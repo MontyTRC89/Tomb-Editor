@@ -14,6 +14,7 @@ using RastDesc = SharpDX.Direct3D11.RasterizerStateDescription;
 using DepthDesc = SharpDX.Direct3D11.DepthStencilStateDescription;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using NLog;
 
 namespace TombEditor.Controls
 {
@@ -37,6 +38,7 @@ namespace TombEditor.Controls
 
     public partial class PanelRendering3D : Panel
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private class RenderBucket
         {
@@ -221,7 +223,7 @@ namespace TombEditor.Controls
 
         public void InitializePanel()
         {
-            Debug.Log("Starting DirectX 11");
+            logger.Info("Starting DirectX 11");
 
             // Initialize the viewport, after the panel is added and sized on the form
             PresentationParameters pp = new PresentationParameters();
@@ -277,7 +279,7 @@ namespace TombEditor.Controls
 
             _rasterizerWireframe = RasterizerState.New(_editor.GraphicsDevice, renderStateDesc);
 
-            Debug.Log("Graphic Device ready", DebugType.Success);
+            logger.Info("Graphic Device ready");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -625,8 +627,7 @@ namespace TombEditor.Controls
                                     _editor.BlockSelectionEndX = xBlock;
                                     _editor.BlockSelectionEndZ = zBlock;
 
-                                    Debug.Log("Selected range: (" + _editor.BlockSelectionStartX + ", " + _editor.BlockSelectionStartZ + ") " +
-                                              "- (" + _editor.BlockSelectionEndX + ", " + _editor.BlockSelectionEndZ + ")");
+                                    logger.Debug($"Selected range: ({_editor.BlockSelectionStartX}, {_editor.BlockSelectionStartZ}) - ({_editor.BlockSelectionEndX}, {_editor.BlockSelectionEndZ})");
 
                                     _editor.LoadTriggersInUI();
 
@@ -1594,31 +1595,31 @@ namespace TombEditor.Controls
             switch (result.ElementType)
             {
                 case PickingElementType.SkinnedModel:
-                    Debug.Log("Selected: Moveable #" + result.Element);
+                    logger.Debug("Selected: Moveable #" + result.Element);
                     break;
 
                 case PickingElementType.StaticModel:
-                    Debug.Log("Selected: Static Mesh #" + result.Element);
+                    logger.Debug("Selected: Static Mesh #" + result.Element);
                     break;
 
                 case PickingElementType.Sink:
-                    Debug.Log("Selected: Sink #" + result.Element);
+                    logger.Debug("Selected: Sink #" + result.Element);
                     break;
 
                 case PickingElementType.Camera:
-                    Debug.Log("Selected: Camera #" + result.Element);
+                    logger.Debug("Selected: Camera #" + result.Element);
                     break;
 
                 case PickingElementType.FlyByCamera:
-                    Debug.Log("Selected: Flyby camera #" + result.Element);
+                    logger.Debug("Selected: Flyby camera #" + result.Element);
                     break;
 
                 case PickingElementType.SoundSource:
-                    Debug.Log("Selected: Sound source #" + result.Element);
+                    logger.Debug("Selected: Sound source #" + result.Element);
                     break;
 
                 case PickingElementType.Light:
-                    Debug.Log("Selected: Light #" + result.Element);
+                    logger.Debug("Selected: Light #" + result.Element);
                     break;
             }
 
@@ -2284,7 +2285,7 @@ namespace TombEditor.Controls
 
             _editor.GraphicsDevice.Present();
 
-            Debug.Log("Draw Call! " + mils + "ms", DebugType.Success);
+            logger.Debug($"Draw Call! {mils}ms");
         }
 
         private void RenderTask1()

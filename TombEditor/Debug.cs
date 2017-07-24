@@ -2,20 +2,13 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using TombEditor.Controls;
 
 namespace TombEditor
 {
-    public enum DebugType
-    {
-        None,
-        Success,
-        Warning,
-        Error
-    }
-
     public class Debug
     {
         public static long NumRooms { get; set; }
@@ -57,9 +50,14 @@ namespace TombEditor
             SpriteBatch batch = new SpriteBatch(_editor.GraphicsDevice);
             batch.Begin(SpriteSortMode.FrontToBack, _editor.GraphicsDevice.BlendStates.Additive);
 
-            batch.DrawString(_editor.Font, "FPS: " + Math.Round(_editor.FPS, 2) + ", Vertices: " + NumVertices + ", Triangles: " + NumTriangles, new Vector2(0, 0), Color.White);
-            batch.DrawString(_editor.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
-            if (SelectedItem != "") batch.DrawString(_editor.Font, "Selected Object: " + SelectedItem, new Vector2(0, 36), Color.White);
+            batch.DrawString(_editor.Font,
+                "FPS: " + Math.Round(_editor.FPS, 2) + ", Vertices: " + NumVertices + ", Triangles: " + NumTriangles,
+                new Vector2(0, 0), Color.White);
+            batch.DrawString(_editor.Font,
+                "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes,
+                new Vector2(0, 18), Color.White);
+            if (SelectedItem != "")
+                batch.DrawString(_editor.Font, "Selected Object: " + SelectedItem, new Vector2(0, 36), Color.White);
 
             for (int i = 0; i < Strings.Count; i++)
             {
@@ -71,15 +69,20 @@ namespace TombEditor
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
         }
 
-        public static void Log(string message, DebugType typ = DebugType.None)
+        public static void InitLogging()
         {
-            if (typ == DebugType.Success) Console.ForegroundColor = ConsoleColor.Green;
-            if (typ == DebugType.Warning) Console.ForegroundColor = ConsoleColor.Yellow;
-            if (typ == DebugType.Error) Console.ForegroundColor = ConsoleColor.Red;
+            var config = new LoggingConfiguration();
 
-            Console.WriteLine(message);
+            var consoleTarget = new ColoredConsoleTarget();
+            config.AddTarget("console", consoleTarget);
 
-            Console.ResetColor();
+            consoleTarget.Layout =
+                @"[${date:format=HH\:mm\:ss.fff} ${pad:padding=5:inner=${level:uppercase=true}}] ${logger} | ${message}";
+
+            var rule1 = new LoggingRule("*", LogLevel.Debug, consoleTarget);
+            config.LoggingRules.Add(rule1);
+
+            LogManager.Configuration = config;
         }
     }
 }
