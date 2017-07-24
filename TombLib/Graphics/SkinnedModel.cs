@@ -14,7 +14,13 @@ namespace TombLib.Graphics
     public class SkinnedModel : Model<SkinnedMesh, SkinnedVertex>
     {
         public Vector3 Offset;
-
+        public Bone Root { get; set; }
+        public List<Animation> Animations { get; set; }
+        public List<Bone> Bones { get; set; }
+        public List<Matrix> Transforms { get; set; }
+        public List<Matrix> InverseTransforms { get; set; }
+        public List<Matrix> AnimationTransforms { get; set; }
+        
         public SkinnedModel(GraphicsDevice device, uint objectId)
             : base(device, objectId, ModelType.Skinned)
         {
@@ -25,23 +31,8 @@ namespace TombLib.Graphics
             InverseTransforms = new List<Matrix>();
         }
 
-        public Bone Root { get; set; }
-
-        public List<Animation> Animations { get; set; }
-
-        public List<Bone> Bones { get; set; }
-
-        public List<Matrix> Transforms { get; set; }
-
-
-        public List<Matrix> InverseTransforms { get; set; }
-
-        public List<Matrix> AnimationTransforms { get; set; }
-
         public void ApplyTransforms()
-        {
-
-        }
+        { }
 
         public void BuildHierarchy()
         {
@@ -129,7 +120,7 @@ namespace TombLib.Graphics
             Indices = new List<int>();
 
             for (int i = 0; i < Meshes.Count; i++)
-            {                
+            {
                 Vertices.AddRange(Meshes[i].Vertices);
 
                 Meshes[i].BaseIndex = lastBaseIndex;
@@ -143,7 +134,8 @@ namespace TombLib.Graphics
                 lastBaseIndex += Meshes[i].Vertices.Count;
             }
 
-            if (Vertices.Count == 0) return;
+            if (Vertices.Count == 0)
+                return;
 
             _vb = Buffer.Vertex.New<SkinnedVertex>(GraphicsDevice, Vertices.ToArray<SkinnedVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             _ib = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);

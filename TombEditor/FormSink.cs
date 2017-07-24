@@ -14,7 +14,6 @@ namespace TombEditor
     public partial class FormSink : DarkForm
     {
         public bool IsNew { get; set; }
-
         private Editor _editor;
 
         public FormSink()

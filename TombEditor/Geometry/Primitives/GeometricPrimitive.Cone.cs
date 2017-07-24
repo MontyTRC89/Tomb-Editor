@@ -94,7 +94,8 @@ namespace SharpDX.Toolkit.Graphics
             /// <exception cref="System.ArgumentOutOfRangeException">tessellation;Must be >= 3</exception>
             public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, float length = 1.0f, int tessellation = 18, bool toLeftHanded = false)
             {
-                if (tessellation < 3) throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
+                if (tessellation < 3)
+                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
 
                 int verticalSegments = tessellation;
                 int horizontalSegments = tessellation * 2;
@@ -103,7 +104,7 @@ namespace SharpDX.Toolkit.Graphics
                 var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
-				
+
                 // Vertex of the cone
                 EditorVertex coneVertex = new EditorVertex();
                 coneVertex.Position = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -112,7 +113,7 @@ namespace SharpDX.Toolkit.Graphics
                 List<EditorVertex> tempVertices = new List<EditorVertex>();
                 List<int> tempIndices = new List<int>();
 
-                for (int i=0;i<verticalSegments;i++)
+                for (int i = 0; i < verticalSegments; i++)
                 {
                     float x = radius * (float)Math.Sin(i * angle);
                     float y = radius * (float)Math.Cos(i * angle);
@@ -126,7 +127,7 @@ namespace SharpDX.Toolkit.Graphics
 
                 tempVertices.Add(coneVertex);
 
-				for (int i=0;i<tessellation;i++)
+                for (int i = 0; i < tessellation; i++)
                 {
                     int first = i;
                     int last = (i == tessellation - 1 ? 0 : i + 1);
@@ -198,5 +199,5 @@ namespace SharpDX.Toolkit.Graphics
                 return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Sphere" };
             }
         }
-   }
+    }
 }

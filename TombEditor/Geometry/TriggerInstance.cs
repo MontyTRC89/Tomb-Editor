@@ -8,48 +8,55 @@ namespace TombEditor.Geometry
     public class TriggerInstance : IObjectInstance
     {
         public byte NumXBlocks { get; set; }
-
         public byte NumZBlocks { get; set; }
-
         public TriggerType TriggerType { get; set; }
-
         public TriggerTargetType TargetType { get; set; }
-
         public int Target { get; set; }
-
         public short Timer { get; set; }
-
         public bool OneShot { get; set; }
 
         private Editor _editor = Editor.Instance;
 
-        public TriggerInstance(int id, short room) : base(ObjectInstanceType.Trigger, id, room)
-        {
-
-        }
+        public TriggerInstance(int id, short room)
+            : base(ObjectInstanceType.Trigger, id, room)
+        { }
 
         public override string ToString()
         {
             string output = "";
 
-            if (TriggerType == TriggerType.Antipad) output = "Antipad";
-            if (TriggerType == TriggerType.Antitrigger) output = "Antitrigger";
-            if (TriggerType == TriggerType.Combat) output = "Combat";
-            if (TriggerType == TriggerType.Condition) output = "Condition";
-            if (TriggerType == TriggerType.Dummy) output = "Dummy";
-            if (TriggerType == TriggerType.Heavy) output = "Heavy";
-            if (TriggerType == TriggerType.HeavyAntritrigger) output = "HeavyAntritrigger";
-            if (TriggerType == TriggerType.HeavySwitch) output = "HeavySwitch";
-            if (TriggerType == TriggerType.Key) output = "Key";
-            if (TriggerType == TriggerType.Monkey) output = "Monkey";
-            if (TriggerType == TriggerType.Pad) output = "Pad";
-            if (TriggerType == TriggerType.Pickup) output = "Pickup";
-            if (TriggerType == TriggerType.Switch) output = "Switch";
-            if (TriggerType == TriggerType.Trigger) output = "Trigger";
+            if (TriggerType == TriggerType.Antipad)
+                output = "Antipad";
+            if (TriggerType == TriggerType.Antitrigger)
+                output = "Antitrigger";
+            if (TriggerType == TriggerType.Combat)
+                output = "Combat";
+            if (TriggerType == TriggerType.Condition)
+                output = "Condition";
+            if (TriggerType == TriggerType.Dummy)
+                output = "Dummy";
+            if (TriggerType == TriggerType.Heavy)
+                output = "Heavy";
+            if (TriggerType == TriggerType.HeavyAntritrigger)
+                output = "HeavyAntritrigger";
+            if (TriggerType == TriggerType.HeavySwitch)
+                output = "HeavySwitch";
+            if (TriggerType == TriggerType.Key)
+                output = "Key";
+            if (TriggerType == TriggerType.Monkey)
+                output = "Monkey";
+            if (TriggerType == TriggerType.Pad)
+                output = "Pad";
+            if (TriggerType == TriggerType.Pickup)
+                output = "Pickup";
+            if (TriggerType == TriggerType.Switch)
+                output = "Switch";
+            if (TriggerType == TriggerType.Trigger)
+                output = "Trigger";
 
             output += " (" + ID + ") for ";
 
-            if (TargetType==TriggerTargetType.Camera)
+            if (TargetType == TriggerTargetType.Camera)
             {
                 CameraInstance instance = (CameraInstance)_editor.Level.Objects[Target];
                 output += "Camera (" + instance.ID + ")";
@@ -102,7 +109,7 @@ namespace TombEditor.Geometry
                 else
                 {
 
-                }                
+                }
             }
 
             if (TargetType == TriggerTargetType.PlayAudio)

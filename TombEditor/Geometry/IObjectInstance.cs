@@ -21,30 +21,17 @@ namespace TombEditor.Geometry
     public abstract class IObjectInstance
     {
         public int ID { get; set; }
-
         public short Room { get; set; }
-
         public Vector3 Position { get; set; }
-
         public short OCB { get; set; }
-
         public short Rotation { get; set; }
-
         public bool Invisible { get; set; }
-
         public bool ClearBody { get; set; }
-
         public bool[] Bits { get; set; }
-
         public ObjectInstanceType Type { get; set; }
-
         public byte X { get; set; }
-
         public byte Z { get; set; }
-
         public short Y { get; set; }
-
-        public abstract IObjectInstance Clone();
 
         public IObjectInstance(ObjectInstanceType type, int id, short room)
         {
@@ -53,6 +40,8 @@ namespace TombEditor.Geometry
             Type = type;
             Bits = new bool[] { false, false, false, false, false };
         }
+
+        public abstract IObjectInstance Clone();
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {

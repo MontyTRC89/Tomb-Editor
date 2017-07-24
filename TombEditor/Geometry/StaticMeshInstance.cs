@@ -11,15 +11,12 @@ namespace TombEditor.Geometry
     public class StaticMeshInstance : IObjectInstance
     {
         public StaticModel Model { get; set; }
-
         public int ObjectID { get; set; }
+        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
 
-        public System.Drawing.Color Color { get; set; }
-
-        public StaticMeshInstance(int id, short room) : base(ObjectInstanceType.StaticMesh, id, room)
-        {
-            Color = System.Drawing.Color.FromArgb(255, 128, 128, 128);
-        }
+        public StaticMeshInstance(int id, short room)
+            : base(ObjectInstanceType.StaticMesh, id, room)
+        { }
 
         public override IObjectInstance Clone()
         {

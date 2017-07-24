@@ -20,13 +20,11 @@ namespace TombEditor
 
     class TexturePackerTest
     {
-        public List<string> Textures { get; set; }
-
+        public List<string> Textures { get; set; } = new List<string>();
         public int Width { get; set; }
 
         public TexturePackerTest(int width)
         {
-            Textures = new List<string>();
             Width = width;
         }
 
@@ -64,9 +62,10 @@ namespace TombEditor
             for (int i = 0; i < Textures.Count; i++)
             {
                 PngInfo info = infos[i];
-                if (info.Width > 512) continue;
+                if (info.Width > 512)
+                    continue;
 
-                if (xcurr + info.Width/2 > 256)
+                if (xcurr + info.Width / 2 > 256)
                 {
                     ycurr += maxHeight;
                     xcurr = 0;
@@ -80,19 +79,20 @@ namespace TombEditor
 
 
                 Bitmap bmp = (Bitmap)Bitmap.FromFile("textures\\" + info.Name);
-                for (int x = 0; x < bmp.Width; x+=2)
+                for (int x = 0; x < bmp.Width; x += 2)
                 {
-                    for (int y = 0; y < bmp.Height; y+=2)
+                    for (int y = 0; y < bmp.Height; y += 2)
                     {
-                        dest.SetPixel(xcurr + x/2, ycurr + y/2, bmp.GetPixel(x, y));
+                        dest.SetPixel(xcurr + x / 2, ycurr + y / 2, bmp.GetPixel(x, y));
                     }
                 }
 
-                if (info.Height/2 > maxHeight) maxHeight = info.Height/2;
-                xcurr += info.Width/2;
+                if (info.Height / 2 > maxHeight)
+                    maxHeight = info.Height / 2;
+                xcurr += info.Width / 2;
 
                 infos[i] = info;
-               
+
             }
             using (Graphics g = Graphics.FromImage(dest))
             {
@@ -105,7 +105,7 @@ namespace TombEditor
                 }
             }
             return dest;
-            
+
         }
 
         private int ReadInt32(BinaryReader reader)

@@ -8,13 +8,11 @@ using System.Runtime.InteropServices;
 
 namespace TombLib.IO
 {
-    public class BinaryWriterEx : BinaryWriter 
+    public class BinaryWriterEx : BinaryWriter
     {
         public BinaryWriterEx(Stream output)
             : base(output)
-        {
-            
-        }
+        { }
 
         public void Write(Vector2 value)
         {

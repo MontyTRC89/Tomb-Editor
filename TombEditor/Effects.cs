@@ -15,9 +15,9 @@ namespace TombEditor
     {
         private static Assembly _editorAssembly;
         private static string _path;
-
         public static GraphicsDevice GraphicsDevice { get; set; }
-
+        public static SharpDX.Toolkit.Graphics.Effect Picking { get; set; }
+        
         public static bool Initialize(GraphicsDevice device)
         {
             _editorAssembly = Assembly.GetExecutingAssembly();
@@ -26,7 +26,9 @@ namespace TombEditor
 
             try
             {
-                Picking = LoadEffect("Picking"); if (Picking == null) return false;
+                Picking = LoadEffect("Picking");
+                if (Picking == null)
+                    return false;
             }
             catch (Exception ex)
             {
@@ -36,8 +38,6 @@ namespace TombEditor
 
             return true;
         }
-
-        public static SharpDX.Toolkit.Graphics.Effect Picking { get; set; }
 
         private static SharpDX.Toolkit.Graphics.Effect LoadEffect(string name)
         {
