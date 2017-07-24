@@ -450,11 +450,6 @@ namespace TombEditor
                 _gridLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, _grids[0]);
         }
 
-        public void Log(string message)
-        {
-            Console.WriteLine(message);
-        }
-
       /*  public void DrawGrid(string gridType, Matrix world)
         {
             Buffer<VertexPositionColor> buffer;

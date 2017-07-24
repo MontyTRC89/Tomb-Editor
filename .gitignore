@@ -4,6 +4,7 @@ thumbs.db
 *.cache
 *.VC.db
 *.suo
-obj
-bin
-.vs
+obj/
+bin/
+.vs/
+packages/

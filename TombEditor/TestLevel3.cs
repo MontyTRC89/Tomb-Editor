@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.IO;
+using NLog;
 using TombLib.IO;
 
 namespace TombEngine
@@ -52,6 +53,8 @@ namespace TombEngine
 
     class TombRaider3Level
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public int Version;
 
         public ushort NumRoomTextureTiles;
@@ -360,7 +363,7 @@ namespace TombEngine
             reader.ReadBlock(out NumMeshTrees);
             reader.ReadBlockArray(out MeshTrees, NumMeshTrees);
 
-            Console.WriteLine(reader.BaseStream.Position.ToString());
+            logger.Debug(reader.BaseStream.Position.ToString());
             reader.ReadBlock(out NumFrames);
             reader.ReadBlockArray(out Frames, NumFrames);
 

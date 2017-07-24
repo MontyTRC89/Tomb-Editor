@@ -15,11 +15,14 @@ using System.Runtime;
 using System.Diagnostics;
 using TombEngine;
 using System.Runtime.InteropServices;
+using NLog;
 
 namespace TombEditor
 {
     public partial class FormMain : DarkUI.Forms.DarkForm
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Editor _editor;
         private int _lastSearchResult;
 
@@ -30,7 +33,7 @@ namespace TombEditor
 
         TimeSpan accumulatedTime;
         TimeSpan lastTime;
-        
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
@@ -51,7 +54,7 @@ namespace TombEditor
 
             // Initialize search result
             _lastSearchResult = -1;
-            
+
             // For each control bind its light parameter
             numLightIntensity.LightParameter = LightParameter.Intensity;
             numLightIn.LightParameter = LightParameter.In;
@@ -153,7 +156,7 @@ namespace TombEditor
             if (!EditorActions.AddPortal())
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Not a valid portal position",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -317,7 +320,7 @@ namespace TombEditor
             else
             {
                 _editor.Level.Rooms[_editor.RoomIndex].FlagReflection = true;
-                _editor.Level.Rooms[_editor.RoomIndex].ReflectionLevel = (short)comboReflection.SelectedIndex;
+                _editor.Level.Rooms[_editor.RoomIndex].ReflectionLevel = (short) comboReflection.SelectedIndex;
             }
         }
 
@@ -331,7 +334,7 @@ namespace TombEditor
             else
             {
                 _editor.Level.Rooms[_editor.RoomIndex].FlagMist = true;
-                _editor.Level.Rooms[_editor.RoomIndex].MistLevel = (short)comboMist.SelectedIndex;
+                _editor.Level.Rooms[_editor.RoomIndex].MistLevel = (short) comboMist.SelectedIndex;
             }
         }
 
@@ -341,7 +344,8 @@ namespace TombEditor
             {
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = new Geometry.Room(_editor.Level, 0, 0, 0, 20, 20, 12);
                 _editor.Level.Rooms[comboRoom.SelectedIndex].Name = "Room " + comboRoom.SelectedIndex;
-                comboRoom.Items[comboRoom.SelectedIndex] = comboRoom.SelectedIndex + ": Room " + comboRoom.SelectedIndex;
+                comboRoom.Items[comboRoom.SelectedIndex] =
+                    comboRoom.SelectedIndex + ": Room " + comboRoom.SelectedIndex;
                 _editor.Level.Rooms[comboRoom.SelectedIndex].BuildGeometry();
                 _editor.Level.Rooms[comboRoom.SelectedIndex].CalculateLightingForThisRoom();
                 _editor.Level.Rooms[comboRoom.SelectedIndex].UpdateBuffers();
@@ -349,7 +353,7 @@ namespace TombEditor
 
             ResetSelection();
 
-            _editor.RoomIndex = (short)comboRoom.SelectedIndex;
+            _editor.RoomIndex = (short) comboRoom.SelectedIndex;
 
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
@@ -379,7 +383,7 @@ namespace TombEditor
 
             comboMist.SelectedIndex = room.MistLevel;
             comboReflection.SelectedIndex = room.ReflectionLevel;
-            comboReverberation.SelectedIndex = (int)room.Reverberation;
+            comboReverberation.SelectedIndex = (int) room.Reverberation;
 
             cbFlagCold.Checked = room.FlagCold;
             cbFlagDamage.Checked = room.FlagDamage;
@@ -446,7 +450,7 @@ namespace TombEditor
 
         private void FormMainNew_Shown(object sender, EventArgs e)
         {
-            Debug.Log("Tomb Editor " + Application.ProductVersion.ToString() + " is starting");
+            logger.Info($"Tomb Editor {Application.ProductVersion} is starting");
 
             // Initialize controls
             _editor = Editor.Instance;
@@ -465,7 +469,7 @@ namespace TombEditor
             panel2DMap.InitializePanel();
             panelItem.InitializePanel();
 
-            Debug.Log("Creating new empty level");
+            logger.Info("Creating new empty level");
 
             // Create a new empty level
             _editor.Level = new Level();
@@ -500,19 +504,17 @@ namespace TombEditor
             // Update 3D view
             but3D_Click(null, null);
 
-            this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - Untitled";
+            this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
-            Debug.Log("Tomb Editor is ready :)", DebugType.Success);
+            logger.Info("Tomb Editor is ready :)");
         }
 
         private void LoadTextureMap()
         {
-
         }
 
         private void LoadWad()
         {
-
         }
 
         private void but3D_Click(object sender, EventArgs e)
@@ -624,8 +626,9 @@ namespace TombEditor
             // aggiorno la telecamera
             /*panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f, room.Position.Y * 128.0f + room.Ceiling * 64.0f,
                                                 room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);*/
-            panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.Centre.X, room.Position.Y * 256.0f + room.Centre.Y,
-                                                room.Position.Z * 1024.0f + room.Centre.Z);
+            panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.Centre.X,
+                room.Position.Y * 256.0f + room.Centre.Y,
+                room.Position.Z * 1024.0f + room.Centre.Z);
             panel3D.Camera.Distance = 3072.0f;
             panel3D.Camera.Update();
         }
@@ -693,7 +696,7 @@ namespace TombEditor
                     for (int k = 10; k <= 13; k++)
                     {
                         if (room.Blocks[x, z].Faces[k].Defined)
-                            EditorActions.ApplyTexture(x, z, (BlockFaces)k);
+                            EditorActions.ApplyTexture(x, z, (BlockFaces) k);
                     }
                 }
             }
@@ -755,7 +758,8 @@ namespace TombEditor
                                 if (!_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].IsFloorSolid)
                                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorOpacity = opacity;
                                 else
-                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorOpacity = PortalOpacity.None;
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorOpacity =
+                                        PortalOpacity.None;
 
                                 break;
 
@@ -763,7 +767,8 @@ namespace TombEditor
                                 if (!_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].IsCeilingSolid)
                                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingOpacity = opacity;
                                 else
-                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingOpacity = PortalOpacity.None;
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingOpacity =
+                                        PortalOpacity.None;
 
                                 break;
                         }
@@ -778,7 +783,7 @@ namespace TombEditor
             else
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You have to select a portal first",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
         }
@@ -816,84 +821,84 @@ namespace TombEditor
             _editor.Action = EditorAction.PlaceSink;
         }
 
-       /* private void numLightIn_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].In = (float)numLightIn.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-
-        private void numLightOut_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Out = (float)numLightOut.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-
-        private void numLightLen_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Len = (float)numLightLen.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-
-        private void numLightCutoff_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Cutoff = (float)numLightCutoff.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-
-        private void numLightDirectionX_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionX = (float)numLightDirectionX.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-
-        private void numLightDirectionY_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = (float)numLightDirectionY.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-        */
+        /* private void numLightIn_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].In = (float)numLightIn.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+ 
+         private void numLightOut_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Out = (float)numLightOut.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+ 
+         private void numLightLen_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Len = (float)numLightLen.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+ 
+         private void numLightCutoff_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Cutoff = (float)numLightCutoff.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+ 
+         private void numLightDirectionX_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionX = (float)numLightDirectionX.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+ 
+         private void numLightDirectionY_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = (float)numLightDirectionY.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+         */
         private void panelLightColor_DoubleClick(object sender, EventArgs e)
         {
             if (_editor.LightIndex != -1)
@@ -943,12 +948,14 @@ namespace TombEditor
             // carico gli elementi del wad se esistono
             for (int i = 0; i < _editor.Level.Wad.Moveables.Count; i++)
             {
-                comboItems.Items.Add(_editor.MoveablesObjectIds[(int)(_editor.Level.Wad.Moveables.ElementAt(i).Value.ObjectID)]);
+                comboItems.Items.Add(
+                    _editor.MoveablesObjectIds[(int) (_editor.Level.Wad.Moveables.ElementAt(i).Value.ObjectID)]);
             }
 
             for (int i = 0; i < _editor.Level.Wad.StaticMeshes.Count; i++)
             {
-                comboItems.Items.Add(_editor.StaticMeshesObjectIds[(int)(_editor.Level.Wad.StaticMeshes.ElementAt(i).Value.ObjectID)]);
+                comboItems.Items.Add(
+                    _editor.StaticMeshesObjectIds[(int) (_editor.Level.Wad.StaticMeshes.ElementAt(i).Value.ObjectID)]);
             }
 
             comboItems.SelectedIndex = 0;
@@ -958,8 +965,9 @@ namespace TombEditor
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to create a new project?",
-                                                        "New project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                    "Your project will be lost. Do you really want to create a new project?",
+                    "New project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
             // Clean all resources before creating a new level
             if (_editor.Level != null) _editor.Level.DisposeLevel();
@@ -1004,7 +1012,6 @@ namespace TombEditor
 
         private void ResetInterface()
         {
-
         }
 
         private void DeletePortal(int id)
@@ -1113,9 +1120,9 @@ namespace TombEditor
                 }
 
                 if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Portal ID = " +
-                                                                        _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                                                            _editor.PickingResult.Element + "?",
+                        "Confirm delete",
+                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                 {
                     DeletePortal(panel2DGrid.SelectedPortal);
                     panel2DGrid.SelectedPortal = -1;
@@ -1145,7 +1152,8 @@ namespace TombEditor
             }
             else
             {
-                if (_editor.Mode == EditorMode.Geometry && _editor.PickingResult.ElementType == PickingElementType.Block)
+                if (_editor.Mode == EditorMode.Geometry &&
+                    _editor.PickingResult.ElementType == PickingElementType.Block)
                 {
                     // Prepare selection boundaries
                     int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
@@ -1158,7 +1166,7 @@ namespace TombEditor
 
                     int face = 0;
                     short increment = 0;
-                                        bool addTrigger = false;
+                    bool addTrigger = false;
 
                     EditorActions.FaceEditorActions action = EditorActions.FaceEditorActions.EntireFace;
                     EditorActions.FaceSubdivisions sub = EditorActions.FaceSubdivisions.Q;
@@ -1256,10 +1264,14 @@ namespace TombEditor
 
                         if (face == 0)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].QAFaces[2] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].QAFaces[3] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].QAFaces[0] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].QAFaces[1] += increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].QAFaces[2] +=
+                                increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].QAFaces[3] +=
+                                increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].QAFaces[0] +=
+                                increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].QAFaces[1] +=
+                                increment;
 
                             for (int x = xMin; x <= xMax; x++)
                             {
@@ -1281,10 +1293,14 @@ namespace TombEditor
                         }
                         else if (face == 1)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].WSFaces[2] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].WSFaces[3] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].WSFaces[0] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].WSFaces[1] += increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].WSFaces[2] +=
+                                increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].WSFaces[3] +=
+                                increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].WSFaces[0] +=
+                                increment;
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].WSFaces[1] +=
+                                increment;
 
                             for (int x = xMin; x <= xMax; x++)
                             {
@@ -1311,39 +1327,48 @@ namespace TombEditor
                         switch (_editor.BlockEditingType)
                         {
                             case 0:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EntireFace, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax,
+                                    EditorActions.FaceEditorActions.EntireFace, sub);
                                 break;
 
                             case 1:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeN, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeN,
+                                    sub);
                                 break;
 
                             case 2:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeE, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeE,
+                                    sub);
                                 break;
 
                             case 3:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeS, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeS,
+                                    sub);
                                 break;
 
                             case 4:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeW, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.EdgeW,
+                                    sub);
                                 break;
 
                             case 5:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerNW, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerNW,
+                                    sub);
                                 break;
 
                             case 6:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerNE, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerNE,
+                                    sub);
                                 break;
 
                             case 7:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerSE, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerSE,
+                                    sub);
                                 break;
 
                             case 8:
-                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerSW, sub);
+                                EditorActions.EditFace(xMin, xMax, zMin, zMax, EditorActions.FaceEditorActions.CornerSW,
+                                    sub);
                                 break;
                         }
                     }
@@ -1357,43 +1382,51 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
 
                         case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.West, e.Shift);
                             break;
 
                         case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.East, e.Shift);
                             break;
 
                         case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.North, e.Shift);
                             break;
 
                         case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.South, e.Shift);
                             break;
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Moveable ID = " +
                                                                         _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element);
+                                EditorActions.DeleteObject(EditorActions.ObjectType.Moveable,
+                                    _editor.PickingResult.Element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
                             break;
 
                         case Keys.R:
-                            EditorActions.RotateObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element, 1, e.Shift);
+                            EditorActions.RotateObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                1, e.Shift);
                             break;
 
                         case Keys.O:
@@ -1408,43 +1441,52 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
 
                         case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.West, e.Shift);
                             break;
 
                         case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.East, e.Shift);
                             break;
 
                         case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.North, e.Shift);
                             break;
 
                         case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.South, e.Shift);
                             break;
 
                         case Keys.Delete:
-                            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Static mesh ID = " +
-                                                                        _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                                    "Do you really want to delete Static mesh ID = " +
+                                    _editor.PickingResult.Element + "?",
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element);
+                                EditorActions.DeleteObject(EditorActions.ObjectType.StaticMesh,
+                                    _editor.PickingResult.Element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
                             break;
 
                         case Keys.R:
-                            EditorActions.RotateObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element, 1, e.Shift);
+                            EditorActions.RotateObject(EditorActions.ObjectType.StaticMesh,
+                                _editor.PickingResult.Element, 1, e.Shift);
                             break;
                     }
                 }
@@ -1455,13 +1497,15 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveLight(_editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveLight(_editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
-                 
+
                         case Keys.Left:
                             if (e.Control)
                             {
@@ -1474,7 +1518,8 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                                EditorActions.MoveLight(_editor.PickingResult.Element,
+                                    EditorActions.MoveObjectDirections.West, e.Shift);
                             }
 
                             break;
@@ -1491,7 +1536,8 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                                EditorActions.MoveLight(_editor.PickingResult.Element,
+                                    EditorActions.MoveObjectDirections.East, e.Shift);
                             }
 
                             break;
@@ -1508,7 +1554,8 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                                EditorActions.MoveLight(_editor.PickingResult.Element,
+                                    EditorActions.MoveObjectDirections.North, e.Shift);
                             }
 
                             break;
@@ -1525,15 +1572,17 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                                EditorActions.MoveLight(_editor.PickingResult.Element,
+                                    EditorActions.MoveObjectDirections.South, e.Shift);
                             }
-                            {}
+                        {
+                        }
                             break;
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete this Light?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteLight(_editor.PickingResult.Element);
 
@@ -1550,36 +1599,43 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
 
                         case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.West, e.Shift);
                             break;
 
                         case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.East, e.Shift);
                             break;
 
                         case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.North, e.Shift);
                             break;
 
                         case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.South, e.Shift);
                             break;
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Camera ID = " +
                                                                         _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element);
+                                EditorActions.DeleteObject(EditorActions.ObjectType.Camera,
+                                    _editor.PickingResult.Element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1591,11 +1647,13 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
 
                         case Keys.Left:
@@ -1605,7 +1663,8 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
+                                    _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
                             }
 
                             break;
@@ -1617,7 +1676,8 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
+                                    _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
                             }
 
                             break;
@@ -1629,7 +1689,8 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
+                                    _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
                             }
 
                             break;
@@ -1641,18 +1702,21 @@ namespace TombEditor
                             }
                             else
                             {
-                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
+                                    _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
                             }
 
                             break;
 
                         case Keys.Delete:
-                            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Flyby camera ID = " +
-                                                                        _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                                    "Do you really want to delete Flyby camera ID = " +
+                                    _editor.PickingResult.Element + "?",
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element);
+                                EditorActions.DeleteObject(EditorActions.ObjectType.FlybyCamera,
+                                    _editor.PickingResult.Element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1670,36 +1734,43 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
 
                         case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.West, e.Shift);
                             break;
 
                         case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.East, e.Shift);
                             break;
 
                         case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.North, e.Shift);
                             break;
 
                         case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                EditorActions.MoveObjectDirections.South, e.Shift);
                             break;
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Sink ID = " +
                                                                         _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element);
+                                EditorActions.DeleteObject(EditorActions.ObjectType.Sink,
+                                    _editor.PickingResult.Element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1717,36 +1788,44 @@ namespace TombEditor
                     switch (e.KeyCode)
                     {
                         case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
                             break;
 
                         case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
 
                         case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
                             break;
 
                         case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
                             break;
 
                         case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
                             break;
 
                         case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
+                            EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
+                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
                             break;
 
                         case Keys.Delete:
-                            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Sound source ID = " +
-                                                                        _editor.PickingResult.Element + "?",
-                                                                        "Confirm delete",
-                                                                        DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
+                            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                                    "Do you really want to delete Sound source ID = " +
+                                    _editor.PickingResult.Element + "?",
+                                    "Confirm delete",
+                                    DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element);
+                                EditorActions.DeleteObject(EditorActions.ObjectType.SoundSource,
+                                    _editor.PickingResult.Element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1760,12 +1839,11 @@ namespace TombEditor
                     }
                 }
 
-               // _editor.DrawPanel3D();
+                // _editor.DrawPanel3D();
             }
 
             if (e.Control && !panel3D.Drag)
             {
-
             }
             else
             {
@@ -1786,7 +1864,7 @@ namespace TombEditor
         {
             _editor.LightIndex = -1;
             _editor.SelectedItem = -1;
-            _editor.PickingResult = new PickingResult { ElementType = PickingElementType.None };
+            _editor.PickingResult = new PickingResult {ElementType = PickingElementType.None};
             _editor.BlockSelectionStartX = -1;
             _editor.BlockSelectionStartZ = -1;
             _editor.BlockSelectionEndX = -1;
@@ -1826,13 +1904,15 @@ namespace TombEditor
             string pngName = "";
             if (!Utils.ConvertTGAtoPNG(openFileDialogTGA.FileName, out pngName))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. Please check " +
-                                                      "your file and please remeber that a TRLE TGA file must have a width of 256 pixel " +
-                                                      "or 512 pixel and a height multiple of 256 pixel", "Error");
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "There was an error while converting TGA in PNG format. Please check " +
+                    "your file and please remeber that a TRLE TGA file must have a width of 256 pixel " +
+                    "or 512 pixel and a height multiple of 256 pixel", "Error");
                 return;
             }
 
-            DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors", "Informations");
+            DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors",
+                "Informations");
         }
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1842,12 +1922,11 @@ namespace TombEditor
             _editor.Level.LoadWad(openFileDialogWAD.FileName);
             LoadWadInInterface();
 
-           // MessageBox.Show("WAD was loaded without errors", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // MessageBox.Show("WAD was loaded without errors", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-        
+
         private void panel2DGrid_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
@@ -1862,7 +1941,8 @@ namespace TombEditor
             if (comboItems.SelectedIndex < _editor.Level.Wad.Moveables.Count)
             {
                 _editor.ItemType = EditorItemType.Moveable;
-                _editor.SelectedItem = (int)_editor.Level.Wad.WadMoveables.ElementAt(comboItems.SelectedIndex).Value.ObjectID;
+                _editor.SelectedItem =
+                    (int) _editor.Level.Wad.WadMoveables.ElementAt(comboItems.SelectedIndex).Value.ObjectID;
                 panelItem.ItemType = _editor.ItemType;
                 panelItem.SelectedItem = _editor.SelectedItem; // (int)comboItems.SelectedIndex;
                 panelRoomAmbientLight.Select();
@@ -1870,7 +1950,9 @@ namespace TombEditor
             else
             {
                 _editor.ItemType = EditorItemType.StaticMesh;
-                _editor.SelectedItem = (int)_editor.Level.Wad.WasStaticMeshes.ElementAt(comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count).Value.ObjectID; //comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count;
+                _editor.SelectedItem = (int) _editor.Level.Wad.WasStaticMeshes
+                    .ElementAt(comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count).Value
+                    .ObjectID; //comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count;
                 panelItem.ItemType = _editor.ItemType;
                 panelItem.SelectedItem = _editor.SelectedItem; // (int)comboItems.SelectedIndex;
                 panelRoomAmbientLight.Select();
@@ -1891,25 +1973,27 @@ namespace TombEditor
 
                 _editor.Action = EditorAction.PlaceItem;
                 _editor.ItemType = EditorItemType.Moveable;
-                _editor.SelectedItem = (int)_editor.Level.Wad.WadMoveables.ElementAt(comboItems.SelectedIndex).Value.ObjectID;
+                _editor.SelectedItem =
+                    (int) _editor.Level.Wad.WadMoveables.ElementAt(comboItems.SelectedIndex).Value.ObjectID;
             }
             else
             {
                 _editor.Action = EditorAction.PlaceItem;
                 _editor.ItemType = EditorItemType.StaticMesh;
-                _editor.SelectedItem = (int)_editor.Level.Wad.WasStaticMeshes.ElementAt(comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count).Value.ObjectID; //comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count;
+                _editor.SelectedItem = (int) _editor.Level.Wad.WasStaticMeshes
+                    .ElementAt(comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count).Value
+                    .ObjectID; //comboItems.SelectedIndex - _editor.Level.Wad.Moveables.Count;
             }
         }
 
         public void LoadStaticMeshColorInUI()
         {
-            StaticMeshInstance instance = (StaticMeshInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            StaticMeshInstance instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult.Element];
             panelStaticMeshColor.BackColor = instance.Color;
         }
 
         private void darkMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-
         }
 
         private void butDeleteRoom_Click(object sender, EventArgs e)
@@ -1933,15 +2017,17 @@ namespace TombEditor
                 Portal p = _editor.Level.Portals[i];
                 if (p.Room == _editor.RoomIndex || p.AdjoiningRoom == _editor.RoomIndex)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
+                    DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.",
+                        "Error");
                     return;
                 }
             }
 
             // Ask for confirmation
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete this room? All objects inside room will be deleted and " +
-                                                            "triggers pointing to them will be removed.",
-                                                            "Delete room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                    "Do you really want to delete this room? All objects inside room will be deleted and " +
+                    "triggers pointing to them will be removed.",
+                    "Delete room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
             {
                 return;
             }
@@ -1950,7 +2036,7 @@ namespace TombEditor
 
             // Delete the room
             DeleteRoom(_editor.RoomIndex);
-            
+
             // Find a valid room
             for (int i = 0; i < _editor.Level.Rooms.Length; i++)
             {
@@ -2002,15 +2088,17 @@ namespace TombEditor
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to open an existing project?",
-                                                        "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                    "Your project will be lost. Do you really want to open an existing project?",
+                    "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
             if (openFileDialogPRJ2.ShowDialog() != DialogResult.OK) return;
 
             Level level = Level.LoadFromPrj2(openFileDialogPRJ2.FileName);
             if (level == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while opening project file. File may be in use or may be corrupted", "Error");
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "There was an error while opening project file. File may be in use or may be corrupted", "Error");
                 return;
             }
 
@@ -2049,8 +2137,10 @@ namespace TombEditor
                 if (_editor.Level.Rooms[i] != null)
                 {
                     string description = _editor.Level.Rooms[i].Name;
-                    if (_editor.Level.Rooms[i].Flipped) description += " (Flipped " +
-                        _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGroup + ")";
+                    if (_editor.Level.Rooms[i].Flipped)
+                        description += " (Flipped " +
+                                       _editor.Level.Rooms[i].AlternateRoom + ":" +
+                                       _editor.Level.Rooms[i].AlternateGroup + ")";
                     comboRoom.Items.Add(i + ": " + description);
                 }
                 else
@@ -2071,7 +2161,7 @@ namespace TombEditor
                     numLightIn.Value = light.In;
                     numLightOut.Value = light.Out;
                     numLightIntensity.Value = light.Intensity;
-                    
+
                     panelLightColor.Enabled = true;
                     numLightLen.Enabled = false;
                     numLightCutoff.Enabled = false;
@@ -2173,8 +2263,9 @@ namespace TombEditor
 
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to open an existing project?",
-                                                        "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                    "Your project will be lost. Do you really want to open an existing project?",
+                    "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
             if (openFileDialogPRJ.ShowDialog() != DialogResult.OK) return;
 
@@ -2182,7 +2273,8 @@ namespace TombEditor
             form.FileName = openFileDialogPRJ.FileName;
             if (form.ShowDialog() != DialogResult.OK || form.Level == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while importing project file. File may be in use or may be corrupted", "Error");
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "There was an error while importing project file. File may be in use or may be corrupted", "Error");
                 return;
             }
 
@@ -2204,7 +2296,8 @@ namespace TombEditor
                 if (_editor.Level.Rooms[i] != null)
                 {
                     roomName = (_editor.Level.Rooms[i].Name == null ? "Room " + i : _editor.Level.Rooms[i].Name);
-                    if (_editor.Level.Rooms[i].BaseRoom != -1) roomName = "(Flipped of " + _editor.Level.Rooms[i].BaseRoom + ") " + roomName;
+                    if (_editor.Level.Rooms[i].BaseRoom != -1)
+                        roomName = "(Flipped of " + _editor.Level.Rooms[i].BaseRoom + ") " + roomName;
 
                     comboRoom.Items.Add(i + ": " + roomName);
                 }
@@ -2249,12 +2342,12 @@ namespace TombEditor
             if (!result)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");
-
             }
             else
             {
                 DarkUI.Forms.DarkMessageBox.ShowInformation("Project file was saved correctly", "Informations");
-                this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + saveFileDialogPRJ2.FileName;
+                this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " +
+                            saveFileDialogPRJ2.FileName;
                 _editor.Level.MustSave = false;
             }
         }
@@ -2313,32 +2406,32 @@ namespace TombEditor
             UpdateStatistics();
         }
 
-      /*  private void numLightIntensity_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Intensity = (float)numLightIntensity.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }*/
+        /*  private void numLightIntensity_ValueChanged(object sender, EventArgs e)
+          {
+              if (_editor.LightIndex != -1)
+              {
+                  Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                  _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Intensity = (float)numLightIntensity.Value;
+                  _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                  _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                  _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                  panel3D.Draw();
+              }
+          }*/
 
         private void butCompileLevel_Click(object sender, EventArgs e)
         {
             if (_editor.Level.WadFile == null || _editor.Level.WadFile == "")
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a WAD file", "Error",
-                                                      DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
             if (_editor.Level.TextureFile == null || _editor.Level.TextureFile == "")
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a texture map", "Error",
-                                                      DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -2359,14 +2452,14 @@ namespace TombEditor
             if (_editor.Level.WadFile == null || _editor.Level.WadFile == "")
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a WAD file", "Error",
-                                                      DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
             if (_editor.Level.TextureFile == null || _editor.Level.TextureFile == "")
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a texture map", "Error",
-                                                      DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -2394,7 +2487,8 @@ namespace TombEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            TombRaider4Level level;/*= new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
+            TombRaider4Level
+                level; /*= new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
             level.Load(""); */
 
             level = new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4");
@@ -2402,12 +2496,11 @@ namespace TombEditor
 
 
             level = new TombEngine.TombRaider4Level("Game\\Data\\coastal.tr4");
-           level.Load("editor");
+            level.Load("editor");
 
-         
 
-         //  level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
-        ////   level.Load("originale");
+            //  level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
+            ////   level.Load("originale");
         }
 
         private void darkButton15_Click(object sender, EventArgs e)
@@ -2418,7 +2511,6 @@ namespace TombEditor
 
         private void panel2_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2472,15 +2564,16 @@ namespace TombEditor
                 {
                     if (_editor.Level.Rooms[i] == null)
                     {
-                        found = (short)i;
+                        found = (short) i;
                         break;
                     }
                 }
 
                 if (found == -1)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
-                                                          "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkMessageBox.ShowError(
+                        "You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                        "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
 
@@ -2492,8 +2585,8 @@ namespace TombEditor
                     return;
                 }
 
-                byte numXSectors = (byte)(xMax - xMin + 3);
-                byte numZSectors = (byte)(zMax - zMin + 3);
+                byte numXSectors = (byte) (xMax - xMin + 3);
+                byte numZSectors = (byte) (zMax - zMin + 3);
 
                 Room newRoom = new Geometry.Room(_editor.Level, 0, 0, 0, numXSectors, numZSectors, room.Ceiling);
 
@@ -2508,7 +2601,7 @@ namespace TombEditor
                         {
                             if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
                             {
-                               // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
+                                // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
                             }
                         }
 
@@ -2557,15 +2650,16 @@ namespace TombEditor
                 {
                     if (_editor.Level.Rooms[i] == null)
                     {
-                        found = (short)i;
+                        found = (short) i;
                         break;
                     }
                 }
 
                 if (found == -1)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
-                                                          "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkMessageBox.ShowError(
+                        "You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                        "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
 
@@ -2577,8 +2671,8 @@ namespace TombEditor
                     return;
                 }
 
-                byte numXSectors = (byte)(xMax - xMin + 3);
-                byte numZSectors = (byte)(zMax - zMin + 3);
+                byte numXSectors = (byte) (xMax - xMin + 3);
+                byte numZSectors = (byte) (zMax - zMin + 3);
 
                 Room newRoom = new Geometry.Room(_editor.Level, 0, 0, 0, numXSectors, numZSectors, room.Ceiling);
 
@@ -2595,8 +2689,8 @@ namespace TombEditor
                         {
                             if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
                             {
-                              //  _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
-                             //   _editor.Level.TextureSamples[room.Blocks[x + xMin - 1, z + zMin - 1].Faces[f].Texture].UsageCount--;
+                                //  _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
+                                //   _editor.Level.TextureSamples[room.Blocks[x + xMin - 1, z + zMin - 1].Faces[f].Texture].UsageCount--;
                             }
                         }
 
@@ -2655,7 +2749,7 @@ namespace TombEditor
 
             int highest = room.GetHighestCorner();
             int lowest = room.GetLowestCorner();
-            short delta = (short)((highest - lowest) / 3);
+            short delta = (short) ((highest - lowest) / 3);
 
             for (int x = 1; x < room.NumXSectors - 1; x++)
             {
@@ -2665,8 +2759,8 @@ namespace TombEditor
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].EDFaces[1] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].RFFaces[0] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].RFFaces[1] = 0;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[0] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[1] = (short)-delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[0] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[1] = (short) -delta;
 
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].QAFaces[2] = delta;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].QAFaces[3] = delta;
@@ -2674,8 +2768,8 @@ namespace TombEditor
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].EDFaces[3] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].RFFaces[2] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].RFFaces[3] = 0;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[2] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[3] = (short)-delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[2] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[3] = (short) -delta;
             }
 
             for (int z = 1; z < room.NumZSectors - 1; z++)
@@ -2686,8 +2780,8 @@ namespace TombEditor
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].EDFaces[2] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].RFFaces[1] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].RFFaces[2] = 0;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[1] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[2] = (short)-delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[1] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[2] = (short) -delta;
 
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].QAFaces[0] = delta;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].QAFaces[3] = delta;
@@ -2695,8 +2789,8 @@ namespace TombEditor
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].EDFaces[3] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].RFFaces[0] = 0;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].RFFaces[3] = 0;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[0] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[3] = (short)-delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[0] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[3] = (short) -delta;
             }
 
             _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
@@ -2712,48 +2806,52 @@ namespace TombEditor
 
             int highest = room.GetHighestCorner();
             int lowest = room.GetLowestCorner();
-            short delta = (short)((highest - lowest) / 5);
+            short delta = (short) ((highest - lowest) / 5);
 
             for (int x = 1; x < room.NumXSectors - 1; x++)
             {
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].QAFaces[0] = (short)(2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].QAFaces[1] = (short)(2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].QAFaces[0] = (short) (2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].QAFaces[1] = (short) (2 * delta);
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].EDFaces[0] = delta;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].EDFaces[1] = delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].RFFaces[0] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].RFFaces[1] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[0] = (short)(-2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[1] = (short)(-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].RFFaces[0] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].RFFaces[1] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[0] = (short) (-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, 0].WSFaces[1] = (short) (-2 * delta);
 
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].QAFaces[2] = (short)(2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].QAFaces[3] = (short)(2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].QAFaces[2] = (short) (2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].QAFaces[3] = (short) (2 * delta);
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].EDFaces[2] = delta;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].EDFaces[3] = delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].RFFaces[2] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].RFFaces[3] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[2] = (short)(-2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[3] = (short)(-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].RFFaces[2] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].RFFaces[3] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[2] =
+                    (short) (-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, room.NumZSectors - 1].WSFaces[3] =
+                    (short) (-2 * delta);
             }
 
             for (int z = 1; z < room.NumZSectors - 1; z++)
             {
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].QAFaces[1] = (short)(2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].QAFaces[2] = (short)(2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].QAFaces[1] = (short) (2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].QAFaces[2] = (short) (2 * delta);
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].EDFaces[1] = delta;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].EDFaces[2] = delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].RFFaces[1] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].RFFaces[2] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[1] = (short)(-2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[2] = (short)(-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].RFFaces[1] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].RFFaces[2] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[1] = (short) (-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[0, z].WSFaces[2] = (short) (-2 * delta);
 
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].QAFaces[0] = (short)(2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].QAFaces[3] = (short)(2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].QAFaces[0] = (short) (2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].QAFaces[3] = (short) (2 * delta);
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].EDFaces[0] = delta;
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].EDFaces[3] = delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].RFFaces[0] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].RFFaces[3] = (short)-delta;
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[0] = (short)(-2 * delta);
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[3] = (short)(-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].RFFaces[0] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].RFFaces[3] = (short) -delta;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[0] =
+                    (short) (-2 * delta);
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[room.NumXSectors - 1, z].WSFaces[3] =
+                    (short) (-2 * delta);
             }
 
             _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
@@ -2775,7 +2873,7 @@ namespace TombEditor
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -2785,16 +2883,21 @@ namespace TombEditor
             {
                 for (int z = zMin + 1; z <= zMax; z++)
                 {
-                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
+                    short step = (short) (r.Next(0, 1000) < 500 ? 0 : 1 * sign);
 
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += step;
 
-                    if (x > xMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].QAFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
-                    if (z > zMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].QAFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
+                    if (x > xMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].QAFaces[2] =
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
+                    if (z > zMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].QAFaces[0] =
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
 
                     if (x > xMin && z > zMin)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z - 1].QAFaces[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z - 1].QAFaces[1] =
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
                     }
                 }
             }
@@ -2818,7 +2921,7 @@ namespace TombEditor
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -2828,16 +2931,21 @@ namespace TombEditor
             {
                 for (int z = zMin + 1; z <= zMax; z++)
                 {
-                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
+                    short step = (short) (r.Next(0, 1000) < 500 ? 0 : 1 * sign);
 
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += step;
 
-                    if (x > xMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].WSFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
-                    if (z > zMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].WSFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
+                    if (x > xMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].WSFaces[2] =
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
+                    if (z > zMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].WSFaces[0] =
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
 
                     if (x > xMin && z > zMin)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z - 1].WSFaces[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z - 1].WSFaces[1] =
+                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
                     }
                 }
             }
@@ -2861,7 +2969,7 @@ namespace TombEditor
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -2873,7 +2981,7 @@ namespace TombEditor
                 {
                     Block b = room.Blocks[x, z];
 
-                    short mean = (short)((b.QAFaces[0] + b.QAFaces[1] + b.QAFaces[2] + b.QAFaces[3]) / 4);
+                    short mean = (short) ((b.QAFaces[0] + b.QAFaces[1] + b.QAFaces[2] + b.QAFaces[3]) / 4);
 
                     for (int i = 0; i < 4; i++)
                     {
@@ -2901,7 +3009,7 @@ namespace TombEditor
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -2913,7 +3021,7 @@ namespace TombEditor
                 {
                     Block b = room.Blocks[x, z];
 
-                    short mean = (short)((b.WSFaces[0] + b.WSFaces[1] + b.WSFaces[2] + b.WSFaces[3]) / 4);
+                    short mean = (short) ((b.WSFaces[0] + b.WSFaces[1] + b.WSFaces[2] + b.WSFaces[3]) / 4);
 
                     for (int i = 0; i < 4; i++)
                     {
@@ -2993,7 +3101,7 @@ namespace TombEditor
         {
             if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
             {
-                StaticMeshInstance instance = (StaticMeshInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+                StaticMeshInstance instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult.Element];
 
                 colorDialog.Color = instance.Color;
                 if (colorDialog.ShowDialog() != DialogResult.OK) return;
@@ -3020,7 +3128,7 @@ namespace TombEditor
                 {
                     if (instance.Type == ObjectInstanceType.Moveable)
                     {
-                        MoveableInstance moveable = (MoveableInstance)instance;
+                        MoveableInstance moveable = (MoveableInstance) instance;
                         if (moveable.Model.ObjectID == _editor.SelectedItem)
                         {
                             _lastSearchResult = i;
@@ -3042,9 +3150,8 @@ namespace TombEditor
                 }
                 else
                 {
-
                 }
-            }       
+            }
         }
 
         private void butResetSearch_Click(object sender, EventArgs e)
@@ -3060,7 +3167,7 @@ namespace TombEditor
             string triggerDescription = _editor.Level.Triggers[trigger].ToString();
 
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete '" + triggerDescription + "'?",
-                                                        "Delete trigger", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                    "Delete trigger", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
             TriggerInstance triggerObject = _editor.Level.Triggers[trigger];
 
@@ -3122,14 +3229,15 @@ namespace TombEditor
                     Portal p = _editor.Level.Portals[i];
                     if ((p.Room == _editor.RoomIndex || p.AdjoiningRoom == _editor.RoomIndex) && !p.MemberOfFlippedRoom)
                     {
-                        DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
+                        DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.",
+                            "Error");
                         return;
                     }
                 }
 
                 // Ask for confirmation
                 if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete flipped room?",
-                                                            "Delete flipped room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                        "Delete flipped room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                 {
                     return;
                 }
@@ -3146,7 +3254,7 @@ namespace TombEditor
             // Change flipped map number, not much to do here
             if (comboFlipMap.SelectedIndex != 0 && room.Flipped)
             {
-                _editor.Level.Rooms[_editor.RoomIndex].AlternateGroup = (short)(comboFlipMap.SelectedIndex - 1);
+                _editor.Level.Rooms[_editor.RoomIndex].AlternateGroup = (short) (comboFlipMap.SelectedIndex - 1);
                 //_editor.Level.Rooms[_editor.Level.Rooms[_editor.RoomIndex].AlternateRoom].FlipGroup = (short)(comboFlipMap.SelectedIndex - 1);
                 return;
             }
@@ -3160,15 +3268,16 @@ namespace TombEditor
                 {
                     if (_editor.Level.Rooms[i] == null)
                     {
-                        found = (short)i;
+                        found = (short) i;
                         break;
                     }
                 }
 
                 if (found == -1)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
-                                                          "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkMessageBox.ShowError(
+                        "You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                        "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
 
@@ -3188,7 +3297,7 @@ namespace TombEditor
                         newPortal.Flipped = true;
 
                         p.Flipped = true;
-                        _editor.Level.Portals[p.ID] = p; 
+                        _editor.Level.Portals[p.ID] = p;
 
                         duplicatedPortals.Add(p.ID, portalId);
                         _editor.Level.Portals.Add(portalId, newPortal);
@@ -3201,12 +3310,13 @@ namespace TombEditor
                     _editor.Level.Portals[p.OtherID].OtherIDFlipped = duplicatedPortals.ElementAt(i).Value;
                 }
 
-                byte numXSectors = (byte)(room.NumXSectors);
-                byte numZSectors = (byte)(room.NumZSectors);
+                byte numXSectors = (byte) (room.NumXSectors);
+                byte numZSectors = (byte) (room.NumZSectors);
 
                 Vector3 pos = room.Position;
 
-                Room newRoom = new Geometry.Room(_editor.Level, (int)pos.X, (int)pos.Y, (int)pos.Z, numXSectors, numZSectors, room.Ceiling);
+                Room newRoom = new Geometry.Room(_editor.Level, (int) pos.X, (int) pos.Y, (int) pos.Z, numXSectors,
+                    numZSectors, room.Ceiling);
 
                 for (int x = 0; x < numXSectors; x++)
                 {
@@ -3214,15 +3324,21 @@ namespace TombEditor
                     {
                         newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
                         newRoom.Blocks[x, z].Room = newRoom;
-                        newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1 ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : -1);
-                        newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != -1 ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : -1);
-                        newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != -1 ? duplicatedPortals[room.Blocks[x, z].WallPortal] : -1);
+                        newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1
+                            ? duplicatedPortals[room.Blocks[x, z].FloorPortal]
+                            : -1);
+                        newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != -1
+                            ? duplicatedPortals[room.Blocks[x, z].CeilingPortal]
+                            : -1);
+                        newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != -1
+                            ? duplicatedPortals[room.Blocks[x, z].WallPortal]
+                            : -1);
 
                         for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
                         {
                             if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
                             {
-                               // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
+                                // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
                             }
                         }
                     }
@@ -3236,11 +3352,11 @@ namespace TombEditor
                 newRoom.Name = "(Flipped of " + _editor.RoomIndex + ") Room " + found;
 
                 _editor.Level.Rooms[_editor.RoomIndex].Flipped = true;
-                _editor.Level.Rooms[_editor.RoomIndex].AlternateGroup = (short)(comboFlipMap.SelectedIndex - 1);
+                _editor.Level.Rooms[_editor.RoomIndex].AlternateGroup = (short) (comboFlipMap.SelectedIndex - 1);
                 _editor.Level.Rooms[_editor.RoomIndex].AlternateRoom = found;
 
                 newRoom.Flipped = true;
-                newRoom.AlternateGroup = (short)(comboFlipMap.SelectedIndex - 1);
+                newRoom.AlternateGroup = (short) (comboFlipMap.SelectedIndex - 1);
                 newRoom.BaseRoom = _editor.RoomIndex;
 
                 // Build the geometry of the new room
@@ -3283,8 +3399,9 @@ namespace TombEditor
                             triggersToRemove.Add(trigger.ID);
                         }
 
-                        if (trigger.TargetType == TriggerTargetType.FlyByCamera && obj.Type == ObjectInstanceType.FlyByCamera &&
-                            trigger.Target == ((FlybyCameraInstance)obj).Sequence)
+                        if (trigger.TargetType == TriggerTargetType.FlyByCamera &&
+                            obj.Type == ObjectInstanceType.FlyByCamera &&
+                            trigger.Target == ((FlybyCameraInstance) obj).Sequence)
                         {
                             triggersToRemove.Add(trigger.ID);
                         }
@@ -3319,7 +3436,7 @@ namespace TombEditor
             }
 
             comboRoom.Items[index] = index + ": --- Empty room ---";
-            _editor.Level.Rooms[index] = null;           
+            _editor.Level.Rooms[index] = null;
         }
 
         private void FlipMap(int map)
@@ -3357,14 +3474,16 @@ namespace TombEditor
 
             if (_editor.IsFlipMap)
             {
-                if (_editor.Level.Rooms[_editor.RoomIndex].Flipped && _editor.Level.Rooms[_editor.RoomIndex].AlternateRoom != -1)
+                if (_editor.Level.Rooms[_editor.RoomIndex].Flipped &&
+                    _editor.Level.Rooms[_editor.RoomIndex].AlternateRoom != -1)
                 {
                     comboRoom.SelectedIndex = _editor.Level.Rooms[_editor.RoomIndex].AlternateRoom;
                 }
             }
             else
             {
-                if (_editor.Level.Rooms[_editor.RoomIndex].Flipped && _editor.Level.Rooms[_editor.RoomIndex].BaseRoom != -1)
+                if (_editor.Level.Rooms[_editor.RoomIndex].Flipped &&
+                    _editor.Level.Rooms[_editor.RoomIndex].BaseRoom != -1)
                 {
                     comboRoom.SelectedIndex = _editor.Level.Rooms[_editor.RoomIndex].BaseRoom;
                 }
@@ -3391,11 +3510,12 @@ namespace TombEditor
 
         private void button2_Click(object sender, EventArgs e)
         {
-            TombRaider3Level level; /*= new TombEngine.TombRaider4Level("e:\\trle\\data\\settomb.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
+            TombRaider3Level
+                level; /*= new TombEngine.TombRaider4Level("e:\\trle\\data\\settomb.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
             level.Load(""); */
 
             level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\crash.tr2");
-             level.Load("crash");
+            level.Load("crash");
 
             level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
             level.Load("jungle");
@@ -3432,12 +3552,12 @@ namespace TombEditor
             if (!result)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");
-
             }
             else
             {
                 DarkUI.Forms.DarkMessageBox.ShowInformation("Project file was saved correctly", "Informations");
-                this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + saveFileDialogPRJ2.FileName;
+                this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " +
+                            saveFileDialogPRJ2.FileName;
             }
         }
 
@@ -3553,7 +3673,7 @@ namespace TombEditor
         {
             butClone_Click(null, null);
         }
-    
+
         public void ResetPanel3DCursor()
         {
             panel3D.Cursor = Cursors.Default;
@@ -3561,7 +3681,6 @@ namespace TombEditor
 
         private void butCut_Click(object sender, EventArgs e)
         {
-            
         }
 
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3597,24 +3716,25 @@ namespace TombEditor
             {
                 if (_editor.Level.Rooms[i] == null)
                 {
-                    found = (short)i;
+                    found = (short) i;
                     break;
                 }
             }
 
             if (found == -1)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
-            Room newRoom = new Geometry.Room(_editor.Level, 
-                                             (int)room.Position.X, 
-                                             (int)(room.Position.Y + room.GetHighestCorner()), 
-                                             (int)room.Position.Z, 
-                                             20, 20, 12);
+            Room newRoom = new Geometry.Room(_editor.Level,
+                (int) room.Position.X,
+                (int) (room.Position.Y + room.GetHighestCorner()),
+                (int) room.Position.Z,
+                20, 20, 12);
 
             newRoom.Name = "Room " + found;
 
@@ -3638,24 +3758,25 @@ namespace TombEditor
             {
                 if (_editor.Level.Rooms[i] == null)
                 {
-                    found = (short)i;
+                    found = (short) i;
                     break;
                 }
             }
 
             if (found == -1)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
-                                                      "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
             Room newRoom = new Geometry.Room(_editor.Level,
-                                             (int)room.Position.X,
-                                             (int)(room.Position.Y - 12),
-                                             (int)room.Position.Z,
-                                             20, 20, 12);
+                (int) room.Position.X,
+                (int) (room.Position.Y - 12),
+                (int) room.Position.Z,
+                20, 20, 12);
 
             newRoom.Name = "Room " + found;
 
@@ -3724,26 +3845,26 @@ namespace TombEditor
             List<System.Drawing.Color> colors = new List<System.Drawing.Color>();
             List<int> tempColors = new List<int>();
 
-            Bitmap bmp = (Bitmap)Bitmap.FromFile("Editor\\Palette.png");
-            for (int y=2;y<bmp.Height;y+=14)
+            Bitmap bmp = (Bitmap) Bitmap.FromFile("Editor\\Palette.png");
+            for (int y = 2; y < bmp.Height; y += 14)
             {
                 for (int x = 2; x < bmp.Width; x += 14)
                 {
                     System.Drawing.Color col = bmp.GetPixel(x, y);
                     if (col.A == 0)
                         continue;
-                   /* if (!tempColors.Contains(col.ToArgb()))*/ tempColors.Add(col.ToArgb());
+                    /* if (!tempColors.Contains(col.ToArgb()))*/
+                    tempColors.Add(col.ToArgb());
                 }
             }
             File.Delete("Editor\\Palette.bin");
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite( "Editor\\Palette.bin"));
-            for (int i=0;i<tempColors.Count;i++)
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("Editor\\Palette.bin"));
+            for (int i = 0; i < tempColors.Count; i++)
             {
                 System.Drawing.Color col2 = System.Drawing.Color.FromArgb(tempColors[i]);
                 writer.Write(col2.R);
                 writer.Write(col2.G);
                 writer.Write(col2.B);
-
             }
 
             writer.Flush();
@@ -3752,7 +3873,6 @@ namespace TombEditor
 
         private void panel4_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         public void ChangeLightColorFromPalette()
@@ -3772,27 +3892,22 @@ namespace TombEditor
 
         private void button6_Click(object sender, EventArgs e)
         {
-
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-
         }
 
         private void darkButton28_Click(object sender, EventArgs e)
         {
-
         }
 
         private void butNoCollision_Click(object sender, EventArgs e)
@@ -3812,7 +3927,7 @@ namespace TombEditor
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to exit?",
-                                                        "Exit", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                    "Exit", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
             this.Close();
         }

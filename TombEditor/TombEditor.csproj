@@ -49,6 +49,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\Libs\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+      <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
+          <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
+      </Reference>
     <Reference Include="ObjectListView">
       <HintPath>..\Libs\ObjectListView.dll</HintPath>
     </Reference>
@@ -348,6 +351,7 @@
     </Compile>
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cone.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.LinesCube.cs" />
+      <None Include="packages.config"/>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
