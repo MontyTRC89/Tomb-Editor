@@ -12,7 +12,7 @@ namespace TombLib.Graphics
     [StructLayout(LayoutKind.Sequential,Pack=1)]
     public struct SkinnedVertex
     {
-        [VertexElementAttribute("POSITION", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0)]
+        [VertexElementAttribute("POSITION", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0)]    
         public Vector4 Position;
         [VertexElementAttribute("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 16)]
         public Vector2 UV;
