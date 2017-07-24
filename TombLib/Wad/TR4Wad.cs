@@ -143,43 +143,25 @@ namespace TombLib.Wad
             public byte[] Data;
         }
 
-        public List<wad_object_texture> Textures;
+        public List<wad_object_texture> Textures = new List<wad_object_texture>();
         public byte[,] TexturePages;
         public int NumTexturePages;
-        public List<uint> Pointers;
-        public List<uint> RealPointers;
-        public List<uint> HelperPointers;
-        public List<wad_mesh> Meshes;
-        public List<wad_animation> Animations;
-        public List<wad_state_change> Changes;
-        public List<wad_anim_dispatch> Dispatches;
-        public List<short> Commands;
-        public List<int> Links;
-        public List<short> KeyFrames;
-        public List<wad_moveable> Moveables;
-        public List<wad_static_mesh> StaticMeshes;
+        public List<uint> Pointers = new List<uint>();
+        public List<uint> RealPointers = new List<uint>();
+        public List<uint> HelperPointers = new List<uint>();
+        public List<wad_mesh> Meshes = new List<wad_mesh>();
+        public List<wad_animation> Animations = new List<wad_animation>();
+        public List<wad_state_change> Changes = new List<wad_state_change>();
+        public List<wad_anim_dispatch> Dispatches = new List<wad_anim_dispatch>();
+        public List<short> Commands = new List<short>();
+        public List<int> Links = new List<int>();
+        public List<short> KeyFrames = new List<short>();
+        public List<wad_moveable> Moveables = new List<wad_moveable>();
+        public List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
 
-        public List<string> Sounds { get; set; }
+        public List<string> Sounds { get; set; } = new List<string>();
         public string BaseName { get; set; }
         public string BasePath { get; set; }
-
-        public TR4Wad()
-        {
-            Textures = new List<wad_object_texture>();
-            Pointers = new List<uint>();
-            Meshes = new List<wad_mesh>();
-            Animations = new List<wad_animation>();
-            Changes = new List<wad_state_change>();
-            Dispatches = new List<wad_anim_dispatch>();
-            Commands = new List<short>();
-            KeyFrames = new List<short>();
-            Moveables = new List<wad_moveable>();
-            StaticMeshes = new List<wad_static_mesh>();
-            Links = new List<int>();
-            RealPointers = new List<uint>();
-            HelperPointers = new List<uint>();
-            Sounds = new List<string>();
-        }
 
         public void LoadWad(string fileName)
         {
@@ -192,7 +174,8 @@ namespace TombLib.Wad
 
             // leggo la versione
             int version = reader.ReadInt32();
-            if (version != 129) throw new InvalidDataException();
+            if (version != 129)
+                throw new InvalidDataException();
 
             // leggo le texture
             uint numTextures = reader.ReadUInt32();
@@ -248,19 +231,25 @@ namespace TombLib.Wad
                 int xMax = Int32.MinValue;
                 int yMax = Int32.MinValue;
                 int zMax = Int32.MinValue;
-                
+
                 for (int i = 0; i < numVertices; i++)
                 {
                     wad_vertex v;
                     reader.ReadBlock<wad_vertex>(out v);
 
-                    if (v.X < xMin) xMin = v.X;
-                    if (-v.Y < yMin) yMin = -v.Y;
-                    if (v.Z < zMin) zMin = v.Z;
+                    if (v.X < xMin)
+                        xMin = v.X;
+                    if (-v.Y < yMin)
+                        yMin = -v.Y;
+                    if (v.Z < zMin)
+                        zMin = v.Z;
 
-                    if (v.X > xMax) xMax = v.X;
-                    if (-v.Y > yMax) yMax = -v.Y;
-                    if (v.Z > zMax) zMax = v.Z;
+                    if (v.X > xMax)
+                        xMax = v.X;
+                    if (-v.Y > yMax)
+                        yMax = -v.Y;
+                    if (v.Z > zMax)
+                        zMax = v.Z;
 
                     mesh.Vertices.Add(v);
                 }
@@ -297,16 +286,19 @@ namespace TombLib.Wad
                     poly.V1 = reader.ReadUInt16();
                     poly.V2 = reader.ReadUInt16();
                     poly.V3 = reader.ReadUInt16();
-                    if (poly.Shape == 9) poly.V4 = reader.ReadUInt16();
+                    if (poly.Shape == 9)
+                        poly.V4 = reader.ReadUInt16();
                     poly.Texture = reader.ReadUInt16();
                     poly.Attributes = reader.ReadByte();
                     poly.Unknown = reader.ReadByte();
 
-                    if (poly.Shape == 9) numQuads++;
+                    if (poly.Shape == 9)
+                        numQuads++;
                     mesh.Polygons.Add(poly);
                 }
 
-                if (numQuads % 2 != 0) reader.ReadInt16();
+                if (numQuads % 2 != 0)
+                    reader.ReadInt16();
 
                 uint endPosition = (uint)reader.BaseStream.Position;
                 bytesRead += endPosition - startOfMesh;
@@ -322,8 +314,6 @@ namespace TombLib.Wad
                     }
 
                 }
-
-
             }
 
             // leggo le animazioni
@@ -497,7 +487,8 @@ namespace TombLib.Wad
 
                 for (int j = 0; j < numAnimations; j++)
                 {
-                    if (m.AnimationIndex == -1) break;
+                    if (m.AnimationIndex == -1)
+                        break;
 
                     WadAnimation animation = new WadAnimation();
                     wad_animation anim = Animations[j + m.AnimationIndex];
@@ -647,7 +638,8 @@ namespace TombLib.Wad
                             frame.Angles[n] = kfAngle;
                         }
 
-                        if ((frames - startOfFrame) < anim.KeyFrameSize) frames += ((int)anim.KeyFrameSize - (frames - startOfFrame));
+                        if ((frames - startOfFrame) < anim.KeyFrameSize)
+                            frames += ((int)anim.KeyFrameSize - (frames - startOfFrame));
 
                         animation.KeyFrames.Add(frame);
                     }
@@ -661,8 +653,8 @@ namespace TombLib.Wad
                     Vector3 offset = new Vector3(kf.Offset.X, -kf.Offset.Y, kf.Offset.Z);
                     //offset = Vector3.Zero;
 
-                     moveable.BoundingBox = new BoundingBox(new Vector3(kf.BoundingBox1.X, -kf.BoundingBox2.Y, kf.BoundingBox1.Z) + offset,
-                                                           new Vector3(kf.BoundingBox2.X, -kf.BoundingBox1.Y, kf.BoundingBox2.Z) + offset);
+                    moveable.BoundingBox = new BoundingBox(new Vector3(kf.BoundingBox1.X, -kf.BoundingBox2.Y, kf.BoundingBox1.Z) + offset,
+                                                          new Vector3(kf.BoundingBox2.X, -kf.BoundingBox1.Y, kf.BoundingBox2.Z) + offset);
                 }
                 else
                 {
@@ -788,7 +780,8 @@ namespace TombLib.Wad
         private int GetNextMoveableWithAnimations(int current)
         {
             for (int i = current + 1; i < Moveables.Count; i++)
-                if (Moveables[i].AnimationIndex != -1) return i;
+                if (Moveables[i].AnimationIndex != -1)
+                    return i;
             return -1;
         }
 
@@ -796,7 +789,8 @@ namespace TombLib.Wad
         {
             short output = 0;
 
-            if (animation > Animations.Count - 1) return 0;
+            if (animation > Animations.Count - 1)
+                return 0;
 
             for (int i = 0; i < animation; i++)
             {

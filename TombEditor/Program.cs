@@ -9,14 +9,14 @@ namespace TombEditor
     static class Program
     {
         /// <summary>
-        /// Punto di ingresso principale dell'applicazione.
+        /// The main entry point of the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-           Application.Run(new FormMain());
+            Application.Run(new FormMain());
         }
     }
 }

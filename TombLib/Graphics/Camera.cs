@@ -11,9 +11,6 @@ namespace TombLib.Graphics
         public Matrix View { get; set; }
         public Matrix Projection { get; set; }
 
-        protected float _width;
-        protected float _height;
-		
         public void GeneratePerspectiveProjectionMatrix(float FieldOfView, float width, float height)
         {
             float aspectRatio = width / height;
@@ -22,14 +19,10 @@ namespace TombLib.Graphics
 
         public void GenerateOrthoProjectionMatrix(float width, float height)
         {
-            this.Projection = Matrix.OrthoLH(width*10, height*10, 10.0f, 100000.0f);
-            _width = width;
-            _height = height;
+            this.Projection = Matrix.OrthoLH(width * 10, height * 10, 10.0f, 100000.0f);
         }
 
         public virtual void Update()
-        {
-
-        }
+        { }
     }
 }

@@ -53,17 +53,12 @@ namespace TombEditor.Geometry
             public short blockYfloor;
             public short blockYceiling;
             public sbyte[] qaFaces;
-
             public sbyte[] wsFaces;
-
             public sbyte[] edFaces;
-
             public sbyte[] rfFaces;
             public prj_face[] faces;
-
             public short Flags2;
             public short Flags3;
-
         }
 
         private struct prj_tex_info
@@ -74,50 +69,22 @@ namespace TombEditor.Geometry
             public byte Height;
         }
 
-        // Rooms in level
-        public Room[] Rooms;
-
-        // Texture tiles
-        public Dictionary<int, LevelTexture> TextureSamples { get; set; }
-
-        // DirectX textures... For now just one texture atlas 2048x2048 pixel
-        public Dictionary<int, Texture2D> Textures { get; set; }
-
-        // The texture map in PNG format
-        public Bitmap TextureMap { get; set; }
-
-        // Portals
+        public Room[] Rooms; //Rooms in level
+        public Dictionary<int, LevelTexture> TextureSamples { get; set; } //Texture tiles
+        public Dictionary<int, Texture2D> Textures { get; set; } //DirectX textures... For now just one texture atlas 2048x2048 pixel
+        public Bitmap TextureMap { get; set; } //The texture map in PNG format
         public Dictionary<int, Portal> Portals { get; set; }
-
-        // Triggers
         public Dictionary<int, TriggerInstance> Triggers { get; set; }
-
-        // Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
-        public Dictionary<int, IObjectInstance> Objects { get; set; }
-
-        // Animated textures
+        public Dictionary<int, IObjectInstance> Objects { get; set; } //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
         public List<AnimatedTextureSet> AnimatedTextures { get; set; }
-
-        // Texture sounds
         public List<TextureSound> TextureSounds { get; set; }
-
-        // The WAD
         public Wad Wad { get; set; }
-
-        // Texture file name
         public string TextureFile { get; set; }
-
-        // WAD file name
         public string WadFile { get; set; }
-
-        // Used for Save and Save as logic
-        public bool MustSave { get; set; }
-
-        // File name
+        public bool MustSave { get; set; } // Used for Save and Save as logic
         public string FileName { get; set; }
-
         private Editor _editor;
-             
+
         public Level()
         {
             TextureSamples = new Dictionary<int, LevelTexture>();
@@ -135,7 +102,7 @@ namespace TombEditor.Geometry
 
         public int AddTexture(short x, short y, short w, short h)
         {
-            short newX = (short)x; 
+            short newX = (short)x;
             short newY = (short)y;
 
             // Step 1: check if there's another texture already in the list
@@ -151,10 +118,12 @@ namespace TombEditor.Geometry
             int id = -1;
             for (int i = 0; i < TextureSamples.Count; i++)
             {
-                if (!TextureSamples.ContainsKey(i) && id == -1) id = i;
+                if (!TextureSamples.ContainsKey(i) && id == -1)
+                    id = i;
             }
 
-            if (id == -1) id = TextureSamples.Count;
+            if (id == -1)
+                id = TextureSamples.Count;
 
             // Step 3: if no compatible texture is found, then add a new texture tile
             short page = (short)Math.Floor(y / 256.0f);
@@ -185,12 +154,14 @@ namespace TombEditor.Geometry
                 }
             }
 
-            if (TextureMap != null) TextureMap.Dispose();
+            if (TextureMap != null)
+                TextureMap.Dispose();
             TextureMap = null;
 
             Textures = new Dictionary<int, Texture2D>();
-            
-            if (Wad != null) Wad.DisposeWad();
+
+            if (Wad != null)
+                Wad.DisposeWad();
 
             GC.Collect();
         }
@@ -207,7 +178,8 @@ namespace TombEditor.Geometry
 
             // Calculate the number of pages
             int numPages = (int)Math.Floor(bmp.Height / 256.0f);
-            if (bmp.Height % 256 != 0) numPages++;
+            if (bmp.Height % 256 != 0)
+                numPages++;
 
             int currentXblock = 0;
             int currentYblock = 0;
@@ -223,7 +195,7 @@ namespace TombEditor.Geometry
             for (int i = 0; i < numPages; i++)
             {
                 System.Drawing.RectangleF src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
-                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(currentXblock*256, currentYblock*256, 256, 256);
+                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256, 256);
 
                 g.DrawImage(bmp, dest, src, GraphicsUnit.Pixel);
 
@@ -301,7 +273,8 @@ namespace TombEditor.Geometry
 
             while (true)
             {
-                if (!Portals.ContainsKey(i)) return i;
+                if (!Portals.ContainsKey(i))
+                    return i;
                 i++;
             }
         }
@@ -312,7 +285,8 @@ namespace TombEditor.Geometry
 
             while (true)
             {
-                if (!Triggers.ContainsKey(i)) return i;
+                if (!Triggers.ContainsKey(i))
+                    return i;
                 i++;
             }
         }
@@ -323,7 +297,8 @@ namespace TombEditor.Geometry
 
             while (true)
             {
-                if (!Objects.ContainsKey(i)) return i;
+                if (!Objects.ContainsKey(i))
+                    return i;
                 i++;
             }
         }
@@ -378,7 +353,8 @@ namespace TombEditor.Geometry
                 {
                     // Room is defined?
                     short defined = reader.ReadInt16();
-                    if (defined == 0x01) continue;
+                    if (defined == 0x01)
+                        continue;
 
                     // Read room's name
                     string roomName = System.Text.UTF8Encoding.ASCII.GetString(reader.ReadBytes(80));
@@ -437,12 +413,18 @@ namespace TombEditor.Geometry
                         p.NumXBlocks = (byte)portalXBlocks;
                         p.NumZBlocks = (byte)portalZBlocks;
 
-                        if (direction == 0x0001) p.Direction = PortalDirection.East;
-                        if (direction == 0x0002) p.Direction = PortalDirection.South;
-                        if (direction == 0x0004) p.Direction = PortalDirection.Floor;
-                        if (direction == 0xfffe) p.Direction = PortalDirection.West;
-                        if (direction == 0xfffd) p.Direction = PortalDirection.North;
-                        if (direction == 0xfffb) p.Direction = PortalDirection.Ceiling;
+                        if (direction == 0x0001)
+                            p.Direction = PortalDirection.East;
+                        if (direction == 0x0002)
+                            p.Direction = PortalDirection.South;
+                        if (direction == 0x0004)
+                            p.Direction = PortalDirection.Floor;
+                        if (direction == 0xfffe)
+                            p.Direction = PortalDirection.West;
+                        if (direction == 0xfffd)
+                            p.Direction = PortalDirection.North;
+                        if (direction == 0xfffb)
+                            p.Direction = PortalDirection.Ceiling;
 
                         p.MemberOfFlippedRoom = (p.Room != i);
                         p.Room = (short)i;
@@ -467,7 +449,7 @@ namespace TombEditor.Geometry
                     }
 
                     Debug.Log("    Objects and Triggers: " + numObjects);
-                    
+
                     for (int j = 0; j < numObjects; j++)
                     {
                         short objectType = reader.ReadInt16();
@@ -508,7 +490,7 @@ namespace TombEditor.Geometry
 
                         if (objectType == 0x0008)
                         {
-                            if (objSlot>=460 && objSlot<=464)
+                            if (objSlot >= 460 && objSlot <= 464)
                             {
                                 continue;
                             }
@@ -532,14 +514,22 @@ namespace TombEditor.Geometry
 
                                 objFacing = (short)((objFacing >> 8) & 0xff);
 
-                                if (objFacing == 0x00) instance.Rotation = 270;
-                                if (objFacing == 0x20) instance.Rotation = 315;
-                                if (objFacing == 0x40) instance.Rotation = 0;
-                                if (objFacing == 0x60) instance.Rotation = 45;
-                                if (objFacing == 0x80) instance.Rotation = 90;
-                                if (objFacing == 0xa0) instance.Rotation = 135;
-                                if (objFacing == 0xc0) instance.Rotation = 180;
-                                if (objFacing == 0xe0) instance.Rotation = 225;
+                                if (objFacing == 0x00)
+                                    instance.Rotation = 270;
+                                if (objFacing == 0x20)
+                                    instance.Rotation = 315;
+                                if (objFacing == 0x40)
+                                    instance.Rotation = 0;
+                                if (objFacing == 0x60)
+                                    instance.Rotation = 45;
+                                if (objFacing == 0x80)
+                                    instance.Rotation = 90;
+                                if (objFacing == 0xa0)
+                                    instance.Rotation = 135;
+                                if (objFacing == 0xc0)
+                                    instance.Rotation = 180;
+                                if (objFacing == 0xe0)
+                                    instance.Rotation = 225;
 
                                 level.Objects.Add(instance.ID, instance);
                                 room.Moveables.Add(instance.ID);
@@ -562,14 +552,22 @@ namespace TombEditor.Geometry
 
                                 objFacing = (short)((objFacing >> 8) & 0xff);
 
-                                if (objFacing == 0x00) instance.Rotation = 270;
-                                if (objFacing == 0x20) instance.Rotation = 315;
-                                if (objFacing == 0x40) instance.Rotation = 0;
-                                if (objFacing == 0x60) instance.Rotation = 45;
-                                if (objFacing == 0x80) instance.Rotation = 90;
-                                if (objFacing == 0xa0) instance.Rotation = 135;
-                                if (objFacing == 0xc0) instance.Rotation = 180;
-                                if (objFacing == 0xe0) instance.Rotation = 225;
+                                if (objFacing == 0x00)
+                                    instance.Rotation = 270;
+                                if (objFacing == 0x20)
+                                    instance.Rotation = 315;
+                                if (objFacing == 0x40)
+                                    instance.Rotation = 0;
+                                if (objFacing == 0x60)
+                                    instance.Rotation = 45;
+                                if (objFacing == 0x80)
+                                    instance.Rotation = 90;
+                                if (objFacing == 0xa0)
+                                    instance.Rotation = 135;
+                                if (objFacing == 0xc0)
+                                    instance.Rotation = 180;
+                                if (objFacing == 0xe0)
+                                    instance.Rotation = 225;
 
                                 byte red = (byte)(objTint & 0x001f);
                                 byte green = (byte)((objTint & 0x03e0) >> 5);
@@ -593,19 +591,32 @@ namespace TombEditor.Geometry
                             trigger.NumZBlocks = (byte)objSizeZ;
                             trigger.Target = triggerItemNumber;
 
-                            if (triggerType == 0) trigger.TriggerType = TriggerType.Trigger;
-                            if (triggerType == 1) trigger.TriggerType = TriggerType.Pad;
-                            if (triggerType == 2) trigger.TriggerType = TriggerType.Switch;
-                            if (triggerType == 3) trigger.TriggerType = TriggerType.Key;
-                            if (triggerType == 4) trigger.TriggerType = TriggerType.Pickup;
-                            if (triggerType == 5) trigger.TriggerType = TriggerType.Heavy;
-                            if (triggerType == 6) trigger.TriggerType = TriggerType.Antipad;
-                            if (triggerType == 7) trigger.TriggerType = TriggerType.Combat;
-                            if (triggerType == 8) trigger.TriggerType = TriggerType.Dummy;
-                            if (triggerType == 9) trigger.TriggerType = TriggerType.Antitrigger;
-                            if (triggerType == 10) trigger.TriggerType = TriggerType.HeavySwitch;
-                            if (triggerType == 11) trigger.TriggerType = TriggerType.HeavyAntritrigger;
-                            if (triggerType == 12) trigger.TriggerType = TriggerType.Monkey;
+                            if (triggerType == 0)
+                                trigger.TriggerType = TriggerType.Trigger;
+                            if (triggerType == 1)
+                                trigger.TriggerType = TriggerType.Pad;
+                            if (triggerType == 2)
+                                trigger.TriggerType = TriggerType.Switch;
+                            if (triggerType == 3)
+                                trigger.TriggerType = TriggerType.Key;
+                            if (triggerType == 4)
+                                trigger.TriggerType = TriggerType.Pickup;
+                            if (triggerType == 5)
+                                trigger.TriggerType = TriggerType.Heavy;
+                            if (triggerType == 6)
+                                trigger.TriggerType = TriggerType.Antipad;
+                            if (triggerType == 7)
+                                trigger.TriggerType = TriggerType.Combat;
+                            if (triggerType == 8)
+                                trigger.TriggerType = TriggerType.Dummy;
+                            if (triggerType == 9)
+                                trigger.TriggerType = TriggerType.Antitrigger;
+                            if (triggerType == 10)
+                                trigger.TriggerType = TriggerType.HeavySwitch;
+                            if (triggerType == 11)
+                                trigger.TriggerType = TriggerType.HeavyAntritrigger;
+                            if (triggerType == 12)
+                                trigger.TriggerType = TriggerType.Monkey;
 
                             trigger.Bits[4] = (triggerFlags & 0x0002) == 0;
                             trigger.Bits[3] = (triggerFlags & 0x0004) == 0;
@@ -616,18 +627,30 @@ namespace TombEditor.Geometry
 
                             trigger.Timer = triggerTimere;
 
-                            if (triggerItemType == 0) trigger.TargetType = TriggerTargetType.Object;
-                            if (triggerItemType == 3) trigger.TargetType = TriggerTargetType.FlipMap;
-                            if (triggerItemType == 4) trigger.TargetType = TriggerTargetType.FlipOn;
-                            if (triggerItemType == 5) trigger.TargetType = TriggerTargetType.FlipOff;
-                            if (triggerItemType == 6) trigger.TargetType = TriggerTargetType.Target;
-                            if (triggerItemType == 7) trigger.TargetType = TriggerTargetType.FinishLevel;
-                            if (triggerItemType == 8) trigger.TargetType = TriggerTargetType.PlayAudio;
-                            if (triggerItemType == 9) trigger.TargetType = TriggerTargetType.FlipEffect;
-                            if (triggerItemType == 10) trigger.TargetType = TriggerTargetType.Secret;
-                            if (triggerItemType == 12) trigger.TargetType = TriggerTargetType.FlyByCamera;
-                            if (triggerItemType == 13) trigger.TargetType = TriggerTargetType.CutsceneOrParameterNG;
-                            if (triggerItemType == 14) trigger.TargetType = TriggerTargetType.FMV;
+                            if (triggerItemType == 0)
+                                trigger.TargetType = TriggerTargetType.Object;
+                            if (triggerItemType == 3)
+                                trigger.TargetType = TriggerTargetType.FlipMap;
+                            if (triggerItemType == 4)
+                                trigger.TargetType = TriggerTargetType.FlipOn;
+                            if (triggerItemType == 5)
+                                trigger.TargetType = TriggerTargetType.FlipOff;
+                            if (triggerItemType == 6)
+                                trigger.TargetType = TriggerTargetType.Target;
+                            if (triggerItemType == 7)
+                                trigger.TargetType = TriggerTargetType.FinishLevel;
+                            if (triggerItemType == 8)
+                                trigger.TargetType = TriggerTargetType.PlayAudio;
+                            if (triggerItemType == 9)
+                                trigger.TargetType = TriggerTargetType.FlipEffect;
+                            if (triggerItemType == 10)
+                                trigger.TargetType = TriggerTargetType.Secret;
+                            if (triggerItemType == 12)
+                                trigger.TargetType = TriggerTargetType.FlyByCamera;
+                            if (triggerItemType == 13)
+                                trigger.TargetType = TriggerTargetType.CutsceneOrParameterNG;
+                            if (triggerItemType == 14)
+                                trigger.TargetType = TriggerTargetType.FMV;
 
                             level.Triggers.Add(trigger.ID, trigger);
                         }
@@ -691,7 +714,8 @@ namespace TombEditor.Geometry
                             light.Len = lightLen;
                             light.DirectionX = 360.0f - lightX;
                             light.DirectionY = lightY + 90.0f;
-                            if (light.DirectionY >= 360) light.DirectionY = light.DirectionY - 360.0f;
+                            if (light.DirectionY >= 360)
+                                light.DirectionY = light.DirectionY - 360.0f;
                             light.Active = (lightOn == 0x01);
                             light.In = lightIn;
                             light.Out = lightOut;
@@ -797,7 +821,8 @@ namespace TombEditor.Geometry
 
                             camera.DirectionX = (short)(-objUnk);
                             camera.DirectionY = (short)(objFacing + 90);
-                            if (camera.DirectionY >= 360) camera.DirectionY = (short)(camera.DirectionY - 360);
+                            if (camera.DirectionY >= 360)
+                                camera.DirectionY = (short)(camera.DirectionY - 360);
 
                             camera.Flags[0] = ((objOCB & 0x01) != 0);
                             camera.Flags[1] = ((objOCB & 0x02) != 0);
@@ -815,7 +840,7 @@ namespace TombEditor.Geometry
                             camera.Flags[13] = ((objOCB & 0x2000) != 0);
                             camera.Flags[14] = ((objOCB & 0x4000) != 0);
                             camera.Flags[15] = ((objOCB & 0x8000) != 0);
-                            
+
                             level.Objects.Add(camera.ID, camera);
                             room.FlyByCameras.Add(camera.ID);
                         }
@@ -847,12 +872,18 @@ namespace TombEditor.Geometry
                     room.AlternateRoom = -1;
                     room.AlternateGroup = -1;
 
-                    if ((flags1 & 0x0200) != 0) room.FlagReflection = true;
-                    if ((flags1 & 0x0100) != 0) room.FlagMist = true;
-                    if ((flags1 & 0x0080) != 0) room.FlagQuickSand = true;
-                    if ((flags1 & 0x0020) != 0) room.FlagOutside = true;
-                    if ((flags1 & 0x0008) != 0) room.FlagHorizon = true;
-                    if ((flags1 & 0x0001) != 0) room.FlagWater = true;
+                    if ((flags1 & 0x0200) != 0)
+                        room.FlagReflection = true;
+                    if ((flags1 & 0x0100) != 0)
+                        room.FlagMist = true;
+                    if ((flags1 & 0x0080) != 0)
+                        room.FlagQuickSand = true;
+                    if ((flags1 & 0x0020) != 0)
+                        room.FlagOutside = true;
+                    if ((flags1 & 0x0008) != 0)
+                        room.FlagHorizon = true;
+                    if ((flags1 & 0x0001) != 0)
+                        room.FlagWater = true;
 
                     prj_block[,] tempBlocks = new prj_block[numXBlocks, numZBlocks];
 
@@ -868,16 +899,20 @@ namespace TombEditor.Geometry
                             b.blockYceiling = reader.ReadInt16();
 
                             b.qaFaces = new sbyte[4];
-                            for (int k = 0; k < 4; k++) b.qaFaces[k] = reader.ReadSByte();
+                            for (int k = 0; k < 4; k++)
+                                b.qaFaces[k] = reader.ReadSByte();
 
                             b.wsFaces = new sbyte[4];
-                            for (int k = 0; k < 4; k++) b.wsFaces[k] = reader.ReadSByte();
+                            for (int k = 0; k < 4; k++)
+                                b.wsFaces[k] = reader.ReadSByte();
 
                             b.edFaces = new sbyte[4];
-                            for (int k = 0; k < 4; k++) b.edFaces[k] = reader.ReadSByte();
+                            for (int k = 0; k < 4; k++)
+                                b.edFaces[k] = reader.ReadSByte();
 
                             b.rfFaces = new sbyte[4];
-                            for (int k = 0; k < 4; k++) b.rfFaces[k] = reader.ReadSByte();
+                            for (int k = 0; k < 4; k++)
+                                b.rfFaces[k] = reader.ReadSByte();
 
                             b.faces = new prj_face[14];
 
@@ -913,8 +948,10 @@ namespace TombEditor.Geometry
                         {
                             prj_block b = tempBlocks[x, z];
 
-                            if (b.blockYfloor < lowest) lowest = b.blockYfloor;
-                            if (b.blockYceiling > highest) highest = b.blockYceiling;
+                            if (b.blockYfloor < lowest)
+                                lowest = b.blockYfloor;
+                            if (b.blockYceiling > highest)
+                                highest = b.blockYceiling;
                         }
                     }
 
@@ -931,19 +968,30 @@ namespace TombEditor.Geometry
                             sbyte deltaFloor = (sbyte)(b.blockYfloor - lowest);
                             sbyte deltaCeiling = (sbyte)(deltaCeilingMain - b.blockYceiling);
 
-                            for (int j = 0; j < 4; j++) b.qaFaces[j] += deltaFloor;
-                            for (int j = 0; j < 4; j++) b.edFaces[j] += deltaFloor;
-                            for (int j = 0; j < 4; j++) b.wsFaces[j] -= deltaCeiling;
-                            for (int j = 0; j < 4; j++) b.rfFaces[j] -= deltaCeiling;
+                            for (int j = 0; j < 4; j++)
+                                b.qaFaces[j] += deltaFloor;
+                            for (int j = 0; j < 4; j++)
+                                b.edFaces[j] += deltaFloor;
+                            for (int j = 0; j < 4; j++)
+                                b.wsFaces[j] -= deltaCeiling;
+                            for (int j = 0; j < 4; j++)
+                                b.rfFaces[j] -= deltaCeiling;
 
                             BlockType typ = BlockType.Floor;
-                            if (b.blockType == 0x01) typ = BlockType.Floor;
-                            if (b.blockType == 0x1e) typ = BlockType.BorderWall;
-                            if (b.blockType == 0x0e) typ = BlockType.Wall;
-                            if (b.blockType == 0x06) typ = BlockType.BorderWall; // BlockType.WallPortal;
-                            if (b.blockType == 0x03) typ = BlockType.Floor; // BlockType.FloorPortal;
-                            if (b.blockType == 0x05) typ = BlockType.Floor; // BlockType.CeilingPortal;
-                            if (b.blockType == 0x07) typ = BlockType.Floor; // BlockType.FloorPortal;
+                            if (b.blockType == 0x01)
+                                typ = BlockType.Floor;
+                            if (b.blockType == 0x1e)
+                                typ = BlockType.BorderWall;
+                            if (b.blockType == 0x0e)
+                                typ = BlockType.Wall;
+                            if (b.blockType == 0x06)
+                                typ = BlockType.BorderWall; // BlockType.WallPortal;
+                            if (b.blockType == 0x03)
+                                typ = BlockType.Floor; // BlockType.FloorPortal;
+                            if (b.blockType == 0x05)
+                                typ = BlockType.Floor; // BlockType.CeilingPortal;
+                            if (b.blockType == 0x07)
+                                typ = BlockType.Floor; // BlockType.FloorPortal;
 
                             room.Blocks[x, z] = new Block(level, room, typ, BlockFlags.None, 20);
 
@@ -971,19 +1019,26 @@ namespace TombEditor.Geometry
 
                             room.Blocks[x, z].SplitFoorType = (byte)b.Flags3;
 
-                            if ((b.blockFlags1 & 0x4000) != 0) room.Blocks[x, z].Flags |= BlockFlags.Monkey;
-                            if ((b.blockFlags1 & 0x0020) != 0) room.Blocks[x, z].Flags |= BlockFlags.Box;
-                            if ((b.blockFlags1 & 0x0010) != 0) room.Blocks[x, z].Flags |= BlockFlags.Death;
-                            if ((b.blockFlags1 & 0x0200) != 0) room.Blocks[x, z].Climb[2] = true;
-                            if ((b.blockFlags1 & 0x0100) != 0) room.Blocks[x, z].Climb[1] = true;
-                            if ((b.blockFlags1 & 0x0080) != 0) room.Blocks[x, z].Climb[0] = true;
-                            if ((b.blockFlags1 & 0x0040) != 0) room.Blocks[x, z].Climb[3] = true;
+                            if ((b.blockFlags1 & 0x4000) != 0)
+                                room.Blocks[x, z].Flags |= BlockFlags.Monkey;
+                            if ((b.blockFlags1 & 0x0020) != 0)
+                                room.Blocks[x, z].Flags |= BlockFlags.Box;
+                            if ((b.blockFlags1 & 0x0010) != 0)
+                                room.Blocks[x, z].Flags |= BlockFlags.Death;
+                            if ((b.blockFlags1 & 0x0200) != 0)
+                                room.Blocks[x, z].Climb[2] = true;
+                            if ((b.blockFlags1 & 0x0100) != 0)
+                                room.Blocks[x, z].Climb[1] = true;
+                            if ((b.blockFlags1 & 0x0080) != 0)
+                                room.Blocks[x, z].Climb[0] = true;
+                            if ((b.blockFlags1 & 0x0040) != 0)
+                                room.Blocks[x, z].Climb[3] = true;
 
                             if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
                             {
                                 if ((b.blockFlags1 & 0x0008) == 0x0008 && (b.blockFlags1 & 0x1000) == 0)
                                     room.Blocks[x, z].WallOpacity = PortalOpacity.Opacity1;
-                                if((b.blockFlags1 & 0x0008) == 0x0008 && (b.blockFlags1 & 0x1000) == 0x1000)
+                                if ((b.blockFlags1 & 0x0008) == 0x0008 && (b.blockFlags1 & 0x1000) == 0x1000)
                                     room.Blocks[x, z].WallOpacity = PortalOpacity.Opacity2;
                             }
                             else
@@ -1023,11 +1078,11 @@ namespace TombEditor.Geometry
                 Debug.Log("All rooms loaded", DebugType.Success);
 
                 // Read unused things indices
-          //      byte[] bufIndices=reader.ReadBytes(13136);
+                //      byte[] bufIndices=reader.ReadBytes(13136);
 
-                int dwNumThings=reader.ReadInt32();  // number of things in the map
+                int dwNumThings = reader.ReadInt32();  // number of things in the map
                 int dwMaxThings = reader.ReadInt32();  // always 2000
-                reader.ReadBytes(dwMaxThings*4);
+                reader.ReadBytes(dwMaxThings * 4);
 
                 int dwNumLights = reader.ReadInt32();  // number of lights in the map
                 reader.ReadBytes(768 * 4);
@@ -1043,7 +1098,8 @@ namespace TombEditor.Geometry
                 while (true)
                 {
                     byte s = reader.ReadByte();
-                    if (s == 0x20) break;
+                    if (s == 0x20)
+                        break;
                     if (s == 0x00)
                         continue;
                     stringBuffer[sb] = s;
@@ -1078,7 +1134,8 @@ namespace TombEditor.Geometry
                 }
 
                 string pngName = "";
-                if (!Utils.ConvertTGAtoPNG(tgaName, out pngName)) return null;
+                if (!Utils.ConvertTGAtoPNG(tgaName, out pngName))
+                    return null;
 
                 level.LoadTextureMap(pngName);
 
@@ -1111,7 +1168,8 @@ namespace TombEditor.Geometry
                 while (true)
                 {
                     byte s = reader.ReadByte();
-                    if (s == 0x20) break;
+                    if (s == 0x20)
+                        break;
                     if (s == 0x00)
                         continue;
                     stringBuffer[sb] = s;
@@ -1152,13 +1210,14 @@ namespace TombEditor.Geometry
                 List<prj_slot> slots = new List<Geometry.Level.prj_slot>();
 
                 StreamWriter writerSlots = new StreamWriter(File.OpenWrite("slots.txt"));
-               
+
                 for (int i = 0; i < numSlots; i++)
                 {
                     prj_slot slot = new Geometry.Level.prj_slot();
 
                     short slotType = reader.ReadInt16();
-                    if (slotType == 0x00) {
+                    if (slotType == 0x00)
+                    {
                         slots.Add(slot);
 
                         writerSlots.WriteLine(i + "\t" + "NOT DEFINED");
@@ -1171,7 +1230,8 @@ namespace TombEditor.Geometry
                     while (true)
                     {
                         byte s = reader.ReadByte();
-                        if (s == 0x20) break;
+                        if (s == 0x20)
+                            break;
                         if (s == 0x00)
                             continue;
                         stringBuffer[sb] = s;
@@ -1201,8 +1261,10 @@ namespace TombEditor.Geometry
                 // Read animated textures
                 form.ReportProgress(61, "Loading animated textures and texture sounds");
                 int numAnimationRanges = reader.ReadInt32();
-                for (int i = 0; i < 40; i++) reader.ReadInt32();
-                for (int i = 0; i < 256; i++) reader.ReadInt32();
+                for (int i = 0; i < 40; i++)
+                    reader.ReadInt32();
+                for (int i = 0; i < 256; i++)
+                    reader.ReadInt32();
 
                 for (int i = 0; i < 40; i++)
                 {
@@ -1258,13 +1320,16 @@ namespace TombEditor.Geometry
                 int minX = 1024;
                 for (int i = 0; i < level.Rooms.Length; i++)
                 {
-                    if (level.Rooms[i] == null) continue;
-                    if (level.Rooms[i].Position.X < minX) minX = (int)level.Rooms[i].Position.X;
+                    if (level.Rooms[i] == null)
+                        continue;
+                    if (level.Rooms[i].Position.X < minX)
+                        minX = (int)level.Rooms[i].Position.X;
                 }
 
                 for (int i = 0; i < level.Rooms.Length; i++)
                 {
-                    if (level.Rooms[i] == null) continue;
+                    if (level.Rooms[i] == null)
+                        continue;
                     level.Rooms[i].Position = new SharpDX.Vector3(level.Rooms[i].Position.X - minX - level.Rooms[i].NumXSectors + 10,
                                                                   level.Rooms[i].Position.Y,
                                                                   level.Rooms[i].Position.Z);
@@ -1274,7 +1339,8 @@ namespace TombEditor.Geometry
 
                 for (int i = 0; i < level.Rooms.Length; i++)
                 {
-                    if (level.Rooms[i] == null) continue;
+                    if (level.Rooms[i] == null)
+                        continue;
 
                     for (int j = 0; j < flipInfos.Count; j++)
                     {
@@ -1420,7 +1486,8 @@ namespace TombEditor.Geometry
 
                     for (int j = 0; j < level.Portals.Count; j++)
                     {
-                        if (i == j) continue;
+                        if (i == j)
+                            continue;
 
                         Portal otherPortal = level.Portals.ElementAt(j).Value;
 
@@ -1450,7 +1517,7 @@ namespace TombEditor.Geometry
                                 {
                                     for (int z = otherPortal.Z; z < otherPortal.Z + otherPortal.NumZBlocks; z++)
                                     {
-                                       // level.Rooms[otherPortal.Room].Blocks[x, z].Type = BlockType.WallPortal;
+                                        // level.Rooms[otherPortal.Room].Blocks[x, z].Type = BlockType.WallPortal;
                                         level.Rooms[otherPortal.Room].Blocks[x, z].WallPortal = otherPortal.ID;
                                     }
                                 }
@@ -1649,7 +1716,8 @@ namespace TombEditor.Geometry
                 form.ReportProgress(85, "Building faces and geometry");
                 for (int i = 0; i < level.Rooms.Length; i++)
                 {
-                    if (level.Rooms[i] == null) continue;
+                    if (level.Rooms[i] == null)
+                        continue;
                     Room room = level.Rooms[i];
 
                     for (int j = 0; j < room.Lights.Count; j++)
@@ -1676,7 +1744,7 @@ namespace TombEditor.Geometry
                             prj_block b = tempRooms[i][room.NumXSectors - 1 - x, z];
 
                             //if (room.Blocks[x, z].FloorPortal != -1 && ) room.Blocks[x, z].IsCeilingSolid = true;
-                           // if (room.Blocks[x, z].CeilingPortal != -1) room.Blocks[x, z].IsFloorSolid = true;
+                            // if (room.Blocks[x, z].CeilingPortal != -1) room.Blocks[x, z].IsFloorSolid = true;
 
 
                             for (int j = 0; j < 14; j++)
@@ -1710,7 +1778,7 @@ namespace TombEditor.Geometry
                                         {
                                             prjFace.NewID = level.TextureSamples.ElementAt(m).Key;
                                             LevelTexture texture = level.TextureSamples.ElementAt(m).Value;
-                                           // texture.UsageCount++;
+                                            // texture.UsageCount++;
                                             level.TextureSamples[texture.ID] = texture;
                                             textureFound = true;
                                             break;
@@ -1748,7 +1816,7 @@ namespace TombEditor.Geometry
                     }
 
                     room.BuildGeometry();
-                    
+
                     for (int z = 0; z < room.NumZSectors; z++)
                     {
                         for (int x = 0; x < room.NumXSectors; x++)
@@ -1759,8 +1827,10 @@ namespace TombEditor.Geometry
                             newBlock.NoCollisionFloor = (((prjBlock.Flags2 & 0x04) != 0) || ((prjBlock.Flags2 & 0x02) != 0));
                             newBlock.NoCollisionCeiling = (((prjBlock.Flags2 & 0x10) != 0) || ((prjBlock.Flags2 & 0x08) != 0));
 
-                            if ((prjBlock.Flags2 & 0x0040) != 0) newBlock.Flags |= BlockFlags.Beetle;
-                            if ((prjBlock.Flags2 & 0x0020) != 0) newBlock.Flags |= BlockFlags.TriggerTriggerer;
+                            if ((prjBlock.Flags2 & 0x0040) != 0)
+                                newBlock.Flags |= BlockFlags.Beetle;
+                            if ((prjBlock.Flags2 & 0x0020) != 0)
+                                newBlock.Flags |= BlockFlags.TriggerTriggerer;
 
                             short h1 = room.Blocks[x, z].QAFaces[0];
                             short h2 = room.Blocks[x, z].QAFaces[1];
@@ -2115,15 +2185,18 @@ namespace TombEditor.Geometry
                                         int xBlock = (int)(texture2.Page % 8);
 
                                         UV[0] = new Vector2((xBlock * 256 + texture2.X) / 2048.0f, (yBlock * 256 + texture2.Y) / 2048.0f);
-                                        UV[1] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f, (yBlock * 256 + texture2.Y) / 2048.0f); ;
+                                        UV[1] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f, (yBlock * 256 + texture2.Y) / 2048.0f);
+                                        ;
                                         UV[2] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f, (yBlock * 256 + texture2.Y + texture2.Height) / 2048.0f);
                                         UV[3] = new Vector2((xBlock * 256 + texture2.X) / 2048.0f, (yBlock * 256 + texture2.Y + texture2.Height) / 2048.0f);
 
                                         sbyte newRot = (sbyte)(theFace.txtRotation);
                                         newRot++;
-                                                                            
-                                        if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Rectangle) newRot = (sbyte)(newRot % 4);
-                                        if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle) newRot = (sbyte)(newRot % 3);
+
+                                        if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Rectangle)
+                                            newRot = (sbyte)(newRot % 4);
+                                        if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle)
+                                            newRot = (sbyte)(newRot % 3);
 
                                         if (theBlock.Faces[faceIndex].Defined && theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle)
                                         {
@@ -2610,8 +2683,10 @@ namespace TombEditor.Geometry
                                             }
 
                                             newRot += adjustRotation;
-                                            if (newRot < 0) newRot = (sbyte)(3 - newRot);
-                                            if (newRot > 3) newRot = (sbyte)(newRot % 3);
+                                            if (newRot < 0)
+                                                newRot = (sbyte)(3 - newRot);
+                                            if (newRot > 3)
+                                                newRot = (sbyte)(newRot % 3);
 
                                             for (int rot = 0; rot < newRot; rot++)
                                             {
@@ -2676,13 +2751,14 @@ namespace TombEditor.Geometry
             form.ReportProgress(95, "Building rooms");
             for (int i = 0; i < level.Rooms.Length; i++)
             {
-                if (level.Rooms[i] == null) continue;
+                if (level.Rooms[i] == null)
+                    continue;
 
                 level.Rooms[i].BuildGeometry();
                 level.Rooms[i].CalculateLightingForThisRoom();
                 level.Rooms[i].UpdateBuffers();
             }
-                        
+
             form.ReportProgress(100, "Level loaded correctly!");
 
             GC.Collect();
@@ -2733,34 +2809,36 @@ namespace TombEditor.Geometry
                 level.TextureFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
 
                 // Little hack
-                if (!File.Exists(level.TextureFile)) level.TextureFile = "coastal.png";
+                if (!File.Exists(level.TextureFile))
+                    level.TextureFile = "coastal.png";
 
-               /* if (level.TextureFile == "" || !File.Exists(level.TextureFile))
-                {
-                    Debug.Log("Can't find texture map!", DebugType.Error);
+                /* if (level.TextureFile == "" || !File.Exists(level.TextureFile))
+                 {
+                     Debug.Log("Can't find texture map!", DebugType.Error);
 
-                    if (DarkUI.Forms.DarkMessageBox.ShowWarning("The texture map '" + level.TextureFile + " could not be found. Do you want to browse it or cancel opening project?",
-                                                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                    {
-                        Debug.Log("PRJ2 loading canceled", DebugType.Error);
-                        reader.Close();
-                        return null;
-                    }
+                     if (DarkUI.Forms.DarkMessageBox.ShowWarning("The texture map '" + level.TextureFile + " could not be found. Do you want to browse it or cancel opening project?",
+                                                                 "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                     {
+                         Debug.Log("PRJ2 loading canceled", DebugType.Error);
+                         reader.Close();
+                         return null;
+                     }
 
-                    // Ask for TGA file
-                    tgaName = form.OpenTGA();
-                    if (tgaName == "")
-                    {
-                        Debug.Log("PRJ import canceled", DebugType.Error);
-                        reader.Close();
-                        return null;
-                    }
-                }*/
+                     // Ask for TGA file
+                     tgaName = form.OpenTGA();
+                     if (tgaName == "")
+                     {
+                         Debug.Log("PRJ import canceled", DebugType.Error);
+                         reader.Close();
+                         return null;
+                     }
+                 }*/
 
                 //Read WAD file
                 stringLength = reader.ReadInt32();
                 level.WadFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
-                if (!File.Exists(level.WadFile)) level.WadFile = "graphics\\wads\\coastal.wad";
+                if (!File.Exists(level.WadFile))
+                    level.WadFile = "graphics\\wads\\coastal.wad";
 
                 // Read fillers
                 reader.ReadInt32();
@@ -2780,7 +2858,8 @@ namespace TombEditor.Geometry
                     texture.Width = reader.ReadInt16();
                     texture.Height = reader.ReadInt16();
                     texture.Page = reader.ReadInt16();
-                    /*texture.UsageCount =*/ reader.ReadInt32();
+                    /*texture.UsageCount =*/
+                    reader.ReadInt32();
                     texture.Transparent = reader.ReadBoolean();
                     texture.DoubleSided = reader.ReadBoolean();
 
@@ -3048,9 +3127,12 @@ namespace TombEditor.Geometry
                                 b.Faces[j].NoCollision = reader.ReadBoolean();
                                 b.Faces[j].TextureTriangle = (TextureTileType)reader.ReadByte();
 
-                                for (int n = 0; n < 4; n++) b.Faces[j].RectangleUV[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
-                                for (int n = 0; n < 3; n++) b.Faces[j].TriangleUV[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
-                                for (int n = 0; n < 3; n++) b.Faces[j].TriangleUV2[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                for (int n = 0; n < 4; n++)
+                                    b.Faces[j].RectangleUV[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                for (int n = 0; n < 3; n++)
+                                    b.Faces[j].TriangleUV[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                for (int n = 0; n < 3; n++)
+                                    b.Faces[j].TriangleUV2[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
 
                                 reader.ReadInt32();
                                 reader.ReadInt32();
@@ -3198,12 +3280,18 @@ namespace TombEditor.Geometry
                 short roomIndex = level.Objects.ElementAt(i).Value.Room;
                 int objectID = level.Objects.ElementAt(i).Value.ID;
 
-                if (objectType == ObjectInstanceType.Moveable) level.Rooms[roomIndex].Moveables.Add(objectID);
-                if (objectType == ObjectInstanceType.StaticMesh) level.Rooms[roomIndex].StaticMeshes.Add(objectID);
-                if (objectType == ObjectInstanceType.Camera) level.Rooms[roomIndex].Cameras.Add(objectID);
-                if (objectType == ObjectInstanceType.Sink) level.Rooms[roomIndex].Sinks.Add(objectID);
-                if (objectType == ObjectInstanceType.Sound) level.Rooms[roomIndex].SoundSources.Add(objectID);
-                if (objectType == ObjectInstanceType.FlyByCamera) level.Rooms[roomIndex].FlyByCameras.Add(objectID);
+                if (objectType == ObjectInstanceType.Moveable)
+                    level.Rooms[roomIndex].Moveables.Add(objectID);
+                if (objectType == ObjectInstanceType.StaticMesh)
+                    level.Rooms[roomIndex].StaticMeshes.Add(objectID);
+                if (objectType == ObjectInstanceType.Camera)
+                    level.Rooms[roomIndex].Cameras.Add(objectID);
+                if (objectType == ObjectInstanceType.Sink)
+                    level.Rooms[roomIndex].Sinks.Add(objectID);
+                if (objectType == ObjectInstanceType.Sound)
+                    level.Rooms[roomIndex].SoundSources.Add(objectID);
+                if (objectType == ObjectInstanceType.FlyByCamera)
+                    level.Rooms[roomIndex].FlyByCameras.Add(objectID);
 
                 if (objectType == ObjectInstanceType.Moveable)
                 {
@@ -3460,7 +3548,8 @@ namespace TombEditor.Geometry
                         writer.Write(true);
                     }
 
-                    if (r.Name == null) r.Name = "Room " + i.ToString();
+                    if (r.Name == null)
+                        r.Name = "Room " + i.ToString();
 
                     writer.Write(System.Text.Encoding.UTF8.GetBytes(r.Name.PadRight(100, ' ')));
                     writer.Write(r.Position.X);
@@ -3478,17 +3567,22 @@ namespace TombEditor.Geometry
 
                             writer.Write((byte)b.Type);
                             writer.Write((short)b.Flags);
-                            for (int n = 0; n < 4; n++) writer.Write(b.QAFaces[n]);
-                            for (int n = 0; n < 4; n++) writer.Write(b.EDFaces[n]);
-                            for (int n = 0; n < 4; n++) writer.Write(b.WSFaces[n]);
-                            for (int n = 0; n < 4; n++) writer.Write(b.RFFaces[n]);
+                            for (int n = 0; n < 4; n++)
+                                writer.Write(b.QAFaces[n]);
+                            for (int n = 0; n < 4; n++)
+                                writer.Write(b.EDFaces[n]);
+                            for (int n = 0; n < 4; n++)
+                                writer.Write(b.WSFaces[n]);
+                            for (int n = 0; n < 4; n++)
+                                writer.Write(b.RFFaces[n]);
                             writer.Write(b.SplitFoorType);
                             writer.Write(b.SplitFloor);
                             writer.Write(b.SplitCeilingType);
                             writer.Write(b.SplitCeiling);
                             writer.Write(b.RealSplitFloor);
                             writer.Write(b.RealSplitCeiling);
-                            for (int n = 0; n < 4; n++) writer.Write(b.Climb[n]);
+                            for (int n = 0; n < 4; n++)
+                                writer.Write(b.Climb[n]);
                             writer.Write((byte)b.FloorOpacity);
                             writer.Write((byte)b.CeilingOpacity);
                             writer.Write((byte)b.WallOpacity);
@@ -3513,9 +3607,12 @@ namespace TombEditor.Geometry
                                 writer.Write(f.Invisible);
                                 writer.Write(f.NoCollision);
                                 writer.Write((byte)f.TextureTriangle);
-                                for (int n = 0; n < 4; n++) writer.Write(f.RectangleUV[n]);
-                                for (int n = 0; n < 3; n++) writer.Write(f.TriangleUV[n]);
-                                for (int n = 0; n < 3; n++) writer.Write(f.TriangleUV2[n]);
+                                for (int n = 0; n < 4; n++)
+                                    writer.Write(f.RectangleUV[n]);
+                                for (int n = 0; n < 3; n++)
+                                    writer.Write(f.TriangleUV[n]);
+                                for (int n = 0; n < 3; n++)
+                                    writer.Write(f.TriangleUV2[n]);
                                 writer.Write(filler32);
                                 writer.Write(filler32);
                                 writer.Write(filler32);

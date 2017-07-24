@@ -119,7 +119,8 @@ namespace TombEditor.Geometry
                 Plane plane1 = new Plane(p1, p2, p3);
                 Plane plane2 = new Plane(p1, p2, p4);
 
-                if (plane1.Normal != plane2.Normal) return false;
+                if (plane1.Normal != plane2.Normal)
+                    return false;
 
                 return true;
             }
@@ -140,7 +141,8 @@ namespace TombEditor.Geometry
                 Plane plane1 = new Plane(p1, p2, p3);
                 Plane plane2 = new Plane(p1, p2, p4);
 
-                if (plane1.Normal != plane2.Normal) return false;
+                if (plane1.Normal != plane2.Normal)
+                    return false;
 
                 return true;
             }
@@ -150,10 +152,14 @@ namespace TombEditor.Geometry
         {
             Block b = new Geometry.Block(Level, Room, Type, Flags, 0);
 
-            for (int i = 0; i < 4; i++) b.QAFaces[i] = QAFaces[i];
-            for (int i = 0; i < 4; i++) b.EDFaces[i] = EDFaces[i];
-            for (int i = 0; i < 4; i++) b.WSFaces[i] = WSFaces[i];
-            for (int i = 0; i < 4; i++) b.RFFaces[i] = RFFaces[i];
+            for (int i = 0; i < 4; i++)
+                b.QAFaces[i] = QAFaces[i];
+            for (int i = 0; i < 4; i++)
+                b.EDFaces[i] = EDFaces[i];
+            for (int i = 0; i < 4; i++)
+                b.WSFaces[i] = WSFaces[i];
+            for (int i = 0; i < 4; i++)
+                b.RFFaces[i] = RFFaces[i];
 
             b.RealSplitFloor = RealSplitFloor;
             b.SplitFloor = SplitFloor;
@@ -169,7 +175,8 @@ namespace TombEditor.Geometry
             b.CeilingSlopeX = CeilingSlopeX;
             b.CeilingSlopeZ = CeilingSlopeZ;
 
-            for (int i = 0; i < 4; i++) b.Climb[i] = Climb[i];
+            for (int i = 0; i < 4; i++)
+                b.Climb[i] = Climb[i];
 
             for (int i = 0; i < 29; i++)
             {

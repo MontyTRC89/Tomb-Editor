@@ -17,6 +17,5 @@ namespace TombEditor
     }
 
     public class UndoRedoSystem
-    {
-    }
+    { }
 }

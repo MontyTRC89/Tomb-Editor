@@ -13,9 +13,7 @@ namespace TombLib.IO
     {
         public BinaryReaderEx(Stream input)
             : base(input)
-        {
-
-        }
+        { }
 
         public Vector2 ReadVector2()
         {
@@ -24,12 +22,12 @@ namespace TombLib.IO
 
         public Vector3 ReadVector3()
         {
-            return new Vector3(ReadSingle(), ReadSingle(),ReadSingle());
+            return new Vector3(ReadSingle(), ReadSingle(), ReadSingle());
         }
 
         public Vector4 ReadVector4()
         {
-            return new Vector4(ReadSingle(), ReadSingle(),ReadSingle(),ReadSingle());
+            return new Vector4(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
         }
 
         public Matrix ReadMatrix()

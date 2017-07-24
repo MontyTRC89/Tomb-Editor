@@ -298,7 +298,6 @@
             this.darkMenuStrip1.Size = new System.Drawing.Size(1875, 24);
             this.darkMenuStrip1.TabIndex = 0;
             this.darkMenuStrip1.Text = "darkMenuStrip1";
-            this.darkMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.darkMenuStrip1_ItemClicked);
             // 
             // fileToolStripMenuItem
             // 
@@ -1190,7 +1189,7 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(283, 836);
             this.panel2.TabIndex = 26;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+
             // 
             // butNotWalkableBox
             // 
@@ -1960,7 +1959,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(1305, 109);
             this.panel4.TabIndex = 28;
-            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel4_Paint);
             // 
             // numLightDirectionY
             // 

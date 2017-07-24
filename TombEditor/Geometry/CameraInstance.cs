@@ -8,25 +8,17 @@ namespace TombEditor.Geometry
     public class CameraInstance : IObjectInstance
     {
         public short Sequence { get; set; }
-
         public short Timer { get; set; }
-
         public short Roll { get; set; }
-
         public short Number { get; set; }
-
         public short Speed { get; set; }
-
         public short FOV { get; set; }
-
         public short Flags { get; set; }
-
         public bool Fixed { get; set; }
 
-        public CameraInstance(int id, short room) : base(ObjectInstanceType.Camera, id, room)
-        {
-
-        }
+        public CameraInstance(int id, short room)
+            : base(ObjectInstanceType.Camera, id, room)
+        { }
 
         public override IObjectInstance Clone()
         {

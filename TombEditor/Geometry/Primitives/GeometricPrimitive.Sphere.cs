@@ -93,7 +93,8 @@ namespace SharpDX.Toolkit.Graphics
             /// <exception cref="System.ArgumentOutOfRangeException">tessellation;Must be >= 3</exception>
             public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, int tessellation = 16, bool toLeftHanded = false)
             {
-                if (tessellation < 3) throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
+                if (tessellation < 3)
+                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
 
                 int verticalSegments = tessellation;
                 int horizontalSegments = tessellation * 2;
@@ -162,5 +163,5 @@ namespace SharpDX.Toolkit.Graphics
                 return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Sphere" };
             }
         }
-   }
+    }
 }

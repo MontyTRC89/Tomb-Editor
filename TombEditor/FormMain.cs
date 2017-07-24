@@ -27,7 +27,7 @@ namespace TombEditor
 
         readonly TimeSpan TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
         readonly TimeSpan MaxElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 10);
-		
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
@@ -48,7 +48,7 @@ namespace TombEditor
 
             // Initialize search result
             _lastSearchResult = -1;
-            
+
             // For each control bind its light parameter
             numLightIntensity.LightParameter = LightParameter.Intensity;
             numLightIn.LightParameter = LightParameter.In;
@@ -59,7 +59,8 @@ namespace TombEditor
             numLightDirectionY.LightParameter = LightParameter.Y;
 
             // Hide palette if the window is too small
-            if (this.Width < 1280) lightPalette.Visible = false;
+            if (this.Width < 1280)
+                lightPalette.Visible = false;
         }
 
         public void Draw()
@@ -90,7 +91,8 @@ namespace TombEditor
                 int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
 
                 if (xMin < 1 || zMin < 1 || xMax > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1 ||
-                    zMax > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1) return;
+                    zMax > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
+                    return;
 
                 // Search for unique triggers inside the selected area
                 for (int x = xMin; x <= xMax; x++)
@@ -100,7 +102,8 @@ namespace TombEditor
                         for (int i = 0; i < _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Triggers.Count; i++)
                         {
                             int trigger = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Triggers[i];
-                            if (!triggers.Contains(trigger)) triggers.Add(trigger);
+                            if (!triggers.Contains(trigger))
+                                triggers.Add(trigger);
                         }
                     }
                 }
@@ -430,7 +433,8 @@ namespace TombEditor
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
             colorDialog.Color = room.AmbientLight;
-            if (colorDialog.ShowDialog() != DialogResult.OK) return;
+            if (colorDialog.ShowDialog() != DialogResult.OK)
+                return;
 
             panelRoomAmbientLight.BackColor = colorDialog.Color;
 
@@ -616,7 +620,8 @@ namespace TombEditor
         public void CenterCamera()
         {
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
-            if (room == null) return;
+            if (room == null)
+                return;
 
             // aggiorno la telecamera
             /*panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f, room.Position.Y * 128.0f + room.Ceiling * 64.0f,
@@ -813,84 +818,84 @@ namespace TombEditor
             _editor.Action = EditorAction.PlaceSink;
         }
 
-       /* private void numLightIn_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].In = (float)numLightIn.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
+        /* private void numLightIn_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].In = (float)numLightIn.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
 
-        private void numLightOut_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Out = (float)numLightOut.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
+         private void numLightOut_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Out = (float)numLightOut.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
 
-        private void numLightLen_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Len = (float)numLightLen.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
+         private void numLightLen_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Len = (float)numLightLen.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
 
-        private void numLightCutoff_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Cutoff = (float)numLightCutoff.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
+         private void numLightCutoff_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Cutoff = (float)numLightCutoff.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
 
-        private void numLightDirectionX_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionX = (float)numLightDirectionX.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
+         private void numLightDirectionX_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionX = (float)numLightDirectionX.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
 
-        private void numLightDirectionY_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = (float)numLightDirectionY.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }
-        */
+         private void numLightDirectionY_ValueChanged(object sender, EventArgs e)
+         {
+             if (_editor.LightIndex != -1)
+             {
+                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                 _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = (float)numLightDirectionY.Value;
+                 _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                 panel3D.Draw();
+             }
+         }
+         */
         private void panelLightColor_DoubleClick(object sender, EventArgs e)
         {
             if (_editor.LightIndex != -1)
@@ -898,7 +903,8 @@ namespace TombEditor
                 Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
 
                 colorDialog.Color = light.Color;
-                if (colorDialog.ShowDialog() != DialogResult.OK) return;
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                    return;
 
                 panelLightColor.BackColor = colorDialog.Color;
 
@@ -919,7 +925,8 @@ namespace TombEditor
 
         public void UpdateStatistics()
         {
-            if (_editor.RoomIndex == -1) return;
+            if (_editor.RoomIndex == -1)
+                return;
 
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
@@ -956,10 +963,12 @@ namespace TombEditor
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to create a new project?",
-                                                        "New project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                                                        "New project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
 
             // Clean all resources before creating a new level
-            if (_editor.Level != null) _editor.Level.DisposeLevel();
+            if (_editor.Level != null)
+                _editor.Level.DisposeLevel();
 
             // Create a new level
             Level level = new Level();
@@ -1000,9 +1009,7 @@ namespace TombEditor
         }
 
         private void ResetInterface()
-        {
-
-        }
+        { }
 
         private void DeletePortal(int id)
         {
@@ -1129,7 +1136,8 @@ namespace TombEditor
                 formTrigger.TriggerID = panel2DGrid.SelectedTrigger;
                 formTrigger.Trigger = _editor.Level.Triggers[panel2DGrid.SelectedTrigger];
 
-                if (formTrigger.ShowDialog() != DialogResult.OK) return;
+                if (formTrigger.ShowDialog() != DialogResult.OK)
+                    return;
 
                 _editor.Level.Triggers[panel2DGrid.SelectedTrigger] = formTrigger.Trigger;
 
@@ -1151,11 +1159,12 @@ namespace TombEditor
                     int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
 
                     // If one of the four corners of selection is not valid, then do nothing
-                    if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1) return;
+                    if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
+                        return;
 
                     int face = 0;
                     short increment = 0;
-                                        bool addTrigger = false;
+                    bool addTrigger = false;
 
                     EditorActions.FaceEditorActions action = EditorActions.FaceEditorActions.EntireFace;
                     EditorActions.FaceSubdivisions sub = EditorActions.FaceSubdivisions.Q;
@@ -1457,7 +1466,7 @@ namespace TombEditor
                         case Keys.A:
                             EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
                             break;
-                 
+
                         case Keys.Left:
                             if (e.Control)
                             {
@@ -1523,7 +1532,7 @@ namespace TombEditor
                             {
                                 EditorActions.MoveLight(_editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
                             }
-                            {}
+                            { }
                             break;
 
                         case Keys.Delete:
@@ -1756,13 +1765,11 @@ namespace TombEditor
                     }
                 }
 
-               // _editor.DrawPanel3D();
+                // _editor.DrawPanel3D();
             }
 
             if (e.Control && !panel3D.Drag)
-            {
-
-            }
+            { }
             else
             {
                 _editor.DrawPanel3D();
@@ -1774,7 +1781,8 @@ namespace TombEditor
 
         private void loadTextureMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogTextureMap.ShowDialog() != DialogResult.OK) return;
+            if (openFileDialogTextureMap.ShowDialog() != DialogResult.OK)
+                return;
             LoadTextureMap(openFileDialogTextureMap.FileName);
         }
 
@@ -1817,7 +1825,8 @@ namespace TombEditor
 
         private void importTGAToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogTGA.ShowDialog() != DialogResult.OK) return;
+            if (openFileDialogTGA.ShowDialog() != DialogResult.OK)
+                return;
 
             string pngName = "";
             if (!Utils.ConvertTGAtoPNG(openFileDialogTGA.FileName, out pngName))
@@ -1833,22 +1842,19 @@ namespace TombEditor
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogWAD.ShowDialog() != DialogResult.OK) return;
+            if (openFileDialogWAD.ShowDialog() != DialogResult.OK)
+                return;
 
             _editor.Level.LoadWad(openFileDialogWAD.FileName);
             LoadWadInInterface();
 
-           // MessageBox.Show("WAD was loaded without errors", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-        
-        private void panel2DGrid_Paint(object sender, PaintEventArgs e)
-        {
-
+            // MessageBox.Show("WAD was loaded without errors", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboItems.SelectedIndex == -1) return;
+            if (comboItems.SelectedIndex == -1)
+                return;
 
             SelectItem(comboItems.SelectedIndex);
         }
@@ -1902,19 +1908,15 @@ namespace TombEditor
             StaticMeshInstance instance = (StaticMeshInstance)_editor.Level.Objects[_editor.PickingResult.Element];
             panelStaticMeshColor.BackColor = instance.Color;
         }
-
-        private void darkMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
+        
         private void butDeleteRoom_Click(object sender, EventArgs e)
         {
             // Check if is the last room
             int numRooms = 0;
             for (int i = 0; i < _editor.Level.Rooms.Length; i++)
             {
-                if (_editor.Level.Rooms[i] != null) numRooms++;
+                if (_editor.Level.Rooms[i] != null)
+                    numRooms++;
             }
 
             if (numRooms == 1)
@@ -1946,7 +1948,7 @@ namespace TombEditor
 
             // Delete the room
             DeleteRoom(_editor.RoomIndex);
-            
+
             // Find a valid room
             for (int i = 0; i < _editor.Level.Rooms.Length; i++)
             {
@@ -1967,7 +1969,8 @@ namespace TombEditor
                 int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
                 int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
 
-                if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1) return;
+                if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
+                    return;
 
                 EditorActions.CropRoom(xMin, xMax, zMin, zMax);
 
@@ -1999,9 +2002,11 @@ namespace TombEditor
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to open an existing project?",
-                                                        "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                                                        "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
 
-            if (openFileDialogPRJ2.ShowDialog() != DialogResult.OK) return;
+            if (openFileDialogPRJ2.ShowDialog() != DialogResult.OK)
+                return;
 
             Level level = Level.LoadFromPrj2(openFileDialogPRJ2.FileName);
             if (level == null)
@@ -2011,7 +2016,8 @@ namespace TombEditor
             }
 
             // Clean all resources before creating a new level
-            if (_editor.Level != null) _editor.Level.DisposeLevel();
+            if (_editor.Level != null)
+                _editor.Level.DisposeLevel();
 
             // Set the new level and update UI
             _editor.Level = level;
@@ -2045,8 +2051,9 @@ namespace TombEditor
                 if (_editor.Level.Rooms[i] != null)
                 {
                     string description = _editor.Level.Rooms[i].Name;
-                    if (_editor.Level.Rooms[i].Flipped) description += " (Flipped " +
-                        _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGroup + ")";
+                    if (_editor.Level.Rooms[i].Flipped)
+                        description += " (Flipped " +
+_editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGroup + ")";
                     comboRoom.Items.Add(i + ": " + description);
                 }
                 else
@@ -2067,7 +2074,7 @@ namespace TombEditor
                     numLightIn.Value = light.In;
                     numLightOut.Value = light.Out;
                     numLightIntensity.Value = light.Intensity;
-                    
+
                     panelLightColor.Enabled = true;
                     numLightLen.Enabled = false;
                     numLightCutoff.Enabled = false;
@@ -2170,9 +2177,11 @@ namespace TombEditor
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to open an existing project?",
-                                                        "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                                                        "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
 
-            if (openFileDialogPRJ.ShowDialog() != DialogResult.OK) return;
+            if (openFileDialogPRJ.ShowDialog() != DialogResult.OK)
+                return;
 
             FormImportPRJ form = new FormImportPRJ();
             form.FileName = openFileDialogPRJ.FileName;
@@ -2183,7 +2192,8 @@ namespace TombEditor
             }
 
             // Clean all resources before creating a new level
-            if (_editor.Level != null) _editor.Level.DisposeLevel();
+            if (_editor.Level != null)
+                _editor.Level.DisposeLevel();
 
             // Set the new level and update UI
             _editor.Level = form.Level;
@@ -2200,7 +2210,8 @@ namespace TombEditor
                 if (_editor.Level.Rooms[i] != null)
                 {
                     roomName = (_editor.Level.Rooms[i].Name == null ? "Room " + i : _editor.Level.Rooms[i].Name);
-                    if (_editor.Level.Rooms[i].BaseRoom != -1) roomName = "(Flipped of " + _editor.Level.Rooms[i].BaseRoom + ") " + roomName;
+                    if (_editor.Level.Rooms[i].BaseRoom != -1)
+                        roomName = "(Flipped of " + _editor.Level.Rooms[i].BaseRoom + ") " + roomName;
 
                     comboRoom.Items.Add(i + ": " + roomName);
                 }
@@ -2238,7 +2249,8 @@ namespace TombEditor
                 return;
             }
 
-            if (saveFileDialogPRJ2.ShowDialog() != DialogResult.OK) return;
+            if (saveFileDialogPRJ2.ShowDialog() != DialogResult.OK)
+                return;
 
             bool result = Level.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
 
@@ -2309,18 +2321,18 @@ namespace TombEditor
             UpdateStatistics();
         }
 
-      /*  private void numLightIntensity_ValueChanged(object sender, EventArgs e)
-        {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Intensity = (float)numLightIntensity.Value;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
-        }*/
+        /*  private void numLightIntensity_ValueChanged(object sender, EventArgs e)
+          {
+              if (_editor.LightIndex != -1)
+              {
+                  Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                  _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Intensity = (float)numLightIntensity.Value;
+                  _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+                  _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                  _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                  panel3D.Draw();
+              }
+          }*/
 
         private void butCompileLevel_Click(object sender, EventArgs e)
         {
@@ -2398,23 +2410,18 @@ namespace TombEditor
 
 
             level = new TombEngine.TombRaider4Level("Game\\Data\\coastal.tr4");
-           level.Load("editor");
+            level.Load("editor");
 
-         
 
-         //  level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
-        ////   level.Load("originale");
+
+            //  level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
+            ////   level.Load("originale");
         }
 
         private void darkButton15_Click(object sender, EventArgs e)
         {
             FormAnimatedTextures form = new TombEditor.FormAnimatedTextures();
             form.ShowDialog();
-        }
-
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2435,7 +2442,8 @@ namespace TombEditor
 
         private void butItemsBack_Click(object sender, EventArgs e)
         {
-            if (comboItems.SelectedIndex == 0 || comboItems.Items.Count == 0) return;
+            if (comboItems.SelectedIndex == 0 || comboItems.Items.Count == 0)
+                return;
             comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
             panelItem.Invalidate();
             panelItem.Refresh();
@@ -2444,7 +2452,8 @@ namespace TombEditor
 
         private void butItemsNext_Click(object sender, EventArgs e)
         {
-            if (comboItems.SelectedIndex == comboItems.Items.Count - 1 || comboItems.Items.Count == 0) return;
+            if (comboItems.SelectedIndex == comboItems.Items.Count - 1 || comboItems.Items.Count == 0)
+                return;
             comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
             panelItem.Invalidate();
             panelItem.Refresh();
@@ -2460,7 +2469,8 @@ namespace TombEditor
                 int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
                 int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
 
-                if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1) return;
+                if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
+                    return;
 
                 // Search the first free room
                 short found = -1;
@@ -2504,7 +2514,7 @@ namespace TombEditor
                         {
                             if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
                             {
-                               // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
+                                // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
                             }
                         }
 
@@ -2545,7 +2555,8 @@ namespace TombEditor
                 int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
                 int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
 
-                if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1) return;
+                if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
+                    return;
 
                 // Search the first free room
                 short found = -1;
@@ -2591,8 +2602,8 @@ namespace TombEditor
                         {
                             if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
                             {
-                              //  _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
-                             //   _editor.Level.TextureSamples[room.Blocks[x + xMin - 1, z + zMin - 1].Faces[f].Texture].UsageCount--;
+                                //  _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
+                                //   _editor.Level.TextureSamples[room.Blocks[x + xMin - 1, z + zMin - 1].Faces[f].Texture].UsageCount--;
                             }
                         }
 
@@ -2638,8 +2649,10 @@ namespace TombEditor
             form.Message = "Insert the name of this room:";
             form.Value = _editor.Level.Rooms[_editor.RoomIndex].Name;
 
-            if (form.ShowDialog() == DialogResult.Cancel) return;
-            if (form.Value == "") return;
+            if (form.ShowDialog() == DialogResult.Cancel)
+                return;
+            if (form.Value == "")
+                return;
 
             _editor.Level.Rooms[_editor.RoomIndex].Name = form.Value;
             comboRoom.Items[comboRoom.SelectedIndex] = comboRoom.SelectedIndex + ": " + form.Value;
@@ -2785,8 +2798,10 @@ namespace TombEditor
 
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += step;
 
-                    if (x > xMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].QAFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
-                    if (z > zMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].QAFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
+                    if (x > xMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].QAFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
+                    if (z > zMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].QAFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
 
                     if (x > xMin && z > zMin)
                     {
@@ -2828,8 +2843,10 @@ namespace TombEditor
 
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += step;
 
-                    if (x > xMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].WSFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
-                    if (z > zMin) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].WSFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
+                    if (x > xMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].WSFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
+                    if (z > zMin)
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].WSFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
 
                     if (x > xMin && z > zMin)
                     {
@@ -2992,7 +3009,8 @@ namespace TombEditor
                 StaticMeshInstance instance = (StaticMeshInstance)_editor.Level.Objects[_editor.PickingResult.Element];
 
                 colorDialog.Color = instance.Color;
-                if (colorDialog.ShowDialog() != DialogResult.OK) return;
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                    return;
 
                 panelStaticMeshColor.BackColor = colorDialog.Color;
                 instance.Color = colorDialog.Color;
@@ -3005,7 +3023,8 @@ namespace TombEditor
 
         private void butFindItem_Click(object sender, EventArgs e)
         {
-            if (_lastSearchResult >= _editor.Level.Objects.Count - 1) _lastSearchResult = -1;
+            if (_lastSearchResult >= _editor.Level.Objects.Count - 1)
+                _lastSearchResult = -1;
             _lastSearchResult++;
 
             for (int i = _lastSearchResult; i < _editor.Level.Objects.Count; i++)
@@ -3029,7 +3048,8 @@ namespace TombEditor
                             int lastRoom = _editor.RoomIndex;
                             _editor.RoomIndex = instance.Room;
 
-                            if (lastRoom != instance.Room) CenterCamera();
+                            if (lastRoom != instance.Room)
+                                CenterCamera();
                             Draw();
 
                             return;
@@ -3040,7 +3060,7 @@ namespace TombEditor
                 {
 
                 }
-            }       
+            }
         }
 
         private void butResetSearch_Click(object sender, EventArgs e)
@@ -3050,13 +3070,15 @@ namespace TombEditor
 
         private void butDeleteTrigger_Click(object sender, EventArgs e)
         {
-            if (lstTriggers.SelectedIndex == -1) return;
+            if (lstTriggers.SelectedIndex == -1)
+                return;
 
             int trigger = Int32.Parse(lstTriggers.Text.Split(' ')[0]);
             string triggerDescription = _editor.Level.Triggers[trigger].ToString();
 
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete '" + triggerDescription + "'?",
-                                                        "Delete trigger", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                                                        "Delete trigger", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
 
             TriggerInstance triggerObject = _editor.Level.Triggers[trigger];
 
@@ -3076,7 +3098,8 @@ namespace TombEditor
 
         private void butEditTrigger_Click(object sender, EventArgs e)
         {
-            if (lstTriggers.SelectedIndex == -1) return;
+            if (lstTriggers.SelectedIndex == -1)
+                return;
 
             int trigger = Int32.Parse(lstTriggers.Text.Split(' ')[0]);
             string triggerDescription = _editor.Level.Triggers[trigger].ToString();
@@ -3085,7 +3108,8 @@ namespace TombEditor
             formTrigger.TriggerID = trigger;
             formTrigger.Trigger = _editor.Level.Triggers[trigger];
 
-            if (formTrigger.ShowDialog() != DialogResult.OK) return;
+            if (formTrigger.ShowDialog() != DialogResult.OK)
+                return;
 
             _editor.Level.Triggers[trigger] = formTrigger.Trigger;
 
@@ -3184,7 +3208,7 @@ namespace TombEditor
                         newPortal.Flipped = true;
 
                         p.Flipped = true;
-                        _editor.Level.Portals[p.ID] = p; 
+                        _editor.Level.Portals[p.ID] = p;
 
                         duplicatedPortals.Add(p.ID, portalId);
                         _editor.Level.Portals.Add(portalId, newPortal);
@@ -3218,7 +3242,7 @@ namespace TombEditor
                         {
                             if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
                             {
-                               // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
+                                // _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
                             }
                         }
                     }
@@ -3315,7 +3339,7 @@ namespace TombEditor
             }
 
             comboRoom.Items[index] = index + ": --- Empty room ---";
-            _editor.Level.Rooms[index] = null;           
+            _editor.Level.Rooms[index] = null;
         }
 
         private void FlipMap(int map)
@@ -3342,7 +3366,8 @@ namespace TombEditor
         {
             _editor.FlipMap = -1;
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
-            if (room.Flipped && room.BaseRoom != -1) SelectRoom(room.BaseRoom);
+            if (room.Flipped && room.BaseRoom != -1)
+                SelectRoom(room.BaseRoom);
             _editor.DrawPanel3D();
         }
 
@@ -3391,7 +3416,7 @@ namespace TombEditor
             level.Load(""); */
 
             level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\crash.tr2");
-             level.Load("crash");
+            level.Load("crash");
 
             level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
             level.Load("jungle");
@@ -3415,7 +3440,8 @@ namespace TombEditor
 
             if (_editor.Level.MustSave)
             {
-                if (saveFileDialogPRJ2.ShowDialog() != DialogResult.OK) return;
+                if (saveFileDialogPRJ2.ShowDialog() != DialogResult.OK)
+                    return;
                 fileName = saveFileDialogPRJ2.FileName;
             }
             else
@@ -3549,7 +3575,7 @@ namespace TombEditor
         {
             butClone_Click(null, null);
         }
-    
+
         public void ResetPanel3DCursor()
         {
             panel3D.Cursor = Cursors.Default;
@@ -3557,7 +3583,7 @@ namespace TombEditor
 
         private void butCut_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3606,10 +3632,10 @@ namespace TombEditor
             }
 
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
-            Room newRoom = new Geometry.Room(_editor.Level, 
-                                             (int)room.Position.X, 
-                                             (int)(room.Position.Y + room.GetHighestCorner()), 
-                                             (int)room.Position.Z, 
+            Room newRoom = new Geometry.Room(_editor.Level,
+                                             (int)room.Position.X,
+                                             (int)(room.Position.Y + room.GetHighestCorner()),
+                                             (int)room.Position.Z,
                                              20, 20, 12);
 
             newRoom.Name = "Room " + found;
@@ -3721,19 +3747,20 @@ namespace TombEditor
             List<int> tempColors = new List<int>();
 
             Bitmap bmp = (Bitmap)Bitmap.FromFile("Editor\\Palette.png");
-            for (int y=2;y<bmp.Height;y+=14)
+            for (int y = 2; y < bmp.Height; y += 14)
             {
                 for (int x = 2; x < bmp.Width; x += 14)
                 {
                     System.Drawing.Color col = bmp.GetPixel(x, y);
                     if (col.A == 0)
                         continue;
-                   /* if (!tempColors.Contains(col.ToArgb()))*/ tempColors.Add(col.ToArgb());
+                    /* if (!tempColors.Contains(col.ToArgb()))*/
+                    tempColors.Add(col.ToArgb());
                 }
             }
             File.Delete("Editor\\Palette.bin");
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite( "Editor\\Palette.bin"));
-            for (int i=0;i<tempColors.Count;i++)
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("Editor\\Palette.bin"));
+            for (int i = 0; i < tempColors.Count; i++)
             {
                 System.Drawing.Color col2 = System.Drawing.Color.FromArgb(tempColors[i]);
                 writer.Write(col2.R);
@@ -3745,12 +3772,7 @@ namespace TombEditor
             writer.Flush();
             writer.Close();
         }
-
-        private void panel4_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
+        
         public void ChangeLightColorFromPalette()
         {
             if (_editor.LightIndex != -1)
@@ -3764,31 +3786,6 @@ namespace TombEditor
 
                 panelLightColor.BackColor = lightPalette.SelectedColor;
             }
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void darkButton28_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void butNoCollision_Click(object sender, EventArgs e)
@@ -3808,7 +3805,8 @@ namespace TombEditor
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to exit?",
-                                                        "Exit", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                                                        "Exit", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
 
             this.Close();
         }

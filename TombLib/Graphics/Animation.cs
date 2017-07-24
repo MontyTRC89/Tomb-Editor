@@ -14,15 +14,8 @@ namespace TombLib.Graphics
         public short NextAnimation;
         public short NextFrame;
         public short StateId;
-        public List<KeyFrame> KeyFrames;
-        public List<StateChange> StateChanges;
-        public List<ushort> AnimCommands;
-
-        public Animation()
-        {
-            KeyFrames = new List<KeyFrame>();
-            StateChanges = new List<StateChange>();
-            AnimCommands = new List<ushort>();
-        }
+        public List<KeyFrame> KeyFrames = new List<KeyFrame>();
+        public List<StateChange> StateChanges = new List<StateChange>();
+        public List<ushort> AnimCommands = new List<ushort>();
     }
 }

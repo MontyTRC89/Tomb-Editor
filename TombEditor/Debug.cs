@@ -59,7 +59,8 @@ namespace TombEditor
 
             batch.DrawString(_editor.Font, "FPS: " + Math.Round(_editor.FPS, 2) + ", Vertices: " + NumVertices + ", Triangles: " + NumTriangles, new Vector2(0, 0), Color.White);
             batch.DrawString(_editor.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
-            if (SelectedItem != "") batch.DrawString(_editor.Font, "Selected Object: " + SelectedItem, new Vector2(0, 36), Color.White);
+            if (SelectedItem != "")
+                batch.DrawString(_editor.Font, "Selected Object: " + SelectedItem, new Vector2(0, 36), Color.White);
 
             for (int i = 0; i < Strings.Count; i++)
             {
@@ -73,9 +74,12 @@ namespace TombEditor
 
         public static void Log(string message, DebugType typ = DebugType.None)
         {
-            if (typ == DebugType.Success) Console.ForegroundColor = ConsoleColor.Green;
-            if (typ == DebugType.Warning) Console.ForegroundColor = ConsoleColor.Yellow;
-            if (typ == DebugType.Error) Console.ForegroundColor = ConsoleColor.Red;
+            if (typ == DebugType.Success)
+                Console.ForegroundColor = ConsoleColor.Green;
+            if (typ == DebugType.Warning)
+                Console.ForegroundColor = ConsoleColor.Yellow;
+            if (typ == DebugType.Error)
+                Console.ForegroundColor = ConsoleColor.Red;
 
             Console.WriteLine(message);
 

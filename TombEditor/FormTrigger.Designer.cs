@@ -89,7 +89,6 @@ namespace TombEditor
             this.comboType.Name = "comboType";
             this.comboType.Size = new System.Drawing.Size(159, 24);
             this.comboType.TabIndex = 1;
-            this.comboType.SelectedIndexChanged += new System.EventHandler(this.comboType_SelectedIndexChanged);
             // 
             // comboTargetType
             // 

@@ -20,7 +20,7 @@ namespace TombEditor.Compilers
                 const int filler = 0;
                 writer.Write(filler);
 
-                NumRooms = (ushort) Rooms.Length;
+                NumRooms = (ushort)Rooms.Length;
                 writer.Write(NumRooms);
 
                 long offset;
@@ -34,11 +34,11 @@ namespace TombEditor.Compilers
                     const int numdw = 0;
                     writer.Write(numdw);
 
-                    var tmp = (ushort) Rooms[i].Vertices.Length;
+                    var tmp = (ushort)Rooms[i].Vertices.Length;
                     writer.Write(tmp);
                     writer.WriteBlockArray(Rooms[i].Vertices);
 
-                    tmp = (ushort) Rooms[i].Rectangles.Length;
+                    tmp = (ushort)Rooms[i].Rectangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
@@ -52,7 +52,7 @@ namespace TombEditor.Compilers
                         }
                     }
 
-                    tmp = (ushort) Rooms[i].Triangles.Length;
+                    tmp = (ushort)Rooms[i].Triangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
@@ -72,7 +72,7 @@ namespace TombEditor.Compilers
                     // Now save current offset and calculate the size of the geometry
                     offset2 = writer.BaseStream.Position;
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    ushort roomGeometrySize = (ushort) ((offset2 - offset - 4) / 2);
+                    ushort roomGeometrySize = (ushort)((offset2 - offset - 4) / 2);
 
                     // Save the size of the geometry
                     writer.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -80,9 +80,10 @@ namespace TombEditor.Compilers
                     writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                     // Write portals
-                    tmp = (ushort) Rooms[i].Portals.Length;
+                    tmp = (ushort)Rooms[i].Portals.Length;
                     writer.WriteBlock(tmp);
-                    if (tmp != 0) writer.WriteBlockArray(Rooms[i].Portals);
+                    if (tmp != 0)
+                        writer.WriteBlockArray(Rooms[i].Portals);
 
                     // Write sectors
                     writer.Write(Rooms[i].NumZSectors);
@@ -94,14 +95,16 @@ namespace TombEditor.Compilers
                     writer.Write(Rooms[i].AmbientIntensity2);
 
                     // Write lights
-                    tmp = (ushort) Rooms[i].Lights.Length;
+                    tmp = (ushort)Rooms[i].Lights.Length;
                     writer.WriteBlock(tmp);
-                    if (tmp != 0) writer.WriteBlockArray(Rooms[i].Lights);
+                    if (tmp != 0)
+                        writer.WriteBlockArray(Rooms[i].Lights);
 
                     // Write static meshes
-                    tmp = (ushort) Rooms[i].StaticMeshes.Length;
+                    tmp = (ushort)Rooms[i].StaticMeshes.Length;
                     writer.WriteBlock(tmp);
-                    if (tmp != 0) writer.WriteBlockArray(Rooms[i].StaticMeshes);
+                    if (tmp != 0)
+                        writer.WriteBlockArray(Rooms[i].StaticMeshes);
 
                     // Write final data
                     writer.Write(Rooms[i].AlternateRoom);
@@ -112,7 +115,7 @@ namespace TombEditor.Compilers
                 }
 
                 // Write floordata
-                NumFloorData = (uint) FloorData.Length;
+                NumFloorData = (uint)FloorData.Length;
                 writer.Write(NumFloorData);
                 writer.WriteBlockArray(FloorData);
 
@@ -162,16 +165,16 @@ namespace TombEditor.Compilers
                     {
                         if (wad.HelperPointers[n] == i)
                         {
-                            MeshPointers[n] = (uint) totalMeshSize;
+                            MeshPointers[n] = (uint)totalMeshSize;
                         }
                     }
 
-                    totalMeshSize += (int) meshSize;
+                    totalMeshSize += (int)meshSize;
                 }
 
                 offset2 = writer.BaseStream.Position;
                 // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                uint meshDataSize = (uint) ((offset2 - offset - 4) / 2);
+                uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
 
                 // Save the size of the meshes
                 writer.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -208,7 +211,7 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(StaticMeshes);
 
                 // SPR block
-                SPR = new byte[] {0x53, 0x50, 0x52};
+                SPR = new byte[] { 0x53, 0x50, 0x52 };
                 writer.WriteBlockArray(SPR);
 
                 writer.Write(NumSpriteTextures);
@@ -234,16 +237,26 @@ namespace TombEditor.Compilers
                 writer.Write(NumOverlaps);
                 writer.WriteBlockArray(Overlaps);
 
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone1_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone2_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone3_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone4_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].FlyZone_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].FlyZone_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone1_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone2_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone3_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone4_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].FlyZone_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone1_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone2_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone3_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone4_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].FlyZone_Alternate);
 
                 //   writer.WriteBlockArray(Zones);
 
@@ -251,7 +264,7 @@ namespace TombEditor.Compilers
                 writer.Write(NumAnimatedTextures);
 
                 // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                short numSets = (short) AnimatedTextures.Length;
+                short numSets = (short)AnimatedTextures.Length;
                 writer.Write(numSets);
 
                 for (var i = 0; i < AnimatedTextures.Length; i++)
@@ -265,11 +278,11 @@ namespace TombEditor.Compilers
                 }
 
                 // Write object textures
-                var tex = new byte[] {0x00, 0x54, 0x45, 0x58};
+                var tex = new byte[] { 0x00, 0x54, 0x45, 0x58 };
                 writer.WriteBlockArray(tex);
 
                 ObjectTextures = _tempObjectTextures.ToArray();
-                NumObjectTextures = (uint) ObjectTextures.Length;
+                NumObjectTextures = (uint)ObjectTextures.Length;
 
                 writer.Write(NumObjectTextures);
                 writer.WriteBlockArray(ObjectTextures);
@@ -298,11 +311,11 @@ namespace TombEditor.Compilers
                     readerSounds.ReadBytes(370 * 2);*/
 
                     soundMap = readerSounds.ReadBytes(370 * 2);
-                    NumSoundDetails = (uint) readerSounds.ReadInt32();
-                    soundDetails = readerSounds.ReadBytes((int) NumSoundDetails * 8);
+                    NumSoundDetails = (uint)readerSounds.ReadInt32();
+                    soundDetails = readerSounds.ReadBytes((int)NumSoundDetails * 8);
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    numSampleIndices = (uint) readerSounds.ReadInt32();
-                    sampleIndices = readerSounds.ReadBytes((int) numSampleIndices * 4);
+                    numSampleIndices = (uint)readerSounds.ReadInt32();
+                    sampleIndices = readerSounds.ReadBytes((int)numSampleIndices * 4);
                 }
 
                 writer.Write(soundMap);
@@ -318,13 +331,14 @@ namespace TombEditor.Compilers
 
                 writer.Flush();
             }
-            
-            using(var writer = new BinaryWriterEx(File.OpenWrite(_dest))) {
+
+            using (var writer = new BinaryWriterEx(File.OpenWrite(_dest)))
+            {
                 using (var reader = new BinaryReaderEx(File.OpenRead("temp.bin")))
                 {
                     ReportProgress(90, "Writing final level");
 
-                    var version = new byte[] {0x54, 0x52, 0x34, 0x00};
+                    var version = new byte[] { 0x54, 0x52, 0x34, 0x00 };
                     writer.WriteBlockArray(version);
 
                     ReportProgress(95, "Writing textures");
@@ -347,11 +361,11 @@ namespace TombEditor.Compilers
 
                     ReportProgress(95, "Compressing geometry data");
 
-                    var geometrySize = (int) reader.BaseStream.Length;
+                    var geometrySize = (int)reader.BaseStream.Length;
                     var levelData = reader.ReadBytes(geometrySize);
                     var buffer = Utils.CompressDataZLIB(levelData);
-                    LevelUncompressedSize = (uint) geometrySize;
-                    LevelCompressedSize = (uint) buffer.Length;
+                    LevelUncompressedSize = (uint)geometrySize;
+                    LevelCompressedSize = (uint)buffer.Length;
 
                     ReportProgress(80, "Writing goemetry data");
 
@@ -373,15 +387,16 @@ namespace TombEditor.Compilers
                 }
             }
         }
-        
+
         private bool WriteLevelTR3()
         {
             var wad = _editor.Level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
-            using(var writer = new BinaryWriterEx(File.OpenWrite(_dest))) {
+            using (var writer = new BinaryWriterEx(File.OpenWrite(_dest)))
+            {
 
-            ReportProgress(85, "Writing geometry data to memory buffer");
+                ReportProgress(85, "Writing geometry data to memory buffer");
 
                 // Write version
                 var version = new byte[] { 0x38, 0x00, 0x18, 0xFF };
@@ -404,7 +419,7 @@ namespace TombEditor.Compilers
                 writer.Write(fakeTextures);
 
                 // 16 bit textures
-                writer.Write(_textures16);
+                writer.Write(Textures16);
 
                 using (var readerRaw = new BinaryReader(File.OpenRead("sprites3.raw")))
                 {
@@ -478,7 +493,8 @@ namespace TombEditor.Compilers
                     // Write portals
                     tmp = (ushort)Rooms[i].Portals.Length;
                     writer.WriteBlock(tmp);
-                    if (tmp != 0) writer.WriteBlockArray(Rooms[i].Portals);
+                    if (tmp != 0)
+                        writer.WriteBlockArray(Rooms[i].Portals);
 
                     // Write sectors
                     writer.Write(Rooms[i].NumZSectors);
@@ -511,7 +527,8 @@ namespace TombEditor.Compilers
                     // Write static meshes
                     tmp = (ushort)Rooms[i].StaticMeshes.Length;
                     writer.WriteBlock(tmp);
-                    if (tmp != 0) writer.WriteBlockArray(Rooms[i].StaticMeshes);
+                    if (tmp != 0)
+                        writer.WriteBlockArray(Rooms[i].StaticMeshes);
 
                     // Write final data
                     writer.Write(Rooms[i].AlternateRoom);
@@ -686,16 +703,26 @@ namespace TombEditor.Compilers
                 writer.Write(NumOverlaps);
                 writer.WriteBlockArray(Overlaps);
 
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone1_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone2_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone3_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone4_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].FlyZone_Normal);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < NumBoxes; i++) writer.Write(Zones[i].FlyZone_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone1_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone2_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone3_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone4_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].FlyZone_Normal);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone1_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone2_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone3_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].GroundZone4_Alternate);
+                for (var i = 0; i < NumBoxes; i++)
+                    writer.Write(Zones[i].FlyZone_Alternate);
 
                 //   writer.WriteBlockArray(Zones);
 
@@ -746,10 +773,10 @@ namespace TombEditor.Compilers
                     new BinaryReaderEx(
                         File.OpenRead(@"Graphics\Wads\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx")))
                 {
-                    sfxBuffer = readerSounds.ReadBytes((int) readerSounds.BaseStream.Length);
+                    sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);
                     readerSounds.ReadBytes(370 * 2);
-                    NumSoundDetails = (uint) readerSounds.ReadInt16();
+                    NumSoundDetails = (uint)readerSounds.ReadInt16();
                 }
 
                 writer.WriteBlockArray(sfxBuffer);

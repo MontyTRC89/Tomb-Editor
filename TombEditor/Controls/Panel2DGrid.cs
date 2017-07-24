@@ -11,96 +11,42 @@ namespace TombEditor.Controls
 {
     public class Panel2DGrid : Panel
     {
-        private Editor _editor;
-
         public float DeltaX { get; set; }
-
         public float DeltaY { get; set; }
-
         public float LastX { get; set; }
-
         public float LastY { get; set; }
-
         public bool Drag { get; set; }
-
-        private bool _firstSelection;
-
-        private Brush _floorBrush;
-
-        private Brush _wallBrush;
-
-        private Brush _deathBrush;
-
-        private Brush _monkeyBrush;
-
-        private Brush _boxBrush;
-
-        private Brush _climbBrush;
-
-        private Brush _notWalkableBrush;
-
-        private Pen _beetlePen;
-
-        private Pen _triggerTriggererPen;
-
-        private Brush _noCollisionBrush;
-
-        private Brush _triggerBrush;
-
-        private Pen _climbPen;
-
-        private Bitmap _selectionBuffer;
-
-        private Graphics _graphics;
-
-        private int _lastTrigger;
-
-        private int _lastPortal;
-		
-        private Font _font;
-
+        public int SelectedTrigger { get; set; }
+        public int SelectedPortal { get; set; }
         public int StartX;
         public int StartY;
 
+        private Editor _editor;
+        private bool _firstSelection;
+        private Brush _floorBrush;
+        private Brush _wallBrush;
+        private Brush _deathBrush;
+        private Brush _monkeyBrush;
+        private Brush _boxBrush;
+        private Brush _climbBrush;
+        private Brush _notWalkableBrush;
+        private Pen _beetlePen;
+        private Pen _triggerTriggererPen;
+        private Brush _noCollisionBrush;
+        private Brush _triggerBrush;
+        private Pen _climbPen;
+        private Bitmap _selectionBuffer;
+        private Graphics _graphics;
+        private Font _font;
+
         private const byte GridStep = 11;
-
-        public int SelectedPortal
-        {
-            get
-            {
-                return _lastPortal;
-            }
-            set
-            {
-                _lastPortal = value;
-            }
-        }
-
-        public int SelectedTrigger
-        {
-            get
-            {
-                return _lastTrigger;
-            }
-            set
-            {
-                _lastTrigger = value;
-            }
-        }
-
+        
         public Panel2DGrid()
             : base()
         {
             _editor = Editor.Instance;
-
             this.DoubleBuffered = true;
-
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
-
-            ControlStyles.UserPaint |
-
-            ControlStyles.OptimizedDoubleBuffer, true);
-
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
         }
 
@@ -122,8 +68,8 @@ namespace TombEditor.Controls
 
             _selectionBuffer = new Bitmap(Width, Height);
             _graphics = Graphics.FromImage(_selectionBuffer);
-            _lastPortal = -1;
-            _lastTrigger = -1;
+            SelectedPortal = -1;
+            SelectedTrigger = -1;
 
             _font = new Font("Arial", 8);
         }
@@ -165,7 +111,7 @@ namespace TombEditor.Controls
             int numZblocks = currentRoom.NumZSectors;
 
             int startZ = (int)(20 - numZblocks) / 2;
-           // if (numZblocks % 2 != 0) startZ++;
+            // if (numZblocks % 2 != 0) startZ++;
 
             return startZ;
         }
@@ -174,8 +120,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            if (_editor == null) return;
-            if (_editor.RoomIndex == -1) return;
+            if (_editor == null)
+                return;
+            if (_editor.RoomIndex == -1)
+                return;
 
             _editor.ResetPanel2DMessage();
 
@@ -200,20 +148,20 @@ namespace TombEditor.Controls
 
                 bool foundSomething = false;
 
-                if (_lastTrigger == -1)
+                if (SelectedTrigger == -1)
                 {
                     // inizio il ciclo dal primo portale
-                    _lastPortal = GetNextPortal((int)LastX / GridStep - startX, GetZBlock(LastY)-startY);
-                    if (_lastPortal == -1)
+                    SelectedPortal = GetNextPortal((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                    if (SelectedPortal == -1)
                     {
-                        _lastTrigger = GetNextTrigger((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
-                        if (_lastTrigger != -1)
+                        SelectedTrigger = GetNextTrigger((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                        if (SelectedTrigger != -1)
                         {
                             foundSomething = true;
 
                             PickingResult result = new PickingResult();
                             result.ElementType = PickingElementType.Trigger;
-                            result.Element = _lastTrigger;
+                            result.Element = SelectedTrigger;
                             _editor.PickingResult = result;
                         }
                     }
@@ -223,25 +171,25 @@ namespace TombEditor.Controls
 
                         PickingResult result = new PickingResult();
                         result.ElementType = PickingElementType.Portal;
-                        result.Element = _lastPortal;
+                        result.Element = SelectedPortal;
                         _editor.PickingResult = result;
                     }
                 }
                 else
                 {
-                    if (_lastPortal == -1 && _lastTrigger != -1)
+                    if (SelectedPortal == -1 && SelectedTrigger != -1)
                     {
-                        _lastTrigger = GetNextTrigger((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
-                        if (_lastTrigger == -1)
+                        SelectedTrigger = GetNextTrigger((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                        if (SelectedTrigger == -1)
                         {
-                            _lastPortal = GetNextPortal((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
-                            if (_lastPortal != -1)
+                            SelectedPortal = GetNextPortal((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                            if (SelectedPortal != -1)
                             {
                                 foundSomething = true;
 
                                 PickingResult result = new PickingResult();
                                 result.ElementType = PickingElementType.Portal;
-                                result.Element = _lastPortal;
+                                result.Element = SelectedPortal;
                                 _editor.PickingResult = result;
                             }
                         }
@@ -251,7 +199,7 @@ namespace TombEditor.Controls
 
                             PickingResult result = new PickingResult();
                             result.ElementType = PickingElementType.Trigger;
-                            result.Element = _lastTrigger;
+                            result.Element = SelectedTrigger;
                             _editor.PickingResult = result;
                         }
                     }
@@ -259,20 +207,21 @@ namespace TombEditor.Controls
 
                 if (!foundSomething)
                 {
-                    _lastPortal = -1;
-                    _lastTrigger = -1;
+                    SelectedPortal = -1;
+                    SelectedTrigger = -1;
                 }
             }
             else
             {
-                if (_lastPortal == -1)
+                if (SelectedPortal == -1)
                 {
-                    if (!Drag) Drag = true;
+                    if (!Drag)
+                        Drag = true;
                     LastX = e.X;
                     LastY = e.Y;
 
                     int xBlock = (int)LastX / GridStep;
-                    int zBlock = GetZBlock(LastY); 
+                    int zBlock = GetZBlock(LastY);
 
                     /*if (xBlock < 0 || zBlock < 0 || xBlock > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors-1 ||
                         zBlock > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
@@ -325,8 +274,8 @@ namespace TombEditor.Controls
                     _editor.PickingResult = result;
                     _editor.StartPickingResult = result;
 
-                    _lastTrigger = -1;
-                    _lastPortal = -1;
+                    SelectedTrigger = -1;
+                    SelectedPortal = -1;
                 }
             }
 
@@ -338,8 +287,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if (_editor == null) return;
-            if (_editor.RoomIndex == -1) return;
+            if (_editor == null)
+                return;
+            if (_editor.RoomIndex == -1)
+                return;
 
             Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
             int numXblocks = currentRoom.NumXSectors;
@@ -359,17 +310,18 @@ namespace TombEditor.Controls
             }
             else
             {
-                if (_lastPortal == -1)
+                if (SelectedPortal == -1)
                 {
                     if (Drag)
                     {
                         LastX = e.X;
                         LastY = e.Y;
 
-                        if (LastY < 0) LastY = 0;
+                        if (LastY < 0)
+                            LastY = 0;
 
                         int xBlock = (int)LastX / GridStep;
-                        int zBlock = GetZBlock(LastY); 
+                        int zBlock = GetZBlock(LastY);
 
                         _editor.BlockSelectionStartX = (_editor.StartPickingResult.Element >> 5) - startX;
                         _editor.BlockSelectionStartZ = (_editor.StartPickingResult.Element & 31) - startY;
@@ -377,13 +329,15 @@ namespace TombEditor.Controls
                         _editor.BlockSelectionEndX = xBlock - startX;
                         _editor.BlockSelectionEndZ = zBlock - startY;
 
-                        if (_editor.BlockSelectionEndX < 0) _editor.BlockSelectionEndX = 0;
-                        if (_editor.BlockSelectionEndZ < 0) _editor.BlockSelectionEndZ = 0;
+                        if (_editor.BlockSelectionEndX < 0)
+                            _editor.BlockSelectionEndX = 0;
+                        if (_editor.BlockSelectionEndZ < 0)
+                            _editor.BlockSelectionEndZ = 0;
                         if (_editor.BlockSelectionEndX > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1)
                             _editor.BlockSelectionEndX = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1;
                         if (_editor.BlockSelectionEndZ > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
                             _editor.BlockSelectionEndZ = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1;
-                        
+
                         _firstSelection = true;
 
                         PickingResult result = new PickingResult();
@@ -405,8 +359,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
 
-            if (_editor == null) return;
-            if (_editor.RoomIndex == -1) return;
+            if (_editor == null)
+                return;
+            if (_editor.RoomIndex == -1)
+                return;
 
             Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
             int numXblocks = currentRoom.NumXSectors;
@@ -426,14 +382,15 @@ namespace TombEditor.Controls
             }
             else
             {
-                if (_lastPortal == -1)
+                if (SelectedPortal == -1)
                 {
                     if (Drag)
                     {
                         LastX = e.X;
                         LastY = e.Y;
 
-                        if (LastY < 0) LastY = 0;
+                        if (LastY < 0)
+                            LastY = 0;
 
                         int xBlock = (int)LastX / GridStep;
                         int zBlock = GetZBlock(LastY);// 20 - (int)(LastY) / GridStep;
@@ -443,8 +400,10 @@ namespace TombEditor.Controls
                             _editor.BlockSelectionEndX = xBlock - startX;
                             _editor.BlockSelectionEndZ = zBlock - startY;
 
-                            if (_editor.BlockSelectionEndX < 0) _editor.BlockSelectionEndX = 0;
-                            if (_editor.BlockSelectionEndZ < 0) _editor.BlockSelectionEndZ = 0;
+                            if (_editor.BlockSelectionEndX < 0)
+                                _editor.BlockSelectionEndX = 0;
+                            if (_editor.BlockSelectionEndZ < 0)
+                                _editor.BlockSelectionEndZ = 0;
                             if (_editor.BlockSelectionEndX > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1)
                                 _editor.BlockSelectionEndX = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1;
                             if (_editor.BlockSelectionEndZ > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
@@ -472,7 +431,7 @@ namespace TombEditor.Controls
                     int xBlock = (int)LastX / GridStep - startX;
                     int zBlock = GetZBlock(LastY) - startY;
 
-                    Portal p = _editor.Level.Portals[_lastPortal];
+                    Portal p = _editor.Level.Portals[SelectedPortal];
 
                     if (xBlock >= p.X && xBlock <= p.X + p.NumXBlocks && zBlock >= p.Z && zBlock <= p.Z + p.NumZBlocks)
                     {
@@ -482,12 +441,12 @@ namespace TombEditor.Controls
                     }
                     else
                     {
-                        _lastPortal = -1;
+                        SelectedPortal = -1;
                         Invalidate();
                     }
-                         
-                    _lastPortal = -1;
-                    _lastTrigger = -1;
+
+                    SelectedPortal = -1;
+                    SelectedTrigger = -1;
                 }
             }
 
@@ -510,8 +469,10 @@ namespace TombEditor.Controls
 
                 g.FillRectangle(Brushes.White, new Rectangle(0, 0, 320, 320));
 
-                if (_editor == null) return;
-                if (_editor.RoomIndex == -1) return;
+                if (_editor == null)
+                    return;
+                if (_editor.RoomIndex == -1)
+                    return;
 
                 Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
                 int numXblocks = currentRoom.NumXSectors;
@@ -612,9 +573,9 @@ namespace TombEditor.Controls
                     g.DrawLine(Pens.Black, new Point(0, y), new Point(320, y));
                 }
 
-                if (_lastPortal != -1)
+                if (SelectedPortal != -1)
                 {
-                    Portal p = _editor.Level.Portals[_lastPortal];
+                    Portal p = _editor.Level.Portals[SelectedPortal];
 
                     int xMin = p.X;
                     int xMax = p.X + p.NumXBlocks - 1;
@@ -629,15 +590,17 @@ namespace TombEditor.Controls
                     g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - p.NumZBlocks) * GridStep), new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep));
 
                     string text = "Portal ";
-                    if (p.Direction == PortalDirection.Floor) text += " (On Floor) ";
-                    if (p.Direction == PortalDirection.Ceiling) text += " (On Ceiling) ";
+                    if (p.Direction == PortalDirection.Floor)
+                        text += " (On Floor) ";
+                    if (p.Direction == PortalDirection.Ceiling)
+                        text += " (On Ceiling) ";
                     text += "to Room #" + p.AdjoiningRoom.ToString();
 
                     DrawMessage(g, text, p.X, p.Z);
                 }
-                else if (_lastTrigger != -1)
+                else if (SelectedTrigger != -1)
                 {
-                    TriggerInstance t = _editor.Level.Triggers[_lastTrigger];
+                    TriggerInstance t = _editor.Level.Triggers[SelectedTrigger];
 
                     int xMin = t.X;
                     int xMax = t.X + t.NumXBlocks - 1;
@@ -678,7 +641,7 @@ namespace TombEditor.Controls
                 }
             }
             catch (Exception)
-            {}
+            { }
 
             _editor.UpdateStatistics();
         }
@@ -689,7 +652,7 @@ namespace TombEditor.Controls
 
             SizeF dimension = g.MeasureString(text, _font, this.Width /*- x * GridStep*/, StringFormat.GenericDefault);
 
-            short deltaX = (short)((this.Width - ((StartX + x) * GridStep + dimension.Width + 4.0f))/GridStep);
+            short deltaX = (short)((this.Width - ((StartX + x) * GridStep + dimension.Width + 4.0f)) / GridStep);
             short deltaZ = (short)((this.Height - (this.Height - (StartY + z) * GridStep + dimension.Height + 4.0f)) / GridStep);
 
             if ((StartX + x) * GridStep + dimension.Width + 4.0f >= this.Width - GridStep)
@@ -710,8 +673,9 @@ namespace TombEditor.Controls
 
         private int GetNextPortal(int x, int z)
         {
-            int index = _lastPortal;
-            if (index == -1) index = 0;
+            int index = SelectedPortal;
+            if (index == -1)
+                index = 0;
 
             //   x = x + StartX;
             //  z = z + StartY;
@@ -720,13 +684,15 @@ namespace TombEditor.Controls
 
             for (int i = index; i < _editor.Level.Portals.Count; i++)
             {
-                if (i == _lastPortal) continue;
+                if (i == SelectedPortal)
+                    continue;
 
                 Portal p = _editor.Level.Portals.ElementAt(i).Value;
 
                 int theRoom = _editor.RoomIndex; // (room.Flipped && room.BaseRoom != -1 ? room.BaseRoom : _editor.RoomIndex);
 
-                if (p.Room == theRoom && x >= p.X && x < p.X + p.NumXBlocks && z >= p.Z && z < p.Z + p.NumZBlocks) return p.ID;
+                if (p.Room == theRoom && x >= p.X && x < p.X + p.NumXBlocks && z >= p.Z && z < p.Z + p.NumZBlocks)
+                    return p.ID;
             }
 
             return -1;
@@ -734,19 +700,22 @@ namespace TombEditor.Controls
 
         private int GetNextTrigger(int x, int z)
         {
-            int index = _lastTrigger;
-            if (index == -1) index = 0;
+            int index = SelectedTrigger;
+            if (index == -1)
+                index = 0;
 
-        //    x = x - StartX;
-         //   z = z - StartY;
+            //    x = x - StartX;
+            //   z = z - StartY;
 
             for (int i = index; i < _editor.Level.Triggers.Count; i++)
             {
-                if (i == _lastTrigger) continue;
+                if (i == SelectedTrigger)
+                    continue;
 
                 TriggerInstance t = _editor.Level.Triggers.ElementAt(i).Value;
 
-                if (t.Room == _editor.RoomIndex && x >= t.X && x < t.X + t.NumXBlocks && z >= t.Z && z < t.Z + t.NumZBlocks) return t.ID;
+                if (t.Room == _editor.RoomIndex && x >= t.X && x < t.X + t.NumXBlocks && z >= t.Z && z < t.Z + t.NumZBlocks)
+                    return t.ID;
             }
 
             return -1;

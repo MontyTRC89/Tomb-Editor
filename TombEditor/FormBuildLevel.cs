@@ -15,7 +15,6 @@ namespace TombEditor
     public partial class FormBuildLevel : DarkForm
     {
         public bool LaunchGameAfterCompile { get; set; }
-
         private Editor _editor = Editor.Instance;
 
         public FormBuildLevel()

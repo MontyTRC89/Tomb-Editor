@@ -123,29 +123,46 @@ namespace TombEditor
                         case FaceEditorActions.EntireFace:
                             if (face == 0)
                             {
-                                if (block.FloorDiagonalSplit == DiagonalSplit.NW && block.QAFaces[2] == block.QAFaces[0] && increment < 0) continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.NE && block.QAFaces[3] == block.QAFaces[1] && increment < 0) continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.SE && block.QAFaces[0] == block.QAFaces[2] && increment < 0) continue;
-                                if (block.FloorDiagonalSplit == DiagonalSplit.SW && block.QAFaces[1] == block.QAFaces[3] && increment < 0) continue;
+                                if (block.FloorDiagonalSplit == DiagonalSplit.NW && block.QAFaces[2] == block.QAFaces[0] && increment < 0)
+                                    continue;
+                                if (block.FloorDiagonalSplit == DiagonalSplit.NE && block.QAFaces[3] == block.QAFaces[1] && increment < 0)
+                                    continue;
+                                if (block.FloorDiagonalSplit == DiagonalSplit.SE && block.QAFaces[0] == block.QAFaces[2] && increment < 0)
+                                    continue;
+                                if (block.FloorDiagonalSplit == DiagonalSplit.SW && block.QAFaces[1] == block.QAFaces[3] && increment < 0)
+                                    continue;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.NW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.NE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.SE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.SW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.NW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.NE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.SE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.SW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.NW && block.WSFaces[2] == block.WSFaces[0] && increment > 0) continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.NE && block.WSFaces[3] == block.WSFaces[1] && increment > 0) continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.SE && block.WSFaces[0] == block.WSFaces[2] && increment > 0) continue;
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.SW && block.WSFaces[1] == block.WSFaces[3] && increment > 0) continue;
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.NW && block.WSFaces[2] == block.WSFaces[0] && increment > 0)
+                                    continue;
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.NE && block.WSFaces[3] == block.WSFaces[1] && increment > 0)
+                                    continue;
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.SE && block.WSFaces[0] == block.WSFaces[2] && increment > 0)
+                                    continue;
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.SW && block.WSFaces[1] == block.WSFaces[3] && increment > 0)
+                                    continue;
 
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
                             }
                             else if (face == 2)
                             {
@@ -154,7 +171,8 @@ namespace TombEditor
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[2] += increment;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -168,32 +186,42 @@ namespace TombEditor
                         case FaceEditorActions.EdgeN:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.NW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.NE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.NW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.NE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
                             }
                             else if (face == 2)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[0] += increment;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].RFFaces[2] += increment;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].RFFaces[3] += increment;
@@ -203,26 +231,34 @@ namespace TombEditor
                         case FaceEditorActions.EdgeE:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.NE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.SE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.NE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.SE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
                             }
                             else if (face == 2)
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[1] += increment;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -234,26 +270,34 @@ namespace TombEditor
                         case FaceEditorActions.EdgeS:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.SE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.SW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.SE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.SW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
                             }
                             else if (face == 2)
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[0] += increment;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -265,26 +309,34 @@ namespace TombEditor
                         case FaceEditorActions.EdgeW:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.FloorDiagonalSplit != DiagonalSplit.NW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
-                                if (block.FloorDiagonalSplit != DiagonalSplit.SW) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.NW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
+                                if (block.FloorDiagonalSplit != DiagonalSplit.SW)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE) _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE)
+                                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
                             }
                             else if (face == 2)
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[0] += increment;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -296,24 +348,29 @@ namespace TombEditor
                         case FaceEditorActions.CornerNW:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.SE && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.SE && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.SE)
                                 {
-                                    if (block.QAFaces[0] == block.QAFaces[1] && increment < 0) continue;
+                                    if (block.QAFaces[0] == block.QAFaces[1] && increment < 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE && block.CeilingDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NE && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE)
                                 {
-                                    if (block.WSFaces[3] == block.WSFaces[0] && increment > 0) continue;
+                                    if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
@@ -322,7 +379,8 @@ namespace TombEditor
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[0] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -333,24 +391,29 @@ namespace TombEditor
                         case FaceEditorActions.CornerNE:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.SW && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.SW && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.SW)
                                 {
-                                    if (block.QAFaces[1] == block.QAFaces[2] && increment < 0) continue;
+                                    if (block.QAFaces[1] == block.QAFaces[2] && increment < 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW && block.CeilingDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.NW && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NW)
                                 {
-                                    if (block.WSFaces[1] == block.WSFaces[2] && increment > 0) continue;
+                                    if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
@@ -359,7 +422,8 @@ namespace TombEditor
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -370,24 +434,29 @@ namespace TombEditor
                         case FaceEditorActions.CornerSE:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.NW && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.NW && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.NW)
                                 {
-                                    if (block.QAFaces[2] == block.QAFaces[3] && increment < 0) continue;
+                                    if (block.QAFaces[2] == block.QAFaces[3] && increment < 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW && block.CeilingDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SW && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.SW)
                                 {
-                                    if (block.WSFaces[1] == block.WSFaces[2] && increment > 0) continue;
+                                    if (block.WSFaces[1] == block.WSFaces[2] && increment > 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
@@ -396,7 +465,8 @@ namespace TombEditor
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -407,24 +477,29 @@ namespace TombEditor
                         case FaceEditorActions.CornerSW:
                             if (face == 0)
                             {
-                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.NE && block.FloorDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.Type != BlockType.Wall && block.FloorDiagonalSplit != DiagonalSplit.NE && block.FloorDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.Type != BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.NE)
                                 {
-                                    if (block.QAFaces[3] == block.QAFaces[0] && increment < 0) continue;
+                                    if (block.QAFaces[3] == block.QAFaces[0] && increment < 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 1)
                             {
-                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE && block.CeilingDiagonalSplit != DiagonalSplit.None) continue;
+                                if (block.CeilingDiagonalSplit != DiagonalSplit.SE && block.CeilingDiagonalSplit != DiagonalSplit.None)
+                                    continue;
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.SE)
                                 {
-                                    if (block.WSFaces[3] == block.WSFaces[0] && increment > 0) continue;
+                                    if (block.WSFaces[3] == block.WSFaces[0] && increment > 0)
+                                        continue;
                                 }
 
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
@@ -433,7 +508,8 @@ namespace TombEditor
                             {
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid) continue;
+                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                    continue;
                             }
                             else if (face == 3)
                             {
@@ -444,25 +520,29 @@ namespace TombEditor
                         case FaceEditorActions.DiagonalFloorCorner:
                             if (block.FloorDiagonalSplit == DiagonalSplit.NW)
                             {
-                                if (block.QAFaces[0] == block.QAFaces[1] && increment > 0) continue;
+                                if (block.QAFaces[0] == block.QAFaces[1] && increment > 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] += increment;
                             }
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE)
                             {
-                                if (block.QAFaces[1] == block.QAFaces[2] && increment > 0) continue;
+                                if (block.QAFaces[1] == block.QAFaces[2] && increment > 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] += increment;
                             }
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.SE)
                             {
-                                if (block.QAFaces[2] == block.QAFaces[3] && increment > 0) continue;
+                                if (block.QAFaces[2] == block.QAFaces[3] && increment > 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] += increment;
                             }
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.SW)
                             {
-                                if (block.QAFaces[3] == block.QAFaces[0] && increment > 0) continue;
+                                if (block.QAFaces[3] == block.QAFaces[0] && increment > 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += increment;
                             }
 
@@ -471,25 +551,29 @@ namespace TombEditor
                         case FaceEditorActions.DiagonalCeilingCorner:
                             if (block.CeilingDiagonalSplit == DiagonalSplit.NW)
                             {
-                                if (block.WSFaces[0] == block.WSFaces[1] && increment < 0) continue;
+                                if (block.WSFaces[0] == block.WSFaces[1] && increment < 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] += increment;
                             }
 
                             if (block.CeilingDiagonalSplit == DiagonalSplit.NE)
                             {
-                                if (block.WSFaces[1] == block.WSFaces[2] && increment < 0) continue;
+                                if (block.WSFaces[1] == block.WSFaces[2] && increment < 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] += increment;
                             }
 
                             if (block.CeilingDiagonalSplit == DiagonalSplit.SE)
                             {
-                                if (block.WSFaces[2] == block.WSFaces[3] && increment < 0) continue;
+                                if (block.WSFaces[2] == block.WSFaces[3] && increment < 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] += increment;
                             }
 
                             if (block.CeilingDiagonalSplit == DiagonalSplit.SW)
                             {
-                                if (block.WSFaces[3] == block.WSFaces[0] && increment < 0) continue;
+                                if (block.WSFaces[3] == block.WSFaces[0] && increment < 0)
+                                    continue;
                                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += increment;
                             }
 
@@ -541,7 +625,8 @@ namespace TombEditor
             {
                 Portal portal = _editor.Level.Portals[portalsToTravel[p]];
 
-                if (roomsProcessed.Contains(portal.AdjoiningRoom)) continue;
+                if (roomsProcessed.Contains(portal.AdjoiningRoom))
+                    continue;
                 roomsProcessed.Add(portal.AdjoiningRoom);
 
                 // Calculate facing X and Z
@@ -555,7 +640,8 @@ namespace TombEditor
 
                 if (portal.Direction == PortalDirection.North)
                 {
-                    if (zMax < room.NumZSectors - 2) continue;
+                    if (zMax < room.NumZSectors - 2)
+                        continue;
 
                     facingXmin = portal.X + (int)(room.Position.X - otherRoom.Position.X) - 1;
                     facingXmin = portal.X + portal.NumXBlocks + (int)(room.Position.X - otherRoom.Position.X);
@@ -564,7 +650,8 @@ namespace TombEditor
                 }
                 else if (portal.Direction == PortalDirection.South)
                 {
-                    if (zMin > 1) continue;
+                    if (zMin > 1)
+                        continue;
 
                     facingXmin = portal.X + (int)(room.Position.X - otherRoom.Position.X) - 1;
                     facingXmax = portal.X + portal.NumXBlocks + (int)(room.Position.X - otherRoom.Position.X);
@@ -573,7 +660,8 @@ namespace TombEditor
                 }
                 else if (portal.Direction == PortalDirection.East)
                 {
-                    if (xMax < room.NumXSectors - 2) continue;
+                    if (xMax < room.NumXSectors - 2)
+                        continue;
 
                     facingXmin = 0;
                     facingXmax = 1;
@@ -582,7 +670,8 @@ namespace TombEditor
                 }
                 else if (portal.Direction == PortalDirection.West)
                 {
-                    if (xMin > 1) continue;
+                    if (xMin > 1)
+                        continue;
 
                     facingXmin = otherRoom.NumXSectors - 2;
                     facingXmax = otherRoom.NumXSectors - 1;
@@ -657,12 +746,14 @@ namespace TombEditor
 
         public static void AddTrigger(int xMin, int xMax, int zMin, int zMax)
         {
-            if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1) return;
+            if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
+                return;
 
             TriggerInstance trigger = null;
             FormTrigger formTrigger = new FormTrigger();
             formTrigger.TriggerID = -1;
-            if (formTrigger.ShowDialog() != DialogResult.OK) return;
+            if (formTrigger.ShowDialog() != DialogResult.OK)
+                return;
             trigger = formTrigger.Trigger;
             trigger.Room = _editor.RoomIndex;
             trigger.ID = _editor.Level.GetNewTriggerID();
@@ -786,7 +877,7 @@ namespace TombEditor
             }
 
             _editor.Level.DeleteObject(id);
-        }        
+        }
 
         public static void MoveLight(int id, MoveObjectDirections direction, bool smoothMove)
         {
@@ -842,10 +933,14 @@ namespace TombEditor
             light.DirectionX += x;
             light.DirectionY += y;
 
-            if (light.DirectionX >= 360) light.DirectionX -= 360;
-            if (light.DirectionX < 0) light.DirectionX += 360;
-            if (light.DirectionY < 0) light.DirectionY += 360;
-            if (light.DirectionY >= 360) light.DirectionY -= 360;
+            if (light.DirectionX >= 360)
+                light.DirectionX -= 360;
+            if (light.DirectionX < 0)
+                light.DirectionX += 360;
+            if (light.DirectionY < 0)
+                light.DirectionY += 360;
+            if (light.DirectionY >= 360)
+                light.DirectionY -= 360;
 
             _editor.Level.Rooms[_editor.RoomIndex].Lights[id] = light;
 
@@ -861,10 +956,14 @@ namespace TombEditor
             flyby.DirectionX += x;
             flyby.DirectionX += y;
 
-            if (flyby.DirectionX >= 360) flyby.DirectionX -= 360;
-            if (flyby.DirectionX < 0) flyby.DirectionX += 360;
-            if (flyby.DirectionY < 0) flyby.DirectionY += 360;
-            if (flyby.DirectionY >= 360) flyby.DirectionY -= 360;
+            if (flyby.DirectionX >= 360)
+                flyby.DirectionX -= 360;
+            if (flyby.DirectionX < 0)
+                flyby.DirectionX += 360;
+            if (flyby.DirectionY < 0)
+                flyby.DirectionY += 360;
+            if (flyby.DirectionY >= 360)
+                flyby.DirectionY -= 360;
 
             _editor.Level.Objects[id] = flyby;
         }
@@ -897,7 +996,8 @@ namespace TombEditor
 
         public static void ApplyTexture(int x, int z, BlockFaces faceType)
         {
-            if (_editor == null || (_editor.SelectedTexture == -1 && !_editor.InvisiblePolygon)) return;
+            if (_editor == null || (_editor.SelectedTexture == -1 && !_editor.InvisiblePolygon))
+                return;
 
             BlockFace face = (BlockFace)_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType];
 
@@ -930,14 +1030,15 @@ namespace TombEditor
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].DoubleSided = false;
 
                 Vector2[] UV = new Vector2[4];
-                
+
                 LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture];
 
                 int yBlock = (int)(texture.Page / 8);
                 int xBlock = (int)(texture.Page % 8);
 
                 UV[0] = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
-                UV[1] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f); ;
+                UV[1] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
+                ;
                 UV[2] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
                 UV[3] = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
 
@@ -1281,7 +1382,8 @@ namespace TombEditor
                     for (int k = 0; k < room.Blocks[x + xMin - 1, z + zMin - 1].Triggers.Count; k++)
                     {
                         int triggerId = room.Blocks[x + xMin - 1, z + zMin - 1].Triggers[k];
-                        if (!triggersToRemove.Contains(triggerId)) newRoom.Blocks[x, z].Triggers.Add(triggerId);
+                        if (!triggersToRemove.Contains(triggerId))
+                            newRoom.Blocks[x, z].Triggers.Add(triggerId);
                     }
 
                     // TODO: remove
@@ -2017,10 +2119,14 @@ namespace TombEditor
             int numZblocks = room.NumZSectors;
 
             // Probably to delete, because new controls. But for now I will leave it here.
-            if (xMin < 0) xMin = 0;
-            if (xMax > numXblocks - 1) xMax = numXblocks - 1;
-            if (zMin < 0) zMin = 0;
-            if (zMax > numZblocks - 1) zMax = numZblocks - 1;
+            if (xMin < 0)
+                xMin = 0;
+            if (xMax > numXblocks - 1)
+                xMax = numXblocks - 1;
+            if (zMin < 0)
+                zMin = 0;
+            if (zMax > numZblocks - 1)
+                zMax = numZblocks - 1;
 
             // West wall
             if (xMin == 0 && xMax == 0 && zMin != 0 && zMax != numZblocks - 1)
@@ -2044,8 +2150,10 @@ namespace TombEditor
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
 
-                    if (i == _editor.RoomIndex || otherRoom == null) continue;
-                    if (otherRoom != null && otherRoom.Flipped != room.Flipped) continue;
+                    if (i == _editor.RoomIndex || otherRoom == null)
+                        continue;
+                    if (otherRoom != null && otherRoom.Flipped != room.Flipped)
+                        continue;
 
                     if (otherRoom.Position.X + otherRoom.NumXSectors - 1 == room.Position.X + 1 && room.Position.Z + zMin >= otherRoom.Position.Z + 1 &&
                         room.Position.Z + zMax <= otherRoom.Position.Z + otherRoom.NumZSectors - 1)
@@ -2071,7 +2179,8 @@ namespace TombEditor
                         }
                     }
 
-                    if (found != -1) break;
+                    if (found != -1)
+                        break;
                 }
 
                 if (found != -1)
@@ -2157,8 +2266,10 @@ namespace TombEditor
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
 
-                    if (i == _editor.RoomIndex || otherRoom == null) continue;
-                    if (otherRoom != null && otherRoom.Flipped != room.Flipped) continue;
+                    if (i == _editor.RoomIndex || otherRoom == null)
+                        continue;
+                    if (otherRoom != null && otherRoom.Flipped != room.Flipped)
+                        continue;
 
                     if (room.Position.X + room.NumXSectors - 1 == otherRoom.Position.X + 1 && room.Position.Z + zMin >= otherRoom.Position.Z + 1 &&
                         room.Position.Z + zMax <= otherRoom.Position.Z + otherRoom.NumZSectors - 1)
@@ -2184,7 +2295,8 @@ namespace TombEditor
                         }
                     }
 
-                    if (found != -1) break;
+                    if (found != -1)
+                        break;
                 }
 
                 if (found != -1)
@@ -2270,8 +2382,10 @@ namespace TombEditor
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
 
-                    if (i == _editor.RoomIndex || otherRoom == null) continue;
-                    if (otherRoom != null && otherRoom.Flipped != room.Flipped) continue;
+                    if (i == _editor.RoomIndex || otherRoom == null)
+                        continue;
+                    if (otherRoom != null && otherRoom.Flipped != room.Flipped)
+                        continue;
 
                     if (room.Position.Z + room.NumZSectors - 1 == otherRoom.Position.Z + 1 && room.Position.X + xMin >= otherRoom.Position.X + 1 &&
                         room.Position.X + xMax <= otherRoom.Position.X + otherRoom.NumXSectors - 1)
@@ -2297,7 +2411,8 @@ namespace TombEditor
                         }
                     }
 
-                    if (found != -1) break;
+                    if (found != -1)
+                        break;
                 }
 
                 if (found != -1)
@@ -2383,8 +2498,10 @@ namespace TombEditor
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
 
-                    if (i == _editor.RoomIndex || otherRoom == null) continue;
-                    if (otherRoom != null && otherRoom.Flipped != room.Flipped) continue;
+                    if (i == _editor.RoomIndex || otherRoom == null)
+                        continue;
+                    if (otherRoom != null && otherRoom.Flipped != room.Flipped)
+                        continue;
 
                     if (otherRoom.Position.Z + otherRoom.NumZSectors - 1 == room.Position.Z + 1 && room.Position.X + xMin >= otherRoom.Position.X + 1 &&
                         room.Position.X + xMax <= otherRoom.Position.X + otherRoom.NumXSectors - 1)
@@ -2410,7 +2527,8 @@ namespace TombEditor
                         }
                     }
 
-                    if (found != -1) break;
+                    if (found != -1)
+                        break;
                 }
 
                 if (found != -1)
@@ -2477,7 +2595,8 @@ namespace TombEditor
             // Floor - ceiling portal
             if (xMin > 0 && xMax < numXblocks - 1 && zMin > 0 && zMax < numZblocks - 1)
             {
-                int lowest = room.GetLowestCorner(); ;
+                int lowest = room.GetLowestCorner();
+                ;
 
                 // Check for floor heights in selected area
                 for (int x = xMin; x <= xMax; x++)
@@ -2512,11 +2631,14 @@ namespace TombEditor
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
 
-                    if (i == _editor.RoomIndex || otherRoom == null) continue;
-                    if (otherRoom != null && otherRoom.Flipped != room.Flipped) continue;
+                    if (i == _editor.RoomIndex || otherRoom == null)
+                        continue;
+                    if (otherRoom != null && otherRoom.Flipped != room.Flipped)
+                        continue;
 
                     int distance = (int)room.Position.Y + room.GetLowestCorner() - ((int)otherRoom.Position.Y + otherRoom.GetHighestCorner());
-                    if (distance < 0 || distance > 2) continue;
+                    if (distance < 0 || distance > 2)
+                        continue;
 
                     int lowXmin = xMin + (int)(room.Position.X - otherRoom.Position.X);
                     int lowXmax = xMax + (int)(room.Position.X - otherRoom.Position.X);
@@ -2558,7 +2680,8 @@ namespace TombEditor
                             }
                         }
 
-                        if (!validRoom) break;
+                        if (!validRoom)
+                            break;
                     }
 
                     if (!validRoom)

@@ -9,10 +9,9 @@ namespace TombEditor.Geometry
     {
         public short Strength { get; set; }
 
-        public SinkInstance(int id, short room) : base(ObjectInstanceType.Sink, id, room)
-        {
-
-        }
+        public SinkInstance(int id, short room)
+            : base(ObjectInstanceType.Sink, id, room)
+        { }
 
         public override IObjectInstance Clone()
         {

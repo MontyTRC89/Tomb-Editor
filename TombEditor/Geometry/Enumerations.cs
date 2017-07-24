@@ -104,14 +104,14 @@ namespace TombEditor.Geometry
     [Flags]
     public enum BlockFlags : short
     {
-        None = 0, 
-        Monkey = 1, 
-        Opacity2 = 2, 
-        Trigger = 4, 
-        Box = 8, 
-        Death = 16, 
-        Lava = 32, 
-        Electricity = 64, 
+        None = 0,
+        Monkey = 1,
+        Opacity2 = 2,
+        Trigger = 4,
+        Box = 8,
+        Death = 16,
+        Lava = 32,
+        Electricity = 64,
         Opacity = 128,
         Beetle = 256,
         TriggerTriggerer = 512,
