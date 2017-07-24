@@ -101,6 +101,7 @@ namespace TombEditor.Geometry
         FMV = 14
     }
 
+    [Flags]
     public enum BlockFlags : short
     {
         None = 0, 
