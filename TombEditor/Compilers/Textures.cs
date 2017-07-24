@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using TombEditor.Geometry;
 using TombLib.IO;
-using TombLib.Wad;
 
 namespace TombEditor.Compilers
 {
@@ -14,49 +14,50 @@ namespace TombEditor.Compilers
         {
             ReportProgress(10, "Building final texture map");
 
-            NumRoomTextureTiles = (ushort)_numRoomTexturePages;
-            NumObjectTextureTiles = (ushort)(_numobjectTexturePages + _numSpriteTexturePages);
+            NumRoomTextureTiles = (ushort) _numRoomTexturePages;
+            NumObjectTextureTiles = (ushort) (_numobjectTexturePages + _numSpriteTexturePages);
 
-            byte[] uncTexture32 = new byte[_roomTexturePages.Length + _objectTexturePages.Length + _spriteTexturePages.Length];
+            var uncTexture32 =
+                new byte[_roomTexturePages.Length + _objectTexturePages.Length + _spriteTexturePages.Length];
 
             Array.Copy(_roomTexturePages, 0, uncTexture32, 0, _roomTexturePages.Length);
             Array.Copy(_objectTexturePages, 0, uncTexture32, _roomTexturePages.Length, _objectTexturePages.Length);
-            Array.Copy(_spriteTexturePages, 0, uncTexture32, _roomTexturePages.Length + _objectTexturePages.Length, _spriteTexturePages.Length);
+            Array.Copy(_spriteTexturePages, 0, uncTexture32, _roomTexturePages.Length + _objectTexturePages.Length,
+                _spriteTexturePages.Length);
 
             ReportProgress(80, "Packing 32 bit textures to 16 bit");
-            byte[] uncTexture16 = PackTextureMap32To16bit(uncTexture32, 256, (_numRoomTexturePages + _numobjectTexturePages + _numSpriteTexturePages) * 256);
+            var uncTexture16 = PackTextureMap32To16Bit(uncTexture32, 256,
+                (_numRoomTexturePages + _numobjectTexturePages + _numSpriteTexturePages) * 256);
 
             ReportProgress(80, "Compressing 32 bit textures");
             Texture32 = Utils.CompressDataZLIB(uncTexture32);
-            Texture32UncompressedSize = (uint)uncTexture32.Length;
-            Texture32CompressedSize = (uint)Texture32.Length;
+            Texture32UncompressedSize = (uint) uncTexture32.Length;
+            Texture32CompressedSize = (uint) Texture32.Length;
 
             _textures16 = uncTexture16;
 
             ReportProgress(80, "Compressing 16 bit textures");
             Texture16 = Utils.CompressDataZLIB(uncTexture16);
-            Texture16UncompressedSize = (uint)uncTexture16.Length;
-            Texture16CompressedSize = (uint)Texture16.Length;
+            Texture16UncompressedSize = (uint) uncTexture16.Length;
+            Texture16CompressedSize = (uint) Texture16.Length;
         }
 
-        public void BuildWadTexturePages()
+        private void BuildWadTexturePages()
         {
             ReportProgress(7, "Building WAD textures pages");
 
-            TR4Wad wad = _editor.Level.Wad.OriginalWad;
-            int x;
-            int y;
+            var wad = _editor.Level.Wad.OriginalWad;
 
             _objectTexturePages = new byte[256 * 256 * 4 * wad.NumTexturePages];
             _numobjectTexturePages = wad.NumTexturePages;
 
-            for (y = 0; y < wad.NumTexturePages * 256; y++)
+            for (var y = 0; y < wad.NumTexturePages * 256; y++)
             {
-                for (x = 0; x < 256; x++)
+                for (var x = 0; x < 256; x++)
                 {
-                    byte r = wad.TexturePages[y, 3 * x + 0];
-                    byte g = wad.TexturePages[y, 3 * x + 1];
-                    byte b = wad.TexturePages[y, 3 * x + 2];
+                    var r = wad.TexturePages[y, 3 * x + 0];
+                    var g = wad.TexturePages[y, 3 * x + 1];
+                    var b = wad.TexturePages[y, 3 * x + 2];
 
                     if (r == 255 && g == 0 && b == 255)
                     {
@@ -80,12 +81,12 @@ namespace TombEditor.Compilers
 
         private TextureSounds GetTextureSound(int texture)
         {
-            LevelTexture txt = _level.TextureSamples[texture];
+            var txt = _level.TextureSamples[texture];
 
-            for (int i = 0; i < _level.TextureSounds.Count; i++)
+            foreach (var txtSound in _level.TextureSounds)
             {
-                TextureSound txtSound = _level.TextureSounds[i];
-                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X <= txtSound.X + 64 && txt.Y <= txtSound.Y + 64 &&
+                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X <= txtSound.X + 64 &&
+                    txt.Y <= txtSound.Y + 64 &&
                     txt.Page == txtSound.Page)
                 {
                     return txtSound.Sound;
@@ -94,20 +95,20 @@ namespace TombEditor.Compilers
 
             return TextureSounds.Stone;
         }
-        
+
         private bool PrepareFontAndSkyTexture()
         {
             try
             {
                 ReportProgress(18, "Building font & sky textures");
 
-                BinaryReaderEx reader = new BinaryReaderEx(File.OpenRead("Graphics\\Common\\font.pc"));
-                byte[] uncMiscTexture = new byte[256 * 256 * 4 * 2];
-
-                byte[] buffer = new byte[256 * 256 * 4];
-
-                reader.ReadBlockArray(out buffer, 256 * 256 * 4);
-                reader.Close();
+                byte[] buffer;
+                byte[] uncMiscTexture;
+                using (var reader = new BinaryReaderEx(File.OpenRead("Graphics\\Common\\font.pc")))
+                {
+                    uncMiscTexture = new byte[256 * 256 * 4 * 2];
+                    reader.ReadBlockArray(out buffer, 256 * 256 * 4);
+                }
 
                 Array.Copy(buffer, 0, uncMiscTexture, 0, 256 * 256 * 4);
 
@@ -115,29 +116,31 @@ namespace TombEditor.Compilers
 
                 // If exists a sky with the same name of WAD, use it, otherwise take the default sky
                 string skyFileName;
-                if (File.Exists(_editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".raw"))
-                    skyFileName = _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".raw";
+                if (File.Exists(_editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName +
+                                ".raw"))
+                    skyFileName = _editor.Level.Wad.OriginalWad.BasePath + "\\" +
+                                  _editor.Level.Wad.OriginalWad.BaseName + ".raw";
                 else
                     skyFileName = "Graphics\\Common\\pcsky.raw";
 
                 ReportProgress(18, "Reading sky texture: " + skyFileName);
 
 
-                reader = new BinaryReaderEx(File.OpenRead(skyFileName));
-
-                for (int y = 0; y < 256; y++)
+                using (var reader = new BinaryReaderEx(File.OpenRead(skyFileName)))
                 {
-                    for (int x = 0; x < 256; x++)
+                    for (var y = 0; y < 256; y++)
                     {
-                        byte r = reader.ReadByte();
-                        byte g = reader.ReadByte();
-                        byte b = reader.ReadByte();
+                        for (var x = 0; x < 256; x++)
+                        {
+                            var r = reader.ReadByte();
+                            var g = reader.ReadByte();
+                            var b = reader.ReadByte();
 
-                        buffer[y * 1024 + 4 * x] = b;
-                        buffer[y * 1024 + 4 * x + 1] = g;
-                        buffer[y * 1024 + 4 * x + 2] = r;
-                        buffer[y * 1024 + 4 * x + 3] = 255;
-
+                            buffer[y * 1024 + 4 * x] = b;
+                            buffer[y * 1024 + 4 * x + 1] = g;
+                            buffer[y * 1024 + 4 * x + 2] = r;
+                            buffer[y * 1024 + 4 * x + 3] = 255;
+                        }
                     }
                 }
 
@@ -146,34 +149,34 @@ namespace TombEditor.Compilers
                 ReportProgress(80, "Compressing font & sky textures");
 
                 MiscTexture = Utils.CompressDataZLIB(uncMiscTexture);
-                MiscTextureUncompressedSize = (uint)uncMiscTexture.Length;
-                MiscTextureCompressedSize = (uint)MiscTexture.Length;
+                MiscTextureUncompressedSize = (uint) uncMiscTexture.Length;
+                MiscTextureCompressedSize = (uint) MiscTexture.Length;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
 
             return true;
         }
-        
-        private byte[] PackTextureMap32To16bit(byte[] map, int width, int height)
-        {
-            byte[] newMap = new byte[width * height * 2];
 
-            for (int x = 0; x < width; x++)
+        private static byte[] PackTextureMap32To16Bit(IReadOnlyList<byte> map, int width, int height)
+        {
+            var newMap = new byte[width * height * 2];
+
+            for (var x = 0; x < width; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (var y = 0; y < height; y++)
                 {
                     ushort a1 = map[y * 256 * 4 + x * 4 + 3];
                     ushort r1 = map[y * 256 * 4 + x * 4 + 2];
                     ushort g1 = map[y * 256 * 4 + x * 4 + 1];
                     ushort b1 = map[y * 256 * 4 + x * 4 + 0];
 
-                    ushort r = (ushort)(r1 / 8);
-                    ushort g = (ushort)(g1 / 8);
-                    ushort b = (ushort)(b1 / 8);
-                    ushort a = 0x8000;
+                    var r = (ushort) (r1 / 8);
+                    var g = (ushort) (g1 / 8);
+                    var b = (ushort) (b1 / 8);
+                    ushort a;
 
                     if (a1 == 0)
                     {
@@ -200,18 +203,17 @@ namespace TombEditor.Compilers
                     else
                     {
                         tmp |= a;
-                        tmp |= (ushort)(r << 10);
-                        tmp |= (ushort)(g << 5);
+                        tmp |= (ushort) (r << 10);
+                        tmp |= (ushort) (g << 5);
                         tmp |= b;
                     }
 
-                    newMap[y * 256 * 2 + 2 * x] = (byte)(tmp & 0xff);
-                    newMap[y * 256 * 2 + 2 * x + 1] = (byte)((tmp & 0xff00) >> 8);
+                    newMap[y * 256 * 2 + 2 * x] = (byte) (tmp & 0xff);
+                    newMap[y * 256 * 2 + 2 * x + 1] = (byte) ((tmp & 0xff00) >> 8);
                 }
             }
 
             return newMap;
         }
-
     }
 }
