@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
@@ -31,16 +32,16 @@ namespace TombEditor.Compilers
             tempBoxes = new List<tr_box_aux>();
 
             // First build boxes except portal boxes
-            for (int i = 0; i < Rooms.Length; i++)
+            for (var i = 0; i < Rooms.Length; i++)
             {
-                tr_room room = Rooms[i];
+                var room = Rooms[i];
 
-                for (int x = 1; x < room.NumXSectors - 1; x++)
+                for (var x = 1; x < room.NumXSectors - 1; x++)
                 {
-                    for (int z = 1; z < room.NumZSectors - 1; z++)
+                    for (var z = 1; z < room.NumZSectors - 1; z++)
                     {
-                        tr_room_sector sector = GetSector(i, x, z);
-                        tr_sector_aux aux = room.AuxSectors[x, z];
+                        var sector = GetSector(i, x, z);
+                        var aux = room.AuxSectors[x, z];
 
                         // If this room is excluded from pathfinding or this sector is a Not Walkable Floor
                         if (_level.Rooms[room.OriginalRoomId].ExcludeFromPathFinding || aux.NotWalkableFloor)
@@ -55,17 +56,17 @@ namespace TombEditor.Compilers
 
                         // Build the box
                         tr_box_aux box;
-                        bool result = BuildBox(i, x, z, 0, 0, 0, 0, out box);
+                        var result = BuildBox(i, x, z, 0, 0, 0, 0, out box);
                         if (!result) continue;
 
                         // Check if box exists
-                        int found = -1;
-                        for (int j = 0; j < tempBoxes.Count; j++)
+                        var found = -1;
+                        for (var j = 0; j < tempBoxes.Count; j++)
                         {
-                            tr_box_aux box2 = tempBoxes[j];
+                            var box2 = tempBoxes[j];
 
-                            tr_room r1 = Rooms[box.Room];
-                            tr_room r2 = Rooms[box2.Room];
+                            var r1 = Rooms[box.Room];
+                            var r2 = Rooms[box2.Room];
 
                             if (box.Xmin == box2.Xmin && box.Xmax == box2.Xmax && box.Zmin == box2.Zmin && box.Zmax == box2.Zmax &&
                                 (box.Room == box2.Room || (box.Room != box2.Room && (r1.BaseRoom == r2.FlippedRoom || r1.FlippedRoom == r2.BaseRoom))) &&
@@ -85,11 +86,11 @@ namespace TombEditor.Compilers
                             {
                                 for (int z2 = box.Zmin; z2 < box.Zmax; z2++)
                                 {
-                                    int xc = x2 - room.Info.X / 1024;
-                                    int zc = z2 - room.Info.Z / 1024;
+                                    var xc = x2 - room.Info.X / 1024;
+                                    var zc = z2 - room.Info.Z / 1024;
 
-                                    tr_room_sector sect = GetSector(i, xc, zc);
-                                    tr_sector_aux aux2 = room.AuxSectors[xc, zc];
+                                    var sect = GetSector(i, xc, zc);
+                                    var aux2 = room.AuxSectors[xc, zc];
 
                                     if (aux2.Wall)
                                     {
@@ -110,11 +111,11 @@ namespace TombEditor.Compilers
                             {
                                 for (int z2 = box.Zmin; z2 < box.Zmax; z2++)
                                 {
-                                    int xc = x2 - room.Info.X / 1024;
-                                    int zc = z2 - room.Info.Z / 1024;
+                                    var xc = x2 - room.Info.X / 1024;
+                                    var zc = z2 - room.Info.Z / 1024;
 
-                                    tr_room_sector sect = GetSector(i, xc, zc);
-                                    tr_sector_aux aux2 = room.AuxSectors[xc, zc];
+                                    var sect = GetSector(i, xc, zc);
+                                    var aux2 = room.AuxSectors[xc, zc];
 
                                     if (aux2.Wall)
                                     {
@@ -133,19 +134,17 @@ namespace TombEditor.Compilers
                 }
             }
 
-            int lastBox = tempBoxes.Count - 1;
-
             // Now build only boxes of horizontal portals
-            for (int i = 0; i < Rooms.Length; i++)
+            for (var i = 0; i < Rooms.Length; i++)
             {
-                tr_room room = Rooms[i];
+                var room = Rooms[i];
 
-                for (int x = 1; x < room.NumXSectors - 1; x++)
+                for (var x = 1; x < room.NumXSectors - 1; x++)
                 {
-                    for (int z = 1; z < room.NumZSectors - 1; z++)
+                    for (var z = 1; z < room.NumZSectors - 1; z++)
                     {
-                        tr_room_sector sector = GetSector(i, x, z);
-                        tr_sector_aux aux = room.AuxSectors[x, z];
+                        var sector = GetSector(i, x, z);
+                        var aux = room.AuxSectors[x, z];
 
                         // If this room is excluded from pathfinding or this sector is a Not Walkable Floor
                         if (_level.Rooms[room.OriginalRoomId].ExcludeFromPathFinding || aux.NotWalkableFloor)
@@ -158,17 +157,17 @@ namespace TombEditor.Compilers
 
                         if (aux.FloorPortal == -1) continue;
 
-                        int xMin = room.Info.X / 1024 + _level.Portals[aux.FloorPortal].X;
-                        int xMax = room.Info.X / 1024 + _level.Portals[aux.FloorPortal].X + _level.Portals[aux.FloorPortal].NumXBlocks;
-                        int zMin = room.Info.Z / 1024 + _level.Portals[aux.FloorPortal].Z;
-                        int zMax = room.Info.Z / 1024 + _level.Portals[aux.FloorPortal].Z + _level.Portals[aux.FloorPortal].NumZBlocks;
+                        var xMin = room.Info.X / 1024 + _level.Portals[aux.FloorPortal].X;
+                        var xMax = room.Info.X / 1024 + _level.Portals[aux.FloorPortal].X + _level.Portals[aux.FloorPortal].NumXBlocks;
+                        var zMin = room.Info.Z / 1024 + _level.Portals[aux.FloorPortal].Z;
+                        var zMax = room.Info.Z / 1024 + _level.Portals[aux.FloorPortal].Z + _level.Portals[aux.FloorPortal].NumZBlocks;
 
-                        int idRoom = i;
+                        var idRoom = i;
 
                         // Find the lowest room and floor
                         int room2;
                         short floor2;
-                        bool result = GetMostDownFloorAndRoom(idRoom, x, z, out room2, out floor2);
+                        var result = GetMostDownFloorAndRoom(idRoom, x, z, out room2, out floor2);
                         if (!result) continue;
 
                         // Build the box
@@ -180,13 +179,13 @@ namespace TombEditor.Compilers
                         if (!result) continue;
 
                         // Check if box exists
-                        int found = -1;
-                        for (int j = 0; j < tempBoxes.Count; j++)
+                        var found = -1;
+                        for (var j = 0; j < tempBoxes.Count; j++)
                         {
-                            tr_box_aux box2 = tempBoxes[j];
+                            var box2 = tempBoxes[j];
 
-                            tr_room r1 = Rooms[box.Room];
-                            tr_room r2 = Rooms[box2.Room];
+                            var r1 = Rooms[box.Room];
+                            var r2 = Rooms[box2.Room];
 
                             if (box.Xmin == box2.Xmin && box.Xmax == box2.Xmax && box.Zmin == box2.Zmin && box.Zmax == box2.Zmax &&
                                 (box.Room == box2.Room || (box.Room != box2.Room && (r1.BaseRoom == r2.FlippedRoom || r1.FlippedRoom == r2.BaseRoom))) &&
@@ -200,7 +199,7 @@ namespace TombEditor.Compilers
                         // If box is not found, then add the new box
                         if (found == -1)
                         {
-                            box.TrueFloor = (short)(GetMostDownFloor(i, x, z));
+                            box.TrueFloor = GetMostDownFloor(i, x, z);
 
                             tempBoxes.Add(box);
                             found = tempBoxes.Count - 1;
@@ -210,11 +209,11 @@ namespace TombEditor.Compilers
                         {
                             for (int z2 = box.Zmin; z2 < box.Zmax; z2++)
                             {
-                                int xc = x2 - room.Info.X / 1024;
-                                int zc = z2 - room.Info.Z / 1024;
+                                var xc = x2 - room.Info.X / 1024;
+                                var zc = z2 - room.Info.Z / 1024;
 
-                                tr_room_sector sect = GetSector(i, xc, zc);
-                                tr_sector_aux aux2 = room.AuxSectors[xc, zc];
+                                var sect = GetSector(i, xc, zc);
+                                var aux2 = room.AuxSectors[xc, zc];
 
                                 if (aux.FloorPortal == aux2.FloorPortal)
                                 {
@@ -228,16 +227,16 @@ namespace TombEditor.Compilers
             }
 
             // Build overlaps
-            List<tr_overlap_aux> tempOverlaps = new List<tr_overlap_aux>();
+            var tempOverlaps = new List<tr_overlap_aux>();
 
-            for (int i = 0; i < tempBoxes.Count; i++)
+            for (var i = 0; i < tempBoxes.Count; i++)
             {
-                tr_box_aux box = tempBoxes[i];
+                var box = tempBoxes[i];
 
-                bool foundOverlaps = false;
-                short baseOverlaps = (short)tempOverlaps.Count;
+                var foundOverlaps = false;
+                var baseOverlaps = (short)tempOverlaps.Count;
 
-                for (int j = 0; j < tempBoxes.Count; j++)
+                for (var j = 0; j < tempBoxes.Count; j++)
                 {
                     // if they are the same box don't do anything
                     if (i == j) continue;
@@ -246,35 +245,27 @@ namespace TombEditor.Compilers
 
                     // Now we have to find overlaps and edges
                     bool jump;
-                    bool monkey;
 
-                    if (BoxesOverlap(i, j, out jump))
-                    {
-                        tr_overlap_aux overlap = new tr_overlap_aux();
-                        overlap.Box = j;
-                        overlap.IsEdge = (box.Xmax == box2.Xmin || box.Zmax == box2.Zmin || box.Xmin == box2.Xmax || box.Zmin == box2.Zmax);
-                        overlap.Monkey = box2.Monkey;
-                        overlap.MainBox = i;
+                    if (!BoxesOverlap(i, j, out jump))
+                        continue;
+                    
+                    var overlap = new tr_overlap_aux();
+                    overlap.Box = j;
+                    overlap.IsEdge = (box.Xmax == box2.Xmin || box.Zmax == box2.Zmin || box.Xmin == box2.Xmax || box.Zmin == box2.Zmax);
+                    overlap.Monkey = box2.Monkey;
+                    overlap.MainBox = i;
 
-                        tempOverlaps.Add(overlap);
+                    tempOverlaps.Add(overlap);
 
-                        if (box.Jump == false) box.Jump = jump;
-                        if (box2.Jump == false) box2.Jump = jump;
+                    if (box.Jump == false) box.Jump = jump;
+                    if (box2.Jump == false) box2.Jump = jump;
 
-                        tempBoxes[j] = box2;
+                    tempBoxes[j] = box2;
 
-                        foundOverlaps = true;
-                    }
+                    foundOverlaps = true;
                 }
 
-                if (foundOverlaps)
-                {
-                    box.OverlapIndex = baseOverlaps;
-                }
-                else
-                {
-                    box.OverlapIndex = 2047;
-                }
+                box.OverlapIndex = (short) (foundOverlaps ? baseOverlaps : 2047);
 
                 tempBoxes[i] = box;
 
@@ -283,26 +274,25 @@ namespace TombEditor.Compilers
                 if (box.IsolatedBox) box.OverlapIndex = (short)(box.OverlapIndex | 0x8000);
 
                 // Mark the end of the list
-                tr_overlap_aux last = tempOverlaps[tempOverlaps.Count - 1];
+                var last = tempOverlaps[tempOverlaps.Count - 1];
                 last.EndOfList = true;
                 tempOverlaps[tempOverlaps.Count - 1] = last;
             }
 
             // Build final overlaps
             Overlaps = new ushort[tempOverlaps.Count];
-            for (int i = 0; i < tempOverlaps.Count; i++)
+            for (var i = 0; i < tempOverlaps.Count; i++)
             {
-                ushort ov = (ushort)tempOverlaps[i].Box;
+                var ov = (ushort)tempOverlaps[i].Box;
 
                 // Is the last overlap of the list?
                 if (tempOverlaps[i].EndOfList) ov |= 0x8000;
 
                 // Monkey flag
-                bool canMonkey = tempBoxes[tempOverlaps[i].Box].Monkey && tempBoxes[tempOverlaps[i].MainBox].Monkey;
-                int step = (int)Math.Abs(tempBoxes[tempOverlaps[i].Box].TrueFloor - tempBoxes[tempOverlaps[i].MainBox].TrueFloor);
+                var canMonkey = tempBoxes[tempOverlaps[i].Box].Monkey && tempBoxes[tempOverlaps[i].MainBox].Monkey;
                 if (canMonkey) ov |= 0x2000;
 
-                bool canJump = tempBoxes[tempOverlaps[i].Box].Jump;
+                var canJump = tempBoxes[tempOverlaps[i].Box].Jump;
                 if (canJump) ov |= 0x800;
 
                 Overlaps[i] = ov;
@@ -312,11 +302,11 @@ namespace TombEditor.Compilers
             Zones = new tr_zone[tempBoxes.Count];
 
             // Convert boxes to TR format
-            for (int i = 0; i < tempBoxes.Count; i++)
+            for (var i = 0; i < tempBoxes.Count; i++)
             {
-                tr_box newBox = new tr_box();
-                tr_box_aux aux = tempBoxes[i];
-                tr_zone zone = new tr_zone();
+                var newBox = new tr_box();
+                var aux = tempBoxes[i];
+                var zone = new tr_zone();
 
                 newBox.Xmin = aux.Xmin;
                 newBox.Xmax = aux.Xmax;
@@ -335,20 +325,20 @@ namespace TombEditor.Compilers
             ushort groundZone3 = 1;
             ushort groundZone4 = 1;
             ushort flyZone = 1;
-            ushort a_groundZone1 = 1;
-            ushort a_groundZone2 = 1;
-            ushort a_groundZone3 = 1;
-            ushort a_groundZone4 = 1;
-            ushort a_flyZone = 1;
+            ushort aGroundZone1 = 1;
+            ushort aGroundZone2 = 1;
+            ushort aGroundZone3 = 1;
+            ushort aGroundZone4 = 1;
+            ushort aFlyZone = 1;
 
-            for (int i = 0; i < Boxes.Length; i++)
+            for (var i = 0; i < Boxes.Length; i++)
             {
                 // Skeleton like enemis: in the future implement also jump
                 if (Zones[i].GroundZone1_Normal == 0)
                 {
                     Zones[i].GroundZone1_Normal = groundZone1;
 
-                    foreach (int box in GetAllReachableBoxes(i, 1))
+                    foreach (var box in GetAllReachableBoxes(i, 1))
                     {
                         Zones[box].GroundZone1_Normal = groundZone1;
                     }
@@ -361,7 +351,7 @@ namespace TombEditor.Compilers
                 {
                     Zones[i].GroundZone2_Normal = groundZone2;
 
-                    foreach (int box in GetAllReachableBoxes(i, 2))
+                    foreach (var box in GetAllReachableBoxes(i, 2))
                     {
                         Zones[box].GroundZone2_Normal = groundZone2;
                     }
@@ -374,7 +364,7 @@ namespace TombEditor.Compilers
                 {
                     Zones[i].GroundZone3_Normal = groundZone3;
 
-                    foreach (int box in GetAllReachableBoxes(i, 3))
+                    foreach (var box in GetAllReachableBoxes(i, 3))
                     {
                         Zones[box].GroundZone3_Normal = groundZone3;
                     }
@@ -387,7 +377,7 @@ namespace TombEditor.Compilers
                 {
                     Zones[i].GroundZone4_Normal = groundZone4;
 
-                    foreach (int box in GetAllReachableBoxes(i, 4))
+                    foreach (var box in GetAllReachableBoxes(i, 4))
                     {
                         Zones[box].GroundZone4_Normal = groundZone4;
                     }
@@ -400,7 +390,7 @@ namespace TombEditor.Compilers
                 {
                     Zones[i].FlyZone_Normal = flyZone;
 
-                    foreach (int box in GetAllReachableBoxes(i, 5))
+                    foreach (var box in GetAllReachableBoxes(i, 5))
                     {
                         Zones[box].FlyZone_Normal = flyZone;
                     }
@@ -413,67 +403,67 @@ namespace TombEditor.Compilers
                 // Skeleton like enemis: in the future implement also jump
                 if (Zones[i].GroundZone1_Alternate == 0)
                 {
-                    Zones[i].GroundZone1_Alternate = a_groundZone1;
+                    Zones[i].GroundZone1_Alternate = aGroundZone1;
 
-                    foreach (int box in GetAllReachableBoxes(i, 101))
+                    foreach (var box in GetAllReachableBoxes(i, 101))
                     {
-                        Zones[box].GroundZone1_Alternate = a_groundZone1;
+                        Zones[box].GroundZone1_Alternate = aGroundZone1;
                     }
 
-                    a_groundZone1++;
+                    aGroundZone1++;
                 }
 
                 // Mummy like enemis: the simplest case
                 if (Zones[i].GroundZone2_Alternate == 0)
                 {
-                    Zones[i].GroundZone2_Alternate = a_groundZone2;
+                    Zones[i].GroundZone2_Alternate = aGroundZone2;
 
-                    foreach (int box in GetAllReachableBoxes(i, 102))
+                    foreach (var box in GetAllReachableBoxes(i, 102))
                     {
-                        Zones[box].GroundZone2_Alternate = a_groundZone2;
+                        Zones[box].GroundZone2_Alternate = aGroundZone2;
                     }
 
-                    a_groundZone2++;
+                    aGroundZone2++;
                 }
 
                 // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
                 if (Zones[i].GroundZone3_Alternate == 0)
                 {
-                    Zones[i].GroundZone3_Alternate = a_groundZone3;
+                    Zones[i].GroundZone3_Alternate = aGroundZone3;
 
-                    foreach (int box in GetAllReachableBoxes(i, 103))
+                    foreach (var box in GetAllReachableBoxes(i, 103))
                     {
-                        Zones[box].GroundZone3_Alternate = a_groundZone3;
+                        Zones[box].GroundZone3_Alternate = aGroundZone3;
                     }
 
-                    a_groundZone3++;
+                    aGroundZone3++;
                 }
 
                 // Baddy like enemis: they can jump, grab and monkey
                 if (Zones[i].GroundZone4_Alternate == 0)
                 {
-                    Zones[i].GroundZone4_Alternate = a_groundZone4;
+                    Zones[i].GroundZone4_Alternate = aGroundZone4;
 
-                    foreach (int box in GetAllReachableBoxes(i, 104))
+                    foreach (var box in GetAllReachableBoxes(i, 104))
                     {
-                        Zones[box].GroundZone4_Alternate = a_groundZone4;
+                        Zones[box].GroundZone4_Alternate = aGroundZone4;
                     }
 
-                    a_groundZone4++;
+                    aGroundZone4++;
                 }
 
                 // Bat like enemis: they can fly everywhere, except into the water
-                if (Zones[i].FlyZone_Alternate == 0)
+                if (Zones[i].FlyZone_Alternate != 0)
+                    continue;
+
+                Zones[i].FlyZone_Alternate = aFlyZone;
+
+                foreach (var box in GetAllReachableBoxes(i, 105))
                 {
-                    Zones[i].FlyZone_Alternate = a_flyZone;
-
-                    foreach (int box in GetAllReachableBoxes(i, 105))
-                    {
-                        Zones[box].FlyZone_Alternate = a_flyZone;
-                    }
-
-                    a_flyZone++;
+                    Zones[box].FlyZone_Alternate = aFlyZone;
                 }
+
+                aFlyZone++;
             }
 
             NumBoxes = (uint)Boxes.Length;
@@ -489,61 +479,16 @@ namespace TombEditor.Compilers
         {
             jump = false;
 
-            tr_box_aux a = tempBoxes[b1];
-            tr_box_aux b = tempBoxes[b2];
+            var a = tempBoxes[b1];
+            var b = tempBoxes[b2];
 
             // Check if there's overlapping and store edge and type
-            bool overlapping = false;
-            bool xOverlap = false;
-            bool zOverlap = false;
-            bool overlapNorth = false;
-            bool overlapSouth = false;
-            bool overlapEast = false;
-            bool overlapWest = false;
-            bool edgeNorth = false;
-            bool edgeSouth = false;
-            bool edgeEast = false;
-            bool edgeWest = false;
 
-            // North overlap
-            if (a.Zmin >= b.Zmin && a.Zmin <= b.Zmax)
-            {
-                overlapSouth = true;
-                edgeSouth = (a.Zmin == b.Zmax);
-                zOverlap = true;
-            }
+            var zOverlap = a.Zmin >= b.Zmin && a.Zmin <= b.Zmax || b.Zmin >= a.Zmin && b.Zmin <= a.Zmax;
+            var xOverlap = a.Xmin >= b.Xmin && a.Xmin <= b.Xmax || b.Xmin >= a.Xmin && b.Xmin <= a.Xmax;
 
-            // South overlap
-            if (b.Zmin >= a.Zmin && b.Zmin <= a.Zmax)
-            {
-                overlapNorth = true;
-                edgeNorth = (b.Zmin == a.Zmax);
-                zOverlap = true;
-            }
-
-            // East overlap
-            if (a.Xmin >= b.Xmin && a.Xmin <= b.Xmax)
-            {
-                overlapWest = true;
-                edgeWest = (a.Xmin == b.Xmax);
-                xOverlap = true;
-            }
-
-            // West overlap
-            if (b.Xmin >= a.Xmin && b.Xmin <= a.Xmax)
-            {
-                overlapEast = true;
-                edgeEast = (b.Xmin == a.Xmax);
-                xOverlap = true;
-            }
-
-            if (b1==745 && b2==746)
-            {
-                int kffk = 0;
-            }
-
-            bool jumpX = CheckIfCanJumpX(b1, b2);
-            bool jumpZ = CheckIfCanJumpZ(b1, b2);
+            var jumpX = CheckIfCanJumpX(b1, b2);
+            var jumpZ = CheckIfCanJumpZ(b1, b2);
             
             if (jumpX || jumpZ)
             {
@@ -551,292 +496,8 @@ namespace TombEditor.Compilers
                 return true;
             }
 
-            // Check if enemy can jump
-            // Boxes must have the same floor height
-           /* if (a.TrueFloor == b.TrueFloor)
-            {
-                // I've four cases to study
-                // In each case, the procedure checks if between boxes there's an hole of 1 or 2 sectors
-                if (b.Xmin - a.Xmax == 1 || b.Xmin - a.Xmax == 2)
-                {
-                    int step = b.Xmin - a.Xmax;
-
-                    int z1 = Math.Max(a.Zmin, b.Zmin);
-                    int z2 = Math.Min(a.Zmax, b.Zmax);
-
-                    for (int z = z1; z < z2; z++)
-                    {
-                        int currX = a.Xmax;
-
-                        int relativeX = currX - Rooms[a.Room].Info.X / 1024;
-                        int relativeZ = z - Rooms[a.Room].Info.Z / 1024;
-
-                        tr_room currentRoom = Rooms[a.Room];
-
-                        if (relativeX == currentRoom.NumXSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeX = 1;
-                                relativeZ = z - currentRoom.Info.Z / 1024;
-                                if (relativeZ < 1 || relativeZ > currentRoom.NumZSectors - 2) continue;
-
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            if (step == 1)
-                            {
-                                jump = true;
-                                return true;
-                            }
-                        }
-
-                        relativeX++;
-
-                        if (relativeX == currentRoom.NumXSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeX = 1;
-                                relativeZ = z - currentRoom.Info.Z / 1024;
-                                if (relativeZ < 1 || relativeZ > currentRoom.NumZSectors - 2) continue;
-                            }
-                        }
-
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            jump = true;
-                            return true;
-                        }
-                    }
-                }
-
-                if (a.Xmin - b.Xmax == 1 || a.Xmin - b.Xmax == 2)
-                {
-                    int step = a.Xmin - b.Xmax;
-
-                    int z1 = Math.Max(a.Zmin, b.Zmin);
-                    int z2 = Math.Min(a.Zmax, b.Zmax);
-
-                    for (int z = z1; z < z2; z++)
-                    {
-                        int currX = b.Xmax;
-
-                        int relativeX = currX - Rooms[b.Room].Info.X / 1024;
-                        int relativeZ = z - Rooms[b.Room].Info.Z / 1024;
-
-                        tr_room currentRoom = Rooms[b.Room];
-
-                        if (relativeX == currentRoom.NumXSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeX = 1;
-                                relativeZ = z - currentRoom.Info.Z / 1024;
-                                if (relativeZ < 1 || relativeZ > currentRoom.NumZSectors - 2) continue;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            if (step == 1)
-                            {
-                                jump = true;
-                                return true;
-                            }
-                        }
-
-                        relativeX++;
-
-                        if (relativeX == currentRoom.NumXSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeX = 1;
-                                relativeZ = z - currentRoom.Info.Z / 1024;
-                                if (relativeZ < 1 || relativeZ > currentRoom.NumZSectors - 2) continue;
-                            }
-                        }
-
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            jump = true;
-                            return true;
-                        }
-                    }
-                }
-                
-                if (b.Zmin - a.Zmax == 1 || b.Zmin - a.Zmax == 2)
-                {
-                    int step = b.Zmin - a.Zmax;
-
-                    int x1 = Math.Max(a.Xmin, b.Xmin);
-                    int x2 = Math.Min(a.Xmax, b.Xmax);
-
-                    for (int x = x1; x < x2; x++)
-                    {
-                        int currZ = a.Zmax;
-
-                        int relativeZ = currZ - Rooms[a.Room].Info.Z / 1024;
-                        int relativeX = x - Rooms[a.Room].Info.X / 1024;
-
-                        tr_room currentRoom = Rooms[a.Room];
-
-                        if (relativeZ == currentRoom.NumZSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeZ = 1;
-                                relativeX = x - currentRoom.Info.X / 1024;
-                                if (relativeX < 1 || relativeX > currentRoom.NumXSectors - 2) continue;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            if (step == 1)
-                            {
-                                jump = true;
-                                return true;
-                            }
-                        }
-
-                        relativeZ++;
-
-                        if (relativeZ == currentRoom.NumZSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeZ = 1;
-                                relativeX = x - currentRoom.Info.X / 1024;
-                                if (relativeX < 1 || relativeX > currentRoom.NumXSectors - 2) continue;
-                            }
-                        }
-
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            jump = true;
-                            return true;
-                        }
-                    }
-                }
-                
-                if (a.Zmin - b.Zmax == 1 || a.Zmin - b.Zmax == 2)
-                {
-                    int step = a.Zmin - b.Zmax;
-
-                    int x1 = Math.Max(a.Xmin, b.Xmin);
-                    int x2 = Math.Min(a.Xmax, b.Xmax);
-
-                    for (int x = x1; x < x2; x++)
-                    {
-                        int currZ = b.Zmax;
-
-                        int relativeZ = currZ - Rooms[b.Room].Info.Z / 1024;
-                        int relativeX = x - Rooms[b.Room].Info.X / 1024;
-
-                        tr_room currentRoom = Rooms[b.Room];
-
-                        if (relativeZ == currentRoom.NumZSectors - 1)
-                        {
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                relativeZ = 1;
-                                relativeX = x - currentRoom.Info.X / 1024;
-                                if (relativeX < 1 || relativeX > currentRoom.NumXSectors - 2) continue;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            if (step == 1)
-                            {
-                                jump = true;
-                                return true;
-                            }
-                        }
-
-                        relativeZ++;
-
-                        if (relativeZ == currentRoom.NumZSectors - 1)
-                        { 
-                            if (currentRoom.AuxSectors[relativeX, relativeZ].WallPortal != -1)
-                            {
-                                 currentRoom = Rooms[_roomsIdTable[_level.Portals[currentRoom.AuxSectors[relativeX, relativeZ].WallPortal].AdjoiningRoom]];
-                                 relativeZ = 1;
-                                relativeX = x - currentRoom.Info.X / 1024;
-                                if (relativeX < 1 || relativeX > currentRoom.NumXSectors - 2) continue;
-                            }
-                        }
-
-                        if (currentRoom.AuxSectors[relativeX, relativeZ].MeanFloorHeight <= a.TrueFloor || currentRoom.AuxSectors[relativeX, relativeZ].Wall)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            jump = true;
-                            return true;
-                        }
-                    }
-                }
-            }*/
-
             // If no overlapping then don't execute the rest of the function
-            overlapping = xOverlap && zOverlap;
+            var overlapping = xOverlap && zOverlap;
             if (!overlapping) return false;
 
             // Boxes that are touching on corners are not overlapping
@@ -849,45 +510,33 @@ namespace TombEditor.Compilers
             }
 
             // If boxes are overlapping and the rooms are the same, then boxes overlap
-            if (a.Room == b.Room) return true;
+            if (a.Room == b.Room)
+                return true;
             
             // Otherwise, we must check if rooms are vertically reachable with a chain of rooms and portals
-            tr_room room = Rooms[a.Room];
 
-            int xMin = a.Xmin;
-            int xMax = a.Xmax;
-            int zMin = a.Zmin - 1;
-            int zMax = a.Zmax - 1;
-
-            bool foundOverlap = false;
-
-            for (int x = xMin; x <= xMax; x++)
+            for (var x = a.Xmin; x <= a.Xmax; x++)
             {
-                for (int z = zMin; z <= zMax; z++)
+                for (var z = a.Zmin - 1; z <= a.Zmax - 1; z++)
                 {
-                    sbyte direction = (sbyte)(Rooms[a.Room].Info.YBottom > Rooms[b.Room].Info.YBottom ? 1 : -1);
+                    var r1 = Rooms[a.Room];
+                    var r2 = Rooms[b.Room];
 
-                    tr_room r1 = Rooms[a.Room];
-                    tr_room r2 = Rooms[b.Room];
-
-                    if (a.Room != b.Room && (IsVerticallyReachable(a.Room, b.Room, x, z, direction) ||
+                    if (a.Room != b.Room && (IsVerticallyReachable(a.Room, b.Room) ||
                         r1.BaseRoom == r2.FlippedRoom || r1.FlippedRoom == r2.BaseRoom))
                     {
-                        foundOverlap = true;
-                        break;
+                        return true;
                     }
                 }
             }
 
-            if (!foundOverlap) return false;
-
-            return true;
+            return false;
         }
         
         private bool CheckIfCanJumpX(int box1, int box2)
         {
-            tr_box_aux a = tempBoxes[box1];
-            tr_box_aux b = tempBoxes[box2];
+            var a = tempBoxes[box1];
+            var b = tempBoxes[box2];
 
             // Boxes must have the same height for jump
             if (a.TrueFloor != b.TrueFloor) return false;
@@ -933,85 +582,74 @@ namespace TombEditor.Compilers
                 roomIndex = a.Room;
             }
 
-            destRoom = roomIndex;
-
             // If the gap is of 1 sector
             if (b.Xmax == a.Xmin - 1 || a.Xmax == b.Xmin - 1)
             {
                 // If X, Zmax - 1 can't be reached then quit the function
-                if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax - 1, currentZ, out destRoom)) return false;
-
-                if (CanSectorBeReachedAndIsSolid(roomIndex, xMax, currentZ, out destRoom))
-                {
-                    currentRoom = Rooms[destRoom];
-
-                    xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
-                    zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
-
-                    xInRoom = xMax - xRoomPosition;
-                    zInRoom = currentZ - zRoomPosition;
-
-                    floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
-
-                    // Enemy can jump to final box if its height is lower than the starting box
-                    if (-floor <= -b.TrueFloor - 512 && floor != 0x7fff) return true;
-
+                if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax - 1, currentZ, out destRoom))
                     return false;
-                }
 
-                return false;
+                if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax, currentZ, out destRoom))
+                    return false;
+                
+                currentRoom = Rooms[destRoom];
+
+                xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
+                zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
+
+                xInRoom = xMax - xRoomPosition;
+                zInRoom = currentZ - zRoomPosition;
+
+                floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
+
+                // Enemy can jump to final box if its height is lower than the starting box
+                return -floor <= -b.TrueFloor - 512 && floor != 0x7fff;
             }
 
             // If the gap is of 2 sectors
-            if (b.Xmax == a.Xmin - 2 || a.Xmax == b.Xmin - 2)
-            {
-                if (CanSectorBeReachedAndIsSolid(roomIndex, xMax - 1, currentZ, out destRoom))
-                {
-                    if (CanSectorBeReachedAndIsSolid(roomIndex, xMax, currentZ, out destRoom))
-                    {
-                        currentRoom = Rooms[destRoom];
-
-                        xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
-                        zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
-
-                        xInRoom = xMax - xRoomPosition;
-                        zInRoom = currentZ - zRoomPosition;
-
-                        floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
-                        
-                        if (-floor <= -b.TrueFloor - 512 && floor != 0x7fff)
-                        {
-                            if (CanSectorBeReachedAndIsSolid(roomIndex, xMax + 1, currentZ, out destRoom))
-                            {
-                                currentRoom = Rooms[destRoom];
-
-                                xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
-                                zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
-
-                                xInRoom = xMax + 1 - xRoomPosition;
-                                zInRoom = currentZ - zRoomPosition;
-
-                                floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
-
-                                //floor = GetBoxFloorHeight(destRoom, xMax + 1, currentZ);
-                                if (-floor <= -b.TrueFloor - 512 && floor != 0x7FFF) return true;
-                            }
-                        }
-                    }
-                }
-
+            if (b.Xmax != a.Xmin - 2 && a.Xmax != b.Xmin - 2)
                 return false;
-            }
 
-            return false;
+            if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax - 1, currentZ, out destRoom))
+                return false;
+
+            if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax, currentZ, out destRoom))
+                return false;
+            
+            currentRoom = Rooms[destRoom];
+
+            xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
+
+            xInRoom = xMax - xRoomPosition;
+            zInRoom = currentZ - zRoomPosition;
+
+            floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
+
+            if (-floor > -b.TrueFloor - 512 || floor == 0x7fff)
+                return false;
+
+            if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax + 1, currentZ, out destRoom))
+                return false;
+            
+            currentRoom = Rooms[destRoom];
+
+            xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
+
+            xInRoom = xMax + 1 - xRoomPosition;
+            zInRoom = currentZ - zRoomPosition;
+
+            floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
+
+            //floor = GetBoxFloorHeight(destRoom, xMax + 1, currentZ);
+            return -floor <= -b.TrueFloor - 512 && floor != 0x7FFF;
         }
 
         private bool CheckIfCanJumpZ(int box1, int box2)
         {
-            tr_box_aux a = tempBoxes[box1];
-            tr_box_aux b = tempBoxes[box2];
-
-            int floorHeight;
+            var a = tempBoxes[box1];
+            var b = tempBoxes[box2];
 
             // Boxes must have the same height for jump
             if (a.TrueFloor != b.TrueFloor) return false;
@@ -1063,74 +701,67 @@ namespace TombEditor.Compilers
             if (b.Zmax == a.Zmin - 1 || a.Zmax == b.Zmin - 1)
             {
                 // If X, Zmax - 1 can't be reached then quit the function
-                if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax - 1, out destRoom)) return false;
-
-                if (CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax, out destRoom))
-                {
-                    currentRoom = Rooms[destRoom];
-
-                    xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
-                    zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
-
-                    xInRoom = currentX - xRoomPosition;
-                    zInRoom = zMax - zRoomPosition;
-
-                    floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
-
-                  //  floor = GetBoxFloorHeight(destRoom, currentX, zMax);
-
-                    // Enemy can jump to final box if its height is lower than the starting box
-                    if (-floor <= -b.TrueFloor - 512 && floor != 0x7fff) return true;
-
+                if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax - 1, out destRoom))
                     return false;
-                }
 
-                return false;
+                if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax, out destRoom))
+                    return false;
+                
+                currentRoom = Rooms[destRoom];
+
+                xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
+                zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
+
+                xInRoom = currentX - xRoomPosition;
+                zInRoom = zMax - zRoomPosition;
+
+                floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
+
+                //  floor = GetBoxFloorHeight(destRoom, currentX, zMax);
+
+                // Enemy can jump to final box if its height is lower than the starting box
+                return -floor <= -b.TrueFloor - 512 && floor != 0x7fff;
             }
 
             // If the gap is of 2 sectors
-            if (b.Zmax == a.Zmin - 2 || a.Zmax == b.Zmin - 2)
-            {
-                if (CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax - 1, out destRoom))
-                {
-                    if (CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax, out destRoom))
-                    {
-                        currentRoom = Rooms[destRoom];
-
-                        xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
-                        zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
-
-                        xInRoom = currentX - xRoomPosition;
-                        zInRoom = zMax - zRoomPosition;
-
-                        floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
-
-                       // floorHeight = GetBoxFloorHeight(destRoom, currentX, zMax);
-                        if (-floor <= -b.TrueFloor - 512 && floor != 0x7fff)
-                        {
-                            if (CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax + 1, out destRoom))
-                            {
-                                currentRoom = Rooms[destRoom];
-
-                                xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
-                                zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
-
-                                xInRoom = currentX - xRoomPosition;
-                                zInRoom = zMax + 1 - zRoomPosition;
-
-                                floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
-
-                                //floorHeight = GetBoxFloorHeight(destRoom, currentX, zMax + 1);
-                                if (-floor <= -b.TrueFloor - 512 && floor != 0x7FFF) return true;
-                            }
-                        }
-                    }
-                }
-
+            if (b.Zmax != a.Zmin - 2 && a.Zmax != b.Zmin - 2)
                 return false;
-            }
 
-            return false;
+            if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax - 1, out destRoom))
+                return false;
+
+            if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax, out destRoom))
+                return false;
+            
+            currentRoom = Rooms[destRoom];
+
+            xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
+
+            xInRoom = currentX - xRoomPosition;
+            zInRoom = zMax - zRoomPosition;
+
+            floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
+
+            // floorHeight = GetBoxFloorHeight(destRoom, currentX, zMax);
+            if (-floor > -b.TrueFloor - 512 || floor == 0x7fff)
+                return false;
+
+            if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax + 1, out destRoom))
+                return false;
+            
+            currentRoom = Rooms[destRoom];
+
+            xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
+
+            xInRoom = currentX - xRoomPosition;
+            zInRoom = zMax + 1 - zRoomPosition;
+
+            floor = GetBoxFloorHeight(destRoom, xInRoom, zInRoom);
+
+            //floorHeight = GetBoxFloorHeight(destRoom, currentX, zMax + 1);
+            return -floor <= -b.TrueFloor - 512 && floor != 0x7FFF;
         }
         
         private int GetBoxFloorHeight(int room, int x, int z)
@@ -1288,8 +919,6 @@ namespace TombEditor.Compilers
         
         private bool CanSectorBeReachedAndIsSolid(int room, int x, int z, out int destRoom)
         {
-            tr_room currentRoom;
-            Room editorRoom;
             int roomIndex = room;
             int xInRoom = 0;
             int zInRoom = 0;
@@ -1299,8 +928,8 @@ namespace TombEditor.Compilers
 
             destRoom = room;
 
-            currentRoom = Rooms[roomIndex];
-            editorRoom = _level.Rooms[currentRoom.OriginalRoomId];
+            var currentRoom = Rooms[roomIndex];
+            Room editorRoom;
 
             xRoomPosition = (int)(currentRoom.Info.X / 1024.0f);
             zRoomPosition = (int)(currentRoom.Info.Z / 1024.0f);
@@ -1308,7 +937,7 @@ namespace TombEditor.Compilers
             xInRoom = x - xRoomPosition;
             zInRoom = z - zRoomPosition;
 
-            bool isOutside = IsXZInBorderOrOutsideRoom(roomIndex, xInRoom, zInRoom);
+            bool isOutside = IsXzInBorderOrOutsideRoom(roomIndex, xInRoom, zInRoom);
 
             while (isOutside)
             {
@@ -1353,7 +982,7 @@ namespace TombEditor.Compilers
                 if (editorRoom.Blocks[xInRoom, zInRoom].WallOpacity == PortalOpacity.Opacity1) return false;
 
                 // Check if now I'm outside
-                isOutside = IsXZInBorderOrOutsideRoom(roomIndex, x, z);
+                isOutside = IsXzInBorderOrOutsideRoom(roomIndex, x, z);
             }
 
             // If I am here, I've probed that I can reach the requested X, Z
@@ -1399,14 +1028,14 @@ namespace TombEditor.Compilers
             return true;
         }
         
-        private bool IsXZInBorderOrOutsideRoom(int room, int x, int z)
+        private bool IsXzInBorderOrOutsideRoom(int room, int x, int z)
         {
             return (x <= 0 || z <= 0 || x >= Rooms[room].NumXSectors - 1 || z >= Rooms[room].NumZSectors - 1);
         }
         
-        private List<int> GetAllReachableBoxes(int box, int zoneType)
+        private IEnumerable<int> GetAllReachableBoxes(int box, int zoneType)
         {
-            List<int> boxes = new List<int>();
+            var boxes = new List<int>();
 
             // This is a non-recursive version of the algorithm for finding all reachable boxes. 
             // Avoid recursion all the times you can!
@@ -1414,37 +1043,37 @@ namespace TombEditor.Compilers
             stack.Push(box);
 
             // All reachable boxes must have the same water flag
-            bool isWater = (Rooms[tempBoxes[box].Room].Flags & 0x01) != 0;
+            var isWater = (Rooms[tempBoxes[box].Room].Flags & 0x01) != 0;
 
             while (stack.Count > 0)
             {
-                int next = stack.Pop();
-                bool last = false;
+                var next = stack.Pop();
+                var last = false;
 
                 for (int i = Boxes[next].OverlapIndex; i < Overlaps.Length && !last; i++)
                 {
                     last = (Overlaps[i] & 0x8000) != 0;
-                    int boxIndex = Overlaps[i] & 0x7ff;
+                    var boxIndex = Overlaps[i] & 0x7ff;
 
-                    bool add = false;
+                    var add = false;
 
                     // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
                     if (zoneType == 1 || zoneType == 101)
                     {
-                        bool water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
-                        int step = (int)(Math.Abs(Boxes[next].TrueFloor - Boxes[boxIndex].TrueFloor));
+                        var water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
+                        var step = Math.Abs(Boxes[next].TrueFloor - Boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256) add = true;
                     }
 
                     // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
                     if (zoneType == 2 || zoneType == 102)
                     {
-                        bool water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
-                        int step = (int)(Math.Abs(Boxes[next].TrueFloor - Boxes[boxIndex].TrueFloor));
+                        var water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
+                        var step = Math.Abs(Boxes[next].TrueFloor - Boxes[boxIndex].TrueFloor);
 
                         // Check all possibilities
-                        bool canJump = tempBoxes[boxIndex].Jump;
-                        bool canClimb = Math.Abs(step) <= 256;
+                        var canJump = tempBoxes[boxIndex].Jump;
+                        var canClimb = Math.Abs(step) <= 256;
 
                         if (water == isWater && (canJump || canClimb)) add = true;
                     }
@@ -1452,21 +1081,21 @@ namespace TombEditor.Compilers
                     // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step. In water they act like flying enemies.
                     if (zoneType == 3 || zoneType == 103)
                     {
-                        bool water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
-                        int step = (int)(Math.Abs(Boxes[next].TrueFloor - Boxes[boxIndex].TrueFloor));
+                        var water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
+                        var step = Math.Abs(Boxes[next].TrueFloor - Boxes[boxIndex].TrueFloor);
                         if (((water == isWater && step <= 256) || water)) add = true;
                     }
 
                     // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
                     if (zoneType == 4 || zoneType == 104)
                     {
-                        bool water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
-                        int step = (int)(Boxes[boxIndex].TrueFloor - Boxes[next].TrueFloor);
+                        var water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
+                        var step = Boxes[boxIndex].TrueFloor - Boxes[next].TrueFloor;
 
                         // Check all possibilities
-                        bool canJump = tempBoxes[boxIndex].Jump;
-                        bool canClimb = Math.Abs(step) <= 1024;
-                        bool canMonkey = tempBoxes[boxIndex].Monkey;
+                        var canJump = tempBoxes[boxIndex].Jump;
+                        var canClimb = Math.Abs(step) <= 1024;
+                        var canMonkey = tempBoxes[boxIndex].Monkey;
 
                         if (water == isWater && (canJump || canClimb || canMonkey)) add = true;
                     }
@@ -1474,31 +1103,26 @@ namespace TombEditor.Compilers
                     // Flying enemies. Here we just check if the water flag is the same.
                     if (zoneType == 5 || zoneType == 105)
                     {
-                        bool water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
+                        var water = (Rooms[tempBoxes[boxIndex].Room].Flags & 0x01) != 0;
                         if (water == isWater) add = true;
                     }
 
-                    if (!stack.Contains(boxIndex) && add)
-                    {
-                        if (!boxes.Contains(boxIndex)) stack.Push(boxIndex);
-                        boxes.Add(boxIndex);
-                    }
+                    if (stack.Contains(boxIndex) || !add)
+                        continue;
+                    
+                    if (!boxes.Contains(boxIndex))
+                        stack.Push(boxIndex);
+                    
+                    boxes.Add(boxIndex);
                 }
             }
 
             return boxes;
         }
         
-        private bool IsVerticallyReachable(int room, int destRoom, int x, int z, sbyte direction)
+        private bool IsVerticallyReachable(int room, int destRoom)
         {
-            if (room == destRoom) return true;
-
-            for (int i = 0; i < Rooms[room].ReachableRooms.Count; i++)
-            {
-                if (Rooms[room].ReachableRooms[i] == destRoom) return true;
-            }
-
-            return false;
+            return room == destRoom || Rooms[room].ReachableRooms.Any(r => r == destRoom);
         }
     }
 }
