@@ -99,8 +99,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clipboard.cs" />
+    <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\ILevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
+    <Compile Include="Compilers\Pathfinding.cs" />
+    <Compile Include="Compilers\Rooms.cs" />
+    <Compile Include="Compilers\Structs.cs" />
+    <Compile Include="Compilers\Textures.cs" />
+    <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Controls\LightParameterController.cs">
       <SubType>UserControl</SubType>
     </Compile>
