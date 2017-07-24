@@ -222,7 +222,6 @@ namespace TombLib.Wad
 
             uint numMeshWords = reader.ReadUInt32();
             uint bytesRead = 0;
-            uint numMeshes = 0;
 
             while (bytesRead < (numMeshWords * 2))
             {
