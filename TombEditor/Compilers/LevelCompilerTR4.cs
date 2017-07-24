@@ -16,7 +16,7 @@ using System.Diagnostics;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTR4 : ILevelCompiler
+    public partial class LevelCompilerTR4 : LevelCompiler
     {
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -201,7 +201,7 @@ namespace TombEditor.Compilers
             CopyWadData();
         }
 
-        public override bool CompileLevel()
+        public virtual bool CompileLevel()
         {
             // Force garbage collector to compact memory
             GC.Collect();
