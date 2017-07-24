@@ -214,7 +214,7 @@ namespace TombEditor.Controls
                                          room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000, 1000000, _editor.GraphicsDevice);
+            Camera = new ArcBallCamera(target, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000, 1000000);
             Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
             Camera.Update();
         }
@@ -240,7 +240,7 @@ namespace TombEditor.Controls
             Viewport = new Viewport(0, 0, Width, Height, 10.0f, 100000.0f);
 
             // Initialize the Arc-Ball Camera
-            Camera = new ArcBallCamera(Vector3.Zero, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000, 1000, 1000000, _editor.GraphicsDevice);
+            Camera = new ArcBallCamera(Vector3.Zero, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000, 1000, 1000000);
             Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
             Camera.Update();
 

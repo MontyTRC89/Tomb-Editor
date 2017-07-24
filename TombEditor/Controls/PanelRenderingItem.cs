@@ -71,7 +71,7 @@ namespace TombEditor.Controls
                 Viewport = new Viewport(0, 0, Width, Height, 10.0f, 100000.0f);
 
                 // inizializzo la telecamera
-                Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000, _editor.GraphicsDevice);
+                Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000);
                 Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 3.0f, Width, Height);
                 Camera.Update();
             }
@@ -209,7 +209,7 @@ namespace TombEditor.Controls
                     _animation = -1;
                     _frame = -1;
 
-                    Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000, _editor.GraphicsDevice);
+                    Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
                     Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
                     Camera.Update();
                 }

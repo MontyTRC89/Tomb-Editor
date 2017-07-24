@@ -25,8 +25,8 @@ namespace TombLib.Wad
         private GraphicsDevice _device;
 
         // firma del WAD
-        private static string _magicWord = "WAD2";
-
+        //private static string _magicWord = "WAD2";
+		
         // i dati del WAD in formato DirectX 11
         private Dictionary<uint, Texture2D> _textures;
         private Dictionary<uint, SkinnedModel> _moveables;
@@ -645,7 +645,7 @@ namespace TombLib.Wad
                             {
                                 currentBone = stack.Pop();
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 //numErrors++;
                                 //processedLinks += 4;
@@ -664,7 +664,7 @@ namespace TombLib.Wad
                             {
                                 stack.Push(currentBone);
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 //  numErrors++;
                                 //  processedLinks += 4;
@@ -681,7 +681,7 @@ namespace TombLib.Wad
                             {
                                 bone = stack.Pop();
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
                                 // numErrors++;
                                 // processedLinks += 4;

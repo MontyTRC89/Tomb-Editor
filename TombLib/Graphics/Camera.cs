@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
-using SharpDX.Toolkit.Graphics;
 
 namespace TombLib.Graphics
 {
@@ -11,16 +10,10 @@ namespace TombLib.Graphics
     {
         public Matrix View { get; set; }
         public Matrix Projection { get; set; }
-        protected GraphicsDevice GraphicsDevice { get; set; }
 
         protected float _width;
         protected float _height;
-
-        public Camera(GraphicsDevice graphicsDevice)
-        {
-            this.GraphicsDevice = graphicsDevice;
-        }
-
+		
         public void GeneratePerspectiveProjectionMatrix(float FieldOfView, float width, float height)
         {
             float aspectRatio = width / height;

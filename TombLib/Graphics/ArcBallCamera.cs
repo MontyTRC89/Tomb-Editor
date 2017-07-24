@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
-using SharpDX.Toolkit;
-using SharpDX.Toolkit.Graphics;
 
 namespace TombLib.Graphics
 {
@@ -31,9 +29,7 @@ namespace TombLib.Graphics
 
         public ArcBallCamera(Vector3 Target, float RotationX,
         float RotationY, float MinRotationY, float MaxRotationY,
-        float Distance, float MinDistance, float MaxDistance,
-        GraphicsDevice graphicsDevice)
-            : base(graphicsDevice)
+        float Distance, float MinDistance, float MaxDistance)
         {
             this.Target = Target;
             this.MinRotationY = MinRotationY;
