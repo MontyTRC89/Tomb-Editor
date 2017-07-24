@@ -1,0 +1,3118 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using SharpDX;
+using TombEditor.Geometry;
+using SharpDX.Toolkit.Graphics;
+using TombLib.Wad;
+using TombLib.Graphics;
+using RastDesc = SharpDX.Direct3D11.RasterizerStateDescription;
+using DepthDesc = SharpDX.Direct3D11.DepthStencilStateDescription;
+using System.Diagnostics;
+using System.Threading.Tasks;
+
+namespace TombEditor.Controls
+{
+    public struct RenderFaceInfo
+    {
+        public Plane Plane;
+        public float Distance;
+        public Vector3 Centre;
+        public BlockFaces Type;
+        public int X;
+        public int Z;
+        public bool Invisible;
+        public bool DoubleSided;
+    }
+
+    public struct DebugString
+    {
+        public Vector2 Position;
+        public string Content;
+    }
+
+    public partial class PanelRendering3D : Panel
+    {
+
+        private class RenderBucket
+        {
+            public byte MainRoom { get; set; }
+            public int Room { get; set; }
+            public int Texture { get; set; }
+            public byte DoubleSided { get; set; }
+            public int X { get; set; }
+            public int Z { get; set; }
+            public byte Invisible { get; set; }
+            public Plane Plane { get; set; }
+            public float Distance { get; set; }
+            public Vector3 Centre { get; set; }
+            public List<BlockFace> Faces { get; set; }
+            public BlockFaces FaceType { get; set; }
+            public BlockFace Face { get; set; }
+            public Buffer<short> IndexBuffer { get; set; }
+            public List<short> Indices { get; set; }
+
+            public RenderBucket()
+            {
+                Faces = new List<BlockFace>();
+                Indices = new List<short>();
+            }
+        }
+
+        private class ComparerOpaqueBuckets : IComparer<RenderBucket>
+        {
+            public int Compare(RenderBucket x, RenderBucket y)
+            {
+                if (x == null || y == null) return 0;
+                int result = (x.MainRoom > y.MainRoom ? -1 : 1);
+                if (x.MainRoom == y.MainRoom) result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
+                if (x.DoubleSided == y.DoubleSided) result = (x.Room > y.Room ? 1 : -1);
+                if (x.Room == y.Room) result = (x.Texture > y.Texture ? 1 : -1);
+                if (x.Texture == y.Texture) return 0;
+
+                return result;
+            }
+        }
+
+        private class ComparerTransparentBuckets : IComparer<RenderBucket>
+        {
+            public int Compare(RenderBucket x, RenderBucket y)
+            {
+                int result = (x.Distance < y.Distance ? 1 : -1);
+                if (x.Distance == y.Distance) result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
+                if (x.DoubleSided == y.DoubleSided) result = (x.Room > y.Room ? 1 : -1);
+                if (x.Room == y.Room) result = (x.Texture > y.Texture ? 1 : -1);
+                if (x.Texture == y.Texture) return 0;
+
+                return result;
+            }
+        }
+
+        private class ComparerInvisibleBuckets : IComparer<RenderBucket>
+        {
+            public int Compare(RenderBucket x, RenderBucket y)
+            {
+                if (x.Room == y.Room) return 0;
+                if (x.Room > y.Room) return 1;
+                return -1;
+            }
+        }
+
+        private class ComparerMoveables : IComparer<int>
+        {
+            public int Compare(int x, int y)
+            {
+                MoveableInstance instanceX = (MoveableInstance)Editor.Instance.Level.Objects[x];
+                MoveableInstance instanceY = (MoveableInstance)Editor.Instance.Level.Objects[y];
+
+                int result = (instanceX.ObjectID > instanceY.ObjectID ? 1 : -1);
+                if (instanceX.ObjectID == instanceY.ObjectID) result = (instanceX.Room > instanceY.Room ? 1 : -1);
+                if (instanceX.Room == instanceY.Room) return 0;
+
+                return result;
+            }
+        }
+
+        private class ComparerStaticMeshes : IComparer<int>
+        {
+            public int Compare(int x, int y)
+            {
+                StaticMeshInstance instanceX = (StaticMeshInstance)Editor.Instance.Level.Objects[x];
+                StaticMeshInstance instanceY = (StaticMeshInstance)Editor.Instance.Level.Objects[y];
+
+                int result = (instanceX.ObjectID > instanceY.ObjectID ? 1 : -1);
+                if (instanceX.ObjectID == instanceY.ObjectID) result = (instanceX.Room > instanceY.Room ? 1 : -1);
+                if (instanceX.Room == instanceY.Room) return 0;
+
+                return result;
+            }
+        }
+
+        public int RoomIndex { get; set; }
+
+        public int DeltaX { get; set; }
+
+        public int DeltaY { get; set; }
+
+        public int LastX { get; set; }
+
+        public int LastY { get; set; }
+
+        public bool Drag { get; set; }
+
+        public Vector3 DeltaVector { get; set; }
+
+        private Editor _editor;
+
+        public int LightIndex { get; set; }
+
+        public SwapChainGraphicsPresenter Presenter { get; set; }
+
+        public Viewport Viewport { get; set; }
+
+        public ArcBallCamera Camera { get; set; }
+
+        private bool _firstSelection;
+
+        private RasterizerState _rasterizerWireframe;
+
+        private GeometricPrimitive _cube;
+
+        private GeometricPrimitive _sphere;
+
+        private GeometricPrimitive _cone;
+
+        private GeometricPrimitive _littleCube;
+
+        private GeometricPrimitive _littleSphere;
+
+        private GeometricPrimitive _littleWireframedCube;
+
+        private BasicEffect _basicEffect;
+
+        // Rooms to draw
+        private List<int> _roomsToDraw;
+
+        // Geometry buckets to draw
+        private List<RenderBucket> _opaqueBuckets;
+        private List<RenderBucket> _solidBuckets;
+        private List<RenderBucket> _transparentBuckets;
+        private List<RenderBucket> _invisibleBuckets;
+
+        // Items to draw
+        private List<int> _camerasToDraw;
+        private List<int> _sinksToDraw;
+        private List<int> _flybyToDraw;
+        private List<int> _soundSourcesToDraw;
+        private List<int> _moveablesToDraw;
+        private List<int> _staticMeshesToDraw;
+
+        private Effect _roomEffect;
+
+        public PanelRendering3D()
+        {
+            InitializeComponent();
+
+            _editor = Editor.Instance;
+        }
+
+        private void PanelRendering3D_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        public void ResetCamera()
+        {
+            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+
+            // Point the camera to the room's centre
+            Vector3 target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f, room.Position.Y * 256.0f + room.Ceiling * 64.0f,
+                                         room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
+
+            // Initialize a new camera
+            Camera = new ArcBallCamera(target, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000, 1000000, _editor.GraphicsDevice);
+            Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
+            Camera.Update();
+        }
+
+        public void InitializePanel()
+        {
+            Debug.Log("Starting DirectX 11");
+
+            // Initialize the viewport, after the panel is added and sized on the form
+            PresentationParameters pp = new PresentationParameters();
+            pp.BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
+            pp.BackBufferWidth = Width;
+            pp.BackBufferHeight = Height;
+            pp.DepthStencilFormat = DepthFormat.Depth24Stencil8;
+            pp.DeviceWindowHandle = this;
+            pp.IsFullScreen = false;
+            pp.MultiSampleCount = MSAALevel.None;
+            pp.PresentationInterval = PresentInterval.Immediate;
+            pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
+            pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
+
+            Presenter = new SwapChainGraphicsPresenter(_editor.GraphicsDevice, pp);
+            Viewport = new Viewport(0, 0, Width, Height, 10.0f, 100000.0f);
+
+            // Initialize the Arc-Ball Camera
+            Camera = new ArcBallCamera(Vector3.Zero, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000, 1000, 1000000, _editor.GraphicsDevice);
+            Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
+            Camera.Update();
+
+            // Maybe I could use this as bounding box, scaling it properly before drawing
+            _cube = GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 1024);
+            _littleWireframedCube = GeometricPrimitive.LinesCube.New(_editor.GraphicsDevice);
+
+            // This sphere will be scaled up and down multiple times for using as In & Out of lights
+            _sphere = GeometricPrimitive.Sphere.New(_editor.GraphicsDevice, 1024, 8);
+
+            //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
+            _littleCube = GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 256);
+            _littleSphere = GeometricPrimitive.Sphere.New(_editor.GraphicsDevice, 256, 8);
+
+            _cone = GeometricPrimitive.Cone.New(_editor.GraphicsDevice, 1024, 1024, 18);
+
+            // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
+            _basicEffect = new BasicEffect(_editor.GraphicsDevice);
+
+            // Initialize the rasterizer state for wireframe drawing
+            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
+            {
+                CullMode = SharpDX.Direct3D11.CullMode.None,
+                DepthBias = 0,
+                DepthBiasClamp = 0,
+                FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+                IsAntialiasedLineEnabled = true,
+                IsDepthClipEnabled = true,
+                IsFrontCounterClockwise = false,
+                IsMultisampleEnabled = true,
+                IsScissorEnabled = false,
+                SlopeScaledDepthBias = 0
+            };
+
+            _rasterizerWireframe = RasterizerState.New(_editor.GraphicsDevice, renderStateDesc);
+
+            Debug.Log("Graphic Device ready", DebugType.Success);
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+           Draw();
+        }
+
+        protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            if (!Drag) Drag = true;
+
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                // Camera movement, just store coordinates
+                LastX = e.X;
+                LastY = e.Y;
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                // Do picking on the scene
+                DoPicking(e.X, e.Y);
+
+                // Try to paste or stamp
+                if (Clipboard.Action != PasteAction.None && Clipboard.Paste())
+                {
+                    return;
+                }
+
+                switch (_editor.Mode)
+                {
+                    case EditorMode.Geometry:
+                        // Check if is a first selection or not, because I must cycle arrows
+                        if (_editor.Action == EditorAction.None)
+                        {
+                            int xBlock = _editor.PickingResult.Element >> 5;
+                            int zBlock = _editor.PickingResult.Element & 31;
+
+                            // if was not selected a block, then exit
+                            if (_editor.PickingResult.ElementType != PickingElementType.Block)
+                            {
+                                _editor.BlockSelectionStartX = -1;
+                                _editor.BlockSelectionStartZ = -1;
+                                _editor.BlockSelectionEndX = -1;
+                                _editor.BlockSelectionEndZ = -1;
+                                _firstSelection = true;
+                                _editor.BlockEditingType = 0;
+
+                                return;
+                            }
+
+                            if ((Control.ModifierKeys & Keys.Alt) == Keys.Alt)
+                            {
+                                BlockFaces face = (BlockFaces)_editor.PickingResult.SubElement;
+
+                                if (face == BlockFaces.Floor || face == BlockFaces.FloorTriangle2)
+                                {
+                                    EditorActions.FlipFloorSplit(xBlock, xBlock, zBlock, zBlock);
+                                    return;
+                                }
+
+                                if (face == BlockFaces.Ceiling || face == BlockFaces.CeilingTriangle2)
+                                {
+                                    EditorActions.FlipCeilingSplit(xBlock, xBlock, zBlock, zBlock);
+                                    return;
+                                }
+                            }
+
+                            _firstSelection = false;
+
+                            // if one of the four corners of the selection is equal to -1, then is a first selection
+                            if (_editor.BlockSelectionStartX == -1 || _editor.BlockSelectionStartZ == -1)
+                            {
+                                _editor.BlockSelectionStartX = _editor.PickingResult.Element >> 5;
+                                _editor.BlockSelectionStartZ = _editor.PickingResult.Element & 31;
+                                _editor.BlockSelectionEndX = _editor.BlockSelectionStartX;
+                                _editor.BlockSelectionEndZ = _editor.BlockSelectionStartZ;
+                                _firstSelection = true;
+                                _editor.BlockEditingType = 0;
+                            }
+                            else
+                            {
+                                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+                                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+                                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+                                if (xBlock >= xMin && xBlock <= xMax && xBlock != -1 && zBlock >= zMin && zBlock <= zMax)
+                                {
+                                    // is not a first selection
+                                    _firstSelection = false;
+                                }
+                                else
+                                {
+                                    _editor.BlockSelectionStartX = _editor.PickingResult.Element >> 5;
+                                    _editor.BlockSelectionStartZ = _editor.PickingResult.Element & 31;
+                                    _editor.BlockSelectionEndX = _editor.BlockSelectionStartX;
+                                    _editor.BlockSelectionEndZ = _editor.BlockSelectionStartZ;
+                                    _firstSelection = true;
+                                    _editor.BlockEditingType = 0;
+                                }
+                            }
+
+                            _editor.StartPickingResult = _editor.PickingResult;
+                        }
+
+                        break;
+
+                    case EditorMode.Map2D:
+
+                        break;
+
+                    case EditorMode.FaceEdit:
+                        if (_editor.Action == EditorAction.None)
+                        {
+                            if (Control.ModifierKeys == Keys.Control)
+                                RotateTexture();
+                            else if (Control.ModifierKeys == Keys.Shift)
+                                FlipTexture();
+                            else
+                                PlaceTexture();
+                        }
+
+                        break;
+                }
+            }
+
+            Draw();
+            _editor.DrawPanelGrid();
+        }
+
+        /*protected override void WndProc(ref Message m)
+        {
+            System.Drawing.Point mouseLoc = new System.Drawing.Point();
+
+            const int WM_MOUSEMOVE = 0x0200;
+            const int MK_CONTROL = 0x8;
+            const int MK_LBUTTON = 0x1;
+            const int MK_MBUTTON = 0x10;
+            const int MK_RBUTTON = 0x2;
+            const int MK_SHIFT = 0x4;
+            const int MK_XBUTTON1 = 0x20;
+            const int MK_XBUTTON2 = 0x40;
+
+            switch (m.Msg)
+            {
+               case WM_MOUSEMOVE:
+                    int lParam = m.LParam.ToInt32();
+
+                    //mouseLoc.X = lParam & 0xFFFF;
+                    //mouseLoc.Y = (int)(lParam & 0xFFFF0000 >> 16);
+
+                    mouseLoc.X = (Int16)m.LParam;
+                    mouseLoc.Y = (Int16)((int)m.LParam >> 16);
+
+                    System.Diagnostics.Debug.WriteLine("mouse move: " + mouseLoc.X + ", " + mouseLoc.Y);
+
+                    MouseButtons button = MouseButtons.None;
+                    if ((m.WParam.ToInt32() & MK_LBUTTON) == MK_LBUTTON)
+                        button = MouseButtons.Left;
+                    if ((m.WParam.ToInt32() & MK_RBUTTON) == MK_RBUTTON)
+                        button = MouseButtons.Right;
+
+                    if (m.WParam.ToInt32() != 0)
+                    {
+                        int jfjjf = 0;
+                    }
+
+                    MouseEventArgs args = new MouseEventArgs(button, 1, mouseLoc.X, mouseLoc.Y, 0);
+                    OnMouseMove2(args);
+                    //this.OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, mouseLoc.X,mouseLoc.Y, 0));
+                    break;
+            }
+
+            base.WndProc(ref m);
+        }*/
+
+        protected override void OnMouseMove(System.Windows.Forms.MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (!this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
+                return;
+
+            // gestisco il drag & drop e la telecamera
+            if (Drag && e.Button == MouseButtons.Right)
+            {
+                DeltaX = e.X - LastX;
+                DeltaY = e.Y - LastY;
+
+                LastX = e.X;
+                LastY = e.Y;
+
+                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                {
+                    Camera.Move(-DeltaY * 50);
+                }
+                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                {
+                    Camera.Translate(new Vector3(DeltaX, -DeltaY, 0));
+                }
+                else
+                {
+                    Camera.Rotate((float)(DeltaX / 500.0f) , (float)(-DeltaY / 500.0f));
+                }
+
+                Camera.Update();
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                DoPicking(e.X, e.Y);
+
+                // calcolo X e Z del blocco selezionato
+                int xBlock = _editor.PickingResult.Element >> 5;
+                int zBlock = _editor.PickingResult.Element & 31;
+
+                switch (_editor.Mode)
+                {
+                    case EditorMode.Geometry:
+                        if (_editor.Action == EditorAction.None)
+                        {
+                            // se la selezione ha come x o z uguali a -1 allora non la inizio neanche
+                            if (_editor.PickingResult.ElementType != PickingElementType.Block)
+                            {
+                                _editor.BlockSelectionStartX = -1;
+                                _editor.BlockSelectionStartZ = -1;
+                                _editor.BlockSelectionEndX = -1;
+                                _editor.BlockSelectionEndZ = -1;
+                                _firstSelection = true;
+                                _editor.BlockEditingType = 0;
+
+                                return;
+                            }
+
+                            int startX = _editor.StartPickingResult.Element >> 5;
+                            int startZ = _editor.StartPickingResult.Element & 31;
+
+                            if (_firstSelection)
+                            {
+                                _editor.BlockSelectionStartX = _editor.StartPickingResult.Element >> 5;
+                                _editor.BlockSelectionStartZ = _editor.StartPickingResult.Element & 31;
+                                _editor.BlockSelectionEndX = xBlock;
+                                _editor.BlockSelectionEndZ = zBlock;
+                                _editor.BlockEditingType = 0;
+                                _firstSelection = true;
+                            }
+                        }
+
+                        break;
+
+                    case EditorMode.Map2D:
+
+                        break;
+
+                    case EditorMode.FaceEdit:
+                        if (_editor.Action == EditorAction.None)
+                        {
+                            PlaceTexture();
+                        }
+
+                        break;
+                }
+            }
+
+            if (Drag) Draw();
+            _editor.DrawPanelGrid();
+        }
+
+        protected override void OnMouseUp(System.Windows.Forms.MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (!this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
+                return;
+
+            this.Focus();
+            this.Select();
+
+            LastX = e.X;
+            LastY = e.Y;
+
+            // gestisco il drag & drop e la telecamera
+            if (e.Button == MouseButtons.Right)
+            {
+                DeltaX = e.X - LastX;
+                DeltaY = e.Y - LastY;
+
+                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                {
+                    Camera.Move(-DeltaY / 10.0f);
+                }
+                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                {
+                    Camera.Translate(new Vector3(DeltaX, -DeltaY, 0));
+                }
+                else
+                {
+                    Camera.Rotate(DeltaX / 5000, -DeltaY / 5000);
+                }
+
+                Camera.Update();
+            }
+            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            {
+                //DoPicking(e.X, e.Y);
+
+                // calcolo X e Z del blocco selezionato
+                int xBlock = _editor.PickingResult.Element >> 5;
+                int zBlock = _editor.PickingResult.Element & 31;
+
+                // _editor.LightIndex = -1;
+
+                switch (_editor.Mode)
+                {
+                    case EditorMode.Geometry:
+                        if (_editor.Action == EditorAction.PlaceNoCollision)
+                        {
+                            PlaceNoCollision();
+                        }
+                        else if (_editor.Action == EditorAction.None)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+                            {
+                                _editor.LoadStaticMeshColorInUI();
+                            }
+                            else
+                            {
+                                // se la selezione ha come x o z uguali a -1 allora non la inizio neanche
+                                if (_editor.PickingResult.ElementType != PickingElementType.Block)
+                                {
+                                    _editor.BlockSelectionStartX = -1;
+                                    _editor.BlockSelectionStartZ = -1;
+                                    _editor.BlockSelectionEndX = -1;
+                                    _editor.BlockSelectionEndZ = -1;
+                                    _firstSelection = true;
+                                    _editor.BlockEditingType = 0;
+
+                                    return;
+                                }
+
+                                // verifico se si tratta di una prima selezione o no
+                                if (_firstSelection)
+                                {
+                                    _editor.BlockSelectionEndX = xBlock;
+                                    _editor.BlockSelectionEndZ = zBlock;
+
+                                    Debug.Log("Selected range: (" + _editor.BlockSelectionStartX + ", " + _editor.BlockSelectionStartZ + ") " +
+                                              "- (" + _editor.BlockSelectionEndX + ", " + _editor.BlockSelectionEndZ + ")");
+
+                                    _editor.LoadTriggersInUI();
+
+                                    _editor.BlockEditingType = 0;
+                                }
+                                else
+                                {
+                                    // ruoto le frecce
+                                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                                    {
+                                        if (_editor.BlockEditingType == 8)
+                                        {
+                                            _editor.BlockEditingType = 0;
+                                        }
+                                        else
+                                        {
+                                            if (_editor.BlockEditingType == 7) _editor.BlockEditingType = 8;
+                                            else if (_editor.BlockEditingType == 6) _editor.BlockEditingType = 7;
+                                            else if (_editor.BlockEditingType == 5) _editor.BlockEditingType = 6;
+                                            else _editor.BlockEditingType = 5;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (_editor.BlockEditingType == 4)
+                                        {
+                                            _editor.BlockEditingType = 0;
+                                        }
+                                        else
+                                        {
+                                            if (_editor.BlockEditingType == 3) _editor.BlockEditingType = 4;
+                                            else if (_editor.BlockEditingType == 2) _editor.BlockEditingType = 3;
+                                            else if (_editor.BlockEditingType == 1) _editor.BlockEditingType = 2;
+                                            else _editor.BlockEditingType = 1;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if (_editor.Action == EditorAction.PlaceItem)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceItem();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceSink)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceSink();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceCamera)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceCamera();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceFlyByCamera)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceFlyByCamera();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceSound)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceSound();
+                        }
+
+                        break;
+
+                    case EditorMode.Map2D:
+
+                        break;
+
+                    case EditorMode.Lighting:
+                        if (_editor.Action == EditorAction.PlaceLight)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceLight();
+                        }
+                        else
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Light)
+                            {
+                                _editor.EditLight();
+                            }
+                            else
+                            {
+                                _editor.LightIndex = -1;
+                            }
+
+                            if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+                            {
+                                _editor.LoadStaticMeshColorInUI();
+                            }
+                        }
+
+                        break;
+
+                    case EditorMode.FaceEdit:
+                        if (_editor.Action == EditorAction.PlaceItem)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceItem();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceSink)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceSink();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceCamera)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceCamera();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceFlyByCamera)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceFlyByCamera();
+                        }
+                        else if (_editor.Action == EditorAction.PlaceSound)
+                        {
+                            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+                                PlaceSound();
+                        }
+
+                        break;
+                }
+            }
+
+            Drag = false;
+
+            Draw();
+            _editor.DrawPanelGrid();
+        }
+
+        private void DrawLights(int room)
+        {
+            if (room == -1) return;
+
+            _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+
+            _editor.GraphicsDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
+            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
+            _editor.GraphicsDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
+
+            Effect solidEffect = _editor.Effects["Solid"];
+
+            solidEffect.Parameters["View"].SetValue(Camera.View);
+            solidEffect.Parameters["Projection"].SetValue(Camera.Projection);
+
+            for (int i = 0; i < _editor.Level.Rooms[room].Lights.Count; i++)
+            {
+                Light light = _editor.Level.Rooms[room].Lights[i];
+
+                /*if (light.Type==LightType.Spot)
+                {
+                    //_editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+
+                    _editor.GraphicsDevice.SetVertexBuffer(_littleWireframedCube.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleWireframedCube.VertexBuffer));
+                    _editor.GraphicsDevice.SetIndexBuffer(_littleWireframedCube.IndexBuffer, false);
+
+                    Effect effect = _editor.Effects["Solid"];
+
+                    //effect.Parameters["TextureEnabled"].SetValue(true);
+                    //effect.Parameters["Texture"].SetResource<Texture2D>(_editor.Textures["spotlight"]);
+
+                    effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+
+                    effect.Parameters["World"].SetValue(Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    effect.Parameters["View"].SetValue(Camera.View);
+                    effect.Parameters["Projection"].SetValue(Camera.Projection);
+                      
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.LineList, 49);
+
+                    continue;
+                }*/
+
+                solidEffect.Parameters["World"].SetValue(Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+
+                if (light.Type == LightType.Light) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                if (light.Type == LightType.Spot) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                if (light.Type == LightType.FogBulb) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
+                if (light.Type == LightType.Shadow) solidEffect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+                if (light.Type == LightType.Effect) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                if (light.Type == LightType.Sun) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
+
+                if (_editor.LightIndex == i)
+                    solidEffect.Parameters["SelectionEnabled"].SetValue(true);
+                else
+                    solidEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+            }
+
+            solidEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+            if (_editor.LightIndex != -1)
+            {
+                Light light = _editor.Level.Rooms[room].Lights[_editor.LightIndex];
+
+                if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
+                {
+                    _editor.GraphicsDevice.SetVertexBuffer(_sphere.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
+                    _editor.GraphicsDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
+
+                    if (light.Type == LightType.Light || light.Type == LightType.Shadow)
+                    {
+                        solidEffect.Parameters["World"].SetValue(Matrix.Scaling(light.In * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+                        solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                        _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                    }
+
+                    if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
+                    {
+                        solidEffect.Parameters["World"].SetValue(Matrix.Scaling(light.Out * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+                        solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                        _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                    }
+                }
+                else if (light.Type == LightType.Spot)
+                {
+                    _editor.GraphicsDevice.SetVertexBuffer(_cone.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
+                    _editor.GraphicsDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
+
+                    // Inner cone
+                    float coneAngle = (float)Math.Atan2(512, 1024);
+                    float lenScaleH = light.Len;
+                    float lenScaleW = MathUtil.DegreesToRadians(light.In) / coneAngle * lenScaleH;
+
+                    Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
+
+                    solidEffect.Parameters["World"].SetValue(Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+
+                    // Outer cone
+                    float cutoffScaleH = light.Cutoff;
+                    float cutoffScaleW = MathUtil.DegreesToRadians(light.Out) / coneAngle * cutoffScaleH;
+
+                    solidEffect.Parameters["World"].SetValue(Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                }
+                else if (light.Type == LightType.Sun)
+                {
+                    _editor.GraphicsDevice.SetVertexBuffer(_cone.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
+                    _editor.GraphicsDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
+
+                    Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
+
+                    solidEffect.Parameters["World"].SetValue(Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                }
+
+                string message = "";
+
+                if (light.Type == LightType.Light) message = "Point light";
+                if (light.Type == LightType.Spot) message = "Spot light";
+                if (light.Type == LightType.Shadow) message = "Shadow";
+                if (light.Type == LightType.Sun) message = "Sun";
+                if (light.Type == LightType.Effect) message = "Effect";
+                if (light.Type == LightType.FogBulb) message = "Fog bulb";
+
+                message += " (" + _editor.LightIndex + ")";
+                Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                Debug.AddString(message, screenPos);
+            }
+
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+        }
+
+        private void DrawObjects(int room)
+        {
+            // Draw objects
+            Effect effect = _editor.Effects["Solid"];
+
+            _editor.GraphicsDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+            _editor.GraphicsDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
+
+            effect.Parameters["View"].SetValue(Camera.View);
+            effect.Parameters["Projection"].SetValue(Camera.Projection);
+
+            Matrix world = Matrix.Identity;
+            string message = "";
+            Vector4 color = new Vector4(0, 0, 0, 0);
+
+            for (int i = 0; i < _camerasToDraw.Count; i++)
+            {
+                IObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
+
+                _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+                
+                color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+                if (_editor.PickingResult.ElementType == PickingElementType.Camera && instance.ID == _editor.PickingResult.Element)
+                {
+                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                    _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+
+                    message = "Camera (" + instance.ID + ")";
+                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+
+                    for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                    {
+                        TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                        if ((trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Camera) && trigger.Target == instance.ID)
+                        {
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                        }
+                    }
+
+                    Debug.AddString(message, screenPos);
+                }
+
+                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+
+                effect.Parameters["World"].SetValue(world);
+                effect.Parameters["Color"].SetValue(color);
+
+                effect.Techniques[0].Passes[0].Apply();
+
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+            }
+
+            for (int i = 0; i < _flybyToDraw.Count; i++)
+            {
+                IObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
+
+                _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+
+                color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
+                if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera && instance.ID == _editor.PickingResult.Element)
+                {
+                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                    _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+                }
+
+                FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
+
+                if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera &&
+                    _editor.PickingResult.Element == instance.ID)
+                {
+                    message = "Flyby Camera (" + flyby.Sequence + ":" + flyby.Number + ")";
+                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+
+                    for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                    {
+                        TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                        if ((trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == instance.ID)
+                        {
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                        }
+                    }
+
+                    Debug.AddString(message, screenPos);
+                }
+
+                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+
+                effect.Parameters["World"].SetValue(world);
+                effect.Parameters["Color"].SetValue(color);
+
+                effect.Techniques[0].Passes[0].Apply();
+
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+            }
+
+            for (int i = 0; i < _sinksToDraw.Count; i++)
+            {
+                IObjectInstance instance = _editor.Level.Objects[_sinksToDraw[i]];
+
+                _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+
+                color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                if (_editor.PickingResult.ElementType == PickingElementType.Sink && instance.ID == _editor.PickingResult.Element)
+                {
+                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                    _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+                
+                    message = "Sink (" + instance.ID + ")";
+                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+
+                    for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                    {
+                        TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                        if ((trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.ID)
+                        {
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                        }
+                    }
+
+                    Debug.AddString(message, screenPos);
+                }
+
+                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+
+                effect.Parameters["World"].SetValue(world);
+                effect.Parameters["Color"].SetValue(color);
+
+                effect.Techniques[0].Passes[0].Apply();
+
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+            }
+
+            for (int i = 0; i < _soundSourcesToDraw.Count; i++)
+            {
+                IObjectInstance instance = _editor.Level.Objects[_soundSourcesToDraw[i]];
+
+                _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+
+                color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+                if (_editor.PickingResult.ElementType == PickingElementType.SoundSource && instance.ID == _editor.PickingResult.Element)
+                {
+                    color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                    _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+
+                    SoundInstance sound = (SoundInstance)instance;
+                    message = "Sound Source (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundID] + ") (" + instance.ID + ")";
+                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+
+                    for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                    {
+                        TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                        if ((trigger.TargetType == TriggerTargetType.Object) && trigger.Target == instance.ID)
+                        {
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                        }
+                    }
+
+                    Debug.AddString(message, screenPos);
+                }
+
+                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+
+                effect.Parameters["World"].SetValue(world);
+                effect.Parameters["Color"].SetValue(color);
+
+                effect.Techniques[0].Passes[0].Apply();
+
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+            }
+
+            _editor.GraphicsDevice.SetVertexBuffer(_cone.VertexBuffer);
+            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
+            _editor.GraphicsDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
+
+            _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+
+            for (int i = 0; i < _flybyToDraw.Count; i++)
+            {
+                IObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
+
+                FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
+
+                // Outer cone
+                float coneAngle = (float)Math.Atan2(512, 1024);
+                float cutoffScaleH = 1;
+                float cutoffScaleW = MathUtil.DegreesToRadians(flyby.FOV / 2) / coneAngle * cutoffScaleH;
+
+                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(flyby.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(flyby.DirectionY));
+
+                effect.Parameters["World"].SetValue(Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+
+                effect.CurrentTechnique.Passes[0].Apply();
+
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+            }
+
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);         
+        }
+
+        private void DrawMoveables()
+        {
+            _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
+
+            Effect skinnedModelEffect = _editor.Effects["Model"];
+
+            skinnedModelEffect.Parameters["View"].SetValue(Camera.View);
+            skinnedModelEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
+            skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+            MoveableInstance _lastObject = null;
+
+            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
+
+            for (int k = 0; k < _moveablesToDraw.Count; k++)
+            {
+                MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[_moveablesToDraw[k]];
+
+                Debug.NumMoveables++;
+
+                SkinnedModel model = modelInfo.Model;
+                
+                if (k==0 || model.ObjectID!=_lastObject.ObjectID)
+                {
+                    _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
+                    _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
+                }
+
+                if (k == 0)
+                {
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                }
+
+                if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel && _editor.PickingResult.Element == modelInfo.ID)
+                    skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(true);
+                else
+                    skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+                Matrix world = Matrix.Identity;
+                Matrix worldDebug = Matrix.Identity;
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    SkinnedMesh mesh = model.Meshes[i];
+                    if (mesh.Vertices.Count == 0) continue;
+
+                    int theRoom = modelInfo.Room;
+
+                    world = model.AnimationTransforms[i] * Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
+                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
+
+                    skinnedModelEffect.Parameters["World"].SetValue(world);
+
+                    skinnedModelEffect.Techniques[0].Passes[0].Apply();
+                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+
+                    Debug.NumVertices += mesh.NumIndices;
+                    Debug.NumTriangles += mesh.NumIndices / 3;
+                }
+
+                if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel &&
+                    _editor.PickingResult.Element == modelInfo.ID)
+                {
+                    Matrix wvp = worldDebug * Camera.View * Camera.Projection;
+                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+
+                    string debugMessage = _editor.MoveablesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+
+                    for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                    {
+                        TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                        if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.ID)
+                        {
+                            debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                        }
+                    }
+
+                    Debug.AddString(debugMessage, screenPos);
+                }
+
+                _lastObject = modelInfo;
+            }
+        }
+
+        private void DrawStaticMeshes()
+        {
+            _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
+
+            Effect staticMeshEffect = _editor.Effects["StaticModel"];
+
+            staticMeshEffect.Parameters["View"].SetValue(Camera.View);
+            staticMeshEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            staticMeshEffect.Parameters["TextureEnabled"].SetValue(true);
+            staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
+            staticMeshEffect.Parameters["LightEnabled"].SetValue(true);
+
+            staticMeshEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+            staticMeshEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
+
+            StaticMeshInstance _lastObject = null;
+
+            for (int k = 0; k < _staticMeshesToDraw.Count; k++)
+            {
+                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[_staticMeshesToDraw[k]];
+                StaticModel model = modelInfo.Model;
+
+                if (k == 0)
+                {
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
+                }
+
+                if (k == 0 || model.ObjectID != _lastObject.ObjectID)
+                {
+                    _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
+                    _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
+                }
+
+                Debug.NumStaticMeshes++;
+
+                if (_editor.PickingResult.ElementType == PickingElementType.StaticModel && _editor.PickingResult.Element == modelInfo.ID)
+                    staticMeshEffect.Parameters["SelectionEnabled"].SetValue(true);
+                else
+                    staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+                staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(modelInfo.Color));
+
+                Matrix world = Matrix.Identity;
+                Matrix worldDebug = Matrix.Identity;
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    int theRoom = modelInfo.Room;
+
+                    StaticMesh mesh = model.Meshes[i];
+                    if (mesh.Vertices.Count == 0) continue;
+
+                    world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
+                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
+
+                    staticMeshEffect.Parameters["World"].SetValue(world);
+
+                    staticMeshEffect.Techniques[0].Passes[0].Apply();
+                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+
+                    Debug.NumVertices += mesh.NumIndices;
+                    Debug.NumTriangles += mesh.NumIndices / 3;
+                }
+
+                if (_editor.PickingResult.ElementType == PickingElementType.StaticModel &&
+                    _editor.PickingResult.Element == modelInfo.ID)
+                {
+                    Matrix wvp = worldDebug * Camera.View * Camera.Projection;
+                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+
+                    string debugMessage = _editor.StaticMeshesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+
+                    for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                    {
+                        TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                        if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.ID)
+                        {
+                            debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                        }
+                    }
+
+                    Debug.AddString(debugMessage, screenPos);
+                }
+
+                _lastObject = modelInfo;
+            }
+        }
+
+        private void DrawSkyBox(int room)
+        {
+            if (_editor.Level.Wad == null) return;
+            if (!_editor.Level.Wad.Moveables.ContainsKey(459)) return;
+
+            _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
+
+            Effect skinnedModelEffect = _editor.Effects["Model"];
+
+            skinnedModelEffect.Parameters["View"].SetValue(Camera.View);
+            skinnedModelEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
+            skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+            SkinnedModel model = _editor.Level.Wad.Moveables[459];
+            model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
+
+            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
+
+            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+
+            _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
+            _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
+
+            for (int i = 0; i < model.Meshes.Count; i++)
+            {
+                SkinnedMesh mesh = model.Meshes[i];
+
+                skinnedModelEffect.Parameters["World"].SetValue(Matrix.Scaling(16.0f) * model.AnimationTransforms[i] * Matrix.Translation(new Vector3(Camera.Position.X, Camera.Position.Y - 5120.0f, Camera.Position.Z)));
+
+                skinnedModelEffect.Techniques[0].Passes[0].Apply();
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+
+                Debug.NumVertices += mesh.NumIndices;
+                Debug.NumTriangles += mesh.NumIndices / 3;
+            }
+        }
+
+        private Ray ConvertMouseToRay(Vector2 mousePosition)
+        {
+            Vector3 nearPoint = new Vector3(mousePosition, 0);
+            Vector3 farPoint = new Vector3(mousePosition, 1);
+
+            nearPoint = _editor.GraphicsDevice.Viewport.Unproject(nearPoint, Camera.Projection, Camera.View,
+                                                     Matrix.Identity);
+            farPoint = _editor.GraphicsDevice.Viewport.Unproject(farPoint,
+                                                    Camera.Projection, Camera.View,
+                                                    Matrix.Identity);
+
+            Vector3 direction = farPoint - nearPoint;
+            direction.Normalize();
+
+            return new Ray(nearPoint, direction);
+        }
+
+        private void DoPicking(float x, float y)
+        {
+            // For picking, I'll check first sphere/cubes bounding boxes and then eventually
+            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+
+            // First get the ray in 3D space from X, Y mouse coordinates
+            Ray ray = Ray.GetPickRay((int)x, (int)y, _editor.GraphicsDevice.Viewport, Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * Camera.View * Camera.Projection);
+
+            float minDistance = float.MaxValue;
+            float distance = 0;
+            PickingResult tempResult = new PickingResult();
+
+            // First check lights
+            for (int i = 0; i < room.Lights.Count; i++)
+            {
+                distance = 0;
+                BoundingSphere sphere = new BoundingSphere(room.Lights[i].Position, 128.0f);
+                if (ray.Intersects(ref sphere, out distance) && distance < minDistance)
+                {
+                    minDistance = distance;
+                    tempResult.ElementType = PickingElementType.Light;
+                    tempResult.Element = i;
+                }
+            }
+
+            // Check for sinks
+            for (int i = 0; i < room.Sinks.Count; i++)
+            {
+                distance = 0;
+                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.Sinks[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                                                  _editor.Level.Objects[room.Sinks[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                if (ray.Intersects(ref box, out distance) && distance < minDistance)
+                {
+                    minDistance = distance;
+                    tempResult.ElementType = PickingElementType.Sink;
+                    tempResult.Element = room.Sinks[i];
+                }
+            }
+
+            // Check for cameras
+            for (int i = 0; i < room.Cameras.Count; i++)
+            {
+                distance = 0;
+                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.Cameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                                                  _editor.Level.Objects[room.Cameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                if (ray.Intersects(ref box, out distance) && distance < minDistance)
+                {
+                    minDistance = distance;
+                    tempResult.ElementType = PickingElementType.Camera;
+                    tempResult.Element = room.Cameras[i];
+                }
+            }
+
+            // Check for sound sources
+            for (int i = 0; i < room.SoundSources.Count; i++)
+            {
+                distance = 0;
+                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.SoundSources[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                                                  _editor.Level.Objects[room.SoundSources[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                if (ray.Intersects(ref box, out distance) && distance < minDistance)
+                {
+                    minDistance = distance;
+                    tempResult.ElementType = PickingElementType.SoundSource;
+                    tempResult.Element = room.SoundSources[i];
+                }
+            }
+
+            // Check for flyby cameras
+            for (int i = 0; i < room.FlyByCameras.Count; i++)
+            {
+                distance = 0;
+                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.FlyByCameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                                                  _editor.Level.Objects[room.FlyByCameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                if (ray.Intersects(ref box, out distance) && distance < minDistance)
+                {
+                    minDistance = distance;
+                    tempResult.ElementType = PickingElementType.FlyByCamera;
+                    tempResult.Element = room.FlyByCameras[i];
+                }
+            }
+
+            // Check for moveables
+            for (int i = 0; i < room.Moveables.Count; i++)
+            {
+                distance = 0;
+                MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[room.Moveables[i]];
+
+                SkinnedModel model = modelInfo.Model;
+                model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
+
+                for (int j = 0; j < model.Meshes.Count; j++)
+                {
+                    SkinnedMesh mesh = model.Meshes[j];
+
+                    Matrix world = model.AnimationTransforms[j] * Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                    Matrix.Translation(modelInfo.Position);
+
+                    Vector3 centre = mesh.BoundingSphere.Center;
+
+                    Vector3 min = mesh.BoundingBox.Minimum;
+                    Vector3 max = mesh.BoundingBox.Maximum;
+
+                    Vector4 transformedMin;
+                    Vector3.Transform(ref min, ref world, out transformedMin);
+                    Vector4 transformedMax;
+                    Vector3.Transform(ref max, ref world, out transformedMax);
+
+                    BoundingBox box = new BoundingBox(new Vector3(transformedMin.X, transformedMin.Y, transformedMin.Z),
+                                                      new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
+
+                    distance = 0;
+                    if (ray.Intersects(ref box, out distance) && distance < minDistance)
+                    {
+                        // Now do a ray - triangle intersection test
+                        for (int k = 0; k < mesh.Indices.Count; k += 3)
+                        {
+                            Vector4 transformed1;
+                            Vector4 transformed2;
+                            Vector4 transformed3;
+
+                            Vector4 p1t = mesh.Vertices[mesh.Indices[k]].Position;
+                            Vector4 p2t = mesh.Vertices[mesh.Indices[k + 1]].Position;
+                            Vector4 p3t = mesh.Vertices[mesh.Indices[k + 2]].Position;
+
+                            Vector4.Transform(ref p1t, ref world, out transformed1);
+                            Vector4.Transform(ref p2t, ref world, out transformed2);
+                            Vector4.Transform(ref p3t, ref world, out transformed3);
+
+                            Vector3 p1 = new Vector3(transformed1.X, transformed1.Y, transformed1.Z);
+                            Vector3 p2 = new Vector3(transformed2.X, transformed2.Y, transformed2.Z);
+                            Vector3 p3 = new Vector3(transformed3.X, transformed3.Y, transformed3.Z);
+
+                            distance = 0;
+                            if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && distance < minDistance)
+                            {
+                                minDistance = distance;
+                                tempResult.ElementType = PickingElementType.SkinnedModel;
+                                tempResult.Element = room.Moveables[i];
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check for static meshes
+            for (int i = 0; i < room.StaticMeshes.Count; i++)
+            {
+                distance = 0;
+                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[room.StaticMeshes[i]];
+
+                StaticModel model = modelInfo.Model;
+
+                StaticMesh mesh = model.Meshes[0];
+
+                Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                Matrix.Translation(modelInfo.Position);
+
+                Vector3 centre = mesh.BoundingSphere.Center;
+
+
+                Vector3 min = mesh.BoundingBox.Minimum;
+                Vector3 max = mesh.BoundingBox.Maximum;
+
+                Vector4 transformedMin;
+                Vector3.Transform(ref min, ref world, out transformedMin);
+                Vector4 transformedMax;
+                Vector3.Transform(ref max, ref world, out transformedMax);
+
+                BoundingBox box = new BoundingBox(new Vector3(transformedMin.X, transformedMin.Y, transformedMin.Z),
+                                                  new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
+
+                distance = 0;
+                if (ray.Intersects(ref box, out distance) && distance < minDistance)
+                {
+                    // Now do a ray - triangle intersection test
+                    for (int k = 0; k < mesh.Indices.Count; k += 3)
+                    {
+                        Vector4 transformed1;
+                        Vector4 transformed2;
+                        Vector4 transformed3;
+
+                        Vector4 p1t = mesh.Vertices[mesh.Indices[k]].Position;
+                        Vector4 p2t = mesh.Vertices[mesh.Indices[k + 1]].Position;
+                        Vector4 p3t = mesh.Vertices[mesh.Indices[k + 2]].Position;
+
+                        Vector4.Transform(ref p1t, ref world, out transformed1);
+                        Vector4.Transform(ref p2t, ref world, out transformed2);
+                        Vector4.Transform(ref p3t, ref world, out transformed3);
+
+                        Vector3 p1 = new Vector3(transformed1.X, transformed1.Y, transformed1.Z);
+                        Vector3 p2 = new Vector3(transformed2.X, transformed2.Y, transformed2.Z);
+                        Vector3 p3 = new Vector3(transformed3.X, transformed3.Y, transformed3.Z);
+
+                        distance = 0;
+                        if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && distance < minDistance)
+                        {
+                            minDistance = distance;
+                            tempResult.ElementType = PickingElementType.StaticModel;
+                            tempResult.Element = room.StaticMeshes[i];
+                        }
+                    }
+                }
+            }
+
+            // Now check geometry
+            for (byte sx = 0; sx < room.NumXSectors; sx++)
+            {
+                for (byte sz = 0; sz < room.NumZSectors; sz++)
+                {
+                    for (byte f = 0; f < 29; f++)
+                    {
+                        distance = 0;
+                        BlockFace face = room.Blocks[sx, sz].Faces[f];
+                        if (!face.Defined) continue;
+                        if (room.RayIntersectsFace(ref ray, ref face, out distance) && distance < minDistance)
+                        {
+                            minDistance = distance;
+                            tempResult.ElementType = PickingElementType.Block;
+                            tempResult.Element = (sx << 5) + sz;
+                            tempResult.SubElement = f;
+                        }
+                    }
+                }
+            }
+
+            PickingResult result = tempResult;
+
+            switch (result.ElementType)
+            {
+                case PickingElementType.SkinnedModel:
+                    Debug.Log("Selected: Moveable #" + result.Element);
+                    break;
+
+                case PickingElementType.StaticModel:
+                    Debug.Log("Selected: Static Mesh #" + result.Element);
+                    break;
+
+                case PickingElementType.Sink:
+                    Debug.Log("Selected: Sink #" + result.Element);
+                    break;
+
+                case PickingElementType.Camera:
+                    Debug.Log("Selected: Camera #" + result.Element);
+                    break;
+
+                case PickingElementType.FlyByCamera:
+                    Debug.Log("Selected: Flyby camera #" + result.Element);
+                    break;
+
+                case PickingElementType.SoundSource:
+                    Debug.Log("Selected: Sound source #" + result.Element);
+                    break;
+
+                case PickingElementType.Light:
+                    Debug.Log("Selected: Light #" + result.Element);
+                    break;
+            }
+
+            Debug.SelectedItem = "";
+            if (result.ElementType == PickingElementType.SkinnedModel)
+            {
+                MoveableInstance model = (MoveableInstance)_editor.Level.Objects[result.Element];
+                Debug.SelectedItem = "Moveable '" + _editor.MoveablesObjectIds[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
+            }
+            else if (result.ElementType == PickingElementType.StaticModel)
+            {
+                StaticMeshInstance model = (StaticMeshInstance)_editor.Level.Objects[result.Element];
+                Debug.SelectedItem = "Static Mesh '" + _editor.StaticMeshesObjectIds[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
+            }
+
+            _editor.PickingResult = result;
+        }
+
+        private void RotateTexture()
+        {
+            // recupero le coordinate X e Z della faccia
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            if (_editor.PickingResult.SubElement > 28) return;
+
+            // salvo un puntatore alla faccia per accesso rapido
+            BlockFace face = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement];
+            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+
+            if (_editor.InvisiblePolygon || face.Invisible) return;
+
+            if (face.Shape == BlockFaceShape.Triangle)
+            {
+                Vector2 temp3 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = temp3;
+
+                if (faceType == BlockFaces.FloorTriangle2)
+                {
+                    Vector2 temp4 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = temp4;
+                }
+
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation += 1;
+                if (_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation == 3)
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation = 0;
+            }
+            else
+            {
+                Vector2 temp2 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0] = temp2;
+
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation += 1;
+                if (_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation == 4)
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation = 0;
+            }
+
+            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+        }
+
+        private void FlipTexture()
+        {
+            // recupero le coordinate X e Z della faccia
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            if (_editor.PickingResult.SubElement > 28) return;
+
+            // salvo un puntatore alla faccia per accesso rapido
+            BlockFace face = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement];
+            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+
+            if (_editor.InvisiblePolygon || face.Invisible || face.Texture == -1) return;
+
+            if (face.Shape == BlockFaceShape.Triangle)
+            {
+                Vector2[] UV = new Vector2[4];
+
+                // calcolo le nuove UV
+                LevelTexture texture = _editor.Level.TextureSamples[face.Texture];
+
+                UV[0] = new Vector2(texture.X / 256.0f, texture.Y / 256.0f);
+                UV[1] = new Vector2((texture.X + texture.Width) / 256.0f, texture.Y / 256.0f); ;
+                UV[2] = new Vector2((texture.X + texture.Width) / 256.0f, (texture.Y + texture.Height) / 256.0f);
+                UV[3] = new Vector2(texture.X / 256.0f, (texture.Y + texture.Height) / 256.0f);
+
+                if (_editor.TextureTriangle == TextureTileType.TriangleNW)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[1];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[0];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[2];
+
+                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[1];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[0];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[2];
+                    }
+                }
+
+                if (_editor.TextureTriangle == TextureTileType.TriangleNE)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[0];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[3];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[1];
+
+                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[0];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[3];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[1];
+                    }
+                }
+
+                if (_editor.TextureTriangle == TextureTileType.TriangleSE)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[3];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[2];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[0];
+
+                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[3];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[2];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[0];
+                    }
+                }
+
+                if (_editor.TextureTriangle == TextureTileType.TriangleSW)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[2];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[1];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[3];
+
+                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[2];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[1];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[3];
+                    }
+                }
+
+                for (int k = 0; k < face.Rotation; k++)
+                {
+                    Vector2 temp3 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0];
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = temp3;
+
+                    if (faceType == BlockFaces.FloorTriangle2)
+                    {
+                        Vector2 temp4 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0];
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = temp4;
+                    }
+                }
+            }
+            else
+            {
+                Vector2 temp2 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0] = temp2;
+
+                temp2 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2];
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2] = temp2;
+            }
+
+            face.Flipped = !face.Flipped;
+
+            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+        }
+
+        private void PlaceTexture()
+        {
+            // recupero le coordinate X e Z della faccia
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            if (_editor.PickingResult.ElementType != PickingElementType.Block) return;
+            if (_editor.PickingResult.SubElement > 28) return;
+
+            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+            EditorActions.PlaceTexture(x, z, faceType);
+        }
+
+        private void PlaceNoCollision()
+        {
+            // recupero le coordinate X e Z della faccia
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+  
+            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+
+            EditorActions.PlaceNoCollision(x, z, faceType);
+        }
+
+        private void PlaceItem()
+        {
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            if (_editor.ItemType == EditorItemType.Moveable)
+            {
+                EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Moveable, _editor.SelectedItem);
+            }
+            else
+            {
+                EditorActions.PlaceObject(x, z, EditorActions.ObjectType.StaticMesh, _editor.SelectedItem);
+            }
+
+            _editor.Action = EditorAction.None;
+        }
+
+        private void PlaceCamera()
+        {
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Camera, 0);
+
+            _editor.Action = EditorAction.None;
+        }
+
+        private void PlaceFlyByCamera()
+        {
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.FlybyCamera, 0);
+
+            _editor.Action = EditorAction.None;
+        }
+
+        private void PlaceSink()
+        {
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Sink, 0);
+
+            _editor.Action = EditorAction.None;
+        }
+
+        private void PlaceSound()
+        {
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.SoundSource, 0);
+
+            _editor.Action = EditorAction.None;
+        }
+
+        private void PlaceLight()
+        {
+            int x = _editor.PickingResult.Element >> 5;
+            int z = _editor.PickingResult.Element & 31;
+
+            EditorActions.PlaceLight(x, z, _editor.LightType);
+
+            Invalidate();
+
+            _editor.Action = EditorAction.None;
+        }
+
+        private Vector4 GetSharpdDXColor(System.Drawing.Color color)
+        {
+            return new Vector4(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, 1.0f);
+        }
+
+        private void CollectObjectsToDraw()
+        {
+            _camerasToDraw = new List<int>();
+            _sinksToDraw = new List<int>();
+            _flybyToDraw = new List<int>();
+            _soundSourcesToDraw = new List<int>();
+            _moveablesToDraw = new List<int>();
+            _staticMeshesToDraw = new List<int>();
+
+            for (int i = 0; i < _roomsToDraw.Count; i++)
+            {
+                if (_roomsToDraw[i] == _editor.RoomIndex)
+                {
+                    _camerasToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Cameras);
+                    _sinksToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Sinks);
+                    _flybyToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].FlyByCameras);
+                    _soundSourcesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].SoundSources);
+                }
+
+                _moveablesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Moveables);
+                _staticMeshesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].StaticMeshes);
+            }
+
+            _moveablesToDraw.Sort(new ComparerMoveables());
+            _staticMeshesToDraw.Sort(new ComparerStaticMeshes());
+        }
+
+        private void CollectRoomsToDraw(int room)
+        {
+            // New iterative version of the function 
+
+            Stack<int> stackRooms = new Stack<int>();
+            Stack<int> stackLimits = new Stack<int>();
+
+            stackRooms.Push(room);
+            stackLimits.Push(0);
+
+            while (stackRooms.Count > 0)
+            {
+                int theRoom = stackRooms.Pop();
+                int theLimit = stackLimits.Pop();
+
+                if (theLimit > 6) continue;
+
+                if (_editor.IsFlipMap)
+                {
+                    if (!_editor.Level.Rooms[theRoom].Flipped)
+                    {
+                        _editor.Level.Rooms[theRoom].Visited = true;
+                        _roomsToDraw.Add(theRoom);
+                    }
+                    else
+                    {
+                        if (_editor.Level.Rooms[theRoom].AlternateRoom != -1)
+                        {
+                            _editor.Level.Rooms[theRoom].Visited = true;
+                            _roomsToDraw.Add(_editor.Level.Rooms[theRoom].AlternateRoom);
+                        }
+                        else
+                        {
+                            _editor.Level.Rooms[theRoom].Visited = true;
+                            _roomsToDraw.Add(theRoom);
+                        }
+                    }
+                }
+                else
+                {
+                    _editor.Level.Rooms[theRoom].Visited = true;
+                    _roomsToDraw.Add(theRoom);
+                }
+
+                for (int p = 0; p < _editor.Level.Rooms[theRoom].Portals.Count; p++)
+                {
+                    Portal portal = _editor.Level.Portals[_editor.Level.Rooms[theRoom].Portals[p]];
+
+                    Vector3 normal = Vector3.Zero;
+
+                    if (portal.Direction == PortalDirection.North) normal = -Vector3.UnitZ;
+                    if (portal.Direction == PortalDirection.East) normal = -Vector3.UnitX;
+                    if (portal.Direction == PortalDirection.South) normal = Vector3.UnitZ;
+                    if (portal.Direction == PortalDirection.West) normal = Vector3.UnitX;
+                    if (portal.Direction == PortalDirection.Floor) normal = Vector3.UnitY;
+                    if (portal.Direction == PortalDirection.Ceiling) normal = -Vector3.UnitY;
+
+                    Vector3 cameraDirection = Camera.Position - Camera.Target;
+
+                    Vector3 v1 = Vector3.UnitX;
+                    Vector3 v2 = Vector3.UnitZ;
+                    float dot = Vector3.Dot(v1, v2);
+
+                    if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1) continue;
+
+                    if (portal.Room == theRoom && !_editor.Level.Rooms[portal.AdjoiningRoom].Visited && !stackRooms.Contains(portal.AdjoiningRoom))
+                    {
+                        stackRooms.Push(portal.AdjoiningRoom);
+                        stackLimits.Push(theLimit + 1);
+                    }
+                }
+            }
+        }
+
+        private void PrepareRenderBuckets()
+        {
+            _opaqueBuckets = new List<RenderBucket>();
+            _transparentBuckets = new List<RenderBucket>();
+            _invisibleBuckets = new List<RenderBucket>();
+            _solidBuckets = new List<RenderBucket>();
+
+            BlockFace face;
+            Vector3 viewVector = Camera.Target - Camera.Position;
+
+            // Build buckets
+            for (int i = 0; i < _roomsToDraw.Count; i++)
+            {
+                int room = _roomsToDraw[i];
+
+                for (int x = 0; x < _editor.Level.Rooms[room].NumXSectors; x++)
+                {
+                    for (int z = 0; z < _editor.Level.Rooms[room].NumZSectors; z++)
+                    {
+                        for (int f = 0; f < _editor.Level.Rooms[room].Blocks[x, z].Faces.Count(); f++)
+                        {
+                            face = _editor.Level.Rooms[room].Blocks[x, z].Faces[f];
+
+                            //float dot = Vector3.Dot(-viewVector, face.Plane.Normal);
+                            //if (dot < 0.01f) continue;
+
+                            if (face.Defined)
+                            {
+                                if ((_editor.Mode == EditorMode.Geometry && room==_editor.RoomIndex) || 
+                                    (face.Texture==-1 && !face.Invisible))
+                                {
+                                    RenderBucket bucket = new RenderBucket();
+
+                                    bucket.FaceType = (BlockFaces)f;
+                                    bucket.Face = face;
+                                    bucket.X = x;
+                                    bucket.Z = z;
+                                    bucket.Room = room;
+
+                                    _solidBuckets.Add(bucket);
+                                }
+                                else
+                                {
+                                    if (face.Invisible)
+                                    {
+                                        RenderBucket bucket = new RenderBucket();
+
+                                        bucket.FaceType = (BlockFaces)f;
+                                        bucket.Face = face;
+                                        bucket.X = x;
+                                        bucket.Z = z;
+                                        bucket.Invisible = (byte)(face.Invisible ? 1 : 0);
+                                        bucket.Texture = face.Texture;
+                                        bucket.Room = room;
+
+                                        _invisibleBuckets.Add(bucket);
+                                    }
+                                    else if (face.Texture == -1)
+                                    {
+                                        if (_editor.Mode == EditorMode.FaceEdit && room == _editor.RoomIndex)
+                                        {
+                                            RenderBucket bucket = new RenderBucket();
+
+                                            bucket.FaceType = (BlockFaces)f;
+                                            bucket.Face = face;
+                                            bucket.X = x;
+                                            bucket.Z = z;
+                                            bucket.Room = room;
+
+                                            _solidBuckets.Add(bucket);
+                                        }
+                                    } 
+                                    else
+                                    {
+                                        if (!face.Transparent && !face.Invisible)
+                                        {
+                                            int found = -1;
+                                            for (int b = 0; b < _opaqueBuckets.Count; b++)
+                                            {
+                                                RenderBucket currentBucket = _opaqueBuckets[b];
+                                                if (currentBucket.Room == room && currentBucket.DoubleSided == (face.DoubleSided ? 1 : 0))
+                                                {
+                                                    found = b;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (found == -1)
+                                            {
+                                                RenderBucket bucket = new RenderBucket();
+
+                                                bucket.DoubleSided = (byte)(face.DoubleSided ? 1 : 0);
+                                                bucket.Room = room;
+
+                                                _opaqueBuckets.Add(bucket);
+
+                                                found = _opaqueBuckets.Count - 1;
+                                            }
+
+                                            _opaqueBuckets[found].Indices.AddRange(face.EditorIndices);
+                                        }
+                                        else if (face.Invisible)
+                                        {
+                                            RenderBucket bucket = new RenderBucket();
+
+                                            bucket.FaceType = (BlockFaces)f;
+                                            bucket.Face = face;
+                                            bucket.X = x;
+                                            bucket.Z = z;
+                                            bucket.Invisible = (byte)(1);
+                                            bucket.Texture = face.Texture;
+                                            bucket.Room = room;
+
+                                            _invisibleBuckets.Add(bucket);
+                                        }
+                                        else if (face.Transparent)
+                                        {
+                                            RenderBucket bucket = new RenderBucket();
+
+                                            bucket.FaceType = (BlockFaces)f;
+                                            bucket.Face = face;
+                                            bucket.X = x;
+                                            bucket.Z = z;
+                                            bucket.DoubleSided = (byte)(face.DoubleSided ? 1 : 0);
+                                            bucket.Texture = face.Texture;
+                                            bucket.Room = room;
+
+                                            // calcolo il piano passante per la faccia
+                                            bucket.Plane = face.Plane;
+
+                                            // calcolo il centro della faccia
+                                            Vector4 centre = Vector4.Zero;
+
+                                            for (int j = 0; j < face.Vertices.Length; j++)
+                                            {
+                                                centre += face.Vertices[j].Position;
+                                            }
+
+                                            centre /= face.Vertices.Length;
+                                            bucket.Centre = new Vector3(centre.X, centre.Y, centre.Z);
+
+                                            // calcolo la distanza
+                                            bucket.Distance = (bucket.Centre - Camera.Position).Length();
+
+                                            // aggiungo la struttura alla lista
+                                            _transparentBuckets.Add(bucket);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Sort buckets
+            _opaqueBuckets.Sort(new ComparerOpaqueBuckets());
+            _transparentBuckets.Sort(new ComparerOpaqueBuckets());
+            _invisibleBuckets.Sort(new ComparerOpaqueBuckets());
+
+            Parallel.ForEach<RenderBucket>(_opaqueBuckets, item => PrepareIndexBuffer(item));
+
+            /*for (int i = 0; i < _opaqueBuckets.Count; i++)
+            {
+                _opaqueBuckets[i].IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.New(Editor.Instance.GraphicsDevice, _opaqueBuckets[i].Indices.ToArray(), BufferFlags.IndexBuffer);
+            }*/
+        }
+
+        private void PrepareIndexBuffer(RenderBucket item)
+        {
+            item.IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.New(Editor.Instance.GraphicsDevice, item.Indices.ToArray(), BufferFlags.IndexBuffer);
+        }
+
+        //   int _counter = 0;
+
+
+        public void Draw()
+        {
+            Stopwatch _watch = new Stopwatch();
+            _watch.Start();
+
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
+
+            Debug.Reset();
+
+            // Don't draw anything if device is not ready
+            if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1) return;
+
+            // reset the backbuffer
+            _editor.GraphicsDevice.Presenter = Presenter;
+            _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
+            _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer, _editor.GraphicsDevice.Presenter.BackBuffer);
+
+            _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
+                                         (!_editor.IsFlipMap ? Color.CornflowerBlue : Color.LightCoral), 1.0f, 0);
+            _editor.GraphicsDevice.SetDepthStencilState(_editor.GraphicsDevice.DepthStencilStates.Default);
+
+            // verify that editor is ready
+            if (_editor.Level == null) return;
+            if (_editor.Level.Rooms.Length == 0) return;
+            if (_editor.Level.Rooms[_editor.RoomIndex] == null) return;
+            if (_editor.Level.Rooms[_editor.RoomIndex].VertexBuffer == null) return;
+
+            // First collect rooms to draw
+            _roomsToDraw = new List<int>();
+
+            // Reset visited flag for collecting rooms
+            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
+            {
+                if (_editor.Level.Rooms[i] == null) continue;
+                _editor.Level.Rooms[i].Visited = false;
+            }
+
+            // Collect rooms to draw
+            if (_editor.DrawPortals)
+            {
+                CollectRoomsToDraw(_editor.RoomIndex);
+            }
+            else
+            {
+                _roomsToDraw.Add(_editor.RoomIndex);
+            }
+
+            Debug.NumRooms = _roomsToDraw.Count;
+
+            Task task1 = Task.Factory.StartNew(RenderTask2);
+            Task task2 = Task.Factory.StartNew(RenderTask3);
+
+            Task.WaitAll(task1, task2);
+
+            // Draw the skybox if present
+            if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) &&
+                 _editor != null && _editor.Level != null && _editor.Level.Wad != null && _editor.DrawHorizon)
+            {
+                DrawSkyBox(_editor.RoomIndex);
+                _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
+            }
+
+            // Draw moveables and static meshes
+            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
+            {
+                DrawMoveables();
+                DrawStaticMeshes();
+            }
+
+            // Prepare the shader
+            _roomEffect = _editor.Effects["Room"];
+
+            // Set some common parameters of the shader
+            _roomEffect.Parameters["CameraPosition"].SetValue(Camera.Position);
+            _roomEffect.Parameters["View"].SetValue(Camera.View);
+            _roomEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            _roomEffect.Parameters["LightingEnabled"].SetValue(false);
+            _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+            _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+            _roomEffect.Parameters["EditorTextureEnabled"].SetValue(false);
+            _roomEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
+
+            // Draw buckets
+            DrawSolidBuckets();
+            DrawOpaqueBuckets();
+            DrawTransparentBuckets();
+            DrawInvisibleBuckets();
+
+            // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
+            DrawObjects(_roomsToDraw[0]);
+
+            // Draw light objects and bounding volumes only for current room
+            DrawLights(_editor.RoomIndex);
+
+            _watch.Stop();
+            long mils = _watch.ElapsedMilliseconds;
+            float fps = (mils != 0 ? 1000 / mils : 60);
+
+            _editor.FPS = fps;
+
+            // Draw debug info
+            Debug.Draw();
+
+            _editor.GraphicsDevice.Present();
+
+            Debug.Log("Draw Call! " + mils + "ms", DebugType.Success);
+        }
+
+        private void RenderTask1()
+        {
+
+        }
+
+        private void RenderTask2()
+        {
+            // Collect objects to draw
+            CollectObjectsToDraw();
+
+            // Now group faces to render based on various things
+            PrepareRenderBuckets();
+        }
+
+        private void RenderTask3()
+        {
+            // Add room names
+            if (_editor.DrawRoomNames)
+            {
+                AddRoomNamesToDebug();
+            }
+
+            // Draw North, South, East and West
+            AddDirectionsToDebug();
+        }
+
+        private void AddRoomNamesToDebug()
+        {
+            for (int i = 0; i <_roomsToDraw.Count;i++)
+            {
+                string message = (_editor.Level.Rooms[_roomsToDraw[i]].Name != null ? _editor.Level.Rooms[_roomsToDraw[i]].Name : "Room " + _roomsToDraw[i]);
+
+                Vector3 pos = _editor.Level.Rooms[_roomsToDraw[i]].Position;
+                Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(pos)) * Camera.View * Camera.Projection;
+                Vector3 screenPos = Vector3.Project(_editor.Level.Rooms[_roomsToDraw[i]].Centre, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                Debug.AddString(message, screenPos);
+            }
+        }
+
+        private void AddDirectionsToDebug()
+        {
+            float xBlocks = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors / 2.0f * 1024.0f;
+            float zBlocks = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors / 2.0f * 1024.0f;
+
+            string[] messages = { "North", "South", "East", "West" };
+            Vector3[] positions = new Vector3[4];
+
+            Vector3 centre = _editor.Level.Rooms[_editor.RoomIndex].Centre;
+            Vector3 pos = Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position);
+
+            positions[0] = centre + new Vector3(0, 0, zBlocks);
+            positions[1] = centre + new Vector3(0, 0, -zBlocks);
+            positions[2] = centre + new Vector3(xBlocks, 0, 0);
+            positions[3] = centre + new Vector3(-xBlocks, 0, 0);
+
+            Matrix wvp = Matrix.Translation(pos) * Camera.View * Camera.Projection;
+
+            for (int i = 0; i < 4; i++)
+            {
+                Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                Debug.AddString(messages[i], screenPos);
+            }
+        }
+
+        private void DrawOpaqueBuckets()
+        {
+            // Setup shader
+            _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+            _roomEffect.Parameters["EditorTextureEnabled"].SetValue(false);
+            _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+            _roomEffect.Parameters["InvisibleFaceEnabled"].SetValue(false);
+
+            RenderBucket _lastBucket = null;
+
+            // Draw opaque faces
+            for (int i = 0; i < _opaqueBuckets.Count; i++)
+            {
+                RenderBucket bucket = _opaqueBuckets[i];
+
+                int room = bucket.Room;
+                
+                // If room is changed, setup vertex buffers, world matrix and lighting
+                if (_lastBucket == null || _lastBucket.Room!=bucket.Room)
+                {
+                    // Load the vertex buffer in the GPU and set the world matrix
+                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
+                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+
+                    // Enable or disable static lighting
+                    bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
+                    _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+                }
+
+                _editor.GraphicsDevice.SetIndexBuffer(bucket.IndexBuffer, false);
+
+                // Enable or disable double sided textures
+                if (_lastBucket == null || _lastBucket.DoubleSided != bucket.DoubleSided)
+                {
+                    if (bucket.DoubleSided == 1)
+                        _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullNone);
+                    else
+                        _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+                }
+
+                // Change texture if needed
+                if (_lastBucket == null)
+                {
+                    _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0]);
+                    _roomEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
+                }
+
+                _roomEffect.CurrentTechnique.Passes[0].Apply();
+
+                // Draw the face
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
+                
+                Debug.NumVertices += bucket.IndexBuffer.ElementCount;
+                Debug.NumTriangles += bucket.IndexBuffer.ElementCount / 3;
+
+                _lastBucket = bucket;
+            }
+
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+        }
+
+        private void DrawInvisibleBuckets()
+        {
+            // Setup shader
+            _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+            _roomEffect.Parameters["EditorTextureEnabled"].SetValue(false);
+            _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+            _roomEffect.Parameters["InvisibleFaceEnabled"].SetValue(true);
+            _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+            _roomEffect.Parameters["LightingEnabled"].SetValue(false);
+
+            RenderBucket _lastBucket = null;
+
+            // Draw opaque faces
+            for (int i = 0; i < _invisibleBuckets.Count; i++)
+            {
+                RenderBucket bucket = _invisibleBuckets[i];
+
+                int room = bucket.Room;
+                int x = bucket.X;
+                int z = bucket.Z;
+                int index = (int)bucket.FaceType;
+                BlockFace face = bucket.Face;
+
+                // If room is changed, setup vertex buffers, world matrix and lighting
+                if (_lastBucket == null || _lastBucket.Room != bucket.Room)
+                {
+                    // Load the vertex buffer in the GPU and set the world matrix
+                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
+                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);                    
+                }
+
+                // Set shape
+                if (face.Shape == BlockFaceShape.Rectangle)
+                    _roomEffect.Parameters["Shape"].SetValue(0);
+                else
+                    _roomEffect.Parameters["Shape"].SetValue(1);
+
+                _roomEffect.Parameters["SplitMode"].SetValue(face.SplitMode);
+
+                _roomEffect.CurrentTechnique.Passes[0].Apply();
+
+                // Draw the face
+                _editor.GraphicsDevice.Draw(PrimitiveType.TriangleList, face.Vertices.Length, face.StartVertex);
+
+                Debug.NumVertices += face.Vertices.Length;
+                Debug.NumTriangles += face.Vertices.Length / 3;
+
+                _lastBucket = bucket;
+            }
+
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+        }
+
+        private void DrawTransparentBuckets()
+        {
+            _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Additive);
+
+            // Setup shader
+            _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+            _roomEffect.Parameters["EditorTextureEnabled"].SetValue(false);
+            _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+            _roomEffect.Parameters["InvisibleFaceEnabled"].SetValue(false);
+
+            RenderBucket _lastBucket = null;
+
+            // Draw opaque faces
+            for (int i = 0; i < _transparentBuckets.Count; i++)
+            {
+                RenderBucket bucket = _transparentBuckets[i];
+
+                int room = bucket.Room;
+                int x = bucket.X;
+                int z = bucket.Z;
+                int index = (int)bucket.FaceType;
+                BlockFace face = bucket.Face;
+
+                // If room is changed, setup vertex buffers, world matrix and lighting
+                if (_lastBucket == null || _lastBucket.Room != bucket.Room)
+                {
+                    // Load the vertex buffer in the GPU and set the world matrix
+                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
+                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+
+                    // Enable or disable static lighting
+                    bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
+                    _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+                }
+
+                // Enable or disable double sided textures
+                if (_lastBucket == null || _lastBucket.DoubleSided != bucket.DoubleSided)
+                {
+                    if (bucket.DoubleSided == 1)
+                        _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullNone);
+                    else
+                        _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+                }
+
+                // Change texture if needed
+                if (_lastBucket == null /*|| _lastBucket.Texture!=bucket.Texture*/)
+                {
+                    // DEBUG
+
+                    LevelTexture textureSample = _editor.Level.TextureSamples[face.Texture];
+                    _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0 /*textureSample.Page*/]);
+                    _roomEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
+                }
+
+                // Set shape
+                if (face.Shape == BlockFaceShape.Rectangle)
+                    _roomEffect.Parameters["Shape"].SetValue(0);
+                else
+                    _roomEffect.Parameters["Shape"].SetValue(1);
+
+                _roomEffect.Parameters["SplitMode"].SetValue(face.SplitMode);
+
+                _roomEffect.CurrentTechnique.Passes[0].Apply();
+
+                // Draw the face
+                _editor.GraphicsDevice.Draw(PrimitiveType.TriangleList, face.Vertices.Length, face.StartVertex);
+
+                Debug.NumVertices += face.Vertices.Length;
+                Debug.NumTriangles += face.Vertices.Length / 3;
+
+                _lastBucket = bucket;
+            }
+
+            SharpDX.Direct3D11.BlendStateDescription desc = new SharpDX.Direct3D11.BlendStateDescription();
+            desc.RenderTarget[0].BlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
+            desc.RenderTarget[0].SourceBlend = SharpDX.Direct3D11.BlendOption.SourceAlpha;
+            desc.RenderTarget[0].DestinationBlend = SharpDX.Direct3D11.BlendOption.InverseDestinationAlpha;
+            desc.IndependentBlendEnable = false;
+
+            _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.AlphaBlend);
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+        }
+
+        private void DrawSolidBuckets()
+        {
+            RenderBucket _lastBucket = null;
+
+            // Draw solid faces
+            for (int i = 0; i < _solidBuckets.Count; i++)
+            {
+                RenderBucket bucket = _solidBuckets[i];
+                int x = bucket.X;
+                int z = bucket.Z;
+                int index = (int)bucket.FaceType;
+                int room = bucket.Room;
+                
+                // If room is changed, setup vertex buffers, world matrix and lighting
+                if (_lastBucket == null || _lastBucket.Room != bucket.Room)
+                {
+                    // Load the vertex buffer in the GPU and set the world matrix
+                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
+                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+
+                    // Enable or disable static lighting
+                    bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
+                    _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+                }
+
+                // Calculate the bounds of the current selection
+                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+                bool noCollision = false;
+
+                if (x >= xMin && x <= xMax && xMin != -1 && zMin != -1 && xMax != -1 && zMax != -1 &&
+                    z >= zMin && z <= zMax)
+                {
+                    // sono in un'area selezionata, quindi attivo la selezione a prescindere
+                    _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+
+                    // attivo le coordinate UV dell'editor a prescindere
+                    _roomEffect.Parameters["EditorTextureEnabled"].SetValue(true);
+
+                    // applico la texture della freccia al pavimento e al soffitto
+                    if (index == 25 || index == 26)
+                    {
+                        switch (_editor.BlockEditingType)
+                        {
+                            case 0:
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                                break;
+
+                            case 1:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 2:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_right"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 3:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 4:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_left"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 5:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 6:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 7:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 8:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                        }
+                    }
+                    else if (index == 27 || index == 28)
+                    {
+                        switch (_editor.BlockEditingType)
+                        {
+                            case 0:
+
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                                break;
+                            case 1:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 2:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_left"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 3:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 4:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_right"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 5:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 6:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 7:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case 8:
+                                _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                        }
+                    }
+                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 || 
+                             (_editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.Wall &&
+                              _editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.BorderWall))
+                    {
+                        _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                        _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                    }
+                    else
+                    {
+                        // applico le texture delle frecce ai muri
+                        int qa, ed, rf, ws, middle;
+
+                        if (z == _editor.Level.Rooms[room].NumZSectors - 1)
+                        {
+                            qa = (int)BlockFaces.SouthQA;
+                            ws = (int)BlockFaces.SouthWS;
+                            ed = (int)BlockFaces.SouthED;
+                            rf = (int)BlockFaces.SouthRF;
+                            middle = (int)BlockFaces.SouthMiddle;
+
+                            switch (_editor.BlockEditingType)
+                            {
+                                case 0:
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                                    break;
+                                case 1:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    break;
+                                case 2:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 3:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 4:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 5:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 6:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 7:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 8:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                            }
+
+                            if (index == middle)
+                            {
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                            }
+                        }
+
+                        if (x == _editor.Level.Rooms[room].NumXSectors - 1)
+                        {
+                            qa = (int)BlockFaces.WestQA;
+                            ws = (int)BlockFaces.WestWS;
+                            ed = (int)BlockFaces.WestED;
+                            rf = (int)BlockFaces.WestRF;
+                            middle = (int)BlockFaces.WestMiddle;
+
+                            switch (_editor.BlockEditingType)
+                            {
+                                case 0:
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                                    break;
+                                case 1:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 2:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 3:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 4:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 5:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 6:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 7:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 8:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                            }
+
+                            if (index == middle)
+                            {
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                            }
+                        }
+
+                        if (z == 0)
+                        {
+                            qa = (int)BlockFaces.NorthQA;
+                            ws = (int)BlockFaces.NorthWS;
+                            ed = (int)BlockFaces.NorthED;
+                            rf = (int)BlockFaces.NorthRF;
+                            middle = (int)BlockFaces.NorthMiddle;
+
+                            switch (_editor.BlockEditingType)
+                            {
+                                case 0:
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                                    break;
+                                case 1:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 2:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 3:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 4:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 5:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 6:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 7:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 8:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                            }
+
+                            if (index == middle)
+                            {
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                            }
+                        }
+
+                        if (x == 0)
+                        {
+                            qa = (int)BlockFaces.EastQA;
+                            ws = (int)BlockFaces.EastWS;
+                            ed = (int)BlockFaces.EastED;
+                            rf = (int)BlockFaces.EastRF;
+                            middle = (int)BlockFaces.EastMiddle;
+
+                            switch (_editor.BlockEditingType)
+                            {
+                                case 0:
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                                    break;
+                                case 1:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 2:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 3:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 4:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 5:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 6:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+                                    break;
+                                case 7:
+                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                    break;
+                                case 8:
+                                    _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["cross"]);
+                                    break;
+                            }
+
+                            if (index == middle)
+                            {
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
+                            }
+                        }
+
+                    }
+                }
+                else
+                {
+                    _roomEffect.Parameters["TextureEnabled"].SetValue(false);
+                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                }
+
+                if (index < 10)
+                {
+                    _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 80.0f / 255.0f, 0.0f, 1.0f));
+                }
+                else if (index >= 10 && index < 15)
+                {
+                    _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 160.0f / 255.0f, 0.0f, 1.0f));
+                }
+                else if (index >= 15 && index < 25)
+                {
+                    _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 240.0f / 255.0f, 0.0f, 1.0f));
+                }
+                else
+                {
+                    _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f));
+
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Electricity) != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.DeathColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Death) != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.DeathColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Lava) != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.DeathColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.MonkeyColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Box) != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.BoxColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.NotWalkableColor));
+                    if (_editor.Level.Rooms[room].Blocks[x, z].Climb[0] ||
+                        _editor.Level.Rooms[room].Blocks[x, z].Climb[1] ||
+                        _editor.Level.Rooms[room].Blocks[x, z].Climb[2] ||
+                        _editor.Level.Rooms[room].Blocks[x, z].Climb[3])
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.ClimbColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].NoCollisionFloor &&
+                        (index == (int)BlockFaces.Floor || index == (int)BlockFaces.FloorTriangle2)))
+                    {
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.NoCollisionColor));
+                        noCollision = true;
+                    }
+                    if (_editor.Level.Rooms[room].Blocks[x, z].Triggers.Count != 0)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.TriggerColor));
+                    if ((_editor.Level.Rooms[room].Blocks[x, z].NoCollisionCeiling &&
+                        (index == (int)BlockFaces.Ceiling || index == (int)BlockFaces.CeilingTriangle2)))
+                    {
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.NoCollisionColor));
+                        noCollision = true;
+                    }
+                }
+
+                // Portals
+                if (index < 25)
+                {
+                    if (_editor.Level.Rooms[room].Blocks[x, z].WallPortal != -1)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
+                }
+
+                if ((index == 25 || index == 26) && !noCollision)
+                {
+                    if (_editor.Level.Rooms[room].Blocks[x, z].FloorPortal != -1)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
+                }
+
+                if ((index == 27 || index == 28) && !noCollision)
+                {
+                    if (_editor.Level.Rooms[room].Blocks[x, z].CeilingPortal != -1)
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
+                }
+
+                if (bucket.Face.Shape == BlockFaceShape.Rectangle)
+                    _roomEffect.Parameters["Shape"].SetValue(0);
+                else
+                    _roomEffect.Parameters["Shape"].SetValue(1);
+
+                _roomEffect.Parameters["SplitMode"].SetValue(bucket.Face.SplitMode);
+
+                _roomEffect.CurrentTechnique.Passes[0].Apply();
+
+                _editor.GraphicsDevice.Draw(PrimitiveType.TriangleList, bucket.Face.Vertices.Length, bucket.Face.StartVertex);
+
+                Debug.NumVertices += bucket.Face.Vertices.Length;
+                Debug.NumTriangles += bucket.Face.Vertices.Length / 3;
+
+                _lastBucket = bucket;
+            }
+        }
+    }
+}
