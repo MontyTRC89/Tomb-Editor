@@ -1,0 +1,8 @@
+thumbs.db
+*.user
+*.cache
+*.VC.db
+*.suo
+obj
+bin
+.vs
