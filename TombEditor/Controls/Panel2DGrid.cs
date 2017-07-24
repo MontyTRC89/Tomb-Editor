@@ -56,9 +56,7 @@ namespace TombEditor.Controls
         private int _lastTrigger;
 
         private int _lastPortal;
-
-        private bool _mouseMove;
-
+		
         private Font _font;
 
         public int StartX;
@@ -126,7 +124,6 @@ namespace TombEditor.Controls
             _graphics = Graphics.FromImage(_selectionBuffer);
             _lastPortal = -1;
             _lastTrigger = -1;
-            _mouseMove = false;
 
             _font = new Font("Arial", 8);
         }
@@ -680,10 +677,8 @@ namespace TombEditor.Controls
                     }
                 }
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch (Exception)
+            {}
 
             _editor.UpdateStatistics();
         }

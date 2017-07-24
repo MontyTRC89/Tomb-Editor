@@ -27,10 +27,7 @@ namespace TombEditor
 
         readonly TimeSpan TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
         readonly TimeSpan MaxElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 10);
-
-        TimeSpan accumulatedTime;
-        TimeSpan lastTime;
-        
+		
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
@@ -1240,7 +1237,6 @@ namespace TombEditor
                     }
 
                     // Add trigger is T key was pressed
-                    TriggerInstance trigger = null;
                     if (addTrigger)
                     {
                         EditorActions.AddTrigger(xMin, xMax, zMin, zMax);

@@ -269,13 +269,10 @@ namespace TombEditor
 
                 readerPalette.Close();
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch (Exception)
+            {}
 
             _panel3D = renderControl;
-
             _panelGrid = grid;
             _formEditor = formEditor;
 

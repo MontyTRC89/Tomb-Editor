@@ -44,8 +44,6 @@ namespace TombEditor.Geometry
             public byte txtTriangle;
             public int NewID;
             public bool IsFlipped;
-            public byte Rotation;
-            public byte Triangle;
         }
 
         private struct prj_block
@@ -1477,12 +1475,6 @@ namespace TombEditor.Geometry
                                         int lowX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
                                         int lowZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
 
-                                        if (((idCurrentRoom == 70 &&  otherPortal.Room==72)||
-                                            (idCurrentRoom == 72 && otherPortal.Room == 70)) && x==4 && z==4)
-                                        {
-                                            int kjkl = 0;
-                                        }
-
                                         if (currentPortal.Direction == PortalDirection.Floor)
                                         {
                                             int minHeight = currentRoom.GetLowestCorner(xMin, zMin, xMax, zMax);
@@ -2517,8 +2509,6 @@ namespace TombEditor.Geometry
                                                         theBlock.Faces[faceIndex].TriangleUV[0] = UV[3];
                                                         theBlock.Faces[faceIndex].TriangleUV[1] = UV[0];
                                                         theBlock.Faces[faceIndex].TriangleUV[2] = UV[2];
-
-                                                        newRot = (sbyte)(newRot);
                                                     }
 
                                                     theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleSW;
@@ -3177,7 +3167,7 @@ namespace TombEditor.Geometry
                 reader.ReadInt32();
                 reader.ReadInt32();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
@@ -3662,7 +3652,7 @@ namespace TombEditor.Geometry
 
                 writer = new BinaryWriterEx(File.OpenWrite(filename));
 
-                if (false)
+                /*/if (false)
                 {
                     int uncompressedSize = projectData.Length;
                     projectData = Utils.CompressDataZLIB(projectData);
@@ -3675,7 +3665,7 @@ namespace TombEditor.Geometry
                     writer.Write(compressedSize);
                     writer.Write(projectData);
                 }
-                else
+                else*/
                 {
                     writer.Write(projectData);
                 }
@@ -3683,7 +3673,7 @@ namespace TombEditor.Geometry
                 writer.Flush();
                 writer.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

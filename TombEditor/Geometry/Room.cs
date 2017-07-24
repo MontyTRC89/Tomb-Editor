@@ -237,15 +237,10 @@ namespace TombEditor.Geometry
                             int r = 0;
                             int g = 0;
                             int b = 0;
-
-                            if (x==19 && z== 19)
-                            {
-                                int jjj = 0;
-                            }
-
+							
                             CalculateLighting2(x, z, f, out r, out g, out b);
 
-                           /* for (int i=0;i< Blocks[x, z].Faces[f].Indices.Count;i++)
+                            /*for (int i=0;i< Blocks[x, z].Faces[f].Indices.Count;i++)
                             {
                                 EditorVertex tmpVertex = OptimizedVertices[Blocks[x, z].Faces[f].Indices[i]];
                                tmpVertex.FaceColor.X /= 255.0f;
@@ -269,8 +264,8 @@ namespace TombEditor.Geometry
                 }
             }
 
-            /*  for (int i = 0; i < _verticesDictionary.Count; i++)
-              {
+            /*for (int i = 0; i < _verticesDictionary.Count; i++)
+            {
                   EditorVertex tmpVertex = OptimizedVertices[i];
                   tmpVertex.FaceColor.X /= 255.0f;
                   tmpVertex.FaceColor.Y /= 255.0f;
@@ -291,7 +286,7 @@ namespace TombEditor.Geometry
                       v2.FaceColor = tmpVertex.FaceColor;
                       Vertices[arrayVertices[j]] = v2;
                   }
-              }*/
+            }*/
 
             for (int i=0;i<Vertices.Count;i++)
             {
@@ -311,7 +306,7 @@ namespace TombEditor.Geometry
                 }
             }
 
-           /* for (int x = 0; x < NumXSectors; x++)
+           /*for (int x = 0; x < NumXSectors; x++)
             {
                 for (int z = 0; z < NumZSectors; z++)
                 {
@@ -350,9 +345,10 @@ namespace TombEditor.Geometry
 
         public void CalculateLightingForThisRoom()
         {
-            CalculateLightingForThisRoom2(); return;
+            CalculateLightingForThisRoom2();
+			return;
 
-            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            /*System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
             short[] iterations = new short[OptimizedVertices.Count];
@@ -400,7 +396,7 @@ namespace TombEditor.Geometry
             }
 
             watch.Stop();
-            long stop = watch.ElapsedMilliseconds;
+            long stop = watch.ElapsedMilliseconds;*/
         }
 
         private void CalculateCeilingSlope(int x, int z, int ws0, int ws1, int ws2, int ws3)
@@ -526,7 +522,7 @@ namespace TombEditor.Geometry
             BuildGeometry(0, NumXSectors, 0, NumZSectors);
         }
 
-        public void BuildGeometry(int xMin,int xMax,int zMin, int zMax)
+        public void BuildGeometry(int xMin, int xMax,int zMin, int zMax)
         {
             Vertices = new List<EditorVertex>();
             OptimizedVertices = new List<EditorVertex>();
@@ -592,14 +588,10 @@ namespace TombEditor.Geometry
                         else
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, false);
                     }
+					
 
-                    if (x == 1 && z==8 )
-                    {
-                        int jjj = 0;
-                    }
-
-                        // South
-                        if (x > 0 && x < NumXSectors - 1 && z > 1 && z < NumZSectors - 1 &&
+                    // South
+                    if (x > 0 && x < NumXSectors - 1 && z > 1 && z < NumZSectors - 1 &&
                         !(Blocks[x, z - 1].Type == BlockType.Wall && 
                          (Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
@@ -637,12 +629,7 @@ namespace TombEditor.Geometry
                         else
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, false);
                     }
-
-                    if (x==1 && z==1)
-                    {
-                        int jjf = 0;
-                    }
-
+					
                     // Diagonal faces
                     if (Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                     {
@@ -804,27 +791,21 @@ namespace TombEditor.Geometry
                     // If is a non diagonal wall, then continue
                     if (Blocks[x, z].Type == BlockType.Wall && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None) continue;
 
-                    /*
-                    *  1----2    Split 0: 231 413  
-                    *  | \  |    Split 1: 124 342
-                    *  |  \ |
-                    *  4----3
-                    */
+                    //
+                    // 1----2    Split 0: 231 413  
+                    // | \  |    Split 1: 124 342
+                    // |  \ |
+                    // 4----3
+                    //
 
-                    /*
-                    *  1----2    Split 0: 231 413  
-                    *  |  / |    Split 1: 124 342
-                    *  | /  |
-                    *  4----3
-                    */
+                    //
+                    // 1----2    Split 0: 231 413  
+                    // |  / |    Split 1: 124 342
+                    // | /  |
+                    // 4----3
+                    //
 
                     // Floor polygons ---------------------------------------------------------------------------------
-
-                    if (x==1 && z==1)
-                    {
-                        int jjjjjjjjjjjj = 0;
-                    }
-
                     BlockFace face = Blocks[x, z].Faces[(int)BlockFaces.Floor];
 
                     // First, I reset the slope already calculated
@@ -1029,29 +1010,19 @@ namespace TombEditor.Geometry
                     }
 
                     // Ceiling polygons ---------------------------------------------------------------------------------
-                    /*
-                     *  2----1    Split 0: 142 324  
-                     *  | \  |    Split 1: 213 431
-                     *  |  \ |
-                     *  3----4
-                     */
-
-                    if (x==1 && z==1)
-                    {
-                        int ghghg = 0;
-                    }
-
+                    //
+                    //  2----1    Split 0: 142 324  
+                    //  | \  |    Split 1: 213 431
+                    //  |  \ |
+                    //  3----4
+                    //
+					 
                     face = Blocks[x, z].Faces[(int)BlockFaces.Ceiling];
 
                     // First, I reset the slope already calculated
                     Blocks[x, z].CeilingSlopeX = 0;
                     Blocks[x, z].CeilingSlopeZ = 0;
-
-                    if (x==4 && z==4)
-                    {
-                        int hghgjkg = 0;
-                    }
-
+					
                     if (IsQuad(x, z, ws0, ws1, ws2, ws3) || (Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None))
                     {
                         if (!(ws0 == ws1 && ws1 == ws2 && ws2 == ws3) && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
@@ -1308,12 +1279,7 @@ namespace TombEditor.Geometry
             Vector2 e2 = new Vector2(1.0f, 0.0f);
             Vector2 e3 = new Vector2(1.0f, 1.0f);
             Vector2 e4 = new Vector2(0.0f, 1.0f);
-
-            if (x==1 && z==11)
-            {
-                int hgfhg = 0;
-            }
-
+			
             Block otherBlock;
             BlockFace face;
 
@@ -3049,7 +3015,7 @@ namespace TombEditor.Geometry
         {
             return false;
             // Get the path traveled by the ray
-            List<RayPathPoint> path = GetRayPath(light.Position, p);
+            /*List<RayPathPoint> path = GetRayPath(light.Position, p);
 
             // Get the light direction
             Vector3 direction = p - light.Position;
@@ -3193,7 +3159,7 @@ namespace TombEditor.Geometry
 
             if ((maxDistance - distance) < 0.0f) return true;
 
-            return false;
+            return false;*/
         }
 
         private bool RayTraceCheckFloorCeiling(int x, int y, int z, int xLight, int yLight, int zLight)
@@ -3209,11 +3175,6 @@ namespace TombEditor.Geometry
 
         private bool RayTraceX(int x, int y, int z, int xLight, int yLight, int zLight)
         {
-            if (x==2048 && z==4096)
-            {
-                int hhgh = 0;
-            }
-
             int deltaX;
             int deltaY;
             int deltaZ;
@@ -3231,7 +3192,7 @@ namespace TombEditor.Geometry
             int currentZblock;
             int currentYclick;
 
-           yLight = -yLight;
+            yLight = -yLight;
             y = -y;
 
             int yPoint = y;
@@ -3331,10 +3292,6 @@ namespace TombEditor.Geometry
         
         private bool RayTraceZ(int x, int y, int z, int xLight, int yLight, int zLight)
         {
-            if (x==2048 && z==4096)
-            {
-                int hhh = 0;
-            }
             int deltaX;
             int deltaY;
             int deltaZ;
@@ -3352,7 +3309,7 @@ namespace TombEditor.Geometry
             int currentZblock;
             int currentYclick;
 
-           yLight = -yLight;
+            yLight = -yLight;
             y = -y;
 
             int yPoint = y;
@@ -3380,7 +3337,7 @@ namespace TombEditor.Geometry
                 yPoint = yLight;
             }
 
-           // deltaY *= -1;
+            //deltaY *= -1;
 
             if (deltaZ != 0)
             {
@@ -4181,7 +4138,7 @@ namespace TombEditor.Geometry
         public void AdjustObjectsHeight()
         {
             return;
-
+			/*
             for (int z = 0; z < NumZSectors; z++)
             {
                 for (int x = 0; x < NumXSectors; x++)
@@ -4230,27 +4187,25 @@ namespace TombEditor.Geometry
                             Level.Objects[Moveables[i]] = (MoveableInstance)instance;
                         }
 
-                        /*if (instance.Position.Y > meanCeiling2 && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                           (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
-                            Level.Objects[Moveables[i]] = (MoveableInstance)instance;
-                        }
+                        //if (instance.Position.Y > meanCeiling2 && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //   (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
+                        //    Level.Objects[Moveables[i]] = (MoveableInstance)instance;
+                        //}
+                        //if (instance.Position.Y < highest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //    (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanFloor, instance.Position.Z);
+                        //    Level.Objects[Moveables[i]] = (MoveableInstance)instance;
+                        //}
 
-                        /*
-                        if (instance.Position.Y < highest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                            (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanFloor, instance.Position.Z);
-                            Level.Objects[Moveables[i]] = (MoveableInstance)instance;
-                        }
-
-                        if (instance.Position.Y > lowest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                           (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
-                            Level.Objects[Moveables[i]] = (MoveableInstance)instance;
-                        }*/
+                        //if (instance.Position.Y > lowest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //   (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
+                        //    Level.Objects[Moveables[i]] = (MoveableInstance)instance;
+                        //}
                     }
 
                     for (int i = 0; i < StaticMeshes.Count; i++)
@@ -4269,12 +4224,12 @@ namespace TombEditor.Geometry
                             Level.Objects[StaticMeshes[i]] = (StaticMeshInstance)instance;
                         }
 
-                       /* if (instance.Position.Y > GetHighestCeilingCorner && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                           (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
-                            Level.Objects[StaticMeshes[i]] = (StaticMeshInstance)instance;
-                        }*/
+                        //if (instance.Position.Y > GetHighestCeilingCorner && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //   (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
+                        //    Level.Objects[StaticMeshes[i]] = (StaticMeshInstance)instance;
+                        //}
                     }
 
                     for (int i = 0; i < Sinks.Count; i++)
@@ -4353,7 +4308,7 @@ namespace TombEditor.Geometry
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }

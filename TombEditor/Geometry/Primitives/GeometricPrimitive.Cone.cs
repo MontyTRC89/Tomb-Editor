@@ -103,9 +103,7 @@ namespace SharpDX.Toolkit.Graphics
                 var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
-
-                int vertexCount = 0;
-
+				
                 // Vertex of the cone
                 EditorVertex coneVertex = new EditorVertex();
                 coneVertex.Position = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);

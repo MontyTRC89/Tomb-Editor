@@ -130,16 +130,17 @@ namespace TombEditor.Controls
             if (_w < 0) 
             {
                 _drag = false;
-                return; _x -= _w;
-                _w = (short)-_w;
+                return;
+				//_x -= _w;
+                //_w = (short)-_w;
             }
 
             if (_h < 0)
             {
                 _drag = false;
                 return;
-                _y -= _h;
-                _h = (short)-_h;
+                //_y -= _h;
+                //_h = (short)-_h;
             }
 
             LevelTexture sample;
