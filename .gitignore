@@ -1,4 +1,5 @@
 thumbs.db
+/Build
 *.user
 *.cache
 *.VC.db
