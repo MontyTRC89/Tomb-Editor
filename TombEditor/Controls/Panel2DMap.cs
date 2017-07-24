@@ -24,9 +24,7 @@ namespace TombEditor.Controls
         public float LastY { get; set; }
 
         public bool Drag { get; set; }
-
-        private bool _firstSelection;
-
+		
         private Bitmap _selectionBuffer;
 
         private Graphics _graphics;

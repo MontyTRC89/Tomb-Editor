@@ -767,7 +767,7 @@ namespace TombEditor.Compilers
         private int GetBoxFloorHeight(int room, int x, int z)
         {
             return GetMostDownFloor(room, x, z);
-
+			/*
             int roomIndex = room;
 
             tr_room currentRoom = Rooms[roomIndex];
@@ -914,7 +914,7 @@ namespace TombEditor.Compilers
                 }
             }
 
-            return 0x7fff;
+            return 0x7fff;*/
         }
         
         private bool CanSectorBeReachedAndIsSolid(int room, int x, int z, out int destRoom)

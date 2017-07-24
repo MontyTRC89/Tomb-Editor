@@ -15,9 +15,8 @@ namespace TombEditor
     {
         public int TriggerID { get; set; }
         public TriggerInstance Trigger { get; set; }
-        
-        private TriggerInstance _trigger;
-        private Editor _editor = Editor.Instance;
+
+		private Editor _editor = Editor.Instance;
         private List<int> _items;
 
         public FormTrigger()
@@ -32,17 +31,6 @@ namespace TombEditor
 
         private void FormTrigger_Load(object sender, EventArgs e)
         {
-            /*if (Trigger==0)
-            {
-                _trigger = new Geometry.TriggerInstance(0, 0);
-                _trigger.TriggerType = TriggerType.Trigger;
-                _trigger.TargetType = TriggerTargetType.Object;
-            }
-            else
-            {
-                _trigger
-            }*/
-
             if (TriggerID == -1)
             {
                 comboType.SelectedIndex = 0;

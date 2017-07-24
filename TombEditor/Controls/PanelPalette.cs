@@ -13,14 +13,7 @@ namespace TombEditor.Controls
     public partial class PanelPalette : PictureBox
     {
         private Editor _editor;
-
-        private bool _drag;
-
-        private short _x;
-        private short _y;
-        private short _w;
-        private short _h;
-
+		
         public Color SelectedColor { get; set; }
 
         private int _selectedColorIndex = -1;

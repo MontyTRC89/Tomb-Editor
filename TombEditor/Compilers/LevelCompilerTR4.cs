@@ -496,7 +496,7 @@ namespace TombEditor.Compilers
 
                 reader.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -1510,11 +1510,6 @@ namespace TombEditor.Compilers
                 }
 
                 if (tmpZ < zMax) zMax = tmpZ;
-            }
-
-            if (tempBoxes.Count==285)
-            {
-                int hhh = 0;
             }
 
             box = new tr_box_aux();

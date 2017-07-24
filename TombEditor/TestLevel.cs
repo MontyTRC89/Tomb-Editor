@@ -435,7 +435,7 @@ namespace TombEngine
         public ushort[] Overlaps;
         public short[] Zones;
         public uint NumAnimatedTextures;
-        public ushort[] AnimatedTextures;
+        //public ushort[] AnimatedTextures;
 
         public byte[] TEX;
 
@@ -537,24 +537,18 @@ namespace TombEngine
             reader = new BinaryReaderEx(stream);
             reader.ReadBlock(out Unused);
             reader.ReadBlock(out NumRooms);
-
-            int i, j, k, l;
+			
             int max = 0;
 
             StreamWriter wp = new StreamWriter(File.OpenWrite("portals" + ind + ".txt"));
 
             Rooms = new tr_room[NumRooms];
-            for (i = 0; i < NumRooms; i++)
+            for (int i = 0; i < NumRooms; i++)
             {
                 wp.WriteLine("=====================================================================");
                 wp.WriteLine("ROOM #" + i);
                 wp.WriteLine("=====================================================================");
-
-                if (i==112)
-                {
-                    int jjjgjgjgjgjg = 0;
-                }
-
+				
                 reader.ReadBlock(out Rooms[i].Info);
                 reader.ReadBlock(out Rooms[i].NumDataWords);
                 reader.ReadBlock(out Rooms[i].NumVertices);
@@ -563,7 +557,7 @@ namespace TombEngine
                 if (Rooms[i].NumVertices > max) max = Rooms[i].NumVertices;
                 reader.ReadBlock(out Rooms[i].NumRectangles);
                 Rooms[i].Rectangles = new tr_face4[Rooms[i].NumRectangles];
-                for (j = 0; j < Rooms[i].NumRectangles; j++)
+                for (int j = 0; j < Rooms[i].NumRectangles; j++)
                 {
                     // Rooms[i].Rectangles[j].Vertices = new ushort[4];
                     reader.ReadBlockArray(out Rooms[i].Rectangles[j].Vertices, 4);
@@ -572,7 +566,7 @@ namespace TombEngine
 
                 reader.ReadBlock(out Rooms[i].NumTriangles);
                 Rooms[i].Triangles = new tr_face3[Rooms[i].NumTriangles];
-                for (j = 0; j < Rooms[i].NumTriangles; j++)
+                for (int j = 0; j < Rooms[i].NumTriangles; j++)
                 {
                     // Rooms[i].Triangles[j].Vertices = new ushort[3];
                     reader.ReadBlockArray(out Rooms[i].Triangles[j].Vertices, 3);
@@ -630,7 +624,7 @@ namespace TombEngine
 
             int numBytes = 0;
             int totalBytes = 0;
-            l = 0;
+            int l = 0;
             short temp = 0;
 
             Meshes = new tr_mesh[2048];
@@ -665,12 +659,7 @@ namespace TombEngine
                 reader.ReadBlock(out Meshes[l].NumTexturedTriangles);
                 reader.ReadBlockArray(out Meshes[l].TexturedTriangles, Meshes[l].NumTexturedTriangles);
                 numBytes += 2 + 10 * Meshes[l].NumTexturedTriangles;
-
-                if (l==353)
-                {
-                    int ghghgh = 0;
-
-                }
+				
                 long offset2 = reader.BaseStream.Position;
                 int diff = (int)(offset2 - offset1);
                 if (diff % 4 != 0) { reader.ReadBlock(out temp); diff += 2; }
@@ -872,9 +861,5 @@ namespace TombEngine
 
 
         }
-
-      
     }
-
-
 }

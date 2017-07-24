@@ -34,8 +34,6 @@ namespace TombEditor
         {
             Bitmap dest = new Bitmap(256, 32768);
             PngInfo[] infos = new PngInfo[1024];
-            int numTextures = 0;
-            int maxWidth = 0;
             int maxHeight = 0;
             int xcurr = 0;
             int ycurr = 0;
