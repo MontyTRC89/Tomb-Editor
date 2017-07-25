@@ -57,16 +57,10 @@ namespace TombEditor.Geometry
         public Vector3 Centre { get; set; }
         public bool ExcludeFromPathFinding { get; set; }
         private Editor _editor;
-        private Dictionary<int, List<int>> _verticesDictionary;
         private EditorVertex[,,] _verticesGrid;
         private byte[,] _numVerticesInGrid;
         private byte[,,] _iterations;
-
-        // Temporary vectors
-        private Vector3 _tempPosition = Vector3.Zero;
-        private Vector3 _tempNormal = Vector3.Zero;
-        private Vector4 _vertexColor = Vector4.Zero;
-
+                
         public Room(Level level)
         {
             Level = level;
@@ -319,7 +313,6 @@ namespace TombEditor.Geometry
         {
             Vertices = new List<EditorVertex>();
             OptimizedVertices = new List<EditorVertex>();
-            _verticesDictionary = new Dictionary<int, List<int>>();
             Centre = new Vector3(0.0f, 0.0f, 0.0f);
 
             Vector2 e1 = new Vector2(0.0f, 0.0f);
@@ -3367,8 +3360,6 @@ namespace TombEditor.Geometry
 
                 _verticesGrid[theX, theZ, ind] = vertex;
             }
-
-            _vertexColor.W = 255.0f;
 
             return;
         }
