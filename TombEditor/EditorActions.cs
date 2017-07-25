@@ -2699,5 +2699,61 @@ namespace TombEditor
 
             return false;
         }
+
+        public static void SpecialRaiseFloorOrCeiling(int face, short increment, 
+                                                      int xMinSpecial, int xMaxSpecial, int zMinSpecial, int zMaxSpecial,
+                                                      int xMin, int xMax, int zMin, int zMax)
+        {
+            if (face == 0)
+            {
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].QAFaces[2] += increment;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].QAFaces[3] += increment;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].QAFaces[0] += increment;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].QAFaces[1] += increment;
+
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].QAFaces[0] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].QAFaces[1] += increment;
+
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].QAFaces[3] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].QAFaces[2] += increment;
+                }
+
+                for (int z = zMin; z <= zMax; z++)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].QAFaces[1] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].QAFaces[2] += increment;
+
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].QAFaces[0] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].QAFaces[3] += increment;
+                }
+            }
+            else if (face == 1)
+            {
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].WSFaces[2] += increment;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].WSFaces[3] += increment;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].WSFaces[0] += increment;
+                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].WSFaces[1] += increment;
+
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].WSFaces[0] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].WSFaces[1] += increment;
+
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].WSFaces[3] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].WSFaces[2] += increment;
+                }
+
+                for (int z = zMin; z <= zMax; z++)
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].WSFaces[1] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].WSFaces[2] += increment;
+
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].WSFaces[0] += increment;
+                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].WSFaces[3] += increment;
+                }
+            }
+        }
     }
 }
