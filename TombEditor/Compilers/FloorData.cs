@@ -6,7 +6,7 @@ using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTR4
+    public partial class LevelCompilerTr4
     {
         private void BuildFloorData()
         {
@@ -222,9 +222,9 @@ namespace TombEditor.Compilers
 
                             // First, we fix the sector height
                             if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
+                                sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
                             else
-                                sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
+                                sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE || block.FloorDiagonalSplit == DiagonalSplit.SW)
                             {
@@ -395,7 +395,7 @@ namespace TombEditor.Compilers
                                 if (!Room.IsQuad(x, z, q0, q1, q2, q3, true))
                                 {
                                     // First, we fix the sector height
-                                    sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
+                                    sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
 
                                     // Then we have to find the axis of the triangulation
                                     var min = room.GetLowestFloorCorner(x, z);
@@ -678,9 +678,9 @@ namespace TombEditor.Compilers
 
                                 // First, we fix the sector height
                                 if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
+                                    sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
                                 else
-                                    sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
+                                    sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE || block.CeilingDiagonalSplit == DiagonalSplit.SW)
                                 {
@@ -1175,7 +1175,7 @@ namespace TombEditor.Compilers
                                             }
                                             else
                                             {
-                                                item = MoveablesTable[trigger.Target];
+                                                item = _moveablesTable[trigger.Target];
                                             }
                                         }
 
@@ -1215,7 +1215,7 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.Target:
                                         // Trigger for look at item
-                                        trigger2 = (ushort)(MoveablesTable[trigger.Target] & 0x3ff | (0x06 << 10));
+                                        trigger2 = (ushort)(_moveablesTable[trigger.Target] & 0x3ff | (0x06 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FinishLevel:
@@ -1272,9 +1272,9 @@ namespace TombEditor.Compilers
                 }
             }
 
-            FloorData = tempFloorData.ToArray();
+            _floorData = tempFloorData.ToArray();
 
-            ReportProgress(80, "    Floordata size: " + FloorData.Length * 2 + " bytes");
+            ReportProgress(80, "    Floordata size: " + _floorData.Length * 2 + " bytes");
         }
     }
 }
