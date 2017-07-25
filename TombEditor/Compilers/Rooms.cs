@@ -286,10 +286,10 @@ namespace TombEditor.Compilers
 
                                 var indices = new List<ushort>
                                 {
-                                    (ushort) indicesDictionary[face.Indices[0]],
-                                    (ushort) indicesDictionary[face.Indices[1]],
-                                    (ushort) indicesDictionary[face.Indices[2]],
-                                    (ushort) indicesDictionary[face.Indices[3]]
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[0]],
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[1]],
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[2]],
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[3]]
                                 };
 
 
@@ -320,9 +320,9 @@ namespace TombEditor.Compilers
 
                                 var indices = new List<ushort>
                                 {
-                                    (ushort) indicesDictionary[face.Indices[0]],
-                                    (ushort) indicesDictionary[face.Indices[1]],
-                                    (ushort) indicesDictionary[face.Indices[2]]
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[0]],
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[1]],
+                                    (ushort) indicesDictionary[face.IndicesForFinalLevel[2]]
                                 };
 
 

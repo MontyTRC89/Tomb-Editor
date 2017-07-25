@@ -2135,7 +2135,7 @@ namespace TombEditor.Controls
                                                 found = _opaqueBuckets.Count - 1;
                                             }
 
-                                            _opaqueBuckets[found].Indices.AddRange(face.EditorIndices);
+                                            _opaqueBuckets[found].Indices.AddRange(face.IndicesForSolidBucketsRendering);
                                         }
                                         else if (face.Invisible)
                                         {
