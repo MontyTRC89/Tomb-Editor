@@ -1083,7 +1083,7 @@ namespace TombEditor
             }
 
             // Stamp
-            if (e.KeyCode == Keys.S && e.Control)
+            if (e.KeyCode == Keys.B && e.Control)
             {
                 butClone_Click(null, null);
                 return;
@@ -1159,56 +1159,72 @@ namespace TombEditor
                     {
                         case Keys.Q:
                             sub = EditorActions.FaceSubdivisions.Q;
+                            face = 0;
+                            increment = 1;
                             break;
 
                         case Keys.A:
                             sub = EditorActions.FaceSubdivisions.A;
+                            face = 0;
+                            increment = -1;
                             break;
 
                         case Keys.W:
                             sub = EditorActions.FaceSubdivisions.W;
+                            face = 1;
+                            increment = 1;
                             break;
 
                         case Keys.S:
                             sub = EditorActions.FaceSubdivisions.S;
+                            face = 1;
+                            increment = -1;
                             break;
 
                         case Keys.E:
                             sub = EditorActions.FaceSubdivisions.E;
+                            increment = 1;
                             break;
 
                         case Keys.D:
                             sub = EditorActions.FaceSubdivisions.D;
+                            increment = -1;
                             break;
 
                         case Keys.R:
                             sub = EditorActions.FaceSubdivisions.R;
+                            increment = 1;
                             break;
 
                         case Keys.F:
                             sub = EditorActions.FaceSubdivisions.F;
+                            increment = -1;
                             break;
 
                         case Keys.Y:
                             sub = EditorActions.FaceSubdivisions.Q;
+                            increment = 1;
                             action = EditorActions.FaceEditorActions.DiagonalFloorCorner;
                             diagonal = true;
                             break;
 
                         case Keys.H:
                             sub = EditorActions.FaceSubdivisions.A;
+                            increment = -1;
                             action = EditorActions.FaceEditorActions.DiagonalFloorCorner;
                             diagonal = true;
                             break;
 
                         case Keys.U:
                             sub = EditorActions.FaceSubdivisions.W;
+                            increment = 1;
                             action = EditorActions.FaceEditorActions.DiagonalCeilingCorner;
                             diagonal = true;
                             break;
 
                         case Keys.J:
                             sub = EditorActions.FaceSubdivisions.S;
+                            increment = -1;
                             action = EditorActions.FaceEditorActions.DiagonalCeilingCorner;
                             diagonal = true;
                             break;
@@ -1243,56 +1259,11 @@ namespace TombEditor
                         int xMaxSpecial = Math.Min(_editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1, xMax + 1);
                         int zMaxSpecial = Math.Min(_editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1, zMax + 1);
 
-                        if (face == 0)
-                        {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].QAFaces[2] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].QAFaces[3] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].QAFaces[0] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].QAFaces[1] += increment;
-
-                            for (int x = xMin; x <= xMax; x++)
-                            {
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].QAFaces[0] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].QAFaces[1] += increment;
-
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].QAFaces[3] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].QAFaces[2] += increment;
-                            }
-
-                            for (int z = zMin; z <= zMax; z++)
-                            {
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].QAFaces[1] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].QAFaces[2] += increment;
-
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].QAFaces[0] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].QAFaces[3] += increment;
-                            }
-                        }
-                        else if (face == 1)
-                        {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMaxSpecial].WSFaces[2] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMaxSpecial].WSFaces[3] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, zMinSpecial].WSFaces[0] += increment;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, zMinSpecial].WSFaces[1] += increment;
-
-                            for (int x = xMin; x <= xMax; x++)
-                            {
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].WSFaces[0] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMinSpecial].WSFaces[1] += increment;
-
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].WSFaces[3] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, zMaxSpecial].WSFaces[2] += increment;
-                            }
-
-                            for (int z = zMin; z <= zMax; z++)
-                            {
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].WSFaces[1] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMinSpecial, z].WSFaces[2] += increment;
-
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].WSFaces[0] += increment;
-                                _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].WSFaces[3] += increment;
-                            }
-                        }
+                        EditorActions.SpecialRaiseFloorOrCeiling(face, increment,
+                                                                 xMinSpecial, xMaxSpecial, zMinSpecial, zMaxSpecial,
+                                                                 xMin, xMax, zMin, zMax);
+                        ///_editor.DrawPanel3D();
+                        //return;
                     }
 
                     if (!diagonal)
@@ -1752,12 +1723,17 @@ namespace TombEditor
                 // _editor.DrawPanel3D();
             }
 
-            if (e.Control && !panel3D.Drag)
-            { }
+            _editor.DrawPanel3D();
+
+            /*if (e.Control && !panel3D.Drag)
+            {
+                    
+            }
             else
             {
                 _editor.DrawPanel3D();
-            }
+            }*/
+
             _editor.DrawPanelGrid();
 
             e.Handled = true;
@@ -3747,5 +3723,10 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         { }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
