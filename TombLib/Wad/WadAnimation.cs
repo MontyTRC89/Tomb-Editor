@@ -18,15 +18,8 @@ namespace TombLib.Wad
         public int Unknown3;
         public ushort NextAnimation;
         public ushort NextFrame;
-        public List<WadKeyFrame> KeyFrames;
-        public List<WadStateChange> StateChanges;
-        public List<short> AnimCommands;
-
-        public WadAnimation()
-        {
-            KeyFrames = new List<WadKeyFrame>();
-            StateChanges = new List<WadStateChange>();
-            AnimCommands = new List<short>();
-        }
+        public List<WadKeyFrame> KeyFrames = new List<WadKeyFrame>();
+        public List<WadStateChange> StateChanges = new List<WadStateChange>();
+        public List<short> AnimCommands = new List<short>();
     }
 }

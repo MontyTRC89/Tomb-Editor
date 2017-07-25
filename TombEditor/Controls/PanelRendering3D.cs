@@ -37,7 +37,6 @@ namespace TombEditor.Controls
 
     public partial class PanelRendering3D : Panel
     {
-
         private class RenderBucket
         {
             public byte MainRoom { get; set; }
@@ -67,12 +66,17 @@ namespace TombEditor.Controls
         {
             public int Compare(RenderBucket x, RenderBucket y)
             {
-                if (x == null || y == null) return 0;
+                if (x == null || y == null)
+                    return 0;
                 int result = (x.MainRoom > y.MainRoom ? -1 : 1);
-                if (x.MainRoom == y.MainRoom) result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
-                if (x.DoubleSided == y.DoubleSided) result = (x.Room > y.Room ? 1 : -1);
-                if (x.Room == y.Room) result = (x.Texture > y.Texture ? 1 : -1);
-                if (x.Texture == y.Texture) return 0;
+                if (x.MainRoom == y.MainRoom)
+                    result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
+                if (x.DoubleSided == y.DoubleSided)
+                    result = (x.Room > y.Room ? 1 : -1);
+                if (x.Room == y.Room)
+                    result = (x.Texture > y.Texture ? 1 : -1);
+                if (x.Texture == y.Texture)
+                    return 0;
 
                 return result;
             }
@@ -83,10 +87,14 @@ namespace TombEditor.Controls
             public int Compare(RenderBucket x, RenderBucket y)
             {
                 int result = (x.Distance < y.Distance ? 1 : -1);
-                if (x.Distance == y.Distance) result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
-                if (x.DoubleSided == y.DoubleSided) result = (x.Room > y.Room ? 1 : -1);
-                if (x.Room == y.Room) result = (x.Texture > y.Texture ? 1 : -1);
-                if (x.Texture == y.Texture) return 0;
+                if (x.Distance == y.Distance)
+                    result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
+                if (x.DoubleSided == y.DoubleSided)
+                    result = (x.Room > y.Room ? 1 : -1);
+                if (x.Room == y.Room)
+                    result = (x.Texture > y.Texture ? 1 : -1);
+                if (x.Texture == y.Texture)
+                    return 0;
 
                 return result;
             }
@@ -96,8 +104,10 @@ namespace TombEditor.Controls
         {
             public int Compare(RenderBucket x, RenderBucket y)
             {
-                if (x.Room == y.Room) return 0;
-                if (x.Room > y.Room) return 1;
+                if (x.Room == y.Room)
+                    return 0;
+                if (x.Room > y.Room)
+                    return 1;
                 return -1;
             }
         }
@@ -110,8 +120,10 @@ namespace TombEditor.Controls
                 MoveableInstance instanceY = (MoveableInstance)Editor.Instance.Level.Objects[y];
 
                 int result = (instanceX.ObjectID > instanceY.ObjectID ? 1 : -1);
-                if (instanceX.ObjectID == instanceY.ObjectID) result = (instanceX.Room > instanceY.Room ? 1 : -1);
-                if (instanceX.Room == instanceY.Room) return 0;
+                if (instanceX.ObjectID == instanceY.ObjectID)
+                    result = (instanceX.Room > instanceY.Room ? 1 : -1);
+                if (instanceX.Room == instanceY.Room)
+                    return 0;
 
                 return result;
             }
@@ -125,53 +137,36 @@ namespace TombEditor.Controls
                 StaticMeshInstance instanceY = (StaticMeshInstance)Editor.Instance.Level.Objects[y];
 
                 int result = (instanceX.ObjectID > instanceY.ObjectID ? 1 : -1);
-                if (instanceX.ObjectID == instanceY.ObjectID) result = (instanceX.Room > instanceY.Room ? 1 : -1);
-                if (instanceX.Room == instanceY.Room) return 0;
+                if (instanceX.ObjectID == instanceY.ObjectID)
+                    result = (instanceX.Room > instanceY.Room ? 1 : -1);
+                if (instanceX.Room == instanceY.Room)
+                    return 0;
 
                 return result;
             }
         }
 
         public int RoomIndex { get; set; }
-
         public int DeltaX { get; set; }
-
         public int DeltaY { get; set; }
-
         public int LastX { get; set; }
-
         public int LastY { get; set; }
-
         public bool Drag { get; set; }
-
         public Vector3 DeltaVector { get; set; }
-
-        private Editor _editor;
-
         public int LightIndex { get; set; }
-
         public SwapChainGraphicsPresenter Presenter { get; set; }
-
         public Viewport Viewport { get; set; }
-
         public ArcBallCamera Camera { get; set; }
 
+        private Editor _editor;
         private bool _firstSelection;
-
         private RasterizerState _rasterizerWireframe;
-
         private GeometricPrimitive _cube;
-
         private GeometricPrimitive _sphere;
-
         private GeometricPrimitive _cone;
-
         private GeometricPrimitive _littleCube;
-
         private GeometricPrimitive _littleSphere;
-
         private GeometricPrimitive _littleWireframedCube;
-
         private BasicEffect _basicEffect;
 
         // Rooms to draw
@@ -188,8 +183,8 @@ namespace TombEditor.Controls
         private List<int> _sinksToDraw;
         private List<int> _flybyToDraw;
         private List<int> _soundSourcesToDraw;
-        private List<int> _moveablesToDraw;
-        private List<int> _staticMeshesToDraw;
+        private List<int> MoveablesToDraw;
+        private List<int> StaticMeshesToDraw;
 
         private Effect _roomEffect;
 
@@ -198,11 +193,6 @@ namespace TombEditor.Controls
             InitializeComponent();
 
             _editor = Editor.Instance;
-        }
-
-        private void PanelRendering3D_Load(object sender, EventArgs e)
-        {
-
         }
 
         public void ResetCamera()
@@ -282,14 +272,15 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-           Draw();
+            Draw();
         }
 
         protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
-            if (!Drag) Drag = true;
+            if (!Drag)
+                Drag = true;
 
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
@@ -482,7 +473,7 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    Camera.Rotate((float)(DeltaX / 500.0f) , (float)(-DeltaY / 500.0f));
+                    Camera.Rotate((float)(DeltaX / 500.0f), (float)(-DeltaY / 500.0f));
                 }
 
                 Camera.Update();
@@ -543,7 +534,8 @@ namespace TombEditor.Controls
                 }
             }
 
-            if (Drag) Draw();
+            if (Drag)
+                Draw();
             _editor.DrawPanelGrid();
         }
 
@@ -643,10 +635,14 @@ namespace TombEditor.Controls
                                         }
                                         else
                                         {
-                                            if (_editor.BlockEditingType == 7) _editor.BlockEditingType = 8;
-                                            else if (_editor.BlockEditingType == 6) _editor.BlockEditingType = 7;
-                                            else if (_editor.BlockEditingType == 5) _editor.BlockEditingType = 6;
-                                            else _editor.BlockEditingType = 5;
+                                            if (_editor.BlockEditingType == 7)
+                                                _editor.BlockEditingType = 8;
+                                            else if (_editor.BlockEditingType == 6)
+                                                _editor.BlockEditingType = 7;
+                                            else if (_editor.BlockEditingType == 5)
+                                                _editor.BlockEditingType = 6;
+                                            else
+                                                _editor.BlockEditingType = 5;
                                         }
                                     }
                                     else
@@ -657,10 +653,14 @@ namespace TombEditor.Controls
                                         }
                                         else
                                         {
-                                            if (_editor.BlockEditingType == 3) _editor.BlockEditingType = 4;
-                                            else if (_editor.BlockEditingType == 2) _editor.BlockEditingType = 3;
-                                            else if (_editor.BlockEditingType == 1) _editor.BlockEditingType = 2;
-                                            else _editor.BlockEditingType = 1;
+                                            if (_editor.BlockEditingType == 3)
+                                                _editor.BlockEditingType = 4;
+                                            else if (_editor.BlockEditingType == 2)
+                                                _editor.BlockEditingType = 3;
+                                            else if (_editor.BlockEditingType == 1)
+                                                _editor.BlockEditingType = 2;
+                                            else
+                                                _editor.BlockEditingType = 1;
                                         }
                                     }
                                 }
@@ -762,7 +762,8 @@ namespace TombEditor.Controls
 
         private void DrawLights(int room)
         {
-            if (room == -1) return;
+            if (room == -1)
+                return;
 
             _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
@@ -806,12 +807,18 @@ namespace TombEditor.Controls
 
                 solidEffect.Parameters["World"].SetValue(Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
 
-                if (light.Type == LightType.Light) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-                if (light.Type == LightType.Spot) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-                if (light.Type == LightType.FogBulb) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
-                if (light.Type == LightType.Shadow) solidEffect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
-                if (light.Type == LightType.Effect) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
-                if (light.Type == LightType.Sun) solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
+                if (light.Type == LightType.Light)
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                if (light.Type == LightType.Spot)
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                if (light.Type == LightType.FogBulb)
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
+                if (light.Type == LightType.Shadow)
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+                if (light.Type == LightType.Effect)
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                if (light.Type == LightType.Sun)
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
 
                 if (_editor.LightIndex == i)
                     solidEffect.Parameters["SelectionEnabled"].SetValue(true);
@@ -904,12 +911,18 @@ namespace TombEditor.Controls
 
                 string message = "";
 
-                if (light.Type == LightType.Light) message = "Point light";
-                if (light.Type == LightType.Spot) message = "Spot light";
-                if (light.Type == LightType.Shadow) message = "Shadow";
-                if (light.Type == LightType.Sun) message = "Sun";
-                if (light.Type == LightType.Effect) message = "Effect";
-                if (light.Type == LightType.FogBulb) message = "Fog bulb";
+                if (light.Type == LightType.Light)
+                    message = "Point light";
+                if (light.Type == LightType.Spot)
+                    message = "Spot light";
+                if (light.Type == LightType.Shadow)
+                    message = "Shadow";
+                if (light.Type == LightType.Sun)
+                    message = "Sun";
+                if (light.Type == LightType.Effect)
+                    message = "Effect";
+                if (light.Type == LightType.FogBulb)
+                    message = "Fog bulb";
 
                 message += " (" + _editor.LightIndex + ")";
                 Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
@@ -942,7 +955,7 @@ namespace TombEditor.Controls
                 IObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
-                
+
                 color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
                 if (_editor.PickingResult.ElementType == PickingElementType.Camera && instance.ID == _editor.PickingResult.Element)
                 {
@@ -1032,7 +1045,7 @@ namespace TombEditor.Controls
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
-                
+
                     message = "Sink (" + instance.ID + ")";
                     Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
@@ -1127,7 +1140,7 @@ namespace TombEditor.Controls
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
             }
 
-            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);         
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
         private void DrawMoveables()
@@ -1146,15 +1159,15 @@ namespace TombEditor.Controls
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
 
-            for (int k = 0; k < _moveablesToDraw.Count; k++)
+            for (int k = 0; k < MoveablesToDraw.Count; k++)
             {
-                MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[_moveablesToDraw[k]];
+                MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[MoveablesToDraw[k]];
 
                 Debug.NumMoveables++;
 
                 SkinnedModel model = modelInfo.Model;
-                
-                if (k==0 || model.ObjectID!=_lastObject.ObjectID)
+
+                if (k == 0 || model.ObjectID != _lastObject.ObjectID)
                 {
                     _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
                     _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
@@ -1176,7 +1189,8 @@ namespace TombEditor.Controls
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     SkinnedMesh mesh = model.Meshes[i];
-                    if (mesh.Vertices.Count == 0) continue;
+                    if (mesh.Vertices.Count == 0)
+                        continue;
 
                     int theRoom = modelInfo.Room;
 
@@ -1235,9 +1249,9 @@ namespace TombEditor.Controls
 
             StaticMeshInstance _lastObject = null;
 
-            for (int k = 0; k < _staticMeshesToDraw.Count; k++)
+            for (int k = 0; k < StaticMeshesToDraw.Count; k++)
             {
-                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[_staticMeshesToDraw[k]];
+                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[StaticMeshesToDraw[k]];
                 StaticModel model = modelInfo.Model;
 
                 if (k == 0)
@@ -1268,7 +1282,8 @@ namespace TombEditor.Controls
                     int theRoom = modelInfo.Room;
 
                     StaticMesh mesh = model.Meshes[i];
-                    if (mesh.Vertices.Count == 0) continue;
+                    if (mesh.Vertices.Count == 0)
+                        continue;
 
                     world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
                                 Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
@@ -1310,8 +1325,10 @@ namespace TombEditor.Controls
 
         private void DrawSkyBox(int room)
         {
-            if (_editor.Level.Wad == null) return;
-            if (!_editor.Level.Wad.Moveables.ContainsKey(459)) return;
+            if (_editor.Level.Wad == null)
+                return;
+            if (!_editor.Level.Wad.Moveables.ContainsKey(459))
+                return;
 
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
@@ -1577,7 +1594,8 @@ namespace TombEditor.Controls
                     {
                         distance = 0;
                         BlockFace face = room.Blocks[sx, sz].Faces[f];
-                        if (!face.Defined) continue;
+                        if (!face.Defined)
+                            continue;
                         if (room.RayIntersectsFace(ref ray, ref face, out distance) && distance < minDistance)
                         {
                             minDistance = distance;
@@ -1643,13 +1661,15 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            if (_editor.PickingResult.SubElement > 28) return;
+            if (_editor.PickingResult.SubElement > 28)
+                return;
 
             // salvo un puntatore alla faccia per accesso rapido
             BlockFace face = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement];
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
 
-            if (_editor.InvisiblePolygon || face.Invisible) return;
+            if (_editor.InvisiblePolygon || face.Invisible)
+                return;
 
             if (face.Shape == BlockFaceShape.Triangle)
             {
@@ -1694,13 +1714,15 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            if (_editor.PickingResult.SubElement > 28) return;
+            if (_editor.PickingResult.SubElement > 28)
+                return;
 
             // salvo un puntatore alla faccia per accesso rapido
             BlockFace face = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement];
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
 
-            if (_editor.InvisiblePolygon || face.Invisible || face.Texture == -1) return;
+            if (_editor.InvisiblePolygon || face.Invisible || face.Texture == -1)
+                return;
 
             if (face.Shape == BlockFaceShape.Triangle)
             {
@@ -1710,7 +1732,8 @@ namespace TombEditor.Controls
                 LevelTexture texture = _editor.Level.TextureSamples[face.Texture];
 
                 UV[0] = new Vector2(texture.X / 256.0f, texture.Y / 256.0f);
-                UV[1] = new Vector2((texture.X + texture.Width) / 256.0f, texture.Y / 256.0f); ;
+                UV[1] = new Vector2((texture.X + texture.Width) / 256.0f, texture.Y / 256.0f);
+                ;
                 UV[2] = new Vector2((texture.X + texture.Width) / 256.0f, (texture.Y + texture.Height) / 256.0f);
                 UV[3] = new Vector2(texture.X / 256.0f, (texture.Y + texture.Height) / 256.0f);
 
@@ -1810,8 +1833,10 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            if (_editor.PickingResult.ElementType != PickingElementType.Block) return;
-            if (_editor.PickingResult.SubElement > 28) return;
+            if (_editor.PickingResult.ElementType != PickingElementType.Block)
+                return;
+            if (_editor.PickingResult.SubElement > 28)
+                return;
 
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
             EditorActions.PlaceTexture(x, z, faceType);
@@ -1822,7 +1847,7 @@ namespace TombEditor.Controls
             // recupero le coordinate X e Z della faccia
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
-  
+
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
 
             EditorActions.PlaceNoCollision(x, z, faceType);
@@ -1908,8 +1933,8 @@ namespace TombEditor.Controls
             _sinksToDraw = new List<int>();
             _flybyToDraw = new List<int>();
             _soundSourcesToDraw = new List<int>();
-            _moveablesToDraw = new List<int>();
-            _staticMeshesToDraw = new List<int>();
+            MoveablesToDraw = new List<int>();
+            StaticMeshesToDraw = new List<int>();
 
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
@@ -1921,12 +1946,12 @@ namespace TombEditor.Controls
                     _soundSourcesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].SoundSources);
                 }
 
-                _moveablesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Moveables);
-                _staticMeshesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].StaticMeshes);
+                MoveablesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Moveables);
+                StaticMeshesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].StaticMeshes);
             }
 
-            _moveablesToDraw.Sort(new ComparerMoveables());
-            _staticMeshesToDraw.Sort(new ComparerStaticMeshes());
+            MoveablesToDraw.Sort(new ComparerMoveables());
+            StaticMeshesToDraw.Sort(new ComparerStaticMeshes());
         }
 
         private void CollectRoomsToDraw(int room)
@@ -1944,7 +1969,8 @@ namespace TombEditor.Controls
                 int theRoom = stackRooms.Pop();
                 int theLimit = stackLimits.Pop();
 
-                if (theLimit > 6) continue;
+                if (theLimit > 6)
+                    continue;
 
                 if (_editor.IsFlipMap)
                 {
@@ -1979,12 +2005,18 @@ namespace TombEditor.Controls
 
                     Vector3 normal = Vector3.Zero;
 
-                    if (portal.Direction == PortalDirection.North) normal = -Vector3.UnitZ;
-                    if (portal.Direction == PortalDirection.East) normal = -Vector3.UnitX;
-                    if (portal.Direction == PortalDirection.South) normal = Vector3.UnitZ;
-                    if (portal.Direction == PortalDirection.West) normal = Vector3.UnitX;
-                    if (portal.Direction == PortalDirection.Floor) normal = Vector3.UnitY;
-                    if (portal.Direction == PortalDirection.Ceiling) normal = -Vector3.UnitY;
+                    if (portal.Direction == PortalDirection.North)
+                        normal = -Vector3.UnitZ;
+                    if (portal.Direction == PortalDirection.East)
+                        normal = -Vector3.UnitX;
+                    if (portal.Direction == PortalDirection.South)
+                        normal = Vector3.UnitZ;
+                    if (portal.Direction == PortalDirection.West)
+                        normal = Vector3.UnitX;
+                    if (portal.Direction == PortalDirection.Floor)
+                        normal = Vector3.UnitY;
+                    if (portal.Direction == PortalDirection.Ceiling)
+                        normal = -Vector3.UnitY;
 
                     Vector3 cameraDirection = Camera.Position - Camera.Target;
 
@@ -1992,7 +2024,8 @@ namespace TombEditor.Controls
                     Vector3 v2 = Vector3.UnitZ;
                     float dot = Vector3.Dot(v1, v2);
 
-                    if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1) continue;
+                    if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1)
+                        continue;
 
                     if (portal.Room == theRoom && !_editor.Level.Rooms[portal.AdjoiningRoom].Visited && !stackRooms.Contains(portal.AdjoiningRoom))
                     {
@@ -2031,8 +2064,8 @@ namespace TombEditor.Controls
 
                             if (face.Defined)
                             {
-                                if ((_editor.Mode == EditorMode.Geometry && room==_editor.RoomIndex) || 
-                                    (face.Texture==-1 && !face.Invisible))
+                                if ((_editor.Mode == EditorMode.Geometry && room == _editor.RoomIndex) ||
+                                    (face.Texture == -1 && !face.Invisible))
                                 {
                                     RenderBucket bucket = new RenderBucket();
 
@@ -2074,7 +2107,7 @@ namespace TombEditor.Controls
 
                                             _solidBuckets.Add(bucket);
                                         }
-                                    } 
+                                    }
                                     else
                                     {
                                         if (!face.Transparent && !face.Invisible)
@@ -2184,12 +2217,14 @@ namespace TombEditor.Controls
             Stopwatch _watch = new Stopwatch();
             _watch.Start();
 
-            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+                return;
 
             Debug.Reset();
 
             // Don't draw anything if device is not ready
-            if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1) return;
+            if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1)
+                return;
 
             // reset the backbuffer
             _editor.GraphicsDevice.Presenter = Presenter;
@@ -2201,10 +2236,14 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetDepthStencilState(_editor.GraphicsDevice.DepthStencilStates.Default);
 
             // verify that editor is ready
-            if (_editor.Level == null) return;
-            if (_editor.Level.Rooms.Length == 0) return;
-            if (_editor.Level.Rooms[_editor.RoomIndex] == null) return;
-            if (_editor.Level.Rooms[_editor.RoomIndex].VertexBuffer == null) return;
+            if (_editor.Level == null)
+                return;
+            if (_editor.Level.Rooms.Length == 0)
+                return;
+            if (_editor.Level.Rooms[_editor.RoomIndex] == null)
+                return;
+            if (_editor.Level.Rooms[_editor.RoomIndex].VertexBuffer == null)
+                return;
 
             // First collect rooms to draw
             _roomsToDraw = new List<int>();
@@ -2212,7 +2251,8 @@ namespace TombEditor.Controls
             // Reset visited flag for collecting rooms
             for (int i = 0; i < _editor.Level.Rooms.Length; i++)
             {
-                if (_editor.Level.Rooms[i] == null) continue;
+                if (_editor.Level.Rooms[i] == null)
+                    continue;
                 _editor.Level.Rooms[i].Visited = false;
             }
 
@@ -2315,7 +2355,7 @@ namespace TombEditor.Controls
 
         private void AddRoomNamesToDebug()
         {
-            for (int i = 0; i <_roomsToDraw.Count;i++)
+            for (int i = 0; i < _roomsToDraw.Count; i++)
             {
                 string message = (_editor.Level.Rooms[_roomsToDraw[i]].Name != null ? _editor.Level.Rooms[_roomsToDraw[i]].Name : "Room " + _roomsToDraw[i]);
 
@@ -2369,9 +2409,9 @@ namespace TombEditor.Controls
                 RenderBucket bucket = _opaqueBuckets[i];
 
                 int room = bucket.Room;
-                
+
                 // If room is changed, setup vertex buffers, world matrix and lighting
-                if (_lastBucket == null || _lastBucket.Room!=bucket.Room)
+                if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
                     // Load the vertex buffer in the GPU and set the world matrix
                     _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
@@ -2405,7 +2445,7 @@ namespace TombEditor.Controls
 
                 // Draw the face
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
-                
+
                 Debug.NumVertices += bucket.IndexBuffer.ElementCount;
                 Debug.NumTriangles += bucket.IndexBuffer.ElementCount / 3;
 
@@ -2444,7 +2484,7 @@ namespace TombEditor.Controls
                     // Load the vertex buffer in the GPU and set the world matrix
                     _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);                    
+                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
                 }
 
                 // Set shape
@@ -2565,7 +2605,7 @@ namespace TombEditor.Controls
                 int z = bucket.Z;
                 int index = (int)bucket.FaceType;
                 int room = bucket.Room;
-                
+
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
@@ -2699,7 +2739,7 @@ namespace TombEditor.Controls
                                 break;
                         }
                     }
-                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 || 
+                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 ||
                              (_editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.Wall &&
                               _editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.BorderWall))
                     {
@@ -2730,26 +2770,38 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     break;
                                 case 2:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 3:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 4:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2764,18 +2816,26 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 7:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 8:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2803,10 +2863,14 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
                                     break;
                                 case 1:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2816,26 +2880,38 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 3:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 4:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 5:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2850,10 +2926,14 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 8:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2881,18 +2961,26 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
                                     break;
                                 case 1:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 2:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2902,26 +2990,38 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 4:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 5:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 6:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2959,26 +3059,38 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
                                     break;
                                 case 1:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 2:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_down"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_up"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 3:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
@@ -2993,19 +3105,27 @@ namespace TombEditor.Controls
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                                 case 6:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_se"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_ne"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
 
                                     break;
                                 case 7:
-                                    if (index == rf) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == ws) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
-                                    if (index == qa) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
-                                    if (index == ed) _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_sw"]);
+                                    if (index == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
+                                    if (index == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_editor.Textures["arrow_nw"]);
                                     _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                     _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;

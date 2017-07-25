@@ -28,7 +28,8 @@ namespace TombEditor.Compilers
                 }
                 else
                 {
-                    if (x.Index == y.Index) return 0;
+                    if (x.Index == y.Index)
+                        return 0;
                     return (x.Index > y.Index ? 1 : -1);
                 }
             }
@@ -104,7 +105,7 @@ namespace TombEditor.Compilers
         public ushort[] Overlaps;
         public tr_zone[] Zones;
         public uint NumAnimatedTextures;
-        public tr_animated_textures_set[] AnimatedTextures;
+        public tr_animatedTextures_set[] AnimatedTextures;
 
         public byte[] TEX;
 
@@ -122,7 +123,7 @@ namespace TombEditor.Compilers
         // texture data
         private List<tr_object_texture> _tempObjectTextures;
         private LevelTexture[] _tempTexturesArray;
-        private Dictionary<int, int> _texturesIdTable;
+        private Dictionary<int, int> TexturesIdTable;
         private Dictionary<int, int> _roomsIdTable;
 
         private byte[] _roomTexturePages;
@@ -133,7 +134,7 @@ namespace TombEditor.Compilers
         private int _numSpriteTexturePages;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
-        private Dictionary<int, int> _moveablesTable;
+        private Dictionary<int, int> MoveablesTable;
         private Dictionary<int, int> _cameraTable;
         private Dictionary<int, int> _sinkTable;
         private Dictionary<int, int> _aiObjectsTable;
@@ -339,7 +340,8 @@ namespace TombEditor.Compilers
                 camera.Z = (int)(Rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z);
 
                 camera.Room = (short)_roomsIdTable[instance.Room];
-                if (instance.Fixed) camera.Flags = 0x01;
+                if (instance.Fixed)
+                    camera.Flags = 0x01;
 
                 tempCameras.Add(camera);
             }
@@ -450,7 +452,8 @@ namespace TombEditor.Compilers
 
                 // Load the real sprite texture data
                 _numSpriteTexturePages = spriteDataSize / (65536 * 3);
-                if ((spriteDataSize % (65536 * 3)) != 0) _numSpriteTexturePages++;
+                if ((spriteDataSize % (65536 * 3)) != 0)
+                    _numSpriteTexturePages++;
 
                 _spriteTexturePages = new byte[256 * 256 * _numSpriteTexturePages * 4];
 
@@ -460,11 +463,13 @@ namespace TombEditor.Compilers
 
                 for (y = 0; y < _numSpriteTexturePages * 256; y++)
                 {
-                    if (bytesRead == spriteDataSize) break;
+                    if (bytesRead == spriteDataSize)
+                        break;
 
                     for (x = 0; x < 256; x++)
                     {
-                        if (bytesRead == spriteDataSize) break;
+                        if (bytesRead == spriteDataSize)
+                            break;
 
                         byte r = reader.ReadByte();
                         byte g = reader.ReadByte();
@@ -496,7 +501,7 @@ namespace TombEditor.Compilers
 
                 reader.Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -657,15 +662,17 @@ namespace TombEditor.Compilers
         private short BuildTextureInfo(BlockFace face)
         {
             tr_object_texture tile = new tr_object_texture();
-            LevelTexture tex = _tempTexturesArray[_texturesIdTable[face.Texture]];
+            LevelTexture tex = _tempTexturesArray[TexturesIdTable[face.Texture]];
 
             // Texture page
             tile.Tile = (ushort)tex.NewPage;
-            if (face.Shape == BlockFaceShape.Triangle) tile.Tile |= 0x8000;
+            if (face.Shape == BlockFaceShape.Triangle)
+                tile.Tile |= 0x8000;
 
             // Attributes
             tile.Attributes = 0;
-            if (tex.AlphaTest) tile.Attributes = 1;
+            if (tex.AlphaTest)
+                tile.Attributes = 1;
             if (face.Transparent)
                 tile.Attributes = 2;
 
@@ -937,7 +944,8 @@ namespace TombEditor.Compilers
             {
                 _tempObjectTextures.Add(tile);
                 int newId = _tempObjectTextures.Count - 1;
-                if (face.DoubleSided) newId |= 0x8000;
+                if (face.DoubleSided)
+                    newId |= 0x8000;
 
                 // Is this texture part of an animated set?
                 if ((tex.Width == 64 && tex.Height == 64) || (tex.Width == 32 && tex.Height == 32))
@@ -963,7 +971,8 @@ namespace TombEditor.Compilers
 
                     if (animatedSet != -1)
                     {
-                        if (!_animTexturesRooms.Contains(newId & 0x7fff)) _animTexturesRooms.Add(newId & 0x7fff);
+                        if (!_animTexturesRooms.Contains(newId & 0x7fff))
+                            _animTexturesRooms.Add(newId & 0x7fff);
 
                         // Search for a compatible variant
                         int foundVariant = -1;
@@ -1013,7 +1022,8 @@ namespace TombEditor.Compilers
             }
             else
             {
-                if (face.DoubleSided) test = test | 0x8000;
+                if (face.DoubleSided)
+                    test = test | 0x8000;
                 return (short)test;
             }
         }
@@ -1025,12 +1035,15 @@ namespace TombEditor.Compilers
 
             // Texture page
             tile.Tile = (ushort)tex.NewPage;
-            if (aSet.IsTriangle) tile.Tile |= 0x8000;
+            if (aSet.IsTriangle)
+                tile.Tile |= 0x8000;
 
             // Attributes
             tile.Attributes = 0;
-            if (tex.AlphaTest) tile.Attributes = 1;
-            if (aSet.Transparent) tile.Attributes = 2;
+            if (tex.AlphaTest)
+                tile.Attributes = 1;
+            if (aSet.Transparent)
+                tile.Attributes = 2;
 
             // Flags
             tile.Flags = 0x8000;
@@ -1328,7 +1341,8 @@ namespace TombEditor.Compilers
         {
             for (int i = 0; i < _level.Rooms.Length; i++)
             {
-                if (_level.Rooms[i] == null) continue;
+                if (_level.Rooms[i] == null)
+                    continue;
 
                 _level.Rooms[i].Visited = false;
                 Rooms[_roomsIdTable[i]].ReachableRooms = new List<int>();
@@ -1336,7 +1350,8 @@ namespace TombEditor.Compilers
 
             for (int i = 0; i < _level.Rooms.Length; i++)
             {
-                if (_level.Rooms[i] == null) continue;
+                if (_level.Rooms[i] == null)
+                    continue;
 
                 GetAllReachableRoomsUp(i, i);
                 GetAllReachableRoomsDown(i, i);
@@ -1445,7 +1460,8 @@ namespace TombEditor.Compilers
                     break;
                 }
 
-                if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope)) break;
+                if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope))
+                    break;
                 xMin = x2;
             }
 
@@ -1461,7 +1477,8 @@ namespace TombEditor.Compilers
                     break;
                 }
 
-                if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope)) break;
+                if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope))
+                    break;
                 xMax = x2;
             }
 
@@ -1480,12 +1497,14 @@ namespace TombEditor.Compilers
                         break;
                     }
 
-                    if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope)) break;
+                    if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope))
+                        break;
 
                     tmpZ = z2;
                 }
 
-                if (tmpZ > zMin) zMin = tmpZ;
+                if (tmpZ > zMin)
+                    zMin = tmpZ;
             }
 
             // Find box corners in direction +Z
@@ -1504,17 +1523,14 @@ namespace TombEditor.Compilers
                         break;
                     }
 
-                    if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope)) break;
+                    if (aux2.NotWalkableFloor || aux2.BorderWall || aux2.Wall || (aux.Box != aux2.Box) || (aux.Monkey != aux2.Monkey) || (aux.Portal != aux2.Portal) || aux2.LowestFloor != aux.LowestFloor || (aux.SoftSlope != aux2.SoftSlope))
+                        break;
 
                     tmpZ = z2;
                 }
 
-                if (tmpZ < zMax) zMax = tmpZ;
-            }
-
-            if (tempBoxes.Count==285)
-            {
-                int hhh = 0;
+                if (tmpZ < zMax)
+                    zMax = tmpZ;
             }
 
             box = new tr_box_aux();
@@ -1531,13 +1547,19 @@ namespace TombEditor.Compilers
             // Cut the box if needed
             if (xm != 0 && zm != 0 && xM != 0 && zM != 0)
             {
-                if (box.Xmin < xm) box.Xmin = (byte)xm;
-                if (box.Xmax > xM) box.Xmax = (byte)xM;
-                if (box.Zmin < zm) box.Zmin = (byte)zm;
-                if (box.Zmax > zM) box.Zmax = (byte)zM;
+                if (box.Xmin < xm)
+                    box.Xmin = (byte)xm;
+                if (box.Xmax > xM)
+                    box.Xmax = (byte)xM;
+                if (box.Zmin < zm)
+                    box.Zmin = (byte)zm;
+                if (box.Zmax > zM)
+                    box.Zmax = (byte)zM;
 
-                if (box.Xmax - box.Xmin <= 0) return false;
-                if (box.Zmax - box.Zmin <= 0) return false;
+                if (box.Xmax - box.Xmin <= 0)
+                    return false;
+                if (box.Zmax - box.Zmin <= 0)
+                    return false;
             }
 
             return true;
@@ -1546,7 +1568,8 @@ namespace TombEditor.Compilers
         private short GetMostDownBox(int room, int x, int z)
         {
             tr_room_sector sector = GetSector(room, x, z);
-            if (sector.RoomBelow == 255) return -1;
+            if (sector.RoomBelow == 255)
+                return -1;
 
             tr_room room1 = Rooms[room];
             tr_room room2 = Rooms[sector.RoomBelow];
@@ -1840,7 +1863,8 @@ namespace TombEditor.Compilers
                 meshSize += 2 + newMesh.NumTexturedRectangles * 12;
                 meshSize += 2 + newMesh.NumTexturedTriangles * 10;
 
-                if (meshSize % 4 != 0) meshSize += 2;
+                if (meshSize % 4 != 0)
+                    meshSize += 2;
 
                 tempMeshesPointers.Add((uint)totalMeshSize);
                 totalMeshSize += meshSize;
@@ -1856,7 +1880,7 @@ namespace TombEditor.Compilers
         {
             ReportProgress(18, "Building items table");
 
-            _moveablesTable = new Dictionary<int, int>();
+            MoveablesTable = new Dictionary<int, int>();
             _aiObjectsTable = new Dictionary<int, int>();
 
             int k = 0;
@@ -1875,7 +1899,7 @@ namespace TombEditor.Compilers
                     }
                     else
                     {
-                        _moveablesTable.Add(_editor.Level.Objects.ElementAt(i).Key, k);
+                        MoveablesTable.Add(_editor.Level.Objects.ElementAt(i).Key, k);
                         k++;
                     }
                 }
@@ -1884,11 +1908,11 @@ namespace TombEditor.Compilers
             List<tr_item> tempItems = new List<tr_item>();
             List<tr_ai_item> tempAIObjects = new List<tr_ai_item>();
 
-            for (int i = 0; i < _moveablesTable.Count; i++)
+            for (int i = 0; i < MoveablesTable.Count; i++)
             {
                 //  if (i == 79) continue;
                 tr_item item = new tr_item();
-                MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_moveablesTable.ElementAt(i).Key];
+                MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[MoveablesTable.ElementAt(i).Key];
                 tr_room newRoom = Rooms[_roomsIdTable[instance.Room]];
 
                 item.X = (int)(Rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X);
@@ -1901,16 +1925,23 @@ namespace TombEditor.Compilers
                 item.Intensity1 = -1;
                 item.Intensity2 = (short)instance.OCB;
 
-                if (instance.ClearBody) item.Flags |= 0x80;
-                if (instance.Invisible) item.Flags |= 0x100;
+                if (instance.ClearBody)
+                    item.Flags |= 0x80;
+                if (instance.Invisible)
+                    item.Flags |= 0x100;
 
                 ushort mask = 0;
 
-                if (instance.Bits[0]) mask |= 0x01;
-                if (instance.Bits[1]) mask |= 0x02;
-                if (instance.Bits[2]) mask |= 0x04;
-                if (instance.Bits[3]) mask |= 0x08;
-                if (instance.Bits[4]) mask |= 0x10;
+                if (instance.Bits[0])
+                    mask |= 0x01;
+                if (instance.Bits[1])
+                    mask |= 0x02;
+                if (instance.Bits[2])
+                    mask |= 0x04;
+                if (instance.Bits[3])
+                    mask |= 0x08;
+                if (instance.Bits[4])
+                    mask |= 0x10;
 
                 item.Flags |= (ushort)(mask << 9);
 
@@ -1938,11 +1969,16 @@ namespace TombEditor.Compilers
 
                 ushort mask = 0;
 
-                if (instance.Bits[0]) mask |= 0x01;
-                if (instance.Bits[1]) mask |= 0x02;
-                if (instance.Bits[2]) mask |= 0x04;
-                if (instance.Bits[3]) mask |= 0x08;
-                if (instance.Bits[4]) mask |= 0x10;
+                if (instance.Bits[0])
+                    mask |= 0x01;
+                if (instance.Bits[1])
+                    mask |= 0x02;
+                if (instance.Bits[2])
+                    mask |= 0x04;
+                if (instance.Bits[3])
+                    mask |= 0x08;
+                if (instance.Bits[4])
+                    mask |= 0x10;
 
                 item.Flags |= (ushort)(mask << 1);
 
@@ -2007,14 +2043,16 @@ namespace TombEditor.Compilers
                 txt = (short)((original & 0xfff));
             }
 
-            if (txt < 0) txt = (short)-txt;
+            if (txt < 0)
+                txt = (short)-txt;
 
             tr_object_texture tile = new tr_object_texture();
             TR4Wad.wad_object_texture tex = wad.Textures[txt];
 
             // Texture page
             tile.Tile = (ushort)(tex.Page + _numRoomTexturePages);
-            if (triangle) tile.Tile |= 0x8000;
+            if (triangle)
+                tile.Tile |= 0x8000;
 
             // Attributes
             tile.Attributes = 0;
@@ -2030,7 +2068,8 @@ namespace TombEditor.Compilers
             }
 
             //if (tex.AlphaTest) tile.Tile = 1;
-            if ((attributes & 0x01) == 0x01) tile.Attributes = 2;
+            if ((attributes & 0x01) == 0x01)
+                tile.Attributes = 2;
 
             // Flags
             tile.Flags = (ushort)(isFlipped ? 1 : 0);

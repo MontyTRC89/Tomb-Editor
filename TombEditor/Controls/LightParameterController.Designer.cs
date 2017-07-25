@@ -78,7 +78,6 @@
             this.Controls.Add(this.butUp);
             this.Name = "LightParameterController";
             this.Size = new System.Drawing.Size(60, 22);
-            this.Load += new System.EventHandler(this.LightParameterController_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
