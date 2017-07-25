@@ -1078,15 +1078,15 @@ namespace TombEditor.Geometry
                             Blocks[x, z].Faces[f].StartVertex = (short)Vertices.Count;
                             int baseIndex = Vertices.Count;
 
-                            Blocks[x, z].Faces[(int)f].EditorIndices.Add((short)(baseIndex + 0));
-                            Blocks[x, z].Faces[(int)f].EditorIndices.Add((short)(baseIndex + 1));
-                            Blocks[x, z].Faces[(int)f].EditorIndices.Add((short)(baseIndex + 2));
+                            Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 0));
+                            Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 1));
+                            Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 2));
 
                             if (face.Shape == BlockFaceShape.Rectangle)
                             {
-                                Blocks[x, z].Faces[(int)f].EditorIndices.Add((short)(baseIndex + 3));
-                                Blocks[x, z].Faces[(int)f].EditorIndices.Add((short)(baseIndex + 4));
-                                Blocks[x, z].Faces[(int)f].EditorIndices.Add((short)(baseIndex + 5));
+                                Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 3));
+                                Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 4));
+                                Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 5));
                             }
 
                             Vertices.AddRange(face.Vertices);
@@ -2212,8 +2212,8 @@ namespace TombEditor.Geometry
             Blocks[x, z].Faces[(int)face].Vertices = new EditorVertex[6];
 
             // creo una nuova lista dei vertici
-            Blocks[x, z].Faces[(int)face].EditorIndices = new List<short>();
-            Blocks[x, z].Faces[(int)face].EditorIndices2 = new List<short>();
+            Blocks[x, z].Faces[(int)face].IndicesForSolidBucketsRendering = new List<short>();
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations = new List<short>();
             Blocks[x, z].Faces[(int)face].EditorUV = new byte[4];
 
             Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Rectangle;
@@ -2286,7 +2286,7 @@ namespace TombEditor.Geometry
                 }
             }
 
-            Blocks[x, z].Faces[(int)face].Indices.Clear();
+            Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Clear();
 
             bool isPortal = Blocks[x, z].FloorPortal != -1 || Blocks[x, z].CeilingPortal != -1 || Blocks[x, z].WallPortal != -1;
             Portal portal = null;
@@ -2311,14 +2311,14 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX1, gridZ1];
                 _verticesGrid[gridX1, gridZ1, lastVertex] = v1;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base1 + _numVerticesInGrid[gridX1, gridZ1]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base1 + _numVerticesInGrid[gridX1, gridZ1]));
                 i1 = _numVerticesInGrid[gridX1, gridZ1];
 
                 _numVerticesInGrid[gridX1, gridZ1]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base1 + i1));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base1 + i1));
             }
 
             if (i2 == -1)
@@ -2326,14 +2326,14 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX2, gridZ2];
                 _verticesGrid[gridX2, gridZ2, lastVertex] = v2;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base2 + _numVerticesInGrid[gridX2, gridZ2]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base2 + _numVerticesInGrid[gridX2, gridZ2]));
                 i2 = _numVerticesInGrid[gridX2, gridZ2];
 
                 _numVerticesInGrid[gridX2, gridZ2]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base2 + i2));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base2 + i2));
             }
 
             if (i3 == -1)
@@ -2341,14 +2341,14 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX3, gridZ3];
                 _verticesGrid[gridX3, gridZ3, lastVertex] = v3;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base3 + _numVerticesInGrid[gridX3, gridZ3]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base3 + _numVerticesInGrid[gridX3, gridZ3]));
                 i3 = _numVerticesInGrid[gridX3, gridZ3];
 
                 _numVerticesInGrid[gridX3, gridZ3]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base3 + i3));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base3 + i3));
             }
 
             if (i4 == -1)
@@ -2356,14 +2356,14 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX4, gridZ4];
                 _verticesGrid[gridX4, gridZ4, lastVertex] = v4;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base4 + _numVerticesInGrid[gridX4, gridZ4]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base4 + _numVerticesInGrid[gridX4, gridZ4]));
                 i4 = _numVerticesInGrid[gridX4, gridZ4];
 
                 _numVerticesInGrid[gridX4, gridZ4]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base4 + i4));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base4 + i4));
             }
 
             i1 = (short)(((short)(p1.X / 1024.0f) << 9) + ((short)(p1.Z / 1024.0f) << 4) + i1);
@@ -2373,12 +2373,12 @@ namespace TombEditor.Geometry
 
             if (splitMode == 0)
             {
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i2);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i3);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i1);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i4);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i1);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i3);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i2);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i3);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i1);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i4);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i1);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i3);
 
                 Blocks[x, z].Faces[(int)face].Vertices[0] = v2;
                 Blocks[x, z].Faces[(int)face].Vertices[1] = v3;
@@ -2389,12 +2389,12 @@ namespace TombEditor.Geometry
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i1);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i2);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i4);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i3);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i4);
-                Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i2);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i1);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i2);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i4);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i3);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i4);
+                Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i2);
 
                 Blocks[x, z].Faces[(int)face].Vertices[0] = v1;
                 Blocks[x, z].Faces[(int)face].Vertices[1] = v2;
@@ -2412,8 +2412,8 @@ namespace TombEditor.Geometry
             Vector3 normal = plane.Normal;
 
             // creo una nuova lista dei vertici
-            Blocks[x, z].Faces[(int)face].EditorIndices = new List<short>();
-            Blocks[x, z].Faces[(int)face].EditorIndices2 = new List<short>();
+            Blocks[x, z].Faces[(int)face].IndicesForSolidBucketsRendering = new List<short>();
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations = new List<short>();
             Blocks[x, z].Faces[(int)face].EditorUV = new byte[4];
 
             Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Triangle;
@@ -2488,7 +2488,7 @@ namespace TombEditor.Geometry
                 }
             }
 
-            Blocks[x, z].Faces[(int)face].Indices.Clear();
+            Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Clear();
 
             bool isPortal = Blocks[x, z].FloorPortal != -1 || Blocks[x, z].CeilingPortal != -1 || Blocks[x, z].WallPortal != -1;
             Portal portal = null;
@@ -2511,14 +2511,14 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX1, gridZ1];
                 _verticesGrid[gridX1, gridZ1, lastVertex] = v1;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base1 + _numVerticesInGrid[gridX1, gridZ1]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base1 + _numVerticesInGrid[gridX1, gridZ1]));
                 i1 = _numVerticesInGrid[gridX1, gridZ1];
 
                 _numVerticesInGrid[gridX1, gridZ1]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base1 + i1));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base1 + i1));
             }
 
             if (i2 == -1)
@@ -2526,14 +2526,14 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX2, gridZ2];
                 _verticesGrid[gridX2, gridZ2, lastVertex] = v2;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base2 + _numVerticesInGrid[gridX2, gridZ2]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base2 + _numVerticesInGrid[gridX2, gridZ2]));
                 i2 = _numVerticesInGrid[gridX2, gridZ2];
 
                 _numVerticesInGrid[gridX2, gridZ2]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base2 + i2));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base2 + i2));
             }
 
             if (i3 == -1)
@@ -2541,23 +2541,23 @@ namespace TombEditor.Geometry
                 int lastVertex = _numVerticesInGrid[gridX3, gridZ3];
                 _verticesGrid[gridX3, gridZ3, lastVertex] = v3;
 
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base3 + _numVerticesInGrid[gridX3, gridZ3]));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base3 + _numVerticesInGrid[gridX3, gridZ3]));
                 i3 = _numVerticesInGrid[gridX3, gridZ3];
 
                 _numVerticesInGrid[gridX3, gridZ3]++;
             }
             else
             {
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(base3 + i3));
+                Blocks[x, z].Faces[(int)face].IndicesForFinalLevel.Add((short)(base3 + i3));
             }
 
             i1 = (short)(((short)(p1.X / 1024.0f) << 9) + ((short)(p1.Z / 1024.0f) << 4) + i1);
             i2 = (short)(((short)(p2.X / 1024.0f) << 9) + ((short)(p2.Z / 1024.0f) << 4) + i2);
             i3 = (short)(((short)(p3.X / 1024.0f) << 9) + ((short)(p3.Z / 1024.0f) << 4) + i3);
 
-            Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i1);
-            Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i2);
-            Blocks[x, z].Faces[(int)face].EditorIndices2.Add(i3);
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i1);
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i2);
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Add(i3);
 
             Blocks[x, z].Faces[(int)face].Vertices[0] = v1;
             Blocks[x, z].Faces[(int)face].Vertices[1] = v2;
@@ -3154,11 +3154,11 @@ namespace TombEditor.Geometry
 
             Vector3 n = face.Plane.Normal;
 
-            for (int v = 0; v < face.EditorIndices2.Count; v++)
+            for (int v = 0; v < face.IndicesForLightingCalculations.Count; v++)
             {
-                int theX = (face.EditorIndices2[v] >> 9) & 0x1f;
-                int theZ = (face.EditorIndices2[v] >> 4) & 0x1f;
-                int theIndex = face.EditorIndices2[v] & 0x0f;
+                int theX = (face.IndicesForLightingCalculations[v] >> 9) & 0x1f;
+                int theZ = (face.IndicesForLightingCalculations[v] >> 4) & 0x1f;
+                int theIndex = face.IndicesForLightingCalculations[v] & 0x0f;
 
                 Vector3 p = new Vector3(_verticesGrid[theX, theZ, theIndex].Position.X,
                                         _verticesGrid[theX, theZ, theIndex].Position.Y,

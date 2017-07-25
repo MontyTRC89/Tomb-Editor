@@ -20,7 +20,6 @@ namespace TombEditor.Geometry
         public bool DoubleSided { get; set; }
         public bool Invisible { get; set; }
         public bool NoCollision { get; set; }
-        //public List<EditorVertex> Vertices { get; set; }
         public short StartVertex { get; set; }
         public byte SplitMode { get; set; }
         public Vector2[] RectangleUV { get; set; } = new Vector2[4];
@@ -28,11 +27,9 @@ namespace TombEditor.Geometry
         public Vector2[] TriangleUV2 { get; set; } = new Vector2[3];
         public byte[] EditorUV { get; set; }
         public TextureTileType TextureTriangle { get; set; }
-        public List<short> EditorIndices { get; set; }
-        public List<short> EditorIndices2 { get; set; }
-        public List<short> Indices { get; set; } = new List<short>();
-        public int BaseIndexInVertices { get; set; }
-        public int BaseIndexInOptimizedVertices { get; set; }
+        public List<short> IndicesForSolidBucketsRendering { get; set; }
+        public List<short> IndicesForLightingCalculations { get; set; }
+        public List<short> IndicesForFinalLevel { get; set; } = new List<short>();
         public EditorVertex[] Vertices { get; set; }
         
         public bool RayIntersect(ref Ray ray, out Vector3 point)
