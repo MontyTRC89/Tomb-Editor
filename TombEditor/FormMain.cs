@@ -3825,11 +3825,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
-            int r, g, b;
-
-            room.CalculateLighting2(2, 4, 0, out r, out g, out b);
         }
 
         private void butDrawHorizon_Click(object sender, EventArgs e)

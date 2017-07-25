@@ -514,7 +514,6 @@ namespace TombEditor.Compilers
                 return true;
             
             // Otherwise, we must check if rooms are vertically reachable with a chain of rooms and portals
-
             for (var x = a.Xmin; x <= a.Xmax; x++)
             {
                 for (var z = a.Zmin - 1; z <= a.Zmax - 1; z++)
