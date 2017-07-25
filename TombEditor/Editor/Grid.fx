@@ -10,18 +10,14 @@ struct PixelInputType
 	float4 Color : COLOR0;
 };
 
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
+float4x4 ModelViewProjection;
 
 PixelInputType VS(VertexInputType input)
 {
     PixelInputType output;
     
     // Calcolo la posizione finale
-    output.position = mul(input.position, World);
-    output.position = mul(output.position, View);
-    output.position = mul(output.position, Projection);
+    output.position = mul(input.position, ModelViewProjection);
     
 	// Passo il colore al pixel shader
 	output.Color = input.Color;

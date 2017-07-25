@@ -30,9 +30,7 @@ struct PixelInputType
 	float4 position : SV_POSITION;
 };
 
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
+float4x4 ModelViewProjection;
 
 float4 Color;
 bool UseVertexColor;
@@ -44,9 +42,7 @@ PixelInputType VS(VertexInputType input)
     
     // Calcolo la posizione finale
 	output.position = float4(input.position, 1); // +float4(input.Normal * 2, 0);
-    output.position = mul(output.position, World);
-    output.position = mul(output.position, View);
-    output.position = mul(output.position, Projection);
+    output.position = mul(output.position, ModelViewProjection);
 
 	//output.ViewDirection = normalize(CameraPosition - mul(input.position, World));
 	//output.Normal = normalize(mul(input.Normal, (float3x3) World));

@@ -55,16 +55,11 @@ namespace TombEditor.Controls
 
                 // inizializzo la telecamera
                 Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000);
-                Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 3.0f, Width, Height);
-                Camera.Update();
             }
         }
 
         public void Draw()
         {
-            if (SelectedItem == -1)
-                return;
-
             _editor.GraphicsDevice.Presenter = Presenter;
             _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
             _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer, _editor.GraphicsDevice.Presenter.BackBuffer);
@@ -72,6 +67,13 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
             _editor.GraphicsDevice.SetDepthStencilState(_editor.GraphicsDevice.DepthStencilStates.Default);
 
+            if (SelectedItem == -1)
+            {
+                _editor.GraphicsDevice.Present();
+                return;
+            }
+
+            Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (ItemType == EditorItemType.Moveable)
             {
                 SkinnedModel model;
@@ -83,9 +85,6 @@ namespace TombEditor.Controls
                 model.BuildHierarchy();
 
                 Effect mioEffect = _editor.Effects["Model"];
-                mioEffect.Parameters["World"].SetValue(Matrix.Identity);
-                mioEffect.Parameters["View"].SetValue(Camera.View);
-                mioEffect.Parameters["Projection"].SetValue(Camera.Projection);
                 mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
                 mioEffect.Parameters["TextureEnabled"].SetValue(true);
                 mioEffect.Parameters["SelectionEnabled"].SetValue(false);
@@ -104,14 +103,12 @@ namespace TombEditor.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
+                    Matrix modelMatrix;
                     if (_animation > -1)
-                    {
-                        mioEffect.Parameters["World"].SetValue(model.AnimationTransforms[i]);
-                    }
+                        modelMatrix = model.AnimationTransforms[i];
                     else
-                    {
-                        mioEffect.Parameters["World"].SetValue(model.Bones[i].GlobalTransform); // model.AnimationTransforms[i]);
-                    }
+                        modelMatrix = model.Bones[i].GlobalTransform;
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
 
                     mioEffect.Techniques[0].Passes[0].Apply();
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -124,9 +121,7 @@ namespace TombEditor.Controls
                 model = _editor.Level.Wad.StaticMeshes[(uint)SelectedItem];
 
                 Effect mioEffect = _editor.Effects["StaticModel"];
-                mioEffect.Parameters["World"].SetValue(Matrix.Identity);
-                mioEffect.Parameters["View"].SetValue(Camera.View);
-                mioEffect.Parameters["Projection"].SetValue(Camera.Projection);
+                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
                 mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
                 mioEffect.Parameters["TextureEnabled"].SetValue(true);
                 mioEffect.Parameters["SelectionEnabled"].SetValue(false);
@@ -149,7 +144,7 @@ namespace TombEditor.Controls
                         _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
                     }
 
-                    mioEffect.Parameters["World"].SetValue(Matrix.Identity);
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(Matrix.Identity);
                     mioEffect.Techniques[0].Passes[0].Apply();
 
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -178,16 +173,12 @@ namespace TombEditor.Controls
                     {
                         _animation = -1;
                         _frame = -1;
-
-                        Camera.Update();
                     }
                     else
                     {
                         _animation = 0;
                         _frame = 0;
                         model.BuildAnimationPose(model.Animations[_animation].KeyFrames[_frame]);
-
-                        Camera.Update();
                     }
                 }
                 else
@@ -196,12 +187,22 @@ namespace TombEditor.Controls
                     _frame = -1;
 
                     Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
-                    Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
-                    Camera.Update();
                 }
 
                 Draw();
             }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            Draw();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (Presenter != null)
+                Presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -242,8 +243,6 @@ namespace TombEditor.Controls
                 {
                     Camera.Rotate(_deltaX / 50, -_deltaY / 50);
                 }
-
-                Camera.Update();
             }
 
             Draw();
@@ -270,8 +269,6 @@ namespace TombEditor.Controls
                 {
                     Camera.Rotate(_deltaX / 500, -_deltaY / 500);
                 }
-
-                Camera.Update();
 
                 _drag = false;
             }

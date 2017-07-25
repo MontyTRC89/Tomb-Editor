@@ -13,9 +13,7 @@ struct PixelInputType
 	float2 UV : TEXCOORD0;
 };
 
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
+float4x4 ModelViewProjection;
 
 float4 Color;
 bool TextureEnabled;
@@ -44,8 +42,7 @@ PixelInputType VS(VertexInputType input)
 	worldPos += mul(input.Position, BoneTransforms[input.BoneIndices.w] * World * input.BoneWeigths.w);*/
 
     // Calcolo la posizione finale
-    output.Position = mul(mul(input.Position, World) /* worldPos*/, View);
-    output.Position = mul(output.Position, Projection);
+    output.Position = mul(input.Position, ModelViewProjection);
     
 	// Passo le coordinate UV al pixel shader
 	output.UV = input.UV;
