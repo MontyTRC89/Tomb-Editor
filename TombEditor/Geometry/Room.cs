@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
-using TombLib.Graphics;
-using TombLib.Wad;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 
 namespace TombEditor.Geometry
 {

@@ -1,13 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using TombLib.IO;
-using TombLib.Wad;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerTr4
     {
-        private void WriteLevelTR4()
+        private void WriteLevelTr4()
         {
             var wad = _editor.Level.Wad.OriginalWad;
 
@@ -345,7 +343,7 @@ namespace TombEditor.Compilers
 
                     writer.Write(_numRoomTextureTiles);
                     writer.Write(_numObjectTextureTiles);
-                    writer.Write(_numBumpTextureTiles);
+                    writer.Write(NumBumpTextureTiles);
 
                     writer.Write(_texture32UncompressedSize);
                     writer.Write(_texture32CompressedSize);
@@ -388,7 +386,7 @@ namespace TombEditor.Compilers
             }
         }
 
-        private bool WriteLevelTR3()
+        private bool WriteLevelTr3()
         {
             var wad = _editor.Level.Wad.OriginalWad;
 
@@ -419,7 +417,7 @@ namespace TombEditor.Compilers
                 writer.Write(fakeTextures);
 
                 // 16 bit textures
-                writer.Write(Textures16);
+                writer.Write(_textures16);
 
                 using (var readerRaw = new BinaryReader(File.OpenRead("sprites3.raw")))
                 {
@@ -444,8 +442,7 @@ namespace TombEditor.Compilers
                     const int numdw = 0;
                     writer.Write(numdw);
 
-                    ushort tmp = 0;
-                    tmp = (ushort)_rooms[i].Vertices.Length;
+                    var tmp = (ushort)_rooms[i].Vertices.Length;
                     writer.Write(tmp);
                     writer.WriteBlockArray(_rooms[i].Vertices);
 
