@@ -145,20 +145,13 @@ namespace TombEditor.Geometry
             _numVerticesInGrid = new byte[NumXSectors, NumZSectors];
         }
 
-        public void CalculateLightingForThisRoom2()
+        public void CalculateLightingForThisRoom()
         {
             System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
+            // This is used for iterative mean
             _iterations = new byte[NumXSectors, NumZSectors, 16];
-
-
-            for (int j = 0; j < OptimizedVertices.Count; j++)
-            {
-                EditorVertex v2 = OptimizedVertices[j];
-                v2.FaceColor = new Vector4(255, 255, 255, 255);
-                OptimizedVertices[j] = v2;
-            }
 
             for (int x = 0; x < NumXSectors; x++)
             {
@@ -168,60 +161,14 @@ namespace TombEditor.Geometry
                     {
                         if (Blocks[x, z].Faces[f].Defined)
                         {
-                            int r = 0;
-                            int g = 0;
-                            int b = 0;
-
-                            CalculateLighting2(x, z, f, out r, out g, out b);
-
-                            /*for (int i=0;i< Blocks[x, z].Faces[f].Indices.Count;i++)
-                            {
-                                EditorVertex tmpVertex = OptimizedVertices[Blocks[x, z].Faces[f].Indices[i]];
-                               tmpVertex.FaceColor.X /= 255.0f;
-                                tmpVertex.FaceColor.Y /= 255.0f;
-                                tmpVertex.FaceColor.Z /= 255.0f;
-                                tmpVertex.FaceColor.W = 1.0f;
-
-                                OptimizedVertices[Blocks[x, z].Faces[f].Indices[i]] = tmpVertex;
-                                
-                                List<int> arrayVertices = _verticesDictionary.ElementAt(i).Value;
-
-                                for (int j = 0; j < arrayVertices.Count; j++)
-                                {
-                                    EditorVertex v2 = Vertices[arrayVertices[j]];
-                                    v2.FaceColor = tmpVertex.FaceColor;
-                                    Vertices[arrayVertices[j]] = v2;
-                                }
-                            }*/
+                            // Calculate the lighting of vertices in X, Z of face f
+                            CalculateLighting(x, z, f);
                         }
                     }
                 }
             }
 
-            /*for (int i = 0; i < _verticesDictionary.Count; i++)
-            {
-                  EditorVertex tmpVertex = OptimizedVertices[i];
-                  tmpVertex.FaceColor.X /= 255.0f;
-                  tmpVertex.FaceColor.Y /= 255.0f;
-                  tmpVertex.FaceColor.Z /= 255.0f;
-                  tmpVertex.FaceColor.W = 1.0f;
-
-                  float maxColor = Math.Max(Math.Max(tmpVertex.FaceColor.X, tmpVertex.FaceColor.Y), tmpVertex.FaceColor.Z);
-                  float minColor = Math.Min(Math.Min(tmpVertex.FaceColor.X, tmpVertex.FaceColor.Y), tmpVertex.FaceColor.Z);
-
-
-                  OptimizedVertices[i] = tmpVertex;
-
-                  List<int> arrayVertices = _verticesDictionary.ElementAt(i).Value;
-
-                  for (int j = 0; j < arrayVertices.Count; j++)
-                  {
-                      EditorVertex v2 = Vertices[arrayVertices[j]];
-                      v2.FaceColor = tmpVertex.FaceColor;
-                      Vertices[arrayVertices[j]] = v2;
-                  }
-            }*/
-
+            // Apply the face color to editor vertices
             for (int i = 0; i < Vertices.Count; i++)
             {
                 int x = (int)(Vertices[i].Position.X / 1024);
@@ -240,97 +187,8 @@ namespace TombEditor.Geometry
                 }
             }
 
-            /*for (int x = 0; x < NumXSectors; x++)
-             {
-                 for (int z = 0; z < NumZSectors; z++)
-                 {
-                     for (int f = 0; f < 29; f++)
-                     {
-                         if (Blocks[x, z].Faces[f].Defined)
-                         {
-                             for (int j=0;j< Blocks[x, z].Faces[f].EditorIndices2.Count;j++)
-                             {
-                                 EditorVertex v = Vertices[Blocks[x, z].Faces[f].StartVertex + i];
-                                 v.FaceColor = _verticesGrid[x, z, Blocks[x, z].Faces[f].EditorIndices2[i]].FaceColor;
-                                 Vertices[Blocks[x, z].Faces[f].StartVertex + i] = v;
-                             }
-                         }
-                     }
-                 }
-             }*/
-
-
-
-
-            /*for (int i=0;i<Vertices.Count;i++)
-            {
-                EditorVertex v2 = Vertices[i];
-                v2.FaceColor.X = v2.FaceColor.X / 255.0f;
-                v2.FaceColor.Y = v2.FaceColor.Y / 255.0f;
-                v2.FaceColor.Z = v2.FaceColor.Z / 255.0f;
-                v2.FaceColor.W = 1.0f;
-
-                Vertices[i] = v2;
-            }*/
-
             watch.Stop();
             long stop = watch.ElapsedMilliseconds;
-        }
-
-        public void CalculateLightingForThisRoom()
-        {
-            CalculateLightingForThisRoom2();
-            return;
-
-            /*System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-            watch.Start();
-
-            short[] iterations = new short[OptimizedVertices.Count];
-
-            for (int i = 0; i < _verticesDictionary.Count; i++)
-            {
-                // First, I have to interpolate normals
-                List<int> arrayVertices = _verticesDictionary.ElementAt(i).Value;
-
-                _tempNormal = Vector3.Zero;
-
-                for (int k = 0; k < arrayVertices.Count; k++)
-                {
-                    _tempNormal += Vertices[arrayVertices[k]].Normal;
-                }
-
-                _tempNormal.Normalize();
-
-                EditorVertex v = OptimizedVertices[i];
-
-                // Calculate light for the optimized vertex
-                _tempPosition.X = v.Position.X;
-                _tempPosition.Y = v.Position.Y;
-                _tempPosition.Z = v.Position.Z;
-
-                int r = 0;
-                int g = 0;
-                int b = 0;
-
-                CalculateLighting(ref _tempPosition, ref _tempNormal, out r, out g, out b);
-
-                //v.FaceColor.X = 
-                
-                v.FaceColor = _vertexColor;
-                v.Normal = _tempNormal;
-                OptimizedVertices[i] = v;
-
-                // Now calculate lighting for linked editor vertices
-                for (int j = 0; j < arrayVertices.Count; j++)
-                {
-                    EditorVertex v2 = Vertices[arrayVertices[j]];
-                    v2.FaceColor = v.FaceColor;
-                    Vertices[arrayVertices[j]] = v2;
-                }
-            }
-
-            watch.Stop();
-            long stop = watch.ElapsedMilliseconds;*/
         }
 
         private void CalculateCeilingSlope(int x, int z, int ws0, int ws1, int ws2, int ws3)
@@ -2706,152 +2564,6 @@ namespace TombEditor.Geometry
             Blocks[x, z].Faces[(int)face].Vertices[2] = v3;
         }
 
-        /*  private void AddTriangle(int x, int z, BlockFaces face, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv1, Vector2 uv2, Vector2 uv3,
-                                   Vector2 e1, Vector2 e2, Vector2 e3, byte subdivision = 0)
-          {
-              Vector3 normal = Vector3.Zero;
-
-              Blocks[x, z].Faces[(int)face].BaseIndexInVertices = Vertices.Count;
-              int baseIndex = Vertices.Count;
-
-              // calcolo la normale
-              Plane plane = new Plane(p1, p2, p3);
-              normal = plane.Normal;
-
-              // creo una nuova lista dei vertici
-              Blocks[x, z].Faces[(int)face].Vertices = new List<EditorVertex>();
-              Blocks[x, z].Faces[(int)face].EditorIndices = new List<short>();
-
-              // aggiungo i vertici
-              EditorVertex v1 = new EditorVertex();
-              v1.Position = new Vector4(p1, 1.0f);
-              v1.Normal = normal;
-              v1.UV = uv1;
-              v1.EditorUV = e1;
-
-              // calcolo l'illuminazione
-
-
-              Blocks[x, z].Faces[(int)face].Vertices.Add(v1);
-
-              EditorVertex v2 = new EditorVertex();
-              v2.Position = new Vector4(p2, 1.0f);
-              v2.Normal = normal;
-              v2.UV = uv2;
-              v2.EditorUV = e2;
-
-              Blocks[x, z].Faces[(int)face].Vertices.Add(v2);
-
-              EditorVertex v3 = new EditorVertex();
-              v3.Position = new Vector4(p3, 1.0f);
-              v3.Normal = normal;
-              v3.UV = uv3;
-              v3.EditorUV = e3;
-
-              Blocks[x, z].Faces[(int)face].Vertices.Add(v3);
-
-              Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 0));
-              Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 1));
-              Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 2));
-
-              Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Triangle;
-              Blocks[x, z].Faces[(int)face].Defined = true;
-              Blocks[x, z].Faces[(int)face].SplitMode = subdivision;
-              Blocks[x, z].Faces[(int)face].Plane = plane;
-
-              Blocks[x, z].Faces[(int)face].StartVertex = (short)Vertices.Count;
-              for (int i = 0; i < Blocks[x, z].Faces[(int)face].Vertices.Count; i++) Vertices.Add(Blocks[x, z].Faces[(int)face].Vertices[i]);
-
-              // For the compilation
-              short i1 = -1; // CheckIfVertexExists(p1);
-              short i2 = -1; // CheckIfVertexExists(p2);
-              short i3 = -1; // CheckIfVertexExists(p3);
-
-              for (short i = 0; i < OptimizedVertices.Count; i++)
-              {
-                  if (OptimizedVertices[i].Position.X == p1.X && OptimizedVertices[i].Position.Y == p1.Y && OptimizedVertices[i].Position.Z == p1.Z)
-                  {
-                      i1 = i;
-                      break;
-                  }
-              }
-
-              for (short i = 0; i < OptimizedVertices.Count; i++)
-              {
-                  if (OptimizedVertices[i].Position.X == p2.X && OptimizedVertices[i].Position.Y == p2.Y && OptimizedVertices[i].Position.Z == p2.Z)
-                  {
-                      i2 = i;
-                      break;
-                  }
-              }
-
-              for (short i = 0; i < OptimizedVertices.Count; i++)
-              {
-                  if (OptimizedVertices[i].Position.X == p3.X && OptimizedVertices[i].Position.Y == p3.Y && OptimizedVertices[i].Position.Z == p3.Z)
-                  {
-                      i3 = i;
-                      break;
-                  }
-              }
-
-              Blocks[x, z].Faces[(int)face].Indices = new List<short>();
-
-              bool isPortal = Blocks[x, z].FloorPortal != -1 || Blocks[x, z].CeilingPortal != -1 || Blocks[x, z].WallPortal != -1;
-              Portal portal = null;
-              if (isPortal)
-              {
-                  if (Blocks[x, z].FloorPortal != -1) portal = Level.Portals[Blocks[x, z].FloorPortal];
-                  if (Blocks[x, z].CeilingPortal != -1) portal = Level.Portals[Blocks[x, z].CeilingPortal];
-                  if (Blocks[x, z].WallPortal != -1) portal = Level.Portals[Blocks[x, z].WallPortal];
-              }
-
-              if (i1 == -1)
-              {
-                  OptimizedVertices.Add(v1);
-                  Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
-                  _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
-                  i1 = (short)(OptimizedVertices.Count - 1);
-                  if (isPortal && !portal.Vertices.Contains(i1)) portal.Vertices.Add(i1);
-              }
-              else
-              {
-                  Blocks[x, z].Faces[(int)face].Indices.Add(i1);
-              }
-
-              _verticesDictionary[i1].Add(Vertices.Count - 3);
-
-              if (i2 == -1)
-              {
-                  OptimizedVertices.Add(v2);
-                  Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
-                  _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
-                  i2 = (short)(OptimizedVertices.Count - 1);
-                  if (isPortal && !portal.Vertices.Contains(i2)) portal.Vertices.Add(i2);
-              }
-              else
-              {
-                  Blocks[x, z].Faces[(int)face].Indices.Add(i2);
-              }
-
-              _verticesDictionary[i2].Add(Vertices.Count - 2);
-
-              if (i3 == -1)
-              {
-                  OptimizedVertices.Add(v3);
-                  Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
-                  _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
-                  i3 = (short)(OptimizedVertices.Count - 1);
-                  if (isPortal && !portal.Vertices.Contains(i3)) portal.Vertices.Add(i3);
-              }
-              else
-              {
-                  Blocks[x, z].Faces[(int)face].Indices.Add(i3);
-              }
-
-              _verticesDictionary[i3].Add(Vertices.Count - 1);
-          }
-          */
-
         public bool RayIntersectsFace(ref Ray ray, ref BlockFace face, out float distance)
         {
             double epsilon = Math.Cos(MathUtil.DegreesToRadians(90));
@@ -3431,50 +3143,14 @@ namespace TombEditor.Geometry
             return true;
         }
 
-        private bool IsPointInShadow2(ref Light light, ref Vector3 p, ref float distance)
+        public void CalculateLighting(int x, int z, int f)
         {
-            Vector3 direction = p - light.Position;
-            distance = direction.Length();
-            direction.Normalize();
-            float currentDistance = 1024.0f;
-
-            int lastX = (int)Math.Floor(light.Position.X);
-            int lastZ = (int)Math.Floor(light.Position.Z);
-
-            Vector3 point = light.Position + direction * currentDistance;
-            int x = (int)Math.Floor(point.X / 1024.0f);
-            int z = (int)Math.Floor(point.Z / 1024.0f);
-
-            while (currentDistance < distance)
-            {
-                if (Blocks[x, z].Type == BlockType.Wall)
-                    return true;
-
-                int floorMax = GetHighestFloorCorner(x, z);
-                int ceilingMin = Ceiling + GetLowestCeilingCorner(x, z);
-
-                if (floorMax * 256.0f > point.Y || ceilingMin * 256 < point.Y)
-                    return true;
-
-                currentDistance += 500.0f;
-
-                point = light.Position + direction * currentDistance;
-                x = (int)Math.Floor(point.X / 1024.0f);
-                z = (int)Math.Floor(point.Z / 1024.0f);
-            }
-
-            return false;
-        }
-
-        public void CalculateLighting2(int x, int z, int f, out int r, out int g, out int b)
-        {
-
             BlockFace face = Blocks[x, z].Faces[f];
 
             // Initialize the vertex color with ambiental light
-            r = AmbientLight.R;
-            g = AmbientLight.G;
-            b = AmbientLight.B;
+            int r = AmbientLight.R;
+            int g = AmbientLight.G;
+            int b = AmbientLight.B;
 
             Vector3 n = face.Plane.Normal;
 
@@ -3693,258 +3369,6 @@ namespace TombEditor.Geometry
             }
 
             _vertexColor.W = 255.0f;
-
-            return;
-        }
-
-
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void CalculateLighting(ref Vector3 p, ref Vector3 n, out int r, out int g, out int b)
-        {
-            // Get all nearest lights. Maybe in the future limit to max number of lights?
-            List<Light> lights = GetNearestLights(p);
-
-            // Initialize the vertex color with ambiental light
-            r = AmbientLight.R;
-            g = AmbientLight.G;
-            b = AmbientLight.B;
-
-            _vertexColor.W = 1.0f;
-
-            //Vector4 color = new Vector4(AmbientLight.R / 255.0f, AmbientLight.G / 255.0f, AmbientLight.B / 255.0f, 1.0f);
-
-            // If I have no lights touching this vertex, then return the ambiental light
-            // if (lights.Count == 0) return;
-
-            // For each light, raytrace the contribution of the light to this vertex
-            for (int i = 0; i < lights.Count; i++)
-            {
-                Light light = lights[i];
-
-                if (light.Type == LightType.Light || light.Type == LightType.Shadow)
-                {
-                    // Get the distance between light and vertex
-                    float distance = (float)Math.Abs((p - lights[i].Position).Length());
-
-                    // If distance is greater than light out radius, then skip this light
-                    if (distance > light.Out * 1024.0f)
-                        continue;
-
-                    // Raytrace and discover if vertex is in shadow or not
-                    if (IsPointInShadow(ref light, ref p, ref distance))
-                        continue;
-
-                    // Calculate light diffuse value
-                    int diffuse = (int)(light.Intensity * 8192); // 4
-                    if (light.Type == LightType.Shadow)
-                        diffuse = -diffuse;
-
-                    // float v38 = (float)(light.Out * 1024.0f - distance) / (light.Out * 1024.0f - light.In * 1024.0f);
-
-                    //if (light.Type == LightType.Shadow) diffuse = -diffuse;
-
-                    float range = light.Out - light.In;
-                    range *= 1024.0f;
-
-                    float attenuaton = 1.0f;
-
-                    // Calculate the attenuation
-                    if (distance >= light.In * 1024.0f)
-                        attenuaton = 1.0f - (float)(distance - light.In * 1024.0f) / (light.Out * 1024.0f - light.In * 1024.0f);
-
-
-                    // Accumulate lit color to the final vertex color
-                    //_vertexColor += (new Vector4(light.Color.R / 255.0f, light.Color.G / 255.0f, light.Color.B / 255.0f, 1.0f)) * diffuse;
-
-                    int finalIntensity = (int)(attenuaton * diffuse);
-
-                    r += finalIntensity * light.Color.R / 8192;
-                    g += finalIntensity * light.Color.G / 8192;
-                    b += finalIntensity * light.Color.B / 8192;
-                }
-                else if (light.Type == LightType.Effect)
-                {
-                    float diffuse = light.Intensity;
-
-                    int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
-                    int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
-                    int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
-                    int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
-
-                    if (((p.X == x1 && p.Z == z1) || (p.X == x1 && p.Z == z2) || (p.X == x2 && p.Z == z1) || (p.X == x2 && p.Z == z2)) && p.Y <= light.Position.Y)
-                    {
-                        // Accumulate lit color to the final vertex color
-                        // _vertexColor += (new Vector4(light.Color.R / 255.0f, light.Color.G / 255.0f, light.Color.B / 255.0f, 1.0f)) * diffuse;
-
-                        int finalIntensity = (int)(light.Intensity * 8192 * 0.25f);
-
-                        r += finalIntensity * light.Color.R / 8192;
-                        g += finalIntensity * light.Color.G / 8192;
-                        b += finalIntensity * light.Color.B / 8192;
-                    }
-                }
-                else if (light.Type == LightType.Sun)
-                {
-                    // Get the distance between light and vertex
-                    float distance = (float)Math.Abs((p - lights[i].Position).Length());
-
-                    // Raytrace and discover if vertex is in shadow or not
-                    if (IsPointInShadow(ref light, ref p, ref distance))
-                        continue;
-
-                    // Calculate the light vector
-                    Vector3 lightDirection = Vector3.Zero;
-
-                    lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
-                    lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
-                    lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
-
-                    lightDirection.Normalize();
-
-                    // calcolo la luce diffusa
-                    float diffuse = Vector3.Dot(-lightDirection, n);
-
-                    if (diffuse <= 0)
-                        continue;
-
-                    // se il prodotto scalare è negativo allora la superficie non è rivolta verso la luce
-                    /*  diffuse *= light.Intensity; // 0.5f; // 2
-                      if (diffuse <= 0) continue;
-                   //   diffuse = MathUtil.Clamp(diffuse, 0.0f, 1.0f);
-
-                      _vertexColor += (new Vector4(light.Color.R / 255.0f, light.Color.G / 255.0f, light.Color.B / 255.0f, 1.0f)) * diffuse;
-                      */
-
-                    int finalIntensity = (int)(diffuse * light.Intensity * 8192);
-                    if (finalIntensity < 0)
-                        continue;
-
-                    r += finalIntensity * light.Color.R / 8192;
-                    g += finalIntensity * light.Color.G / 8192;
-                    b += finalIntensity * light.Color.B / 8192;
-                }
-                else if (light.Type == LightType.Spot)
-                {
-                    // Calculate the ray from light to vertex
-                    Vector3 lightVector = (lights[i].Position - p);
-                    lightVector.Normalize();
-
-                    // Get the distance between light and vertex
-                    float distance = (float)Math.Abs((p - lights[i].Position).Length());
-
-                    // If distance is greater than light length, then skip this light
-                    if (distance > light.Cutoff * 1024.0f)
-                        continue;
-
-                    // Calculate the light direction
-                    Vector3 lightDirection = Vector3.Zero;
-
-                    lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
-                    lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
-                    lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
-
-                    lightDirection.Normalize();
-
-                    // Calculate the cosines values for In, Out, In/2, Out/2
-                    double d = Vector3.Dot(-lightVector, lightDirection);
-                    double cosI = (double)Math.Cos(MathUtil.DegreesToRadians(light.In));
-                    double cosO = (double)Math.Cos(MathUtil.DegreesToRadians(light.Out));
-                    double cosI2 = (double)Math.Cos(MathUtil.DegreesToRadians(light.In / 2.0f));
-                    double cosO2 = (double)Math.Cos(MathUtil.DegreesToRadians(light.Out / 2.0f));
-
-                    if (d <= cosO)
-                        continue;
-
-                    // Raytrace and discover if vertex is in shadow or not
-                    if (IsPointInShadow(ref light, ref p, ref distance))
-                        continue;
-
-                    // Calculate light diffuse value
-                    int diffuse = (int)(light.Intensity * 8192);
-
-                    float range = light.Out - light.In;
-                    range *= 1024.0f;
-
-                    float factor = (float)(/*1.0f*/  (d - cosI2) / (cosO2 - cosI2));
-                    float attenuation = 1.0f;
-                    if (distance >= light.Len * 1024.0f)
-                        attenuation = (float)(1.0f - (distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f));
-                    float dot1 = Vector3.Dot(-lightDirection, n);
-                    if (dot1 < 0)
-                        continue;
-
-                    int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
-
-                    r += finalIntensity * light.Color.R / 8192;
-                    g += finalIntensity * light.Color.G / 8192;
-                    b += finalIntensity * light.Color.B / 8192;
-
-
-                    // If ray is not inside the cone of the spotlight, skip this light
-                    /*  if (d <= cosO) continue;
-
-                              // Raytrace and discover if vertex is in shadow or not
-                              if (IsPointInShadow(ref light, ref p, ref distance)) continue;
-
-                              // Calculate light diffuse value
-                              int diffuse = (int)(light.Intensity * 8192);
-
-                              float range = light.Out - light.In;
-                              range *= 1024.0f;
-
-                              // Calculate the attenuation
-                              if (d <= cosI && d >= cosO)
-                                  diffuse = (float)Math.Pow((d - cosO) / (cosI - cosO), 1.0f);
-
-                              if (distance >= light.Len * 1024.0f && distance <= light.Cutoff * 1024.0f)
-                                  diffuse *= 1.0f - (float)(distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f);
-
-                              // Accumulate lit color to the final vertex color
-                              _vertexColor += (new Vector4(light.Color.R / 255.0f, light.Color.G / 255.0f, light.Color.B / 255.0f, 1.0f)) * diffuse;
-
-                      */
-                }
-            }
-
-            /* float maxColor = Math.Max(Math.Max(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
-             float minColor = Math.Min(Math.Min(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
-
-             if (_vertexColor.X > 0.5f || _vertexColor.Y > 0.5f || _vertexColor.Z > 0.5f)
-             {
-                 _vertexColor.X = (_vertexColor.X / maxColor) / 2.0f;
-                 _vertexColor.Y = (_vertexColor.Y / maxColor) / 2.0f;
-                 _vertexColor.Z = (_vertexColor.Z / maxColor) / 2.0f;
-             }
-
-             if (_vertexColor.X < 0.0f) _vertexColor.X = 0.0f;
-             if (_vertexColor.Y < 0.0f) _vertexColor.Y = 0.0f;
-             if (_vertexColor.Z < 0.0f) _vertexColor.Z = 0.0f;
-
-             _vertexColor.W = 1.0f;*/
-
-            /*    r=r+(lights.Count*r)
-
-              _vertexColor.X = r / 255.0f;
-                _vertexColor.Y = g / 255.0f;
-                _vertexColor.Z = b / 255.0f;*/
-
-
-            /* 
-                       float maxColor = Math.Max(Math.Max(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
-                       float minColor = Math.Min(Math.Min(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
-
-                       if (_vertexColor.X > 0.5f || _vertexColor.Y > 0.5f || _vertexColor.Z > 0.5f)
-                       {
-                           _vertexColor.X = (_vertexColor.X / maxColor) / 2.0f;
-                           _vertexColor.Y = (_vertexColor.Y / maxColor) / 2.0f;
-                           _vertexColor.Z = (_vertexColor.Z / maxColor) / 2.0f;
-                       }
-
-                       if (_vertexColor.X < 0.0f) _vertexColor.X = 0.0f;
-                       if (_vertexColor.Y < 0.0f) _vertexColor.Y = 0.0f;
-                       if (_vertexColor.Z < 0.0f) _vertexColor.Z = 0.0f;
-
-                       _vertexColor.W = 1.0f;*/
 
             return;
         }
@@ -4235,6 +3659,7 @@ namespace TombEditor.Geometry
             return max;
         }
 
+        // TODO: check if can be safely removed
         public void AdjustObjectsHeight()
         {
             return;
