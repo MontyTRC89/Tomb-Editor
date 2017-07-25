@@ -1498,17 +1498,12 @@ namespace TombEditor
             GC.Collect();
         }
 
-        public static void SetDiagonalFloorSplit()
+        public static void SetDiagonalFloorSplit(int room, int xMin, int xMax, int zMin, int zMax)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.Level.Rooms[room];
 
             if (_editor.BlockSelectionStartX != -1)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
@@ -1563,52 +1558,47 @@ namespace TombEditor
 
                         if (theCorner == 0)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SE;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[1] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[3] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SE;
                         }
 
                         if (theCorner == 1)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SW;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[0] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[2] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SW;
                         }
 
                         if (theCorner == 2)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NW;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[1] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[3] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NW;
                         }
 
                         if (theCorner == 3)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NE;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[0] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[2] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NE;
                         }
 
 
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplitType = DiagonalSplitType.Floor;
+                        _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplitType = DiagonalSplitType.Floor;
                     }
                 }
 
-                SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
+                SmartBuildGeometry(room, xMin, xMax + 1, zMin, zMax + 1);
             }
         }
 
-        public static void SetDiagonalCeilingSplit()
+        public static void SetDiagonalCeilingSplit(int room, int xMin, int xMax, int zMin, int zMax)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.Level.Rooms[room];
 
             if (_editor.BlockSelectionStartX != -1)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
@@ -1663,52 +1653,47 @@ namespace TombEditor
 
                         if (theCorner == 0)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SE;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[1] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[3] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SE;
                         }
 
                         if (theCorner == 1)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SW;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[0] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[2] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SW;
                         }
 
                         if (theCorner == 2)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[1] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NW;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[1] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[3] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NW;
                         }
 
                         if (theCorner == 3)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[0] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[2] = minHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NE;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[0] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].WSFaces[2] = minHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NE;
                         }
 
 
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplitType = DiagonalSplitType.Floor;
+                        _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplitType = DiagonalSplitType.Floor;
                     }
                 }
 
-                SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
+                SmartBuildGeometry(room, xMin, xMax + 1, zMin, zMax + 1);
             }
         }
 
-        public static void SetDiagonalWallSplit()
+        public static void SetDiagonalWallSplit(int room, int xMin, int xMax, int zMin, int zMax)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.Level.Rooms[room];
 
             if (_editor.BlockSelectionStartX != -1)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
@@ -1763,43 +1748,43 @@ namespace TombEditor
 
                         if (theCorner == 0)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SE;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SE;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[1] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[3] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SE;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SE;
                         }
 
                         if (theCorner == 1)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SW;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SW;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[0] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[2] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.SW;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.SW;
                         }
 
                         if (theCorner == 2)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[1] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NW;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NW;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[1] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[3] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NW;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NW;
                         }
 
                         if (theCorner == 3)
                         {
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[0] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[2] = maxHeight;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NE;
-                            _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NE;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[0] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].QAFaces[2] = maxHeight;
+                            _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NE;
+                            _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NE;
                         }
 
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Type = BlockType.Wall;
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplitType = DiagonalSplitType.Wall;
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplitType = DiagonalSplitType.None;
+                        _editor.Level.Rooms[room].Blocks[x, z].Type = BlockType.Wall;
+                        _editor.Level.Rooms[room].Blocks[x, z].FloorDiagonalSplitType = DiagonalSplitType.Wall;
+                        _editor.Level.Rooms[room].Blocks[x, z].CeilingDiagonalSplitType = DiagonalSplitType.None;
                     }
                 }
 
-                SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
+                SmartBuildGeometry(room, xMin, xMax + 1, zMin, zMax + 1);
             }
         }
 

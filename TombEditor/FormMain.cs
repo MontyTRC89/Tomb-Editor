@@ -3637,24 +3637,43 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
         private void butDiagonalFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.SetDiagonalFloorSplit();
+            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+            EditorActions.SetDiagonalFloorSplit(_editor.RoomIndex, xMin, xMax, zMin, zMax);
+
             _editor.DrawPanel3D();
+            _editor.DrawPanelGrid();
         }
 
         private void butDiagonalCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.SetDiagonalCeilingSplit();
+            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+            EditorActions.SetDiagonalCeilingSplit(_editor.RoomIndex, xMin, xMax, zMin, zMax);
+
             _editor.DrawPanel3D();
+            _editor.DrawPanelGrid();
         }
 
         private void butDiagonalWall_Click(object sender, EventArgs e)
         {
-            EditorActions.SetDiagonalWallSplit();
+            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+            EditorActions.SetDiagonalWallSplit(_editor.RoomIndex, xMin, xMax, zMin, zMax);
+
             _editor.DrawPanel3D();
+            _editor.DrawPanelGrid();
         }
         
-
-
         // Only for debugging purposes...
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
