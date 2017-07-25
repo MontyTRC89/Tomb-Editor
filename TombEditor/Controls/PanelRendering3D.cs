@@ -2182,11 +2182,11 @@ namespace TombEditor.Controls
         
         public void Draw()
         {
-            Stopwatch _watch = new Stopwatch();
-            _watch.Start();
-
             if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
                 return;
+
+            Stopwatch _watch = new Stopwatch();
+            _watch.Start();
 
             Debug.Reset();
 
