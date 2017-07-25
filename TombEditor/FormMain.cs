@@ -21,34 +21,22 @@ namespace TombEditor
     public partial class FormMain : DarkUI.Forms.DarkForm
     {
         private Editor _editor;
-        private int _lastSearchResult;
-
-        Stopwatch stopWatch = Stopwatch.StartNew();
-
-        readonly TimeSpan TargetElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 60);
-        readonly TimeSpan MaxElapsedTime = TimeSpan.FromTicks(TimeSpan.TicksPerSecond / 10);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool AllocConsole();
-
+        private int _lastSearchResult = -1;
+        
         public FormMain()
         {
             InitializeComponent();
-        }
 
-        private void FormMainNew_Load(object sender, EventArgs e)
-        {
             // Autosize the window
             this.Width = Screen.PrimaryScreen.Bounds.Width;
             this.Height = Screen.PrimaryScreen.Bounds.Height - 50;
-            this.Location = new Point(0, 0);
+            this.StartPosition = FormStartPosition.Manual;
 
             this.panelTextureContainer.Height = panelTextureTools.Location.Y;
 
-            // Initialize search result
-            _lastSearchResult = -1;
-
+            // Only how debug menu when a debugger is attached...
+            debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
+            
             // For each control bind its light parameter
             numLightIntensity.LightParameter = LightParameter.Intensity;
             numLightIn.LightParameter = LightParameter.In;
@@ -57,12 +45,8 @@ namespace TombEditor
             numLightCutoff.LightParameter = LightParameter.CutOff;
             numLightDirectionX.LightParameter = LightParameter.X;
             numLightDirectionY.LightParameter = LightParameter.Y;
-
-            // Hide palette if the window is too small
-            if (this.Width < 1280)
-                lightPalette.Visible = false;
         }
-
+        
         public void Draw()
         {
             panel3D.Draw();
@@ -2400,24 +2384,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             butCompileLevelAndPlay_Click(null, null);
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            TombRaider4Level level;/*= new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
-            level.Load(""); */
-
-            level = new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4");
-            level.Load("originale");
-
-
-            level = new TombEngine.TombRaider4Level("Game\\Data\\coastal.tr4");
-            level.Load("editor");
-
-
-
-            //  level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
-            ////   level.Load("originale");
-        }
-
         private void darkButton15_Click(object sender, EventArgs e)
         {
             FormAnimatedTextures form = new TombEditor.FormAnimatedTextures();
@@ -3410,18 +3376,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             _editor.DrawPanelGrid();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            TombRaider3Level level; /*= new TombEngine.TombRaider4Level("e:\\trle\\data\\settomb.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
-            level.Load(""); */
-
-            level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\crash.tr2");
-            level.Load("crash");
-
-            level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
-            level.Load("jungle");
-        }
-
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.Level.WadFile == "" || _editor.Level.WadFile == null)
@@ -3524,17 +3478,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
         {
             panel3D.Cursor = Cursors.Default;
         }
-
-        private void butCut_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butCut_Click(null, null);
-        }
-
+        
         private void butCopy_Click(object sender, EventArgs e)
         {
             Clipboard.Copy();
@@ -3637,38 +3581,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             comboRoom.SelectedIndex = found;
         }
 
-        private void button11_Click(object sender, EventArgs e)
-        {
-            List<System.Drawing.Color> colors = new List<System.Drawing.Color>();
-            List<int> tempColors = new List<int>();
-
-            Bitmap bmp = (Bitmap)Bitmap.FromFile("Editor\\Palette.png");
-            for (int y = 2; y < bmp.Height; y += 14)
-            {
-                for (int x = 2; x < bmp.Width; x += 14)
-                {
-                    System.Drawing.Color col = bmp.GetPixel(x, y);
-                    if (col.A == 0)
-                        continue;
-                    /* if (!tempColors.Contains(col.ToArgb()))*/
-                    tempColors.Add(col.ToArgb());
-                }
-            }
-            File.Delete("Editor\\Palette.bin");
-            BinaryWriter writer = new BinaryWriter(File.OpenWrite("Editor\\Palette.bin"));
-            for (int i = 0; i < tempColors.Count; i++)
-            {
-                System.Drawing.Color col2 = System.Drawing.Color.FromArgb(tempColors[i]);
-                writer.Write(col2.R);
-                writer.Write(col2.G);
-                writer.Write(col2.B);
-
-            }
-
-            writer.Flush();
-            writer.Close();
-        }
-        
         public void ChangeLightColorFromPalette()
         {
             if (_editor.LightIndex != -1)
@@ -3719,11 +3631,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             LoadTriggersInUI();
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void butDrawHorizon_Click(object sender, EventArgs e)
         {
             _editor.DrawHorizon = !_editor.DrawHorizon;
@@ -3769,5 +3676,76 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             EditorActions.SetDiagonalWallSplit();
             _editor.DrawPanel3D();
         }
+        
+
+
+        // Only for debugging purposes...
+
+        private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TombRaider4Level level; //= new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
+                                    //level.Load(""); 
+            level = new TombEngine.TombRaider4Level("e:\\trle\\data\\coastal.tr4");
+            level.Load("originale");
+
+            level = new TombEngine.TombRaider4Level("Game\\Data\\coastal.tr4");
+            level.Load("editor");
+
+            //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
+            //level.Load("originale");
+        }
+
+        private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TombRaider3Level level; //= new TombEngine.TombRaider4Level("e:\\trle\\data\\settomb.tr4"); // new TombEngine.TombRaider4Level("c:\\Program Files (x86)\\Steam\\steamapps\\common\\Tomb Raider (IV) The Last Revelation\\data\\karnak1.tr4");
+            //level.Load("");
+
+            level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\crash.tr2");
+            level.Load("crash");
+
+            level = new TombEngine.TombRaider3Level("e:\\tomb3\\data\\jungle.tr2");
+            level.Load("jungle");
+        }
+
+        private void debugAction2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<System.Drawing.Color> colors = new List<System.Drawing.Color>();
+            List<int> tempColors = new List<int>();
+
+            Bitmap bmp = (Bitmap)Bitmap.FromFile("Editor\\Palette.png");
+            for (int y = 2; y < bmp.Height; y += 14)
+            {
+                for (int x = 2; x < bmp.Width; x += 14)
+                {
+                    System.Drawing.Color col = bmp.GetPixel(x, y);
+                    if (col.A == 0)
+                        continue;
+                    /* if (!tempColors.Contains(col.ToArgb()))*/
+                    tempColors.Add(col.ToArgb());
+                }
+            }
+            File.Delete("Editor\\Palette.bin");
+            BinaryWriter writer = new BinaryWriter(File.OpenWrite("Editor\\Palette.bin"));
+            for (int i = 0; i < tempColors.Count; i++)
+            {
+                System.Drawing.Color col2 = System.Drawing.Color.FromArgb(tempColors[i]);
+                writer.Write(col2.R);
+                writer.Write(col2.G);
+                writer.Write(col2.B);
+
+            }
+
+            writer.Flush();
+            writer.Close();
+        }
+
+        private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
+        { }
+
+        private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
+        { }
+
+        private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
+        { }
     }
 }

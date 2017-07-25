@@ -88,6 +88,13 @@
             this.bumpMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.butFloor = new System.Windows.Forms.Button();
             this.butWall = new System.Windows.Forms.Button();
             this.butBox = new System.Windows.Forms.Button();
@@ -105,14 +112,8 @@
             this.butCeiling = new System.Windows.Forms.Button();
             this.butNotWalkableBox = new System.Windows.Forms.Button();
             this.cbNoPathfinding = new DarkUI.Controls.DarkCheckBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.cbLightActive = new DarkUI.Controls.DarkCheckBox();
-            this.butGlobalLightSettings = new DarkUI.Controls.DarkButton();
-            this.butTestTriangleEditMode = new DarkUI.Controls.DarkButton();
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
             this.butResetSearch = new DarkUI.Controls.DarkButton();
-            this.button1 = new System.Windows.Forms.Button();
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.butAverageCeiling = new DarkUI.Controls.DarkButton();
             this.butAverageFloor = new DarkUI.Controls.DarkButton();
@@ -273,7 +274,8 @@
             this.roomsToolStripMenuItem,
             this.itemsToolStripMenuItem,
             this.texturesToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.debugToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
             this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
@@ -714,7 +716,7 @@
             this.texturesToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
-            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
+            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.texturesToolStripMenuItem.Text = "Textures";
             // 
             // loadTextureMapToolStripMenuItem
@@ -809,7 +811,7 @@
             this.textureMapBuilderToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // textureMapBuilderToolStripMenuItem
@@ -817,8 +819,72 @@
             this.textureMapBuilderToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.textureMapBuilderToolStripMenuItem.Image = global::TombEditor.Properties.Resources.small_icons_16;
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
-            this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.textureMapBuilderToolStripMenuItem.Text = "Texture Map builder";
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.debugAction0ToolStripMenuItem,
+            this.debugAction1ToolStripMenuItem,
+            this.debugAction2ToolStripMenuItem,
+            this.debugAction3ToolStripMenuItem,
+            this.debugAction4ToolStripMenuItem,
+            this.debugAction5ToolStripMenuItem});
+            this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 120, 0);
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // debugAction0ToolStripMenuItem
+            // 
+            this.debugAction0ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction0ToolStripMenuItem.Name = "debugAction0ToolStripMenuItem";
+            this.debugAction0ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.debugAction0ToolStripMenuItem.Text = "Debug Action 0";
+            this.debugAction0ToolStripMenuItem.Click += new System.EventHandler(this.debugAction0ToolStripMenuItem_Click);
+            // 
+            // debugAction1ToolStripMenuItem
+            // 
+            this.debugAction1ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction1ToolStripMenuItem.Name = "debugAction1ToolStripMenuItem";
+            this.debugAction1ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.debugAction1ToolStripMenuItem.Text = "Debug Action 1";
+            this.debugAction1ToolStripMenuItem.Click += new System.EventHandler(this.debugAction1ToolStripMenuItem_Click);
+            // 
+            // debugAction2ToolStripMenuItem
+            // 
+            this.debugAction2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction2ToolStripMenuItem.Name = "debugAction2ToolStripMenuItem";
+            this.debugAction2ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.debugAction2ToolStripMenuItem.Text = "Debug Action 2";
+            this.debugAction2ToolStripMenuItem.Click += new System.EventHandler(this.debugAction2ToolStripMenuItem_Click);
+            // 
+            // debugAction3ToolStripMenuItem
+            // 
+            this.debugAction3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction3ToolStripMenuItem.Name = "debugAction3ToolStripMenuItem";
+            this.debugAction3ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.debugAction3ToolStripMenuItem.Text = "Debug Action 3";
+            this.debugAction3ToolStripMenuItem.Click += new System.EventHandler(this.debugAction3ToolStripMenuItem_Click);
+            // 
+            // debugAction4ToolStripMenuItem
+            // 
+            this.debugAction4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction4ToolStripMenuItem.Name = "debugAction4ToolStripMenuItem";
+            this.debugAction4ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.debugAction4ToolStripMenuItem.Text = "Debug Action 4";
+            this.debugAction4ToolStripMenuItem.Click += new System.EventHandler(this.debugAction4ToolStripMenuItem_Click);
+            // 
+            // debugAction5ToolStripMenuItem
+            // 
+            this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
+            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.debugAction5ToolStripMenuItem.Text = "Debug Action 5";
+            this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
             // 
             // butFloor
             // 
@@ -951,14 +1017,8 @@
             this.panel2.Controls.Add(this.butCeiling);
             this.panel2.Controls.Add(this.butNotWalkableBox);
             this.panel2.Controls.Add(this.cbNoPathfinding);
-            this.panel2.Controls.Add(this.button3);
-            this.panel2.Controls.Add(this.button2);
-            this.panel2.Controls.Add(this.cbLightActive);
-            this.panel2.Controls.Add(this.butGlobalLightSettings);
-            this.panel2.Controls.Add(this.butTestTriangleEditMode);
             this.panel2.Controls.Add(this.cbHorizon);
             this.panel2.Controls.Add(this.butResetSearch);
-            this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.butFindItem);
             this.panel2.Controls.Add(this.butAverageCeiling);
             this.panel2.Controls.Add(this.butAverageFloor);
@@ -1097,61 +1157,6 @@
             this.cbNoPathfinding.Text = "No pathfinding";
             this.cbNoPathfinding.CheckedChanged += new System.EventHandler(this.cbNoPathfinding_CheckedChanged);
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(14, 892);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(72, 50);
-            this.button3.TabIndex = 80;
-            this.button3.Text = "DON\'T CLICK ME :)";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(208, 893);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(72, 50);
-            this.button2.TabIndex = 50;
-            this.button2.Text = "DON\'T CLICK ME :)";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // cbLightActive
-            // 
-            this.cbLightActive.AutoSize = true;
-            this.cbLightActive.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightActive.Location = new System.Drawing.Point(179, 683);
-            this.cbLightActive.Name = "cbLightActive";
-            this.cbLightActive.Size = new System.Drawing.Size(56, 17);
-            this.cbLightActive.TabIndex = 41;
-            this.cbLightActive.Text = "Active";
-            this.cbLightActive.Visible = false;
-            // 
-            // butGlobalLightSettings
-            // 
-            this.butGlobalLightSettings.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butGlobalLightSettings.Location = new System.Drawing.Point(206, 864);
-            this.butGlobalLightSettings.Name = "butGlobalLightSettings";
-            this.butGlobalLightSettings.Padding = new System.Windows.Forms.Padding(5);
-            this.butGlobalLightSettings.Size = new System.Drawing.Size(67, 23);
-            this.butGlobalLightSettings.TabIndex = 44;
-            this.butGlobalLightSettings.Text = "Global";
-            this.butGlobalLightSettings.Visible = false;
-            // 
-            // butTestTriangleEditMode
-            // 
-            this.butTestTriangleEditMode.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTestTriangleEditMode.Location = new System.Drawing.Point(16, 677);
-            this.butTestTriangleEditMode.Name = "butTestTriangleEditMode";
-            this.butTestTriangleEditMode.Padding = new System.Windows.Forms.Padding(5);
-            this.butTestTriangleEditMode.Size = new System.Drawing.Size(121, 23);
-            this.butTestTriangleEditMode.TabIndex = 69;
-            this.butTestTriangleEditMode.Text = "Test Diagonal Split";
-            this.butTestTriangleEditMode.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butTestTriangleEditMode.Visible = false;
-            // 
             // cbHorizon
             // 
             this.cbHorizon.AutoSize = true;
@@ -1175,16 +1180,6 @@
             this.butResetSearch.Text = "Reset";
             this.butResetSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butResetSearch.Click += new System.EventHandler(this.butResetSearch_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(130, 893);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(72, 50);
-            this.button1.TabIndex = 45;
-            this.button1.Text = "DON\'T CLICK ME :)";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // butFindItem
             // 
@@ -1949,7 +1944,7 @@
             this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel22.Location = new System.Drawing.Point(6, 5);
             this.darkLabel22.Name = "darkLabel22";
-            this.darkLabel22.Size = new System.Drawing.Size(103, 13);
+            this.darkLabel22.Size = new System.Drawing.Size(104, 13);
             this.darkLabel22.TabIndex = 48;
             this.darkLabel22.Text = "Triggers on sectors";
             // 
@@ -2775,7 +2770,6 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tomb Editor";
-            this.Load += new System.EventHandler(this.FormMainNew_Load);
             this.Shown += new System.EventHandler(this.FormMainNew_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormMainNew_KeyDown);
             this.darkMenuStrip1.ResumeLayout(false);
@@ -2900,7 +2894,6 @@
         private DarkUI.Controls.DarkLabel darkLabel6;
         private System.Windows.Forms.Panel panelStaticMeshColor;
         private DarkUI.Controls.DarkLabel darkLabel14;
-        private DarkUI.Controls.DarkCheckBox cbLightActive;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkLabel darkLabel13;
         private DarkUI.Controls.DarkLabel darkLabel11;
@@ -2915,7 +2908,6 @@
         private DarkUI.Controls.DarkComboBox comboRoomType;
         private DarkUI.Controls.DarkLabel darkLabel15;
         private DarkUI.Controls.DarkComboBox comboRoom;
-        private DarkUI.Controls.DarkButton butGlobalLightSettings;
         private DarkUI.Controls.DarkComboBox comboMist;
         private DarkUI.Controls.DarkLabel darkLabel17;
         private DarkUI.Controls.DarkComboBox comboReflection;
@@ -2962,7 +2954,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialogPRJ2;
         private System.Windows.Forms.SaveFileDialog saveFileDialogPRJ2;
         private System.Windows.Forms.OpenFileDialog openFileDialogPRJ;
-        private System.Windows.Forms.Button button1;
         private DarkUI.Controls.DarkContextMenu darkContextMenu1;
         private System.Windows.Forms.ToolStripStatusLabel labelRoomStatistics;
         private DarkUI.Controls.DarkComboBox comboFlipMap;
@@ -2990,10 +2981,8 @@
         private System.Windows.Forms.ToolStripMenuItem resetFilterToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton butFlipMap;
-        private System.Windows.Forms.Button button2;
         private DarkUI.Controls.DarkCheckBox cbHorizon;
         private System.Windows.Forms.ToolStripButton butDrawRoomNames;
-        private DarkUI.Controls.DarkButton butTestTriangleEditMode;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureMapBuilderToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem14;
@@ -3008,7 +2997,6 @@
         private Controls.Panel2DGrid panel2DGrid;
         private Controls.PanelPalette lightPalette;
         private DarkUI.Controls.DarkButton butAddTrigger;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.ToolStripButton butDrawHorizon;
         private DarkUI.Controls.DarkCheckBox cbNoPathfinding;
         private System.Windows.Forms.Button butNotWalkableBox;
@@ -3023,5 +3011,12 @@
         private DarkUI.Controls.DarkButton butDiagonalCeiling;
         private DarkUI.Controls.DarkButton butDiagonalFloor;
         private DarkUI.Controls.DarkButton butDiagonalWall;
+        private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction0ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction5ToolStripMenuItem;
     }
 }
