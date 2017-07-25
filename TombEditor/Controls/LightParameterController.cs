@@ -55,12 +55,7 @@ namespace TombEditor.Controls
 
             this.BackColor = _backgroundColor;
         }
-
-        private void LightParameterController_Load(object sender, EventArgs e)
-        {
-
-        }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -75,7 +70,8 @@ namespace TombEditor.Controls
         private void SetParameters()
         {
             _editor = Editor.Instance;
-            if (_editor.LightIndex == -1) return;
+            if (_editor.LightIndex == -1)
+                return;
 
             Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
 
@@ -206,14 +202,17 @@ namespace TombEditor.Controls
             float newValue = _value;
 
             // Change parameter value
-            if (e.Button == MouseButtons.Left) newValue -= _step;
-            if (e.Button == MouseButtons.Right) newValue -= _fastStep;
+            if (e.Button == MouseButtons.Left)
+                newValue -= _step;
+            if (e.Button == MouseButtons.Right)
+                newValue -= _fastStep;
 
             // Check for ranges
-            if ((light.Type == LightType.Spot || light.Type == LightType.Sun) && 
+            if ((light.Type == LightType.Spot || light.Type == LightType.Sun) &&
                 (LightParameter == LightParameter.X || LightParameter == LightParameter.Y))
             {
-                if (newValue < 0.0f) newValue = 360.0f + newValue;
+                if (newValue < 0.0f)
+                    newValue = 360.0f + newValue;
             }
             else
             {
@@ -242,14 +241,17 @@ namespace TombEditor.Controls
             float newValue = _value;
 
             // Change parameter value
-            if (e.Button == MouseButtons.Left) newValue += _step;
-            if (e.Button == MouseButtons.Right) newValue += _fastStep;
+            if (e.Button == MouseButtons.Left)
+                newValue += _step;
+            if (e.Button == MouseButtons.Right)
+                newValue += _fastStep;
 
             // Check for ranges
             if ((light.Type == LightType.Spot || light.Type == LightType.Sun) &&
                 (LightParameter == LightParameter.X || LightParameter == LightParameter.Y))
             {
-                if (newValue >= 360.0f) newValue = newValue - 360.0f;
+                if (newValue >= 360.0f)
+                    newValue = newValue - 360.0f;
             }
             else
             {
@@ -311,7 +313,7 @@ namespace TombEditor.Controls
                         _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = _value;
                         break;
                 }
-     
+
                 //_editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
                 _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
                 _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();

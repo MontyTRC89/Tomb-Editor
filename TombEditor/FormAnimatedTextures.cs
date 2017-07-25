@@ -33,7 +33,7 @@ namespace TombEditor
 
             picTextureMap.Image = _editor.Level.TextureMap;
 
-            lstTextures.GetColumn(0).ImageGetter = delegate (object row) 
+            lstTextures.GetColumn(0).ImageGetter = delegate (object row)
             {
                 RowAnimatedTexture obj = (RowAnimatedTexture)row;
                 return obj.Texture;
@@ -46,7 +46,8 @@ namespace TombEditor
 
         private void ReloadTextureSets()
         {
-            while (comboItems.Items.Count > 1) comboItems.Items.RemoveAt(1);
+            while (comboItems.Items.Count > 1)
+                comboItems.Items.RemoveAt(1);
 
             for (int i = 0; i < _editor.Level.AnimatedTextures.Count; i++)
             {
@@ -73,13 +74,13 @@ namespace TombEditor
 
                 comboEffect.SelectedIndex = (int)aSet.Effect;
 
-                for (int i=0;i<imgList.Images.Count;i++)
+                for (int i = 0; i < imgList.Images.Count; i++)
                 {
                     imgList.Images[i].Dispose();
                 }
 
                 imgList.Images.Clear();
-                
+
                 for (int i = 0; i < aSet.Textures.Count; i++)
                 {
                     Bitmap bmp = Utils.GetTextureTileFromMap(aSet.Textures[i].X, aSet.Textures[i].Y, aSet.Textures[i].Page);
@@ -110,7 +111,8 @@ namespace TombEditor
         private void butDelete_Click(object sender, EventArgs e)
         {
             if (DarkMessageBox.ShowWarning("Do you really want to delete this animated texture set?",
-                                           "Confirm", DarkDialogButton.YesNo) != DialogResult.Yes) return;
+                                           "Confirm", DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
             _editor.Level.AnimatedTextures.RemoveAt(comboItems.SelectedIndex - 1);
             ReloadTextureSets();
             comboItems.SelectedIndex = 0;
@@ -118,17 +120,19 @@ namespace TombEditor
 
         private void butAddNewTexture_Click(object sender, EventArgs e)
         {
-            if (!picTextureMap.IsTextureSelected) return;
+            if (!picTextureMap.IsTextureSelected)
+                return;
 
             AnimatedTextureSet aSet = _editor.Level.AnimatedTextures[comboItems.SelectedIndex - 1];
 
-            for (int i=0;i<aSet.Textures.Count;i++)
+            for (int i = 0; i < aSet.Textures.Count; i++)
             {
                 if (aSet.Textures[i].X == picTextureMap.SelectedX && aSet.Textures[i].Y == picTextureMap.SelectedY &&
-                    aSet.Textures[i].Page == picTextureMap.Page) return;
+                    aSet.Textures[i].Page == picTextureMap.Page)
+                    return;
             }
 
-            Bitmap newTexture = Utils.GetTextureTileFromMap(picTextureMap.SelectedX, picTextureMap.SelectedY, 
+            Bitmap newTexture = Utils.GetTextureTileFromMap(picTextureMap.SelectedX, picTextureMap.SelectedY,
                                                             picTextureMap.Page);
             imgList.Images.Add(newTexture);
 
@@ -145,15 +149,18 @@ namespace TombEditor
 
         private void timerPreview_Tick(object sender, EventArgs e)
         {
-            if (imgList.Images.Count == 0) return;
-            if (_currentFrame > imgList.Images.Count - 1) _currentFrame = 0;
+            if (imgList.Images.Count == 0)
+                return;
+            if (_currentFrame > imgList.Images.Count - 1)
+                _currentFrame = 0;
             picPreview.Image = imgList.Images[_currentFrame];
             _currentFrame++;
         }
 
         private void lstTextures_Click(object sender, EventArgs e)
         {
-            if (lstTextures.SelectedObject == null) return;
+            if (lstTextures.SelectedObject == null)
+                return;
 
             RowAnimatedTexture obj = (RowAnimatedTexture)lstTextures.SelectedObject;
 
@@ -167,14 +174,14 @@ namespace TombEditor
 
         private void lstTextures_CellClick(object sender, BrightIdeasSoftware.CellClickEventArgs e)
         {
- 
+
         }
 
         private void butDeleteTexture_Click(object sender, EventArgs e)
         {
             if (lstTextures.SelectedObject != null)
             {
-               // imgList.Images.RemoveAt(lstTextures.SelectedItem.Index);
+                // imgList.Images.RemoveAt(lstTextures.SelectedItem.Index);
                 _editor.Level.AnimatedTextures[comboItems.SelectedIndex - 1].Textures.RemoveAt(lstTextures.SelectedItem.Index);
                 lstTextures.RemoveObject(lstTextures.SelectedObject);
             }

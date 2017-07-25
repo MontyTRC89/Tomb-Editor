@@ -16,37 +16,24 @@ namespace TombLib.Wad
         public TR4Wad OriginalWad { get; set; }
 
         // dati provenienti dal WAD
-        private Dictionary<uint, WadMoveable> _wadMoveables;
-        private Dictionary<uint, WadStaticMesh> _wadStaticMeshes;
-        private Dictionary<uint, WadTexturePage> _texturePages;
-        private Dictionary<uint, WadTextureSample> _textureSamples;
+        public Dictionary<uint, WadMoveable> WadMoveables { get; } = new Dictionary<uint, WadMoveable>();
+        public Dictionary<uint, WadStaticMesh> WasStaticMeshes { get; } = new Dictionary<uint, WadStaticMesh>();
+        public Dictionary<uint, WadTexturePage> TexturePages { get; } = new Dictionary<uint, WadTexturePage>();
+        public Dictionary<uint, WadTextureSample> TextureSamples { get; } = new Dictionary<uint, WadTextureSample>();
 
         // il device DirectX 11
         private GraphicsDevice _device;
 
         // firma del WAD
         //private static string _magicWord = "WAD2";
-		
+
         // i dati del WAD in formato DirectX 11
-        private Dictionary<uint, Texture2D> _textures;
-        private Dictionary<uint, SkinnedModel> _moveables;
-        private Dictionary<uint, StaticModel> _staticMeshes;
+        public Dictionary<uint, Texture2D> Textures { get; } = new Dictionary<uint, Texture2D>();
+        public Dictionary<uint, SkinnedModel> Moveables { get; } = new Dictionary<uint, SkinnedModel>();
+        public Dictionary<uint, StaticModel> StaticMeshes { get; } = new Dictionary<uint, StaticModel>();
 
         // sound samples
         public List<string> Samples { get; set; }
-
-        public Wad()
-        {
-            _wadMoveables = new Dictionary<uint, WadMoveable>();
-            _wadStaticMeshes = new Dictionary<uint, WadStaticMesh>();
-            _texturePages = new Dictionary<uint, WadTexturePage>();
-            _textureSamples = new Dictionary<uint, WadTextureSample>();
-            
-            _textures = new Dictionary<uint, Texture2D>();
-            _moveables = new Dictionary<uint, SkinnedModel>();
-            _staticMeshes = new Dictionary<uint, StaticModel>();
-        }
-
         public GraphicsDevice GraphicsDevice
         {
             get
@@ -59,62 +46,6 @@ namespace TombLib.Wad
             }
         }
 
-        public Dictionary<uint, WadMoveable> WadMoveables
-        {
-            get
-            {
-                return _wadMoveables;
-            }
-        }
-
-        public Dictionary<uint, WadStaticMesh> WasStaticMeshes
-        {
-            get
-            {
-                return _wadStaticMeshes;
-            }
-        }
-
-        public Dictionary<uint, WadTexturePage> TexturePages
-        {
-            get
-            {
-                return _texturePages;
-            }
-        }
-
-        public Dictionary<uint, WadTextureSample> TextureSamples
-        {
-            get
-            {
-                return _textureSamples;
-            }
-        }
-
-        public Dictionary<uint, Texture2D> Textures
-        {
-            get
-            {
-                return _textures;
-            }
-        }
-
-        public Dictionary<uint, SkinnedModel> Moveables
-        {
-            get
-            {
-                return _moveables;
-            }
-        }
-
-        public Dictionary<uint, StaticModel> StaticMeshes
-        {
-            get
-            {
-                return _staticMeshes;
-            }
-        }
-
         public static Wad LoadWad(string filename)
         {
             TR4Wad original = new TR4Wad();
@@ -124,7 +55,7 @@ namespace TombLib.Wad
 
         public void DisposeWad()
         {
-            if (Textures.Count!=0)
+            if (Textures.Count != 0)
             {
                 Textures[0].Dispose();
                 Textures.Remove(0);
@@ -393,7 +324,7 @@ namespace TombLib.Wad
                     writer.Write(mesh.NumPolygons);
                     writer.WriteBlockArray(mesh.Polygons);
                 }
-                    
+
                 for (int k = 0; k < moveable.Meshes.Count - 1; k++)
                     writer.WriteBlock<WadLink>(moveable.Links[k]);
 
@@ -474,7 +405,7 @@ namespace TombLib.Wad
                 writer.WriteBlock(staticMesh.CollisionBox1);
                 writer.WriteBlock(staticMesh.CollisionBox2);
             }
-            
+
             // termino la scrittura
             writer.Flush();
             writer.Close();
@@ -489,9 +420,9 @@ namespace TombLib.Wad
             // textures.
             Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            for (uint i = 0; i < _texturePages.Count; i++)
+            for (uint i = 0; i < TexturePages.Count; i++)
             {
-                WadTexturePage page = _texturePages[i];
+                WadTexturePage page = TexturePages[i];
 
                 for (int x = 0; x < 256; x++)
                 {
@@ -505,7 +436,7 @@ namespace TombLib.Wad
                                                                                page.TexturePage[y, x * 4 + 1],
                                                                                page.TexturePage[y, x * 4 + 2]);
 
-                            tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, c.R, c.G, c.B));
+                        tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, c.R, c.G, c.B));
                     }
                 }
 
@@ -522,7 +453,7 @@ namespace TombLib.Wad
             tempBitmap.Save(outputTexture, System.Drawing.Imaging.ImageFormat.Png);
             outputTexture.Seek(0, SeekOrigin.Begin);
             Texture2D newTexture = Texture2D.Load(_device, outputTexture, TextureFlags.None, SharpDX.Direct3D11.ResourceUsage.Default);
-      
+
             // Add texture to the dictionary
             Textures.Add(0, newTexture);
 
@@ -531,9 +462,9 @@ namespace TombLib.Wad
             tempBitmap.Dispose();
 
             // creo i moveable
-            for (int i = 0; i < _wadMoveables.Count; i++)
+            for (int i = 0; i < WadMoveables.Count; i++)
             {
-                WadMoveable mov = _wadMoveables.ElementAt(i).Value;
+                WadMoveable mov = WadMoveables.ElementAt(i).Value;
                 SkinnedModel model = new SkinnedModel(_device, mov.ObjectID);
                 model.Offset = mov.Offset;
 
@@ -545,7 +476,7 @@ namespace TombLib.Wad
 
                     mesh.BoundingBox = msh.BoundingBox;
 
-                    for (int j = 0; j < _texturePages.Count; j++)
+                    for (int j = 0; j < TexturePages.Count; j++)
                     {
                         Submesh submesh = new Submesh();
                         submesh.Material = new TombLib.Graphics.Material();
@@ -559,8 +490,9 @@ namespace TombLib.Wad
                     {
                         WadPolygon poly = msh.Polygons[j];
                         int textureId = poly.Texture & 0xfff;
-                        if (textureId > 2047) textureId = -(textureId - 4096);
-                        short submeshIndex = _textureSamples[(uint)textureId].Page;
+                        if (textureId > 2047)
+                            textureId = -(textureId - 4096);
+                        short submeshIndex = TextureSamples[(uint)textureId].Page;
 
                         List<Vector2> uv = CalculateUVCoordinates(poly);
 
@@ -750,13 +682,13 @@ namespace TombLib.Wad
                     model.Animations.Add(animation);
                 }
 
-                _moveables.Add(model.ObjectID, model);
+                Moveables.Add(model.ObjectID, model);
             }
 
             // creo le static mesh
-            for (int i = 0; i < _wadStaticMeshes.Count; i++)
+            for (int i = 0; i < WasStaticMeshes.Count; i++)
             {
-                WadStaticMesh mov = _wadStaticMeshes.ElementAt(i).Value;
+                WadStaticMesh mov = WasStaticMeshes.ElementAt(i).Value;
                 StaticModel model = new StaticModel(_device, mov.ObjectID);
 
                 // inizializzo le mesh
@@ -764,7 +696,7 @@ namespace TombLib.Wad
                 StaticMesh mesh = new StaticMesh(_device, mov.ObjectID.ToString() + "_mesh_" + i.ToString());
                 mesh.BoundingBox = msh.BoundingBox;
 
-                for (int j = 0; j < _texturePages.Count; j++)
+                for (int j = 0; j < TexturePages.Count; j++)
                 {
                     Submesh submesh = new Submesh();
                     submesh.Material = new TombLib.Graphics.Material();
@@ -778,8 +710,9 @@ namespace TombLib.Wad
                 {
                     WadPolygon poly = msh.Polygons[j];
                     int textureId = poly.Texture & 0xfff;
-                    if (textureId > 2047) textureId = -(textureId - 4096);
-                    short submeshIndex = _textureSamples[(uint)textureId].Page;
+                    if (textureId > 2047)
+                        textureId = -(textureId - 4096);
+                    short submeshIndex = TextureSamples[(uint)textureId].Page;
 
                     List<Vector2> uv = CalculateUVCoordinates(poly);
 
@@ -816,7 +749,7 @@ namespace TombLib.Wad
 
                 model.Meshes.Add(mesh);
 
-                _staticMeshes.Add(model.ObjectID, model);
+                StaticMeshes.Add(model.ObjectID, model);
             }
         }
 
@@ -849,16 +782,17 @@ namespace TombLib.Wad
             int shape = (poly.Texture & 0x7000) >> 12;
             int flipped = (poly.Texture & 0x8000) >> 15;
             int textureId = poly.Texture & 0xfff;
-            if (textureId > 2047) textureId = -(textureId - 4096);
+            if (textureId > 2047)
+                textureId = -(textureId - 4096);
 
-           
+
             // calcolo i quattro angoli della texture
-            WadTextureSample texture = _textureSamples[(uint) textureId];
+            WadTextureSample texture = TextureSamples[(uint)textureId];
 
             int yBlock = (int)(texture.Page / 8);
             int xBlock = (int)(texture.Page % 8);
-            
-            Vector2 nw = new Vector2((xBlock*256+ texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
+
+            Vector2 nw = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
             Vector2 ne = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
             Vector2 se = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
             Vector2 sw = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);

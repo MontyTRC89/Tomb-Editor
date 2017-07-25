@@ -78,7 +78,7 @@ namespace TombLib.Graphics
             Vector3 translation = new Vector3(0, 0, Distance);
             translation = Vector3.TransformCoordinate(translation, rotation);
             Position = Target + translation;
-            
+
             Vector3 up = Vector3.TransformCoordinate(Vector3.UnitY, rotation);
 
             //new Vector3(0, 150, 0), Vector3.Up); 

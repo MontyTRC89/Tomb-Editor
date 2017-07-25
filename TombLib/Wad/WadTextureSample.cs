@@ -6,14 +6,14 @@ using System.Runtime.InteropServices;
 
 namespace TombLib.Wad
 {
-    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct WadTextureSamplePoint
     {
         public byte X;
         public byte Y;
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct WadTextureSample
     {
         public WadTextureSampleType Type;

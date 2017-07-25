@@ -13,12 +13,7 @@ namespace TombLib.Graphics
         public Matrix Transform;
         public Matrix GlobalTransform;
         public Bone Parent;
-        public List<Bone> Children;
+        public List<Bone> Children = new List<Bone>();
         public short Index;
-
-        public Bone()
-        {
-            Children = new List<Bone>();
-        }
     }
 }

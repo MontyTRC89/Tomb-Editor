@@ -6,7 +6,7 @@ namespace TombEditor
     static class Program
     {
         /// <summary>
-        /// Punto di ingresso principale dell'applicazione.
+        /// The main entry point of the application.
         /// </summary>
         [STAThread]
         static void Main()

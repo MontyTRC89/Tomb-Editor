@@ -11,7 +11,6 @@ namespace TombEditor.Geometry
         public short Y { get; set; }
         public short NewID { get; set; }
         public short Page { get; set; }
-
         public TextureSounds Sound { get; set; }
 
         public TextureSound(short x, short y, short page)

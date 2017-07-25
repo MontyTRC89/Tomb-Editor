@@ -15,13 +15,10 @@ namespace TombEditor
     public partial class FormSound : Form
     {
         public bool IsNew { get; set; }
-
         private Editor _editor;
-
         public short SoundID;
-
         private Dictionary<short, string> _sounds;
-        
+
         public FormSound()
         {
             InitializeComponent();
@@ -42,7 +39,7 @@ namespace TombEditor
             List<RowSoundSample> rows = new List<RowSoundSample>();
             _sounds = new Dictionary<short, string>();
             short i = 0;
-            while (reader.EndOfStream==false)
+            while (reader.EndOfStream == false)
             {
                 string s = reader.ReadLine();
 
@@ -52,7 +49,7 @@ namespace TombEditor
                 string[] tokens = s.Split(':');
                 name = tokens[0];
 
-                if (tokens.Length>1)
+                if (tokens.Length > 1)
                 {
                     string temp = tokens[1].Trim(' ', '\t');
                     tokens = temp.Split(' ', '\t');
@@ -85,7 +82,8 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (lstSamples.SelectedObject == null) return;
+            if (lstSamples.SelectedObject == null)
+                return;
             RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
 
             if (!IsNew)
@@ -101,11 +99,11 @@ namespace TombEditor
             }
             else
             {
-               /* sound.Bits[0] = cbBit1.Checked;
-                sound.Bits[1] = cbBit2.Checked;
-                sound.Bits[2] = cbBit3.Checked;
-                sound.Bits[3] = cbBit4.Checked;
-                sound.Bits[4] = cbBit5.Checked;*/
+                /* sound.Bits[0] = cbBit1.Checked;
+                 sound.Bits[1] = cbBit2.Checked;
+                 sound.Bits[2] = cbBit3.Checked;
+                 sound.Bits[3] = cbBit4.Checked;
+                 sound.Bits[4] = cbBit5.Checked;*/
                 SoundID = row.ID;
             }
 
@@ -115,12 +113,14 @@ namespace TombEditor
 
         private void butPlay_Click(object sender, EventArgs e)
         {
-            if (lstSamples.SelectedObject == null) return;
+            if (lstSamples.SelectedObject == null)
+                return;
             RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
 
             if (row.File != "")
             {
-                if (!File.Exists("Sounds\\Samples\\" + row.File + ".wav")) return;
+                if (!File.Exists("Sounds\\Samples\\" + row.File + ".wav"))
+                    return;
                 SoundPlayer player = new SoundPlayer("Sounds\\Samples\\" + row.File + ".wav");
                 player.Play();
             }
@@ -128,7 +128,8 @@ namespace TombEditor
 
         private void lstSamples_Click(object sender, EventArgs e)
         {
-            if (lstSamples.SelectedObject == null) return;
+            if (lstSamples.SelectedObject == null)
+                return;
             RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
             SoundID = row.ID;
             tbSound.Text = row.Name;

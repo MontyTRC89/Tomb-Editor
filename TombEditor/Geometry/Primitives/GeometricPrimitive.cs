@@ -142,7 +142,7 @@ namespace SharpDX.Toolkit.Graphics
             {
                 var passes = effect.CurrentTechnique.Passes;
                 var passesCount = passes.Count;
-                for(var i = 0; i < passesCount; i++)
+                for (var i = 0; i < passesCount; i++)
                 {
                     Draw(graphicsDevice, passes[i]);
                 }
@@ -251,9 +251,9 @@ namespace SharpDX.Toolkit.Graphics
         protected override void ReverseWinding<TIndex>(EditorVertex[] vertices, TIndex[] indices)
         {
             base.ReverseWinding(vertices, indices);
-            for( int i = 0; i < vertices.Length; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
-                vertices[i].UV.X = ( 1.0f - vertices[i].UV.X );
+                vertices[i].UV.X = (1.0f - vertices[i].UV.X);
             }
         }
     }

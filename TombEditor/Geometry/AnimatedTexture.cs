@@ -14,16 +14,14 @@ namespace TombEditor.Geometry
 
         public LevelTexture Texture { get; set; }
 
-        public List<short> NewIDList { get; set; }
+        public List<short> NewIDList { get; set; } = new List<short>();
 
         public AnimatedTexture(short x, short y, short page)
         {
             X = x;
             Y = y;
             Page = page;
-
-            NewIDList = new List<short>();
-
+            
             NewIDList.Add(-1); // Normal Rectangle
             NewIDList.Add(-1); // Flipped Rectangle
 

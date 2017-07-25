@@ -50,12 +50,8 @@ namespace TombEditor
             SpriteBatch batch = new SpriteBatch(_editor.GraphicsDevice);
             batch.Begin(SpriteSortMode.FrontToBack, _editor.GraphicsDevice.BlendStates.Additive);
 
-            batch.DrawString(_editor.Font,
-                "FPS: " + Math.Round(_editor.FPS, 2) + ", Vertices: " + NumVertices + ", Triangles: " + NumTriangles,
-                new Vector2(0, 0), Color.White);
-            batch.DrawString(_editor.Font,
-                "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes,
-                new Vector2(0, 18), Color.White);
+            batch.DrawString(_editor.Font, "FPS: " + Math.Round(_editor.FPS, 2) + ", Vertices: " + NumVertices + ", Triangles: " + NumTriangles, new Vector2(0, 0), Color.White);
+            batch.DrawString(_editor.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
             if (SelectedItem != "")
                 batch.DrawString(_editor.Font, "Selected Object: " + SelectedItem, new Vector2(0, 36), Color.White);
 

@@ -36,15 +36,10 @@ namespace TombEditor
     public class PickingManager
     {
         private static PickingManager _instance;
-
         private RenderTarget2D _renderTarget1;
-
         private RenderTarget2D _renderTarget2;
-
         private RenderTarget2D _oldTarget;
-
         private RenderTarget2D _depthTarget;
-
         private Editor _editor;
 
         public delegate void PickingDrawDelegate();
@@ -89,7 +84,7 @@ namespace TombEditor
             byte a = data[(int)(y * _editor.GraphicsDevice.Viewport.Width * 4 + 4 * x + 3)];
 
             PickingResult result = new PickingResult();
-            
+
             int elementType = (r >> 2) & 0x3f;
             int subelementType = r & 0x03;
             int element = (g << 2) + ((b >> 6) & 0x03);
@@ -97,13 +92,13 @@ namespace TombEditor
             data = _renderTarget2.GetData<byte>();
 
             r = data[(int)(y * _editor.GraphicsDevice.Viewport.Width * 4 + 4 * x)];
-            
+
             int subelement = (b & 0x3f) + r;
 
             result.Element = element;
             result.ElementType = (PickingElementType)elementType;
             result.SubElement = subelement;
-            result.SubElementType = subelementType ;
+            result.SubElementType = subelementType;
 
             _renderTarget1.Save("D:\\rt1.png", ImageFileType.Png);
             _renderTarget2.Save("D:\\rt2.png", ImageFileType.Png);
@@ -124,7 +119,8 @@ namespace TombEditor
         {
             get
             {
-                if (_instance == null) _instance = new PickingManager();
+                if (_instance == null)
+                    _instance = new PickingManager();
                 return _instance;
             }
         }

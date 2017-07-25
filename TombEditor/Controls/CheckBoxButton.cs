@@ -23,7 +23,7 @@ namespace TombEditor.Controls
                 if (_state)
                     BackColor = System.Drawing.Color.LightGreen;
                 else
-                    BackColor = Control.DefaultBackColor; 
+                    BackColor = Control.DefaultBackColor;
             }
         }
 

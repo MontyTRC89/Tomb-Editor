@@ -35,7 +35,6 @@ namespace TombEditor.Controls
         public PanelTextureMap(IContainer container)
         {
             container.Add(this);
-
             InitializeComponent();
         }
 
@@ -52,11 +51,6 @@ namespace TombEditor.Controls
                _editor.SelectedTexture = texture;
                Invalidate();*/
             _editor.InvisiblePolygon = false;
-
-            if (_editor.Level.TextureMap == null)
-            {
-                
-            }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -90,23 +84,25 @@ namespace TombEditor.Controls
                 short page = (short)(Math.Floor(_lastY / 256.0f));
                 short maxHeight = (short)(256 - (_y - 256 * page));
                 short maxWidth = (short)(256 - _x);
-                if (_h > maxHeight) _h = maxHeight;
-                if (_w > maxWidth) _w = maxWidth;
+                if (_h > maxHeight)
+                    _h = maxHeight;
+                if (_w > maxWidth)
+                    _w = maxWidth;
 
                 if (_w < 0)
                 {
                     _drag = false;
                     return;
-                //    _x -= _w;
-               //     _w = (short)-_w;
+                    //    _x -= _w;
+                    //     _w = (short)-_w;
                 }
 
                 if (_h < 0)
                 {
                     _drag = false;
                     return;
-                //    _y -= _h;
-                //    _h = (short)-_h;
+                    //    _y -= _h;
+                    //    _h = (short)-_h;
                 }
             }
 
@@ -116,37 +112,38 @@ namespace TombEditor.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            
+
             _editor.InvisiblePolygon = false;
 
             _deltaX = e.X - _lastX;
             _deltaY = e.Y - _lastY;
 
-           // _x = (short) (Math.Floor(_lastX / 16.0f) * 16);
-        //    _y = (short)(Math.Floor(_lastY / 16.0f) * 16);
+            // _x = (short) (Math.Floor(_lastX / 16.0f) * 16);
+            //    _y = (short)(Math.Floor(_lastY / 16.0f) * 16);
             _w = (short)(Math.Ceiling(_deltaX / 16.0f) * 16);
             _h = (short)(Math.Ceiling(_deltaY / 16.0f) * 16);
 
-            if (_w < 0) 
+            if (_w < 0)
             {
                 _drag = false;
-                return; _x -= _w;
-                _w = (short)-_w;
+                return;
+                //_x -= _w;
+                //_w = (short)-_w;
             }
 
             if (_h < 0)
             {
                 _drag = false;
                 return;
-                _y -= _h;
-                _h = (short)-_h;
+                //_y -= _h;
+                //_h = (short)-_h;
             }
 
             LevelTexture sample;
 
             // verifico di non aver attraversato una pagina
             short page = (short)(Math.Floor(_lastY / 256.0f));
-            
+
             if (Math.Abs(_deltaX) < 8 && Math.Abs(_deltaY) < 8)
             {
                 // click singolo, tile da 64x64 o confermo la texture corrente
@@ -181,22 +178,24 @@ namespace TombEditor.Controls
                     sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
                 }
 
-            /*    _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
-                _y = (short)(Math.Floor(_lastY / 64.0f) * 64);
-                _w = 64;
-                _h = 64;*/
+                /*    _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
+                    _y = (short)(Math.Floor(_lastY / 64.0f) * 64);
+                    _w = 64;
+                    _h = 64;*/
             }
             else
             {
                 short maxHeight = (short)(256 - (_y - 256 * page));
                 short maxWidth = (short)(256 - _x);
-                if (_h > maxHeight) _h = maxHeight;
-                if (_w > maxWidth) _w = maxWidth;
+                if (_h > maxHeight)
+                    _h = maxHeight;
+                if (_w > maxWidth)
+                    _w = maxWidth;
 
                 // trascinamento prolungato, tile di forma variabile
                 _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h);
                 sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
-            }            
+            }
 
             // trovo il triangolo
             if (_lastX >= sample.X && _lastX <= sample.X + sample.Width / 2 && _lastY >= sample.Y + page * 256 &&
@@ -286,6 +285,5 @@ namespace TombEditor.Controls
                 }
             }
         }
-
     }
 }

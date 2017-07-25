@@ -13,69 +13,16 @@ namespace TombEditor.Controls
     public partial class PanelTextureSounds : PictureBox
     {
         private Editor _editor;
-
-        private short _x;
-        private short _y;
-        private short _page;
-
-        private bool _selectedTexture;
-
         public FormTextureSounds ContainerForm { get; set; }
 
         private Font _font = new Font("Segoe UI", 8, FontStyle.Bold);
-
-        public short SelectedX
-        {
-            get
-            {
-                return _x;
-            }
-
-            set
-            {
-                _x = value;
-            }
-        }
-
-        public short SelectedY
-        {
-            get
-            {
-                return _y;
-            }
-
-            set
-            {
-                _y = value;
-            }
-        }
-
-        public short Page
-        {
-            get
-            {
-                return _page;
-            }
-
-            set
-            {
-                _page = value;
-            }
-        }
-
-        public bool IsTextureSelected
-        {
-            get
-            {
-                return _selectedTexture;
-            }
-            set
-            {
-                _selectedTexture = value;
-            }
-        }
-
         private Pen _penSelectedTexture = new Pen(Brushes.Red, 3);
+
+        public short SelectedX { get; set; }
+        public short SelectedY { get; set; }
+        public short Page { get; set; }
+        public bool IsTextureSelected { get; set; }
+
 
         public PanelTextureSounds()
         {
@@ -93,12 +40,12 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            _x = (short)(Math.Floor(e.X / 64.0f) * 64.0f);
-            _y = (short)(Math.Floor(e.Y / 64.0f) * 64.0f);
-            _page = (short)Math.Floor(_y / 256.0f);
-            _y -= (short)(_page * 256);
+            SelectedX = (short)(Math.Floor(e.X / 64.0f) * 64.0f);
+            SelectedY = (short)(Math.Floor(e.Y / 64.0f) * 64.0f);
+            Page = (short)Math.Floor(SelectedY / 256.0f);
+            SelectedY -= (short)(Page * 256);
 
-            _selectedTexture = true;
+            IsTextureSelected = true;
 
             ContainerForm.SelectTexture();
 
@@ -240,9 +187,9 @@ namespace TombEditor.Controls
                 g.DrawLine(Pens.White, new Point(0, 64 * i), new Point(255, 64 * i));
             }
 
-            if (_selectedTexture)
+            if (IsTextureSelected)
             {
-                g.DrawRectangle(_penSelectedTexture, new Rectangle(_x, _page * 256 + _y, 64, 64));
+                g.DrawRectangle(_penSelectedTexture, new Rectangle(SelectedX, Page * 256 + SelectedY, 64, 64));
             }
         }
     }

@@ -11,10 +11,9 @@ namespace TombEditor.Geometry
 
         public short Flags { get; set; }
 
-        public SoundInstance(int id, short room) : base(ObjectInstanceType.Sound, id, room)
-        {
-
-        }
+        public SoundInstance(int id, short room)
+            : base(ObjectInstanceType.Sound, id, room)
+        { }
 
         public override IObjectInstance Clone()
         {
@@ -36,7 +35,7 @@ namespace TombEditor.Geometry
 
             instance.SoundID = SoundID;
             instance.Flags = Flags;
-            
+
             return instance;
         }
     }

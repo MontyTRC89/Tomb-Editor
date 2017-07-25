@@ -39,13 +39,15 @@ namespace TombEditor
             watch.Start();
                        
             Bitmap tga = Paloma.TargaImage.LoadTargaImage(filename);
-            if ((tga.Width != 256 && tga.Width != 512) || (tga.Height % 256 != 0 && tga.Height % 128 != 0 && tga.Height % 64 != 0)) return false;
+            if ((tga.Width != 256 && tga.Width != 512) || (tga.Height % 256 != 0 && tga.Height % 128 != 0 && tga.Height % 64 != 0))
+                return false;
             
             int height = tga.Height * (tga.Width == 256 ? 1 : 2);
             int numPages = height / 256;
-            if (height % 256 != 0) numPages++;
+            if (height % 256 != 0)
+                numPages++;
 
-            Bitmap png = new Bitmap(256, numPages*256);
+            Bitmap png = new Bitmap(256, numPages * 256);
 
             if (tga.Width == 256)
             {

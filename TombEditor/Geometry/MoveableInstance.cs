@@ -11,13 +11,11 @@ namespace TombEditor.Geometry
     public class MoveableInstance : IObjectInstance
     {
         public SkinnedModel Model { get; set; }
-
         public int ObjectID { get; set; }
 
-        public MoveableInstance(int id, short room) : base(ObjectInstanceType.Moveable, id, room)
-        {
-             
-        }
+        public MoveableInstance(int id, short room)
+            : base(ObjectInstanceType.Moveable, id, room)
+        { }
 
         public override IObjectInstance Clone()
         {
