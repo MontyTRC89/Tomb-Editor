@@ -12,9 +12,6 @@ using TombEditor.Geometry;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombEditor.Controls;
 using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
-using Effect = SharpDX.Toolkit.Graphics.Effect;
 
 namespace TombEditor
 {
@@ -112,37 +109,6 @@ namespace TombEditor
             _instance = this;
         }
 
-        public static Texture2D LoadTexture2D(GraphicsDevice graphicsDevice, Stream stream)
-        {
-            //Avoid calling this function to avoid the Direct2D1 dependency.
-            //Texture2D.Load(graphicsDevice, stream);
-            using (var bitmap = (System.Drawing.Bitmap)System.Drawing.Bitmap.FromStream(stream))
-            {
-                var lockData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                    System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                try
-                {
-                    Texture2DDescription description;
-                    description.ArraySize = 1;
-                    description.BindFlags = BindFlags.ShaderResource;
-                    description.CpuAccessFlags = CpuAccessFlags.None;
-                    description.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
-                    description.Height = bitmap.Height;
-                    description.MipLevels = 1;
-                    description.OptionFlags = ResourceOptionFlags.None;
-                    description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
-                    description.Usage = ResourceUsage.Immutable;
-                    description.Width = bitmap.Width;
-                    //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
-                    return Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
-                        new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
-                }
-                finally
-                {
-                    bitmap.UnlockBits(lockData);
-                }
-            }
-        }
         public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor)
         {
             Palette = new List<System.Drawing.Color>();
@@ -205,7 +171,7 @@ namespace TombEditor
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
-                Textures.Add(textureName, LoadTexture2D(GraphicsDevice, new FileStream(fileName, FileMode.Open, FileAccess.Read)));
+                Textures.Add(textureName, TombLib.Graphics.TextureLoad.FromStream(GraphicsDevice, new FileStream(fileName, FileMode.Open, FileAccess.Read)));
             }
 
             // carico il Editor
