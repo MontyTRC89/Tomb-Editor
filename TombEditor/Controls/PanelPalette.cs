@@ -13,34 +13,19 @@ namespace TombEditor.Controls
     public partial class PanelPalette : PictureBox
     {
         private Editor _editor;
-
-        private bool _drag;
-
-        private short _x;
-        private short _y;
-        private short _w;
-        private short _h;
-
         public Color SelectedColor { get; set; }
-
         private int _selectedColorIndex = -1;
-
-        private Pen _pen;
+        private Pen _pen = new Pen(Brushes.White, 2);
 
         public PanelPalette()
         {
             InitializeComponent();
-
-            _pen = new Pen(Brushes.White, 2);
         }
 
         public PanelPalette(IContainer container)
         {
             container.Add(this);
-
             InitializeComponent();
-
-            _pen = new Pen(Brushes.White, 2);
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
@@ -50,7 +35,8 @@ namespace TombEditor.Controls
             else
                 _editor = Editor.Instance;
 
-            if (_editor.Palette == null) return;
+            if (_editor.Palette == null)
+                return;
 
             int x = (int)Math.Floor(e.X / 10.0f);
             int y = (int)Math.Floor(e.Y / 10.0f);
@@ -73,7 +59,8 @@ namespace TombEditor.Controls
             else
                 _editor = Editor.Instance;
 
-            if (_editor.Palette == null) return;
+            if (_editor.Palette == null)
+                return;
 
             Graphics g = pe.Graphics;
 
@@ -85,7 +72,8 @@ namespace TombEditor.Controls
             {
                 for (int x = 0; x < 64; x++)
                 {
-                    if (currentColor > _editor.Palette.Count - 1) break;
+                    if (currentColor > _editor.Palette.Count - 1)
+                        break;
 
                     Color color = _editor.Palette[currentColor];
 
@@ -101,7 +89,8 @@ namespace TombEditor.Controls
                     currentColor++;
                 }
 
-                if (currentColor > _editor.Palette.Count - 1) break;
+                if (currentColor > _editor.Palette.Count - 1)
+                    break;
             }
 
             if (_selectedColorIndex != -1)

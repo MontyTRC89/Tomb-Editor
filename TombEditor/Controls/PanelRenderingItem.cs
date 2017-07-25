@@ -12,38 +12,21 @@ namespace TombEditor.Controls
     class PanelRenderingItem : Panel
     {
         public SwapChainGraphicsPresenter Presenter { get; set; }
-
         public ArcBallCamera Camera { get; set; }
-
         public Viewport Viewport { get; set; }
-
-        private Editor _editor;
-
-        private bool _drag;
-
-        private float _lastX;
-
-        private float _lastY;
-
-        private float _deltaX;
-
-        private float _deltaY;
-
-        private int _animation;
-
-        private int _frame;
-
-        private VertexInputLayout _layout;
-
-        private int _selectedItem;
-
         public EditorItemType ItemType { get; set; }
 
-        public PanelRenderingItem()
-        {
-
-        }
-
+        private Editor _editor;
+        private bool _drag;
+        private float _lastX;
+        private float _lastY;
+        private float _deltaX;
+        private float _deltaY;
+        private int _animation;
+        private int _frame;
+        private VertexInputLayout _layout;
+        private int _selectedItem;
+        
         public void InitializePanel()
         {
             _editor = Editor.Instance;
@@ -79,7 +62,8 @@ namespace TombEditor.Controls
 
         public void Draw()
         {
-            if (SelectedItem == -1) return;
+            if (SelectedItem == -1)
+                return;
 
             _editor.GraphicsDevice.Presenter = Presenter;
             _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
@@ -117,7 +101,8 @@ namespace TombEditor.Controls
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     SkinnedMesh mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0) continue;
+                    if (mesh.Vertices.Count == 0)
+                        continue;
 
                     if (_animation > -1)
                     {
@@ -173,7 +158,7 @@ namespace TombEditor.Controls
 
             _editor.GraphicsDevice.Present();
         }
-        
+
         public int SelectedItem
         {
             get
@@ -183,7 +168,8 @@ namespace TombEditor.Controls
             set
             {
                 _selectedItem = value;
-                if (_selectedItem == -1 || _editor == null || _editor.Level == null || _editor.Level.Wad == null) return;
+                if (_selectedItem == -1 || _editor == null || _editor.Level == null || _editor.Level.Wad == null)
+                    return;
 
                 if (_editor.Level.Wad.Moveables.Count > _selectedItem)
                 {

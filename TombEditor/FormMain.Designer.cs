@@ -86,23 +86,6 @@
             this.textureSoundsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.animationRangesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bumpMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.geometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalWallSEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalWallSWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalWallNWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalWallNEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
-            this.diagonalStepSEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalStepSWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalFloorNWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalStepNEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripSeparator();
-            this.diagonalCeilingSEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalCeilingSWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalCeilingNWToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.diagonalCeilingNEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripSeparator();
-            this.domeNSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.butFloor = new System.Windows.Forms.Button();
@@ -116,6 +99,10 @@
             this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.butDiagonalWall = new DarkUI.Controls.DarkButton();
+            this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
+            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
+            this.butCeiling = new System.Windows.Forms.Button();
             this.butNotWalkableBox = new System.Windows.Forms.Button();
             this.cbNoPathfinding = new DarkUI.Controls.DarkCheckBox();
             this.button3 = new System.Windows.Forms.Button();
@@ -261,10 +248,6 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
-            this.butCeiling = new System.Windows.Forms.Button();
-            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
-            this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
-            this.butDiagonalWall = new DarkUI.Controls.DarkButton();
             this.darkMenuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -290,7 +273,6 @@
             this.roomsToolStripMenuItem,
             this.itemsToolStripMenuItem,
             this.texturesToolStripMenuItem,
-            this.geometryToolStripMenuItem,
             this.toolsToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
@@ -298,7 +280,6 @@
             this.darkMenuStrip1.Size = new System.Drawing.Size(1875, 24);
             this.darkMenuStrip1.TabIndex = 0;
             this.darkMenuStrip1.Text = "darkMenuStrip1";
-            this.darkMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.darkMenuStrip1_ItemClicked);
             // 
             // fileToolStripMenuItem
             // 
@@ -822,159 +803,6 @@
             this.bumpMappingToolStripMenuItem.Text = "Bump mapping";
             this.bumpMappingToolStripMenuItem.Visible = false;
             // 
-            // geometryToolStripMenuItem
-            // 
-            this.geometryToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.diagonalWallSEToolStripMenuItem,
-            this.diagonalWallSWToolStripMenuItem,
-            this.diagonalWallNWToolStripMenuItem,
-            this.diagonalWallNEToolStripMenuItem,
-            this.toolStripMenuItem12,
-            this.diagonalStepSEToolStripMenuItem,
-            this.diagonalStepSWToolStripMenuItem,
-            this.diagonalFloorNWToolStripMenuItem,
-            this.diagonalStepNEToolStripMenuItem,
-            this.toolStripMenuItem13,
-            this.diagonalCeilingSEToolStripMenuItem,
-            this.diagonalCeilingSWToolStripMenuItem,
-            this.diagonalCeilingNWToolStripMenuItem,
-            this.diagonalCeilingNEToolStripMenuItem,
-            this.toolStripMenuItem15,
-            this.domeNSToolStripMenuItem});
-            this.geometryToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.geometryToolStripMenuItem.Name = "geometryToolStripMenuItem";
-            this.geometryToolStripMenuItem.Size = new System.Drawing.Size(126, 20);
-            this.geometryToolStripMenuItem.Text = "Advanced geometry";
-            // 
-            // diagonalWallSEToolStripMenuItem
-            // 
-            this.diagonalWallSEToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalWallSEToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
-            this.diagonalWallSEToolStripMenuItem.Name = "diagonalWallSEToolStripMenuItem";
-            this.diagonalWallSEToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalWallSEToolStripMenuItem.Text = "Diagonal Wall SE";
-            // 
-            // diagonalWallSWToolStripMenuItem
-            // 
-            this.diagonalWallSWToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalWallSWToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_wall_SW;
-            this.diagonalWallSWToolStripMenuItem.Name = "diagonalWallSWToolStripMenuItem";
-            this.diagonalWallSWToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalWallSWToolStripMenuItem.Text = "Diagonal Wall SW";
-            // 
-            // diagonalWallNWToolStripMenuItem
-            // 
-            this.diagonalWallNWToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalWallNWToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_wall_NW;
-            this.diagonalWallNWToolStripMenuItem.Name = "diagonalWallNWToolStripMenuItem";
-            this.diagonalWallNWToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalWallNWToolStripMenuItem.Text = "Diagonal Wall NW";
-            // 
-            // diagonalWallNEToolStripMenuItem
-            // 
-            this.diagonalWallNEToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalWallNEToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_wall_NE;
-            this.diagonalWallNEToolStripMenuItem.Name = "diagonalWallNEToolStripMenuItem";
-            this.diagonalWallNEToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalWallNEToolStripMenuItem.Text = "Diagonal Wall NE";
-            // 
-            // toolStripMenuItem12
-            // 
-            this.toolStripMenuItem12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem12.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(181, 6);
-            // 
-            // diagonalStepSEToolStripMenuItem
-            // 
-            this.diagonalStepSEToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalStepSEToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.diagonalStepSEToolStripMenuItem.Name = "diagonalStepSEToolStripMenuItem";
-            this.diagonalStepSEToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalStepSEToolStripMenuItem.Text = "Diagonal Step SE";
-            // 
-            // diagonalStepSWToolStripMenuItem
-            // 
-            this.diagonalStepSWToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalStepSWToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_SW;
-            this.diagonalStepSWToolStripMenuItem.Name = "diagonalStepSWToolStripMenuItem";
-            this.diagonalStepSWToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalStepSWToolStripMenuItem.Text = "Diagonal Step SW";
-            // 
-            // diagonalFloorNWToolStripMenuItem
-            // 
-            this.diagonalFloorNWToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalFloorNWToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_NW;
-            this.diagonalFloorNWToolStripMenuItem.Name = "diagonalFloorNWToolStripMenuItem";
-            this.diagonalFloorNWToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalFloorNWToolStripMenuItem.Text = "Diagonal Step NW";
-            // 
-            // diagonalStepNEToolStripMenuItem
-            // 
-            this.diagonalStepNEToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalStepNEToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_NE;
-            this.diagonalStepNEToolStripMenuItem.Name = "diagonalStepNEToolStripMenuItem";
-            this.diagonalStepNEToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalStepNEToolStripMenuItem.Text = "Diagonal Step NE";
-            // 
-            // toolStripMenuItem13
-            // 
-            this.toolStripMenuItem13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem13.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem13.Name = "toolStripMenuItem13";
-            this.toolStripMenuItem13.Size = new System.Drawing.Size(181, 6);
-            // 
-            // diagonalCeilingSEToolStripMenuItem
-            // 
-            this.diagonalCeilingSEToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalCeilingSEToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.diagonalCeilingSEToolStripMenuItem.Name = "diagonalCeilingSEToolStripMenuItem";
-            this.diagonalCeilingSEToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalCeilingSEToolStripMenuItem.Text = "Diagonal Ceiling SE";
-            this.diagonalCeilingSEToolStripMenuItem.Click += new System.EventHandler(this.diagonalCeilingSEToolStripMenuItem_Click);
-            // 
-            // diagonalCeilingSWToolStripMenuItem
-            // 
-            this.diagonalCeilingSWToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalCeilingSWToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_SW;
-            this.diagonalCeilingSWToolStripMenuItem.Name = "diagonalCeilingSWToolStripMenuItem";
-            this.diagonalCeilingSWToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalCeilingSWToolStripMenuItem.Text = "Diagonal Ceiling SW";
-            this.diagonalCeilingSWToolStripMenuItem.Click += new System.EventHandler(this.diagonalCeilingSWToolStripMenuItem_Click);
-            // 
-            // diagonalCeilingNWToolStripMenuItem
-            // 
-            this.diagonalCeilingNWToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalCeilingNWToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_NW;
-            this.diagonalCeilingNWToolStripMenuItem.Name = "diagonalCeilingNWToolStripMenuItem";
-            this.diagonalCeilingNWToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalCeilingNWToolStripMenuItem.Text = "Diagonal Ceiling NW";
-            this.diagonalCeilingNWToolStripMenuItem.Click += new System.EventHandler(this.diagonalCeilingNWToolStripMenuItem_Click);
-            // 
-            // diagonalCeilingNEToolStripMenuItem
-            // 
-            this.diagonalCeilingNEToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.diagonalCeilingNEToolStripMenuItem.Image = global::TombEditor.Properties.Resources.diagonal_floor_NE;
-            this.diagonalCeilingNEToolStripMenuItem.Name = "diagonalCeilingNEToolStripMenuItem";
-            this.diagonalCeilingNEToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.diagonalCeilingNEToolStripMenuItem.Text = "Diagonal Ceiling NE";
-            this.diagonalCeilingNEToolStripMenuItem.Click += new System.EventHandler(this.diagonalCeilingNEToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem15
-            // 
-            this.toolStripMenuItem15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem15.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem15.Name = "toolStripMenuItem15";
-            this.toolStripMenuItem15.Size = new System.Drawing.Size(181, 6);
-            // 
-            // domeNSToolStripMenuItem
-            // 
-            this.domeNSToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.domeNSToolStripMenuItem.Name = "domeNSToolStripMenuItem";
-            this.domeNSToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.domeNSToolStripMenuItem.Text = "Dome";
-            this.domeNSToolStripMenuItem.Visible = false;
-            // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1190,7 +1018,59 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(283, 836);
             this.panel2.TabIndex = 26;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            // 
+            // butDiagonalWall
+            // 
+            this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
+            this.butDiagonalWall.Location = new System.Drawing.Point(188, 226);
+            this.butDiagonalWall.Name = "butDiagonalWall";
+            this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
+            this.butDiagonalWall.Size = new System.Drawing.Size(92, 23);
+            this.butDiagonalWall.TabIndex = 88;
+            this.butDiagonalWall.Text = "Diag. Wall";
+            this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
+            // 
+            // butDiagonalCeiling
+            // 
+            this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
+            this.butDiagonalCeiling.Location = new System.Drawing.Point(97, 226);
+            this.butDiagonalCeiling.Name = "butDiagonalCeiling";
+            this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
+            this.butDiagonalCeiling.Size = new System.Drawing.Size(85, 23);
+            this.butDiagonalCeiling.TabIndex = 87;
+            this.butDiagonalCeiling.Text = "Diag. CE";
+            this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
+            // 
+            // butDiagonalFloor
+            // 
+            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
+            this.butDiagonalFloor.Location = new System.Drawing.Point(6, 226);
+            this.butDiagonalFloor.Name = "butDiagonalFloor";
+            this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
+            this.butDiagonalFloor.Size = new System.Drawing.Size(85, 23);
+            this.butDiagonalFloor.TabIndex = 86;
+            this.butDiagonalFloor.Text = "Diag. FL";
+            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
+            // 
+            // butCeiling
+            // 
+            this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
+            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.butCeiling.ForeColor = System.Drawing.Color.White;
+            this.butCeiling.Location = new System.Drawing.Point(256, 0);
+            this.butCeiling.Name = "butCeiling";
+            this.butCeiling.Size = new System.Drawing.Size(24, 24);
+            this.butCeiling.TabIndex = 85;
+            this.butCeiling.Text = "C";
+            this.butCeiling.UseVisualStyleBackColor = false;
+            this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
             // 
             // butNotWalkableBox
             // 
@@ -1960,7 +1840,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(1305, 109);
             this.panel4.TabIndex = 28;
-            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel4_Paint);
             // 
             // numLightDirectionY
             // 
@@ -2824,7 +2703,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1326, 673);
+            this.tabPage2.Size = new System.Drawing.Size(1297, 673);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -2839,7 +2718,7 @@
             this.panel2DMap.LastY = 0F;
             this.panel2DMap.Location = new System.Drawing.Point(3, 3);
             this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(1320, 667);
+            this.panel2DMap.Size = new System.Drawing.Size(1291, 667);
             this.panel2DMap.TabIndex = 0;
             // 
             // tabPage3
@@ -2847,7 +2726,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1326, 673);
+            this.tabPage3.Size = new System.Drawing.Size(1297, 673);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -2857,7 +2736,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1326, 673);
+            this.tabPage4.Size = new System.Drawing.Size(1297, 673);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -2875,59 +2754,6 @@
             this.panel2DGrid.SelectedTrigger = 0;
             this.panel2DGrid.Size = new System.Drawing.Size(220, 220);
             this.panel2DGrid.TabIndex = 81;
-            // 
-            // butCeiling
-            // 
-            this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butCeiling.ForeColor = System.Drawing.Color.White;
-            this.butCeiling.Location = new System.Drawing.Point(256, 0);
-            this.butCeiling.Name = "butCeiling";
-            this.butCeiling.Size = new System.Drawing.Size(24, 24);
-            this.butCeiling.TabIndex = 85;
-            this.butCeiling.Text = "C";
-            this.butCeiling.UseVisualStyleBackColor = false;
-            this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
-            // 
-            // butDiagonalFloor
-            // 
-            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalFloor.Location = new System.Drawing.Point(6, 226);
-            this.butDiagonalFloor.Name = "butDiagonalFloor";
-            this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalFloor.Size = new System.Drawing.Size(85, 23);
-            this.butDiagonalFloor.TabIndex = 86;
-            this.butDiagonalFloor.Text = "Diag. FL";
-            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
-            // 
-            // butDiagonalCeiling
-            // 
-            this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalCeiling.Location = new System.Drawing.Point(97, 226);
-            this.butDiagonalCeiling.Name = "butDiagonalCeiling";
-            this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalCeiling.Size = new System.Drawing.Size(85, 23);
-            this.butDiagonalCeiling.TabIndex = 87;
-            this.butDiagonalCeiling.Text = "Diag. CE";
-            this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
-            // 
-            // butDiagonalWall
-            // 
-            this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
-            this.butDiagonalWall.Location = new System.Drawing.Point(188, 226);
-            this.butDiagonalWall.Name = "butDiagonalWall";
-            this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalWall.Size = new System.Drawing.Size(92, 23);
-            this.butDiagonalWall.TabIndex = 88;
-            this.butDiagonalWall.Text = "Diag. Wall";
-            this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
             // 
             // FormMain
             // 
@@ -3168,18 +2994,6 @@
         private DarkUI.Controls.DarkCheckBox cbHorizon;
         private System.Windows.Forms.ToolStripButton butDrawRoomNames;
         private DarkUI.Controls.DarkButton butTestTriangleEditMode;
-        private System.Windows.Forms.ToolStripMenuItem geometryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalWallNWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalWallNEToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalWallSEToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalWallSWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem12;
-        private System.Windows.Forms.ToolStripMenuItem diagonalFloorNWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalStepNEToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalStepSEToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalStepSWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem13;
-        private System.Windows.Forms.ToolStripMenuItem domeNSToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem textureMapBuilderToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem14;
@@ -3191,11 +3005,6 @@
         private System.Windows.Forms.ToolStripButton butPaste;
         private System.Windows.Forms.ToolStripButton butClone;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem diagonalCeilingSEToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalCeilingSWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalCeilingNWToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem diagonalCeilingNEToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem15;
         private Controls.Panel2DGrid panel2DGrid;
         private Controls.PanelPalette lightPalette;
         private DarkUI.Controls.DarkButton butAddTrigger;

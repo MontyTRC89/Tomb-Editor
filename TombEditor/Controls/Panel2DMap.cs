@@ -14,40 +14,21 @@ namespace TombEditor.Controls
     public class Panel2DMap : Panel
     {
         private Editor _editor;
-
         public float DeltaX { get; set; }
-
         public float DeltaY { get; set; }
-
         public float LastX { get; set; }
-
         public float LastY { get; set; }
-
         public bool Drag { get; set; }
-
-        private bool _firstSelection;
-
         private Bitmap _selectionBuffer;
-
         private Graphics _graphics;
-
         private List<int> _roomsToMove;
 
         public Panel2DMap()
-            : base()
         {
             _editor = Editor.Instance;
-
             this.DoubleBuffered = true;
-
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
-
-            ControlStyles.UserPaint |
-
-            ControlStyles.OptimizedDoubleBuffer, true);
-
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
-
             _editor.RoomIndex = -1;
         }
 
@@ -55,8 +36,10 @@ namespace TombEditor.Controls
         {
             if (Width != 0 && Height != 0)
             {
-                if (_selectionBuffer != null) _selectionBuffer.Dispose();
-                if (_graphics != null) _graphics.Dispose();
+                if (_selectionBuffer != null)
+                    _selectionBuffer.Dispose();
+                if (_graphics != null)
+                    _graphics.Dispose();
                 _selectionBuffer = new Bitmap(Width, Height);
                 _graphics = Graphics.FromImage(_selectionBuffer);
             }
@@ -74,7 +57,8 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                if (!Drag) Drag = true;
+                if (!Drag)
+                    Drag = true;
 
                 LastX = e.X / 4;
                 LastY = e.Y / 4;
@@ -187,8 +171,10 @@ namespace TombEditor.Controls
                 g.DrawLine(Pens.LightGray, new System.Drawing.Point(0, y), new System.Drawing.Point(Width, y));
             }
 
-            if (_editor == null) return;
-            if (_editor.Level == null) return;
+            if (_editor == null)
+                return;
+            if (_editor.Level == null)
+                return;
 
             // per prima cosa ordino le stanze in modo da disegnarle dalla più alta alla più bassa
             List<int> roomList = new List<int>();
@@ -222,13 +208,15 @@ namespace TombEditor.Controls
             for (int i = 0; i < roomList.Count; i++)
             {
                 room = _editor.Level.Rooms[roomList[i]];
-                if (room == null) continue;
+                if (room == null)
+                    continue;
 
                 if (roomList[i] == _editor.RoomIndex)
                     brush = Brushes.Red;
                 else
                     brush = Brushes.Cyan;
-                if (!Drag || roomList[i] == _editor.RoomIndex) g.FillRectangle(brush, new Rectangle((int)(room.Position.X + 1) * 4, (Height / 4 - (int)(room.Position.Z + 1) - room.NumZSectors + 3) * 4, (room.NumXSectors - 2) * 4, (room.NumZSectors - 2) * 4));
+                if (!Drag || roomList[i] == _editor.RoomIndex)
+                    g.FillRectangle(brush, new Rectangle((int)(room.Position.X + 1) * 4, (Height / 4 - (int)(room.Position.Z + 1) - room.NumZSectors + 3) * 4, (room.NumXSectors - 2) * 4, (room.NumZSectors - 2) * 4));
                 g.DrawRectangle(Pens.Black, new Rectangle((int)(room.Position.X + 1) * 4, (Height / 4 - (int)(room.Position.Z + 1) - room.NumZSectors + 3) * 4, (room.NumXSectors - 2) * 4, (room.NumZSectors - 2) * 4));
             }
 
@@ -238,10 +226,10 @@ namespace TombEditor.Controls
         private int DoPicking(int x, int y)
         {
             // per prima cosa ordino le stanze in modo da disegnarle dalla più alta alla più bassa
-            List<int> roomList=new List<int>();
+            List<int> roomList = new List<int>();
             List<int> heightList = new List<int>();
 
-            for (int i=0;i<Editor.MaxNumberOfRooms;i++)
+            for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
             {
                 if (_editor.Level.Rooms[i] != null)
                 {
@@ -279,14 +267,15 @@ namespace TombEditor.Controls
             // recupero l'id della stanza in base al colore
             Color pickColor = _selectionBuffer.GetPixel(x, y);
             int roomId = (pickColor.G << 8) + pickColor.B;
-            if (roomId == 65535) roomId = -1;
+            if (roomId == 65535)
+                roomId = -1;
 
             return roomId;
         }
 
         public void MoveRoomRecursive(int room, int deltaX, int deltaY)
         {
-            _editor.Level.Rooms[room].Visited = true;           
+            _editor.Level.Rooms[room].Visited = true;
 
             for (int i = 0; i < _editor.Level.Portals.Count; i++)
             {
@@ -294,7 +283,8 @@ namespace TombEditor.Controls
 
                 if (p.Room == room)
                 {
-                    if (_editor.Level.Rooms[p.AdjoiningRoom].Visited) continue;
+                    if (_editor.Level.Rooms[p.AdjoiningRoom].Visited)
+                        continue;
                     MoveRoomRecursive(p.AdjoiningRoom, deltaX, deltaY);
                 }
             }
@@ -307,7 +297,7 @@ namespace TombEditor.Controls
             for (int i = 0; i < _roomsToMove.Count; i++)
             {
                 _editor.Level.Rooms[_roomsToMove[i]].Position += new Vector3(deltaX, 0, -deltaY);
-            }            
+            }
         }
 
         public void CollectRoomsToMove(int room, int deltaX, int deltaY)
@@ -320,7 +310,8 @@ namespace TombEditor.Controls
 
                 if (p.Room == room)
                 {
-                    if (_editor.Level.Rooms[p.AdjoiningRoom].Visited) continue;
+                    if (_editor.Level.Rooms[p.AdjoiningRoom].Visited)
+                        continue;
                     CollectRoomsToMove(p.AdjoiningRoom, deltaX, deltaY);
                 }
             }

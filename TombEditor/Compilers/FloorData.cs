@@ -6,19 +6,20 @@ using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTR4
+    public partial class LevelCompilerTr4
     {
         private void BuildFloorData()
         {
             ReportProgress(70, "Building floordata");
 
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-            var tempFloorData = new List<ushort> {0 | 0x8000};
+            var tempFloorData = new List<ushort> { 0 | 0x8000 };
 
             for (var i = 0; i < _editor.Level.Rooms.Length; i++)
             {
                 var room = _editor.Level.Rooms[i];
-                if (room == null) continue;
+                if (room == null)
+                    continue;
                 var idNewRoom = _roomsIdTable[i];
 
                 // Get all portals
@@ -55,7 +56,7 @@ namespace TombEditor.Compilers
                                 if (x < portal.X - 1 || x > portal.X + portal.NumXBlocks + 1 || z < portal.Z - 1 ||
                                     z > portal.Z + portal.NumZBlocks + 1)
                                     continue;
-                                
+
                                 var adjoining = _level.Rooms[portal.AdjoiningRoom];
                                 var x2 = (int)(room.Position.X + x - adjoining.Position.X);
                                 var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
@@ -221,9 +222,9 @@ namespace TombEditor.Compilers
 
                             // First, we fix the sector height
                             if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
+                                sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
                             else
-                                sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
+                                sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE || block.FloorDiagonalSplit == DiagonalSplit.SW)
                             {
@@ -394,7 +395,7 @@ namespace TombEditor.Compilers
                                 if (!Room.IsQuad(x, z, q0, q1, q2, q3, true))
                                 {
                                     // First, we fix the sector height
-                                    sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
+                                    sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
 
                                     // Then we have to find the axis of the triangulation
                                     var min = room.GetLowestFloorCorner(x, z);
@@ -677,9 +678,9 @@ namespace TombEditor.Compilers
 
                                 // First, we fix the sector height
                                 if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
+                                    sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - 0x0f);
                                 else
-                                    sector.Floor = (sbyte)(Rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
+                                    sector.Floor = (sbyte)(_rooms[idNewRoom].Info.YBottom / 256.0f - room.GetHighestFloorCorner(x, z));
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE || block.CeilingDiagonalSplit == DiagonalSplit.SW)
                                 {
@@ -1047,10 +1048,14 @@ namespace TombEditor.Compilers
                         {
                             ushort climb = 0x06;
 
-                            if (block.Climb[0]) climb |= (0x01 << 8);
-                            if (block.Climb[1]) climb |= (0x02 << 8);
-                            if (block.Climb[2]) climb |= (0x04 << 8);
-                            if (block.Climb[3]) climb |= (0x08 << 8);
+                            if (block.Climb[0])
+                                climb |= (0x01 << 8);
+                            if (block.Climb[1])
+                                climb |= (0x02 << 8);
+                            if (block.Climb[2])
+                                climb |= (0x04 << 8);
+                            if (block.Climb[3])
+                                climb |= (0x08 << 8);
 
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(climb);
@@ -1096,46 +1101,58 @@ namespace TombEditor.Compilers
 
                                 if (trigger.TriggerType == TriggerType.Trigger)
                                     continue;
-                                
+
                                 // For now I use the first special trigger of the chain, ignoring the following triggers
                                 found = j;
                                 break;
                             }
 
-                            var tempTriggers = new List<int> {room.Blocks[x, z].Triggers[found]};
+                            var tempTriggers = new List<int> { room.Blocks[x, z].Triggers[found] };
                             tempTriggers.AddRange(room.Blocks[x, z].Triggers.Where((t, j) => j != found));
 
                             {
                                 var trigger = _editor.Level.Triggers[room.Blocks[x, z].Triggers[found]];
 
-                                lastFloorDataFunction = (ushort) tempCodes.Count;
+                                lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                 // Trigger type and setup are coming from the found trigger. Other triggers are needed onlt for action.
                                 ushort trigger1 = 0x04;
-                                if (trigger.TriggerType == TriggerType.Trigger) trigger1 |= (ushort) (0x00 << 8);
-                                if (trigger.TriggerType == TriggerType.Pad) trigger1 |= (ushort) (0x01 << 8);
-                                if (trigger.TriggerType == TriggerType.Switch) trigger1 |= (ushort) (0x02 << 8);
-                                if (trigger.TriggerType == TriggerType.Key) trigger1 |= (ushort) (0x03 << 8);
-                                if (trigger.TriggerType == TriggerType.Pickup) trigger1 |= (ushort) (0x04 << 8);
-                                if (trigger.TriggerType == TriggerType.Heavy) trigger1 |= (ushort) (0x05 << 8);
-                                if (trigger.TriggerType == TriggerType.Antipad) trigger1 |= (ushort) (0x06 << 8);
-                                if (trigger.TriggerType == TriggerType.Combat) trigger1 |= (ushort) (0x07 << 8);
-                                if (trigger.TriggerType == TriggerType.Dummy) trigger1 |= (ushort) (0x08 << 8);
-                                if (trigger.TriggerType == TriggerType.Antitrigger) trigger1 |= (ushort) (0x09 << 8);
-                                if (trigger.TriggerType == TriggerType.HeavySwitch) trigger1 |= (ushort) (0x0a << 8);
+                                if (trigger.TriggerType == TriggerType.Trigger)
+                                    trigger1 |= (ushort)(0x00 << 8);
+                                if (trigger.TriggerType == TriggerType.Pad)
+                                    trigger1 |= (ushort)(0x01 << 8);
+                                if (trigger.TriggerType == TriggerType.Switch)
+                                    trigger1 |= (ushort)(0x02 << 8);
+                                if (trigger.TriggerType == TriggerType.Key)
+                                    trigger1 |= (ushort)(0x03 << 8);
+                                if (trigger.TriggerType == TriggerType.Pickup)
+                                    trigger1 |= (ushort)(0x04 << 8);
+                                if (trigger.TriggerType == TriggerType.Heavy)
+                                    trigger1 |= (ushort)(0x05 << 8);
+                                if (trigger.TriggerType == TriggerType.Antipad)
+                                    trigger1 |= (ushort)(0x06 << 8);
+                                if (trigger.TriggerType == TriggerType.Combat)
+                                    trigger1 |= (ushort)(0x07 << 8);
+                                if (trigger.TriggerType == TriggerType.Dummy)
+                                    trigger1 |= (ushort)(0x08 << 8);
+                                if (trigger.TriggerType == TriggerType.Antitrigger)
+                                    trigger1 |= (ushort)(0x09 << 8);
+                                if (trigger.TriggerType == TriggerType.HeavySwitch)
+                                    trigger1 |= (ushort)(0x0a << 8);
                                 if (trigger.TriggerType == TriggerType.HeavyAntritrigger)
-                                    trigger1 |= (ushort) (0x0b << 8);
-                                if (trigger.TriggerType == TriggerType.Monkey) trigger1 |= (ushort) (0x0c << 8);
+                                    trigger1 |= (ushort)(0x0b << 8);
+                                if (trigger.TriggerType == TriggerType.Monkey)
+                                    trigger1 |= (ushort)(0x0c << 8);
 
                                 ushort triggerSetup = 0;
-                                triggerSetup |= (ushort) (trigger.Timer & 0xff);
-                                triggerSetup |= (ushort) (trigger.OneShot ? 0x100 : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[0] ? (0x01 << 13) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[1] ? (0x01 << 12) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[2] ? (0x01 << 11) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[3] ? (0x01 << 10) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[4] ? (0x01 << 9) : 0);
-                                
+                                triggerSetup |= (ushort)(trigger.Timer & 0xff);
+                                triggerSetup |= (ushort)(trigger.OneShot ? 0x100 : 0);
+                                triggerSetup |= (ushort)(trigger.Bits[0] ? (0x01 << 13) : 0);
+                                triggerSetup |= (ushort)(trigger.Bits[1] ? (0x01 << 12) : 0);
+                                triggerSetup |= (ushort)(trigger.Bits[2] ? (0x01 << 11) : 0);
+                                triggerSetup |= (ushort)(trigger.Bits[3] ? (0x01 << 10) : 0);
+                                triggerSetup |= (ushort)(trigger.Bits[4] ? (0x01 << 9) : 0);
+
                                 tempCodes.Add(trigger1);
                                 tempCodes.Add(triggerSetup);
                             }
@@ -1255,9 +1272,9 @@ namespace TombEditor.Compilers
                 }
             }
 
-            FloorData = tempFloorData.ToArray();
+            _floorData = tempFloorData.ToArray();
 
-            ReportProgress(80, "    Floordata size: " + FloorData.Length * 2 + " bytes");
+            ReportProgress(80, "    Floordata size: " + _floorData.Length * 2 + " bytes");
         }
     }
 }

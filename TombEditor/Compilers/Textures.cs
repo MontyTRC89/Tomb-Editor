@@ -6,16 +6,16 @@ using TombLib.IO;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTR4
+    public partial class LevelCompilerTr4
     {
-        private byte[] _textures16;
+        private byte[] Textures16;
 
         private void PrepareTextures()
         {
             ReportProgress(10, "Building final texture map");
 
-            NumRoomTextureTiles = (ushort) _numRoomTexturePages;
-            NumObjectTextureTiles = (ushort) (_numobjectTexturePages + _numSpriteTexturePages);
+            _numRoomTextureTiles = (ushort)_numRoomTexturePages;
+            _numObjectTextureTiles = (ushort)(_numobjectTexturePages + _numSpriteTexturePages);
 
             var uncTexture32 =
                 new byte[_roomTexturePages.Length + _objectTexturePages.Length + _spriteTexturePages.Length];
@@ -30,16 +30,16 @@ namespace TombEditor.Compilers
                 (_numRoomTexturePages + _numobjectTexturePages + _numSpriteTexturePages) * 256);
 
             ReportProgress(80, "Compressing 32 bit textures");
-            Texture32 = Utils.CompressDataZLIB(uncTexture32);
-            Texture32UncompressedSize = (uint) uncTexture32.Length;
-            Texture32CompressedSize = (uint) Texture32.Length;
+            _texture32 = Utils.CompressDataZLIB(uncTexture32);
+            _texture32UncompressedSize = (uint)uncTexture32.Length;
+            _texture32CompressedSize = (uint)_texture32.Length;
 
-            _textures16 = uncTexture16;
+            Textures16 = uncTexture16;
 
             ReportProgress(80, "Compressing 16 bit textures");
-            Texture16 = Utils.CompressDataZLIB(uncTexture16);
-            Texture16UncompressedSize = (uint) uncTexture16.Length;
-            Texture16CompressedSize = (uint) Texture16.Length;
+            _texture16 = Utils.CompressDataZLIB(uncTexture16);
+            _texture16UncompressedSize = (uint)uncTexture16.Length;
+            _texture16CompressedSize = (uint)_texture16.Length;
         }
 
         private void BuildWadTexturePages()
@@ -148,9 +148,9 @@ namespace TombEditor.Compilers
 
                 ReportProgress(80, "Compressing font & sky textures");
 
-                MiscTexture = Utils.CompressDataZLIB(uncMiscTexture);
-                MiscTextureUncompressedSize = (uint) uncMiscTexture.Length;
-                MiscTextureCompressedSize = (uint) MiscTexture.Length;
+                _miscTexture = Utils.CompressDataZLIB(uncMiscTexture);
+                _miscTextureUncompressedSize = (uint)uncMiscTexture.Length;
+                _miscTextureCompressedSize = (uint)_miscTexture.Length;
             }
             catch (Exception)
             {
@@ -173,9 +173,9 @@ namespace TombEditor.Compilers
                     ushort g1 = map[y * 256 * 4 + x * 4 + 1];
                     ushort b1 = map[y * 256 * 4 + x * 4 + 0];
 
-                    var r = (ushort) (r1 / 8);
-                    var g = (ushort) (g1 / 8);
-                    var b = (ushort) (b1 / 8);
+                    var r = (ushort)(r1 / 8);
+                    var g = (ushort)(g1 / 8);
+                    var b = (ushort)(b1 / 8);
                     ushort a;
 
                     if (a1 == 0)
@@ -190,9 +190,12 @@ namespace TombEditor.Compilers
                         a = 0x8000;
                     }
 
-                    if (r1 < 8) r = 0;
-                    if (g1 < 8) g = 0;
-                    if (b1 < 8) b = 0;
+                    if (r1 < 8)
+                        r = 0;
+                    if (g1 < 8)
+                        g = 0;
+                    if (b1 < 8)
+                        b = 0;
 
                     ushort tmp = 0;
 
@@ -203,13 +206,13 @@ namespace TombEditor.Compilers
                     else
                     {
                         tmp |= a;
-                        tmp |= (ushort) (r << 10);
-                        tmp |= (ushort) (g << 5);
+                        tmp |= (ushort)(r << 10);
+                        tmp |= (ushort)(g << 5);
                         tmp |= b;
                     }
 
-                    newMap[y * 256 * 2 + 2 * x] = (byte) (tmp & 0xff);
-                    newMap[y * 256 * 2 + 2 * x + 1] = (byte) ((tmp & 0xff00) >> 8);
+                    newMap[y * 256 * 2 + 2 * x] = (byte)(tmp & 0xff);
+                    newMap[y * 256 * 2 + 2 * x + 1] = (byte)((tmp & 0xff00) >> 8);
                 }
             }
 

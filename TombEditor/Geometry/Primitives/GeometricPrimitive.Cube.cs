@@ -170,8 +170,8 @@ namespace SharpDX.Toolkit.Graphics
                 }
 
                 // Create the primitive object.
-                return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Cube"};
+                return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Cube" };
             }
         }
-   }
+    }
 }

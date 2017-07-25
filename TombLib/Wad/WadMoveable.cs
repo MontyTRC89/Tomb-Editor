@@ -9,18 +9,10 @@ namespace TombLib.Wad
     public class WadMoveable
     {
         public uint ObjectID;
-        public List<WadMesh> Meshes;
-        public List<WadLink> Links;
-        public List<WadAnimation> Animations;
+        public List<WadMesh> Meshes = new List<WadMesh>();
+        public List<WadLink> Links = new List<WadLink>();
+        public List<WadAnimation> Animations = new List<WadAnimation>();
         public Vector3 Offset;
         public BoundingBox BoundingBox;
-
-        public WadMoveable()
-        {
-            Meshes = new List<WadMesh>();
-            Links = new List<WadLink>();
-            Animations = new List<WadAnimation>();
-        }
-
     }
 }

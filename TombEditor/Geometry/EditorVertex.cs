@@ -24,10 +24,14 @@ namespace TombEditor.Geometry
 
         public bool EqualsTo(EditorVertex b)
         {
-            if (Position != b.Position) return false;
-            if (UV != b.UV) return false;
-            if (Normal != b.Normal) return false;
-            if (FaceColor != b.FaceColor) return false;
+            if (Position != b.Position)
+                return false;
+            if (UV != b.UV)
+                return false;
+            if (Normal != b.Normal)
+                return false;
+            if (FaceColor != b.FaceColor)
+                return false;
 
             return true;
         }
