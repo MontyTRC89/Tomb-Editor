@@ -368,7 +368,8 @@ namespace TombLib.Utils
         /// <exception cref="ArgumentException">Is thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
         public static float Wrap(float value, float min, float max)
         {
-            if (NearEqual(min, max)) return min;
+            if (NearEqual(min, max))
+                return min;
 
             double mind = min;
             double maxd = max;

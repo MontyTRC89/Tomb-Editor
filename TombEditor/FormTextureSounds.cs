@@ -62,7 +62,8 @@ namespace TombEditor
             {
                 TextureSound txtSound = _editor.Level.TextureSounds[i];
 
-                if (txtSound.X == picTextureMap.SelectedX && txtSound.Y == picTextureMap.SelectedY && txtSound.Page == picTextureMap.Page) return i;
+                if (txtSound.X == picTextureMap.SelectedX && txtSound.Y == picTextureMap.SelectedY && txtSound.Page == picTextureMap.Page)
+                    return i;
             }
 
             return -1;

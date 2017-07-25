@@ -13,12 +13,7 @@ namespace TombEditor.Geometry
         public int AnimatedSequence { get; set; }
         public int Size { get; set; }
         public bool Transparent { get; set; }
-        public List<AnimatedTextureVariantTile> Tiles { get; set; }
-
-        public AnimatedTextureSequenceVariant()
-        {
-            Tiles = new List<AnimatedTextureVariantTile>();
-        }
+        public List<AnimatedTextureVariantTile> Tiles { get; set; } = new List<AnimatedTextureVariantTile>();
     }
 
     public class AnimatedTextureVariantTile
@@ -36,14 +31,7 @@ namespace TombEditor.Geometry
     public class AnimatedTextureSet
     {
         public AnimatexTextureSetEffect Effect { get; set; }
-
-        public List<AnimatedTexture> Textures { get; set; }
-
+        public List<AnimatedTexture> Textures { get; set; } = new List<Geometry.AnimatedTexture>();
         public List<AnimatedTextureSequenceVariant> Variants { get; set; }
-
-        public AnimatedTextureSet()
-        {
-            Textures = new List<Geometry.AnimatedTexture>();
-        }
     }
 }

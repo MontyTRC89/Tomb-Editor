@@ -15,105 +15,51 @@ namespace TombEditor.Geometry
 {
     public class Room
     {
-        /*private struct RawPolygon
-        {
-            public Vector3 P1;
-            public Vector3 P2;
-            public Vector3 P3;
-            public Vector3 P4;
-            public 
-        }*/
-
         public string Name { get; set; }
-
         public Vector3 Position { get; set; }
-
         public short Ceiling { get; set; }
-
         public byte NumXSectors { get; set; }
-
         public byte NumZSectors { get; set; }
-
-        public System.Drawing.Color AmbientLight { get; set; }
-
+        public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);
         public Block[,] Blocks { get; set; }
-
         public Buffer<EditorVertex> VertexBuffer { get; set; }
-
         public Buffer<EditorVertex> NormalsBuffer { get; set; }
-
         public List<EditorVertex> Vertices { get; set; }
-
-        public List<int> Moveables { get; set; }
-
-        public List<int> StaticMeshes { get; set; }
-
-        public List<Light> Lights { get; set; }
-
-        public List<int> SoundSources { get; set; }
-
-        public List<int> Sinks { get; set; }
-
-        public List<int> Cameras { get; set; }
-
-        public List<int> FlyByCameras { get; set; }
-
-        public List<int> Portals { get; set; }
-
-        public short BaseRoom { get; set; }
-
+        public List<int> Moveables { get; set; } = new List<int>();
+        public List<int> StaticMeshes { get; set; } = new List<int>();
+        public List<Light> Lights { get; set; } = new List<Light>();
+        public List<int> SoundSources { get; set; } = new List<int>();
+        public List<int> Sinks { get; set; } = new List<int>();
+        public List<int> Cameras { get; set; } = new List<int>();
+        public List<int> FlyByCameras { get; set; } = new List<int>();
+        public List<int> Portals { get; set; } = new List<int>();
+        public short BaseRoom { get; set; } = -1;
         public bool Flipped { get; set; }
-
         public bool Visited { get; set; }
-
         public List<EditorVertex> OptimizedVertices { get; set; }
-               
-        public short AlternateRoom { get; set; }
-
-        public short AlternateGroup { get; set; }
-
+        public short AlternateRoom { get; set; } = -1;
+        public short AlternateGroup { get; set; } = 0;
         public short WaterLevel { get; set; }
-
         public short MistLevel { get; set; }
-
         public short ReflectionLevel { get; set; }
-
         public bool FlagWater { get; set; }
-
         public bool FlagReflection { get; set; }
-
         public bool FlagMist { get; set; }
-
         public bool FlagSnow { get; set; }
-
         public bool FlagRain { get; set; }
-
         public bool FlagCold { get; set; }
-
         public bool FlagDamage { get; set; }
-
         public bool FlagQuickSand { get; set; }
-
         public bool FlagOutside { get; set; }
-
         public bool FlagHorizon { get; set; }
-
         public Reverberation Reverberation { get; set; }
-
         public Level Level { get; set; }
-
         public Vector3 Centre { get; set; }
-
         public bool ExcludeFromPathFinding { get; set; }
-
         private Editor _editor;
-
         private Dictionary<int, List<int>> _verticesDictionary;
-
         private EditorVertex[,,] _verticesGrid;
-
         private byte[,] _numVerticesInGrid;
-
         private byte[,,] _iterations;
 
         // Temporary vectors
@@ -123,19 +69,7 @@ namespace TombEditor.Geometry
 
         public Room(Level level)
         {
-            AmbientLight = System.Drawing.Color.FromArgb(255, 32, 32, 32);
-            Moveables = new List<int>();
-            StaticMeshes = new List<int>();
-            Lights = new List<Light>();
-            FlyByCameras = new List<int>();
-            Cameras = new List<int>();
-            Sinks = new List<int>();
-            SoundSources = new List<int>();
-            Portals = new List<int>();
             Level = level;
-            AlternateRoom = -1;
-            BaseRoom = -1;
-            AlternateGroup = 0;
             _editor = Editor.Instance;
 
             InitializeVerticesGrid();
@@ -210,7 +144,7 @@ namespace TombEditor.Geometry
             _verticesGrid = new EditorVertex[NumXSectors, NumZSectors, 16];
             _numVerticesInGrid = new byte[NumXSectors, NumZSectors];
         }
-                
+
         public void CalculateLightingForThisRoom2()
         {
             System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
@@ -230,22 +164,17 @@ namespace TombEditor.Geometry
             {
                 for (int z = 0; z < NumZSectors; z++)
                 {
-                    for (int f=0;f<29;f++)
+                    for (int f = 0; f < 29; f++)
                     {
-                        if (Blocks[x,z].Faces[f].Defined)
+                        if (Blocks[x, z].Faces[f].Defined)
                         {
                             int r = 0;
                             int g = 0;
                             int b = 0;
 
-                            if (x==19 && z== 19)
-                            {
-                                int jjj = 0;
-                            }
-
                             CalculateLighting2(x, z, f, out r, out g, out b);
 
-                           /* for (int i=0;i< Blocks[x, z].Faces[f].Indices.Count;i++)
+                            /*for (int i=0;i< Blocks[x, z].Faces[f].Indices.Count;i++)
                             {
                                 EditorVertex tmpVertex = OptimizedVertices[Blocks[x, z].Faces[f].Indices[i]];
                                tmpVertex.FaceColor.X /= 255.0f;
@@ -269,8 +198,8 @@ namespace TombEditor.Geometry
                 }
             }
 
-            /*  for (int i = 0; i < _verticesDictionary.Count; i++)
-              {
+            /*for (int i = 0; i < _verticesDictionary.Count; i++)
+            {
                   EditorVertex tmpVertex = OptimizedVertices[i];
                   tmpVertex.FaceColor.X /= 255.0f;
                   tmpVertex.FaceColor.Y /= 255.0f;
@@ -291,16 +220,16 @@ namespace TombEditor.Geometry
                       v2.FaceColor = tmpVertex.FaceColor;
                       Vertices[arrayVertices[j]] = v2;
                   }
-              }*/
+            }*/
 
-            for (int i=0;i<Vertices.Count;i++)
+            for (int i = 0; i < Vertices.Count; i++)
             {
                 int x = (int)(Vertices[i].Position.X / 1024);
                 int z = (int)(Vertices[i].Position.Z / 1024);
 
-                for (int j=0;j<_numVerticesInGrid[x,z];j++)
+                for (int j = 0; j < _numVerticesInGrid[x, z]; j++)
                 {
-                    if (_verticesGrid[x,z,j].Position.Y == Vertices[i].Position.Y)
+                    if (_verticesGrid[x, z, j].Position.Y == Vertices[i].Position.Y)
                     {
                         EditorVertex v = Vertices[i];
                         v.FaceColor = _verticesGrid[x, z, j].FaceColor;
@@ -311,27 +240,27 @@ namespace TombEditor.Geometry
                 }
             }
 
-           /* for (int x = 0; x < NumXSectors; x++)
-            {
-                for (int z = 0; z < NumZSectors; z++)
-                {
-                    for (int f = 0; f < 29; f++)
-                    {
-                        if (Blocks[x, z].Faces[f].Defined)
-                        {
-                            for (int j=0;j< Blocks[x, z].Faces[f].EditorIndices2.Count;j++)
-                            {
-                                EditorVertex v = Vertices[Blocks[x, z].Faces[f].StartVertex + i];
-                                v.FaceColor = _verticesGrid[x, z, Blocks[x, z].Faces[f].EditorIndices2[i]].FaceColor;
-                                Vertices[Blocks[x, z].Faces[f].StartVertex + i] = v;
-                            }
-                        }
-                    }
-                }
-            }*/
+            /*for (int x = 0; x < NumXSectors; x++)
+             {
+                 for (int z = 0; z < NumZSectors; z++)
+                 {
+                     for (int f = 0; f < 29; f++)
+                     {
+                         if (Blocks[x, z].Faces[f].Defined)
+                         {
+                             for (int j=0;j< Blocks[x, z].Faces[f].EditorIndices2.Count;j++)
+                             {
+                                 EditorVertex v = Vertices[Blocks[x, z].Faces[f].StartVertex + i];
+                                 v.FaceColor = _verticesGrid[x, z, Blocks[x, z].Faces[f].EditorIndices2[i]].FaceColor;
+                                 Vertices[Blocks[x, z].Faces[f].StartVertex + i] = v;
+                             }
+                         }
+                     }
+                 }
+             }*/
 
 
-                            
+
 
             /*for (int i=0;i<Vertices.Count;i++)
             {
@@ -344,15 +273,16 @@ namespace TombEditor.Geometry
                 Vertices[i] = v2;
             }*/
 
-                watch.Stop();
+            watch.Stop();
             long stop = watch.ElapsedMilliseconds;
         }
 
         public void CalculateLightingForThisRoom()
         {
-            CalculateLightingForThisRoom2(); return;
+            CalculateLightingForThisRoom2();
+            return;
 
-            System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+            /*System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
             short[] iterations = new short[OptimizedVertices.Count];
@@ -400,7 +330,7 @@ namespace TombEditor.Geometry
             }
 
             watch.Stop();
-            long stop = watch.ElapsedMilliseconds;
+            long stop = watch.ElapsedMilliseconds;*/
         }
 
         private void CalculateCeilingSlope(int x, int z, int ws0, int ws1, int ws2, int ws3)
@@ -515,7 +445,8 @@ namespace TombEditor.Geometry
         {
             for (short i = 0; i < OptimizedVertices.Count; i++)
             {
-                if (OptimizedVertices[i].Position.X == v.X && OptimizedVertices[i].Position.Y == v.Y && OptimizedVertices[i].Position.Z == v.Z) return i;
+                if (OptimizedVertices[i].Position.X == v.X && OptimizedVertices[i].Position.Y == v.Y && OptimizedVertices[i].Position.Z == v.Z)
+                    return i;
             }
 
             return -1;
@@ -526,7 +457,7 @@ namespace TombEditor.Geometry
             BuildGeometry(0, NumXSectors, 0, NumZSectors);
         }
 
-        public void BuildGeometry(int xMin,int xMax,int zMin, int zMax)
+        public void BuildGeometry(int xMin, int xMax, int zMin, int zMax)
         {
             Vertices = new List<EditorVertex>();
             OptimizedVertices = new List<EditorVertex>();
@@ -546,9 +477,12 @@ namespace TombEditor.Geometry
                     for (int f = 0; f < 29; f++)
                     {
                         Blocks[x, z].Faces[f].Defined = false;
-                        if (Blocks[x, z].FloorPortal != -1) Level.Portals[Blocks[x, z].FloorPortal].Vertices.Clear();
-                        if (Blocks[x, z].CeilingPortal != -1) Level.Portals[Blocks[x, z].CeilingPortal].Vertices.Clear();
-                        if (Blocks[x, z].WallPortal != -1) Level.Portals[Blocks[x, z].WallPortal].Vertices.Clear();
+                        if (Blocks[x, z].FloorPortal != -1)
+                            Level.Portals[Blocks[x, z].FloorPortal].Vertices.Clear();
+                        if (Blocks[x, z].CeilingPortal != -1)
+                            Level.Portals[Blocks[x, z].CeilingPortal].Vertices.Clear();
+                        if (Blocks[x, z].WallPortal != -1)
+                            Level.Portals[Blocks[x, z].WallPortal].Vertices.Clear();
                     }
 
                     _numVerticesInGrid[x, z] = 0;
@@ -561,10 +495,22 @@ namespace TombEditor.Geometry
                 for (int z = zMin; z < zMax; z++)
                 {
                     // Save the height of the faces
-                    int qa0 = Blocks[x, z].QAFaces[0]; int qa1 = Blocks[x, z].QAFaces[1]; int qa2 = Blocks[x, z].QAFaces[2]; int qa3 = Blocks[x, z].QAFaces[3];
-                    int ws0 = Blocks[x, z].WSFaces[0]; int ws1 = Blocks[x, z].WSFaces[1]; int ws2 = Blocks[x, z].WSFaces[2]; int ws3 = Blocks[x, z].WSFaces[3];
-                    int ed0 = Blocks[x, z].EDFaces[0]; int ed1 = Blocks[x, z].EDFaces[1]; int ed2 = Blocks[x, z].EDFaces[2]; int ed3 = Blocks[x, z].EDFaces[3];
-                    int rf0 = Blocks[x, z].RFFaces[0]; int rf1 = Blocks[x, z].RFFaces[1]; int rf2 = Blocks[x, z].RFFaces[2]; int rf3 = Blocks[x, z].RFFaces[3];
+                    int qa0 = Blocks[x, z].QAFaces[0];
+                    int qa1 = Blocks[x, z].QAFaces[1];
+                    int qa2 = Blocks[x, z].QAFaces[2];
+                    int qa3 = Blocks[x, z].QAFaces[3];
+                    int ws0 = Blocks[x, z].WSFaces[0];
+                    int ws1 = Blocks[x, z].WSFaces[1];
+                    int ws2 = Blocks[x, z].WSFaces[2];
+                    int ws3 = Blocks[x, z].WSFaces[3];
+                    int ed0 = Blocks[x, z].EDFaces[0];
+                    int ed1 = Blocks[x, z].EDFaces[1];
+                    int ed2 = Blocks[x, z].EDFaces[2];
+                    int ed3 = Blocks[x, z].EDFaces[3];
+                    int rf0 = Blocks[x, z].RFFaces[0];
+                    int rf1 = Blocks[x, z].RFFaces[1];
+                    int rf2 = Blocks[x, z].RFFaces[2];
+                    int rf3 = Blocks[x, z].RFFaces[3];
 
                     // Save portals
                     Portal floorPortal = FindPortal(x, z, PortalDirection.Floor);
@@ -576,35 +522,32 @@ namespace TombEditor.Geometry
 
                     // If x, z is one of the four corner then nothing has to be done
                     if ((x == 0 && z == 0) || (x == 0 && z == NumZSectors - 1) ||
-                        (x == NumXSectors - 1 && z == NumZSectors - 1) || (x == NumXSectors - 1 && z == 0)) continue;
+                        (x == NumXSectors - 1 && z == NumZSectors - 1) || (x == NumXSectors - 1 && z == 0))
+                        continue;
 
                     // Vertical polygons  ---------------------------------------------------------------------------------
-                    
+
                     // North
-                    if (x > 0 && x < NumXSectors - 1 && z > 0 && z < NumZSectors - 2 &&                         
-                        !(Blocks[x, z + 1].Type == BlockType.Wall && 
-                         (Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].FloorDiagonalSplit==DiagonalSplit.NW || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NE)))
+                    if (x > 0 && x < NumXSectors - 1 && z > 0 && z < NumZSectors - 2 &&
+                        !(Blocks[x, z + 1].Type == BlockType.Wall &&
+                         (Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NE)))
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != -1 &&
                             Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
-                            !(Blocks[x, z].FloorDiagonalSplit==DiagonalSplit.NW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE))
+                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE))
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, false);
                     }
 
-                    if (x == 1 && z==8 )
-                    {
-                        int jjj = 0;
-                    }
 
-                        // South
-                        if (x > 0 && x < NumXSectors - 1 && z > 1 && z < NumZSectors - 1 &&
-                        !(Blocks[x, z - 1].Type == BlockType.Wall && 
+                    // South
+                    if (x > 0 && x < NumXSectors - 1 && z > 1 && z < NumZSectors - 1 &&
+                        !(Blocks[x, z - 1].Type == BlockType.Wall &&
                          (Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || 
-                            (Blocks[x, z].WallPortal != -1 &&  
+                        if ((Blocks[x, z].Type == BlockType.Wall ||
+                            (Blocks[x, z].WallPortal != -1 &&
                             Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
                             !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE))
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, true);
@@ -614,8 +557,8 @@ namespace TombEditor.Geometry
 
                     // East
                     if (z > 0 && z < NumZSectors - 1 && x > 0 && x < NumXSectors - 2 &&
-                        !(Blocks[x+1, z].Type == BlockType.Wall && 
-                        (Blocks[x+1,z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x+1,z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[x+ 1,z].FloorDiagonalSplit == DiagonalSplit.SE)))
+                        !(Blocks[x + 1, z].Type == BlockType.Wall &&
+                        (Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != -1 &&
                              Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
@@ -627,8 +570,8 @@ namespace TombEditor.Geometry
 
                     // West
                     if (z > 0 && z < NumZSectors - 1 && x > 1 && x < NumXSectors - 1 &&
-                        !(Blocks[x - 1, z].Type == BlockType.Wall && 
-                        (Blocks[x-1,z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x- 1, z].FloorDiagonalSplit == DiagonalSplit.SW)))
+                        !(Blocks[x - 1, z].Type == BlockType.Wall &&
+                        (Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.SW)))
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != -1 &&
                              Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
@@ -636,11 +579,6 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, false);
-                    }
-
-                    if (x==1 && z==1)
-                    {
-                        int jjf = 0;
                     }
 
                     // Diagonal faces
@@ -701,7 +639,7 @@ namespace TombEditor.Geometry
 
                     // South border wall
                     if (z == NumZSectors - 1 && x != 0 && x != NumXSectors - 1 &&
-                        !(Blocks[x, NumZSectors-2].Type == BlockType.Wall &&
+                        !(Blocks[x, NumZSectors - 2].Type == BlockType.Wall &&
                          (Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
                         bool addMiddle = false;
@@ -734,8 +672,8 @@ namespace TombEditor.Geometry
                     }
 
                     // East border wall
-                    if (x == 0 && z != 0 && z != NumZSectors - 1 && 
-                        !(Blocks[1,z].Type == BlockType.Wall &&
+                    if (x == 0 && z != 0 && z != NumZSectors - 1 &&
+                        !(Blocks[1, z].Type == BlockType.Wall &&
                          (Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
                         bool addMiddle = false;
@@ -769,9 +707,9 @@ namespace TombEditor.Geometry
 
                     // West border wall
                     if (x == NumXSectors - 1 && z != 0 && z != NumZSectors - 1 &&
-                        !(Blocks[NumXSectors-2,z].Type == BlockType.Wall &&
+                        !(Blocks[NumXSectors - 2, z].Type == BlockType.Wall &&
                          (Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.SW)))
-                        {
+                    {
                         bool addMiddle = false;
 
                         if (Blocks[x, z].WallPortal != -1)
@@ -794,7 +732,7 @@ namespace TombEditor.Geometry
                                 addMiddle = true;
                             }
                         }
-                        
+
                         if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == -1) || (Blocks[x, z].WallPortal >= 0 && Blocks[x, z].WallOpacity != PortalOpacity.None))
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, true);
                         else
@@ -802,36 +740,31 @@ namespace TombEditor.Geometry
                     }
 
                     // If is a non diagonal wall, then continue
-                    if (Blocks[x, z].Type == BlockType.Wall && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None) continue;
+                    if (Blocks[x, z].Type == BlockType.Wall && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
+                        continue;
 
-                    /*
-                    *  1----2    Split 0: 231 413  
-                    *  | \  |    Split 1: 124 342
-                    *  |  \ |
-                    *  4----3
-                    */
+                    //
+                    // 1----2    Split 0: 231 413  
+                    // | \  |    Split 1: 124 342
+                    // |  \ |
+                    // 4----3
+                    //
 
-                    /*
-                    *  1----2    Split 0: 231 413  
-                    *  |  / |    Split 1: 124 342
-                    *  | /  |
-                    *  4----3
-                    */
+                    //
+                    // 1----2    Split 0: 231 413  
+                    // |  / |    Split 1: 124 342
+                    // | /  |
+                    // 4----3
+                    //
 
                     // Floor polygons ---------------------------------------------------------------------------------
-
-                    if (x==1 && z==1)
-                    {
-                        int jjjjjjjjjjjj = 0;
-                    }
-
                     BlockFace face = Blocks[x, z].Faces[(int)BlockFaces.Floor];
 
                     // First, I reset the slope already calculated
                     Blocks[x, z].FloorSlopeX = 0;
                     Blocks[x, z].FloorSlopeZ = 0;
 
-                    if (IsQuad(x, z, qa0, qa1, qa2, qa3) || (Blocks[x,z].FloorDiagonalSplit != DiagonalSplit.None))
+                    if (IsQuad(x, z, qa0, qa1, qa2, qa3) || (Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None))
                     {
                         if (!(qa0 == qa1 && qa1 == qa2 && qa2 == qa3) && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
                         {
@@ -840,7 +773,7 @@ namespace TombEditor.Geometry
 
                         if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == -1) || /*Blocks[x, z].CeilingPortal != -1 ||*/
                             (Blocks[x, z].FloorPortal != -1 && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
-                            Blocks[x, z].IsFloorSolid || Blocks[x,z].Type == BlockType.Wall )
+                            Blocks[x, z].IsFloorSolid || Blocks[x, z].Type == BlockType.Wall)
                         {
                             if (Blocks[x, z].SplitFloor == false && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
                             {
@@ -857,14 +790,21 @@ namespace TombEditor.Geometry
                                 if (Blocks[x, z].Type != BlockType.Wall)
                                 {
                                     if (Blocks[x, z].SplitFoorType == 1)
-                                        if (split == 0) split = 1; else split = 0;
+                                        if (split == 0)
+                                            split = 1;
+                                        else
+                                            split = 0;
                                 }
 
                                 bool addTriangle1 = true;
                                 bool addTriangle2 = true;
 
-                                int y1 = 0;int y2 = 0;int y3 = 0;
-                                int y4 = 0; int y5 = 0; int y6 = 0;
+                                int y1 = 0;
+                                int y2 = 0;
+                                int y3 = 0;
+                                int y4 = 0;
+                                int y5 = 0;
+                                int y6 = 0;
 
                                 if (Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
                                 {
@@ -922,7 +862,7 @@ namespace TombEditor.Geometry
                                 }
                                 else
                                 {
-                                    if (split==0)
+                                    if (split == 0)
                                     {
                                         addTriangle1 = true;
                                         addTriangle2 = true;
@@ -995,7 +935,10 @@ namespace TombEditor.Geometry
                         {
                             int split = GetBestFloorSplit(x, z, qa0, qa1, qa2, qa3);
                             if (Blocks[x, z].SplitFoorType == 1)
-                                if (split == 0) split = 1; else split = 0;
+                                if (split == 0)
+                                    split = 1;
+                                else
+                                    split = 0;
 
                             Blocks[x, z].RealSplitFloor = (byte)split;
 
@@ -1029,28 +972,18 @@ namespace TombEditor.Geometry
                     }
 
                     // Ceiling polygons ---------------------------------------------------------------------------------
-                    /*
-                     *  2----1    Split 0: 142 324  
-                     *  | \  |    Split 1: 213 431
-                     *  |  \ |
-                     *  3----4
-                     */
-
-                    if (x==1 && z==1)
-                    {
-                        int ghghg = 0;
-                    }
+                    //
+                    //  2----1    Split 0: 142 324  
+                    //  | \  |    Split 1: 213 431
+                    //  |  \ |
+                    //  3----4
+                    //
 
                     face = Blocks[x, z].Faces[(int)BlockFaces.Ceiling];
 
                     // First, I reset the slope already calculated
                     Blocks[x, z].CeilingSlopeX = 0;
                     Blocks[x, z].CeilingSlopeZ = 0;
-
-                    if (x==4 && z==4)
-                    {
-                        int hghgjkg = 0;
-                    }
 
                     if (IsQuad(x, z, ws0, ws1, ws2, ws3) || (Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None))
                     {
@@ -1076,19 +1009,29 @@ namespace TombEditor.Geometry
                             {
                                 int split = GetBestCeilingSplit(x, z, ws0, ws1, ws2, ws3);
                                 if (Blocks[x, z].SplitCeilingType == 1)
-                                    if (split == 0) split = 1; else split = 0;
+                                    if (split == 0)
+                                        split = 1;
+                                    else
+                                        split = 0;
 
                                 if (Blocks[x, z].Type != BlockType.Wall)
                                 {
                                     if (Blocks[x, z].SplitFoorType == 1)
-                                        if (split == 0) split = 1; else split = 0;
+                                        if (split == 0)
+                                            split = 1;
+                                        else
+                                            split = 0;
                                 }
 
                                 bool addTriangle1 = true;
                                 bool addTriangle2 = true;
 
-                                int y1 = 0; int y2 = 0; int y3 = 0;
-                                int y4 = 0; int y5 = 0; int y6 = 0;
+                                int y1 = 0;
+                                int y2 = 0;
+                                int y3 = 0;
+                                int y4 = 0;
+                                int y5 = 0;
+                                int y6 = 0;
 
                                 if (Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
                                 {
@@ -1219,7 +1162,10 @@ namespace TombEditor.Geometry
                         {
                             int split = GetBestCeilingSplit(x, z, ws0, ws1, ws2, ws3);
                             if (Blocks[x, z].SplitCeilingType == 1)
-                                if (split == 0) split = 1; else split = 0;
+                                if (split == 0)
+                                    split = 1;
+                                else
+                                    split = 0;
 
                             Blocks[x, z].RealSplitCeiling = (byte)split;
 
@@ -1266,7 +1212,8 @@ namespace TombEditor.Geometry
                     for (int f = 0; f < 29; f++)
                     {
                         BlockFace face = Blocks[x, z].Faces[f];
-                        if (face == null || !face.Defined) continue;
+                        if (face == null || !face.Defined)
+                            continue;
 
                         if (face.Vertices != null && face.Vertices.Length != 0)
                         {
@@ -1309,11 +1256,6 @@ namespace TombEditor.Geometry
             Vector2 e3 = new Vector2(1.0f, 1.0f);
             Vector2 e4 = new Vector2(0.0f, 1.0f);
 
-            if (x==1 && z==11)
-            {
-                int hgfhg = 0;
-            }
-
             Block otherBlock;
             BlockFace face;
 
@@ -1345,12 +1287,12 @@ namespace TombEditor.Geometry
                     middleFace = BlockFaces.NorthMiddle;
                     rfFace = BlockFaces.NorthRF;
                     wsFace = BlockFaces.NorthWS;
-                    
+
                     if (Blocks[x, z].WallPortal != -1)
                     {
                         Portal portal = FindPortal(x, z, PortalDirection.South);
                         Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                        if (Flipped && BaseRoom!=-1)
+                        if (Flipped && BaseRoom != -1)
                         {
                             if (adjoiningRoom.Flipped)
                                 adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
@@ -1496,11 +1438,11 @@ namespace TombEditor.Geometry
                         Blocks[x, z].QAFaces[2] = (short)qB;
                         Blocks[x, z].WSFaces[3] = (short)wA;
                         Blocks[x, z].WSFaces[2] = (short)wB;
-                    }                    
+                    }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[x,NumZSectors-2].WSFaces[0] + Ceiling < Blocks[x, z].QAFaces[3])
+                        if (Blocks[x, NumZSectors - 2].WSFaces[0] + Ceiling < Blocks[x, z].QAFaces[3])
                         {
                             qA = Blocks[x, NumZSectors - 2].WSFaces[0] + Ceiling;
                             Blocks[x, z].QAFaces[3] = (short)qA;
@@ -1623,7 +1565,7 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[1,z].WSFaces[3] + Ceiling < Blocks[x, z].QAFaces[2])
+                        if (Blocks[1, z].WSFaces[3] + Ceiling < Blocks[x, z].QAFaces[2])
                         {
                             qA = Blocks[1, z].WSFaces[3] + Ceiling;
                             Blocks[x, z].QAFaces[2] = (short)qA;
@@ -1648,7 +1590,7 @@ namespace TombEditor.Geometry
                         qB = Blocks[x, z].QAFaces[2];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit==DiagonalSplit.NW)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.NW)
                     {
                         fA = otherBlock.QAFaces[0];
                         fB = otherBlock.QAFaces[0];
@@ -1952,7 +1894,7 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[NumXSectors-2,z].WSFaces[1] + Ceiling < Blocks[x, z].QAFaces[0])
+                        if (Blocks[NumXSectors - 2, z].WSFaces[1] + Ceiling < Blocks[x, z].QAFaces[0])
                         {
                             qA = Blocks[NumXSectors - 2, z].WSFaces[1] + Ceiling;
                             Blocks[x, z].QAFaces[0] = (short)qA;
@@ -1982,7 +1924,7 @@ namespace TombEditor.Geometry
                         fA = otherBlock.QAFaces[1];
                         fB = otherBlock.QAFaces[1];
                     }
-                    
+
                     if (otherBlock.FloorDiagonalSplit == DiagonalSplit.SE)
                     {
                         fA = otherBlock.QAFaces[2];
@@ -2177,10 +2119,22 @@ namespace TombEditor.Geometry
             {
                 face = Blocks[x, z].Faces[(int)middleFace];
 
-                if (wA > cA) yA = cA; else yA = wA;
-                if (wB > cB) yB = cB; else yB = wB;
-                if (qA < fA) yD = fA; else yD = qA;
-                if (qB < fB) yC = fB; else yC = qB;
+                if (wA > cA)
+                    yA = cA;
+                else
+                    yA = wA;
+                if (wB > cB)
+                    yB = cB;
+                else
+                    yB = wB;
+                if (qA < fA)
+                    yD = fA;
+                else
+                    yD = qA;
+                if (qB < fB)
+                    yC = fB;
+                else
+                    yC = qB;
 
                 // middle
                 if (Ceiling + yA != yD && Ceiling + yB != yC)
@@ -2227,8 +2181,10 @@ namespace TombEditor.Geometry
             Plane plane1 = new Plane(p1, p2, p3);
             Plane plane2 = new Plane(p1, p2, p4);
 
-            if (plane1.Normal != plane2.Normal) return false;
-            if (horizontal && (plane1.Normal != Vector3.UnitY && plane1.Normal != -Vector3.UnitY)) return false;
+            if (plane1.Normal != plane2.Normal)
+                return false;
+            if (horizontal && (plane1.Normal != Vector3.UnitY && plane1.Normal != -Vector3.UnitY))
+                return false;
 
             return true;
         }
@@ -2243,8 +2199,10 @@ namespace TombEditor.Geometry
             Plane plane1 = new Plane(p1, p2, p3);
             Plane plane2 = new Plane(p1, p2, p4);
 
-            if (plane1.Normal != plane2.Normal) return false;
-            if (plane1.Normal == Vector3.UnitY || plane1.Normal == -Vector3.UnitY) return true;
+            if (plane1.Normal != plane2.Normal)
+                return false;
+            if (plane1.Normal == Vector3.UnitY || plane1.Normal == -Vector3.UnitY)
+                return true;
 
             return false;
         }
@@ -2256,7 +2214,8 @@ namespace TombEditor.Geometry
             Vector3 p3 = new Vector3(v3.X, v3.Y, v3.Z);
 
             Plane plane1 = new Plane(p1, p2, p3);
-            if (plane1.Normal == Vector3.UnitY || plane1.Normal == -Vector3.UnitY) return true;
+            if (plane1.Normal == Vector3.UnitY || plane1.Normal == -Vector3.UnitY)
+                return true;
 
             return false;
         }
@@ -2269,16 +2228,20 @@ namespace TombEditor.Geometry
             Vector3 p4 = new Vector3(x * 1024.0f, h4 * 256.0f, (z + 1) * 1024.0f);
 
             Plane plane = new Plane(p1, p2, p4);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY) return 0;
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 0;
 
             plane = new Plane(p1, p2, p3);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY) return 1;
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 1;
 
             plane = new Plane(p2, p3, p4);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY) return 2;
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 2;
 
             plane = new Plane(p3, p4, p1);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY) return 3;
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 3;
 
             return -1;
         }
@@ -2289,22 +2252,32 @@ namespace TombEditor.Geometry
 
             switch (horizontalTriangle)
             {
-                case 0: return 1;
-                case 1: return 0;
-                case 2: return 1;
-                case 3: return 0;
+                case 0:
+                    return 1;
+                case 1:
+                    return 0;
+                case 2:
+                    return 1;
+                case 3:
+                    return 0;
                 default:
                     int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                     int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
 
-                    if (max == h1 && max == h3) return 1;
-                    if (max == h2 && max == h4) return 0;
+                    if (max == h1 && max == h3)
+                        return 1;
+                    if (max == h2 && max == h4)
+                        return 0;
 
-                    if (min == h1 && max == h3) return 1;
-                    if (min == h2 && max == h4) return 0;
-                    if (min == h3 && max == h1) return 1;
-                    if (min == h4 && max == h2) return 0;
-                    
+                    if (min == h1 && max == h3)
+                        return 1;
+                    if (min == h2 && max == h4)
+                        return 0;
+                    if (min == h3 && max == h1)
+                        return 1;
+                    if (min == h4 && max == h2)
+                        return 0;
+
                     break;
             }
 
@@ -2317,15 +2290,22 @@ namespace TombEditor.Geometry
 
             switch (horizontalTriangle)
             {
-                case 0: return 1;
-                case 1: return 0;
-                case 2: return 1;
-                case 3: return 0;
+                case 0:
+                    return 1;
+                case 1:
+                    return 0;
+                case 2:
+                    return 1;
+                case 3:
+                    return 0;
                 default:
                     int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
-                    if (min == h1) return 1;
-                    if (min == h2) return 0;
-                    if (min == h3) return 1;
+                    if (min == h1)
+                        return 1;
+                    if (min == h2)
+                        return 0;
+                    if (min == h3)
+                        return 1;
                     break;
             }
 
@@ -2334,9 +2314,12 @@ namespace TombEditor.Geometry
 
         private Portal FindPortal(int x, int z, PortalDirection type)
         {
-            if (Blocks[x, z].WallPortal != -1) return Level.Portals[Blocks[x, z].WallPortal];
-            if (Blocks[x, z].FloorPortal != -1 && type == PortalDirection.Floor) return Level.Portals[Blocks[x, z].FloorPortal];
-            if (Blocks[x, z].CeilingPortal != -1 && type == PortalDirection.Ceiling) return Level.Portals[Blocks[x, z].CeilingPortal];
+            if (Blocks[x, z].WallPortal != -1)
+                return Level.Portals[Blocks[x, z].WallPortal];
+            if (Blocks[x, z].FloorPortal != -1 && type == PortalDirection.Floor)
+                return Level.Portals[Blocks[x, z].FloorPortal];
+            if (Blocks[x, z].CeilingPortal != -1 && type == PortalDirection.Ceiling)
+                return Level.Portals[Blocks[x, z].CeilingPortal];
 
             return null;
         }
@@ -2374,7 +2357,7 @@ namespace TombEditor.Geometry
             Blocks[x, z].Faces[(int)face].EditorIndices = new List<short>();
             Blocks[x, z].Faces[(int)face].EditorIndices2 = new List<short>();
             Blocks[x, z].Faces[(int)face].EditorUV = new byte[4];
-            
+
             Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Rectangle;
             Blocks[x, z].Faces[(int)face].Defined = true;
             Blocks[x, z].Faces[(int)face].SplitMode = splitMode;
@@ -2392,7 +2375,7 @@ namespace TombEditor.Geometry
             int gridX1 = (int)(p1.X / 1024);
             int gridZ1 = (int)(p1.Z / 1024);
 
-            for (short i = 0; i < _numVerticesInGrid[gridX1,gridZ1]; i++)
+            for (short i = 0; i < _numVerticesInGrid[gridX1, gridZ1]; i++)
             {
                 if (_verticesGrid[gridX1, gridZ1, i].Position.X == p1.X &&
                     _verticesGrid[gridX1, gridZ1, i].Position.Y == p1.Y &&
@@ -2451,9 +2434,12 @@ namespace TombEditor.Geometry
             Portal portal = null;
             if (isPortal)
             {
-                if (Blocks[x, z].FloorPortal != -1) portal = Level.Portals[Blocks[x, z].FloorPortal];
-                if (Blocks[x, z].CeilingPortal != -1) portal = Level.Portals[Blocks[x, z].CeilingPortal];
-                if (Blocks[x, z].WallPortal != -1) portal = Level.Portals[Blocks[x, z].WallPortal];
+                if (Blocks[x, z].FloorPortal != -1)
+                    portal = Level.Portals[Blocks[x, z].FloorPortal];
+                if (Blocks[x, z].CeilingPortal != -1)
+                    portal = Level.Portals[Blocks[x, z].CeilingPortal];
+                if (Blocks[x, z].WallPortal != -1)
+                    portal = Level.Portals[Blocks[x, z].WallPortal];
             }
 
             short base1 = (short)(((short)(p1.X / 1024.0f) << 9) + ((short)(p1.Z / 1024.0f) << 4));
@@ -2469,7 +2455,7 @@ namespace TombEditor.Geometry
 
                 Blocks[x, z].Faces[(int)face].Indices.Add((short)(base1 + _numVerticesInGrid[gridX1, gridZ1]));
                 i1 = _numVerticesInGrid[gridX1, gridZ1];
-                
+
                 _numVerticesInGrid[gridX1, gridZ1]++;
             }
             else
@@ -2494,7 +2480,7 @@ namespace TombEditor.Geometry
 
             if (i3 == -1)
             {
-               int lastVertex = _numVerticesInGrid[gridX3, gridZ3];
+                int lastVertex = _numVerticesInGrid[gridX3, gridZ3];
                 _verticesGrid[gridX3, gridZ3, lastVertex] = v3;
 
                 Blocks[x, z].Faces[(int)face].Indices.Add((short)(base3 + _numVerticesInGrid[gridX3, gridZ3]));
@@ -2509,7 +2495,7 @@ namespace TombEditor.Geometry
 
             if (i4 == -1)
             {
-               int lastVertex = _numVerticesInGrid[gridX4, gridZ4];
+                int lastVertex = _numVerticesInGrid[gridX4, gridZ4];
                 _verticesGrid[gridX4, gridZ4, lastVertex] = v4;
 
                 Blocks[x, z].Faces[(int)face].Indices.Add((short)(base4 + _numVerticesInGrid[gridX4, gridZ4]));
@@ -2558,7 +2544,7 @@ namespace TombEditor.Geometry
                 Blocks[x, z].Faces[(int)face].Vertices[3] = v3;
                 Blocks[x, z].Faces[(int)face].Vertices[4] = v4;
                 Blocks[x, z].Faces[(int)face].Vertices[5] = v2;
-            }          
+            }
         }
 
         private void AddTriangle(int x, int z, BlockFaces face, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv1, Vector2 uv2,
@@ -2581,7 +2567,7 @@ namespace TombEditor.Geometry
             //  for (int i = 0; i < Blocks[x, z].Faces[(int)face].Vertices.Count; i++) Vertices.Add(Blocks[x, z].Faces[(int)face].Vertices[i]);
 
             Blocks[x, z].Faces[(int)face].Vertices = new EditorVertex[3];
-            
+
             EditorVertex v1 = new EditorVertex();
             v1.Position = new Vector4(p1, 1.0f);
             v1.UV = uv1;
@@ -2598,7 +2584,7 @@ namespace TombEditor.Geometry
             v3.EditorUV = e3;
 
             // according to texture rotation
-            short i1 = -1; 
+            short i1 = -1;
             short i2 = -1;
             short i3 = -1;
 
@@ -2650,9 +2636,12 @@ namespace TombEditor.Geometry
             Portal portal = null;
             if (isPortal)
             {
-                if (Blocks[x, z].FloorPortal != -1) portal = Level.Portals[Blocks[x, z].FloorPortal];
-                if (Blocks[x, z].CeilingPortal != -1) portal = Level.Portals[Blocks[x, z].CeilingPortal];
-                if (Blocks[x, z].WallPortal != -1) portal = Level.Portals[Blocks[x, z].WallPortal];
+                if (Blocks[x, z].FloorPortal != -1)
+                    portal = Level.Portals[Blocks[x, z].FloorPortal];
+                if (Blocks[x, z].CeilingPortal != -1)
+                    portal = Level.Portals[Blocks[x, z].CeilingPortal];
+                if (Blocks[x, z].WallPortal != -1)
+                    portal = Level.Portals[Blocks[x, z].WallPortal];
             }
 
             short base1 = (short)(((short)(p1.X / 1024.0f) << 9) + ((short)(p1.Z / 1024.0f) << 4));
@@ -2717,151 +2706,151 @@ namespace TombEditor.Geometry
             Blocks[x, z].Faces[(int)face].Vertices[2] = v3;
         }
 
-      /*  private void AddTriangle(int x, int z, BlockFaces face, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv1, Vector2 uv2, Vector2 uv3,
-                                 Vector2 e1, Vector2 e2, Vector2 e3, byte subdivision = 0)
-        {
-            Vector3 normal = Vector3.Zero;
-            
-            Blocks[x, z].Faces[(int)face].BaseIndexInVertices = Vertices.Count;
-            int baseIndex = Vertices.Count;
+        /*  private void AddTriangle(int x, int z, BlockFaces face, Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv1, Vector2 uv2, Vector2 uv3,
+                                   Vector2 e1, Vector2 e2, Vector2 e3, byte subdivision = 0)
+          {
+              Vector3 normal = Vector3.Zero;
 
-            // calcolo la normale
-            Plane plane = new Plane(p1, p2, p3);
-            normal = plane.Normal;
+              Blocks[x, z].Faces[(int)face].BaseIndexInVertices = Vertices.Count;
+              int baseIndex = Vertices.Count;
 
-            // creo una nuova lista dei vertici
-            Blocks[x, z].Faces[(int)face].Vertices = new List<EditorVertex>();
-            Blocks[x, z].Faces[(int)face].EditorIndices = new List<short>();
+              // calcolo la normale
+              Plane plane = new Plane(p1, p2, p3);
+              normal = plane.Normal;
 
-            // aggiungo i vertici
-            EditorVertex v1 = new EditorVertex();
-            v1.Position = new Vector4(p1, 1.0f);
-            v1.Normal = normal;
-            v1.UV = uv1;
-            v1.EditorUV = e1;
+              // creo una nuova lista dei vertici
+              Blocks[x, z].Faces[(int)face].Vertices = new List<EditorVertex>();
+              Blocks[x, z].Faces[(int)face].EditorIndices = new List<short>();
 
-            // calcolo l'illuminazione
+              // aggiungo i vertici
+              EditorVertex v1 = new EditorVertex();
+              v1.Position = new Vector4(p1, 1.0f);
+              v1.Normal = normal;
+              v1.UV = uv1;
+              v1.EditorUV = e1;
+
+              // calcolo l'illuminazione
 
 
-            Blocks[x, z].Faces[(int)face].Vertices.Add(v1);
+              Blocks[x, z].Faces[(int)face].Vertices.Add(v1);
 
-            EditorVertex v2 = new EditorVertex();
-            v2.Position = new Vector4(p2, 1.0f);
-            v2.Normal = normal;
-            v2.UV = uv2;
-            v2.EditorUV = e2;
+              EditorVertex v2 = new EditorVertex();
+              v2.Position = new Vector4(p2, 1.0f);
+              v2.Normal = normal;
+              v2.UV = uv2;
+              v2.EditorUV = e2;
 
-            Blocks[x, z].Faces[(int)face].Vertices.Add(v2);
+              Blocks[x, z].Faces[(int)face].Vertices.Add(v2);
 
-            EditorVertex v3 = new EditorVertex();
-            v3.Position = new Vector4(p3, 1.0f);
-            v3.Normal = normal;
-            v3.UV = uv3;
-            v3.EditorUV = e3;
+              EditorVertex v3 = new EditorVertex();
+              v3.Position = new Vector4(p3, 1.0f);
+              v3.Normal = normal;
+              v3.UV = uv3;
+              v3.EditorUV = e3;
 
-            Blocks[x, z].Faces[(int)face].Vertices.Add(v3);
+              Blocks[x, z].Faces[(int)face].Vertices.Add(v3);
 
-            Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 0));
-            Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 1));
-            Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 2));
+              Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 0));
+              Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 1));
+              Blocks[x, z].Faces[(int)face].EditorIndices.Add((short)(baseIndex + 2));
 
-            Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Triangle;
-            Blocks[x, z].Faces[(int)face].Defined = true;
-            Blocks[x, z].Faces[(int)face].SplitMode = subdivision;
-            Blocks[x, z].Faces[(int)face].Plane = plane;
+              Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Triangle;
+              Blocks[x, z].Faces[(int)face].Defined = true;
+              Blocks[x, z].Faces[(int)face].SplitMode = subdivision;
+              Blocks[x, z].Faces[(int)face].Plane = plane;
 
-            Blocks[x, z].Faces[(int)face].StartVertex = (short)Vertices.Count;
-            for (int i = 0; i < Blocks[x, z].Faces[(int)face].Vertices.Count; i++) Vertices.Add(Blocks[x, z].Faces[(int)face].Vertices[i]);
+              Blocks[x, z].Faces[(int)face].StartVertex = (short)Vertices.Count;
+              for (int i = 0; i < Blocks[x, z].Faces[(int)face].Vertices.Count; i++) Vertices.Add(Blocks[x, z].Faces[(int)face].Vertices[i]);
 
-            // For the compilation
-            short i1 = -1; // CheckIfVertexExists(p1);
-            short i2 = -1; // CheckIfVertexExists(p2);
-            short i3 = -1; // CheckIfVertexExists(p3);
+              // For the compilation
+              short i1 = -1; // CheckIfVertexExists(p1);
+              short i2 = -1; // CheckIfVertexExists(p2);
+              short i3 = -1; // CheckIfVertexExists(p3);
 
-            for (short i = 0; i < OptimizedVertices.Count; i++)
-            {
-                if (OptimizedVertices[i].Position.X == p1.X && OptimizedVertices[i].Position.Y == p1.Y && OptimizedVertices[i].Position.Z == p1.Z)
-                {
-                    i1 = i;
-                    break;
-                }
-            }
+              for (short i = 0; i < OptimizedVertices.Count; i++)
+              {
+                  if (OptimizedVertices[i].Position.X == p1.X && OptimizedVertices[i].Position.Y == p1.Y && OptimizedVertices[i].Position.Z == p1.Z)
+                  {
+                      i1 = i;
+                      break;
+                  }
+              }
 
-            for (short i = 0; i < OptimizedVertices.Count; i++)
-            {
-                if (OptimizedVertices[i].Position.X == p2.X && OptimizedVertices[i].Position.Y == p2.Y && OptimizedVertices[i].Position.Z == p2.Z)
-                {
-                    i2 = i;
-                    break;
-                }
-            }
+              for (short i = 0; i < OptimizedVertices.Count; i++)
+              {
+                  if (OptimizedVertices[i].Position.X == p2.X && OptimizedVertices[i].Position.Y == p2.Y && OptimizedVertices[i].Position.Z == p2.Z)
+                  {
+                      i2 = i;
+                      break;
+                  }
+              }
 
-            for (short i = 0; i < OptimizedVertices.Count; i++)
-            {
-                if (OptimizedVertices[i].Position.X == p3.X && OptimizedVertices[i].Position.Y == p3.Y && OptimizedVertices[i].Position.Z == p3.Z)
-                {
-                    i3 = i;
-                    break;
-                }
-            }
+              for (short i = 0; i < OptimizedVertices.Count; i++)
+              {
+                  if (OptimizedVertices[i].Position.X == p3.X && OptimizedVertices[i].Position.Y == p3.Y && OptimizedVertices[i].Position.Z == p3.Z)
+                  {
+                      i3 = i;
+                      break;
+                  }
+              }
 
-            Blocks[x, z].Faces[(int)face].Indices = new List<short>();
+              Blocks[x, z].Faces[(int)face].Indices = new List<short>();
 
-            bool isPortal = Blocks[x, z].FloorPortal != -1 || Blocks[x, z].CeilingPortal != -1 || Blocks[x, z].WallPortal != -1;
-            Portal portal = null;
-            if (isPortal)
-            {
-                if (Blocks[x, z].FloorPortal != -1) portal = Level.Portals[Blocks[x, z].FloorPortal];
-                if (Blocks[x, z].CeilingPortal != -1) portal = Level.Portals[Blocks[x, z].CeilingPortal];
-                if (Blocks[x, z].WallPortal != -1) portal = Level.Portals[Blocks[x, z].WallPortal];
-            }
+              bool isPortal = Blocks[x, z].FloorPortal != -1 || Blocks[x, z].CeilingPortal != -1 || Blocks[x, z].WallPortal != -1;
+              Portal portal = null;
+              if (isPortal)
+              {
+                  if (Blocks[x, z].FloorPortal != -1) portal = Level.Portals[Blocks[x, z].FloorPortal];
+                  if (Blocks[x, z].CeilingPortal != -1) portal = Level.Portals[Blocks[x, z].CeilingPortal];
+                  if (Blocks[x, z].WallPortal != -1) portal = Level.Portals[Blocks[x, z].WallPortal];
+              }
 
-            if (i1 == -1)
-            {
-                OptimizedVertices.Add(v1);
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
-                _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
-                i1 = (short)(OptimizedVertices.Count - 1);
-                if (isPortal && !portal.Vertices.Contains(i1)) portal.Vertices.Add(i1);
-            }
-            else
-            {
-                Blocks[x, z].Faces[(int)face].Indices.Add(i1);
-            }
+              if (i1 == -1)
+              {
+                  OptimizedVertices.Add(v1);
+                  Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
+                  _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
+                  i1 = (short)(OptimizedVertices.Count - 1);
+                  if (isPortal && !portal.Vertices.Contains(i1)) portal.Vertices.Add(i1);
+              }
+              else
+              {
+                  Blocks[x, z].Faces[(int)face].Indices.Add(i1);
+              }
 
-            _verticesDictionary[i1].Add(Vertices.Count - 3);
+              _verticesDictionary[i1].Add(Vertices.Count - 3);
 
-            if (i2 == -1)
-            {
-                OptimizedVertices.Add(v2);
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
-                _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
-                i2 = (short)(OptimizedVertices.Count - 1);
-                if (isPortal && !portal.Vertices.Contains(i2)) portal.Vertices.Add(i2);
-            }
-            else
-            {
-                Blocks[x, z].Faces[(int)face].Indices.Add(i2);
-            }
+              if (i2 == -1)
+              {
+                  OptimizedVertices.Add(v2);
+                  Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
+                  _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
+                  i2 = (short)(OptimizedVertices.Count - 1);
+                  if (isPortal && !portal.Vertices.Contains(i2)) portal.Vertices.Add(i2);
+              }
+              else
+              {
+                  Blocks[x, z].Faces[(int)face].Indices.Add(i2);
+              }
 
-            _verticesDictionary[i2].Add(Vertices.Count - 2);
+              _verticesDictionary[i2].Add(Vertices.Count - 2);
 
-            if (i3 == -1)
-            {
-                OptimizedVertices.Add(v3);
-                Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
-                _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
-                i3 = (short)(OptimizedVertices.Count - 1);
-                if (isPortal && !portal.Vertices.Contains(i3)) portal.Vertices.Add(i3);
-            }
-            else
-            {
-                Blocks[x, z].Faces[(int)face].Indices.Add(i3);
-            }
+              if (i3 == -1)
+              {
+                  OptimizedVertices.Add(v3);
+                  Blocks[x, z].Faces[(int)face].Indices.Add((short)(OptimizedVertices.Count - 1));
+                  _verticesDictionary.Add(OptimizedVertices.Count - 1, new List<int>());
+                  i3 = (short)(OptimizedVertices.Count - 1);
+                  if (isPortal && !portal.Vertices.Contains(i3)) portal.Vertices.Add(i3);
+              }
+              else
+              {
+                  Blocks[x, z].Faces[(int)face].Indices.Add(i3);
+              }
 
-            _verticesDictionary[i3].Add(Vertices.Count - 1);
-        }
-        */
+              _verticesDictionary[i3].Add(Vertices.Count - 1);
+          }
+          */
 
         public bool RayIntersectsFace(ref Ray ray, ref BlockFace face, out float distance)
         {
@@ -2902,7 +2891,8 @@ namespace TombEditor.Geometry
 
                 Plane pl = new Plane(p1, p2, p3);
 
-                if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && Vector3.Dot(-ray.Direction, pl.Normal) >= epsilon) return true;
+                if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && Vector3.Dot(-ray.Direction, pl.Normal) >= epsilon)
+                    return true;
 
                 return false;
             }
@@ -2947,109 +2937,109 @@ namespace TombEditor.Geometry
             return path;
         }
 
-     /*   private bool RaytraceLightZ(ref Light light, ref Vector3 p, ref float distance)
-        {
-            distance = 0;
+        /*   private bool RaytraceLightZ(ref Light light, ref Vector3 p, ref float distance)
+           {
+               distance = 0;
 
-            float deltaX = 0;
-            float deltaY = 0;
-            float deltaZ = 0;
+               float deltaX = 0;
+               float deltaY = 0;
+               float deltaZ = 0;
 
-            float fractionZ;
+               float fractionZ;
 
-            float currentX;
-            float currentY;
-            float currentZ;
+               float currentX;
+               float currentY;
+               float currentZ;
 
-            float minZ = 0;
-
-            
-
-            if (p.Z>=light.Position.Z)
-            {
-                deltaX = p.X - light.Position.X;
-                deltaY = p.Y - light.Position.Y;
-                deltaZ = p.Z - light.Position.Z;
-                
-
-                //minZ = p.Z;
-            }
-            else
-            {
-                deltaX = light.Position.X - p.X;
-                deltaY = light.Position.Y - p.Y;
-                deltaZ = light.Position.Z - p.Z;
-
-              //  minZ = light.Position.Z;
-            }
-
-            if (deltaZ != 0)
-            {
-                // find the two equations of the 3D ray
-                float mXZ = deltaX / deltaZ;
-                float mYZ = deltaY / deltaZ;
-
-                float qXZ = p.X - p.Z * mXZ;
-                float qYZ = p.Y - p.Z * mYZ;
-
-                float startX = 0; //= Math.Ceiling()
-                float startY = 0;
-                float startZ = 0;
+               float minZ = 0;
 
 
 
-                fractionZ = (minZ / 1024 + 1) * 1024 - minZ;
-
-                currentX = deltaX / (deltaZ + 1) * fractionZ + p.X;
-                currentY = deltaY / (deltaZ + 1) * fractionZ + p.Y;
-                currentZ = (minZ / 1024 + 1) * 1024;
-
-                if (currentZ<=light.Position.Z)
-                {
-                    do
-                    {
-                        int currentXblock = (int)(currentX / 1024);
-                        int currentZblock = (int)(currentZ / 1024);
-                        
-                        if (currentXblock < 0 || currentZblock >= NumZSectors || currentXblock >= NumXSectors)
-                        {
-                            if (currentZ == light.Position.Z)
-                                return true;
-                        }
-                        else
-                        {
-                            int currentYclick = (int)(currentY / 256);
-
-                            if (currentZblock > 0)
-                            {
-                                v17 = *((_DWORD*)pRoom + 29);
-                                pCurrentBlock = v17 + 142 * (currentZblock + currentXblock * numRoomZblocks) - 142;
-                                if (*(_WORD*)(pCurrentBlock + 6)
-                                   + ((*(_BYTE*)(v17 + 142 * (currentZblock + currentXblock * numRoomZblocks) - 132)
-                                     + (signed int)*(_BYTE*)(pCurrentBlock + 11)) >> 1) > currentYclick
-                                 || *(_WORD*)(pCurrentBlock + 8)
-                                  + ((*(_BYTE*)(pCurrentBlock + 16) + (signed int)*(_BYTE*)(pCurrentBlock + 17)) >> 1) < currentYclick
-                               || *(_BYTE*)pCurrentBlock & 8 )
-              return false;
-                            }
-                            if (currentZ == zLightCopy)
-                                return 1;
-
-                        }
-
-                    } while (currentZ <= light.Position.Z);
-                }
-            }
+               if (p.Z>=light.Position.Z)
+               {
+                   deltaX = p.X - light.Position.X;
+                   deltaY = p.Y - light.Position.Y;
+                   deltaZ = p.Z - light.Position.Z;
 
 
-            }
-            */
+                   //minZ = p.Z;
+               }
+               else
+               {
+                   deltaX = light.Position.X - p.X;
+                   deltaY = light.Position.Y - p.Y;
+                   deltaZ = light.Position.Z - p.Z;
+
+                 //  minZ = light.Position.Z;
+               }
+
+               if (deltaZ != 0)
+               {
+                   // find the two equations of the 3D ray
+                   float mXZ = deltaX / deltaZ;
+                   float mYZ = deltaY / deltaZ;
+
+                   float qXZ = p.X - p.Z * mXZ;
+                   float qYZ = p.Y - p.Z * mYZ;
+
+                   float startX = 0; //= Math.Ceiling()
+                   float startY = 0;
+                   float startZ = 0;
+
+
+
+                   fractionZ = (minZ / 1024 + 1) * 1024 - minZ;
+
+                   currentX = deltaX / (deltaZ + 1) * fractionZ + p.X;
+                   currentY = deltaY / (deltaZ + 1) * fractionZ + p.Y;
+                   currentZ = (minZ / 1024 + 1) * 1024;
+
+                   if (currentZ<=light.Position.Z)
+                   {
+                       do
+                       {
+                           int currentXblock = (int)(currentX / 1024);
+                           int currentZblock = (int)(currentZ / 1024);
+
+                           if (currentXblock < 0 || currentZblock >= NumZSectors || currentXblock >= NumXSectors)
+                           {
+                               if (currentZ == light.Position.Z)
+                                   return true;
+                           }
+                           else
+                           {
+                               int currentYclick = (int)(currentY / 256);
+
+                               if (currentZblock > 0)
+                               {
+                                   v17 = *((_DWORD*)pRoom + 29);
+                                   pCurrentBlock = v17 + 142 * (currentZblock + currentXblock * numRoomZblocks) - 142;
+                                   if (*(_WORD*)(pCurrentBlock + 6)
+                                      + ((*(_BYTE*)(v17 + 142 * (currentZblock + currentXblock * numRoomZblocks) - 132)
+                                        + (signed int)*(_BYTE*)(pCurrentBlock + 11)) >> 1) > currentYclick
+                                    || *(_WORD*)(pCurrentBlock + 8)
+                                     + ((*(_BYTE*)(pCurrentBlock + 16) + (signed int)*(_BYTE*)(pCurrentBlock + 17)) >> 1) < currentYclick
+                                  || *(_BYTE*)pCurrentBlock & 8 )
+                 return false;
+                               }
+                               if (currentZ == zLightCopy)
+                                   return 1;
+
+                           }
+
+                       } while (currentZ <= light.Position.Z);
+                   }
+               }
+
+
+               }
+               */
 
         private bool IsPointInShadow(ref Light light, ref Vector3 p, ref float distance)
         {
             return false;
             // Get the path traveled by the ray
-            List<RayPathPoint> path = GetRayPath(light.Position, p);
+            /*List<RayPathPoint> path = GetRayPath(light.Position, p);
 
             // Get the light direction
             Vector3 direction = p - light.Position;
@@ -3193,7 +3183,7 @@ namespace TombEditor.Geometry
 
             if ((maxDistance - distance) < 0.0f) return true;
 
-            return false;
+            return false;*/
         }
 
         private bool RayTraceCheckFloorCeiling(int x, int y, int z, int xLight, int yLight, int zLight)
@@ -3209,11 +3199,6 @@ namespace TombEditor.Geometry
 
         private bool RayTraceX(int x, int y, int z, int xLight, int yLight, int zLight)
         {
-            if (x==2048 && z==4096)
-            {
-                int hhgh = 0;
-            }
-
             int deltaX;
             int deltaY;
             int deltaZ;
@@ -3231,7 +3216,7 @@ namespace TombEditor.Geometry
             int currentZblock;
             int currentYclick;
 
-           yLight = -yLight;
+            yLight = -yLight;
             y = -y;
 
             int yPoint = y;
@@ -3259,7 +3244,7 @@ namespace TombEditor.Geometry
                 zPoint = zLight;
             }
 
-           // deltaY *= -1;
+            // deltaY *= -1;
 
             if (deltaX != 0)
             {
@@ -3286,10 +3271,10 @@ namespace TombEditor.Geometry
 
                             if (currentXblock > 0)
                             {
-                                Block currentBlock = Blocks[currentXblock-1, currentZblock];
+                                Block currentBlock = Blocks[currentXblock - 1, currentZblock];
 
                                 if (((currentBlock.QAFaces[0] + currentBlock.QAFaces[3]) / 2 > currentYclick) ||
-                                    (Ceiling + (currentBlock.WSFaces[0] + currentBlock.WSFaces[3]) / 2 < currentYclick) || 
+                                    (Ceiling + (currentBlock.WSFaces[0] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
                                     currentBlock.Type == BlockType.Wall)
                                 {
                                     return false;
@@ -3303,8 +3288,8 @@ namespace TombEditor.Geometry
 
                             if (currentXblock >= 0)
                             {
-                                Block currentBlock = Blocks[currentXblock-1, currentZblock];
-                                Block nextBlock = Blocks[currentXblock , currentZblock];
+                                Block currentBlock = Blocks[currentXblock - 1, currentZblock];
+                                Block nextBlock = Blocks[currentXblock, currentZblock];
 
                                 if (((currentBlock.QAFaces[2] + currentBlock.QAFaces[1]) / 2 > currentYclick) ||
                                     (Ceiling + (currentBlock.WSFaces[2] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
@@ -3328,13 +3313,9 @@ namespace TombEditor.Geometry
 
             return true;
         }
-        
+
         private bool RayTraceZ(int x, int y, int z, int xLight, int yLight, int zLight)
         {
-            if (x==2048 && z==4096)
-            {
-                int hhh = 0;
-            }
             int deltaX;
             int deltaY;
             int deltaZ;
@@ -3352,7 +3333,7 @@ namespace TombEditor.Geometry
             int currentZblock;
             int currentYclick;
 
-           yLight = -yLight;
+            yLight = -yLight;
             y = -y;
 
             int yPoint = y;
@@ -3380,7 +3361,7 @@ namespace TombEditor.Geometry
                 yPoint = yLight;
             }
 
-           // deltaY *= -1;
+            //deltaY *= -1;
 
             if (deltaZ != 0)
             {
@@ -3407,7 +3388,7 @@ namespace TombEditor.Geometry
 
                             if (currentZblock > 0)
                             {
-                                Block currentBlock = Blocks[currentXblock, currentZblock-1];
+                                Block currentBlock = Blocks[currentXblock, currentZblock - 1];
 
                                 if (((currentBlock.QAFaces[2] + currentBlock.QAFaces[3]) / 2 > currentYclick) ||
                                     (Ceiling + (currentBlock.WSFaces[2] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
@@ -3424,8 +3405,8 @@ namespace TombEditor.Geometry
 
                             if (currentZblock >= 0)
                             {
-                                Block currentBlock = Blocks[currentXblock, currentZblock-1];
-                                Block nextBlock = Blocks[currentXblock, currentZblock ];
+                                Block currentBlock = Blocks[currentXblock, currentZblock - 1];
+                                Block nextBlock = Blocks[currentXblock, currentZblock];
 
                                 if (((currentBlock.QAFaces[0] + currentBlock.QAFaces[1]) / 2 > currentYclick) ||
                                     (Ceiling + (currentBlock.WSFaces[0] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
@@ -3461,17 +3442,19 @@ namespace TombEditor.Geometry
             int lastZ = (int)Math.Floor(light.Position.Z);
 
             Vector3 point = light.Position + direction * currentDistance;
-            int x = (int)Math.Floor(point.X/1024.0f);
+            int x = (int)Math.Floor(point.X / 1024.0f);
             int z = (int)Math.Floor(point.Z / 1024.0f);
 
             while (currentDistance < distance)
             {
-                if (Blocks[x, z].Type == BlockType.Wall) return true;
+                if (Blocks[x, z].Type == BlockType.Wall)
+                    return true;
 
                 int floorMax = GetHighestFloorCorner(x, z);
                 int ceilingMin = Ceiling + GetLowestCeilingCorner(x, z);
 
-                if (floorMax * 256.0f > point.Y || ceilingMin * 256 < point.Y) return true;
+                if (floorMax * 256.0f > point.Y || ceilingMin * 256 < point.Y)
+                    return true;
 
                 currentDistance += 500.0f;
 
@@ -3480,7 +3463,7 @@ namespace TombEditor.Geometry
                 z = (int)Math.Floor(point.Z / 1024.0f);
             }
 
-            return false;            
+            return false;
         }
 
         public void CalculateLighting2(int x, int z, int f, out int r, out int g, out int b)
@@ -3522,7 +3505,8 @@ namespace TombEditor.Geometry
                         float distance = (float)Math.Abs((p - lights[i].Position).Length());
 
                         // If distance is greater than light out radius, then skip this light
-                        if (distance > light.Out * 1024.0f) continue;
+                        if (distance > light.Out * 1024.0f)
+                            continue;
 
                         // Calculate light diffuse value
                         int diffuse = (int)(light.Intensity * 8192);
@@ -3542,8 +3526,10 @@ namespace TombEditor.Geometry
                         // Calculate the attenuation
                         float attenuaton = 1.0f;
                         attenuaton = (float)(light.Out * 1024.0f - distance) / (light.Out * 1024.0f - light.In * 1024.0f);
-                        if (attenuaton > 1.0f) attenuaton = 1.0f;
-                        if (attenuaton <= 0.0f) continue;
+                        if (attenuaton > 1.0f)
+                            attenuaton = 1.0f;
+                        if (attenuaton <= 0.0f)
+                            continue;
 
                         // Calculate final light color
                         int finalIntensity = (int)(dotN * attenuaton * diffuse);
@@ -3594,13 +3580,16 @@ namespace TombEditor.Geometry
                         // calcolo la luce diffusa
                         float diffuse = -Vector3.Dot(lightDirection, n);
 
-                        if (diffuse <= 0) continue;
+                        if (diffuse <= 0)
+                            continue;
 
-                        if (diffuse > 1) diffuse = 1.0f;
+                        if (diffuse > 1)
+                            diffuse = 1.0f;
 
 
                         int finalIntensity = (int)(diffuse * light.Intensity * 8192);
-                        if (finalIntensity < 0) continue;
+                        if (finalIntensity < 0)
+                            continue;
 
                         r += finalIntensity * light.Color.R / 8192;
                         g += finalIntensity * light.Color.G / 8192;
@@ -3617,7 +3606,8 @@ namespace TombEditor.Geometry
                         float distance = (float)Math.Abs((p - lights[i].Position).Length());
 
                         // If distance is greater than light length, then skip this light
-                        if (distance > light.Cutoff * 1024.0f) continue;
+                        if (distance > light.Cutoff * 1024.0f)
+                            continue;
 
                         // Calculate the light direction
                         Vector3 lightDirection = Vector3.Zero;
@@ -3633,7 +3623,8 @@ namespace TombEditor.Geometry
                         double cosI2 = (double)Math.Cos(MathUtil.DegreesToRadians(light.In));
                         double cosO2 = (double)Math.Cos(MathUtil.DegreesToRadians(light.Out));
 
-                        if (d < cosO2) continue;
+                        if (d < cosO2)
+                            continue;
 
                         if (!RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                             !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
@@ -3650,21 +3641,27 @@ namespace TombEditor.Geometry
                         range *= 1024.0f;
 
                         float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
-                        if (factor > 1.0f) factor = 1.0f;
-                        if (factor <= 0.0f) continue;
+                        if (factor > 1.0f)
+                            factor = 1.0f;
+                        if (factor <= 0.0f)
+                            continue;
 
                         float attenuation = 1.0f;
                         if (distance >= light.Len * 1024.0f)
                             attenuation = (float)(1.0f - (distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f));
 
-                        if (attenuation > 1.0f) attenuation = 1.0f;
-                        if (attenuation < 0.0f) continue;
+                        if (attenuation > 1.0f)
+                            attenuation = 1.0f;
+                        if (attenuation < 0.0f)
+                            continue;
 
                         n.Y = -n.Y;
 
                         float dot1 = Vector3.Dot(lightDirection, n);
-                        if (dot1 < 0.0f) continue;
-                        if (dot1 > 1.0f) dot1 = 1.0f;
+                        if (dot1 < 0.0f)
+                            continue;
+                        if (dot1 > 1.0f)
+                            dot1 = 1.0f;
 
                         int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
 
@@ -3678,9 +3675,12 @@ namespace TombEditor.Geometry
                 int ind = theIndex; // v; // face.Indices[v];
                 EditorVertex vertex = _verticesGrid[theX, theZ, ind];
 
-                if (r < 0) r = 0;
-                if (g < 0) g = 0;
-                if (b < 0) b = 0;
+                if (r < 0)
+                    r = 0;
+                if (g < 0)
+                    g = 0;
+                if (b < 0)
+                    b = 0;
 
                 vertex.FaceColor.X = (r + _iterations[theX, theZ, ind] * vertex.FaceColor.X) / (_iterations[theX, theZ, ind] + 1);
                 vertex.FaceColor.Y = (g + _iterations[theX, theZ, ind] * vertex.FaceColor.Y) / (_iterations[theX, theZ, ind] + 1);
@@ -3714,7 +3714,7 @@ namespace TombEditor.Geometry
             //Vector4 color = new Vector4(AmbientLight.R / 255.0f, AmbientLight.G / 255.0f, AmbientLight.B / 255.0f, 1.0f);
 
             // If I have no lights touching this vertex, then return the ambiental light
-           // if (lights.Count == 0) return;
+            // if (lights.Count == 0) return;
 
             // For each light, raytrace the contribution of the light to this vertex
             for (int i = 0; i < lights.Count; i++)
@@ -3727,21 +3727,24 @@ namespace TombEditor.Geometry
                     float distance = (float)Math.Abs((p - lights[i].Position).Length());
 
                     // If distance is greater than light out radius, then skip this light
-                    if (distance > light.Out * 1024.0f) continue;
+                    if (distance > light.Out * 1024.0f)
+                        continue;
 
                     // Raytrace and discover if vertex is in shadow or not
-                    if (IsPointInShadow(ref light, ref p, ref distance)) continue;
+                    if (IsPointInShadow(ref light, ref p, ref distance))
+                        continue;
 
                     // Calculate light diffuse value
                     int diffuse = (int)(light.Intensity * 8192); // 4
-                    if (light.Type == LightType.Shadow) diffuse = -diffuse;
+                    if (light.Type == LightType.Shadow)
+                        diffuse = -diffuse;
 
                     // float v38 = (float)(light.Out * 1024.0f - distance) / (light.Out * 1024.0f - light.In * 1024.0f);
 
                     //if (light.Type == LightType.Shadow) diffuse = -diffuse;
 
                     float range = light.Out - light.In;
-                        range *= 1024.0f;
+                    range *= 1024.0f;
 
                     float attenuaton = 1.0f;
 
@@ -3774,7 +3777,7 @@ namespace TombEditor.Geometry
                         // _vertexColor += (new Vector4(light.Color.R / 255.0f, light.Color.G / 255.0f, light.Color.B / 255.0f, 1.0f)) * diffuse;
 
                         int finalIntensity = (int)(light.Intensity * 8192 * 0.25f);
-                        
+
                         r += finalIntensity * light.Color.R / 8192;
                         g += finalIntensity * light.Color.G / 8192;
                         b += finalIntensity * light.Color.B / 8192;
@@ -3786,7 +3789,8 @@ namespace TombEditor.Geometry
                     float distance = (float)Math.Abs((p - lights[i].Position).Length());
 
                     // Raytrace and discover if vertex is in shadow or not
-                    if (IsPointInShadow(ref light, ref p, ref distance)) continue;
+                    if (IsPointInShadow(ref light, ref p, ref distance))
+                        continue;
 
                     // Calculate the light vector
                     Vector3 lightDirection = Vector3.Zero;
@@ -3800,7 +3804,8 @@ namespace TombEditor.Geometry
                     // calcolo la luce diffusa
                     float diffuse = Vector3.Dot(-lightDirection, n);
 
-                    if (diffuse <= 0) continue;
+                    if (diffuse <= 0)
+                        continue;
 
                     // se il prodotto scalare è negativo allora la superficie non è rivolta verso la luce
                     /*  diffuse *= light.Intensity; // 0.5f; // 2
@@ -3811,7 +3816,8 @@ namespace TombEditor.Geometry
                       */
 
                     int finalIntensity = (int)(diffuse * light.Intensity * 8192);
-                    if (finalIntensity < 0) continue;
+                    if (finalIntensity < 0)
+                        continue;
 
                     r += finalIntensity * light.Color.R / 8192;
                     g += finalIntensity * light.Color.G / 8192;
@@ -3827,7 +3833,8 @@ namespace TombEditor.Geometry
                     float distance = (float)Math.Abs((p - lights[i].Position).Length());
 
                     // If distance is greater than light length, then skip this light
-                    if (distance > light.Cutoff * 1024.0f) continue;
+                    if (distance > light.Cutoff * 1024.0f)
+                        continue;
 
                     // Calculate the light direction
                     Vector3 lightDirection = Vector3.Zero;
@@ -3845,10 +3852,12 @@ namespace TombEditor.Geometry
                     double cosI2 = (double)Math.Cos(MathUtil.DegreesToRadians(light.In / 2.0f));
                     double cosO2 = (double)Math.Cos(MathUtil.DegreesToRadians(light.Out / 2.0f));
 
-                    if (d <= cosO) continue;
+                    if (d <= cosO)
+                        continue;
 
                     // Raytrace and discover if vertex is in shadow or not
-                    if (IsPointInShadow(ref light, ref p, ref distance)) continue;
+                    if (IsPointInShadow(ref light, ref p, ref distance))
+                        continue;
 
                     // Calculate light diffuse value
                     int diffuse = (int)(light.Intensity * 8192);
@@ -3861,7 +3870,8 @@ namespace TombEditor.Geometry
                     if (distance >= light.Len * 1024.0f)
                         attenuation = (float)(1.0f - (distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f));
                     float dot1 = Vector3.Dot(-lightDirection, n);
-                    if (dot1 < 0) continue;
+                    if (dot1 < 0)
+                        continue;
 
                     int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
 
@@ -3912,29 +3922,29 @@ namespace TombEditor.Geometry
 
              _vertexColor.W = 1.0f;*/
 
-        /*    r=r+(lights.Count*r)
+            /*    r=r+(lights.Count*r)
 
-          _vertexColor.X = r / 255.0f;
-            _vertexColor.Y = g / 255.0f;
-            _vertexColor.Z = b / 255.0f;*/
+              _vertexColor.X = r / 255.0f;
+                _vertexColor.Y = g / 255.0f;
+                _vertexColor.Z = b / 255.0f;*/
 
 
- /* 
-            float maxColor = Math.Max(Math.Max(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
-            float minColor = Math.Min(Math.Min(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
+            /* 
+                       float maxColor = Math.Max(Math.Max(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
+                       float minColor = Math.Min(Math.Min(_vertexColor.X, _vertexColor.Y), _vertexColor.Z);
 
-            if (_vertexColor.X > 0.5f || _vertexColor.Y > 0.5f || _vertexColor.Z > 0.5f)
-            {
-                _vertexColor.X = (_vertexColor.X / maxColor) / 2.0f;
-                _vertexColor.Y = (_vertexColor.Y / maxColor) / 2.0f;
-                _vertexColor.Z = (_vertexColor.Z / maxColor) / 2.0f;
-            }
+                       if (_vertexColor.X > 0.5f || _vertexColor.Y > 0.5f || _vertexColor.Z > 0.5f)
+                       {
+                           _vertexColor.X = (_vertexColor.X / maxColor) / 2.0f;
+                           _vertexColor.Y = (_vertexColor.Y / maxColor) / 2.0f;
+                           _vertexColor.Z = (_vertexColor.Z / maxColor) / 2.0f;
+                       }
 
-            if (_vertexColor.X < 0.0f) _vertexColor.X = 0.0f;
-            if (_vertexColor.Y < 0.0f) _vertexColor.Y = 0.0f;
-            if (_vertexColor.Z < 0.0f) _vertexColor.Z = 0.0f;
+                       if (_vertexColor.X < 0.0f) _vertexColor.X = 0.0f;
+                       if (_vertexColor.Y < 0.0f) _vertexColor.Y = 0.0f;
+                       if (_vertexColor.Z < 0.0f) _vertexColor.Z = 0.0f;
 
-            _vertexColor.W = 1.0f;*/
+                       _vertexColor.W = 1.0f;*/
 
             return;
         }
@@ -3969,7 +3979,8 @@ namespace TombEditor.Geometry
 
         public void UpdateBuffers()
         {
-            if (Vertices.Count == 0) return;
+            if (Vertices.Count == 0)
+                return;
 
             if (VertexBuffer == null)
             {
@@ -4010,12 +4021,17 @@ namespace TombEditor.Geometry
             {
                 for (int z = 1; z < NumZSectors - 1; z++)
                 {
-                    if (Blocks[x, z].Type == BlockType.Wall) continue;
+                    if (Blocks[x, z].Type == BlockType.Wall)
+                        continue;
 
-                    if (Blocks[x, z].WSFaces[0] > max) max = Blocks[x, z].WSFaces[0];
-                    if (Blocks[x, z].WSFaces[1] > max) max = Blocks[x, z].WSFaces[1];
-                    if (Blocks[x, z].WSFaces[2] > max) max = Blocks[x, z].WSFaces[2];
-                    if (Blocks[x, z].WSFaces[3] > max) max = Blocks[x, z].WSFaces[3];
+                    if (Blocks[x, z].WSFaces[0] > max)
+                        max = Blocks[x, z].WSFaces[0];
+                    if (Blocks[x, z].WSFaces[1] > max)
+                        max = Blocks[x, z].WSFaces[1];
+                    if (Blocks[x, z].WSFaces[2] > max)
+                        max = Blocks[x, z].WSFaces[2];
+                    if (Blocks[x, z].WSFaces[3] > max)
+                        max = Blocks[x, z].WSFaces[3];
                 }
             }
 
@@ -4030,12 +4046,17 @@ namespace TombEditor.Geometry
             {
                 for (int z = 1; z < NumZSectors - 1; z++)
                 {
-                    if (Blocks[x, z].Type == BlockType.Wall) continue;
+                    if (Blocks[x, z].Type == BlockType.Wall)
+                        continue;
 
-                    if (Blocks[x, z].QAFaces[0] < min) min = Blocks[x, z].QAFaces[0];
-                    if (Blocks[x, z].QAFaces[1] < min) min = Blocks[x, z].QAFaces[1];
-                    if (Blocks[x, z].QAFaces[2] < min) min = Blocks[x, z].QAFaces[2];
-                    if (Blocks[x, z].QAFaces[3] < min) min = Blocks[x, z].QAFaces[3];
+                    if (Blocks[x, z].QAFaces[0] < min)
+                        min = Blocks[x, z].QAFaces[0];
+                    if (Blocks[x, z].QAFaces[1] < min)
+                        min = Blocks[x, z].QAFaces[1];
+                    if (Blocks[x, z].QAFaces[2] < min)
+                        min = Blocks[x, z].QAFaces[2];
+                    if (Blocks[x, z].QAFaces[3] < min)
+                        min = Blocks[x, z].QAFaces[3];
                 }
             }
 
@@ -4050,12 +4071,17 @@ namespace TombEditor.Geometry
             {
                 for (int z = z1; z < z2; z++)
                 {
-                    if (Blocks[x, z].Type == BlockType.Wall) continue;
+                    if (Blocks[x, z].Type == BlockType.Wall)
+                        continue;
 
-                    if (Blocks[x, z].WSFaces[0] > max) max = Blocks[x, z].WSFaces[0];
-                    if (Blocks[x, z].WSFaces[1] > max) max = Blocks[x, z].WSFaces[1];
-                    if (Blocks[x, z].WSFaces[2] > max) max = Blocks[x, z].WSFaces[2];
-                    if (Blocks[x, z].WSFaces[3] > max) max = Blocks[x, z].WSFaces[3];
+                    if (Blocks[x, z].WSFaces[0] > max)
+                        max = Blocks[x, z].WSFaces[0];
+                    if (Blocks[x, z].WSFaces[1] > max)
+                        max = Blocks[x, z].WSFaces[1];
+                    if (Blocks[x, z].WSFaces[2] > max)
+                        max = Blocks[x, z].WSFaces[2];
+                    if (Blocks[x, z].WSFaces[3] > max)
+                        max = Blocks[x, z].WSFaces[3];
                 }
             }
 
@@ -4070,12 +4096,17 @@ namespace TombEditor.Geometry
             {
                 for (int z = z1; z < z2; z++)
                 {
-                    if (Blocks[x, z].Type == BlockType.Wall) continue;
+                    if (Blocks[x, z].Type == BlockType.Wall)
+                        continue;
 
-                    if (Blocks[x, z].QAFaces[0] < min) min = Blocks[x, z].QAFaces[0];
-                    if (Blocks[x, z].QAFaces[1] < min) min = Blocks[x, z].QAFaces[1];
-                    if (Blocks[x, z].QAFaces[2] < min) min = Blocks[x, z].QAFaces[2];
-                    if (Blocks[x, z].QAFaces[3] < min) min = Blocks[x, z].QAFaces[3];
+                    if (Blocks[x, z].QAFaces[0] < min)
+                        min = Blocks[x, z].QAFaces[0];
+                    if (Blocks[x, z].QAFaces[1] < min)
+                        min = Blocks[x, z].QAFaces[1];
+                    if (Blocks[x, z].QAFaces[2] < min)
+                        min = Blocks[x, z].QAFaces[2];
+                    if (Blocks[x, z].QAFaces[3] < min)
+                        min = Blocks[x, z].QAFaces[3];
                 }
             }
 
@@ -4086,10 +4117,14 @@ namespace TombEditor.Geometry
         {
             int max = int.MinValue;
 
-            if (Blocks[x, z].WSFaces[0] > max) max = Blocks[x, z].WSFaces[0];
-            if (Blocks[x, z].WSFaces[1] > max) max = Blocks[x, z].WSFaces[1];
-            if (Blocks[x, z].WSFaces[2] > max) max = Blocks[x, z].WSFaces[2];
-            if (Blocks[x, z].WSFaces[3] > max) max = Blocks[x, z].WSFaces[3];
+            if (Blocks[x, z].WSFaces[0] > max)
+                max = Blocks[x, z].WSFaces[0];
+            if (Blocks[x, z].WSFaces[1] > max)
+                max = Blocks[x, z].WSFaces[1];
+            if (Blocks[x, z].WSFaces[2] > max)
+                max = Blocks[x, z].WSFaces[2];
+            if (Blocks[x, z].WSFaces[3] > max)
+                max = Blocks[x, z].WSFaces[3];
 
             return (Ceiling + max);
         }
@@ -4098,10 +4133,14 @@ namespace TombEditor.Geometry
         {
             int min = int.MaxValue;
 
-            if (Blocks[x, z].QAFaces[0] < min) min = Blocks[x, z].QAFaces[0];
-            if (Blocks[x, z].QAFaces[1] < min) min = Blocks[x, z].QAFaces[1];
-            if (Blocks[x, z].QAFaces[2] < min) min = Blocks[x, z].QAFaces[2];
-            if (Blocks[x, z].QAFaces[3] < min) min = Blocks[x, z].QAFaces[3];
+            if (Blocks[x, z].QAFaces[0] < min)
+                min = Blocks[x, z].QAFaces[0];
+            if (Blocks[x, z].QAFaces[1] < min)
+                min = Blocks[x, z].QAFaces[1];
+            if (Blocks[x, z].QAFaces[2] < min)
+                min = Blocks[x, z].QAFaces[2];
+            if (Blocks[x, z].QAFaces[3] < min)
+                min = Blocks[x, z].QAFaces[3];
 
             return min;
         }
@@ -4110,10 +4149,14 @@ namespace TombEditor.Geometry
         {
             int max = int.MinValue;
 
-            if (Blocks[x, z].QAFaces[0] > max) max = Blocks[x, z].QAFaces[0];
-            if (Blocks[x, z].QAFaces[1] > max) max = Blocks[x, z].QAFaces[1];
-            if (Blocks[x, z].QAFaces[2] > max) max = Blocks[x, z].QAFaces[2];
-            if (Blocks[x, z].QAFaces[3] > max) max = Blocks[x, z].QAFaces[3];
+            if (Blocks[x, z].QAFaces[0] > max)
+                max = Blocks[x, z].QAFaces[0];
+            if (Blocks[x, z].QAFaces[1] > max)
+                max = Blocks[x, z].QAFaces[1];
+            if (Blocks[x, z].QAFaces[2] > max)
+                max = Blocks[x, z].QAFaces[2];
+            if (Blocks[x, z].QAFaces[3] > max)
+                max = Blocks[x, z].QAFaces[3];
 
             return max;
         }
@@ -4122,10 +4165,14 @@ namespace TombEditor.Geometry
         {
             int min = int.MaxValue;
 
-            if (Blocks[x, z].QAFaces[0] < min) min = Blocks[x, z].QAFaces[0];
-            if (Blocks[x, z].QAFaces[1] < min) min = Blocks[x, z].QAFaces[1];
-            if (Blocks[x, z].QAFaces[2] < min) min = Blocks[x, z].QAFaces[2];
-            if (Blocks[x, z].QAFaces[3] < min) min = Blocks[x, z].QAFaces[3];
+            if (Blocks[x, z].QAFaces[0] < min)
+                min = Blocks[x, z].QAFaces[0];
+            if (Blocks[x, z].QAFaces[1] < min)
+                min = Blocks[x, z].QAFaces[1];
+            if (Blocks[x, z].QAFaces[2] < min)
+                min = Blocks[x, z].QAFaces[2];
+            if (Blocks[x, z].QAFaces[3] < min)
+                min = Blocks[x, z].QAFaces[3];
 
             return min;
         }
@@ -4134,7 +4181,8 @@ namespace TombEditor.Geometry
         {
             int sum = 0;
 
-            for (int i = 0; i < 4; i++) sum += Blocks[x, z].QAFaces[i];
+            for (int i = 0; i < 4; i++)
+                sum += Blocks[x, z].QAFaces[i];
 
             sum *= 256;
             sum /= 4;
@@ -4146,10 +4194,14 @@ namespace TombEditor.Geometry
         {
             int min = int.MaxValue;
 
-            if (Blocks[x, z].WSFaces[0] < min) min = Blocks[x, z].WSFaces[0];
-            if (Blocks[x, z].WSFaces[1] < min) min = Blocks[x, z].WSFaces[1];
-            if (Blocks[x, z].WSFaces[2] < min) min = Blocks[x, z].WSFaces[2];
-            if (Blocks[x, z].WSFaces[3] < min) min = Blocks[x, z].WSFaces[3];
+            if (Blocks[x, z].WSFaces[0] < min)
+                min = Blocks[x, z].WSFaces[0];
+            if (Blocks[x, z].WSFaces[1] < min)
+                min = Blocks[x, z].WSFaces[1];
+            if (Blocks[x, z].WSFaces[2] < min)
+                min = Blocks[x, z].WSFaces[2];
+            if (Blocks[x, z].WSFaces[3] < min)
+                min = Blocks[x, z].WSFaces[3];
 
             return min;
         }
@@ -4158,7 +4210,8 @@ namespace TombEditor.Geometry
         {
             int sum = 0;
 
-            for (int i = 0; i < 4; i++) sum += Blocks[x, z].WSFaces[i];
+            for (int i = 0; i < 4; i++)
+                sum += Blocks[x, z].WSFaces[i];
 
             sum *= 256;
             sum /= 4;
@@ -4170,10 +4223,14 @@ namespace TombEditor.Geometry
         {
             int max = int.MinValue;
 
-            if (Blocks[x, z].WSFaces[0] > max) max = Blocks[x, z].WSFaces[0];
-            if (Blocks[x, z].WSFaces[1] > max) max = Blocks[x, z].WSFaces[1];
-            if (Blocks[x, z].WSFaces[2] > max) max = Blocks[x, z].WSFaces[2];
-            if (Blocks[x, z].WSFaces[3] > max) max = Blocks[x, z].WSFaces[3];
+            if (Blocks[x, z].WSFaces[0] > max)
+                max = Blocks[x, z].WSFaces[0];
+            if (Blocks[x, z].WSFaces[1] > max)
+                max = Blocks[x, z].WSFaces[1];
+            if (Blocks[x, z].WSFaces[2] > max)
+                max = Blocks[x, z].WSFaces[2];
+            if (Blocks[x, z].WSFaces[3] > max)
+                max = Blocks[x, z].WSFaces[3];
 
             return max;
         }
@@ -4181,7 +4238,7 @@ namespace TombEditor.Geometry
         public void AdjustObjectsHeight()
         {
             return;
-
+            /*
             for (int z = 0; z < NumZSectors; z++)
             {
                 for (int x = 0; x < NumXSectors; x++)
@@ -4230,27 +4287,25 @@ namespace TombEditor.Geometry
                             Level.Objects[Moveables[i]] = (MoveableInstance)instance;
                         }
 
-                        /*if (instance.Position.Y > meanCeiling2 && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                           (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
-                            Level.Objects[Moveables[i]] = (MoveableInstance)instance;
-                        }
+                        //if (instance.Position.Y > meanCeiling2 && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //   (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
+                        //    Level.Objects[Moveables[i]] = (MoveableInstance)instance;
+                        //}
+                        //if (instance.Position.Y < highest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //    (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanFloor, instance.Position.Z);
+                        //    Level.Objects[Moveables[i]] = (MoveableInstance)instance;
+                        //}
 
-                        /*
-                        if (instance.Position.Y < highest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                            (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanFloor, instance.Position.Z);
-                            Level.Objects[Moveables[i]] = (MoveableInstance)instance;
-                        }
-
-                        if (instance.Position.Y > lowest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                           (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
-                            Level.Objects[Moveables[i]] = (MoveableInstance)instance;
-                        }*/
+                        //if (instance.Position.Y > lowest && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //   (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
+                        //    Level.Objects[Moveables[i]] = (MoveableInstance)instance;
+                        //}
                     }
 
                     for (int i = 0; i < StaticMeshes.Count; i++)
@@ -4269,12 +4324,12 @@ namespace TombEditor.Geometry
                             Level.Objects[StaticMeshes[i]] = (StaticMeshInstance)instance;
                         }
 
-                       /* if (instance.Position.Y > GetHighestCeilingCorner && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
-                           (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
-                        {
-                            instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
-                            Level.Objects[StaticMeshes[i]] = (StaticMeshInstance)instance;
-                        }*/
+                        //if (instance.Position.Y > GetHighestCeilingCorner && (int)Math.Floor(instance.Position.X / 1024.0f) == x &&
+                        //   (int)Math.Floor(instance.Position.Z / 1024.0f) == z)
+                        //{
+                        //    instance.Position = new Vector3(instance.Position.X, meanCeiling, instance.Position.Z);
+                        //    Level.Objects[StaticMeshes[i]] = (StaticMeshInstance)instance;
+                        //}
                     }
 
                     for (int i = 0; i < Sinks.Count; i++)
@@ -4353,7 +4408,7 @@ namespace TombEditor.Geometry
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 }

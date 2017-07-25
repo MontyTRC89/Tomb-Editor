@@ -11,11 +11,6 @@ namespace TombLib.Graphics
         public Material Material;
         public ushort NumIndices;
         public ushort StartIndex;
-        public List<ushort> Indices;
-
-        public Submesh()
-        {
-            Indices = new List<ushort>();
-        }
+        public List<ushort> Indices = new List<ushort>();
     }
 }

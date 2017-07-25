@@ -266,21 +266,6 @@
     <None Include="Editor\Palette.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Geometry\old\GeometryLib.cs" />
-    <None Include="Geometry\old\MathHelper.cs" />
-    <None Include="Geometry\old\BaseGeometry.cs" />
-    <None Include="Geometry\old\Brush.cs" />
-    <None Include="Geometry\old\BrushFace.cs" />
-    <None Include="Geometry\old\EditorGrid.cs" />
-    <None Include="Geometry\old\Geometry.cs" />
-    <None Include="Geometry\old\Enumerations.cs" />
-    <None Include="Geometry\old\Gizmo.cs" />
-    <None Include="Geometry\old\GizmoComponent.cs" />
-    <None Include="Geometry\old\GridMesh.cs" />
-    <None Include="Geometry\old\Level.cs" />
-    <None Include="Geometry\old\PatchFace.cs" />
-    <None Include="Geometry\old\Portal.cs" />
-    <None Include="Geometry\old\TerrainBrush.cs" />
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\BlockFace.cs" />
     <Compile Include="Geometry\Enumerations.cs" />
@@ -288,10 +273,7 @@
     <Compile Include="Geometry\Portal.cs" />
     <Compile Include="Geometry\Room.cs" />
     <Compile Include="PickingManager.cs" />
-    <None Include="Geometry\old\Polygon.cs" />
-    <None Include="Geometry\old\Room.cs" />
     <Compile Include="Geometry\EditorVertex.cs" />
-    <None Include="Geometry\old\TextureLib.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\LightParameterController.resx">
@@ -364,7 +346,6 @@
   <ItemGroup>
     <Content Include="Ankh Icon 03.ico" />
     <Content Include="Ankh Icon 15.ico" />
-    <Content Include="Codice.txt" />
     <None Include="Editor\arrow_down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -518,7 +499,6 @@
     <None Include="Resources\draw_spiral.png" />
     <None Include="Resources\cctv_camera.png" />
     <None Include="Resources\lightning_go.png" />
-    <Content Include="Geometry\old\TextFile1.txt" />
     <None Include="Resources\sound1.png" />
     <None Include="Resources\Camera-24.png" />
     <None Include="Resources\Camera-16.png" />

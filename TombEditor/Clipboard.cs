@@ -13,7 +13,7 @@ namespace TombEditor
         Moveable,
         StaticMesh,
         Light,
-        Sink, 
+        Sink,
         SoundSource,
         Camera,
         FlybyCamera
@@ -29,11 +29,8 @@ namespace TombEditor
     public class Clipboard
     {
         public static ClipboardElementType ElementType { get; set; }
-
         public static int ElementID { get; set; }
-
         public static int OriginalRoom { get; set; }
-
         public static PasteAction Action { get; set; }
 
         private static Editor _editor;
@@ -105,12 +102,12 @@ namespace TombEditor
                 {
                     case ClipboardElementType.Light:
                         Light light = _editor.Level.Rooms[OriginalRoom].Lights[ElementID].Clone();
-                        
+
                         light.X = x;
                         light.Y = y;
                         light.Z = z;
                         light.Position = position;
-                        
+
                         _editor.Level.Rooms[room].Lights.Add(light);
 
                         _editor.Level.Rooms[room].BuildGeometry();
@@ -234,8 +231,7 @@ namespace TombEditor
                 ElementID = -1;
                 _editor.ResetPanel3DCursor();
             }
-
-
+            
             return hasPastedSomething;
         }
     }

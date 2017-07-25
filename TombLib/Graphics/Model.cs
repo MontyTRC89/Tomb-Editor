@@ -29,20 +29,14 @@ namespace TombLib.Graphics
             Meshes = new List<T>();
         }
 
-        public uint ObjectID { get; set; }
-
-        public BoundingBox BoundingBox { get; set; }
-
-        public List<T> Meshes { get; set; }
-
-        public GraphicsDevice GraphicsDevice { get; set; }
-
-        public ModelType Type{ get; set; }
-
         public abstract void BuildBuffers();
 
+        public uint ObjectID { get; set; }
+        public BoundingBox BoundingBox { get; set; }
+        public List<T> Meshes { get; set; }
+        public GraphicsDevice GraphicsDevice { get; set; }
+        public ModelType Type { get; set; }
         public List<U> Vertices { get; set; }
-
         public List<int> Indices { get; set; }
 
         public Buffer<U> VertexBuffer
