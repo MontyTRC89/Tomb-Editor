@@ -94,7 +94,6 @@ namespace TombEditor
         public int XSave;
         public int ZSave;
         public short SoundID { get; set; }
-        public static int MaxNumberOfRooms = 512;
 
         private Panel2DGrid _panelGrid;
         private PanelRendering3D _panel3D;
@@ -171,7 +170,7 @@ namespace TombEditor
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
-                Textures.Add(textureName, TombLib.Graphics.TextureLoad.FromStream(GraphicsDevice, new FileStream(fileName, FileMode.Open, FileAccess.Read)));
+                Textures.Add(textureName, TombLib.Graphics.TextureLoad.LoadToTexture(GraphicsDevice, fileName));
             }
 
             // carico il Editor

@@ -1981,7 +1981,7 @@ namespace TombEditor
 
                 // Search a compatible neighbour
                 short found = -1;
-                for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
                 {
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
@@ -2097,7 +2097,7 @@ namespace TombEditor
 
                 // Search a compatible neighbour
                 short found = -1;
-                for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
                 {
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
@@ -2213,7 +2213,7 @@ namespace TombEditor
 
                 // Search a compatible neighbour
                 short found = -1;
-                for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
                 {
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
@@ -2329,7 +2329,7 @@ namespace TombEditor
 
                 // Search a compatible neighbour
                 short found = -1;
-                for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
                 {
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];
@@ -2462,7 +2462,7 @@ namespace TombEditor
                 // Search a compatible neighbour
                 short found = -1;
 
-                for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
                 {
                     found = -1;
                     Room otherRoom = _editor.Level.Rooms[i];

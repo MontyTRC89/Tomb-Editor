@@ -229,7 +229,7 @@ namespace TombEditor.Controls
             List<int> roomList = new List<int>();
             List<int> heightList = new List<int>();
 
-            for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+            for (int i = 0; i < Level.MaxNumberOfRooms; i++)
             {
                 if (_editor.Level.Rooms[i] != null)
                 {
@@ -328,7 +328,7 @@ namespace TombEditor.Controls
 
         private void ResetRoomsVisited()
         {
-            for (int i = 0; i < Editor.MaxNumberOfRooms; i++)
+            for (int i = 0; i < Level.MaxNumberOfRooms; i++)
             {
                 if (_editor.Level.Rooms[i] != null)
                 {

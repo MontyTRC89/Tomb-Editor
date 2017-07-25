@@ -2095,17 +2095,17 @@
             // 
             // openFileDialogTextureMap
             // 
-            this.openFileDialogTextureMap.Filter = "Texture files (*.png)|*.png";
+            this.openFileDialogTextureMap.Filter = "Recommended image files (*.png, *.tga, *.bmp)|*.png;*.tga;*.bmp|PNG images (*.png)|*.png|Targe images (*.tga)|*.tga|Bitmap images (*.bmp)|*.bmp|All files (*.*)|*.*";
             this.openFileDialogTextureMap.Title = "Load texture map";
             // 
             // openFileDialogTGA
             // 
-            this.openFileDialogTGA.Filter = "TRLE Texture (*.tga)|*.tga";
+            this.openFileDialogTGA.Filter = "TRLE Texture (*.tga)|*.tga|All files (*.*)|*.*";
             this.openFileDialogTGA.Title = "Import TGA";
             // 
             // openFileDialogWAD
             // 
-            this.openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad";
+            this.openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
             this.openFileDialogWAD.Title = "Load WAD";
             // 
             // darkToolStrip1
@@ -2534,7 +2534,7 @@
             // 
             // openFileDialogPRJ2
             // 
-            this.openFileDialogPRJ2.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
+            this.openFileDialogPRJ2.Filter = "Tomb Editor Project (*.prj2)|*.prj2|All files (*.*)|*.*";
             // 
             // saveFileDialogPRJ2
             // 
@@ -2542,7 +2542,7 @@
             // 
             // openFileDialogPRJ
             // 
-            this.openFileDialogPRJ.Filter = "TRLE PRJ Project (*.prj)|*.prj";
+            this.openFileDialogPRJ.Filter = "TRLE PRJ Project (*.prj)|*.prj|All files (*.*)|*.*";
             this.openFileDialogPRJ.Title = "Import TRLE PRJ";
             // 
             // darkContextMenu1
