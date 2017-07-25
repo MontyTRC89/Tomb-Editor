@@ -75,12 +75,12 @@ namespace TombEditor
             // 
             // openFileDialogTGA
             // 
-            this.openFileDialogTGA.Filter = "TRLE Texture (*.tga)|*.tga";
+            this.openFileDialogTGA.Filter = "Targe winroomedit file (*.tga)|*.tga|All files (*.*)|*.*";
             this.openFileDialogTGA.Title = "Import TGA";
             // 
             // openFileDialogWAD
             // 
-            this.openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad";
+            this.openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
             this.openFileDialogWAD.Title = "Load WAD";
             // 
             // FormImportPRJ

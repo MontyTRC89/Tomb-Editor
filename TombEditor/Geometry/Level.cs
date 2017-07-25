@@ -18,7 +18,7 @@ using System.Diagnostics;
 
 namespace TombEditor.Geometry
 {
-    public class Level
+    public class Level : IDisposable
     {
         private struct prj_slot
         {
@@ -69,15 +69,16 @@ namespace TombEditor.Geometry
             public byte Height;
         }
 
-        public Room[] Rooms; //Rooms in level
-        public Dictionary<int, LevelTexture> TextureSamples { get; set; } //Texture tiles
-        public Dictionary<int, Texture2D> Textures { get; set; } //DirectX textures... For now just one texture atlas 2048x2048 pixel
-        public Bitmap TextureMap { get; set; } //The texture map in PNG format
-        public Dictionary<int, Portal> Portals { get; set; }
-        public Dictionary<int, TriggerInstance> Triggers { get; set; }
-        public Dictionary<int, IObjectInstance> Objects { get; set; } //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
-        public List<AnimatedTextureSet> AnimatedTextures { get; set; }
-        public List<TextureSound> TextureSounds { get; set; }
+        public const int MaxNumberOfRooms = 512;
+        public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
+        public Dictionary<int, LevelTexture> TextureSamples { get; } = new Dictionary<int, LevelTexture>(); //Texture tiles
+        public Dictionary<int, Texture2D> Textures { get; } = new Dictionary<int, Texture2D>(); //DirectX textures... For now just one texture atlas 2048x2048 pixel
+        public Bitmap TextureMap; //The texture map on the CPU
+        public Dictionary<int, Portal> Portals { get; } = new Dictionary<int, Geometry.Portal>();
+        public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, Geometry.TriggerInstance>();
+        public Dictionary<int, IObjectInstance> Objects { get; } = new Dictionary<int, IObjectInstance>(); //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
+        public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
+        public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
         public Wad Wad { get; set; }
         public string TextureFile { get; set; }
         public string WadFile { get; set; }
@@ -87,16 +88,6 @@ namespace TombEditor.Geometry
 
         public Level()
         {
-            TextureSamples = new Dictionary<int, LevelTexture>();
-            Textures = new Dictionary<int, Texture2D>();
-            Portals = new Dictionary<int, Geometry.Portal>();
-            Triggers = new Dictionary<int, Geometry.TriggerInstance>();
-            Objects = new Dictionary<int, IObjectInstance>();
-            AnimatedTextures = new List<AnimatedTextureSet>();
-            TextureSounds = new List<TextureSound>();
-
-            Rooms = new Room[512];
-
             _editor = Editor.Instance;
         }
 
@@ -142,26 +133,17 @@ namespace TombEditor.Geometry
             return id;
         }
 
-        public void DisposeLevel()
+        public void Dispose()
         {
             // First clean the old data
-            if (Textures != null)
-            {
-                for (int i = 0; i < Textures.Count; i++)
-                {
-                    // Dispose DirectX texture and release GPU memory
-                    Textures.ElementAt(i).Value.Dispose();
-                }
-            }
-
+            for (int i = 0; i < Textures.Count; i++)
+                Textures.ElementAt(i).Value.Dispose(); // Dispose DirectX texture and release GPU memory
+            
             if (TextureMap != null)
                 TextureMap.Dispose();
-            TextureMap = null;
-
-            Textures = new Dictionary<int, Texture2D>();
 
             if (Wad != null)
-                Wad.DisposeWad();
+                Wad.Dispose();
 
             GC.Collect();
         }
@@ -173,65 +155,59 @@ namespace TombEditor.Geometry
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
+            //Free old texture map...
+            if (TextureMap != null)
+                TextureMap.Dispose();
+
             // Load texture map as a bitmap
-            Bitmap bmp = (Bitmap)Bitmap.FromFile(filename);
+            TextureMap = TombLib.Graphics.TextureLoad.LoadToBitmap(filename);
+            Utils.ConvertTextureTo256Width(ref TextureMap);
 
             // Calculate the number of pages
-            int numPages = (int)Math.Floor(bmp.Height / 256.0f);
-            if (bmp.Height % 256 != 0)
+            int numPages = (int)Math.Floor(TextureMap.Height / 256.0f);
+            if (TextureMap.Height % 256 != 0)
                 numPages++;
-
-            int currentXblock = 0;
-            int currentYblock = 0;
-
+            
             Debug.Log("Building 2048x2048 texture atlas for DirectX");
 
             // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
             // textures.
-            Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            Graphics g = Graphics.FromImage(tempBitmap);
-
-            for (int i = 0; i < numPages; i++)
+            using (Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
             {
-                System.Drawing.RectangleF src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
-                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256, 256);
-
-                g.DrawImage(bmp, dest, src, GraphicsUnit.Pixel);
-
-                currentXblock++;
-                if (currentXblock == 8)
+                using (Graphics g = Graphics.FromImage(tempBitmap))
                 {
-                    currentXblock = 0;
-                    currentYblock++;
+                    int currentXblock = 0;
+                    int currentYblock = 0;
+                    for (int i = 0; i < numPages; i++)
+                    {
+                        var src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
+                        var dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256, 256);
+
+                        g.DrawImage(TextureMap, dest, src, GraphicsUnit.Pixel);
+
+                        currentXblock++;
+                        if (currentXblock == 8)
+                        {
+                            currentXblock = 0;
+                            currentYblock++;
+                        }
+                    }
                 }
+
+                // Clean up DirectX texture
+                if (Textures.ContainsKey(0))
+                {
+                    Debug.Log("Cleaning memory used by a previous texture map");
+
+                    Textures[0].Dispose();
+                    Textures.Remove(0);
+                }
+
+                // Create DirectX texture
+                Textures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(_editor.GraphicsDevice, tempBitmap));
             }
-
-            // Create DirectX texture
-            MemoryStream outputTexture = new MemoryStream();
-            tempBitmap.Save(outputTexture, System.Drawing.Imaging.ImageFormat.Png);
-            outputTexture.Seek(0, SeekOrigin.Begin);
-            Texture2D newTexture = TombLib.Graphics.TextureLoad.FromStream(_editor.GraphicsDevice, outputTexture);
-
-            if (TextureMap != null)
-            {
-                Debug.Log("Cleaning memory used by a previous texture map");
-
-                TextureMap.Dispose();
-                TextureMap = null;
-                Textures[0].Dispose();
-                Textures.Remove(0);
-            }
-
-            // Add texture to the dictionary
-            Textures.Add(0, newTexture);
-
-            // Clean used memory
-            outputTexture.Close();
-            tempBitmap.Dispose();
-
+            
             TextureFile = filename;
-            TextureMap = bmp;
 
             watch.Stop();
 
@@ -270,37 +246,25 @@ namespace TombEditor.Geometry
         public int GetNewPortalID()
         {
             int i = 0;
-
-            while (true)
-            {
-                if (!Portals.ContainsKey(i))
-                    return i;
-                i++;
-            }
+            while (Portals.ContainsKey(i))
+                ++i;
+            return i;
         }
 
         public int GetNewTriggerID()
         {
             int i = 0;
-
-            while (true)
-            {
-                if (!Triggers.ContainsKey(i))
-                    return i;
-                i++;
-            }
+            while (Triggers.ContainsKey(i))
+                ++i;
+            return i;
         }
 
         public int GetNewObjectID()
         {
             int i = 0;
-
-            while (true)
-            {
-                if (!Objects.ContainsKey(i))
-                    return i;
-                i++;
-            }
+            while (Objects.ContainsKey(i))
+                ++i;
+            return i;
         }
 
         public static Level LoadFromPrj(string filename, FormImportPRJ form)
@@ -339,8 +303,9 @@ namespace TombEditor.Geometry
                 Debug.Log("Number of rooms: " + numRooms);
 
                 // Now read the first info about rooms, at the end of the PRJ there will be another block
-                level.Rooms = new Room[Editor.MaxNumberOfRooms];
-
+                for (int i = 0; i < MaxNumberOfRooms; ++i)
+                    level.Rooms[i] = null;
+                
                 Dictionary<int, prj_block[,]> tempRooms = new Dictionary<int, prj_block[,]>();
                 Dictionary<int, int> flippedRooms = new Dictionary<int, int>();
                 List<prj_flip_info> flipInfos = new List<Geometry.Level.prj_flip_info>();
@@ -1134,8 +1099,7 @@ namespace TombEditor.Geometry
                 }
 
                 string pngName = "";
-                if (!Utils.ConvertTGAtoPNG(tgaName, out pngName))
-                    return null;
+                Utils.ConvertTGAtoPNG(tgaName, out pngName);
 
                 level.LoadTextureMap(pngName);
 

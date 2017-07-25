@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
-using Paloma;
 using System.Drawing;
 using System.IO;
 using System.Drawing.Imaging;
@@ -26,97 +25,74 @@ namespace TombEditor
             return Int64.TryParse(value, out number);
         }
 
-        public static bool ConvertTGAtoPNG(string filename, out string newName)
+        public static void ConvertTextureTo256Width(ref Bitmap bitmap)
+        {
+            if ((bitmap.Height % 256) != 0)
+                throw new ArgumentException("Image height must be of a multiple of 256 pixels.");
+            if (bitmap.Width == 256)
+                return;
+            if (bitmap.Width != 512)
+                throw new ArgumentException("Image width must be either 256 or 512 pixels.");
+
+            Bitmap newBitmap = new Bitmap(256, bitmap.Height * 2);
+            try
+            {
+                using (Graphics g = Graphics.FromImage(newBitmap))
+                {
+                    int numXtiles = 8;
+                    int numYtiles = bitmap.Height / 64;
+
+                    for (int yy = 0; yy < numYtiles; yy++)
+                        for (int xx = 0; xx < numXtiles; xx++)
+                        {
+                            if (xx >= 4)
+                            {
+                                System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
+                                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(64 * (xx - 4), 64 * yy * 2 + 64, 64, 64);
+
+                                g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
+                            }
+                            else
+                            {
+                                System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
+                                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(64 * xx, 64 * yy * 2, 64, 64);
+
+                                g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
+                            }
+                        }
+                }
+            }
+            catch (Exception)
+            {
+                newBitmap.Dispose();
+                throw;
+            }
+            bitmap = newBitmap;
+        }
+        public static void ConvertTGAtoPNG(string filename, out string newName)
         {
             Debug.Log("Converting TGA texture map to PNG format");
-
-            newName = "";
-
+            
             Stopwatch watch = new Stopwatch();
             watch.Start();
 
-            Bitmap tga = Paloma.TargaImage.LoadTargaImage(filename);
-            if ((tga.Width != 256 && tga.Width != 512) || (tga.Height % 256 != 0 && tga.Height % 128 != 0 && tga.Height % 64 != 0))
-                return false;
-
-            int height = tga.Height * (tga.Width == 256 ? 1 : 2);
-            int numPages = height / 256;
-            if (height % 256 != 0)
-                numPages++;
-
-            Bitmap png = new Bitmap(256, numPages * 256);
-
-            if (tga.Width == 256)
+            //Convert the *tga file to the *.png file...
+            Bitmap bitmap = TombLib.Graphics.TextureLoad.LoadToBitmap(filename);
+            try
             {
-                Graphics g = Graphics.FromImage(png);
-                g.DrawImage(tga, 0, 0);
-                /*
-                for (int y = 0; y < tga.Height; y++)
-                {
-                    for (int x = 0; x < tga.Width; x++)
-                    {
-                        png.SetPixel(x, y, tga.GetPixel(x, y));
-                    }
-                }*/
+                ConvertTextureTo256Width(ref bitmap);
+                newName = "Textures\\Imported\\" + Path.GetFileNameWithoutExtension(filename) + ".png";
+                bitmap.Save(newName, ImageFormat.Png);
             }
-            else
+            finally
             {
-                Graphics g = Graphics.FromImage(png);
-
-                int numXtiles = 8;
-                int numYtiles = tga.Height / 64;
-
-                for (int yy = 0; yy < numYtiles; yy++)
-                {
-                    for (int xx = 0; xx < numXtiles; xx++)
-                    {
-                        if (xx >= 4)
-                        {
-                            System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
-                            System.Drawing.RectangleF dest = new System.Drawing.RectangleF(64 * (xx - 4), 64 * yy * 2 + 64, 64, 64);
-
-                            g.DrawImage(tga, dest, src, GraphicsUnit.Pixel);
-                        }
-                        else
-                        {
-                            System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
-                            System.Drawing.RectangleF dest = new System.Drawing.RectangleF(64 * xx, 64 * yy * 2, 64, 64);
-
-                            g.DrawImage(tga, dest, src, GraphicsUnit.Pixel);
-                        }
-
-                        /*for (int y = 0; y < 64; y++)
-                        {
-                            for (int x = 0; x < 64; x++)
-                            {
-                                if (xx >= 4)
-                                    png.SetPixel(64 * (xx - 4) + x, 64 * yy * 2 + 64 + y, tga.GetPixel(64 * xx + x, 64 * yy + y));
-                                else
-                                    png.SetPixel(64 * xx + x, 64 * yy * 2 + y, tga.GetPixel(64 * xx + x, 64 * yy + y));
-                            }
-                        }*/
-
-
-                    }
-                }
+                bitmap.Dispose();
             }
-
-            newName = "Textures\\Imported\\" + Path.GetFileNameWithoutExtension(filename) + ".png";
-            png.Save(newName, ImageFormat.Png);
-            png.Dispose();
-            tga.Dispose();
-
+            
             watch.Stop();
 
             Debug.Log("Texture map converted", DebugType.Success);
             Debug.Log("    Elapsed time: " + watch.ElapsedMilliseconds + " ms", DebugType.None);
-
-            png = null;
-            tga = null;
-
-            GC.Collect();
-
-            return true;
         }
 
         public static int GetWorldX(Room room, int x)

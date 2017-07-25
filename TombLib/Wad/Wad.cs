@@ -11,7 +11,7 @@ using System.Drawing;
 
 namespace TombLib.Wad
 {
-    public class Wad
+    public class Wad : IDisposable
     {
         public TR4Wad OriginalWad { get; set; }
 
@@ -22,7 +22,7 @@ namespace TombLib.Wad
         public Dictionary<uint, WadTextureSample> TextureSamples { get; } = new Dictionary<uint, WadTextureSample>();
 
         // il device DirectX 11
-        private GraphicsDevice _device;
+        public GraphicsDevice GraphicsDevice { get; set; }
 
         // firma del WAD
         //private static string _magicWord = "WAD2";
@@ -34,17 +34,6 @@ namespace TombLib.Wad
 
         // sound samples
         public List<string> Samples { get; set; }
-        public GraphicsDevice GraphicsDevice
-        {
-            get
-            {
-                return _device;
-            }
-            set
-            {
-                _device = value;
-            }
-        }
 
         public static Wad LoadWad(string filename)
         {
@@ -53,7 +42,7 @@ namespace TombLib.Wad
             return original.GetTheWad();
         }
 
-        public void DisposeWad()
+        public void Dispose()
         {
             if (Textures.Count != 0)
             {
@@ -418,61 +407,59 @@ namespace TombLib.Wad
 
             // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
             // textures.
-            Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-            for (uint i = 0; i < TexturePages.Count; i++)
+            using (Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
             {
-                WadTexturePage page = TexturePages[i];
-
-                for (int x = 0; x < 256; x++)
+                for (uint i = 0; i < TexturePages.Count; i++)
                 {
-                    for (int y = 0; y < 256; y++)
+                    WadTexturePage page = TexturePages[i];
+
+                    for (int x = 0; x < 256; x++)
                     {
-                        int x1 = currentXblock * 256 + x;
-                        int y1 = currentYblock * 256 + y;
+                        for (int y = 0; y < 256; y++)
+                        {
+                            int x1 = currentXblock * 256 + x;
+                            int y1 = currentYblock * 256 + y;
 
-                        System.Drawing.Color c = System.Drawing.Color.FromArgb(page.TexturePage[y, x * 4 + 3],
-                                                                               page.TexturePage[y, x * 4],
-                                                                               page.TexturePage[y, x * 4 + 1],
-                                                                               page.TexturePage[y, x * 4 + 2]);
+                            System.Drawing.Color c = System.Drawing.Color.FromArgb(page.TexturePage[y, x * 4 + 3],
+                                                                                   page.TexturePage[y, x * 4],
+                                                                                   page.TexturePage[y, x * 4 + 1],
+                                                                                   page.TexturePage[y, x * 4 + 2]);
 
-                        tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, c.R, c.G, c.B));
+                            tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, c.R, c.G, c.B));
+                        }
+                    }
+
+                    currentXblock++;
+                    if (currentXblock == 8)
+                    {
+                        currentXblock = 0;
+                        currentYblock++;
                     }
                 }
 
-                currentXblock++;
-                if (currentXblock == 8)
+                // Free old texture...
+                if (Textures.ContainsKey(0))
                 {
-                    currentXblock = 0;
-                    currentYblock++;
+                    Textures[0].Dispose();
+                    Textures.Remove(0);
                 }
+
+                // Create DirectX texture
+                Textures.Add(0, TextureLoad.LoadToTexture(GraphicsDevice, tempBitmap));
             }
-
-            // Create DirectX texture
-            MemoryStream outputTexture = new MemoryStream();
-            tempBitmap.Save(outputTexture, System.Drawing.Imaging.ImageFormat.Png);
-            outputTexture.Seek(0, SeekOrigin.Begin);
-            Texture2D newTexture = TextureLoad.FromStream(_device, outputTexture);
-
-            // Add texture to the dictionary
-            Textures.Add(0, newTexture);
-
-            // Clean used memory
-            outputTexture.Close();
-            tempBitmap.Dispose();
 
             // creo i moveable
             for (int i = 0; i < WadMoveables.Count; i++)
             {
                 WadMoveable mov = WadMoveables.ElementAt(i).Value;
-                SkinnedModel model = new SkinnedModel(_device, mov.ObjectID);
+                SkinnedModel model = new SkinnedModel(GraphicsDevice, mov.ObjectID);
                 model.Offset = mov.Offset;
 
                 // inizializzo le mesh
                 for (int m = 0; m < mov.Meshes.Count; m++)
                 {
                     WadMesh msh = mov.Meshes[m];
-                    SkinnedMesh mesh = new SkinnedMesh(_device, mov.ObjectID.ToString() + "_mesh_" + i.ToString());
+                    SkinnedMesh mesh = new SkinnedMesh(GraphicsDevice, mov.ObjectID.ToString() + "_mesh_" + i.ToString());
 
                     mesh.BoundingBox = msh.BoundingBox;
 
@@ -689,11 +676,11 @@ namespace TombLib.Wad
             for (int i = 0; i < WasStaticMeshes.Count; i++)
             {
                 WadStaticMesh mov = WasStaticMeshes.ElementAt(i).Value;
-                StaticModel model = new StaticModel(_device, mov.ObjectID);
+                StaticModel model = new StaticModel(GraphicsDevice, mov.ObjectID);
 
                 // inizializzo le mesh
                 WadMesh msh = mov.Mesh;
-                StaticMesh mesh = new StaticMesh(_device, mov.ObjectID.ToString() + "_mesh_" + i.ToString());
+                StaticMesh mesh = new StaticMesh(GraphicsDevice, mov.ObjectID.ToString() + "_mesh_" + i.ToString());
                 mesh.BoundingBox = msh.BoundingBox;
 
                 for (int j = 0; j < TexturePages.Count; j++)

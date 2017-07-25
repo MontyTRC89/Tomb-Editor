@@ -954,7 +954,7 @@ namespace TombEditor
 
             // Clean all resources before creating a new level
             if (_editor.Level != null)
-                _editor.Level.DisposeLevel();
+                _editor.Level.Dispose();
 
             // Create a new level
             Level level = new Level();
@@ -1790,12 +1790,14 @@ namespace TombEditor
             if (openFileDialogTGA.ShowDialog() != DialogResult.OK)
                 return;
 
-            string pngName = "";
-            if (!Utils.ConvertTGAtoPNG(openFileDialogTGA.FileName, out pngName))
+            string pngName;
+            try
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. Please check " +
-                                                      "your file and please remeber that a TRLE TGA file must have a width of 256 pixel " +
-                                                      "or 512 pixel and a height multiple of 256 pixel", "Error");
+                Utils.ConvertTGAtoPNG(openFileDialogTGA.FileName, out pngName);
+            }
+            catch (Exception exc)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. " + exc.Message, "Error");
                 return;
             }
 
@@ -1979,7 +1981,7 @@ namespace TombEditor
 
             // Clean all resources before creating a new level
             if (_editor.Level != null)
-                _editor.Level.DisposeLevel();
+                _editor.Level.Dispose();
 
             // Set the new level and update UI
             _editor.Level = level;
@@ -2155,7 +2157,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
             // Clean all resources before creating a new level
             if (_editor.Level != null)
-                _editor.Level.DisposeLevel();
+                _editor.Level.Dispose();
 
             // Set the new level and update UI
             _editor.Level = form.Level;
@@ -2429,7 +2431,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
                 if (found == -1)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
                                                           "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
@@ -2515,7 +2517,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
                 if (found == -1)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
                                                           "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
@@ -3043,7 +3045,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
                 if (found == -1)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                    DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
                                                           "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
@@ -3404,7 +3406,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
             if (found == -1)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
                                                       "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
@@ -3445,7 +3447,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
             if (found == -1)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Editor.MaxNumberOfRooms + " rooms",
+                DarkUI.Forms.DarkMessageBox.ShowError("You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
                                                       "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
