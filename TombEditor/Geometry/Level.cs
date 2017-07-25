@@ -211,7 +211,7 @@ namespace TombEditor.Geometry
             MemoryStream outputTexture = new MemoryStream();
             tempBitmap.Save(outputTexture, System.Drawing.Imaging.ImageFormat.Png);
             outputTexture.Seek(0, SeekOrigin.Begin);
-            Texture2D newTexture = Texture2D.Load(_editor.GraphicsDevice, outputTexture, TextureFlags.None, SharpDX.Direct3D11.ResourceUsage.Default);
+            Texture2D newTexture = TombLib.Graphics.TextureLoad.FromStream(_editor.GraphicsDevice, outputTexture);
 
             if (TextureMap != null)
             {

@@ -452,7 +452,7 @@ namespace TombLib.Wad
             MemoryStream outputTexture = new MemoryStream();
             tempBitmap.Save(outputTexture, System.Drawing.Imaging.ImageFormat.Png);
             outputTexture.Seek(0, SeekOrigin.Begin);
-            Texture2D newTexture = Texture2D.Load(_device, outputTexture, TextureFlags.None, SharpDX.Direct3D11.ResourceUsage.Default);
+            Texture2D newTexture = TextureLoad.FromStream(_device, outputTexture);
 
             // Add texture to the dictionary
             Textures.Add(0, newTexture);
@@ -752,28 +752,7 @@ namespace TombLib.Wad
                 StaticMeshes.Add(model.ObjectID, model);
             }
         }
-
-        private Texture2D GetDirectXTexture(WadTexturePage page)
-        {
-            //  FileStream outputTexture = new FileStream("D:\\texture.png", FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            MemoryStream outputTexture = new MemoryStream();
-            using (var bmp = new Bitmap(256, 256, System.Drawing.Imaging.PixelFormat.Format32bppRgb))
-            {
-
-                for (int y = 0; y < 256; y++)
-                    for (int x = 0; x < 1024; x = x + 4)
-                        bmp.SetPixel(x / 4, y, System.Drawing.Color.FromArgb(page.TexturePage[y, x + 3], page.TexturePage[y, x], page.TexturePage[y, x + 1], page.TexturePage[y, x + 2]));
-
-                bmp.Save(outputTexture, System.Drawing.Imaging.ImageFormat.Png);
-                //     bmp.Dispose();
-            }
-
-            outputTexture.Seek(0, SeekOrigin.Begin);
-            Texture2D newTexture = Texture2D.Load(_device, outputTexture, TextureFlags.None, SharpDX.Direct3D11.ResourceUsage.Default);
-
-            return newTexture;
-        }
-
+        
         private List<Vector2> CalculateUVCoordinates(WadPolygon poly)
         {
             List<Vector2> uv = new List<Vector2>();

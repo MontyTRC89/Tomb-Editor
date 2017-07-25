@@ -78,6 +78,7 @@
     <Compile Include="IO\BinaryReaderEx.cs" />
     <Compile Include="IO\BinaryWriterEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Graphics\TextureLoad.cs" />
     <Compile Include="Utils\Collision.cs" />
     <Compile Include="Utils\MathUtilsEx.cs" />
     <Compile Include="Wad\ModelType.cs" />
