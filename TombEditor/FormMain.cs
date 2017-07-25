@@ -3490,62 +3490,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             _editor.DrawPanel3D();
         }
 
-        private void butWallDiagonalNE_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalWall(DiagonalSplit.NE);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butWallDiagonalNW_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalWall(DiagonalSplit.NW);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butWallDiagonalSE_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalWall(DiagonalSplit.SE);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butWallDiagonalSW_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalWall(DiagonalSplit.SW);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalFloorNW_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalFloor(DiagonalSplit.NW);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalFloorSE_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalFloor(DiagonalSplit.SE);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalFloorNE_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalFloor(DiagonalSplit.NE);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalFloorSW_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalFloor(DiagonalSplit.SW);
-
-            _editor.DrawPanel3D();
-        }
-
         private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
             butCropRoom_Click(null, null);
@@ -3691,54 +3635,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
             // Update the UI
             comboRoom.Items[found] = found + ": " + newRoom.Name;
             comboRoom.SelectedIndex = found;
-        }
-
-        private void butDiagonalCeilingSE_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalCeiling(DiagonalSplit.SE);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalCeilingSW_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalCeiling(DiagonalSplit.SW);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalCeilingNW_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalCeiling(DiagonalSplit.NW);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void butDiagonalCeilingNE_Click(object sender, EventArgs e)
-        {
-            EditorActions.SetDiagonalCeiling(DiagonalSplit.NE);
-
-            _editor.DrawPanel3D();
-        }
-
-        private void diagonalCeilingSEToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butDiagonalCeilingSE_Click(null, null);
-        }
-
-        private void diagonalCeilingSWToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butDiagonalCeilingSW_Click(null, null);
-        }
-
-        private void diagonalCeilingNWToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butDiagonalCeilingNW_Click(null, null);
-        }
-
-        private void diagonalCeilingNEToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            butDiagonalCeilingNE_Click(null, null);
         }
 
         private void button11_Click(object sender, EventArgs e)

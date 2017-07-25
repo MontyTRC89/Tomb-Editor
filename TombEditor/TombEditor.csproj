@@ -208,7 +208,6 @@
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\IObjectInstance.cs" />
-    <Compile Include="Geometry\OptimizedVertex.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cube.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Plane.cs" />
