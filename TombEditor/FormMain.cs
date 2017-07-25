@@ -55,7 +55,12 @@ namespace TombEditor
 
         private void butFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.SetFloor();
+            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+            EditorActions.SetFloor(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
@@ -77,7 +82,7 @@ namespace TombEditor
                 if (xMin < 1 || zMin < 1 || xMax > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1 ||
                     zMax > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
                     return;
-
+                
                 // Search for unique triggers inside the selected area
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -102,7 +107,12 @@ namespace TombEditor
 
         private void butWall_Click(object sender, EventArgs e)
         {
-            EditorActions.SetWall();
+            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+            EditorActions.SetWall(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
@@ -2716,8 +2726,6 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
         private void RandomFloor(short sign)
         {
-            Room room = _editor.Level.Rooms[_editor.RoomIndex];
-
             int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
             int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
             int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
@@ -2730,33 +2738,9 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
                 return;
             }
 
-            Random r = new Random(new Random().Next());
+            EditorActions.RandomFloor(sign, _editor.RoomIndex, xMin, xMax, zMin, zMax);
 
-            for (int x = xMin + 1; x <= xMax; x++)
-            {
-                for (int z = zMin + 1; z <= zMax; z++)
-                {
-                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
-
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3] += step;
-
-                    if (x > xMin)
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].QAFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
-                    if (z > zMin)
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].QAFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
-
-                    if (x > xMin && z > zMin)
-                    {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z - 1].QAFaces[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[3];
-                    }
-                }
-            }
-
-            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-
-            Draw();
+            _editor.DrawPanel3D();
         }
 
         private void RandomCeiling(short sign)
@@ -2775,33 +2759,9 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
                 return;
             }
 
-            Random r = new Random(new Random().Next());
+            EditorActions.RandomCeiling(sign, _editor.RoomIndex, xMin, xMax, zMin, zMax);
 
-            for (int x = xMin + 1; x <= xMax; x++)
-            {
-                for (int z = zMin + 1; z <= zMax; z++)
-                {
-                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
-
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3] += step;
-
-                    if (x > xMin)
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z].WSFaces[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
-                    if (z > zMin)
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z - 1].WSFaces[0] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
-
-                    if (x > xMin && z > zMin)
-                    {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x - 1, z - 1].WSFaces[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[3];
-                    }
-                }
-            }
-
-            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-
-            Draw();
+            _editor.DrawPanel3D();
         }
 
         private void AverageFloor()
@@ -2820,28 +2780,9 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
                 return;
             }
 
-            Random r = new Random(new Random().Next());
+            EditorActions.AverageFloor(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
-            for (int x = xMin; x <= xMax; x++)
-            {
-                for (int z = zMin; z <= zMax; z++)
-                {
-                    Block b = room.Blocks[x, z];
-
-                    short mean = (short)((b.QAFaces[0] + b.QAFaces[1] + b.QAFaces[2] + b.QAFaces[3]) / 4);
-
-                    for (int i = 0; i < 4; i++)
-                    {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].QAFaces[i] = mean;
-                    }
-                }
-            }
-
-            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-
-            Draw();
+            _editor.DrawPanel3D();
         }
 
         private void AverageCeiling()
@@ -2860,28 +2801,9 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
                 return;
             }
 
-            Random r = new Random(new Random().Next());
+            EditorActions.AverageCeiling(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
-            for (int x = xMin; x <= xMax; x++)
-            {
-                for (int z = zMin; z <= zMax; z++)
-                {
-                    Block b = room.Blocks[x, z];
-
-                    short mean = (short)((b.WSFaces[0] + b.WSFaces[1] + b.WSFaces[2] + b.WSFaces[3]) / 4);
-
-                    for (int i = 0; i < 4; i++)
-                    {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WSFaces[i] = mean;
-                    }
-                }
-            }
-
-            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-
-            Draw();
+            _editor.DrawPanel3D();
         }
 
         private void butRandomFloorUp_Click(object sender, EventArgs e)
@@ -3629,7 +3551,12 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
         private void butCeiling_Click(object sender, EventArgs e)
         {
-            EditorActions.SetCeiling();
+            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
+            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+
+            EditorActions.SetCeiling(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();

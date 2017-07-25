@@ -1789,22 +1789,17 @@ namespace TombEditor
         }
 
 
-        public static void SetWall()
+        public static void SetWall(int roomIndex, int xMin, int xMax, int zMin, int zMax)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.Level.Rooms[roomIndex];
 
             if (_editor.BlockSelectionStartX != -1)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Type = BlockType.Wall;
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].Type = BlockType.Wall;
 
                         if (currentRoom.Blocks[x, z].FloorPortal != -1)
                         {
@@ -1828,21 +1823,16 @@ namespace TombEditor
                     }
                 }
 
-                SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
+                SmartBuildGeometry(roomIndex, xMin, xMax + 1, zMin, zMax + 1);
             }
         }
 
-        public static void SetFloor()
+        public static void SetFloor(int roomIndex, int xMin, int xMax, int zMin, int zMax)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.Level.Rooms[roomIndex];
 
             if (_editor.BlockSelectionStartX != -1)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
@@ -1860,27 +1850,22 @@ namespace TombEditor
                 {
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].SplitFloor = false;
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Type = BlockType.Floor;
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].SplitFloor = false;
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].Type = BlockType.Floor;
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
                     }
                 }
 
-                SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
+                SmartBuildGeometry(roomIndex, xMin, xMax + 1, zMin, zMax + 1);
             }
         }
 
-        public static void SetCeiling()
+        public static void SetCeiling(int roomIndex, int xMin, int xMax, int zMin, int zMax)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.Level.Rooms[roomIndex];
 
             if (_editor.BlockSelectionStartX != -1)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
@@ -1898,12 +1883,12 @@ namespace TombEditor
                 {
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].SplitCeiling = false;
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].SplitCeiling = false;
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
                     }
                 }
 
-                SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
+                SmartBuildGeometry(roomIndex, xMin, xMax + 1, zMin, zMax + 1);
             }
         }
 
@@ -2739,6 +2724,108 @@ namespace TombEditor
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[xMaxSpecial, z].WSFaces[3] += increment;
                 }
             }
+        }
+
+        public static void RandomFloor(short sign, int roomIndex, int xMin, int xMax, int zMin, int zMax)
+        {
+            Room room = _editor.Level.Rooms[roomIndex];
+
+            Random r = new Random(new Random().Next());
+
+            for (int x = xMin + 1; x <= xMax; x++)
+            {
+                for (int z = zMin + 1; z <= zMax; z++)
+                {
+                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
+
+                    _editor.Level.Rooms[roomIndex].Blocks[x, z].QAFaces[3] += step;
+
+                    if (x > xMin)
+                        _editor.Level.Rooms[roomIndex].Blocks[x - 1, z].QAFaces[2] = _editor.Level.Rooms[roomIndex].Blocks[x, z].QAFaces[3];
+                    if (z > zMin)
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z - 1].QAFaces[0] = _editor.Level.Rooms[roomIndex].Blocks[x, z].QAFaces[3];
+
+                    if (x > xMin && z > zMin)
+                    {
+                        _editor.Level.Rooms[roomIndex].Blocks[x - 1, z - 1].QAFaces[1] = _editor.Level.Rooms[roomIndex].Blocks[x, z].QAFaces[3];
+                    }
+                }
+            }
+
+            SmartBuildGeometry(roomIndex, xMin, xMax, zMin, zMax);
+        }
+
+        public static void RandomCeiling(short sign, int roomIndex, int xMin, int xMax, int zMin, int zMax)
+        {
+            Room room = _editor.Level.Rooms[roomIndex];
+
+            Random r = new Random(new Random().Next());
+
+            for (int x = xMin + 1; x <= xMax; x++)
+            {
+                for (int z = zMin + 1; z <= zMax; z++)
+                {
+                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
+
+                    _editor.Level.Rooms[roomIndex].Blocks[x, z].WSFaces[3] += step;
+
+                    if (x > xMin)
+                        _editor.Level.Rooms[roomIndex].Blocks[x - 1, z].WSFaces[2] = _editor.Level.Rooms[roomIndex].Blocks[x, z].WSFaces[3];
+                    if (z > zMin)
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z - 1].WSFaces[0] = _editor.Level.Rooms[roomIndex].Blocks[x, z].WSFaces[3];
+
+                    if (x > xMin && z > zMin)
+                    {
+                        _editor.Level.Rooms[roomIndex].Blocks[x - 1, z - 1].WSFaces[1] = _editor.Level.Rooms[roomIndex].Blocks[x, z].WSFaces[3];
+                    }
+                }
+            }
+
+            SmartBuildGeometry(roomIndex, xMin, xMax, zMin, zMax);
+        }
+
+        public static void AverageFloor(int roomIndex, int xMin, int xMax, int zMin, int zMax)
+        {
+            Room room = _editor.Level.Rooms[roomIndex];
+
+            for (int x = xMin; x <= xMax; x++)
+            {
+                for (int z = zMin; z <= zMax; z++)
+                {
+                    Block b = room.Blocks[x, z];
+
+                    short mean = (short)((b.QAFaces[0] + b.QAFaces[1] + b.QAFaces[2] + b.QAFaces[3]) / 4);
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].QAFaces[i] = mean;
+                    }
+                }
+            }
+
+            SmartBuildGeometry(roomIndex, xMin, xMax, zMin, zMax);
+        }
+
+        public static void AverageCeiling(int roomIndex, int xMin, int xMax, int zMin, int zMax)
+        {
+            Room room = _editor.Level.Rooms[roomIndex];
+
+            for (int x = xMin; x <= xMax; x++)
+            {
+                for (int z = zMin; z <= zMax; z++)
+                {
+                    Block b = room.Blocks[x, z];
+
+                    short mean = (short)((b.WSFaces[0] + b.WSFaces[1] + b.WSFaces[2] + b.WSFaces[3]) / 4);
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        _editor.Level.Rooms[roomIndex].Blocks[x, z].WSFaces[i] = mean;
+                    }
+                }
+            }
+
+            SmartBuildGeometry(roomIndex, xMin, xMax, zMin, zMax);
         }
     }
 }
