@@ -571,35 +571,30 @@ namespace TombEditor.Compilers
             _staticMeshes = new tr_staticmesh[wad.StaticMeshes.Count];
             for (int i = 0; i < _numStaticMeshes; i++)
             {
-                var sm = new tr_staticmesh();
-
-                var collision = new tr_bounding_box
+                _staticMeshes[i] = new tr_staticmesh
                 {
-                    X1 = wad.StaticMeshes[i].CollisionX1,
-                    Y1 = wad.StaticMeshes[i].CollisionY1,
-                    Z1 = wad.StaticMeshes[i].CollisionZ1,
-                    X2 = wad.StaticMeshes[i].CollisionX2,
-                    Y2 = wad.StaticMeshes[i].CollisionY2,
-                    Z2 = wad.StaticMeshes[i].CollisionZ2
+                    CollisionBox = new tr_bounding_box
+                    {
+                        X1 = wad.StaticMeshes[i].CollisionX1,
+                        Y1 = wad.StaticMeshes[i].CollisionY1,
+                        Z1 = wad.StaticMeshes[i].CollisionZ1,
+                        X2 = wad.StaticMeshes[i].CollisionX2,
+                        Y2 = wad.StaticMeshes[i].CollisionY2,
+                        Z2 = wad.StaticMeshes[i].CollisionZ2
+                    },
+                    VisibilityBox = new tr_bounding_box
+                    {
+                        X1 = wad.StaticMeshes[i].VisibilityX1,
+                        Y1 = wad.StaticMeshes[i].VisibilityY1,
+                        Z1 = wad.StaticMeshes[i].VisibilityZ1,
+                        X2 = wad.StaticMeshes[i].VisibilityX2,
+                        Y2 = wad.StaticMeshes[i].VisibilityY2,
+                        Z2 = wad.StaticMeshes[i].VisibilityZ2
+                    },
+                    Flags = wad.StaticMeshes[i].Flags,
+                    Mesh = wad.StaticMeshes[i].PointersIndex,
+                    ObjectID = wad.StaticMeshes[i].ObjectId
                 };
-
-                var visibility = new tr_bounding_box
-                {
-                    X1 = wad.StaticMeshes[i].VisibilityX1,
-                    Y1 = wad.StaticMeshes[i].VisibilityY1,
-                    Z1 = wad.StaticMeshes[i].VisibilityZ1,
-                    X2 = wad.StaticMeshes[i].VisibilityX2,
-                    Y2 = wad.StaticMeshes[i].VisibilityY2,
-                    Z2 = wad.StaticMeshes[i].VisibilityZ2
-                };
-
-                sm.CollisionBox = collision;
-                sm.VisibilityBox = visibility;
-                sm.Flags = wad.StaticMeshes[i].Flags;
-                sm.Mesh = wad.StaticMeshes[i].PointersIndex;
-                sm.ObjectID = wad.StaticMeshes[i].ObjectId;
-
-                _staticMeshes[i] = sm;
             }
         }
 
