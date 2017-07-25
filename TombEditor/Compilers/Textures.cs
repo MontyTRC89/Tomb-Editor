@@ -6,9 +6,9 @@ using TombLib.IO;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerTr4
     {
-        private byte[] Textures16;
+        private byte[] _textures16;
 
         private void PrepareTextures()
         {
@@ -34,7 +34,7 @@ namespace TombEditor.Compilers
             _texture32UncompressedSize = (uint)uncTexture32.Length;
             _texture32CompressedSize = (uint)_texture32.Length;
 
-            Textures16 = uncTexture16;
+            _textures16 = uncTexture16;
 
             ReportProgress(80, "Compressing 16 bit textures");
             _texture16 = Utils.CompressDataZLIB(uncTexture16);

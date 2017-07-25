@@ -6,7 +6,7 @@ using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTr4
+    public sealed partial class LevelCompilerTr4
     {
         private void BuildRooms()
         {
@@ -1057,8 +1057,6 @@ namespace TombEditor.Compilers
                 }
             }
 
-            _tempAnimatedTextures = new List<AnimatedTextureSequenceVariant>();
-
             _tempObjectTextures = new List<tr_object_texture>();
 
             // I start with a 128 pages texture map (32 MB in memory)
@@ -1186,7 +1184,6 @@ namespace TombEditor.Compilers
                         if (texture.Tiles[k].NewID == -1)
                         {
                             texture.Tiles[k].NewID = BuildAnimatedTextureInfo(texture,
-                                texture.Tiles[k],
                                 textureSet.Textures[k].Texture);
                         }
                     }
