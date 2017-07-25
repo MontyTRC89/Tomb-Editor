@@ -32,7 +32,7 @@ namespace TombEditor
 
         private void FormObject_Load(object sender, EventArgs e)
         {
-
+              
         }
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
