@@ -6,7 +6,7 @@ using TombLib.IO;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTR4
+    public partial class LevelCompilerTr4
     {
         private byte[] Textures16;
 
@@ -14,8 +14,8 @@ namespace TombEditor.Compilers
         {
             ReportProgress(10, "Building final texture map");
 
-            NumRoomTextureTiles = (ushort)_numRoomTexturePages;
-            NumObjectTextureTiles = (ushort)(_numobjectTexturePages + _numSpriteTexturePages);
+            _numRoomTextureTiles = (ushort)_numRoomTexturePages;
+            _numObjectTextureTiles = (ushort)(_numobjectTexturePages + _numSpriteTexturePages);
 
             var uncTexture32 =
                 new byte[_roomTexturePages.Length + _objectTexturePages.Length + _spriteTexturePages.Length];
@@ -30,16 +30,16 @@ namespace TombEditor.Compilers
                 (_numRoomTexturePages + _numobjectTexturePages + _numSpriteTexturePages) * 256);
 
             ReportProgress(80, "Compressing 32 bit textures");
-            Texture32 = Utils.CompressDataZLIB(uncTexture32);
-            Texture32UncompressedSize = (uint)uncTexture32.Length;
-            Texture32CompressedSize = (uint)Texture32.Length;
+            _texture32 = Utils.CompressDataZLIB(uncTexture32);
+            _texture32UncompressedSize = (uint)uncTexture32.Length;
+            _texture32CompressedSize = (uint)_texture32.Length;
 
             Textures16 = uncTexture16;
 
             ReportProgress(80, "Compressing 16 bit textures");
-            Texture16 = Utils.CompressDataZLIB(uncTexture16);
-            Texture16UncompressedSize = (uint)uncTexture16.Length;
-            Texture16CompressedSize = (uint)Texture16.Length;
+            _texture16 = Utils.CompressDataZLIB(uncTexture16);
+            _texture16UncompressedSize = (uint)uncTexture16.Length;
+            _texture16CompressedSize = (uint)_texture16.Length;
         }
 
         private void BuildWadTexturePages()
@@ -148,9 +148,9 @@ namespace TombEditor.Compilers
 
                 ReportProgress(80, "Compressing font & sky textures");
 
-                MiscTexture = Utils.CompressDataZLIB(uncMiscTexture);
-                MiscTextureUncompressedSize = (uint)uncMiscTexture.Length;
-                MiscTextureCompressedSize = (uint)MiscTexture.Length;
+                _miscTexture = Utils.CompressDataZLIB(uncMiscTexture);
+                _miscTextureUncompressedSize = (uint)uncMiscTexture.Length;
+                _miscTextureCompressedSize = (uint)_miscTexture.Length;
             }
             catch (Exception)
             {

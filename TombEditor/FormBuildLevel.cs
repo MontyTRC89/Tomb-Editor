@@ -39,7 +39,7 @@ namespace TombEditor
 
             GC.Collect();
 
-            LevelCompilerTR4 comp = new LevelCompilerTR4(_editor.Level, "Game\\Data\\" + baseName + ".tr4", bw);
+            LevelCompilerTr4 comp = new LevelCompilerTr4(_editor.Level, "Game\\Data\\" + baseName + ".tr4", bw);
             comp.CompileLevel();
         }
 

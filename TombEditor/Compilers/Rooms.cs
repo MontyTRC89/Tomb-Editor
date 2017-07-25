@@ -6,7 +6,7 @@ using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
-    public partial class LevelCompilerTR4
+    public partial class LevelCompilerTr4
     {
         private void BuildRooms()
         {
@@ -29,7 +29,7 @@ namespace TombEditor.Compilers
             // Average lighting at the portals
             MatchPortalShades();
 
-            Rooms = new tr_room[_roomsIdTable.Count];
+            _rooms = new tr_room[_roomsIdTable.Count];
 
             for (var i = 0; i < _level.Rooms.Length - 1; i++)
             {
@@ -1034,10 +1034,10 @@ namespace TombEditor.Compilers
                 newRoom.NumLights = (ushort)tempLights.Count;
                 newRoom.Lights = tempLights.ToArray();
 
-                Rooms[_roomsIdTable[i]] = newRoom;
+                _rooms[_roomsIdTable[i]] = newRoom;
             }
 
-            ReportProgress(25, "    Number of rooms: " + Rooms.Length);
+            ReportProgress(25, "    Number of rooms: " + _rooms.Length);
         }
 
         private void PrepareRoomTextures()
@@ -1066,7 +1066,7 @@ namespace TombEditor.Compilers
 
             // First, I have to filter only used textures and sort them (for now I use bubble sort, in the future a tree)
             var tempTexturesList = new List<LevelTexture>();
-            TexturesIdTable = new Dictionary<int, int>();
+            _texturesIdTable = new Dictionary<int, int>();
 
             for (var i = 0; i < _editor.Level.TextureSamples.Count; i++)
             {
@@ -1137,7 +1137,7 @@ namespace TombEditor.Compilers
                 tex.NewPage = tex.Page;
 
                 if (!tex.Animated)
-                    TexturesIdTable.Add(tex.OldID, i);
+                    _texturesIdTable.Add(tex.OldID, i);
                 else
                     _level.AnimatedTextures[tex.AnimatedSequence].Textures[tex.AnimatedTexture].Texture = tex;
             }
@@ -1193,7 +1193,7 @@ namespace TombEditor.Compilers
                 }
             }
 
-            NumAnimatedTextures = 0;
+            _numAnimatedTextures = 0;
             var tempAnimatedTextures = new List<tr_animatedTextures_set>();
             foreach (var textureSet in _level.AnimatedTextures)
             {
@@ -1208,7 +1208,7 @@ namespace TombEditor.Compilers
                         if (!_animTexturesGeneral.Contains(tile.NewID))
                             _animTexturesGeneral.Add(tile.NewID);
 
-                        NumAnimatedTextures++;
+                        _numAnimatedTextures++;
                     }
 
                     if (tempTextureIds.Count <= 0)
@@ -1217,14 +1217,14 @@ namespace TombEditor.Compilers
                     newSet.Textures = tempTextureIds.ToArray();
                     newSet.NumTextures = (short)(newSet.Textures.Length - 1);
                     tempAnimatedTextures.Add(newSet);
-                    NumAnimatedTextures++;
+                    _numAnimatedTextures++;
                 }
             }
 
             // This because between NumAnimatedTextures and the array itself there's an extra short with the number of sets
-            NumAnimatedTextures++;
+            _numAnimatedTextures++;
 
-            AnimatedTextures = tempAnimatedTextures.ToArray();
+            _animatedTextures = tempAnimatedTextures.ToArray();
 
             _animTexturesGeneral.Sort();
             _animTexturesRooms.Sort();

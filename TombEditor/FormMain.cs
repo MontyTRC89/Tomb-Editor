@@ -2358,7 +2358,7 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
         {
             string baseName = System.IO.Path.GetFileNameWithoutExtension(_editor.Level.WadFile);
 
-            LevelCompilerTR4 comp = new LevelCompilerTR4(_editor.Level, "Game\\Data\\" + baseName + ".tr4");
+            LevelCompilerTr4 comp = new LevelCompilerTr4(_editor.Level, "Game\\Data\\" + baseName + ".tr4");
             comp.CompileLevel();
         }
 
