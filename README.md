@@ -1,15 +1,15 @@
 # Tomb Editor
 ## Introduction
-In year 2000, Core Design released finally the official level editor for Tomb Raider IV. It was a great gift to the fans, and nothing of what exists now in the community would exist. But it was limited. No tools for editing WADs, no way to customize the engine, no source code. And also winroomedit.exe is a Windows port of a MS-DOS tool.
+In year 2000, Core Design finally released the official level editor for Tomb Raider IV. It was a great gift to fans, nothing of what exists now in the community would exist had the original level editor not been released. Unfortunately, the official level editor package standalone is limited. It does not include tools for editing WADs, no way to customize the engine due to lack of source code. In addition, winroomedit.exe is a Windows port of a MS-DOS application.
 
-## Why building a new editor?
-Because the techonology moves on. Newer versions of Windows, newer versions of DirectX, newer hardware is making problematic running the old 1998 editor with newe PCs. So I've decide to build a full clone of the editor. It has the objective to replicate as much as possible the behaviour of the original editor. But I've also improved the original mechanics where it was possible, and also the editor features a new UI that can adapt to screens from 1280x1024 pixels to 1920x1080 pixels and beyond.
+## Why build a new editor?
+Because techonology moves on. Newer versions of Windows, DirectX and hardware results in problems when running the old 1999 editor on newer PCs. As a result, I've decided to create a full clone of the original Tomb Raider level editor in C#. The objective is to replicate behavior of the original editor as accurately as possible. There have been cases where I've improved/expanded upon the original editor mechanics. This includes but is not limited to a completely new UI (User interface) that can robustly scale from 1280x1024 screen resolutions to 1920x1080 and beyond without issues.
 
 ## Disclaimer
-I don't work for Core Design, Eidos Interactive, Square Enix, and I didn't work for any of these companies in the past. This is a hobby project. I don't want this code to be sold because Tomb Raider is a registered trademark of Square Enix. This code is released open source for improving the editor in the future and for study purposes. I'm not responsable for illegal use of this source code. This source code is released as-is and it's maintained by me and by other (not paid) programmers in our free time.
+I don't work for/have ever worked for Core Design, Eidos Interactive or Square Enix. This is a hobby project. I don't want this code to be sold since Tomb Raider is a registered trademark of Square Enix. The code is currently open source to allow more people to improve the editor and for study purposes. I'm not responsible for illegal use of this source code. This source code is released as-is and it's maintained by me and by other (not paid) contributors in our free time.
 
 ## Thanks to...
-I want to thank all the guys that contributed to the development of this new editor. They are not in order of importance :) They helped me with tips, knowledge, bug reporting, suggestions, direct development.
+I would like to to thank all the following people that contributed to the development of this new Tomb Raider level editor. (not in order of importance :)) They helped me with tips, knowledge, bug reporting, suggestions, direct development.
 
 * Lwmte
 * XProger
