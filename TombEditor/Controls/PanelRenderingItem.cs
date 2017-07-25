@@ -2,6 +2,7 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -60,6 +61,9 @@ namespace TombEditor.Controls
 
         public void Draw()
         {
+            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+                return;
+
             _editor.GraphicsDevice.Presenter = Presenter;
             _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
             _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer, _editor.GraphicsDevice.Presenter.BackBuffer);
