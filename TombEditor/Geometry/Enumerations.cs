@@ -5,6 +5,32 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
+    public enum PickingElementType : int
+    {
+        None = 63,
+        Block = 1,
+        SkinnedModel = 2,
+        StaticModel = 3,
+        Light = 4,
+        Camera = 5,
+        SoundSource = 6,
+        FogBulb = 7,
+        CollisionBlock = 8,
+        Path = 9,
+        Sink = 10,
+        Portal = 11,
+        Trigger = 12,
+        FlyByCamera = 13
+    }
+
+    public struct PickingResult
+    {
+        public PickingElementType ElementType;
+        public int SubElementType;
+        public int Element;
+        public int SubElement;
+    }
+
     public enum BlockType : byte
     {
         Floor, Wall, BorderWall
@@ -13,11 +39,6 @@ namespace TombEditor.Geometry
     public enum LightType : byte
     {
         Light, Shadow, Spot, Effect, Sun, FogBulb
-    }
-
-    public enum RoomDirection : byte
-    {
-        Floor, Ceiling, North, South, East, West
     }
 
     public enum PortalDirection : byte
@@ -125,28 +146,13 @@ namespace TombEditor.Geometry
         Out,
         Len,
         CutOff,
-        X,
-        Y
+        DirectionX,
+        DirectionY
     }
 
     public enum SplitType : byte
     {
         None, NWtoSE, NEtoSW
-    }
-
-    public enum TexturingMode : byte
-    {
-        Normal, AdaptToFace, ManualUV
-    }
-
-    public enum SectorFace : byte
-    {
-        North, East, South, West, Diagonal
-    }
-
-    public enum PolygonDrawMode : byte
-    {
-        Opaque, Transparent, DoubleSided
     }
 
     public enum DiagonalSplit : byte
@@ -176,25 +182,7 @@ namespace TombEditor.Geometry
         NorthRF = 20, SouthRF = 21, WestRF = 22, EastRF = 23, DiagonalRF = 24,
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
-
-    public enum BlockFaceFlags : byte
-    {
-        Opaque = 0,
-        Transparent = 1,
-        DoubleSided = 2,
-        Invisible = 4
-    }
-
-    public enum RoomFlags : byte
-    {
-        None = 0,
-        Water = 1,
-        Outside = 2,
-        Mist = 4,
-        Quicksand = 8,
-        Gas = 16
-    }
-
+    
     public enum BlockFaceShape : byte
     {
         Rectangle, Triangle

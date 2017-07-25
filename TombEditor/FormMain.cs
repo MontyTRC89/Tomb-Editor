@@ -43,8 +43,8 @@ namespace TombEditor
             numLightOut.LightParameter = LightParameter.Out;
             numLightLen.LightParameter = LightParameter.Len;
             numLightCutoff.LightParameter = LightParameter.CutOff;
-            numLightDirectionX.LightParameter = LightParameter.X;
-            numLightDirectionY.LightParameter = LightParameter.Y;
+            numLightDirectionX.LightParameter = LightParameter.DirectionX;
+            numLightDirectionY.LightParameter = LightParameter.DirectionY;
         }
         
         public void Draw()

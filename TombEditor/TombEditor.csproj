@@ -271,7 +271,6 @@
     <Compile Include="Geometry\Level.cs" />
     <Compile Include="Geometry\Portal.cs" />
     <Compile Include="Geometry\Room.cs" />
-    <Compile Include="PickingManager.cs" />
     <Compile Include="Geometry\EditorVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

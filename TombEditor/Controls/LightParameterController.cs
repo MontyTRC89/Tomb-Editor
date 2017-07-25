@@ -165,7 +165,7 @@ namespace TombEditor.Controls
 
                     break;
 
-                case LightParameter.X:
+                case LightParameter.DirectionX:
                     _minValue = 0.0f;
                     _maxValue = 359.0f;
 
@@ -176,7 +176,7 @@ namespace TombEditor.Controls
 
                     break;
 
-                case LightParameter.Y:
+                case LightParameter.DirectionY:
                     _minValue = 0.0f;
                     _maxValue = 359.0f;
 
@@ -209,7 +209,7 @@ namespace TombEditor.Controls
 
             // Check for ranges
             if ((light.Type == LightType.Spot || light.Type == LightType.Sun) &&
-                (LightParameter == LightParameter.X || LightParameter == LightParameter.Y))
+                (LightParameter == LightParameter.DirectionX || LightParameter == LightParameter.DirectionY))
             {
                 if (newValue < 0.0f)
                     newValue = 360.0f + newValue;
@@ -248,7 +248,7 @@ namespace TombEditor.Controls
 
             // Check for ranges
             if ((light.Type == LightType.Spot || light.Type == LightType.Sun) &&
-                (LightParameter == LightParameter.X || LightParameter == LightParameter.Y))
+                (LightParameter == LightParameter.DirectionX || LightParameter == LightParameter.DirectionY))
             {
                 if (newValue >= 360.0f)
                     newValue = newValue - 360.0f;
@@ -305,11 +305,11 @@ namespace TombEditor.Controls
                         _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Cutoff = _value;
                         break;
 
-                    case LightParameter.X:
+                    case LightParameter.DirectionX:
                         _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionX = _value;
                         break;
 
-                    case LightParameter.Y:
+                    case LightParameter.DirectionY:
                         _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = _value;
                         break;
                 }
