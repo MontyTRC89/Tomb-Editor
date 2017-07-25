@@ -299,7 +299,7 @@ namespace TombEditor.Geometry
 
         public void BuildGeometry()
         {
-            BuildGeometry(0, NumXSectors, 0, NumZSectors);
+            BuildGeometry(0, NumXSectors - 1, 0, NumZSectors - 1);
         }
 
         public void BuildGeometry(int xMin, int xMax, int zMin, int zMax)
@@ -313,10 +313,16 @@ namespace TombEditor.Geometry
             Vector2 e3 = new Vector2(1.0f, 1.0f);
             Vector2 e4 = new Vector2(0.0f, 1.0f);
 
+            // Adjust ranges
+            xMin = Math.Max(0, xMin);
+            xMax = Math.Min(NumXSectors - 1, xMax);
+            zMin = Math.Max(0, zMin);
+            zMax = Math.Min(NumZSectors - 1, zMax);
+
             // Reset faces
-            for (int x = xMin; x < xMax; x++)
+            for (int x = xMin; x <= xMax; x++)
             {
-                for (int z = zMin; z < zMax; z++)
+                for (int z = zMin; z <= zMax; z++)
                 {
                     for (int f = 0; f < 29; f++)
                     {
@@ -334,9 +340,9 @@ namespace TombEditor.Geometry
             }
 
             // Build face polygons
-            for (int x = xMin; x < xMax; x++)
+            for (int x = xMin; x <= xMax; x++)
             {
-                for (int z = zMin; z < zMax; z++)
+                for (int z = zMin; z <= zMax; z++)
                 {
                     // Save the height of the faces
                     int qa0 = Blocks[x, z].QAFaces[0];
