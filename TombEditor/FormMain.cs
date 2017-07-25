@@ -3661,10 +3661,5 @@ _editor.Level.Rooms[i].AlternateRoom + ":" + _editor.Level.Rooms[i].AlternateGro
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         { }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
-        }
     }
 }
