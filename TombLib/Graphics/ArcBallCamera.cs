@@ -24,27 +24,28 @@ namespace TombLib.Graphics
         public float MaxDistance { get; set; }
 
         // Calculated position and specified target
-        public Vector3 Position { get; private set; }
+        public Vector3 Position { get; set; }
         public Vector3 Target { get; set; }
 
+        // Horizontal field of view angle of the camera in radians.
+        public float FieldOfView { get; set; } = 0.872f;
+        
         public ArcBallCamera(Vector3 Target, float RotationX,
-        float RotationY, float MinRotationY, float MaxRotationY,
-        float Distance, float MinDistance, float MaxDistance)
+            float RotationY, float MinRotationY, float MaxRotationY,
+            float Distance, float MinDistance, float MaxDistance)
         {
             this.Target = Target;
             this.MinRotationY = MinRotationY;
             this.MaxRotationY = MaxRotationY;
 
             // Lock the y axis rotation between the min and max values
-            this.RotationY = MathUtil.Clamp(RotationY, MinRotationY,
-            MaxRotationY);
+            this.RotationY = MathUtil.Clamp(RotationY, MinRotationY, MaxRotationY);
             this.RotationX = RotationX;
             this.MinDistance = MinDistance;
             this.MaxDistance = MaxDistance;
 
             // Lock the distance between the min and max values
-            this.Distance = MathUtil.Clamp(Distance, MinDistance,
-            MaxDistance);
+            this.Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
         }
 
         public void Move(float DistanceChange)
@@ -67,7 +68,7 @@ namespace TombLib.Graphics
             this.Target += PositionChange;
         }
 
-        public override void Update()
+        public override Matrix GetViewProjectionMatrix(float width, float height)
         {
             // Calculate rotation matrix from rotation values
             Matrix rotation = Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
@@ -82,8 +83,10 @@ namespace TombLib.Graphics
             Vector3 up = Vector3.TransformCoordinate(Vector3.UnitY, rotation);
 
             //new Vector3(0, 150, 0), Vector3.Up); 
-            View = Matrix.LookAtLH(Position, Target, up);
+            Matrix View = Matrix.LookAtLH(Position, Target, up);
+            float aspectRatio = width / height;
+            Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 10.0f, 100000.0f);
+            return View * Projection;
         }
-
     }
 }

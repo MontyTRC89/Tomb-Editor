@@ -20,9 +20,7 @@ struct PixelOutput
 	float4 Picking2 : SV_TARGET1;
 };
 
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
+float4x4 ModelViewProjection;
 
 float4 Color;
 bool UseVertexColor;
@@ -32,9 +30,7 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     
     // Calcolo la posizione finale
-    output.position = mul(input.position, World);
-    output.position = mul(output.position, View);
-    output.position = mul(output.position, Projection);
+    output.position = mul(input.position, ModelViewProjection);
     
 	// Passo il colore al pixel shader
 	output.FaceColor = input.FaceColor;

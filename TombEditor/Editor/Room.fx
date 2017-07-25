@@ -15,9 +15,7 @@ struct PixelInputType
 	float4 Color : COLOR0;
 };
 
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
+float4x4 ModelViewProjection;
 
 float4 Color;
 float3 CameraPosition;
@@ -41,9 +39,7 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     
     // Calcolo la posizione finale
-    output.Position = mul(input.Position, World);
-    output.Position = mul(output.Position, View);
-    output.Position = mul(output.Position, Projection);
+    output.Position = mul(input.Position, ModelViewProjection);
     
 	// Passo le coordinate UV al pixel shader
 	output.UV = input.UV;

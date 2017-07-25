@@ -26,14 +26,7 @@ namespace TombEditor
         public FormMain()
         {
             InitializeComponent();
-
-            // Autosize the window
-            this.Width = Screen.PrimaryScreen.Bounds.Width;
-            this.Height = Screen.PrimaryScreen.Bounds.Height - 50;
-            this.StartPosition = FormStartPosition.Manual;
-
-            this.panelTextureContainer.Height = panelTextureTools.Location.Y;
-
+            
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
             
@@ -623,7 +616,6 @@ namespace TombEditor
             panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.Centre.X, room.Position.Y * 256.0f + room.Centre.Y,
                                                 room.Position.Z * 1024.0f + room.Centre.Z);
             panel3D.Camera.Distance = 3072.0f;
-            panel3D.Camera.Update();
         }
 
         private void butNoOpacity_Click(object sender, EventArgs e)

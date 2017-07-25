@@ -194,7 +194,7 @@ namespace TombEditor.Controls
 
             _editor = Editor.Instance;
         }
-
+        
         public void ResetCamera()
         {
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
@@ -205,8 +205,6 @@ namespace TombEditor.Controls
 
             // Initialize a new camera
             Camera = new ArcBallCamera(target, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000, 1000000);
-            Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
-            Camera.Update();
         }
 
         public void InitializePanel()
@@ -231,8 +229,6 @@ namespace TombEditor.Controls
 
             // Initialize the Arc-Ball Camera
             Camera = new ArcBallCamera(Vector3.Zero, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000, 1000, 1000000);
-            Camera.GeneratePerspectiveProjectionMatrix((float)Math.PI / 4.0f, Width, Height);
-            Camera.Update();
 
             // Maybe I could use this as bounding box, scaling it properly before drawing
             _cube = GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 1024);
@@ -273,6 +269,13 @@ namespace TombEditor.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             Draw();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (Presenter != null)
+                Presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 
         protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
@@ -475,8 +478,6 @@ namespace TombEditor.Controls
                 {
                     Camera.Rotate((float)(DeltaX / 500.0f), (float)(-DeltaY / 500.0f));
                 }
-
-                Camera.Update();
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
@@ -570,8 +571,6 @@ namespace TombEditor.Controls
                 {
                     Camera.Rotate(DeltaX / 5000, -DeltaY / 5000);
                 }
-
-                Camera.Update();
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
@@ -760,22 +759,18 @@ namespace TombEditor.Controls
             _editor.DrawPanelGrid();
         }
 
-        private void DrawLights(int room)
+        private void DrawLights(Matrix viewProjection, int room)
         {
             if (room == -1)
                 return;
 
             _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
-
             _editor.GraphicsDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
             _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
             _editor.GraphicsDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
             Effect solidEffect = _editor.Effects["Solid"];
-
-            solidEffect.Parameters["View"].SetValue(Camera.View);
-            solidEffect.Parameters["Projection"].SetValue(Camera.Projection);
-
+            
             for (int i = 0; i < _editor.Level.Rooms[room].Lights.Count; i++)
             {
                 Light light = _editor.Level.Rooms[room].Lights[i];
@@ -795,9 +790,8 @@ namespace TombEditor.Controls
 
                     effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
 
-                    effect.Parameters["World"].SetValue(Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
-                    effect.Parameters["View"].SetValue(Camera.View);
-                    effect.Parameters["Projection"].SetValue(Camera.Projection);
+                    Matrix model = Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                       
                     effect.CurrentTechnique.Passes[0].Apply();
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.LineList, 49);
@@ -805,7 +799,8 @@ namespace TombEditor.Controls
                     continue;
                 }*/
 
-                solidEffect.Parameters["World"].SetValue(Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                Matrix model = Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 
                 if (light.Type == LightType.Light)
                     solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
@@ -826,7 +821,6 @@ namespace TombEditor.Controls
                     solidEffect.Parameters["SelectionEnabled"].SetValue(false);
 
                 solidEffect.CurrentTechnique.Passes[0].Apply();
-
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
             }
 
@@ -844,21 +838,21 @@ namespace TombEditor.Controls
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow)
                     {
-                        solidEffect.Parameters["World"].SetValue(Matrix.Scaling(light.In * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                        Matrix model = Matrix.Scaling(light.In * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-
                         _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                     }
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
                     {
-                        solidEffect.Parameters["World"].SetValue(Matrix.Scaling(light.Out * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                        Matrix model = Matrix.Scaling(light.Out * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-
                         _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                     }
                 }
@@ -874,8 +868,8 @@ namespace TombEditor.Controls
                     float lenScaleW = MathUtil.DegreesToRadians(light.In) / coneAngle * lenScaleH;
 
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
-
-                    solidEffect.Parameters["World"].SetValue(Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    Matrix Model = Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(Model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                     solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -886,11 +880,11 @@ namespace TombEditor.Controls
                     float cutoffScaleH = light.Cutoff;
                     float cutoffScaleW = MathUtil.DegreesToRadians(light.Out) / coneAngle * cutoffScaleH;
 
-                    solidEffect.Parameters["World"].SetValue(Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    Matrix model2 = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model2 * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                     solidEffect.CurrentTechnique.Passes[0].Apply();
-
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
                 else if (light.Type == LightType.Sun)
@@ -901,11 +895,11 @@ namespace TombEditor.Controls
 
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
 
-                    solidEffect.Parameters["World"].SetValue(Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                     solidEffect.CurrentTechnique.Passes[0].Apply();
-
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
@@ -925,47 +919,39 @@ namespace TombEditor.Controls
                     message = "Fog bulb";
 
                 message += " (" + _editor.LightIndex + ")";
-                Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                 Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
                 Debug.AddString(message, screenPos);
             }
 
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawObjects(int room)
+        private void DrawObjects(Matrix viewProjection, int room)
         {
-            // Draw objects
             Effect effect = _editor.Effects["Solid"];
 
             _editor.GraphicsDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _editor.GraphicsDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-
-            effect.Parameters["View"].SetValue(Camera.View);
-            effect.Parameters["Projection"].SetValue(Camera.Projection);
-
-            Matrix world = Matrix.Identity;
-            string message = "";
-            Vector4 color = new Vector4(0, 0, 0, 0);
-
+            
             for (int i = 0; i < _camerasToDraw.Count; i++)
             {
                 IObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
-                color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+                Vector4 color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
                 if (_editor.PickingResult.ElementType == PickingElementType.Camera && instance.ID == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    message = "Camera (" + instance.ID + ")";
-                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    string message = "Camera (" + instance.ID + ")";
+                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -979,13 +965,12 @@ namespace TombEditor.Controls
                     Debug.AddString(message, screenPos);
                 }
 
-                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
 
-                effect.Parameters["World"].SetValue(world);
+                effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
                 effect.Techniques[0].Passes[0].Apply();
-
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
@@ -995,7 +980,7 @@ namespace TombEditor.Controls
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
-                color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
+                Vector4 color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
                 if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera && instance.ID == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -1007,10 +992,10 @@ namespace TombEditor.Controls
                 if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera &&
                     _editor.PickingResult.Element == instance.ID)
                 {
-                    message = "Flyby Camera (" + flyby.Sequence + ":" + flyby.Number + ")";
-                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    string message = "Flyby Camera (" + flyby.Sequence + ":" + flyby.Number + ")";
+                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -1024,13 +1009,12 @@ namespace TombEditor.Controls
                     Debug.AddString(message, screenPos);
                 }
 
-                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
 
-                effect.Parameters["World"].SetValue(world);
+                effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
                 effect.Techniques[0].Passes[0].Apply();
-
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
@@ -1040,16 +1024,16 @@ namespace TombEditor.Controls
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
-                color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
                 if (_editor.PickingResult.ElementType == PickingElementType.Sink && instance.ID == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    message = "Sink (" + instance.ID + ")";
-                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    string message = "Sink (" + instance.ID + ")";
+                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -1063,13 +1047,11 @@ namespace TombEditor.Controls
                     Debug.AddString(message, screenPos);
                 }
 
-                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
-
-                effect.Parameters["World"].SetValue(world);
+                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
                 effect.Techniques[0].Passes[0].Apply();
-
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
@@ -1079,17 +1061,17 @@ namespace TombEditor.Controls
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
-                color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+                Vector4 color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
                 if (_editor.PickingResult.ElementType == PickingElementType.SoundSource && instance.ID == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
                     SoundInstance sound = (SoundInstance)instance;
-                    message = "Sound Source (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundID] + ") (" + instance.ID + ")";
-                    Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * Camera.View * Camera.Projection;
+                    string message = "Sound Source (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundID] + ") (" + instance.ID + ")";
+                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -1103,20 +1085,17 @@ namespace TombEditor.Controls
                     Debug.AddString(message, screenPos);
                 }
 
-                world = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
-
-                effect.Parameters["World"].SetValue(world);
+                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
                 effect.Techniques[0].Passes[0].Apply();
-
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
             _editor.GraphicsDevice.SetVertexBuffer(_cone.VertexBuffer);
             _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
             _editor.GraphicsDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
-
             _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
             for (int i = 0; i < _flybyToDraw.Count; i++)
@@ -1132,25 +1111,23 @@ namespace TombEditor.Controls
 
                 Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(flyby.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(flyby.DirectionY));
 
-                effect.Parameters["World"].SetValue(Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position)));
+                Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                 effect.CurrentTechnique.Passes[0].Apply();
-
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
             }
 
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawMoveables()
+        private void DrawMoveables(Matrix viewProjection)
         {
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
             Effect skinnedModelEffect = _editor.Effects["Model"];
-
-            skinnedModelEffect.Parameters["View"].SetValue(Camera.View);
-            skinnedModelEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            
             skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
             skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
 
@@ -1198,7 +1175,7 @@ namespace TombEditor.Controls
                                 Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
                     worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
 
-                    skinnedModelEffect.Parameters["World"].SetValue(world);
+                    skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
                     skinnedModelEffect.Techniques[0].Passes[0].Apply();
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -1210,9 +1187,9 @@ namespace TombEditor.Controls
                 if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel &&
                     _editor.PickingResult.Element == modelInfo.ID)
                 {
-                    Matrix wvp = worldDebug * Camera.View * Camera.Projection;
+                    Matrix modelViewProjection = worldDebug * viewProjection;
                     Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     string debugMessage = _editor.MoveablesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
 
@@ -1232,14 +1209,12 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawStaticMeshes()
+        private void DrawStaticMeshes(Matrix viewProjection)
         {
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
             Effect staticMeshEffect = _editor.Effects["StaticModel"];
-
-            staticMeshEffect.Parameters["View"].SetValue(Camera.View);
-            staticMeshEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            
             staticMeshEffect.Parameters["TextureEnabled"].SetValue(true);
             staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
             staticMeshEffect.Parameters["LightEnabled"].SetValue(true);
@@ -1255,7 +1230,7 @@ namespace TombEditor.Controls
                 StaticModel model = modelInfo.Model;
 
                 if (k == 0)
-                {
+                { 
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
                 }
 
@@ -1267,11 +1242,8 @@ namespace TombEditor.Controls
 
                 Debug.NumStaticMeshes++;
 
-                if (_editor.PickingResult.ElementType == PickingElementType.StaticModel && _editor.PickingResult.Element == modelInfo.ID)
-                    staticMeshEffect.Parameters["SelectionEnabled"].SetValue(true);
-                else
-                    staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
-
+                bool SelectionEnabled = _editor.PickingResult.ElementType == PickingElementType.StaticModel && _editor.PickingResult.Element == modelInfo.ID;
+                staticMeshEffect.Parameters["SelectionEnabled"].SetValue(SelectionEnabled);
                 staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(modelInfo.Color));
 
                 Matrix world = Matrix.Identity;
@@ -1289,7 +1261,7 @@ namespace TombEditor.Controls
                                 Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
                     worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
 
-                    staticMeshEffect.Parameters["World"].SetValue(world);
+                    staticMeshEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
                     staticMeshEffect.Techniques[0].Passes[0].Apply();
                     _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -1301,9 +1273,9 @@ namespace TombEditor.Controls
                 if (_editor.PickingResult.ElementType == PickingElementType.StaticModel &&
                     _editor.PickingResult.Element == modelInfo.ID)
                 {
-                    Matrix wvp = worldDebug * Camera.View * Camera.Projection;
+                    Matrix modelViewProjection = worldDebug * viewProjection;
                     Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     string debugMessage = _editor.StaticMeshesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
 
@@ -1323,7 +1295,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawSkyBox(int room)
+        private void DrawSkyBox(Matrix viewProjection, int room)
         {
             if (_editor.Level.Wad == null)
                 return;
@@ -1333,28 +1305,27 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
             Effect skinnedModelEffect = _editor.Effects["Model"];
-
-            skinnedModelEffect.Parameters["View"].SetValue(Camera.View);
-            skinnedModelEffect.Parameters["Projection"].SetValue(Camera.Projection);
+            
             skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
             skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
 
-            SkinnedModel model = _editor.Level.Wad.Moveables[459];
-            model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
+            SkinnedModel skinnedModel = _editor.Level.Wad.Moveables[459];
+            skinnedModel.BuildAnimationPose(skinnedModel.Animations[0].KeyFrames[0]);
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
 
-            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
 
-            _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
-            _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
+            _editor.GraphicsDevice.SetVertexBuffer(0, skinnedModel.VertexBuffer);
+            _editor.GraphicsDevice.SetIndexBuffer(skinnedModel.IndexBuffer, true);
 
-            for (int i = 0; i < model.Meshes.Count; i++)
+            for (int i = 0; i < skinnedModel.Meshes.Count; i++)
             {
-                SkinnedMesh mesh = model.Meshes[i];
+                SkinnedMesh mesh = skinnedModel.Meshes[i];
 
-                skinnedModelEffect.Parameters["World"].SetValue(Matrix.Scaling(16.0f) * model.AnimationTransforms[i] * Matrix.Translation(new Vector3(Camera.Position.X, Camera.Position.Y - 5120.0f, Camera.Position.Z)));
+                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] * Matrix.Translation(new Vector3(Camera.Position.X, Camera.Position.Y - 5120.0f, Camera.Position.Z));
+                skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
 
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
@@ -1368,12 +1339,10 @@ namespace TombEditor.Controls
         {
             Vector3 nearPoint = new Vector3(mousePosition, 0);
             Vector3 farPoint = new Vector3(mousePosition, 1);
+            Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
-            nearPoint = _editor.GraphicsDevice.Viewport.Unproject(nearPoint, Camera.Projection, Camera.View,
-                                                     Matrix.Identity);
-            farPoint = _editor.GraphicsDevice.Viewport.Unproject(farPoint,
-                                                    Camera.Projection, Camera.View,
-                                                    Matrix.Identity);
+            nearPoint = _editor.GraphicsDevice.Viewport.Unproject(nearPoint, viewProjection, Matrix.Identity, Matrix.Identity);
+            farPoint = _editor.GraphicsDevice.Viewport.Unproject(farPoint, viewProjection, Matrix.Identity, Matrix.Identity);
 
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
@@ -1383,11 +1352,13 @@ namespace TombEditor.Controls
 
         private void DoPicking(float x, float y)
         {
+            Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
+
             // For picking, I'll check first sphere/cubes bounding boxes and then eventually
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = Ray.GetPickRay((int)x, (int)y, _editor.GraphicsDevice.Viewport, Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * Camera.View * Camera.Projection);
+            Ray ray = Ray.GetPickRay((int)x, (int)y, _editor.GraphicsDevice.Viewport, Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
 
             float minDistance = float.MaxValue;
             float distance = 0;
@@ -2208,10 +2179,7 @@ namespace TombEditor.Controls
         {
             item.IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.New(Editor.Instance.GraphicsDevice, item.Indices.ToArray(), BufferFlags.IndexBuffer);
         }
-
-        //   int _counter = 0;
-
-
+        
         public void Draw()
         {
             Stopwatch _watch = new Stopwatch();
@@ -2230,11 +2198,10 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.Presenter = Presenter;
             _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
             _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer, _editor.GraphicsDevice.Presenter.BackBuffer);
-
             _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
                                          (!_editor.IsFlipMap ? Color.CornflowerBlue : Color.LightCoral), 1.0f, 0);
             _editor.GraphicsDevice.SetDepthStencilState(_editor.GraphicsDevice.DepthStencilStates.Default);
-
+            
             // verify that editor is ready
             if (_editor.Level == null)
                 return;
@@ -2244,6 +2211,9 @@ namespace TombEditor.Controls
                 return;
             if (_editor.Level.Rooms[_editor.RoomIndex].VertexBuffer == null)
                 return;
+
+            //Precalculate the view projection matrix
+            Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
             // First collect rooms to draw
             _roomsToDraw = new List<int>();
@@ -2258,34 +2228,29 @@ namespace TombEditor.Controls
 
             // Collect rooms to draw
             if (_editor.DrawPortals)
-            {
                 CollectRoomsToDraw(_editor.RoomIndex);
-            }
             else
-            {
                 _roomsToDraw.Add(_editor.RoomIndex);
-            }
 
             Debug.NumRooms = _roomsToDraw.Count;
 
-            Task task1 = Task.Factory.StartNew(RenderTask2);
-            Task task2 = Task.Factory.StartNew(RenderTask3);
-
+            Task task1 = Task.Factory.StartNew(RenderTask1, viewProjection);
+            Task task2 = Task.Factory.StartNew(RenderTask2, viewProjection);
             Task.WaitAll(task1, task2);
 
             // Draw the skybox if present
             if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) &&
                  _editor != null && _editor.Level != null && _editor.Level.Wad != null && _editor.DrawHorizon)
             {
-                DrawSkyBox(_editor.RoomIndex);
+                DrawSkyBox(viewProjection, _editor.RoomIndex);
                 _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
             }
 
             // Draw moveables and static meshes
             if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
             {
-                DrawMoveables();
-                DrawStaticMeshes();
+                DrawMoveables(viewProjection);
+                DrawStaticMeshes(viewProjection);
             }
 
             // Prepare the shader
@@ -2293,8 +2258,6 @@ namespace TombEditor.Controls
 
             // Set some common parameters of the shader
             _roomEffect.Parameters["CameraPosition"].SetValue(Camera.Position);
-            _roomEffect.Parameters["View"].SetValue(Camera.View);
-            _roomEffect.Parameters["Projection"].SetValue(Camera.Projection);
             _roomEffect.Parameters["LightingEnabled"].SetValue(false);
             _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
@@ -2302,16 +2265,16 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
 
             // Draw buckets
-            DrawSolidBuckets();
-            DrawOpaqueBuckets();
-            DrawTransparentBuckets();
-            DrawInvisibleBuckets();
+            DrawSolidBuckets(viewProjection);
+            DrawOpaqueBuckets(viewProjection);
+            DrawTransparentBuckets(viewProjection);
+            DrawInvisibleBuckets(viewProjection);
 
             // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-            DrawObjects(_roomsToDraw[0]);
+            DrawObjects(viewProjection, _roomsToDraw[0]);
 
             // Draw light objects and bounding volumes only for current room
-            DrawLights(_editor.RoomIndex);
+            DrawLights(viewProjection, _editor.RoomIndex);
 
             _watch.Stop();
             long mils = _watch.ElapsedMilliseconds;
@@ -2326,14 +2289,11 @@ namespace TombEditor.Controls
 
             Debug.Log("Draw Call! " + mils + "ms", DebugType.Success);
         }
-
-        private void RenderTask1()
+        
+        private void RenderTask1(object viewProjection_)
         {
+            Matrix viewProjection = (Matrix)viewProjection_;
 
-        }
-
-        private void RenderTask2()
-        {
             // Collect objects to draw
             CollectObjectsToDraw();
 
@@ -2341,33 +2301,35 @@ namespace TombEditor.Controls
             PrepareRenderBuckets();
         }
 
-        private void RenderTask3()
+        private void RenderTask2(object viewProjection_)
         {
+            Matrix viewProjection = (Matrix)viewProjection_;
+
             // Add room names
             if (_editor.DrawRoomNames)
             {
-                AddRoomNamesToDebug();
+                AddRoomNamesToDebug(viewProjection);
             }
 
             // Draw North, South, East and West
-            AddDirectionsToDebug();
+            AddDirectionsToDebug(viewProjection);
         }
 
-        private void AddRoomNamesToDebug()
+        private void AddRoomNamesToDebug(Matrix viewProjection)
         {
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
                 string message = (_editor.Level.Rooms[_roomsToDraw[i]].Name != null ? _editor.Level.Rooms[_roomsToDraw[i]].Name : "Room " + _roomsToDraw[i]);
 
                 Vector3 pos = _editor.Level.Rooms[_roomsToDraw[i]].Position;
-                Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(pos)) * Camera.View * Camera.Projection;
+                Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(pos)) * viewProjection;
                 Vector3 screenPos = Vector3.Project(_editor.Level.Rooms[_roomsToDraw[i]].Centre, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                 _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
                 Debug.AddString(message, screenPos);
             }
         }
 
-        private void AddDirectionsToDebug()
+        private void AddDirectionsToDebug(Matrix viewProjection)
         {
             float xBlocks = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors / 2.0f * 1024.0f;
@@ -2383,7 +2345,7 @@ namespace TombEditor.Controls
             positions[2] = centre + new Vector3(xBlocks, 0, 0);
             positions[3] = centre + new Vector3(-xBlocks, 0, 0);
 
-            Matrix wvp = Matrix.Translation(pos) * Camera.View * Camera.Projection;
+            Matrix wvp = Matrix.Translation(pos) * viewProjection;
 
             for (int i = 0; i < 4; i++)
             {
@@ -2393,7 +2355,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawOpaqueBuckets()
+        private void DrawOpaqueBuckets(Matrix viewProjection)
         {
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
@@ -2416,7 +2378,7 @@ namespace TombEditor.Controls
                     // Load the vertex buffer in the GPU and set the world matrix
                     _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
 
                     // Enable or disable static lighting
                     bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
@@ -2455,7 +2417,7 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawInvisibleBuckets()
+        private void DrawInvisibleBuckets(Matrix viewProjection)
         {
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
@@ -2484,7 +2446,7 @@ namespace TombEditor.Controls
                     // Load the vertex buffer in the GPU and set the world matrix
                     _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
                 }
 
                 // Set shape
@@ -2509,7 +2471,7 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawTransparentBuckets()
+        private void DrawTransparentBuckets(Matrix viewProjection)
         {
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Additive);
 
@@ -2538,7 +2500,7 @@ namespace TombEditor.Controls
                     // Load the vertex buffer in the GPU and set the world matrix
                     _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
 
                     // Enable or disable static lighting
                     bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
@@ -2593,7 +2555,7 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawSolidBuckets()
+        private void DrawSolidBuckets(Matrix viewProjection)
         {
             RenderBucket _lastBucket = null;
 
@@ -2612,7 +2574,7 @@ namespace TombEditor.Controls
                     // Load the vertex buffer in the GPU and set the world matrix
                     _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["World"].SetValue(_editor.Level.Rooms[room].Transform);
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
 
                     // Enable or disable static lighting
                     bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
