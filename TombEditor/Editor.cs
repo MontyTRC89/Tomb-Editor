@@ -205,8 +205,6 @@ namespace TombEditor
             SelectedItem = -1;
             SelectedTexture = -1;
 
-            PickingManager mgr = PickingManager.Instance;
-
             UV = new Vector2[4];
 
             PickingResultEmpty = new PickingResult();
