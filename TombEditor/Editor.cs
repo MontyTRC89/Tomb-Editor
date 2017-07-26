@@ -120,6 +120,8 @@ namespace TombEditor
 
         public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor)
         {
+            // Load configuration
+            Configuration.LoadConfiguration();
 
 #if DEBUG
 

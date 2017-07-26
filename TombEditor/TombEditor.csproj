@@ -111,6 +111,7 @@
     <Compile Include="Compilers\Structs.cs" />
     <Compile Include="Compilers\Textures.cs" />
     <Compile Include="Compilers\Writer.cs" />
+    <Compile Include="Configuration.cs" />
     <Compile Include="Controls\LightParameterController.cs">
       <SubType>UserControl</SubType>
     </Compile>

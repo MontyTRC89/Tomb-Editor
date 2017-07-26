@@ -1940,7 +1940,7 @@ namespace TombEditor.Controls
                 int theRoom = stackRooms.Pop();
                 int theLimit = stackLimits.Pop();
 
-                if (theLimit > 6)
+                if (theLimit > Configuration.DrawRoomsMaxDepth)
                     continue;
 
                 if (_editor.IsFlipMap)
