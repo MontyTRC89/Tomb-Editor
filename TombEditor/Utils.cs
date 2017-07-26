@@ -72,31 +72,6 @@ namespace TombEditor
             }
             bitmap = newBitmap;
         }
-        public static void ConvertTGAtoPNG(string filename, out string newName)
-        {
-            logger.Debug("Converting TGA texture map to PNG format");
-            
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-
-            //Convert the *tga file to the *.png file...
-            Bitmap bitmap = TombLib.Graphics.TextureLoad.LoadToBitmap(filename);
-            try
-            {
-                ConvertTextureTo256Width(ref bitmap);
-                newName = "Textures\\Imported\\" + Path.GetFileNameWithoutExtension(filename) + ".png";
-                bitmap.Save(newName, ImageFormat.Png);
-            }
-            finally
-            {
-                bitmap.Dispose();
-            }
-            
-            watch.Stop();
-
-            logger.Info("Texture map converted");
-            logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
-        }
 
         public static int GetWorldX(Room room, int x)
         {

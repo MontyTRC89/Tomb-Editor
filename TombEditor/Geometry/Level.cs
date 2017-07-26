@@ -1137,17 +1137,17 @@ namespace TombEditor.Geometry
                     sb++;
                 }
 
-                string tgaName = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                tgaName = tgaName.Replace('\0', ' ').Trim();
+                string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                textureFilename = textureFilename.Replace('\0', ' ').Trim();
 
-                logger.Debug("Texture map: " + tgaName);
+                logger.Debug("Texture map: " + textureFilename);
 
-                if (tgaName == "" || !File.Exists(tgaName))
+                if (textureFilename == "" || !File.Exists(textureFilename))
                 {
                     logger.Error("Can't find texture map!");
 
                     if (DarkUI.Forms.DarkMessageBox.ShowWarning(
-                            "The TGA file '" + tgaName +
+                            "The texture file '" + textureFilename +
                             " could not be found. Do you want to browse it or cancel importing?",
                             "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                     {
@@ -1157,21 +1157,18 @@ namespace TombEditor.Geometry
                     }
 
                     // Ask for TGA file
-                    tgaName = form.OpenTGA();
-                    if (tgaName == "")
+                    textureFilename = form.OpenTGA();
+                    if (textureFilename == "")
                     {
                         logger.Error("PRJ import canceled");
                         reader.Close();
                         return null;
                     }
                 }
+                
+                level.LoadTextureMap(textureFilename);
 
-                string pngName = "";
-                Utils.ConvertTGAtoPNG(tgaName, out pngName);
-
-                level.LoadTextureMap(pngName);
-
-                form.ReportProgress(50, "Converted '" + tgaName + "' to PNG format");
+                form.ReportProgress(50, "Converted '" + textureFilename + "' to PNG format");
 
                 // Read textures
                 int numTextures = reader.ReadInt32();
