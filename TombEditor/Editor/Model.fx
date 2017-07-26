@@ -3,8 +3,6 @@
     float4 Position : POSITION0;
     float2 UV : TEXCOORD0;
 	float3 Normal : NORMAL0;
-	float4 BoneWeigths : BONEWEIGTH0;
-	float4 BoneIndices : BLENDINDICES0;
 };
 
 struct PixelInputType
@@ -26,27 +24,11 @@ int SplitMode;
 Texture2D Texture;
 sampler TextureSampler;
 
-Texture2D HelperTexture;
-sampler HelperTextureSampler;
-
-float4x4 BoneTransforms[32];
-
 PixelInputType VS(VertexInputType input)
 {
     PixelInputType output;
-    float4 worldPos;
-
-	//worldPos = mul(input.Position, BoneTransforms[6 /*(int)input.BoneIndices.x*/]);// * input.BoneWeigths.x);
-	/*worldPos += mul(input.Position, BoneTransforms[input.BoneIndices.y] * World * input.BoneWeigths.y);
-	worldPos += mul(input.Position, BoneTransforms[input.BoneIndices.z] * World * input.BoneWeigths.z);
-	worldPos += mul(input.Position, BoneTransforms[input.BoneIndices.w] * World * input.BoneWeigths.w);*/
-
-    // Calcolo la posizione finale
     output.Position = mul(input.Position, ModelViewProjection);
-    
-	// Passo le coordinate UV al pixel shader
 	output.UV = input.UV;
-
     return output;
 }
 
@@ -56,18 +38,11 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel;
-
-	float2 uv;
-
-	//if (EditorTextureEnabled)
-	//	uv = input.EditorUV;
-	//else
-		uv = input.UV;
-
 	if (TextureEnabled)
 	{
-		pixel = Texture.Sample(TextureSampler, uv);
-						if (SelectionEnabled) pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
+		pixel = Texture.Sample(TextureSampler, input.UV);
+		if (SelectionEnabled) 
+			pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 	}
 	else
 	{
@@ -99,7 +74,6 @@ float4 PS(PixelInputType input) : SV_TARGET
 				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
 		}*/
 	}
-
 	return pixel;
 }
 
