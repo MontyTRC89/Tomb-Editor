@@ -189,6 +189,9 @@ namespace TombEditor.Controls
         private List<int> MoveablesToDraw;
         private List<int> StaticMeshesToDraw;
 
+        private Buffer<EditorVertex> _objectHeightLineVertex;
+        private bool _drawHeightLine = false;
+
         private Effect _roomEffect;
 
         public PanelRendering3D()
@@ -761,6 +764,25 @@ namespace TombEditor.Controls
             _editor.DrawPanelGrid();
         }
 
+        private void DrawObjectHeightLine(Matrix viewProjection)
+        {
+            _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+            _editor.GraphicsDevice.SetVertexBuffer(_objectHeightLineVertex);
+            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _objectHeightLineVertex));
+
+            Effect solidEffect = _editor.Effects["Solid"];
+
+            Matrix model = Matrix.Identity * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+
+            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+            solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+            solidEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+            solidEffect.CurrentTechnique.Passes[0].Apply();
+
+            _editor.GraphicsDevice.Draw(PrimitiveType.LineList, 2);
+        }
+
         private void DrawLights(Matrix viewProjection, int room)
         {
             if (room == -1)
@@ -925,6 +947,9 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                 _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
                 Debug.AddString(message, screenPos);
+
+                // Add the line height of the object
+                AddObjectHeightLine(light.Position, viewProjection);
             }
 
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
@@ -964,6 +989,9 @@ namespace TombEditor.Controls
                     }
 
                     Debug.AddString(message, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(instance.Position, viewProjection);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1008,6 +1036,9 @@ namespace TombEditor.Controls
                     }
 
                     Debug.AddString(message, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(instance.Position, viewProjection);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1045,6 +1076,9 @@ namespace TombEditor.Controls
                     }
 
                     Debug.AddString(message, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(instance.Position, viewProjection);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1083,6 +1117,9 @@ namespace TombEditor.Controls
                     }
 
                     Debug.AddString(message, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(instance.Position, viewProjection);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1203,6 +1240,9 @@ namespace TombEditor.Controls
                     }
 
                     Debug.AddString(debugMessage, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(modelInfo.Position, viewProjection);
                 }
 
                 _lastObject = modelInfo;
@@ -1289,6 +1329,9 @@ namespace TombEditor.Controls
                     }
 
                     Debug.AddString(debugMessage, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(modelInfo.Position, viewProjection);
                 }
 
                 _lastObject = modelInfo;
@@ -2190,6 +2233,8 @@ namespace TombEditor.Controls
 
             Debug.Reset();
 
+            _drawHeightLine = false;
+
             // Don't draw anything if device is not ready
             if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1)
                 return;
@@ -2275,6 +2320,9 @@ namespace TombEditor.Controls
 
             // Draw light objects and bounding volumes only for current room
             DrawLights(viewProjection, _editor.RoomIndex);
+
+            // Draw the height of the object
+            if (_drawHeightLine) DrawObjectHeightLine(viewProjection);
 
             _watch.Stop();
             long mils = _watch.ElapsedMilliseconds;
@@ -3195,6 +3243,41 @@ namespace TombEditor.Controls
 
                 _lastBucket = bucket;
             }
+        }
+
+        private void AddObjectHeightLine(Vector3 position, Matrix viewProjection)
+        {
+            int xBlock = (int)Math.Floor(position.X / 1024.0f);
+            int zBlock = (int)Math.Floor(position.Z / 1024.0f);
+
+            // Get the base floor height
+            int floorHeight = _editor.Level.Rooms[_editor.RoomIndex].GetLowestFloorCorner(xBlock, zBlock);
+
+            // Get the distance between point and floor in clicks
+            float height = position.Y / 256.0f - (float)floorHeight;
+
+            // Prepare two vertices for the line
+            EditorVertex v1 = new EditorVertex();
+            v1.Position = new Vector4(position.X, floorHeight * 256.0f, position.Z, 1.0f);
+
+            EditorVertex v2 = new EditorVertex();
+            v2.Position = new Vector4(position.X, position.Y, position.Z, 1.0f);
+
+            EditorVertex[] vertices = new EditorVertex[] { v1, v2 };
+
+            // Prepare the Vertex Buffer
+            if (_objectHeightLineVertex != null) _objectHeightLineVertex.Dispose();
+            _objectHeightLineVertex = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+            // Add the text description
+            Vector3 meanPosition = new Vector3(position.X, position.Y / 2.0f, position.Z);
+            Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
+            Vector3 screenPos = Vector3.Project(meanPosition, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                            _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+
+            Debug.AddString("Height: " + Math.Round(height * 256.0f) + " units (" + height + " clicks)", screenPos);
+
+            _drawHeightLine = true;
         }
     }
 }
