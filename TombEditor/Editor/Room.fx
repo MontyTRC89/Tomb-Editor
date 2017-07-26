@@ -40,7 +40,7 @@ PixelInputType VS(VertexInputType input)
     output.Position = mul(input.Position, ModelViewProjection);
 	output.UV = input.UV;
 	output.EditorUV = input.EditorUV;
-	output.Color = input.Color;
+	output.Color = input.Color * (1.0f / 255.0f);
     return output;
 }
 
@@ -64,10 +64,9 @@ float4 PS(PixelInputType input) : SV_TARGET
 			if (SelectionEnabled) pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 			if (LightingEnabled)
 			{
-				float4 col = float4(input.Color.x / 255.0f, input.Color.y / 255.0f, input.Color.z / 255.0f, 1.0f);
-
-				pixel = clamp(pixel * col * 2.0f, 0, 1);
-				//pixel.w = 1.0f;
+				float3 colorAdd = clamp(input.Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
+				float3 colorMul = min(input.Color.xyz * 2.0f, 1.0f);
+				pixel.xyz = pixel.xyz * colorMul + colorAdd;
 			}
 		}
 		else
