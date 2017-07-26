@@ -2225,7 +2225,7 @@ namespace TombEditor.Controls
         
         public void Draw()
         {
-            if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
+            if (DesignMode)
                 return;
 
             Stopwatch _watch = new Stopwatch();
