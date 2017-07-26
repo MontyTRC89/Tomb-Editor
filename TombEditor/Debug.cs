@@ -2,20 +2,13 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using TombEditor.Controls;
 
 namespace TombEditor
 {
-    public enum DebugType
-    {
-        None,
-        Success,
-        Warning,
-        Error
-    }
-
     public class Debug
     {
         public static long NumRooms { get; set; }
@@ -72,18 +65,20 @@ namespace TombEditor
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
         }
 
-        public static void Log(string message, DebugType typ = DebugType.None)
+        public static void InitLogging()
         {
-            if (typ == DebugType.Success)
-                Console.ForegroundColor = ConsoleColor.Green;
-            if (typ == DebugType.Warning)
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            if (typ == DebugType.Error)
-                Console.ForegroundColor = ConsoleColor.Red;
+            var config = new LoggingConfiguration();
 
-            Console.WriteLine(message);
+            var consoleTarget = new ColoredConsoleTarget();
+            config.AddTarget("console", consoleTarget);
 
-            Console.ResetColor();
+            consoleTarget.Layout =
+                @"[${date:format=HH\:mm\:ss.fff} ${pad:padding=5:inner=${level:uppercase=true}}] ${logger} | ${message}";
+
+            var rule1 = new LoggingRule("*", LogLevel.Debug, consoleTarget);
+            config.LoggingRules.Add(rule1);
+
+            LogManager.Configuration = config;
         }
     }
 }

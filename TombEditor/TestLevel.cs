@@ -6,10 +6,11 @@ using System.Runtime.InteropServices;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.IO;
+using NLog;
 using TombLib.IO;
 
 namespace TombEngine
-{
+{   
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_color
     {
@@ -353,18 +354,10 @@ namespace TombEngine
         public int Angle;
     }
 
-
-
-
-
-
-
-
-
-
-
     class TombRaider4Level
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public int Version;
 
         public ushort NumRoomTextureTiles;
@@ -447,7 +440,7 @@ namespace TombEngine
         public tr_ai_item[] AiItems;
 
         string fileName;
-
+        
         public TombRaider4Level(string fileName)
         {
             this.fileName = fileName;
@@ -716,7 +709,7 @@ namespace TombEngine
             reader.ReadBlock(out NumMeshTrees);
             reader.ReadBlockArray(out MeshTrees, NumMeshTrees);
 
-            Console.WriteLine(reader.BaseStream.Position.ToString());
+            logger.Debug(reader.BaseStream.Position.ToString());
             reader.ReadBlock(out NumFrames);
             reader.ReadBlockArray(out Frames, NumFrames);
 
@@ -770,7 +763,7 @@ namespace TombEngine
             for (int n = 0; n < Boxes.Length; n++)
             {
                 writer.WriteLine("[" + n + "] " + "Xmin: " + Boxes[n].Xmin + ", " + "Xmax: " + Boxes[n].Xmax + ", " +
-                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " +
+                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " + 
                                  "Floor: " + Boxes[n].TrueFloor + ", Overlap Index: " + Boxes[n].OverlapIndex);
             }
 

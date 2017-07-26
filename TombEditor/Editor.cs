@@ -142,10 +142,10 @@ namespace TombEditor
             pp.PresentationInterval = PresentInterval.Immediate;
             pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
             pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
-
+            
             SwapChainGraphicsPresenter presenter = new SwapChainGraphicsPresenter(GraphicsDevice, pp);
             GraphicsDevice.Presenter = presenter;
-
+           
             // inizializzo le griglie
             _grids = new Buffer<VertexPositionColor>[4];
 
@@ -208,7 +208,7 @@ namespace TombEditor
 
             PickingResultEmpty = new PickingResult();
             PickingResultEmpty.Element = (int)PickingElementType.None;
-
+            
             Debug.Initialize();
 
 
@@ -372,7 +372,7 @@ namespace TombEditor
             BlockSelectionEndX = -1;
             BlockSelectionEndX = -1;
             LoadTriggersInUI();
-
+    
             _formEditor.SelectRoom(index);
         }
 
