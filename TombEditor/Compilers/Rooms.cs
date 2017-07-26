@@ -1119,12 +1119,12 @@ namespace TombEditor.Compilers
             ReportProgress(3, "Building room texture map");
 
             // I've sorted the textures by height, now I build the texture map
-            var numRoomTexturePages = _editor.Level.TextureMap.Height / 256;
+            var numRoomTexturePages = _editor.Level._textureMap.Height / 256;
             for (var x = 0; x < 256; x++)
             {
-                for (var y = 0; y < _editor.Level.TextureMap.Height; y++)
+                for (var y = 0; y < _editor.Level._textureMap.Height; y++)
                 {
-                    var c = _editor.Level.TextureMap.GetPixel(x, y);
+                    var c = _editor.Level._textureMap.GetPixel(x, y);
 
                     if (c.R == 255 & c.G == 0 && c.B == 255)
                     {

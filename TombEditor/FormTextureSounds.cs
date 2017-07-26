@@ -31,7 +31,7 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            picTextureMap.Image = _editor.Level.TextureMap;
+            picTextureMap.Image = _editor.Level._textureMap;
 
             comboSounds.SelectedIndex = 6;
         }

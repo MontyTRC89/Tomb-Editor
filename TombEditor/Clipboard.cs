@@ -125,7 +125,7 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectID();
+                        instance.ID = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
@@ -142,7 +142,7 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectID();
+                        instance.ID = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
@@ -159,7 +159,7 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectID();
+                        instance.ID = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
@@ -176,7 +176,7 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectID();
+                        instance.ID = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
@@ -193,7 +193,7 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectID();
+                        instance.ID = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
@@ -210,7 +210,7 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectID();
+                        instance.ID = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
