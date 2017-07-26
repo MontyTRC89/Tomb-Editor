@@ -171,6 +171,7 @@ namespace TombEditor.Controls
         private GeometricPrimitive _littleSphere;
         private GeometricPrimitive _littleWireframedCube;
         private BasicEffect _basicEffect;
+        private Gizmo _gizmo;
 
         // Rooms to draw
         private List<int> _roomsToDraw;
@@ -268,6 +269,8 @@ namespace TombEditor.Controls
             };
 
             _rasterizerWireframe = RasterizerState.New(_editor.GraphicsDevice, renderStateDesc);
+
+            _gizmo = new Gizmo();
 
             logger.Info("Graphic Device ready");
         }
@@ -1079,6 +1082,8 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(instance.Position, viewProjection);
+
+                    //_gizmo.Draw(instance.Position, viewProjection);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
