@@ -332,7 +332,7 @@
     </Compile>
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cone.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.LinesCube.cs" />
-    <None Include="packages.config" />
+    <None Include="packages.config"/>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
