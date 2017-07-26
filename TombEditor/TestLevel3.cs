@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.IO;
+using NLog;
 using TombLib.IO;
 
 namespace TombEngine
@@ -51,6 +52,8 @@ namespace TombEngine
 
     class TombRaider3Level
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public int Version;
 
         //public ushort NumRoomTextureTiles;
@@ -158,7 +161,7 @@ namespace TombEngine
 
             wrPalette.Flush();
             wrPalette.Close();
-
+            
 
             reader.ReadBytes(1024);
 
@@ -353,7 +356,7 @@ namespace TombEngine
             reader.ReadBlock(out NumMeshTrees);
             reader.ReadBlockArray(out MeshTrees, NumMeshTrees);
 
-            Console.WriteLine(reader.BaseStream.Position.ToString());
+            logger.Debug(reader.BaseStream.Position.ToString());
             reader.ReadBlock(out NumFrames);
             reader.ReadBlockArray(out Frames, NumFrames);
 
@@ -408,7 +411,7 @@ namespace TombEngine
             for (int n = 0; n < Boxes.Length; n++)
             {
                 writer.WriteLine("[" + n + "] " + "Xmin: " + Boxes[n].Xmin + ", " + "Xmax: " + Boxes[n].Xmax + ", " +
-                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " +
+                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " + 
                                  "Floor: " + Boxes[n].TrueFloor + ", Overlap Index: " + Boxes[n].OverlapIndex);
             }
 
@@ -529,7 +532,7 @@ namespace TombEngine
                 }
             }
 
-
+    
             // I've sorted the textures by height, now I build the texture map
             bool newLine = false;
             int numRoomTexturePages = 1;
@@ -630,7 +633,7 @@ namespace TombEngine
                         writer.Write(SpriteTextures[i].TopSide);
                         writer.Write(SpriteTextures[i].RightSide);
                         writer.Write(SpriteTextures[i].BottomSide);
-
+                        
                         break;
                     }
                 }

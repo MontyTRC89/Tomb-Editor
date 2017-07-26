@@ -9,11 +9,14 @@ using System.Drawing.Imaging;
 using TombEditor.Geometry;
 using zlib;
 using System.Diagnostics;
+using NLog;
 
 namespace TombEditor
 {
     class Utils
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static Vector3 PositionInWorldCoordinates(Vector3 pos)
         {
             return new Vector3(pos.X * 1024.0f, pos.Y * 256.0f, pos.Z * 1024.0f);
@@ -71,7 +74,7 @@ namespace TombEditor
         }
         public static void ConvertTGAtoPNG(string filename, out string newName)
         {
-            Debug.Log("Converting TGA texture map to PNG format");
+            logger.Debug("Converting TGA texture map to PNG format");
             
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -91,8 +94,8 @@ namespace TombEditor
             
             watch.Stop();
 
-            Debug.Log("Texture map converted", DebugType.Success);
-            Debug.Log("    Elapsed time: " + watch.ElapsedMilliseconds + " ms", DebugType.None);
+            logger.Info("Texture map converted");
+            logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
         }
 
         public static int GetWorldX(Room room, int x)

@@ -5,12 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NLog;
 using TombEditor.Geometry;
 
 namespace TombEditor
 {
     public class EditorActions
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public enum FaceEditorActions
         {
             EntireFace,
@@ -705,7 +708,7 @@ namespace TombEditor
             //   });
 
             watch.Stop();
-            Console.WriteLine("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
+            logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
         }
 
         public static void FlipFloorSplit(int xMin, int xMax, int zMin, int zMax)
@@ -877,7 +880,7 @@ namespace TombEditor
             }
 
             _editor.Level.DeleteObject(id);
-        }
+        }        
 
         public static void MoveLight(int id, MoveObjectDirections direction, bool smoothMove)
         {
@@ -1030,7 +1033,7 @@ namespace TombEditor
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].DoubleSided = false;
 
                 Vector2[] UV = new Vector2[4];
-
+                
                 LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture];
 
                 int yBlock = (int)(texture.Page / 8);

@@ -14,6 +14,7 @@ using RastDesc = SharpDX.Direct3D11.RasterizerStateDescription;
 using DepthDesc = SharpDX.Direct3D11.DepthStencilStateDescription;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using NLog;
 
 namespace TombEditor.Controls
 {
@@ -37,6 +38,8 @@ namespace TombEditor.Controls
 
     public partial class PanelRendering3D : Panel
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private class RenderBucket
         {
             public byte MainRoom { get; set; }
@@ -209,7 +212,7 @@ namespace TombEditor.Controls
 
         public void InitializePanel()
         {
-            Debug.Log("Starting DirectX 11");
+            logger.Info("Starting DirectX 11");
 
             // Initialize the viewport, after the panel is added and sized on the form
             PresentationParameters pp = new PresentationParameters();
@@ -263,7 +266,7 @@ namespace TombEditor.Controls
 
             _rasterizerWireframe = RasterizerState.New(_editor.GraphicsDevice, renderStateDesc);
 
-            Debug.Log("Graphic Device ready", DebugType.Success);
+            logger.Info("Graphic Device ready");
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -616,8 +619,7 @@ namespace TombEditor.Controls
                                     _editor.BlockSelectionEndX = xBlock;
                                     _editor.BlockSelectionEndZ = zBlock;
 
-                                    Debug.Log("Selected range: (" + _editor.BlockSelectionStartX + ", " + _editor.BlockSelectionStartZ + ") " +
-                                              "- (" + _editor.BlockSelectionEndX + ", " + _editor.BlockSelectionEndZ + ")");
+                                    logger.Debug($"Selected range: ({_editor.BlockSelectionStartX}, {_editor.BlockSelectionStartZ}) - ({_editor.BlockSelectionEndX}, {_editor.BlockSelectionEndZ})");
 
                                     _editor.LoadTriggersInUI();
 
@@ -941,8 +943,7 @@ namespace TombEditor.Controls
                 IObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
-
-                Vector4 color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+                var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
                 if (_editor.PickingResult.ElementType == PickingElementType.Camera && instance.ID == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -1029,9 +1030,8 @@ namespace TombEditor.Controls
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
-
-                    string message = "Sink (" + instance.ID + ")";
-                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
+                    var message = "Sink (" + instance.ID + ")";
+                    var modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
@@ -1119,7 +1119,7 @@ namespace TombEditor.Controls
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
             }
 
-            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);         
         }
 
         private void DrawMoveables(Matrix viewProjection)
@@ -1143,7 +1143,7 @@ namespace TombEditor.Controls
                 Debug.NumMoveables++;
 
                 SkinnedModel model = modelInfo.Model;
-
+                
                 if (k == 0 || model.ObjectID != _lastObject.ObjectID)
                 {
                     _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
@@ -1583,31 +1583,31 @@ namespace TombEditor.Controls
             switch (result.ElementType)
             {
                 case PickingElementType.SkinnedModel:
-                    Debug.Log("Selected: Moveable #" + result.Element);
+                    logger.Debug("Selected: Moveable #" + result.Element);
                     break;
 
                 case PickingElementType.StaticModel:
-                    Debug.Log("Selected: Static Mesh #" + result.Element);
+                    logger.Debug("Selected: Static Mesh #" + result.Element);
                     break;
 
                 case PickingElementType.Sink:
-                    Debug.Log("Selected: Sink #" + result.Element);
+                    logger.Debug("Selected: Sink #" + result.Element);
                     break;
 
                 case PickingElementType.Camera:
-                    Debug.Log("Selected: Camera #" + result.Element);
+                    logger.Debug("Selected: Camera #" + result.Element);
                     break;
 
                 case PickingElementType.FlyByCamera:
-                    Debug.Log("Selected: Flyby camera #" + result.Element);
+                    logger.Debug("Selected: Flyby camera #" + result.Element);
                     break;
 
                 case PickingElementType.SoundSource:
-                    Debug.Log("Selected: Sound source #" + result.Element);
+                    logger.Debug("Selected: Sound source #" + result.Element);
                     break;
 
                 case PickingElementType.Light:
-                    Debug.Log("Selected: Light #" + result.Element);
+                    logger.Debug("Selected: Light #" + result.Element);
                     break;
             }
 
@@ -1818,7 +1818,7 @@ namespace TombEditor.Controls
             // recupero le coordinate X e Z della faccia
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
-
+  
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
 
             EditorActions.PlaceNoCollision(x, z, faceType);
@@ -2078,7 +2078,7 @@ namespace TombEditor.Controls
 
                                             _solidBuckets.Add(bucket);
                                         }
-                                    }
+                                    } 
                                     else
                                     {
                                         if (!face.Transparent && !face.Invisible)
@@ -2287,7 +2287,7 @@ namespace TombEditor.Controls
 
             _editor.GraphicsDevice.Present();
 
-            Debug.Log("Draw Call! " + mils + "ms", DebugType.Success);
+            logger.Debug($"Draw Call! {mils}ms");
         }
         
         private void RenderTask1(object viewProjection_)
@@ -2371,7 +2371,7 @@ namespace TombEditor.Controls
                 RenderBucket bucket = _opaqueBuckets[i];
 
                 int room = bucket.Room;
-
+                
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
@@ -2407,7 +2407,7 @@ namespace TombEditor.Controls
 
                 // Draw the face
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
-
+                
                 Debug.NumVertices += bucket.IndexBuffer.ElementCount;
                 Debug.NumTriangles += bucket.IndexBuffer.ElementCount / 3;
 
@@ -2567,7 +2567,7 @@ namespace TombEditor.Controls
                 int z = bucket.Z;
                 int index = (int)bucket.FaceType;
                 int room = bucket.Room;
-
+                
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
@@ -2701,7 +2701,7 @@ namespace TombEditor.Controls
                                 break;
                         }
                     }
-                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 ||
+                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 || 
                              (_editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.Wall &&
                               _editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.BorderWall))
                     {

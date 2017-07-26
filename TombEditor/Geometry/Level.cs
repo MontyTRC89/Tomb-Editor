@@ -15,11 +15,14 @@ using TombEditor.Controls;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
+using NLog;
 
 namespace TombEditor.Geometry
 {
     public class Level : IDisposable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private struct prj_slot
         {
             public bool present;
@@ -85,7 +88,7 @@ namespace TombEditor.Geometry
         public bool MustSave { get; set; } // Used for Save and Save as logic
         public string FileName { get; set; }
         private Editor _editor;
-
+             
         public Level()
         {
             _editor = Editor.Instance;
@@ -93,7 +96,7 @@ namespace TombEditor.Geometry
 
         public int AddTexture(short x, short y, short w, short h)
         {
-            short newX = (short)x;
+            short newX = (short)x; 
             short newY = (short)y;
 
             // Step 1: check if there's another texture already in the list
@@ -150,7 +153,7 @@ namespace TombEditor.Geometry
 
         public void LoadTextureMap(string filename)
         {
-            Debug.Log("Loading texture map", DebugType.Warning);
+            logger.Warn("Loading texture map");
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -167,8 +170,8 @@ namespace TombEditor.Geometry
             int numPages = (int)Math.Floor(TextureMap.Height / 256.0f);
             if (TextureMap.Height % 256 != 0)
                 numPages++;
-            
-            Debug.Log("Building 2048x2048 texture atlas for DirectX");
+
+            logger.Debug("Building 2048x2048 texture atlas for DirectX");
 
             // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
             // textures.
@@ -197,7 +200,7 @@ namespace TombEditor.Geometry
                 // Clean up DirectX texture
                 if (Textures.ContainsKey(0))
                 {
-                    Debug.Log("Cleaning memory used by a previous texture map");
+                    logger.Debug("Cleaning memory used by a previous texture map");
 
                     Textures[0].Dispose();
                     Textures.Remove(0);
@@ -211,8 +214,8 @@ namespace TombEditor.Geometry
 
             watch.Stop();
 
-            Debug.Log("Texture map loaded", DebugType.Success);
-            Debug.Log("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
+            logger.Info("Texture map loaded");
+            logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
         }
 
         public void LoadWad(string filename)
@@ -280,7 +283,7 @@ namespace TombEditor.Geometry
 
                 form.ReportProgress(0, "Begin of PRJ import");
 
-                Debug.Log("Opening Winroomedit PRJ file", DebugType.Warning);
+                logger.Warn("Opening Winroomedit PRJ file");
 
                 // Check if it's a NGLE PRJ
                 bool ngle = false;
@@ -289,7 +292,7 @@ namespace TombEditor.Geometry
                 if (bytesNGLE[0] == 0x4E && bytesNGLE[1] == 0x47 && bytesNGLE[2] == 0x4C && bytesNGLE[3] == 0x45)
                 {
                     form.ReportProgress(1, "This is a NGLE project");
-                    Debug.Log("NGLE Project");
+                    logger.Debug("NGLE Project");
                     ngle = true;
                 }
 
@@ -300,7 +303,7 @@ namespace TombEditor.Geometry
 
                 // Number of rooms
                 int numRooms = reader.ReadInt32();
-                Debug.Log("Number of rooms: " + numRooms);
+                logger.Debug("Number of rooms: " + numRooms);
 
                 // Now read the first info about rooms, at the end of the PRJ there will be another block
                 for (int i = 0; i < MaxNumberOfRooms; ++i)
@@ -324,8 +327,8 @@ namespace TombEditor.Geometry
                     // Read room's name
                     string roomName = System.Text.UTF8Encoding.ASCII.GetString(reader.ReadBytes(80));
 
-                    Debug.Log("Room #" + i, DebugType.Warning);
-                    Debug.Log("    Name: " + roomName);
+                    logger.Warn("Room #" + i);
+                    logger.Info("    Name: " + roomName);
 
                     // Read position
                     int zPos = reader.ReadInt32();
@@ -356,7 +359,7 @@ namespace TombEditor.Geometry
 
                     List<int> tmpPortals = new List<int>();
 
-                    Debug.Log("    Portals: " + numPortals);
+                    logger.Info("    Portals: " + numPortals);
 
                     for (int j = 0; j < numPortals; j++)
                     {
@@ -413,8 +416,8 @@ namespace TombEditor.Geometry
                         objectsThings[j] = reader.ReadInt16();
                     }
 
-                    Debug.Log("    Objects and Triggers: " + numObjects);
-
+                    logger.Info("    Objects and Triggers: " + numObjects);
+                    
                     for (int j = 0; j < numObjects; j++)
                     {
                         short objectType = reader.ReadInt16();
@@ -627,7 +630,7 @@ namespace TombEditor.Geometry
                     short numObjects2 = reader.ReadInt16();
                     short[] objectsThings2 = new short[numObjects2];
 
-                    Debug.Log("    Lights and other objects: " + numObjects2);
+                    logger.Info("    Lights and other objects: " + numObjects2);
 
                     for (int j = 0; j < numObjects2; j++)
                     {
@@ -805,7 +808,7 @@ namespace TombEditor.Geometry
                             camera.Flags[13] = ((objOCB & 0x2000) != 0);
                             camera.Flags[14] = ((objOCB & 0x4000) != 0);
                             camera.Flags[15] = ((objOCB & 0x8000) != 0);
-
+                            
                             level.Objects.Add(camera.ID, camera);
                             room.FlyByCameras.Add(camera.ID);
                         }
@@ -1040,7 +1043,7 @@ namespace TombEditor.Geometry
 
                 form.ReportProgress(30, "Rooms loaded");
 
-                Debug.Log("All rooms loaded", DebugType.Success);
+                logger.Info("All rooms loaded");
 
                 // Read unused things indices
                 //      byte[] bufIndices=reader.ReadBytes(13136);
@@ -1074,16 +1077,16 @@ namespace TombEditor.Geometry
                 string tgaName = System.Text.UTF8Encoding.ASCII.GetString(stringBuffer);
                 tgaName = tgaName.Replace('\0', ' ').Trim();
 
-                Debug.Log("Texture map: " + tgaName);
+                logger.Debug("Texture map: " + tgaName);
 
                 if (tgaName == "" || !File.Exists(tgaName))
                 {
-                    Debug.Log("Can't find texture map!", DebugType.Error);
+                    logger.Error("Can't find texture map!");
 
                     if (DarkUI.Forms.DarkMessageBox.ShowWarning("The TGA file '" + tgaName + " could not be found. Do you want to browse it or cancel importing?",
                                                                 "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                     {
-                        Debug.Log("PRJ import canceled", DebugType.Error);
+                        logger.Error("PRJ import canceled");
                         reader.Close();
                         return null;
                     }
@@ -1092,7 +1095,7 @@ namespace TombEditor.Geometry
                     tgaName = form.OpenTGA();
                     if (tgaName == "")
                     {
-                        Debug.Log("PRJ import canceled", DebugType.Error);
+                        logger.Error("PRJ import canceled");
                         reader.Close();
                         return null;
                     }
@@ -1174,7 +1177,7 @@ namespace TombEditor.Geometry
                 List<prj_slot> slots = new List<Geometry.Level.prj_slot>();
 
                 StreamWriter writerSlots = new StreamWriter(File.OpenWrite("slots.txt"));
-
+               
                 for (int i = 0; i < numSlots; i++)
                 {
                     prj_slot slot = new Geometry.Level.prj_slot();
@@ -1780,7 +1783,7 @@ namespace TombEditor.Geometry
                     }
 
                     room.BuildGeometry();
-
+                    
                     for (int z = 0; z < room.NumZSectors; z++)
                     {
                         for (int x = 0; x < room.NumXSectors; x++)
@@ -2156,7 +2159,7 @@ namespace TombEditor.Geometry
 
                                         sbyte newRot = (sbyte)(theFace.txtRotation);
                                         newRot++;
-
+                                                                            
                                         if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Rectangle)
                                             newRot = (sbyte)(newRot % 4);
                                         if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle)
@@ -2722,7 +2725,7 @@ namespace TombEditor.Geometry
                 level.Rooms[i].CalculateLightingForThisRoom();
                 level.Rooms[i].UpdateBuffers();
             }
-
+                        
             form.ReportProgress(100, "Level loaded correctly!");
 
             GC.Collect();
