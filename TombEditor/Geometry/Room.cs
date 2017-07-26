@@ -1070,6 +1070,8 @@ namespace TombEditor.Geometry
                             Blocks[x, z].Faces[f].StartVertex = (short)Vertices.Count;
                             int baseIndex = Vertices.Count;
 
+                            Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering = new List<short>();
+
                             Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 0));
                             Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 1));
                             Blocks[x, z].Faces[(int)f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 2));
