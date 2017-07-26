@@ -220,6 +220,7 @@
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
+    <Compile Include="Gizmo.cs" />
     <Compile Include="RowAnimatedTexture.cs" />
     <Compile Include="RowSoundSample.cs" />
     <Compile Include="TestLevel3.cs" />
