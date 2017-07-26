@@ -193,6 +193,9 @@ namespace TombEditor.Controls
         {
             _editor = Editor.Instance;
 
+            if (_editor.LightIndex == -1)
+                return;
+
             // Hack for setting up light parameter ranges
             SetParameters();
 
@@ -231,6 +234,9 @@ namespace TombEditor.Controls
         private void butUp_MouseDown(object sender, MouseEventArgs e)
         {
             _editor = Editor.Instance;
+
+            if (_editor.LightIndex == -1)
+                return;
 
             // Hack for setting up light parameter ranges
             SetParameters();
