@@ -1854,24 +1854,62 @@ namespace TombEditor
             butTextureWalls_Click(null, null);
         }
 
-        private void importTGAToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importConvertTextureToPng_Click(object sender, EventArgs e)
         {
-            if (openFileDialogTGA.ShowDialog() != DialogResult.OK)
+            if (_editor.Level == null)
                 return;
-
-            string pngName;
-            try
+            if (_editor.Level.TextureFile == null)
             {
-                Utils.ConvertTGAtoPNG(openFileDialogTGA.FileName, out pngName);
-            }
-            catch (Exception exc)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. " + exc.Message, "Error");
+                DarkUI.Forms.DarkMessageBox.ShowError("Currently there is no texture loaded to convert it.", "No texture loaded");
                 return;
             }
 
-            DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors",
-                "Informations");
+            string pngFilePath = Path.Combine(
+                Path.GetDirectoryName(_editor.Level.TextureFile),
+                Path.GetFileNameWithoutExtension(_editor.Level.TextureFile) + ".png");
+
+            if (File.Exists(pngFilePath))
+            {
+                if (DarkUI.Forms.DarkMessageBox.ShowWarning("There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
+                    "File exist already", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    return;
+            }
+
+            logger.Debug("Converting texture map to PNG format");
+
+            {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+
+                try
+                {
+
+                    //Convert...
+                    Bitmap bitmap = TombLib.Graphics.TextureLoad.LoadToBitmap(_editor.Level.TextureFile);
+                    try
+                    {
+                        Utils.ConvertTextureTo256Width(ref bitmap);
+                        bitmap.Save(pngFilePath, System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                    finally
+                    {
+                        bitmap.Dispose();
+                    }
+                }
+                catch (Exception exc)
+                {
+                    DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. " + exc.Message, "Error");
+                    return;
+                }
+
+                watch.Stop();
+
+                logger.Info("Texture map converted");
+                logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
+            }
+
+            DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
+            _editor.Level.LoadTextureMap(pngFilePath);
         }
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
