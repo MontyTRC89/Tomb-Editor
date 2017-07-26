@@ -42,7 +42,6 @@ namespace TombEditor.Controls
         private const byte GridStep = 11;
         
         public Panel2DGrid()
-            : base()
         {
             _editor = Editor.Instance;
             this.DoubleBuffered = true;
@@ -455,12 +454,7 @@ namespace TombEditor.Controls
             _editor.DrawPanel3D();
             Invalidate();
         }
-
-        private void Draw()
-        {
-
-        }
-
+        
         protected override void OnPaint(PaintEventArgs e)
         {
             try
