@@ -277,7 +277,7 @@ namespace TombEditor.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (Presenter != null)
+            if (Presenter != null && Width != 0 && Height != 0)
                 Presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 

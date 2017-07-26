@@ -12,6 +12,7 @@ using TombEditor.Geometry;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombEditor.Controls;
 using SharpDX.Direct3D;
+using System.Runtime.InteropServices;
 
 namespace TombEditor
 {
@@ -37,6 +38,15 @@ namespace TombEditor
 
     public class Editor
     {
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
+
         // istanza dell'editor
         private static Editor _instance;
 
@@ -110,6 +120,15 @@ namespace TombEditor
 
         public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor)
         {
+
+#if DEBUG
+
+#else
+            // Hide the console in release mode
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE);
+#endif
+
             Palette = new List<System.Drawing.Color>();
             try
             {
