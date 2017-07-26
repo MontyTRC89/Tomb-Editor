@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.IO;
-using System.Drawing.Drawing2D;
 using SharpDX.Toolkit.Graphics;
 using TombLib.Wad;
 using TombLib.IO;
-using TombEditor.Geometry;
 using SharpDX;
 using Color = System.Drawing.Color;
-using TombEditor.Controls;
-using System.ComponentModel;
 using System.Windows.Forms;
 using System.Diagnostics;
 using NLog;
@@ -74,12 +69,20 @@ namespace TombEditor.Geometry
 
         public const int MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
-        public Dictionary<int, LevelTexture> TextureSamples { get; } = new Dictionary<int, LevelTexture>(); //Texture tiles
-        public Dictionary<int, Texture2D> Textures { get; } = new Dictionary<int, Texture2D>(); //DirectX textures... For now just one texture atlas 2048x2048 pixel
+
+        public Dictionary<int, LevelTexture> TextureSamples { get; } =
+            new Dictionary<int, LevelTexture>(); //Texture tiles
+
+        public Dictionary<int, Texture2D> Textures { get; } =
+            new Dictionary<int, Texture2D>(); //DirectX textures... For now just one texture atlas 2048x2048 pixel
+
         public Bitmap _textureMap; //The texture map on the CPU
-        public Dictionary<int, Portal> Portals { get; } = new Dictionary<int, Geometry.Portal>();
-        public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, Geometry.TriggerInstance>();
-        public Dictionary<int, IObjectInstance> Objects { get; } = new Dictionary<int, IObjectInstance>(); //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
+        public Dictionary<int, Portal> Portals { get; } = new Dictionary<int, Portal>();
+        public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
+
+        public Dictionary<int, IObjectInstance> Objects { get; } =
+            new Dictionary<int, IObjectInstance>(); //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
+
         public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
         public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
         public Wad Wad { get; private set; }
@@ -88,7 +91,7 @@ namespace TombEditor.Geometry
         public bool MustSave { get; set; } // Used for Save and Save as logic
         public string FileName { get; private set; }
         public readonly Editor _editor;
-             
+
         public Level()
         {
             _editor = Editor.Instance;
@@ -96,14 +99,14 @@ namespace TombEditor.Geometry
 
         public int AddTexture(short x, short y, short w, short h)
         {
-            short newX = (short)x; 
-            short newY = (short)y;
+            short newX = x;
+            short newY = y;
 
             // Step 1: check if there's another texture already in the list
-            for (int i = 0; i < TextureSamples.Count; i++)
+            foreach (var texture in TextureSamples.Values)
             {
-                var texture = TextureSamples.ElementAt(i).Value;
-                if (texture.X == newX && (texture.Y + 256 * texture.Page) == newY && texture.Width == w && texture.Height == h
+                if (texture.X == newX && (texture.Y + 256 * texture.Page) == newY && texture.Width == w &&
+                    texture.Height == h
                     && texture.DoubleSided == _editor.DoubleSided && texture.Transparent == _editor.Transparent)
                     return texture.ID;
             }
@@ -120,7 +123,7 @@ namespace TombEditor.Geometry
                 id = TextureSamples.Count;
 
             // Step 3: if no compatible texture is found, then add a new texture tile
-            short page = (short)Math.Floor(y / 256.0f);
+            short page = (short) Math.Floor(y / 256.0f);
             var newTexture = new LevelTexture
             {
                 X = newX,
@@ -141,8 +144,8 @@ namespace TombEditor.Geometry
         public void Dispose()
         {
             // First clean the old data
-            for (int i = 0; i < Textures.Count; i++)
-                Textures.ElementAt(i).Value.Dispose(); // Dispose DirectX texture and release GPU memory
+            foreach (var texture in Textures.Values)
+                texture.Dispose(); // Dispose DirectX texture and release GPU memory
 
             _textureMap?.Dispose();
 
@@ -166,7 +169,7 @@ namespace TombEditor.Geometry
             Utils.ConvertTextureTo256Width(ref _textureMap);
 
             // Calculate the number of pages
-            int numPages = (int)Math.Floor(_textureMap.Height / 256.0f);
+            int numPages = (int) Math.Floor(_textureMap.Height / 256.0f);
             if (_textureMap.Height % 256 != 0)
                 numPages++;
 
@@ -190,7 +193,7 @@ namespace TombEditor.Geometry
                         currentXblock++;
                         if (currentXblock != 8)
                             continue;
-                        
+
                         currentXblock = 0;
                         currentYblock++;
                     }
@@ -208,7 +211,7 @@ namespace TombEditor.Geometry
                 // Create DirectX texture
                 Textures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(_editor.GraphicsDevice, tempBitmap));
             }
-            
+
             TextureFile = filename;
 
             watch.Stop();
@@ -227,21 +230,21 @@ namespace TombEditor.Geometry
             Wad.PrepareDataForDirectX();
 
             // Prepare vertex buffers and index buffers
-            for (int i = 0; i < Wad.Moveables.Count; i++)
+            foreach (var moveable in Wad.Moveables.Values)
             {
                 // Build the mesh tree
-                Wad.Moveables.ElementAt(i).Value.BuildHierarchy();
+                moveable.BuildHierarchy();
 
                 // If moveable has animations, then build the animation pose of first frame of animation 0
-                if (Wad.Moveables.ElementAt(i).Value.Animations.Count > 0 && Wad.Moveables.ElementAt(i).Value.Animations[0].KeyFrames.Count > 0)
-                    Wad.Moveables.ElementAt(i).Value.BuildAnimationPose(Wad.Moveables.ElementAt(i).Value.Animations[0].KeyFrames[0]);
+                if (moveable.Animations.Count > 0 && moveable.Animations[0].KeyFrames.Count > 0)
+                    moveable.BuildAnimationPose(moveable.Animations[0].KeyFrames[0]);
 
-                Wad.Moveables.ElementAt(i).Value.BuildBuffers();
+                moveable.BuildBuffers();
             }
 
-            for (int i = 0; i < Wad.StaticMeshes.Count; i++)
+            foreach (var staticMesh in Wad.StaticMeshes.Values)
             {
-                Wad.StaticMeshes.ElementAt(i).Value.BuildBuffers();
+                staticMesh.BuildBuffers();
             }
         }
 
@@ -307,10 +310,9 @@ namespace TombEditor.Geometry
                 // Now read the first info about rooms, at the end of the PRJ there will be another block
                 for (int i = 0; i < MaxNumberOfRooms; ++i)
                     level.Rooms[i] = null;
-                
+
                 var tempRooms = new Dictionary<int, PrjBlock[,]>();
                 var flipInfos = new List<PrjFlipInfo>();
-                var portalRef = new List<List<int>>();
 
                 form.ReportProgress(2, "Number of rooms: " + numRooms);
                 double progress = 2;
@@ -345,7 +347,8 @@ namespace TombEditor.Geometry
 
                     reader.ReadInt16();
 
-                    var room = new Room(level, posXBlocks, (int)(yPos / 256.0f), posZBlocks, (byte)numXBlocks, (byte)numZBlocks, 0);
+                    var room = new Room(level, posXBlocks, (int) (yPos / 256.0f), posZBlocks, (byte) numXBlocks,
+                        (byte) numZBlocks, 0);
 
                     short numPortals = reader.ReadInt16();
                     var portalThings = new short[numPortals];
@@ -395,8 +398,8 @@ namespace TombEditor.Geometry
                             p.Direction = PortalDirection.Ceiling;
 
                         p.MemberOfFlippedRoom = (p.Room != i);
-                        p.Room = (short)i;
-                        p.PrjRealRoom = (short)i;
+                        p.Room = (short) i;
+                        p.PrjRealRoom = (short) i;
 
                         p.PrjThingIndex = portalThings[j];
                         p.PrjOtherThingIndex = portalSlot;
@@ -405,8 +408,6 @@ namespace TombEditor.Geometry
 
                         level.Portals.Add(p.ID, p);
                     }
-
-                    portalRef.Add(tmpPortals);
 
                     short numObjects = reader.ReadInt16();
                     var objectsThings = new short[numObjects];
@@ -417,7 +418,7 @@ namespace TombEditor.Geometry
                     }
 
                     logger.Info("    Objects and Triggers: " + numObjects);
-                    
+
                     for (int j = 0; j < numObjects; j++)
                     {
                         short objectType = reader.ReadInt16();
@@ -466,26 +467,26 @@ namespace TombEditor.Geometry
                             if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                             {
                                 var instance = new MoveableInstance(objectsThings[j], objRoom)
+                                {
+                                    Bits =
                                     {
-                                        Bits =
-                                        {
-                                            [0] = (objOcb & 0x0002) != 0,
-                                            [1] = (objOcb & 0x0004) != 0,
-                                            [2] = (objOcb & 0x0008) != 0,
-                                            [3] = (objOcb & 0x0010) != 0,
-                                            [4] = (objOcb & 0x0020) != 0
-                                        },
-                                        Invisible = (objOcb & 0x0001) != 0,
-                                        ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectID = objSlot,
-                                        X = (byte) (objPosX),
-                                        Z = (byte) (objPosZ),
-                                        Y = (short) objLongY,
-                                        OCB = objTimer
-                                    };
+                                        [0] = (objOcb & 0x0002) != 0,
+                                        [1] = (objOcb & 0x0004) != 0,
+                                        [2] = (objOcb & 0x0008) != 0,
+                                        [3] = (objOcb & 0x0010) != 0,
+                                        [4] = (objOcb & 0x0020) != 0
+                                    },
+                                    Invisible = (objOcb & 0x0001) != 0,
+                                    ClearBody = (objOcb & 0x0080) != 0,
+                                    ObjectID = objSlot,
+                                    X = (byte) (objPosX),
+                                    Z = (byte) (objPosZ),
+                                    Y = (short) objLongY,
+                                    OCB = objTimer
+                                };
 
 
-                                objFacing = (short)((objFacing >> 8) & 0xff);
+                                objFacing = (short) ((objFacing >> 8) & 0xff);
 
                                 if (objFacing == 0x00)
                                     instance.Rotation = 270;
@@ -519,11 +520,11 @@ namespace TombEditor.Geometry
                                 instance.Invisible = (objOcb & 0x0001) != 0;
                                 instance.ClearBody = (objOcb & 0x0080) != 0;
                                 instance.ObjectID = objSlot - (ngle ? 520 : 465);
-                                instance.X = (byte)(objPosX);
-                                instance.Z = (byte)(objPosZ);
-                                instance.Y = (short)objLongY;
+                                instance.X = (byte) (objPosX);
+                                instance.Z = (byte) (objPosZ);
+                                instance.Y = (short) objLongY;
 
-                                objFacing = (short)((objFacing >> 8) & 0xff);
+                                objFacing = (short) ((objFacing >> 8) & 0xff);
 
                                 if (objFacing == 0x00)
                                     instance.Rotation = 270;
@@ -542,9 +543,9 @@ namespace TombEditor.Geometry
                                 if (objFacing == 0xe0)
                                     instance.Rotation = 225;
 
-                                byte red = (byte)(objTint & 0x001f);
-                                byte green = (byte)((objTint & 0x03e0) >> 5);
-                                byte blu = (byte)((objTint & 0x7c00) >> 10);
+                                byte red = (byte) (objTint & 0x001f);
+                                byte green = (byte) ((objTint & 0x03e0) >> 5);
+                                byte blu = (byte) ((objTint & 0x7c00) >> 10);
 
                                 instance.Color = Color.FromArgb(255, red * 8, green * 8, blu * 8);
 
@@ -554,16 +555,16 @@ namespace TombEditor.Geometry
                         }
                         else
                         {
-                            short currentRoom = (short)i;
+                            short currentRoom = (short) i;
 
                             var trigger = new TriggerInstance(level.GetNewTriggerId(), currentRoom)
-                                {
-                                    X = (byte) objPosX,
-                                    Z = (byte) objPosZ,
-                                    NumXBlocks = (byte) objSizeX,
-                                    NumZBlocks = (byte) objSizeZ,
-                                    Target = triggerItemNumber
-                                };
+                            {
+                                X = (byte) objPosX,
+                                Z = (byte) objPosZ,
+                                NumXBlocks = (byte) objSizeX,
+                                NumZBlocks = (byte) objSizeZ,
+                                Target = triggerItemNumber
+                            };
 
 
                             switch (triggerType)
@@ -734,46 +735,40 @@ namespace TombEditor.Geometry
                                 light.Out = lightOut;
                                 light.Intensity = lightIntensity / 8192.0f;
 
-                                light.X = (byte)(objPosX);
-                                light.Z = (byte)(objPosZ);
-                                light.Y = (short)objLongY;
+                                light.X = (byte) (objPosX);
+                                light.Z = (byte) (objPosZ);
+                                light.Y = (short) objLongY;
 
-                                if (objectType == 0x4000)
+                                switch (objectType)
                                 {
-                                    light.Type = LightType.Light;
-                                    light.In /= 1024.0f;
-                                    light.Out /= 1024.0f;
-                                }
-
-                                if (objectType == 0x6000)
-                                {
-                                    light.Type = LightType.Shadow;
-                                    light.In /= 1024.0f;
-                                    light.Out /= 1024.0f;
-                                }
-
-                                if (objectType == 0x4200)
-                                    light.Type = LightType.Sun;
-
-                                if (objectType == 0x5000)
-                                {
-                                    light.In = 512.0f;
-                                    light.Out = 1536.0f;
-                                    light.Type = LightType.Effect;
-                                }
-
-                                if (objectType == 0x4100)
-                                {
-                                    light.Type = LightType.Spot;
-                                    light.Len /= 1024.0f;
-                                    light.Cutoff /= 1024.0f;
-                                }
-
-                                if (objectType == 0x4020)
-                                {
-                                    light.In /= 1024.0f;
-                                    light.Out /= 1024.0f;
-                                    light.Type = LightType.FogBulb;
+                                    case 0x4000:
+                                        light.Type = LightType.Light;
+                                        light.In /= 1024.0f;
+                                        light.Out /= 1024.0f;
+                                        break;
+                                    case 0x6000:
+                                        light.Type = LightType.Shadow;
+                                        light.In /= 1024.0f;
+                                        light.Out /= 1024.0f;
+                                        break;
+                                    case 0x4200:
+                                        light.Type = LightType.Sun;
+                                        break;
+                                    case 0x5000:
+                                        light.In = 512.0f;
+                                        light.Out = 1536.0f;
+                                        light.Type = LightType.Effect;
+                                        break;
+                                    case 0x4100:
+                                        light.Type = LightType.Spot;
+                                        light.Len /= 1024.0f;
+                                        light.Cutoff /= 1024.0f;
+                                        break;
+                                    case 0x4020:
+                                        light.In /= 1024.0f;
+                                        light.Out /= 1024.0f;
+                                        light.Type = LightType.FogBulb;
+                                        break;
                                 }
 
                                 room.Lights.Add(light);
@@ -791,13 +786,13 @@ namespace TombEditor.Geometry
                                 level.Objects.Add(sound.ID, sound);
                                 break;
                             case 0x4400:
-                                SinkInstance sink = new SinkInstance(objectsThings2[j], objRoom);
+                                var sink = new SinkInstance(objectsThings2[j], objRoom);
 
-                                sink.X = (byte)(objPosX);
-                                sink.Z = (byte)(objPosZ);
-                                sink.Y = (short)objLongY;
+                                sink.X = (byte) (objPosX);
+                                sink.Z = (byte) (objPosZ);
+                                sink.Y = (short) objLongY;
 
-                                sink.Strength = (short)(objTimer / 2);
+                                sink.Strength = (short) (objTimer / 2);
 
                                 level.Objects.Add(sink.ID, sink);
                                 room.Sinks.Add(sink.ID);
@@ -805,14 +800,14 @@ namespace TombEditor.Geometry
                             case 0x4800:
                             case 0x4080:
                             {
-                                CameraInstance camera = new CameraInstance(objectsThings2[j], objRoom);
-
-                                camera.Timer = objTimer;
-                                camera.Fixed = (objectType == 0x4080);
-
-                                camera.X = (byte)(objPosX);
-                                camera.Z = (byte)(objPosZ);
-                                camera.Y = (short)objLongY;
+                                var camera = new CameraInstance(objectsThings2[j], objRoom)
+                                {
+                                    Timer = objTimer,
+                                    Fixed = (objectType == 0x4080),
+                                    X = (byte) (objPosX),
+                                    Z = (byte) (objPosZ),
+                                    Y = (short) objLongY
+                                };
 
                                 level.Objects.Add(camera.ID, camera);
                                 room.Cameras.Add(camera.ID);
@@ -820,24 +815,23 @@ namespace TombEditor.Geometry
                                 break;
                             case 0x4040:
                             {
-                                FlybyCameraInstance camera = new FlybyCameraInstance(objectsThings2[j], objRoom);
+                                var camera = new FlybyCameraInstance(objectsThings2[j], objRoom)
+                                {
+                                    Timer = objTimer,
+                                    Sequence = (short) ((objSlot & 0xe000) >> 13),
+                                    Number = (short) ((objSlot & 0x1f00) >> 8),
+                                    FOV = (short) ((objSlot & 0x00ff)),
+                                    Roll = objRoll,
+                                    Speed = (short) (objSpeed / 655),
+                                    X = (byte) (objPosX),
+                                    Z = (byte) (objPosZ),
+                                    Y = (short) objLongY,
+                                    DirectionX = (short) (-objUnk),
+                                    DirectionY = (short) (objFacing + 90)
+                                };
 
-                                camera.Timer = objTimer;
-
-                                camera.Sequence = (short)((objSlot & 0xe000) >> 13);
-                                camera.Number = (short)((objSlot & 0x1f00) >> 8);
-                                camera.FOV = (short)((objSlot & 0x00ff));
-                                camera.Roll = objRoll;
-                                camera.Speed = (short)(objSpeed / 655);
-
-                                camera.X = (byte)(objPosX);
-                                camera.Z = (byte)(objPosZ);
-                                camera.Y = (short)objLongY;
-
-                                camera.DirectionX = (short)(-objUnk);
-                                camera.DirectionY = (short)(objFacing + 90);
                                 if (camera.DirectionY >= 360)
-                                    camera.DirectionY = (short)(camera.DirectionY - 360);
+                                    camera.DirectionY = (short) (camera.DirectionY - 360);
 
                                 camera.Flags[0] = ((objOcb & 0x01) != 0);
                                 camera.Flags[1] = ((objOcb & 0x02) != 0);
@@ -855,7 +849,7 @@ namespace TombEditor.Geometry
                                 camera.Flags[13] = ((objOcb & 0x2000) != 0);
                                 camera.Flags[14] = ((objOcb & 0x4000) != 0);
                                 camera.Flags[15] = ((objOcb & 0x8000) != 0);
-                            
+
                                 level.Objects.Add(camera.ID, camera);
                                 room.FlyByCameras.Add(camera.ID);
                             }
@@ -876,7 +870,7 @@ namespace TombEditor.Geometry
 
                     if (flipRoom != -1)
                     {
-                        var info = new Geometry.Level.PrjFlipInfo
+                        var info = new PrjFlipInfo
                         {
                             _baseRoom = (short) i,
                             _flipRoom = flipRoom,
@@ -909,7 +903,7 @@ namespace TombEditor.Geometry
                     {
                         for (int x = 0; x < room.NumXSectors; x++)
                         {
-                            var b = new Geometry.Level.PrjBlock
+                            var b = new PrjBlock
                             {
                                 _blockType = reader.ReadInt16(),
                                 _blockFlags1 = reader.ReadInt16(),
@@ -976,9 +970,9 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    room.Position = new SharpDX.Vector3(-room.Position.X, lowest, room.Position.Z);
+                    room.Position = new Vector3(-room.Position.X, lowest, room.Position.Z);
 
-                    sbyte deltaCeilingMain = (sbyte)(lowest + 20);
+                    sbyte deltaCeilingMain = (sbyte) (lowest + 20);
 
                     for (int z = 0; z < room.NumZSectors; z++)
                     {
@@ -986,8 +980,8 @@ namespace TombEditor.Geometry
                         {
                             var b = tempBlocks[room.NumXSectors - 1 - x, z];
 
-                            sbyte deltaFloor = (sbyte)(b._blockYfloor - lowest);
-                            sbyte deltaCeiling = (sbyte)(deltaCeilingMain - b._blockYceiling);
+                            sbyte deltaFloor = (sbyte) (b._blockYfloor - lowest);
+                            sbyte deltaCeiling = (sbyte) (deltaCeilingMain - b._blockYceiling);
 
                             for (int j = 0; j < 4; j++)
                                 b._qaFaces[j] += deltaFloor;
@@ -1045,17 +1039,17 @@ namespace TombEditor.Geometry
 
                             room.Ceiling = 20;
 
-                            room.Blocks[x, z].WSFaces[0] = (sbyte)(b._wsFaces[0]);
-                            room.Blocks[x, z].WSFaces[1] = (sbyte)(b._wsFaces[3]);
-                            room.Blocks[x, z].WSFaces[2] = (sbyte)(b._wsFaces[2]);
-                            room.Blocks[x, z].WSFaces[3] = (sbyte)(b._wsFaces[1]);
+                            room.Blocks[x, z].WSFaces[0] = (sbyte) (b._wsFaces[0]);
+                            room.Blocks[x, z].WSFaces[1] = (sbyte) (b._wsFaces[3]);
+                            room.Blocks[x, z].WSFaces[2] = (sbyte) (b._wsFaces[2]);
+                            room.Blocks[x, z].WSFaces[3] = (sbyte) (b._wsFaces[1]);
 
-                            room.Blocks[x, z].RFFaces[0] = (sbyte)(b._rfFaces[0]);
-                            room.Blocks[x, z].RFFaces[1] = (sbyte)(b._rfFaces[3]);
-                            room.Blocks[x, z].RFFaces[2] = (sbyte)(b._rfFaces[2]);
-                            room.Blocks[x, z].RFFaces[3] = (sbyte)(b._rfFaces[1]);
+                            room.Blocks[x, z].RFFaces[0] = (sbyte) (b._rfFaces[0]);
+                            room.Blocks[x, z].RFFaces[1] = (sbyte) (b._rfFaces[3]);
+                            room.Blocks[x, z].RFFaces[2] = (sbyte) (b._rfFaces[2]);
+                            room.Blocks[x, z].RFFaces[3] = (sbyte) (b._rfFaces[1]);
 
-                            room.Blocks[x, z].SplitFoorType = (byte)b._flags3;
+                            room.Blocks[x, z].SplitFoorType = (byte) b._flags3;
 
                             if ((b._blockFlags1 & 0x4000) != 0)
                                 room.Blocks[x, z].Flags |= BlockFlags.Monkey;
@@ -1099,16 +1093,16 @@ namespace TombEditor.Geometry
                     // Fix lights
                     foreach (var light in room.Lights)
                     {
-                        light.Position = new SharpDX.Vector3((room.NumXSectors - 1) * 1024.0f - light.Position.X + 512.0f,
+                        light.Position = new Vector3((room.NumXSectors - 1) * 1024.0f - light.Position.X + 512.0f,
                             light.Position.Y,
                             light.Position.Z + 512.0f);
                     }
 
                     level.Rooms[i] = room;
 
-                    progress += (i / (float)numRooms * 0.28f);
+                    progress += (i / (float) numRooms * 0.28f);
 
-                    form.ReportProgress((int)progress, "");
+                    form.ReportProgress((int) progress, "");
                 }
 
                 form.ReportProgress(30, "Rooms loaded");
@@ -1118,20 +1112,19 @@ namespace TombEditor.Geometry
                 // Read unused things indices
                 //      byte[] bufIndices=reader.ReadBytes(13136);
 
-                int dwNumThings = reader.ReadInt32();  // number of things in the map
-                int dwMaxThings = reader.ReadInt32();  // always 2000
+                int dwNumThings = reader.ReadInt32(); // number of things in the map
+                int dwMaxThings = reader.ReadInt32(); // always 2000
                 reader.ReadBytes(dwMaxThings * 4);
 
-                int dwNumLights = reader.ReadInt32();  // number of lights in the map
+                int dwNumLights = reader.ReadInt32(); // number of lights in the map
                 reader.ReadBytes(768 * 4);
 
-                int dwNumTriggers = reader.ReadInt32();    // number of triggers in the map
+                int dwNumTriggers = reader.ReadInt32(); // number of triggers in the map
                 reader.ReadBytes(512 * 4);
 
 
-
                 // Read TGA string
-                byte[] stringBuffer = new byte[255];
+                var stringBuffer = new byte[255];
                 int sb = 0;
                 while (true)
                 {
@@ -1153,8 +1146,10 @@ namespace TombEditor.Geometry
                 {
                     logger.Error("Can't find texture map!");
 
-                    if (DarkUI.Forms.DarkMessageBox.ShowWarning("The TGA file '" + tgaName + " could not be found. Do you want to browse it or cancel importing?",
-                                                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                            "The TGA file '" + tgaName +
+                            " could not be found. Do you want to browse it or cancel importing?",
+                            "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                     {
                         logger.Error("PRJ import canceled");
                         reader.Close();
@@ -1220,8 +1215,10 @@ namespace TombEditor.Geometry
 
                 if (wadName == "" || !File.Exists(wadName))
                 {
-                    if (DarkUI.Forms.DarkMessageBox.ShowWarning("The WAD file '" + wadName + " could not be found. Do you want to browse it or cancel importing?",
-                                                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                            "The WAD file '" + wadName +
+                            " could not be found. Do you want to browse it or cancel importing?",
+                            "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                     {
                         reader.Close();
                         return null;
@@ -1248,10 +1245,10 @@ namespace TombEditor.Geometry
                 int numSlots = reader.ReadInt32();
 
                 var writerSlots = new StreamWriter(File.OpenWrite("slots.txt"));
-               
+
                 for (int i = 0; i < numSlots; i++)
                 {
-                    var slot = new Geometry.Level.PrjSlot();
+                    var slot = new PrjSlot();
 
                     short slotType = reader.ReadInt16();
                     if (slotType == 0x00)
@@ -1308,22 +1305,22 @@ namespace TombEditor.Geometry
 
                     if (defined != 1)
                         continue;
-                    
+
                     var aSet = new AnimatedTextureSet();
 
                     for (int j = firstTexture; j <= lastTexture; j++)
                     {
                         int relative = j % 16;
 
-                        int txtY = (int)Math.Floor(relative / 4.0f);
+                        int txtY = (int) Math.Floor(relative / 4.0f);
                         int txtX = relative - 4 * txtY;
 
                         txtX *= 64;
                         txtY *= 64;
 
-                        int tile = (int)Math.Floor(j / 16.0f);
+                        int tile = (int) Math.Floor(j / 16.0f);
 
-                        AnimatedTexture aTexture = new AnimatedTexture((short)txtX, (short)txtY, (short)tile);
+                        AnimatedTexture aTexture = new AnimatedTexture((short) txtX, (short) txtY, (short) tile);
                         aSet.Textures.Add(aTexture);
                     }
 
@@ -1334,18 +1331,18 @@ namespace TombEditor.Geometry
                 {
                     int relative = i % 16;
 
-                    int txtY = (int)Math.Floor(relative / 4.0f);
+                    int txtY = (int) Math.Floor(relative / 4.0f);
                     int txtX = relative - 4 * txtY;
 
                     txtX *= 64;
                     txtY *= 64;
 
-                    int tile = (int)Math.Floor(i / 16.0f);
+                    int tile = (int) Math.Floor(i / 16.0f);
 
                     var txtSound = new TextureSound((short) txtX, (short) txtY, (short) tile)
-                        {
-                            Sound = (TextureSounds) (reader.ReadByte())
-                        };
+                    {
+                        Sound = (TextureSounds) (reader.ReadByte())
+                    };
 
                     level.TextureSounds.Add(txtSound);
                 }
@@ -1353,11 +1350,12 @@ namespace TombEditor.Geometry
                 // Fix rooms coordinates (in TRLE reference system is messed up...)
                 form.ReportProgress(65, "Flipping reference system");
 
-                int minX = level.Rooms.Where(room => room != null).Select(room => (int) room.Position.X).Concat(new[] {1024}).Min();
+                int minX = level.Rooms.Where(room => room != null).Select(room => (int) room.Position.X)
+                    .Concat(new[] {1024}).Min();
 
-                foreach (Room room in level.Rooms.Where(room => room != null))
+                foreach (var room in level.Rooms.Where(room => room != null))
                 {
-                    room.Position = new SharpDX.Vector3(room.Position.X - minX - room.NumXSectors + 10,
+                    room.Position = new Vector3(room.Position.X - minX - room.NumXSectors + 10,
                         room.Position.Y,
                         room.Position.Z);
                 }
@@ -1380,7 +1378,7 @@ namespace TombEditor.Geometry
 
                         if (info._flipRoom != i)
                             continue;
-                        
+
                         level.Rooms[i].Flipped = true;
                         level.Rooms[i].BaseRoom = info._baseRoom;
                         level.Rooms[i].AlternateGroup = info._group;
@@ -1392,31 +1390,24 @@ namespace TombEditor.Geometry
 
                 // Fix objects
                 form.ReportProgress(70, "Fixing objects positions and data");
-                for (int i = 0; i < level.Objects.Count; i++)
+                foreach (var instance in level.Objects.Values)
                 {
-                    var instance = level.Objects.ElementAt(i).Value;
-
-                    //if (instance.X < 1) instance.X = 1;
-                    //if (instance.X > level.Rooms[instance.Room].NumXSectors - 2) instance.X = (byte)(level.Rooms[instance.Room].NumXSectors - 2);
-                    //if (instance.Z < 1) instance.Z = 1;
-                    //if (instance.Z > level.Rooms[instance.Room].NumZSectors - 2) instance.Z = (byte)(level.Rooms[instance.Room].NumZSectors - 2);
-
-                    instance.X = (byte)(level.Rooms[instance.Room].NumXSectors - instance.X - 1);
+                    instance.X = (byte) (level.Rooms[instance.Room].NumXSectors - instance.X - 1);
 
                     instance.Position = new Vector3(instance.X * 1024 + 512,
-                                                  -instance.Y - level.Rooms[instance.Room].Position.Y * 256,
-                                                  instance.Z * 1024 + 512);
+                        -instance.Y - level.Rooms[instance.Room].Position.Y * 256,
+                        instance.Z * 1024 + 512);
 
                     switch (instance.Type)
                     {
                         case ObjectInstanceType.Moveable:
-                            var moveable = (MoveableInstance)instance;
-                            moveable.Model = level.Wad.Moveables[(uint)moveable.ObjectID];
+                            var moveable = (MoveableInstance) instance;
+                            moveable.Model = level.Wad.Moveables[(uint) moveable.ObjectID];
                             level.Objects[instance.ID] = moveable;
                             break;
                         case ObjectInstanceType.StaticMesh:
-                            var staticMesh = (StaticMeshInstance)instance;
-                            staticMesh.Model = level.Wad.StaticMeshes[(uint)staticMesh.ObjectID];
+                            var staticMesh = (StaticMeshInstance) instance;
+                            staticMesh.Model = level.Wad.StaticMeshes[(uint) staticMesh.ObjectID];
                             level.Objects[instance.ID] = staticMesh;
                             break;
                         default:
@@ -1429,10 +1420,8 @@ namespace TombEditor.Geometry
 
                 // Fix triggers
                 form.ReportProgress(73, "Fixing triggers");
-                for (int i = 0; i < level.Triggers.Count; i++)
+                foreach (var instance in level.Triggers.Values)
                 {
-                    var instance = level.Triggers.ElementAt(i).Value;
-
                     if (instance.TargetType == TriggerTargetType.Object && !level.Objects.ContainsKey(instance.Target))
                     {
                         triggersToRemove.Add(instance.ID);
@@ -1442,13 +1431,13 @@ namespace TombEditor.Geometry
                     if (instance.X < 1)
                         instance.X = 1;
                     if (instance.X > level.Rooms[instance.Room].NumXSectors - 2)
-                        instance.X = (byte)(level.Rooms[instance.Room].NumXSectors - 2);
+                        instance.X = (byte) (level.Rooms[instance.Room].NumXSectors - 2);
                     if (instance.Z < 1)
                         instance.Z = 1;
                     if (instance.Z > level.Rooms[instance.Room].NumZSectors - 2)
-                        instance.Z = (byte)(level.Rooms[instance.Room].NumZSectors - 2);
+                        instance.Z = (byte) (level.Rooms[instance.Room].NumZSectors - 2);
 
-                    instance.X = (byte)(level.Rooms[instance.Room].NumXSectors - instance.X - instance.NumXBlocks);
+                    instance.X = (byte) (level.Rooms[instance.Room].NumXSectors - instance.X - instance.NumXBlocks);
 
                     for (int x = instance.X; x < instance.X + instance.NumXBlocks; x++)
                     {
@@ -1458,25 +1447,28 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    if (instance.TargetType == TriggerTargetType.Object && level.Objects[instance.Target].Type == ObjectInstanceType.FlyByCamera)
+                    if (instance.TargetType == TriggerTargetType.Object &&
+                        level.Objects[instance.Target].Type == ObjectInstanceType.FlyByCamera)
                     {
                         instance.TargetType = TriggerTargetType.FlyByCamera;
-                        instance.Target = ((FlybyCameraInstance)level.Objects[instance.Target]).Sequence;
+                        instance.Target = ((FlybyCameraInstance) level.Objects[instance.Target]).Sequence;
                     }
 
-                    if (instance.TargetType == TriggerTargetType.Object && level.Objects[instance.Target].Type == ObjectInstanceType.Camera)
+                    if (instance.TargetType == TriggerTargetType.Object &&
+                        level.Objects[instance.Target].Type == ObjectInstanceType.Camera)
                     {
                         instance.TargetType = TriggerTargetType.Camera;
                     }
 
                     if (instance.TargetType == TriggerTargetType.Object &&
                         level.Objects[instance.Target].Type == ObjectInstanceType.Moveable &&
-                        ((MoveableInstance)level.Objects[instance.Target]).ObjectID == 422)
+                        ((MoveableInstance) level.Objects[instance.Target]).ObjectID == 422)
                     {
                         instance.TargetType = TriggerTargetType.Target;
                     }
 
-                    if (instance.TargetType == TriggerTargetType.Object && level.Objects[instance.Target].Type == ObjectInstanceType.Sink)
+                    if (instance.TargetType == TriggerTargetType.Object &&
+                        level.Objects[instance.Target].Type == ObjectInstanceType.Sink)
                     {
                         instance.TargetType = TriggerTargetType.Sink;
                     }
@@ -1487,38 +1479,32 @@ namespace TombEditor.Geometry
                 if (triggersToRemove.Count != 0)
                 {
                     form.ReportProgress(75, "Found invalid triggers");
-                    for (int i = 0; i < triggersToRemove.Count; i++)
+                    foreach (int trigger in triggersToRemove)
                     {
-                        form.ReportProgress(75, "    Deleted trigger #" + triggersToRemove[i] + " in room " +
-                                            level.Triggers[triggersToRemove[i]].Room);
-                        level.Triggers.Remove(triggersToRemove[i]);
+                        form.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
+                                                level.Triggers[trigger].Room);
+                        level.Triggers.Remove(trigger);
                     }
                 }
 
                 // Fix portals
                 form.ReportProgress(76, "Building portals");
-                for (int i = 0; i < level.Portals.Count; i++)
+                foreach (var currentPortal in level.Portals.Values)
                 {
-                    var currentPortal = level.Portals.ElementAt(i).Value;
-
-                    currentPortal.X = (byte)(level.Rooms[currentPortal.Room].NumXSectors - currentPortal.NumXBlocks - currentPortal.X);
-                    level.Portals[i] = currentPortal;
+                    currentPortal.X = (byte) (level.Rooms[currentPortal.Room].NumXSectors - currentPortal.NumXBlocks -
+                                              currentPortal.X);
                 }
 
-                for (int i = 0; i < level.Portals.Count; i++)
+                foreach (var currentPortal in level.Portals.Values)
                 {
-                    var currentPortal = level.Portals.ElementAt(i).Value;
-
-                    for (int j = 0; j < level.Portals.Count; j++)
+                    foreach (var otherPortal in level.Portals.Values)
                     {
-                        if (i == j)
+                        if (ReferenceEquals(currentPortal, otherPortal))
                             continue;
-
-                        var otherPortal = level.Portals.ElementAt(j).Value;
 
                         if (currentPortal.PrjOtherThingIndex != otherPortal.PrjThingIndex)
                             continue;
-                        
+
                         currentPortal.PrjAdjusted = true;
                         otherPortal.PrjAdjusted = true;
 
@@ -1527,14 +1513,15 @@ namespace TombEditor.Geometry
                         var currentRoom = level.Rooms[idCurrentRoom];
                         var otherRoom = level.Rooms[otherPortal.Room];
 
-                        if (currentPortal.Direction == PortalDirection.North || currentPortal.Direction == PortalDirection.South ||
-                            currentPortal.Direction == PortalDirection.East || currentPortal.Direction == PortalDirection.West)
+                        if (currentPortal.Direction == PortalDirection.North ||
+                            currentPortal.Direction == PortalDirection.South ||
+                            currentPortal.Direction == PortalDirection.East ||
+                            currentPortal.Direction == PortalDirection.West)
                         {
                             for (int x = currentPortal.X; x < currentPortal.X + currentPortal.NumXBlocks; x++)
                             {
                                 for (int z = currentPortal.Z; z < currentPortal.Z + currentPortal.NumZBlocks; z++)
                                 {
-                                    //level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.WallPortal;
                                     level.Rooms[idCurrentRoom].Blocks[x, z].WallPortal = currentPortal.ID;
                                 }
                             }
@@ -1543,37 +1530,42 @@ namespace TombEditor.Geometry
                             {
                                 for (int z = otherPortal.Z; z < otherPortal.Z + otherPortal.NumZBlocks; z++)
                                 {
-                                    // level.Rooms[otherPortal.Room].Blocks[x, z].Type = BlockType.WallPortal;
                                     level.Rooms[otherPortal.Room].Blocks[x, z].WallPortal = otherPortal.ID;
                                 }
                             }
                         }
 
-                        if (currentPortal.Direction == PortalDirection.Floor || currentPortal.Direction == PortalDirection.Ceiling)
+                        if (currentPortal.Direction == PortalDirection.Floor ||
+                            currentPortal.Direction == PortalDirection.Ceiling)
                         {
                             int xMin = currentPortal.X;
                             int xMax = currentPortal.X + currentPortal.NumXBlocks;
                             int zMin = currentPortal.Z;
                             int zMax = currentPortal.Z + currentPortal.NumZBlocks;
 
-                            int otherXmin = xMin + (int)(level.Rooms[idCurrentRoom].Position.X - level.Rooms[otherPortal.Room].Position.X);
-                            int otherXmax = xMax + (int)(level.Rooms[idCurrentRoom].Position.X - level.Rooms[otherPortal.Room].Position.X);
-                            int otherZmin = zMin + (int)(level.Rooms[idCurrentRoom].Position.Z - level.Rooms[otherPortal.Room].Position.Z);
-                            int otherZmax = zMax + (int)(level.Rooms[idCurrentRoom].Position.Z - level.Rooms[otherPortal.Room].Position.Z);
+                            int otherXmin = xMin + (int) (level.Rooms[idCurrentRoom].Position.X -
+                                                          level.Rooms[otherPortal.Room].Position.X);
+                            int otherXmax = xMax + (int) (level.Rooms[idCurrentRoom].Position.X -
+                                                          level.Rooms[otherPortal.Room].Position.X);
+                            int otherZmin = zMin + (int) (level.Rooms[idCurrentRoom].Position.Z -
+                                                          level.Rooms[otherPortal.Room].Position.Z);
+                            int otherZmax = zMax + (int) (level.Rooms[idCurrentRoom].Position.Z -
+                                                          level.Rooms[otherPortal.Room].Position.Z);
 
                             for (int x = xMin; x < xMax; x++)
                             {
                                 for (int z = zMin; z < zMax; z++)
                                 {
-                                    int lowX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
-                                    int lowZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
+                                    int lowX = x + (int) (currentRoom.Position.X - otherRoom.Position.X);
+                                    int lowZ = z + (int) (currentRoom.Position.Z - otherRoom.Position.Z);
 
                                     if (currentPortal.Direction == PortalDirection.Floor)
                                     {
                                         int minHeight = currentRoom.GetLowestCorner(xMin, zMin, xMax, zMax);
-                                        int maxHeight = otherRoom.GetHighestCorner(otherXmin, otherZmin, otherXmax, otherZmax);
+                                        int maxHeight = otherRoom.GetHighestCorner(otherXmin, otherZmin, otherXmax,
+                                            otherZmax);
 
-                                        level.Rooms[currentPortal.Room].Blocks[x, z].FloorPortal = i;
+                                        level.Rooms[currentPortal.Room].Blocks[x, z].FloorPortal = currentPortal.ID;
 
                                         int h1 = currentRoom.Blocks[x, z].QAFaces[0];
                                         int h2 = currentRoom.Blocks[x, z].QAFaces[1];
@@ -1585,37 +1577,23 @@ namespace TombEditor.Geometry
                                         int lh3 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[2];
                                         int lh4 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[3];
 
-                                        bool defined = false;
+                                        bool defined;
 
-                                        if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == minHeight && otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall && lh1 == maxHeight &&
+                                        if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == minHeight &&
+                                            otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall && lh1 == maxHeight &&
                                             currentRoom.Blocks[x, z].Type != BlockType.Wall)
                                         {
-                                            /*if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.Floor)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.FloorPortal;
-                                                else if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.CeilingPortal)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.Portal;*/
-
                                             level.Rooms[currentPortal.Room].Blocks[x, z].IsFloorSolid = false;
                                             defined = true;
                                         }
                                         else
                                         {
-                                            /*if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.Floor)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.FloorPortal;
-                                                else if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.CeilingPortal)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.Portal;*/
-
                                             level.Rooms[idCurrentRoom].Blocks[x, z].IsFloorSolid = true;
                                             defined = false;
                                         }
 
                                         if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && defined && lh1 == maxHeight)
                                         {
-                                            /*if (level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type == BlockType.Floor)
-                                                    level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type = BlockType.CeilingPortal;
-                                                else if (level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type == BlockType.FloorPortal)
-                                                    level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type = BlockType.Portal;*/
-
                                             level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].IsCeilingSolid = false;
                                         }
                                         else
@@ -1625,10 +1603,11 @@ namespace TombEditor.Geometry
                                     }
                                     else
                                     {
-                                        int minHeight = otherRoom.GetLowestCorner(otherXmin, otherZmin, otherXmax, otherZmax);
+                                        int minHeight = otherRoom.GetLowestCorner(otherXmin, otherZmin, otherXmax,
+                                            otherZmax);
                                         int maxHeight = currentRoom.GetHighestCorner(xMin, zMin, xMax, zMax);
 
-                                        level.Rooms[currentPortal.Room].Blocks[x, z].CeilingPortal = i;
+                                        level.Rooms[currentPortal.Room].Blocks[x, z].CeilingPortal = currentPortal.ID;
 
                                         int h1 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[0];
                                         int h2 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[1];
@@ -1640,37 +1619,24 @@ namespace TombEditor.Geometry
                                         int lh3 = otherRoom.Blocks[lowX, lowZ].QAFaces[2];
                                         int lh4 = otherRoom.Blocks[lowX, lowZ].QAFaces[3];
 
-                                        bool defined = false;
+                                        bool defined;
 
-                                        if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == maxHeight && otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall && lh1 == minHeight &&
+                                        if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == maxHeight &&
+                                            otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall && lh1 == minHeight &&
                                             currentRoom.Blocks[x, z].Type != BlockType.Wall)
                                         {
-                                            /*if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.Floor)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.CeilingPortal;
-                                                else if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.FloorPortal)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.Portal;*/
-
                                             level.Rooms[idCurrentRoom].Blocks[x, z].IsCeilingSolid = false;
                                             defined = true;
                                         }
                                         else
                                         {
-                                            /*if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.Floor)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.CeilingPortal;
-                                                else if (level.Rooms[idCurrentRoom].Blocks[x, z].Type == BlockType.FloorPortal)
-                                                    level.Rooms[idCurrentRoom].Blocks[x, z].Type = BlockType.Portal;*/
-
                                             level.Rooms[idCurrentRoom].Blocks[x, z].IsCeilingSolid = true;
                                             defined = false;
                                         }
 
-                                        if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && defined && lh1 == minHeight /*&& otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall*/)
+                                        if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && defined &&
+                                            lh1 == minHeight /*&& otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall*/)
                                         {
-                                            /*if (level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type == BlockType.Floor)
-                                                    level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type = BlockType.FloorPortal;
-                                                else if (level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type == BlockType.CeilingPortal)
-                                                    level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].Type = BlockType.Portal;*/
-
                                             level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].IsFloorSolid = false;
                                         }
                                         else
@@ -1693,8 +1659,10 @@ namespace TombEditor.Geometry
                         {
                             currentPortal.OtherID = otherPortal.ID;
                             otherPortal.OtherID = currentPortal.ID;
-                            currentPortal.AdjoiningRoom = (otherRoom.BaseRoom != -1 ? otherRoom.BaseRoom : otherPortal.Room);
-                            otherPortal.AdjoiningRoom = (currentRoom.BaseRoom != -1 ? currentRoom.BaseRoom : currentPortal.Room);
+                            currentPortal.AdjoiningRoom =
+                                (otherRoom.BaseRoom != -1 ? otherRoom.BaseRoom : otherPortal.Room);
+                            otherPortal.AdjoiningRoom =
+                                (currentRoom.BaseRoom != -1 ? currentRoom.BaseRoom : currentPortal.Room);
                         }
                         else
                         {
@@ -1749,16 +1717,11 @@ namespace TombEditor.Geometry
                     {
                         var light = room.Lights[j];
 
-                        /*if (light.X < 1) light.X = 1;
-                        if (light.X > room.NumXSectors - 2) light.X = (byte)(room.NumXSectors - 2);
-                        if (light.Z < 1) light.Z = 1;
-                        if (light.Z > room.NumZSectors - 2) light.Z = (byte)(room.NumZSectors - 2);*/
-
-                        light.X = (byte)(room.NumXSectors - light.X - 1);
+                        light.X = (byte) (room.NumXSectors - light.X - 1);
 
                         light.Position = new Vector3(light.X * 1024 + 512,
-                                                  -light.Y - level.Rooms[i].Position.Y * 256,
-                                                  light.Z * 1024 + 512);
+                            -light.Y - level.Rooms[i].Position.Y * 256,
+                            light.Z * 1024 + 512);
                         room.Lights[j] = light;
                     }
 
@@ -1767,10 +1730,6 @@ namespace TombEditor.Geometry
                         for (int x = 0; x < room.NumXSectors; x++)
                         {
                             var b = tempRooms[i][room.NumXSectors - 1 - x, z];
-
-                            //if (room.Blocks[x, z].FloorPortal != -1 && ) room.Blocks[x, z].IsCeilingSolid = true;
-                            // if (room.Blocks[x, z].CeilingPortal != -1) room.Blocks[x, z].IsFloorSolid = true;
-
 
                             for (int j = 0; j < 14; j++)
                             {
@@ -1784,25 +1743,27 @@ namespace TombEditor.Geometry
 
                                 if (prjFace._txtType == 0x0007)
                                 {
-                                    prjFace._txtIndex = (short)(((prjFace._txtFlags & 0x03) << 8) + prjFace._txtIndex);
+                                    prjFace._txtIndex = (short) (((prjFace._txtFlags & 0x03) << 8) + prjFace._txtIndex);
 
                                     PrjTexInfo texInfo = tempTextures[prjFace._txtIndex];
                                     bool textureFound = false;
 
-                                    byte newX = (byte)(texInfo._x % 256);
-                                    byte newY = (byte)(texInfo._y % 256);
-                                    short tile = (short)Math.Floor((float)texInfo._y / 256);
+                                    byte newX = (byte) (texInfo._x % 256);
+                                    byte newY = (byte) (texInfo._y % 256);
+                                    short tile = (short) Math.Floor((float) texInfo._y / 256);
 
-                                    for (int m = 0; m < level.TextureSamples.Count; m++)
+                                    foreach (var sample in level.TextureSamples)
                                     {
-                                        var currentTexture = level.TextureSamples.ElementAt(m).Value;
+                                        var currentTexture = sample.Value;
                                         if (currentTexture.X == newX && currentTexture.Y == newY &&
-                                            currentTexture.Transparent == isTransparent && currentTexture.DoubleSided == isDoubleSided &&
-                                            currentTexture.Width == (texInfo._width + 1) && currentTexture.Height == (texInfo._height + 1) &&
+                                            currentTexture.Transparent == isTransparent &&
+                                            currentTexture.DoubleSided == isDoubleSided &&
+                                            currentTexture.Width == (texInfo._width + 1) &&
+                                            currentTexture.Height == (texInfo._height + 1) &&
                                             currentTexture.Page == tile)
                                         {
-                                            prjFace._newId = level.TextureSamples.ElementAt(m).Key;
-                                            LevelTexture texture = level.TextureSamples.ElementAt(m).Value;
+                                            prjFace._newId = sample.Key;
+                                            var texture = sample.Value;
                                             // texture.UsageCount++;
                                             level.TextureSamples[texture.ID] = texture;
                                             textureFound = true;
@@ -1839,7 +1800,7 @@ namespace TombEditor.Geometry
                     }
 
                     room.BuildGeometry();
-                    
+
                     for (int z = 0; z < room.NumZSectors; z++)
                     {
                         for (int x = 0; x < room.NumXSectors; x++)
@@ -1847,8 +1808,10 @@ namespace TombEditor.Geometry
                             var newBlock = room.Blocks[x, z];
                             var prjBlock = tempRooms[i][room.NumXSectors - 1 - x, z];
 
-                            newBlock.NoCollisionFloor = (((prjBlock._flags2 & 0x04) != 0) || ((prjBlock._flags2 & 0x02) != 0));
-                            newBlock.NoCollisionCeiling = (((prjBlock._flags2 & 0x10) != 0) || ((prjBlock._flags2 & 0x08) != 0));
+                            newBlock.NoCollisionFloor =
+                                (((prjBlock._flags2 & 0x04) != 0) || ((prjBlock._flags2 & 0x02) != 0));
+                            newBlock.NoCollisionCeiling =
+                                (((prjBlock._flags2 & 0x10) != 0) || ((prjBlock._flags2 & 0x08) != 0));
 
                             if ((prjBlock._flags2 & 0x0040) != 0)
                                 newBlock.Flags |= BlockFlags.Beetle;
@@ -1878,30 +1841,30 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_FLOOR
                                 if (n == 0)
                                 {
-                                    faceIndex = (int)BlockFaces.Floor;
+                                    faceIndex = (int) BlockFaces.Floor;
                                     otherBlock = null;
                                 }
 
                                 // BLOCK_TEX_CEILING
                                 if (n == 1)
                                 {
-                                    faceIndex = (int)BlockFaces.Ceiling;
+                                    faceIndex = (int) BlockFaces.Ceiling;
                                     otherBlock = null;
                                 }
 
                                 // BLOCK_TEX_N4 (North QA)
                                 if (n == 2)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.SouthQA].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.SouthQA].Defined)
                                     {
-                                        faceIndex = (int)BlockFaces.SouthQA;
+                                        faceIndex = (int) BlockFaces.SouthQA;
                                         otherBlock = null;
                                     }
                                     else
                                     {
                                         if (z > 0)
                                         {
-                                            faceIndex = (int)BlockFaces.NorthQA;
+                                            faceIndex = (int) BlockFaces.NorthQA;
                                             otherBlock = room.Blocks[x, z - 1];
                                             x2 = x;
                                             z2 = z - 1;
@@ -1914,21 +1877,24 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_N1 (North RF)
                                 if (n == 3)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.SouthRF].Defined || newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.SouthRF].Defined ||
+                                        newBlock.Faces[(int) BlockFaces.SouthWS].Defined)
                                     {
-                                        if (newBlock.Faces[(int)BlockFaces.SouthRF].Defined && !newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
+                                        if (newBlock.Faces[(int) BlockFaces.SouthRF].Defined &&
+                                            !newBlock.Faces[(int) BlockFaces.SouthWS].Defined)
                                         {
-                                            faceIndex = (int)BlockFaces.SouthRF;
+                                            faceIndex = (int) BlockFaces.SouthRF;
                                             otherBlock = null;
                                         }
-                                        else if (!newBlock.Faces[(int)BlockFaces.SouthRF].Defined && newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
+                                        else if (!newBlock.Faces[(int) BlockFaces.SouthRF].Defined &&
+                                                 newBlock.Faces[(int) BlockFaces.SouthWS].Defined)
                                         {
-                                            faceIndex = (int)BlockFaces.SouthWS;
+                                            faceIndex = (int) BlockFaces.SouthWS;
                                             otherBlock = null;
                                         }
                                         else
                                         {
-                                            faceIndex = (int)BlockFaces.SouthRF;
+                                            faceIndex = (int) BlockFaces.SouthRF;
                                             otherBlock = null;
                                         }
                                     }
@@ -1938,17 +1904,19 @@ namespace TombEditor.Geometry
                                         {
                                             otherBlock = room.Blocks[x, z - 1];
 
-                                            if (otherBlock.Faces[(int)BlockFaces.NorthRF].Defined && !otherBlock.Faces[(int)BlockFaces.NorthWS].Defined)
+                                            if (otherBlock.Faces[(int) BlockFaces.NorthRF].Defined &&
+                                                !otherBlock.Faces[(int) BlockFaces.NorthWS].Defined)
                                             {
-                                                faceIndex = (int)BlockFaces.NorthRF;
+                                                faceIndex = (int) BlockFaces.NorthRF;
                                             }
-                                            else if (!otherBlock.Faces[(int)BlockFaces.NorthRF].Defined && otherBlock.Faces[(int)BlockFaces.NorthWS].Defined)
+                                            else if (!otherBlock.Faces[(int) BlockFaces.NorthRF].Defined &&
+                                                     otherBlock.Faces[(int) BlockFaces.NorthWS].Defined)
                                             {
-                                                faceIndex = (int)BlockFaces.NorthWS;
+                                                faceIndex = (int) BlockFaces.NorthWS;
                                             }
                                             else
                                             {
-                                                faceIndex = (int)BlockFaces.NorthRF;
+                                                faceIndex = (int) BlockFaces.NorthRF;
                                             }
 
                                             x2 = x;
@@ -1962,16 +1930,16 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_N3 (North middle)
                                 if (n == 4)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.SouthMiddle].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.SouthMiddle].Defined)
                                     {
-                                        faceIndex = (int)BlockFaces.SouthMiddle;
+                                        faceIndex = (int) BlockFaces.SouthMiddle;
                                         otherBlock = null;
                                     }
                                     else
                                     {
                                         if (z > 0)
                                         {
-                                            faceIndex = (int)BlockFaces.NorthMiddle;
+                                            faceIndex = (int) BlockFaces.NorthMiddle;
                                             otherBlock = room.Blocks[x, z - 1];
                                             x2 = x;
                                             z2 = z - 1;
@@ -1984,16 +1952,16 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_W4 (West QA)
                                 if (n == 5)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.EastQA].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.EastQA].Defined)
                                     {
-                                        faceIndex = (int)BlockFaces.EastQA;
+                                        faceIndex = (int) BlockFaces.EastQA;
                                         otherBlock = null;
                                     }
                                     else
                                     {
                                         if (x < room.NumXSectors - 1)
                                         {
-                                            faceIndex = (int)BlockFaces.WestQA;
+                                            faceIndex = (int) BlockFaces.WestQA;
                                             otherBlock = room.Blocks[x + 1, z];
                                             x2 = x + 1;
                                             z2 = z;
@@ -2006,21 +1974,24 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_W1 (West RF)
                                 if (n == 6)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.EastRF].Defined || newBlock.Faces[(int)BlockFaces.EastWS].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.EastRF].Defined ||
+                                        newBlock.Faces[(int) BlockFaces.EastWS].Defined)
                                     {
-                                        if (newBlock.Faces[(int)BlockFaces.EastRF].Defined && !newBlock.Faces[(int)BlockFaces.EastWS].Defined)
+                                        if (newBlock.Faces[(int) BlockFaces.EastRF].Defined &&
+                                            !newBlock.Faces[(int) BlockFaces.EastWS].Defined)
                                         {
-                                            faceIndex = (int)BlockFaces.EastRF;
+                                            faceIndex = (int) BlockFaces.EastRF;
                                             otherBlock = null;
                                         }
-                                        else if (!newBlock.Faces[(int)BlockFaces.EastRF].Defined && newBlock.Faces[(int)BlockFaces.EastWS].Defined)
+                                        else if (!newBlock.Faces[(int) BlockFaces.EastRF].Defined &&
+                                                 newBlock.Faces[(int) BlockFaces.EastWS].Defined)
                                         {
-                                            faceIndex = (int)BlockFaces.EastWS;
+                                            faceIndex = (int) BlockFaces.EastWS;
                                             otherBlock = null;
                                         }
                                         else
                                         {
-                                            faceIndex = (int)BlockFaces.EastRF;
+                                            faceIndex = (int) BlockFaces.EastRF;
                                             otherBlock = null;
                                         }
                                     }
@@ -2030,17 +2001,19 @@ namespace TombEditor.Geometry
                                         {
                                             otherBlock = room.Blocks[x + 1, z];
 
-                                            if (otherBlock.Faces[(int)BlockFaces.WestRF].Defined && !otherBlock.Faces[(int)BlockFaces.WestWS].Defined)
+                                            if (otherBlock.Faces[(int) BlockFaces.WestRF].Defined &&
+                                                !otherBlock.Faces[(int) BlockFaces.WestWS].Defined)
                                             {
-                                                faceIndex = (int)BlockFaces.WestRF;
+                                                faceIndex = (int) BlockFaces.WestRF;
                                             }
-                                            else if (!otherBlock.Faces[(int)BlockFaces.WestRF].Defined && otherBlock.Faces[(int)BlockFaces.WestWS].Defined)
+                                            else if (!otherBlock.Faces[(int) BlockFaces.WestRF].Defined &&
+                                                     otherBlock.Faces[(int) BlockFaces.WestWS].Defined)
                                             {
-                                                faceIndex = (int)BlockFaces.WestWS;
+                                                faceIndex = (int) BlockFaces.WestWS;
                                             }
                                             else
                                             {
-                                                faceIndex = (int)BlockFaces.WestRF;
+                                                faceIndex = (int) BlockFaces.WestRF;
                                             }
 
                                             x2 = x + 1;
@@ -2054,16 +2027,16 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_W3 (West middle)
                                 if (n == 7)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.EastMiddle].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.EastMiddle].Defined)
                                     {
-                                        faceIndex = (int)BlockFaces.EastMiddle;
+                                        faceIndex = (int) BlockFaces.EastMiddle;
                                         otherBlock = null;
                                     }
                                     else
                                     {
                                         if (x < room.NumXSectors - 1)
                                         {
-                                            faceIndex = (int)BlockFaces.WestMiddle;
+                                            faceIndex = (int) BlockFaces.WestMiddle;
                                             otherBlock = room.Blocks[x + 1, z];
                                             x2 = x + 1;
                                             z2 = z;
@@ -2076,16 +2049,16 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_N5 (North ED)
                                 if (n == 10)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.SouthED].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.SouthED].Defined)
                                     {
-                                        faceIndex = (int)BlockFaces.SouthED;
+                                        faceIndex = (int) BlockFaces.SouthED;
                                         otherBlock = null;
                                     }
                                     else
                                     {
                                         if (z > 0)
                                         {
-                                            faceIndex = (int)BlockFaces.NorthED;
+                                            faceIndex = (int) BlockFaces.NorthED;
                                             otherBlock = room.Blocks[x, z - 1];
                                             x2 = x;
                                             z2 = z - 1;
@@ -2098,11 +2071,13 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_N2 (North WS)
                                 if (n == 11)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.SouthRF].Defined || newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.SouthRF].Defined ||
+                                        newBlock.Faces[(int) BlockFaces.SouthWS].Defined)
                                     {
-                                        if (newBlock.Faces[(int)BlockFaces.SouthRF].Defined && newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
+                                        if (newBlock.Faces[(int) BlockFaces.SouthRF].Defined &&
+                                            newBlock.Faces[(int) BlockFaces.SouthWS].Defined)
                                         {
-                                            faceIndex = (int)BlockFaces.SouthWS;
+                                            faceIndex = (int) BlockFaces.SouthWS;
                                             otherBlock = null;
                                         }
                                     }
@@ -2112,9 +2087,10 @@ namespace TombEditor.Geometry
                                         {
                                             otherBlock = room.Blocks[x, z - 1];
 
-                                            if (otherBlock.Faces[(int)BlockFaces.NorthRF].Defined && otherBlock.Faces[(int)BlockFaces.NorthWS].Defined)
+                                            if (otherBlock.Faces[(int) BlockFaces.NorthRF].Defined &&
+                                                otherBlock.Faces[(int) BlockFaces.NorthWS].Defined)
                                             {
-                                                faceIndex = (int)BlockFaces.NorthWS;
+                                                faceIndex = (int) BlockFaces.NorthWS;
                                             }
 
                                             x2 = x;
@@ -2128,16 +2104,16 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_W5 (West ED)
                                 if (n == 12)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.EastED].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.EastED].Defined)
                                     {
-                                        faceIndex = (int)BlockFaces.EastED;
+                                        faceIndex = (int) BlockFaces.EastED;
                                         otherBlock = null;
                                     }
                                     else
                                     {
                                         if (x < room.NumXSectors - 1)
                                         {
-                                            faceIndex = (int)BlockFaces.WestED;
+                                            faceIndex = (int) BlockFaces.WestED;
                                             otherBlock = room.Blocks[x + 1, z];
                                             x2 = x + 1;
                                             z2 = z;
@@ -2150,11 +2126,13 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_W2 (West WS)
                                 if (n == 13)
                                 {
-                                    if (newBlock.Faces[(int)BlockFaces.EastRF].Defined || newBlock.Faces[(int)BlockFaces.EastWS].Defined)
+                                    if (newBlock.Faces[(int) BlockFaces.EastRF].Defined ||
+                                        newBlock.Faces[(int) BlockFaces.EastWS].Defined)
                                     {
-                                        if (newBlock.Faces[(int)BlockFaces.EastRF].Defined && newBlock.Faces[(int)BlockFaces.EastWS].Defined)
+                                        if (newBlock.Faces[(int) BlockFaces.EastRF].Defined &&
+                                            newBlock.Faces[(int) BlockFaces.EastWS].Defined)
                                         {
-                                            faceIndex = (int)BlockFaces.EastWS;
+                                            faceIndex = (int) BlockFaces.EastWS;
                                             otherBlock = null;
                                         }
                                     }
@@ -2164,9 +2142,10 @@ namespace TombEditor.Geometry
                                         {
                                             otherBlock = room.Blocks[x + 1, z];
 
-                                            if (otherBlock.Faces[(int)BlockFaces.WestRF].Defined && otherBlock.Faces[(int)BlockFaces.WestWS].Defined)
+                                            if (otherBlock.Faces[(int) BlockFaces.WestRF].Defined &&
+                                                otherBlock.Faces[(int) BlockFaces.WestWS].Defined)
                                             {
-                                                faceIndex = (int)BlockFaces.WestWS;
+                                                faceIndex = (int) BlockFaces.WestWS;
                                             }
 
                                             x2 = x + 1;
@@ -2181,14 +2160,14 @@ namespace TombEditor.Geometry
                                 // BLOCK_TEX_F_NENW (Floor Triangle 2)
                                 if (n == 8)
                                 {
-                                    faceIndex = (int)BlockFaces.FloorTriangle2;
+                                    faceIndex = (int) BlockFaces.FloorTriangle2;
                                     otherBlock = null;
                                 }
 
                                 // BLOCK_TEX_C_NENW (Ceiling Triangle 2)
                                 if (n == 9)
                                 {
-                                    faceIndex = (int)BlockFaces.CeilingTriangle2;
+                                    faceIndex = (int) BlockFaces.CeilingTriangle2;
                                     otherBlock = null;
                                 }
 
@@ -2196,33 +2175,40 @@ namespace TombEditor.Geometry
 
                                 if (faceIndex != -1)
                                 {
-                                    bool isFloor = (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.FloorTriangle2);
-                                    bool isCeiling = (faceIndex == (int)BlockFaces.Ceiling || faceIndex == (int)BlockFaces.CeilingTriangle2);
+                                    bool isFloor = (faceIndex == (int) BlockFaces.Floor ||
+                                                    faceIndex == (int) BlockFaces.FloorTriangle2);
+                                    bool isCeiling = (faceIndex == (int) BlockFaces.Ceiling ||
+                                                      faceIndex == (int) BlockFaces.CeilingTriangle2);
 
                                     switch (theFace._txtType)
                                     {
                                         case 0x07:
-                                            var texture2 = level.TextureSamples[(short)theFace._newId];
+                                            var texture2 = level.TextureSamples[(short) theFace._newId];
                                             var uv = new Vector2[4];
 
-                                            int yBlock = (int)(texture2.Page / 8);
-                                            int xBlock = (int)(texture2.Page % 8);
+                                            int yBlock = texture2.Page / 8;
+                                            int xBlock = texture2.Page % 8;
 
-                                            uv[0] = new Vector2((xBlock * 256 + texture2.X) / 2048.0f, (yBlock * 256 + texture2.Y) / 2048.0f);
-                                            uv[1] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f, (yBlock * 256 + texture2.Y) / 2048.0f);
-                                            ;
-                                            uv[2] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f, (yBlock * 256 + texture2.Y + texture2.Height) / 2048.0f);
-                                            uv[3] = new Vector2((xBlock * 256 + texture2.X) / 2048.0f, (yBlock * 256 + texture2.Y + texture2.Height) / 2048.0f);
+                                            uv[0] = new Vector2((xBlock * 256 + texture2.X) / 2048.0f,
+                                                (yBlock * 256 + texture2.Y) / 2048.0f);
+                                            uv[1] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f,
+                                                (yBlock * 256 + texture2.Y) / 2048.0f);
 
-                                            sbyte newRot = (sbyte)(theFace._txtRotation);
+                                            uv[2] = new Vector2((xBlock * 256 + texture2.X + texture2.Width) / 2048.0f,
+                                                (yBlock * 256 + texture2.Y + texture2.Height) / 2048.0f);
+                                            uv[3] = new Vector2((xBlock * 256 + texture2.X) / 2048.0f,
+                                                (yBlock * 256 + texture2.Y + texture2.Height) / 2048.0f);
+
+                                            sbyte newRot = (sbyte) (theFace._txtRotation);
                                             newRot++;
-                                                                            
-                                            if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Rectangle)
-                                                newRot = (sbyte)(newRot % 4);
-                                            if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle)
-                                                newRot = (sbyte)(newRot % 3);
 
-                                            if (theBlock.Faces[faceIndex].Defined && theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle)
+                                            if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Rectangle)
+                                                newRot = (sbyte) (newRot % 4);
+                                            if (theBlock.Faces[faceIndex].Shape == BlockFaceShape.Triangle)
+                                                newRot = (sbyte) (newRot % 3);
+
+                                            if (theBlock.Faces[faceIndex].Defined && theBlock.Faces[faceIndex].Shape ==
+                                                BlockFaceShape.Triangle)
                                             {
                                                 if (theFace._isFlipped)
                                                 {
@@ -2232,40 +2218,44 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2275,10 +2265,11 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                            newRot = (sbyte)(newRot + 2);
+                                                            newRot = (sbyte) (newRot + 2);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleNW;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleNW;
                                                     }
 
                                                     if (theFace._txtTriangle == 1)
@@ -2287,40 +2278,44 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2330,10 +2325,11 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
-                                                            newRot = (sbyte)(newRot + 2);
+                                                            newRot = (sbyte) (newRot + 2);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleNE;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleNE;
                                                     }
 
                                                     if (theFace._txtTriangle == 3)
@@ -2342,40 +2338,44 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2385,10 +2385,11 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
-                                                            newRot = (sbyte)(newRot + 2);
+                                                            newRot = (sbyte) (newRot + 2);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleSW;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleSW;
                                                     }
 
                                                     if (theFace._txtTriangle == 2)
@@ -2397,40 +2398,44 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2440,10 +2445,11 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                            newRot = (sbyte)(newRot + 2);
+                                                            newRot = (sbyte) (newRot + 2);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleSE;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleSE;
                                                     }
                                                 }
                                                 else
@@ -2454,40 +2460,46 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2
+                                                                ) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2
+                                                                ) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2497,10 +2509,11 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
-                                                            newRot = (sbyte)(newRot + 2);
+                                                            newRot = (sbyte) (newRot + 2);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleNW;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleNW;
                                                     }
 
                                                     if (theFace._txtTriangle == 1)
@@ -2509,40 +2522,46 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2
+                                                                ) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2
+                                                                ) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2552,10 +2571,11 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                            newRot = (sbyte)(newRot + 1);
+                                                            newRot = (sbyte) (newRot + 1);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleNE;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleNE;
                                                     }
 
                                                     if (theFace._txtTriangle == 3)
@@ -2564,40 +2584,46 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // OK
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // OK
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)  // TODO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex ==
+                                                                    (int) BlockFaces.CeilingTriangle2) // TODO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[2];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // OK
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // OK
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)  // OK
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex ==
+                                                                    (int) BlockFaces.CeilingTriangle2) // OK
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[0];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[2];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2608,7 +2634,8 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleSW;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleSW;
                                                     }
 
                                                     if (theFace._txtTriangle == 2)
@@ -2617,40 +2644,46 @@ namespace TombEditor.Geometry
                                                         {
                                                             if (theBlock.RealSplitFloor == 0)
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling)  // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
-                                                                    newRot = (sbyte)(newRot + 2);
+                                                                    newRot = (sbyte) (newRot + 2);
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)  // TODO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex ==
+                                                                    (int) BlockFaces.CeilingTriangle2) // TODO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                if (faceIndex == (int)BlockFaces.Floor || faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.Floor ||
+                                                                    faceIndex == (int) BlockFaces.Ceiling) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
                                                                 }
 
-                                                                if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2) // CORRETTO
+                                                                if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                                    faceIndex == (int) BlockFaces.CeilingTriangle2
+                                                                ) // CORRETTO
                                                                 {
                                                                     theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
                                                                     theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
 
-                                                                    newRot = (sbyte)(newRot + 1);
+                                                                    newRot = (sbyte) (newRot + 1);
                                                                 }
                                                             }
                                                         }
@@ -2660,38 +2693,47 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
-                                                            newRot = (sbyte)(newRot + 1);
+                                                            newRot = (sbyte) (newRot + 1);
                                                         }
 
-                                                        theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.TriangleSE;
+                                                        theBlock.Faces[faceIndex].TextureTriangle =
+                                                            TextureTileType.TriangleSE;
                                                     }
                                                 }
 
-                                                newRot = (sbyte)(newRot % 3);
+                                                newRot = (sbyte) (newRot % 3);
 
                                                 for (int rot = 0; rot < newRot; rot++)
                                                 {
-                                                    if (faceIndex != (int)BlockFaces.FloorTriangle2 && faceIndex != (int)BlockFaces.CeilingTriangle2)
+                                                    if (faceIndex != (int) BlockFaces.FloorTriangle2 &&
+                                                        faceIndex != (int) BlockFaces.CeilingTriangle2)
                                                     {
                                                         var temp3 = theBlock.Faces[faceIndex].TriangleUV[2];
-                                                        theBlock.Faces[faceIndex].TriangleUV[2] = theBlock.Faces[faceIndex].TriangleUV[1];
-                                                        theBlock.Faces[faceIndex].TriangleUV[1] = theBlock.Faces[faceIndex].TriangleUV[0];
+                                                        theBlock.Faces[faceIndex].TriangleUV[2] =
+                                                            theBlock.Faces[faceIndex].TriangleUV[1];
+                                                        theBlock.Faces[faceIndex].TriangleUV[1] =
+                                                            theBlock.Faces[faceIndex].TriangleUV[0];
                                                         theBlock.Faces[faceIndex].TriangleUV[0] = temp3;
                                                     }
 
-                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 || faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                    if (faceIndex == (int) BlockFaces.FloorTriangle2 ||
+                                                        faceIndex == (int) BlockFaces.CeilingTriangle2)
                                                     {
                                                         var temp3 = theBlock.Faces[faceIndex].TriangleUV2[2];
-                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = theBlock.Faces[faceIndex].TriangleUV2[1];
-                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = theBlock.Faces[faceIndex].TriangleUV2[0];
+                                                        theBlock.Faces[faceIndex].TriangleUV2[2] =
+                                                            theBlock.Faces[faceIndex].TriangleUV2[1];
+                                                        theBlock.Faces[faceIndex].TriangleUV2[1] =
+                                                            theBlock.Faces[faceIndex].TriangleUV2[0];
                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = temp3;
                                                     }
                                                 }
 
-                                                theBlock.Faces[faceIndex].Transparent = level.TextureSamples[theFace._newId].Transparent;
-                                                theBlock.Faces[faceIndex].DoubleSided = level.TextureSamples[theFace._newId].DoubleSided;
+                                                theBlock.Faces[faceIndex].Transparent =
+                                                    level.TextureSamples[theFace._newId].Transparent;
+                                                theBlock.Faces[faceIndex].DoubleSided =
+                                                    level.TextureSamples[theFace._newId].DoubleSided;
                                                 theBlock.Faces[faceIndex].Flipped = theFace._isFlipped;
-                                                theBlock.Faces[faceIndex].Rotation = (byte)(newRot);
+                                                theBlock.Faces[faceIndex].Rotation = (byte) (newRot);
                                             }
                                             else
                                             {
@@ -2708,9 +2750,9 @@ namespace TombEditor.Geometry
 
                                                 newRot += adjustRotation;
                                                 if (newRot < 0)
-                                                    newRot = (sbyte)(3 - newRot);
+                                                    newRot = (sbyte) (3 - newRot);
                                                 if (newRot > 3)
-                                                    newRot = (sbyte)(newRot % 3);
+                                                    newRot = (sbyte) (newRot % 3);
 
                                                 for (int rot = 0; rot < newRot; rot++)
                                                 {
@@ -2728,13 +2770,15 @@ namespace TombEditor.Geometry
 
                                                 theBlock.Faces[faceIndex].TextureTriangle = TextureTileType.Rectangle;
 
-                                                theBlock.Faces[faceIndex].Transparent = level.TextureSamples[theFace._newId].Transparent;
-                                                theBlock.Faces[faceIndex].DoubleSided = level.TextureSamples[theFace._newId].DoubleSided;
+                                                theBlock.Faces[faceIndex].Transparent =
+                                                    level.TextureSamples[theFace._newId].Transparent;
+                                                theBlock.Faces[faceIndex].DoubleSided =
+                                                    level.TextureSamples[theFace._newId].DoubleSided;
                                                 theBlock.Faces[faceIndex].Flipped = theFace._isFlipped;
-                                                theBlock.Faces[faceIndex].Rotation = (byte)newRot;
+                                                theBlock.Faces[faceIndex].Rotation = (byte) newRot;
                                             }
 
-                                            theBlock.Faces[faceIndex].Texture = (short)theFace._newId;
+                                            theBlock.Faces[faceIndex].Texture = (short) theFace._newId;
                                             break;
                                         case 0x00:
                                             theBlock.Faces[faceIndex].Texture = -1;
@@ -2762,13 +2806,14 @@ namespace TombEditor.Geometry
             }
             catch (Exception ex)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
                 return null;
             }
 
-            for (int i = 0; i < level.Portals.Count; i++)
+            foreach (var portal in level.Portals)
             {
-                level.Rooms[level.Portals.ElementAt(i).Value.Room].Portals.Add(level.Portals.ElementAt(i).Key);
+                level.Rooms[portal.Value.Room].Portals.Add(portal.Key);
             }
 
             form.ReportProgress(95, "Building rooms");
@@ -2781,7 +2826,7 @@ namespace TombEditor.Geometry
                 level.Rooms[i].CalculateLightingForThisRoom();
                 level.Rooms[i].UpdateBuffers();
             }
-                        
+
             form.ReportProgress(100, "Level loaded correctly!");
 
             GC.Collect();
@@ -2935,7 +2980,7 @@ namespace TombEditor.Geometry
                 for (int i = 0; i < numObjects; i++)
                 {
                     int objectId = reader.ReadInt32();
-                    var objectType = (ObjectInstanceType)reader.ReadByte();
+                    var objectType = (ObjectInstanceType) reader.ReadByte();
 
                     IObjectInstance o;
 
@@ -2966,7 +3011,7 @@ namespace TombEditor.Geometry
 
                     o.ID = objectId;
                     o.Type = objectType;
-                    o.Position = new SharpDX.Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                    o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                     o.Room = reader.ReadInt16();
                     o.OCB = reader.ReadInt16();
                     o.Rotation = reader.ReadInt16();
@@ -2980,32 +3025,33 @@ namespace TombEditor.Geometry
 
                     if (o.Type == ObjectInstanceType.StaticMesh)
                     {
-                        ((StaticMeshInstance)o).ObjectID = reader.ReadInt32();
-                        ((StaticMeshInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                        ((StaticMeshInstance) o).ObjectID = reader.ReadInt32();
+                        ((StaticMeshInstance) o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
+                            reader.ReadByte());
                         reader.ReadBytes(1);
                     }
 
                     if (o.Type == ObjectInstanceType.Moveable)
                     {
-                        ((MoveableInstance)o).ObjectID = reader.ReadInt32();
+                        ((MoveableInstance) o).ObjectID = reader.ReadInt32();
                         reader.ReadBytes(4);
                     }
 
                     if (o.Type == ObjectInstanceType.Camera)
                     {
-                        ((CameraInstance)o).Fixed = reader.ReadBoolean();
+                        ((CameraInstance) o).Fixed = reader.ReadBoolean();
                         reader.ReadBytes(7);
                     }
 
                     if (o.Type == ObjectInstanceType.Sink)
                     {
-                        ((SinkInstance)o).Strength = reader.ReadInt16();
+                        ((SinkInstance) o).Strength = reader.ReadInt16();
                         reader.ReadBytes(6);
                     }
 
                     if (o.Type == ObjectInstanceType.Sound)
                     {
-                        ((SoundInstance)o).SoundID = reader.ReadInt16();
+                        ((SoundInstance) o).SoundID = reader.ReadInt16();
                         reader.ReadBytes(6);
                     }
 
@@ -3080,7 +3126,7 @@ namespace TombEditor.Geometry
                     var room = new Room(level)
                     {
                         Name = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(100)).Trim(),
-                        Position = new SharpDX.Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
+                        Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
                         Ceiling = reader.ReadInt16(),
                         NumXSectors = reader.ReadByte(),
                         NumZSectors = reader.ReadByte()
@@ -3160,14 +3206,14 @@ namespace TombEditor.Geometry
                                 f.DoubleSided = reader.ReadBoolean();
                                 f.Invisible = reader.ReadBoolean();
                                 f.NoCollision = reader.ReadBoolean();
-                                f.TextureTriangle = (TextureTileType)reader.ReadByte();
+                                f.TextureTriangle = (TextureTileType) reader.ReadByte();
 
                                 for (int n = 0; n < 4; n++)
-                                    f.RectangleUV[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                    f.RectangleUV[n] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
                                 for (int n = 0; n < 3; n++)
-                                    f.TriangleUV[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                    f.TriangleUV[n] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
                                 for (int n = 0; n < 3; n++)
-                                    f.TriangleUV2[n] = new SharpDX.Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                    f.TriangleUV2[n] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
                                 reader.ReadInt32();
                                 reader.ReadInt32();
@@ -3175,10 +3221,10 @@ namespace TombEditor.Geometry
                                 reader.ReadInt32();
                             }
 
-                            b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadByte();
-                            b.FloorDiagonalSplitType = (DiagonalSplitType)reader.ReadByte();
-                            b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadByte();
-                            b.CeilingDiagonalSplitType = (DiagonalSplitType)reader.ReadByte();
+                            b.FloorDiagonalSplit = (DiagonalSplit) reader.ReadByte();
+                            b.FloorDiagonalSplitType = (DiagonalSplitType) reader.ReadByte();
+                            b.CeilingDiagonalSplit = (DiagonalSplit) reader.ReadByte();
+                            b.CeilingDiagonalSplitType = (DiagonalSplitType) reader.ReadByte();
 
                             reader.ReadInt32();
                             reader.ReadInt32();
@@ -3192,10 +3238,10 @@ namespace TombEditor.Geometry
                     int numLights = reader.ReadInt32();
                     for (int j = 0; j < numLights; j++)
                     {
-                        var l = new Geometry.Light
+                        var l = new Light
                         {
                             Type = (LightType) reader.ReadByte(),
-                            Position = new SharpDX.Vector3(reader.ReadSingle(), reader.ReadSingle(),
+                            Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(),
                                 reader.ReadSingle()),
                             Intensity = reader.ReadSingle(),
                             Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte()),
@@ -3246,7 +3292,7 @@ namespace TombEditor.Geometry
                 int numAnimatedSets = reader.ReadInt32();
                 for (int i = 0; i < numAnimatedSets; i++)
                 {
-                    var effect = (AnimatexTextureSetEffect)reader.ReadByte();
+                    var effect = (AnimatexTextureSetEffect) reader.ReadByte();
                     var aSet = new AnimatedTextureSet {Effect = effect};
                     int numAnimatedTextures = reader.ReadInt32();
                     for (int j = 0; j < numAnimatedTextures; j++)
@@ -3265,9 +3311,9 @@ namespace TombEditor.Geometry
                 for (int i = 0; i < numTextureSounds; i++)
                 {
                     var txtSound = new TextureSound(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16())
-                        {
-                            Sound = (TextureSounds) reader.ReadByte()
-                        };
+                    {
+                        Sound = (TextureSounds) reader.ReadByte()
+                    };
 
                     level.TextureSounds.Add(txtSound);
                 }
@@ -3276,7 +3322,8 @@ namespace TombEditor.Geometry
                 Editor.Instance.Palette.Clear();
                 for (int i = 0; i < numPaletteColors; i++)
                 {
-                    Editor.Instance.Palette.Add(Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte()));
+                    Editor.Instance.Palette.Add(Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
+                        reader.ReadByte()));
                 }
 
                 reader.ReadInt32();
@@ -3313,35 +3360,45 @@ namespace TombEditor.Geometry
                 }
             }
 
-            for (int i = 0; i < level.Objects.Count; i++)
+            foreach (var obj in level.Objects.Values)
             {
-                var objectType = level.Objects.ElementAt(i).Value.Type;
-                short roomIndex = level.Objects.ElementAt(i).Value.Room;
-                int objectId = level.Objects.ElementAt(i).Value.ID;
+                var objectType = obj.Type;
+                short roomIndex = obj.Room;
+                int objectId = obj.ID;
 
-                if (objectType == ObjectInstanceType.Moveable)
-                    level.Rooms[roomIndex].Moveables.Add(objectId);
-                if (objectType == ObjectInstanceType.StaticMesh)
-                    level.Rooms[roomIndex].StaticMeshes.Add(objectId);
-                if (objectType == ObjectInstanceType.Camera)
-                    level.Rooms[roomIndex].Cameras.Add(objectId);
-                if (objectType == ObjectInstanceType.Sink)
-                    level.Rooms[roomIndex].Sinks.Add(objectId);
-                if (objectType == ObjectInstanceType.Sound)
-                    level.Rooms[roomIndex].SoundSources.Add(objectId);
-                if (objectType == ObjectInstanceType.FlyByCamera)
-                    level.Rooms[roomIndex].FlyByCameras.Add(objectId);
-
-                if (objectType == ObjectInstanceType.Moveable)
+                switch (objectType)
                 {
-                    uint oid = (uint)((MoveableInstance)level.Objects.ElementAt(i).Value).ObjectID;
-                    ((MoveableInstance)level.Objects.ElementAt(i).Value).Model = level.Wad.Moveables[oid];
-                }
+                    case ObjectInstanceType.Moveable:
+                        level.Rooms[roomIndex].Moveables.Add(objectId);
+                        break;
+                    case ObjectInstanceType.StaticMesh:
+                        level.Rooms[roomIndex].StaticMeshes.Add(objectId);
+                        break;
+                    case ObjectInstanceType.Camera:
+                        level.Rooms[roomIndex].Cameras.Add(objectId);
+                        break;
+                    case ObjectInstanceType.Sink:
+                        level.Rooms[roomIndex].Sinks.Add(objectId);
+                        break;
+                    case ObjectInstanceType.Sound:
+                        level.Rooms[roomIndex].SoundSources.Add(objectId);
+                        break;
+                    case ObjectInstanceType.FlyByCamera:
+                        level.Rooms[roomIndex].FlyByCameras.Add(objectId);
+                        break;
+                    default:
+                        if (objectType == ObjectInstanceType.Moveable)
+                        {
+                            uint oid = (uint) ((MoveableInstance) obj).ObjectID;
+                            ((MoveableInstance) obj).Model = level.Wad.Moveables[oid];
+                        }
 
-                if (objectType == ObjectInstanceType.StaticMesh)
-                {
-                    uint oid = (uint)((StaticMeshInstance)level.Objects.ElementAt(i).Value).ObjectID;
-                    ((StaticMeshInstance)level.Objects.ElementAt(i).Value).Model = level.Wad.StaticMeshes[oid];
+                        else if (objectType == ObjectInstanceType.StaticMesh)
+                        {
+                            uint oid = (uint) ((StaticMeshInstance) obj).ObjectID;
+                            ((StaticMeshInstance) obj).Model = level.Wad.StaticMeshes[oid];
+                        }
+                        break;
                 }
             }
 
@@ -3354,9 +3411,9 @@ namespace TombEditor.Geometry
                 room.UpdateBuffers();
             }
 
-            for (int i = 0; i < level.Portals.Count; i++)
+            foreach (var portal in level.Portals)
             {
-                level.Rooms[level.Portals.ElementAt(i).Value.Room].Portals.Add(level.Portals.ElementAt(i).Key);
+                level.Rooms[portal.Value.Room].Portals.Add(portal.Key);
             }
 
             level.FileName = filename;
@@ -3373,438 +3430,408 @@ namespace TombEditor.Geometry
             try
             {
                 var ms = new MemoryStream();
-                var writer = new BinaryWriterEx(ms);
-
-                // Write version
-                var version = new byte[] { 0x50, 0x52, 0x4A, 0x32 };
-                writer.Write(version);
-
-                const int versionCode = 2;
-                writer.Write(versionCode);
-
-                // Write texture map
-                var textureFile = System.Text.Encoding.UTF8.GetBytes(level.TextureFile);
-                int numBytes = (int)textureFile.Length;
-                writer.Write(numBytes);
-                writer.Write(textureFile);
-
-                var wadFile = System.Text.Encoding.UTF8.GetBytes(level.WadFile);
-                numBytes = (int)wadFile.Length;
-                writer.Write(numBytes);
-                writer.Write(wadFile);
-
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-
-                // Write textures
-                int numTextures = (int)level.TextureSamples.Count;
-                writer.Write(numTextures);
-                for (int i = 0; i < level.TextureSamples.Count; i++)
+                byte[] projectData;
+                using (var writer = new BinaryWriterEx(ms))
                 {
-                    var txt = level.TextureSamples.ElementAt(i).Value;
+                    // Write version
+                    var version = new byte[] {0x50, 0x52, 0x4A, 0x32};
+                    writer.Write(version);
 
-                    writer.Write(txt.ID);
-                    writer.Write(txt.X);
-                    writer.Write(txt.Y);
-                    writer.Write(txt.Width);
-                    writer.Write(txt.Height);
-                    writer.Write(txt.Page);
-                    writer.Write(filler32);
-                    writer.Write(txt.Transparent);
-                    writer.Write(txt.DoubleSided);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                }
+                    const int versionCode = 2;
+                    writer.Write(versionCode);
 
-                // Write portals
-                int numPortals = (int)level.Portals.Count;
-                writer.Write(numPortals);
-                for (int i = 0; i < level.Portals.Count; i++)
-                {
-                    var p = level.Portals.ElementAt(i).Value;
+                    // Write texture map
+                    var textureFile = System.Text.Encoding.UTF8.GetBytes(level.TextureFile);
+                    int numBytes = textureFile.Length;
+                    writer.Write(numBytes);
+                    writer.Write(textureFile);
 
-                    writer.Write(p.ID);
-                    writer.Write(p.OtherID);
-                    writer.Write(p.Room);
-                    writer.Write(p.AdjoiningRoom);
-                    writer.Write((byte)p.Direction);
-                    writer.Write(p.X);
-                    writer.Write(p.Z);
-                    writer.Write(p.NumXBlocks);
-                    writer.Write(p.NumZBlocks);
-                    writer.Write(filler8);
-                    writer.Write(p.MemberOfFlippedRoom);
-                    writer.Write(p.Flipped);
-                    writer.Write(p.OtherIDFlipped);
+                    var wadFile = System.Text.Encoding.UTF8.GetBytes(level.WadFile);
+                    numBytes = wadFile.Length;
+                    writer.Write(numBytes);
+                    writer.Write(wadFile);
+
                     writer.Write(filler32);
                     writer.Write(filler32);
                     writer.Write(filler32);
                     writer.Write(filler32);
-                }
 
-                // Write objects: moveables, static meshes, cameras, sinks, sound sources
-                int numObjects = (int)level.Objects.Count;
-                writer.Write(numObjects);
-                for (int i = 0; i < level.Objects.Count; i++)
-                {
-                    var o = level.Objects.ElementAt(i).Value;
-
-                    writer.Write(o.ID);
-                    writer.Write((byte)o.Type);
-                    writer.Write(o.Position.X);
-                    writer.Write(o.Position.Y);
-                    writer.Write(o.Position.Z);
-                    writer.Write(o.Room);
-                    writer.Write(o.OCB);
-                    writer.Write(o.Rotation);
-                    writer.Write(o.Invisible);
-                    writer.Write(o.ClearBody);
-                    writer.Write(o.Bits[0]);
-                    writer.Write(o.Bits[1]);
-                    writer.Write(o.Bits[2]);
-                    writer.Write(o.Bits[3]);
-                    writer.Write(o.Bits[4]);
-
-                    if (o.Type == ObjectInstanceType.StaticMesh)
+                    // Write textures
+                    int numTextures = level.TextureSamples.Count;
+                    writer.Write(numTextures);
+                    foreach (var txt in level.TextureSamples.Values)
                     {
-                        var sm = (StaticMeshInstance)o;
-                        writer.Write(sm.Model.ObjectID);
-                        writer.Write(sm.Color.R);
-                        writer.Write(sm.Color.G);
-                        writer.Write(sm.Color.B);
-
-                        writer.Write(filler8);
-                    }
-
-                    if (o.Type == ObjectInstanceType.Moveable)
-                    {
-                        var m = (MoveableInstance)o;
-                        writer.Write(m.Model?.ObjectID ?? 0);
-
+                        writer.Write(txt.ID);
+                        writer.Write(txt.X);
+                        writer.Write(txt.Y);
+                        writer.Write(txt.Width);
+                        writer.Write(txt.Height);
+                        writer.Write(txt.Page);
+                        writer.Write(filler32);
+                        writer.Write(txt.Transparent);
+                        writer.Write(txt.DoubleSided);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
                         writer.Write(filler32);
                     }
 
-                    if (o.Type == ObjectInstanceType.Camera)
+                    // Write portals
+                    int numPortals = level.Portals.Count;
+                    writer.Write(numPortals);
+                    foreach (var p in level.Portals.Values)
                     {
-                        var c = (CameraInstance)o;
-                        writer.Write(c.Fixed);
-
+                        writer.Write(p.ID);
+                        writer.Write(p.OtherID);
+                        writer.Write(p.Room);
+                        writer.Write(p.AdjoiningRoom);
+                        writer.Write((byte) p.Direction);
+                        writer.Write(p.X);
+                        writer.Write(p.Z);
+                        writer.Write(p.NumXBlocks);
+                        writer.Write(p.NumZBlocks);
                         writer.Write(filler8);
-                        writer.Write(filler8);
-                        writer.Write(filler8);
+                        writer.Write(p.MemberOfFlippedRoom);
+                        writer.Write(p.Flipped);
+                        writer.Write(p.OtherIDFlipped);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
                         writer.Write(filler32);
                     }
 
-                    if (o.Type == ObjectInstanceType.Sink)
+                    // Write objects: moveables, static meshes, cameras, sinks, sound sources
+                    int numObjects = level.Objects.Count;
+                    writer.Write(numObjects);
+                    foreach (var o in level.Objects.Values)
                     {
-                        var s = (SinkInstance)o;
-                        writer.Write(s.Strength);
+                        writer.Write(o.ID);
+                        writer.Write((byte) o.Type);
+                        writer.Write(o.Position.X);
+                        writer.Write(o.Position.Y);
+                        writer.Write(o.Position.Z);
+                        writer.Write(o.Room);
+                        writer.Write(o.OCB);
+                        writer.Write(o.Rotation);
+                        writer.Write(o.Invisible);
+                        writer.Write(o.ClearBody);
+                        writer.Write(o.Bits[0]);
+                        writer.Write(o.Bits[1]);
+                        writer.Write(o.Bits[2]);
+                        writer.Write(o.Bits[3]);
+                        writer.Write(o.Bits[4]);
 
-                        writer.Write(filler8);
-                        writer.Write(filler8);
-                        writer.Write(filler32);
-                    }
-
-                    if (o.Type == ObjectInstanceType.Sound)
-                    {
-                        var s = (SoundInstance)o;
-                        writer.Write(s.SoundID);
-
-                        writer.Write(filler8);
-                        writer.Write(filler8);
-                        writer.Write(filler32);
-                    }
-
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                }
-
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-
-                // Write triggers
-                int numTriggers = (int)level.Triggers.Count;
-                writer.Write(numTriggers);
-                for (int i = 0; i < level.Triggers.Count; i++)
-                {
-                    var o = level.Triggers.ElementAt(i).Value;
-
-                    writer.Write(o.ID);
-                    writer.Write(o.X);
-                    writer.Write(o.Z);
-                    writer.Write(o.NumXBlocks);
-                    writer.Write(o.NumZBlocks);
-                    writer.Write((byte)o.TriggerType);
-                    writer.Write((byte)o.TargetType);
-                    writer.Write(o.Target);
-                    writer.Write(o.Timer);
-                    writer.Write(o.OneShot);
-                    writer.Write(o.Bits[0]);
-                    writer.Write(o.Bits[1]);
-                    writer.Write(o.Bits[2]);
-                    writer.Write(o.Bits[3]);
-                    writer.Write(o.Bits[4]);
-                    writer.Write(o.Room);
-
-                    writer.Write(filler16);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                }
-
-                // Write rooms
-                int numRooms = 255;
-                writer.Write(numRooms);
-                for (int i = 0; i < numRooms; i++)
-                {
-                    var roomMagicWord = System.Text.Encoding.ASCII.GetBytes("ROOM");
-                    writer.Write(roomMagicWord);
-
-                    var r = level.Rooms[i];
-
-                    if (r == null)
-                    {
-                        writer.Write(false);
-                        continue;
-                    }
-                    else
-                    {
-                        writer.Write(true);
-                    }
-
-                    if (r.Name == null)
-                        r.Name = "Room " + i.ToString();
-
-                    writer.Write(System.Text.Encoding.UTF8.GetBytes(r.Name.PadRight(100, ' ')));
-                    writer.Write(r.Position.X);
-                    writer.Write(r.Position.Y);
-                    writer.Write(r.Position.Z);
-                    writer.Write(r.Ceiling);
-                    writer.Write(r.NumXSectors);
-                    writer.Write(r.NumZSectors);
-
-                    for (int z = 0; z < r.NumZSectors; z++)
-                    {
-                        for (int x = 0; x < r.NumXSectors; x++)
+                        switch (o.Type)
                         {
-                            var b = r.Blocks[x, z];
+                            case ObjectInstanceType.StaticMesh:
+                                var sm = (StaticMeshInstance) o;
+                                writer.Write(sm.Model.ObjectID);
+                                writer.Write(sm.Color.R);
+                                writer.Write(sm.Color.G);
+                                writer.Write(sm.Color.B);
 
-                            writer.Write((byte)b.Type);
-                            writer.Write((short)b.Flags);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.QAFaces[n]);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.EDFaces[n]);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.WSFaces[n]);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.RFFaces[n]);
-                            writer.Write(b.SplitFoorType);
-                            writer.Write(b.SplitFloor);
-                            writer.Write(b.SplitCeilingType);
-                            writer.Write(b.SplitCeiling);
-                            writer.Write(b.RealSplitFloor);
-                            writer.Write(b.RealSplitCeiling);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.Climb[n]);
-                            writer.Write((byte)b.FloorOpacity);
-                            writer.Write((byte)b.CeilingOpacity);
-                            writer.Write((byte)b.WallOpacity);
-                            writer.Write(b.FloorPortal);
-                            writer.Write(b.CeilingPortal);
-                            writer.Write(b.WallPortal);
-                            writer.Write(b.IsFloorSolid);
-                            writer.Write(b.IsCeilingSolid);
-                            writer.Write(b.NoCollisionFloor);
-                            writer.Write(b.NoCollisionCeiling);
+                                writer.Write(filler8);
+                                break;
+                            case ObjectInstanceType.Moveable:
+                                var m = (MoveableInstance) o;
+                                writer.Write(m.Model?.ObjectID ?? 0);
 
-                            for (int j = 0; j < b.Faces.Length; j++)
+                                writer.Write(filler32);
+                                break;
+                            case ObjectInstanceType.Camera:
+                                var c = (CameraInstance) o;
+                                writer.Write(c.Fixed);
+
+                                writer.Write(filler8);
+                                writer.Write(filler8);
+                                writer.Write(filler8);
+                                writer.Write(filler32);
+                                break;
+                            case ObjectInstanceType.Sink:
                             {
-                                BlockFace f = b.Faces[j];
+                                var s = (SinkInstance) o;
+                                writer.Write(s.Strength);
 
-                                writer.Write(f.Defined);
-                                writer.Write(f.Flipped);
-                                writer.Write(f.Texture);
-                                writer.Write(f.Rotation);
-                                writer.Write(f.Transparent);
-                                writer.Write(f.DoubleSided);
-                                writer.Write(f.Invisible);
-                                writer.Write(f.NoCollision);
-                                writer.Write((byte)f.TextureTriangle);
+                                writer.Write(filler8);
+                                writer.Write(filler8);
+                                writer.Write(filler32);
+                            }
+                                break;
+                            case ObjectInstanceType.Sound:
+                            {
+                                var s = (SoundInstance) o;
+                                writer.Write(s.SoundID);
+
+                                writer.Write(filler8);
+                                writer.Write(filler8);
+                                writer.Write(filler32);
+                            }
+                                break;
+                        }
+
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                    }
+
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+
+                    // Write triggers
+                    int numTriggers = level.Triggers.Count;
+                    writer.Write(numTriggers);
+                    foreach (var o in level.Triggers.Values)
+                    {
+                        writer.Write(o.ID);
+                        writer.Write(o.X);
+                        writer.Write(o.Z);
+                        writer.Write(o.NumXBlocks);
+                        writer.Write(o.NumZBlocks);
+                        writer.Write((byte) o.TriggerType);
+                        writer.Write((byte) o.TargetType);
+                        writer.Write(o.Target);
+                        writer.Write(o.Timer);
+                        writer.Write(o.OneShot);
+                        writer.Write(o.Bits[0]);
+                        writer.Write(o.Bits[1]);
+                        writer.Write(o.Bits[2]);
+                        writer.Write(o.Bits[3]);
+                        writer.Write(o.Bits[4]);
+                        writer.Write(o.Room);
+
+                        writer.Write(filler16);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                    }
+
+                    // Write rooms
+                    const int numRooms = 255;
+                    writer.Write(numRooms);
+                    for (int i = 0; i < numRooms; i++)
+                    {
+                        var roomMagicWord = System.Text.Encoding.ASCII.GetBytes("ROOM");
+                        writer.Write(roomMagicWord);
+
+                        var r = level.Rooms[i];
+
+                        if (r == null)
+                        {
+                            writer.Write(false);
+                            continue;
+                        }
+                        else
+                        {
+                            writer.Write(true);
+                        }
+
+                        if (r.Name == null)
+                            r.Name = "Room " + i.ToString();
+
+                        writer.Write(System.Text.Encoding.UTF8.GetBytes(r.Name.PadRight(100, ' ')));
+                        writer.Write(r.Position.X);
+                        writer.Write(r.Position.Y);
+                        writer.Write(r.Position.Z);
+                        writer.Write(r.Ceiling);
+                        writer.Write(r.NumXSectors);
+                        writer.Write(r.NumZSectors);
+
+                        for (int z = 0; z < r.NumZSectors; z++)
+                        {
+                            for (int x = 0; x < r.NumXSectors; x++)
+                            {
+                                var b = r.Blocks[x, z];
+
+                                writer.Write((byte) b.Type);
+                                writer.Write((short) b.Flags);
                                 for (int n = 0; n < 4; n++)
-                                    writer.Write(f.RectangleUV[n]);
-                                for (int n = 0; n < 3; n++)
-                                    writer.Write(f.TriangleUV[n]);
-                                for (int n = 0; n < 3; n++)
-                                    writer.Write(f.TriangleUV2[n]);
+                                    writer.Write(b.QAFaces[n]);
+                                for (int n = 0; n < 4; n++)
+                                    writer.Write(b.EDFaces[n]);
+                                for (int n = 0; n < 4; n++)
+                                    writer.Write(b.WSFaces[n]);
+                                for (int n = 0; n < 4; n++)
+                                    writer.Write(b.RFFaces[n]);
+                                writer.Write(b.SplitFoorType);
+                                writer.Write(b.SplitFloor);
+                                writer.Write(b.SplitCeilingType);
+                                writer.Write(b.SplitCeiling);
+                                writer.Write(b.RealSplitFloor);
+                                writer.Write(b.RealSplitCeiling);
+                                for (int n = 0; n < 4; n++)
+                                    writer.Write(b.Climb[n]);
+                                writer.Write((byte) b.FloorOpacity);
+                                writer.Write((byte) b.CeilingOpacity);
+                                writer.Write((byte) b.WallOpacity);
+                                writer.Write(b.FloorPortal);
+                                writer.Write(b.CeilingPortal);
+                                writer.Write(b.WallPortal);
+                                writer.Write(b.IsFloorSolid);
+                                writer.Write(b.IsCeilingSolid);
+                                writer.Write(b.NoCollisionFloor);
+                                writer.Write(b.NoCollisionCeiling);
+
+                                foreach (var f in b.Faces)
+                                {
+                                    writer.Write(f.Defined);
+                                    writer.Write(f.Flipped);
+                                    writer.Write(f.Texture);
+                                    writer.Write(f.Rotation);
+                                    writer.Write(f.Transparent);
+                                    writer.Write(f.DoubleSided);
+                                    writer.Write(f.Invisible);
+                                    writer.Write(f.NoCollision);
+                                    writer.Write((byte) f.TextureTriangle);
+                                    for (int n = 0; n < 4; n++)
+                                        writer.Write(f.RectangleUV[n]);
+                                    for (int n = 0; n < 3; n++)
+                                        writer.Write(f.TriangleUV[n]);
+                                    for (int n = 0; n < 3; n++)
+                                        writer.Write(f.TriangleUV2[n]);
+                                    writer.Write(filler32);
+                                    writer.Write(filler32);
+                                    writer.Write(filler32);
+                                    writer.Write(filler32);
+                                }
+
+                                writer.Write((byte) b.FloorDiagonalSplit);
+                                writer.Write((byte) b.FloorDiagonalSplitType);
+                                writer.Write((byte) b.CeilingDiagonalSplit);
+                                writer.Write((byte) b.CeilingDiagonalSplitType);
+
                                 writer.Write(filler32);
                                 writer.Write(filler32);
                                 writer.Write(filler32);
                                 writer.Write(filler32);
                             }
+                        }
 
-                            writer.Write((byte)b.FloorDiagonalSplit);
-                            writer.Write((byte)b.FloorDiagonalSplitType);
-                            writer.Write((byte)b.CeilingDiagonalSplit);
-                            writer.Write((byte)b.CeilingDiagonalSplitType);
+                        int numLights = r.Lights.Count;
+                        writer.Write(numLights);
+                        foreach (var l in r.Lights)
+                        {
+                            writer.Write((byte) l.Type);
+                            writer.Write(l.Position.X);
+                            writer.Write(l.Position.Y);
+                            writer.Write(l.Position.Z);
+                            writer.Write(l.Intensity);
+                            writer.Write(l.Color.R);
+                            writer.Write(l.Color.G);
+                            writer.Write(l.Color.B);
+                            writer.Write(l.In);
+                            writer.Write(l.Out);
+                            writer.Write(l.Len);
+                            writer.Write(l.Cutoff);
+                            writer.Write(l.DirectionX);
+                            writer.Write(l.DirectionY);
 
-                            writer.Write(filler32);
-                            writer.Write(filler32);
-                            writer.Write(filler32);
-                            writer.Write(filler32);
+                            byte b = (byte) l.Face;
+                            writer.Write(b);
+
+                            writer.Write(filler8);
+                            writer.Write(filler8);
+                            writer.Write(filler8);
+                        }
+
+                        writer.Write((byte) r.AmbientLight.R);
+                        writer.Write((byte) r.AmbientLight.G);
+                        writer.Write((byte) r.AmbientLight.B);
+                        writer.Write(r.Flipped);
+                        writer.Write(r.AlternateRoom);
+                        writer.Write(r.AlternateGroup);
+                        writer.Write(r.WaterLevel);
+                        writer.Write(r.MistLevel);
+                        writer.Write(r.ReflectionLevel);
+                        writer.Write(r.FlagCold);
+                        writer.Write(r.FlagDamage);
+                        writer.Write(r.FlagHorizon);
+                        writer.Write(r.FlagMist);
+                        writer.Write(r.FlagOutside);
+                        writer.Write(r.FlagRain);
+                        writer.Write(r.FlagReflection);
+                        writer.Write(r.FlagSnow);
+                        writer.Write(r.FlagWater);
+                        writer.Write(r.FlagQuickSand);
+                        writer.Write(r.Flipped);
+                        writer.Write(r.BaseRoom);
+                        writer.Write(r.ExcludeFromPathFinding);
+
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                        writer.Write(filler32);
+                    }
+
+                    // Write animated textures
+                    int numAnimatedTextures = level.AnimatedTextures.Count;
+                    writer.Write(numAnimatedTextures);
+                    foreach (var textureSet in level.AnimatedTextures)
+                    {
+                        writer.Write((byte) textureSet.Effect);
+
+                        int numTexturesInSet = textureSet.Textures.Count;
+                        writer.Write(numTexturesInSet);
+
+                        foreach (var texture in textureSet.Textures)
+                        {
+                            writer.Write(texture.Page);
+                            writer.Write(texture.X);
+                            writer.Write(texture.Y);
                         }
                     }
 
-                    int numLights = (int)r.Lights.Count;
-                    writer.Write(numLights);
-                    for (int j = 0; j < numLights; j++)
+                    int numTextureSounds = level.TextureSounds.Count;
+                    writer.Write(numTextureSounds);
+                    foreach (var sound in level.TextureSounds)
                     {
-                        var l = r.Lights[j];
-
-                        writer.Write((byte)l.Type);
-                        writer.Write(l.Position.X);
-                        writer.Write(l.Position.Y);
-                        writer.Write(l.Position.Z);
-                        writer.Write(l.Intensity);
-                        writer.Write(l.Color.R);
-                        writer.Write(l.Color.G);
-                        writer.Write(l.Color.B);
-                        writer.Write(l.In);
-                        writer.Write(l.Out);
-                        writer.Write(l.Len);
-                        writer.Write(l.Cutoff);
-                        writer.Write(l.DirectionX);
-                        writer.Write(l.DirectionY);
-
-                        byte b = (byte)l.Face;
-                        writer.Write(b);
-
-                        writer.Write(filler8);
-                        writer.Write(filler8);
-                        writer.Write(filler8);
+                        writer.Write(sound.X);
+                        writer.Write(sound.Y);
+                        writer.Write(sound.Page);
+                        writer.Write((byte) sound.Sound);
                     }
 
-                    writer.Write((byte)r.AmbientLight.R);
-                    writer.Write((byte)r.AmbientLight.G);
-                    writer.Write((byte)r.AmbientLight.B);
-                    writer.Write(r.Flipped);
-                    writer.Write(r.AlternateRoom);
-                    writer.Write(r.AlternateGroup);
-                    writer.Write(r.WaterLevel);
-                    writer.Write(r.MistLevel);
-                    writer.Write(r.ReflectionLevel);
-                    writer.Write(r.FlagCold);
-                    writer.Write(r.FlagDamage);
-                    writer.Write(r.FlagHorizon);
-                    writer.Write(r.FlagMist);
-                    writer.Write(r.FlagOutside);
-                    writer.Write(r.FlagRain);
-                    writer.Write(r.FlagReflection);
-                    writer.Write(r.FlagSnow);
-                    writer.Write(r.FlagWater);
-                    writer.Write(r.FlagQuickSand);
-                    writer.Write(r.Flipped);
-                    writer.Write(r.BaseRoom);
-                    writer.Write(r.ExcludeFromPathFinding);
-
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                }
-
-                // Write animated textures
-                int numAnimatedTextures = (int)level.AnimatedTextures.Count;
-                writer.Write(numAnimatedTextures);
-                foreach (var textureSet in level.AnimatedTextures)
-                {
-                    writer.Write((byte)textureSet.Effect);
-
-                    int numTexturesInSet = (int)textureSet.Textures.Count;
-                    writer.Write(numTexturesInSet);
-
-                    foreach (var texture in textureSet.Textures)
+                    int numPalette = Editor.Instance.Palette.Count;
+                    writer.Write(numPalette);
+                    for (int i = 0; i < numPalette; i++)
                     {
-                        writer.Write(texture.Page);
-                        writer.Write(texture.X);
-                        writer.Write(texture.Y);
+                        writer.Write(Editor.Instance.Palette[i].R);
+                        writer.Write(Editor.Instance.Palette[i].G);
+                        writer.Write(Editor.Instance.Palette[i].B);
                     }
+
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+                    writer.Write(filler32);
+
+                    writer.Flush();
+
+                    projectData = ms.ToArray();
                 }
 
-                int numTextureSounds = (int)level.TextureSounds.Count;
-                writer.Write(numTextureSounds);
-                foreach (var sound in level.TextureSounds)
-                {
-                    writer.Write(sound.X);
-                    writer.Write(sound.Y);
-                    writer.Write(sound.Page);
-                    writer.Write((byte)sound.Sound);
-                }
-
-                int numPalette = Editor.Instance.Palette.Count;
-                writer.Write(numPalette);
-                for (int i = 0; i < numPalette; i++)
-                {
-                    writer.Write(Editor.Instance.Palette[i].R);
-                    writer.Write(Editor.Instance.Palette[i].G);
-                    writer.Write(Editor.Instance.Palette[i].B);
-                }
-
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-                writer.Write(filler32);
-
-                var projectData = ms.ToArray();
-
-                writer.Flush();
-                writer.Close();
-
-                writer = new BinaryWriterEx(File.OpenWrite(filename));
-
-                /*/if (false)
-                {
-                    int uncompressedSize = projectData.Length;
-                    projectData = Utils.CompressDataZLIB(projectData);
-                    int compressedSize = projectData.Length;
-
-                    version = new byte[] { 0x5A, 0x52, 0x4A, 0x32 };
-
-                    writer.Write(version);
-                    writer.Write(uncompressedSize);
-                    writer.Write(compressedSize);
-                    writer.Write(projectData);
-                }
-                else*/
+                using (var writer = new BinaryWriterEx(File.OpenWrite(filename)))
                 {
                     writer.Write(projectData);
+                    writer.Flush();
                 }
-
-                writer.Flush();
-                writer.Close();
             }
             catch (Exception)
             {
@@ -3821,12 +3848,11 @@ namespace TombEditor.Geometry
             var triggersToDelete = new List<int>();
 
             // First I build a list of triggers to delete
-            for (int i = 0; i < Triggers.Count; i++)
+            foreach (var trigger in Triggers.Values)
             {
-                var trigger = Triggers.ElementAt(i).Value;
-
-                if ((trigger.TargetType == TriggerTargetType.Camera || trigger.TargetType == TriggerTargetType.FlyByCamera ||
-                    trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Sink) &&
+                if ((trigger.TargetType == TriggerTargetType.Camera ||
+                     trigger.TargetType == TriggerTargetType.FlyByCamera ||
+                     trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Sink) &&
                     trigger.Target == instance)
                 {
                     triggersToDelete.Add(trigger.ID);
@@ -3834,9 +3860,9 @@ namespace TombEditor.Geometry
             }
 
             // Then I clean sectors and delete triggers
-            for (int i = 0; i < triggersToDelete.Count; i++)
+            foreach (int t in triggersToDelete)
             {
-                var trigger = Triggers[triggersToDelete[i]];
+                var trigger = Triggers[t];
 
                 // Clean sectors
                 for (int z = trigger.Z; z < trigger.Z + trigger.NumZBlocks; z++)
@@ -3848,7 +3874,7 @@ namespace TombEditor.Geometry
                 }
 
                 // Delete trigger
-                Triggers.Remove(triggersToDelete[i]);
+                Triggers.Remove(t);
             }
         }
     }
