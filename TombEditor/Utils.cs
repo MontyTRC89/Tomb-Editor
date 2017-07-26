@@ -116,7 +116,7 @@ namespace TombEditor
             {
                 for (int y = 0; y < 64; y++)
                 {
-                    System.Drawing.Color color = Editor.Instance.Level.TextureMap.GetPixel(xc + x, page * 256 + yc + y);
+                    System.Drawing.Color color = Editor.Instance.Level._textureMap.GetPixel(xc + x, page * 256 + yc + y);
                     bmp.SetPixel(x, y, color);
                 }
             }

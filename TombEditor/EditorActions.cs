@@ -759,7 +759,7 @@ namespace TombEditor
                 return;
             trigger = formTrigger.Trigger;
             trigger.Room = _editor.RoomIndex;
-            trigger.ID = _editor.Level.GetNewTriggerID();
+            trigger.ID = _editor.Level.GetNewTriggerId();
             trigger.X = (byte)xMin;
             trigger.Z = (byte)zMin;
             trigger.NumXBlocks = (byte)(xMax - xMin + 1);
@@ -1130,7 +1130,7 @@ namespace TombEditor
         {
             if (typ == ObjectType.Moveable)
             {
-                MoveableInstance instance = new MoveableInstance(_editor.Level.GetNewObjectID(), _editor.RoomIndex);
+                MoveableInstance instance = new MoveableInstance(_editor.Level.GetNewObjectId(), _editor.RoomIndex);
 
                 Block block = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -1144,7 +1144,7 @@ namespace TombEditor
             }
             else if (typ == ObjectType.StaticMesh)
             {
-                StaticMeshInstance instance = new StaticMeshInstance(_editor.Level.GetNewObjectID(), _editor.RoomIndex);
+                StaticMeshInstance instance = new StaticMeshInstance(_editor.Level.GetNewObjectId(), _editor.RoomIndex);
 
                 Block block = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -1159,7 +1159,7 @@ namespace TombEditor
             }
             else if (typ == ObjectType.Camera)
             {
-                CameraInstance instance = new CameraInstance(_editor.Level.GetNewObjectID(), _editor.RoomIndex);
+                CameraInstance instance = new CameraInstance(_editor.Level.GetNewObjectId(), _editor.RoomIndex);
 
                 Block block = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -1173,7 +1173,7 @@ namespace TombEditor
             }
             else if (typ == ObjectType.FlybyCamera)
             {
-                FlybyCameraInstance instance = new FlybyCameraInstance(_editor.Level.GetNewObjectID(), _editor.RoomIndex);
+                FlybyCameraInstance instance = new FlybyCameraInstance(_editor.Level.GetNewObjectId(), _editor.RoomIndex);
 
                 Block block = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -1187,7 +1187,7 @@ namespace TombEditor
             }
             else if (typ == ObjectType.SoundSource)
             {
-                SoundInstance instance = new SoundInstance(_editor.Level.GetNewObjectID(), _editor.RoomIndex);
+                SoundInstance instance = new SoundInstance(_editor.Level.GetNewObjectId(), _editor.RoomIndex);
 
                 Block block = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -1201,7 +1201,7 @@ namespace TombEditor
             }
             else if (typ == ObjectType.Sink)
             {
-                SinkInstance instance = new SinkInstance(_editor.Level.GetNewObjectID(), _editor.RoomIndex);
+                SinkInstance instance = new SinkInstance(_editor.Level.GetNewObjectId(), _editor.RoomIndex);
 
                 Block block = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -2031,7 +2031,7 @@ namespace TombEditor
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
                     int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = 1;
                     currentRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     currentRoomPortal.Direction = PortalDirection.West;
@@ -2043,7 +2043,7 @@ namespace TombEditor
                     _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
                     _editor.Level.Rooms[_editor.RoomIndex].Portals.Add(currentRoomPortal.ID);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = 1;
                     otherRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     otherRoomPortal.Direction = PortalDirection.East;
@@ -2147,7 +2147,7 @@ namespace TombEditor
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
                     int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = 1;
                     currentRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     currentRoomPortal.Direction = PortalDirection.East;
@@ -2159,7 +2159,7 @@ namespace TombEditor
                     _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
                     _editor.Level.Rooms[_editor.RoomIndex].Portals.Add(currentRoomPortal.ID);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = 1;
                     otherRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     otherRoomPortal.Direction = PortalDirection.West;
@@ -2263,7 +2263,7 @@ namespace TombEditor
                     byte xPortalOther = (byte)(xPortalWorld - otherRoom.Position.X);
                     byte zPortalOther = (byte)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     currentRoomPortal.NumZBlocks = 1;
                     currentRoomPortal.Direction = PortalDirection.North;
@@ -2275,7 +2275,7 @@ namespace TombEditor
                     _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
                     _editor.Level.Rooms[_editor.RoomIndex].Portals.Add(currentRoomPortal.ID);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     otherRoomPortal.NumZBlocks = 1;
                     otherRoomPortal.Direction = PortalDirection.South;
@@ -2379,7 +2379,7 @@ namespace TombEditor
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
                     int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     currentRoomPortal.NumZBlocks = 1;
                     currentRoomPortal.Direction = PortalDirection.South;
@@ -2391,7 +2391,7 @@ namespace TombEditor
                     _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
                     _editor.Level.Rooms[_editor.RoomIndex].Portals.Add(currentRoomPortal.ID);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     otherRoomPortal.NumZBlocks = 1;
                     otherRoomPortal.Direction = PortalDirection.North;
@@ -2606,7 +2606,7 @@ namespace TombEditor
                     Portal currentRoomPortal = new Portal(0, _editor.RoomIndex);
                     Portal otherRoomPortal = new Portal(0, found);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     currentRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     currentRoomPortal.Direction = PortalDirection.Floor;
@@ -2623,7 +2623,7 @@ namespace TombEditor
                     int lowZmin = zMin + (int)(room.Position.Z - otherRoom.Position.Z);
                     int lowZmax = zMax + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalID();
+                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(lowXmax - lowXmin + 1);
                     otherRoomPortal.NumZBlocks = (byte)(lowZmax - lowZmin + 1);
                     otherRoomPortal.Direction = PortalDirection.Ceiling;

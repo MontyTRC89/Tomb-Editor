@@ -909,8 +909,8 @@ namespace TombEditor
 
         public void LoadTextureMapInEditor(Level level)
         {
-            panelTextureMap.Image = level.TextureMap;
-            panelTextureMap.Height = level.TextureMap.Height;
+            panelTextureMap.Image = level._textureMap;
+            panelTextureMap.Height = level._textureMap.Height;
             panelTextureMap.Invalidate();
         }
 
@@ -1834,8 +1834,8 @@ namespace TombEditor
         {
             _editor.SelectedTexture = -1;
             _editor.Level.LoadTextureMap(filename);
-            panelTextureMap.Image = _editor.Level.TextureMap;
-            panelTextureMap.Height = _editor.Level.TextureMap.Height;
+            panelTextureMap.Image = _editor.Level._textureMap;
+            panelTextureMap.Height = _editor.Level._textureMap.Height;
             panelTextureMap.Invalidate();
         }
 
@@ -3144,7 +3144,7 @@ namespace TombEditor
 
                     if (p.Room == _editor.RoomIndex)
                     {
-                        int portalId = _editor.Level.GetNewPortalID();
+                        int portalId = _editor.Level.GetNewPortalId();
                         Portal newPortal = p.ClonePortal();
                         newPortal.ID = portalId;
                         newPortal.Flipped = true;
