@@ -1390,7 +1390,7 @@ namespace TombEditor.Geometry
 
                 // Fix objects
                 form.ReportProgress(70, "Fixing objects positions and data");
-                foreach (var instance in level.Objects.Values)
+                foreach (var instance in level.Objects.Values.ToList())
                 {
                     instance.X = (byte) (level.Rooms[instance.Room].NumXSectors - instance.X - 1);
 
@@ -1420,7 +1420,7 @@ namespace TombEditor.Geometry
 
                 // Fix triggers
                 form.ReportProgress(73, "Fixing triggers");
-                foreach (var instance in level.Triggers.Values)
+                foreach (var instance in level.Triggers.Values.ToList())
                 {
                     if (instance.TargetType == TriggerTargetType.Object && !level.Objects.ContainsKey(instance.Target))
                     {
@@ -1489,15 +1489,15 @@ namespace TombEditor.Geometry
 
                 // Fix portals
                 form.ReportProgress(76, "Building portals");
-                foreach (var currentPortal in level.Portals.Values)
+                foreach (var currentPortal in level.Portals.Values.ToList())
                 {
                     currentPortal.X = (byte) (level.Rooms[currentPortal.Room].NumXSectors - currentPortal.NumXBlocks -
                                               currentPortal.X);
                 }
 
-                foreach (var currentPortal in level.Portals.Values)
+                foreach (var currentPortal in level.Portals.Values.ToList())
                 {
-                    foreach (var otherPortal in level.Portals.Values)
+                    foreach (var otherPortal in level.Portals.Values.ToList())
                     {
                         if (ReferenceEquals(currentPortal, otherPortal))
                             continue;
