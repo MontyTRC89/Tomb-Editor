@@ -307,9 +307,7 @@ namespace TombEditor.Controls
 
                 // Try to paste or stamp
                 if (Clipboard.Action != PasteAction.None && Clipboard.Paste())
-                {
                     return;
-                }
 
                 switch (_editor.Mode)
                 {
@@ -329,7 +327,6 @@ namespace TombEditor.Controls
                                 _editor.BlockSelectionEndZ = -1;
                                 _firstSelection = true;
                                 _editor.BlockEditingType = 0;
-
                                 return;
                             }
 
@@ -387,24 +384,21 @@ namespace TombEditor.Controls
 
                             _editor.StartPickingResult = _editor.PickingResult;
                         }
-
                         break;
 
                     case EditorMode.Map2D:
-
                         break;
 
                     case EditorMode.FaceEdit:
                         if (_editor.Action == EditorAction.None)
                         {
                             if (Control.ModifierKeys == Keys.Control)
-                                RotateTexture();
-                            else if (Control.ModifierKeys == Keys.Shift)
                                 FlipTexture();
+                            else if (Control.ModifierKeys == Keys.Shift)
+                                RotateTexture();
                             else
                                 PlaceTexture();
                         }
-
                         break;
                 }
             }
@@ -1752,7 +1746,7 @@ namespace TombEditor.Controls
 
                 UV[0] = new Vector2(texture.X / 256.0f, texture.Y / 256.0f);
                 UV[1] = new Vector2((texture.X + texture.Width) / 256.0f, texture.Y / 256.0f);
-                ;
+
                 UV[2] = new Vector2((texture.X + texture.Width) / 256.0f, (texture.Y + texture.Height) / 256.0f);
                 UV[3] = new Vector2(texture.X / 256.0f, (texture.Y + texture.Height) / 256.0f);
 
@@ -1848,7 +1842,7 @@ namespace TombEditor.Controls
 
         private void PlaceTexture()
         {
-            // recupero le coordinate X e Z della faccia
+            // Recover the X and Z coordinates of the face
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
@@ -1863,7 +1857,7 @@ namespace TombEditor.Controls
 
         private void PlaceNoCollision()
         {
-            // recupero le coordinate X e Z della faccia
+            // Recover the X and Z coordinates of the face
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
   
@@ -1878,13 +1872,9 @@ namespace TombEditor.Controls
             int z = _editor.PickingResult.Element & 31;
 
             if (_editor.ItemType == EditorItemType.Moveable)
-            {
                 EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Moveable, _editor.SelectedItem);
-            }
             else
-            {
                 EditorActions.PlaceObject(x, z, EditorActions.ObjectType.StaticMesh, _editor.SelectedItem);
-            }
 
             _editor.Action = EditorAction.None;
         }
