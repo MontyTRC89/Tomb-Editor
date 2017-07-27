@@ -38,42 +38,14 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel;
+
 	if (TextureEnabled)
 	{
 		pixel = Texture.Sample(TextureSampler, input.UV);
 		if (SelectionEnabled) 
 			pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 	}
-	else
-	{
-		/*float LINE_SIZE = 0.015f;
-		pixel = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
-			if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) && 
-				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) && Shape == 0)
-			{
-				pixel = Color;
-				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-			}
-
-		if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) && 
-				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) &&
-				(input.EditorUV.y < 1.0f - LINE_SIZE - input.EditorUV.x ||
-				input.EditorUV.y > 1.0f + LINE_SIZE - input.EditorUV.x) && Shape == 1 && SplitMode == 1)
-		{
-			pixel = Color;
-				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-		}
-
-		if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) && 
-				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) &&
-				(input.EditorUV.y < - LINE_SIZE + input.EditorUV.x ||
-				input.EditorUV.y > + LINE_SIZE + input.EditorUV.x) && Shape == 1 && SplitMode == 0)
-		{
-			pixel = Color;
-				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-		}*/
-	}
 	return pixel;
 }
 

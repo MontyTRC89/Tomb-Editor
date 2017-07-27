@@ -706,19 +706,19 @@ namespace TombLib.Wad
                     if (poly.Shape == Shape.Triangle)
                     {
 
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, msh.Shades[poly.V1]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, msh.Shades[poly.V2]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, msh.Shades[poly.V3]);
                     }
                     else
                     {
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, msh.Shades[poly.V1]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, msh.Shades[poly.V2]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, msh.Shades[poly.V4]);
 
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, msh.Shades[poly.V4]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, msh.Shades[poly.V2]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, msh.Shades[poly.V3]);
 
                     }
                 }
@@ -866,15 +866,16 @@ namespace TombLib.Wad
             mesh.SubMeshes[submeshIndex].Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
 
-        private void AddStaticVertexAndIndex(WadVertex v, StaticMesh mesh, Vector2 uv, int submeshIndex)
+        private void AddStaticVertexAndIndex(WadVertex v, StaticMesh mesh, Vector2 uv, int submeshIndex, short color)
         {
             StaticVertex newVertex = new StaticVertex();
 
             newVertex.Position = new Vector4(v.X, -v.Y, v.Z, 1);
             newVertex.Normal = Vector3.Zero;
-            newVertex.Tangent = Vector3.Zero;
-            newVertex.Binormal = Vector3.Zero;
             newVertex.UV = uv;
+
+            var shade = 1.0f - color / 8191.0f;
+            newVertex.Shade = new Vector2(shade, 0.0f);
 
             mesh.Vertices.Add(newVertex);
             mesh.SubMeshes[submeshIndex].Indices.Add((ushort)(mesh.Vertices.Count - 1));

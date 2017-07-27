@@ -3,12 +3,14 @@
 	float4 Position : POSITION0;
 	float2 UV : TEXCOORD0;
 	float3 Normal : NORMAL0;
+	float2 Shade : TEXCOORD1;
 };
 
 struct PixelInputType
 {
 	float4 Position : SV_POSITION;
 	float2 UV : TEXCOORD0;
+	float2 Shade : TEXCOORD1;
 };
 
 float4x4 ModelViewProjection;
@@ -30,6 +32,7 @@ PixelInputType VS(VertexInputType input)
 	PixelInputType output;
 	output.Position = mul(input.Position, ModelViewProjection);
 	output.UV = input.UV;
+	output.Shade = input.Shade;
 	return output;
 }
 
@@ -51,7 +54,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 			{
 				float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
 				float3 colorMul = min(Color.xyz * 2.0f, 1.0f);
-				pixel.xyz = pixel.xyz * colorMul + colorAdd;
+				pixel.xyz = pixel.xyz * colorMul * input.Shade.x + colorAdd;
 			}
 		}		
 	}
