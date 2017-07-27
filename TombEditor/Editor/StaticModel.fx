@@ -25,22 +25,11 @@ int SplitMode;
 Texture2D Texture;
 sampler TextureSampler;
 
-Texture2D HelperTexture;
-sampler HelperTextureSampler;
-
-float4x4 BoneTransforms[32];
-
 PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
-	float4 worldPos;
-
-	// Calcolo la posizione finale
 	output.Position = mul(input.Position, ModelViewProjection);
-
-	// Passo le coordinate UV al pixel shader
 	output.UV = input.UV;
-
 	return output;
 }
 
@@ -49,31 +38,24 @@ PixelInputType VS(VertexInputType input)
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS(PixelInputType input) : SV_TARGET
 {
-	float4 pixel;
-	float2 uv;
-
-	uv = input.UV;
-
+	float4 pixel = Texture.Sample(TextureSampler, input.UV);
 	if (TextureEnabled)
 	{
 		if (SelectionEnabled)
 		{
-			pixel = Texture.Sample(TextureSampler, uv);
-			if (SelectionEnabled) pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
+			pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 		}
 		else
 		{
-			pixel = Texture.Sample(TextureSampler, uv);
-			if (LightEnabled) pixel = pixel * Color * 2.0f;
-			if (pixel.w > 1.0f) pixel.w = 1.0f;
+			if (LightEnabled) 
+			{
+				float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
+				float3 colorMul = min(Color.xyz * 2.0f, 1.0f);
+				pixel.xyz = pixel.xyz * colorMul + colorAdd;
+			}
 		}		
 	}
-	else
-	{
-
-	}
-
-return pixel;
+	return pixel;
 }
 
 technique10 Textured
