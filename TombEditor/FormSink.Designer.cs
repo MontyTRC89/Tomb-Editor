@@ -129,7 +129,7 @@ namespace TombEditor
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSink";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sink";
             this.Load += new System.EventHandler(this.FormSink_Load);
             this.ResumeLayout(false);

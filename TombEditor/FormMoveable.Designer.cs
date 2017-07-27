@@ -170,7 +170,7 @@ namespace TombEditor
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormMoveable";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Object";
             this.Load += new System.EventHandler(this.FormObject_Load);
             this.ResumeLayout(false);
