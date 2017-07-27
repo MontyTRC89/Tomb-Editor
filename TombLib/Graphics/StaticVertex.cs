@@ -16,9 +16,7 @@ namespace TombLib.Graphics
         public Vector2 UV;
         [VertexElementAttribute("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 24)]
         public Vector3 Normal;
-        [VertexElementAttribute("TANGENT", 0, SharpDX.DXGI.Format.R32G32B32_Float, 36)]
-        public Vector3 Tangent;
-        [VertexElementAttribute("BINORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 48)]
-        public Vector3 Binormal;
+        [VertexElementAttribute("TEXCOORD", 1, SharpDX.DXGI.Format.R32G32_Float, 36)]
+        public Vector2 Shade;
     }
 }
