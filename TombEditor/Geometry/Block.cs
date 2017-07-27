@@ -9,91 +9,45 @@ namespace TombEditor.Geometry
     public class Block
     {
         public BlockType Type { get; set; }
-
         public BlockFlags Flags { get; set; }
-
-        public short[] EDFaces { get; set; }
-
-        public short[] QAFaces { get; set; }
-
-        public short[] WSFaces { get; set; }
-
-        public short[] RFFaces { get; set; }
-
-        public BlockFace[] Faces { get; set; }
-
+        public short[] EDFaces { get; set; } = new short[4];
+        public short[] QAFaces { get; set; } = new short[4];
+        public short[] WSFaces { get; set; } = new short[4];
+        public short[] RFFaces { get; set; } = new short[4];
+        public BlockFace[] Faces { get; set; } = new BlockFace[29];
         public byte SplitFoorType { get; set; }
-
         public byte SplitCeilingType { get; set; }
-
-        public bool SplitFloor { get; set; }
-
+        public bool SplitFloor { get; set; } = false;
         public byte RealSplitFloor { get; set; }
-
         public byte RealSplitCeiling { get; set; }
-
-        public bool SplitCeiling { get; set; }
-
-        public bool[] Climb { get; set; }
-
+        public bool SplitCeiling { get; set; } = false;
+        public bool[] Climb { get; set; } = new bool[4];
         public PortalOpacity FloorOpacity { get; set; }
-
         public PortalOpacity CeilingOpacity { get; set; }
-
         public PortalOpacity WallOpacity { get; set; }
-
-        public int FloorPortal { get; set; }
-
-        public int WallPortal { get; set; }
-
-        public int CeilingPortal { get; set; }
-
+        public int FloorPortal { get; set; } = -1;
+        public int WallPortal { get; set; } = -1;
+        public int CeilingPortal { get; set; } = -1;
         public short FloorSlopeX { get; set; }
-
         public short FloorSlopeZ { get; set; }
-
         public short CeilingSlopeX { get; set; }
-
         public short CeilingSlopeZ { get; set; }
-
         public bool IsFloorSolid { get; set; }
-
         public bool IsCeilingSolid { get; set; }
-
         public bool NoCollisionFloor { get; set; }
-
         public bool NoCollisionCeiling { get; set; }
-
-        public List<int> Triggers { get; set; }
-
+        public List<int> Triggers { get; set; } = new List<int>();
         public Room Room { get; set; }
-
         public Level Level { get; set; }
-
         public DiagonalSplit FloorDiagonalSplit { get; set; }
-
         public DiagonalSplitType FloorDiagonalSplitType { get; set; }
-
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
-
         public DiagonalSplitType CeilingDiagonalSplitType { get; set; }
 
         public Block(Level level, Room room, BlockType type, BlockFlags flags, short height)
         {
             Type = type;
             Flags = flags;
-            EDFaces = new short[4];
-            QAFaces = new short[4];
-            WSFaces = new short[4];
-            RFFaces = new short[4];
-            SplitFloor = false;
-            SplitCeiling = false;
-            Faces = new BlockFace[29];
-            Climb = new bool[4];
-            WallPortal = -1;
-            FloorPortal = -1;
-            CeilingPortal = -1;
-            Triggers = new List<int>();
             Level = level;
             Room = room;
 
