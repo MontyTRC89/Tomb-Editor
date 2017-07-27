@@ -107,7 +107,7 @@ namespace TombEditor
             _editor.GraphicsDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
             // X axis sphere
-            model = Matrix.Translation(Position + Vector3.UnitX*1024.0f) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+            model = Matrix.Translation(Position + Vector3.UnitX * 1024.0f) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * ViewProjection);
             solidEffect.Parameters["Color"].SetValue(_red);
             solidEffect.CurrentTechnique.Passes[0].Apply();

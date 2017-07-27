@@ -839,6 +839,45 @@ namespace TombEditor
             }
         }
 
+        public static void MoveObject(ObjectType typ, int id, GizmoAxis axis, float delta)
+        {
+            if (typ != ObjectType.Light)
+            {
+                switch (axis)
+                {
+                    case GizmoAxis.X:
+                        _editor.Level.Objects[id].Position += new Vector3(delta, 0.0f, 0.0f);
+                        break;
+
+                    case GizmoAxis.Y:
+                        _editor.Level.Objects[id].Position += new Vector3(0.0f, delta, 0.0f);
+                        break;                
+                   
+                    case GizmoAxis.Z:
+                        _editor.Level.Objects[id].Position += new Vector3(0.0f, 0.0f, delta);
+                        break;
+                }
+            }
+            else
+            {
+                switch (axis)
+                {
+                    case GizmoAxis.X:
+                        _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position += new Vector3(delta, 0.0f, 0.0f);
+                        break;
+
+                    case GizmoAxis.Y:
+                        _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position += new Vector3(0.0f, delta, 0.0f);
+                        break;
+
+                    case GizmoAxis.Z:
+                        _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position += new Vector3(0.0f, 0.0f, delta);
+                        break;
+                }
+            }
+        }
+
+
         public static void RotateObject(ObjectType typ, int id, int sign, bool smoothMove)
         {
             _editor.Level.Objects[_editor.PickingResult.Element].Rotation += (short)(sign * (smoothMove ? 5 : 45));

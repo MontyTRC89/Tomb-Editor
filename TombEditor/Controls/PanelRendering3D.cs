@@ -308,6 +308,8 @@ namespace TombEditor.Controls
                 // Do picking on the scene
                 DoPicking(e.X, e.Y);
 
+                if (_editor.PickingResult.Gizmo) return;
+
                 // Try to paste or stamp
                 if (Clipboard.Action != PasteAction.None && Clipboard.Paste())
                     return;
@@ -433,58 +435,12 @@ namespace TombEditor.Controls
                     using (FormSound form = new FormSound())
                         form.ShowDialog(this.Parent);
                     break;
-                case PickingElementType.SkinnedModel:
+                case PickingElementType.Moveable:
                     using (FormMoveable form = new FormMoveable())
                         form.ShowDialog(this.Parent);
                     break;
             }
         }
-
-        /*protected override void WndProc(ref Message m)
-        {
-            System.Drawing.Point mouseLoc = new System.Drawing.Point();
-
-            const int WM_MOUSEMOVE = 0x0200;
-            const int MK_CONTROL = 0x8;
-            const int MK_LBUTTON = 0x1;
-            const int MK_MBUTTON = 0x10;
-            const int MK_RBUTTON = 0x2;
-            const int MK_SHIFT = 0x4;
-            const int MK_XBUTTON1 = 0x20;
-            const int MK_XBUTTON2 = 0x40;
-
-            switch (m.Msg)
-            {
-               case WM_MOUSEMOVE:
-                    int lParam = m.LParam.ToInt32();
-
-                    //mouseLoc.X = lParam & 0xFFFF;
-                    //mouseLoc.Y = (int)(lParam & 0xFFFF0000 >> 16);
-
-                    mouseLoc.X = (Int16)m.LParam;
-                    mouseLoc.Y = (Int16)((int)m.LParam >> 16);
-
-                    System.Diagnostics.Debug.WriteLine("mouse move: " + mouseLoc.X + ", " + mouseLoc.Y);
-
-                    MouseButtons button = MouseButtons.None;
-                    if ((m.WParam.ToInt32() & MK_LBUTTON) == MK_LBUTTON)
-                        button = MouseButtons.Left;
-                    if ((m.WParam.ToInt32() & MK_RBUTTON) == MK_RBUTTON)
-                        button = MouseButtons.Right;
-
-                    if (m.WParam.ToInt32() != 0)
-                    {
-                        int jfjjf = 0;
-                    }
-
-                    MouseEventArgs args = new MouseEventArgs(button, 1, mouseLoc.X, mouseLoc.Y, 0);
-                    OnMouseMove2(args);
-                    //this.OnMouseDown(new MouseEventArgs(MouseButtons.Left, 1, mouseLoc.X,mouseLoc.Y, 0));
-                    break;
-            }
-
-            base.WndProc(ref m);
-        }*/
 
         protected override void OnMouseMove(System.Windows.Forms.MouseEventArgs e)
         {
@@ -493,15 +449,15 @@ namespace TombEditor.Controls
             if (!this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
                 return;
 
-            // gestisco il drag & drop e la telecamera
-            if (Drag && e.Button == MouseButtons.Right)
-            {
-                DeltaX = e.X - LastX;
-                DeltaY = e.Y - LastY;
+            DeltaX = e.X - LastX;
+            DeltaY = e.Y - LastY;
 
-                LastX = e.X;
-                LastY = e.Y;
-                
+            LastX = e.X;
+            LastY = e.Y;
+
+            // Right click is for camera motion
+            if (Drag && e.Button == MouseButtons.Right)
+            {                
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                 {
                     Camera.Move(-DeltaY * 50);
@@ -517,6 +473,101 @@ namespace TombEditor.Controls
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
+                // If gizmo was picked, then don't do picking again
+                if (_editor.PickingResult.Gizmo)
+                {
+                    // TODO: it's just a test, need to figure out the real math
+                    //float delta = (float)Math.Floor(DeltaX * 40.0f / 32.0f) * 32.0f;
+
+                    Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
+
+                    // For picking, I'll check first sphere/cubes bounding boxes and then eventually
+                    Room room = _editor.Level.Rooms[_editor.RoomIndex];
+
+                    // First get the ray in 3D space from X, Y mouse coordinates
+                    Ray ray = Ray.GetPickRay((int)e.X, (int)e.Y, _editor.GraphicsDevice.Viewport, Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
+
+                    float delta = 0;
+
+                    if (_editor.PickingResult.GizmoAxis == GizmoAxis.X)
+                    {
+                        Plane plane = new Plane(_gizmo.Position, Vector3.UnitY);
+                        Vector3 intersection;
+
+                        ray.Intersects(ref plane, out intersection);
+                        delta = intersection.X - (_gizmo.Position.X + 1024.0f);
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    }
+
+                    if (_editor.PickingResult.GizmoAxis == GizmoAxis.Y)
+                    {
+                        Plane plane = new Plane(_gizmo.Position, Vector3.UnitX);
+                        Vector3 intersection;
+
+                        ray.Intersects(ref plane, out intersection);
+                        delta = intersection.Y - (_gizmo.Position.Y + 1024.0f);
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    }
+
+                    if (_editor.PickingResult.GizmoAxis == GizmoAxis.Z)
+                    {
+                        Plane plane = new Plane(_gizmo.Position, Vector3.UnitY);
+                        Vector3 intersection;
+
+                        ray.Intersects(ref plane, out intersection);
+                        delta = intersection.Z - (_gizmo.Position.Z - 1024.0f);
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.Camera)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, 
+                                                 _editor.PickingResult.GizmoAxis, delta);                                                     
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element,
+                                                 _editor.PickingResult.GizmoAxis, delta);
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.Sink)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
+                                                 _editor.PickingResult.GizmoAxis, delta);
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element,
+                                                 _editor.PickingResult.GizmoAxis, delta);
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.Light)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.Light, _editor.PickingResult.Element,
+                                                 _editor.PickingResult.GizmoAxis, delta);
+                        _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                                                 _editor.PickingResult.GizmoAxis, delta);
+                    }
+
+                    if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
+                    {
+                        EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
+                                                 _editor.PickingResult.GizmoAxis, delta);
+                    }
+
+                    Draw();
+
+                    return;
+                }
+
+                // Do the picking if we are not moving the gizmo
                 DoPicking(e.X, e.Y);
 
                 // calcolo X e Z del blocco selezionato
@@ -627,7 +678,7 @@ namespace TombEditor.Controls
                         }
                         else if (_editor.Action == EditorAction.None)
                         {
-                            if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+                            if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
                             {
                                 _editor.LoadStaticMeshColorInUI();
                             }
@@ -749,7 +800,7 @@ namespace TombEditor.Controls
                                 _editor.LightIndex = -1;
                             }
 
-                            if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+                            if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
                             {
                                 _editor.LoadStaticMeshColorInUI();
                             }
@@ -980,6 +1031,10 @@ namespace TombEditor.Controls
 
                 // Add the line height of the object
                 AddObjectHeightLine(light.Position, viewProjection);
+
+                // Draw gizmo
+                _drawGizmo = true;
+                _gizmo.Position = light.Position;
             }
 
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
@@ -1234,7 +1289,7 @@ namespace TombEditor.Controls
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
                 }
 
-                if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel && _editor.PickingResult.Element == modelInfo.ID)
+                if (_editor.PickingResult.ElementType == PickingElementType.Moveable && _editor.PickingResult.Element == modelInfo.ID)
                     skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(true);
                 else
                     skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
@@ -1263,7 +1318,7 @@ namespace TombEditor.Controls
                     Debug.NumTriangles += mesh.NumIndices / 3;
                 }
 
-                if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel &&
+                if (_editor.PickingResult.ElementType == PickingElementType.Moveable &&
                     _editor.PickingResult.Element == modelInfo.ID)
                 {
                     Matrix modelViewProjection = worldDebug * viewProjection;
@@ -1285,6 +1340,10 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(modelInfo.Position, viewProjection);
+
+                    // Draw gizmo
+                    _drawGizmo = true;
+                    _gizmo.Position = modelInfo.Position;
                 }
 
                 _lastObject = modelInfo;
@@ -1324,7 +1383,7 @@ namespace TombEditor.Controls
 
                 Debug.NumStaticMeshes++;
 
-                bool SelectionEnabled = _editor.PickingResult.ElementType == PickingElementType.StaticModel && _editor.PickingResult.Element == modelInfo.ID;
+                bool SelectionEnabled = _editor.PickingResult.ElementType == PickingElementType.StaticMesh && _editor.PickingResult.Element == modelInfo.ID;
                 staticMeshEffect.Parameters["SelectionEnabled"].SetValue(SelectionEnabled);
                 staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(modelInfo.Color));
 
@@ -1352,7 +1411,7 @@ namespace TombEditor.Controls
                     Debug.NumTriangles += mesh.NumIndices / 3;
                 }
 
-                if (_editor.PickingResult.ElementType == PickingElementType.StaticModel &&
+                if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh &&
                     _editor.PickingResult.Element == modelInfo.ID)
                 {
                     Matrix modelViewProjection = worldDebug * viewProjection;
@@ -1374,6 +1433,10 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(modelInfo.Position, viewProjection);
+
+                    // Draw gizmo
+                    _drawGizmo = true;
+                    _gizmo.Position = modelInfo.Position;
                 }
 
                 _lastObject = modelInfo;
@@ -1448,6 +1511,51 @@ namespace TombEditor.Controls
             float minDistance = float.MaxValue;
             float distance = 0;
             PickingResult tempResult = new PickingResult();
+
+            // The gizmo has the priority
+            // Don't init a new PickingResult, because we also need the current selected object
+            // Simply set Gizmo = true on current PickingResult
+            if (_drawGizmo)
+            {
+                BoundingSphere sphereX = new BoundingSphere(_gizmo.Position + Vector3.UnitX * 1024.0f, 64.0f);
+                if (ray.Intersects(ref sphereX, out distance))
+                {
+                    PickingResult currentResult = _editor.PickingResult;
+
+                    currentResult.Gizmo = true;
+                    currentResult.GizmoAxis = GizmoAxis.X;
+
+                    _editor.PickingResult = currentResult;
+
+                    return;
+                }
+
+                BoundingSphere sphereY = new BoundingSphere(_gizmo.Position + Vector3.UnitY * 1024.0f, 64.0f);
+                if (ray.Intersects(ref sphereY, out distance))
+                {
+                    PickingResult currentResult = _editor.PickingResult;
+
+                    currentResult.Gizmo = true;
+                    currentResult.GizmoAxis = GizmoAxis.Y;
+
+                    _editor.PickingResult = currentResult;
+
+                    return;
+                }
+
+                BoundingSphere sphereZ = new BoundingSphere(_gizmo.Position - Vector3.UnitZ * 1024.0f, 64.0f);
+                if (ray.Intersects(ref sphereZ, out distance))
+                {
+                    PickingResult currentResult = _editor.PickingResult;
+
+                    currentResult.Gizmo = true;
+                    currentResult.GizmoAxis = GizmoAxis.Z;
+
+                    _editor.PickingResult = currentResult;
+
+                    return;
+                }
+            }
 
             // First check lights
             for (int i = 0; i < room.Lights.Count; i++)
@@ -1573,7 +1681,7 @@ namespace TombEditor.Controls
                             if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && distance < minDistance)
                             {
                                 minDistance = distance;
-                                tempResult.ElementType = PickingElementType.SkinnedModel;
+                                tempResult.ElementType = PickingElementType.Moveable;
                                 tempResult.Element = room.Moveables[i];
                             }
                         }
@@ -1634,7 +1742,7 @@ namespace TombEditor.Controls
                         if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && distance < minDistance)
                         {
                             minDistance = distance;
-                            tempResult.ElementType = PickingElementType.StaticModel;
+                            tempResult.ElementType = PickingElementType.StaticMesh;
                             tempResult.Element = room.StaticMeshes[i];
                         }
                     }
@@ -1667,11 +1775,11 @@ namespace TombEditor.Controls
 
             switch (result.ElementType)
             {
-                case PickingElementType.SkinnedModel:
+                case PickingElementType.Moveable:
                     logger.Debug("Selected: Moveable #" + result.Element);
                     break;
 
-                case PickingElementType.StaticModel:
+                case PickingElementType.StaticMesh:
                     logger.Debug("Selected: Static Mesh #" + result.Element);
                     break;
 
@@ -1697,12 +1805,12 @@ namespace TombEditor.Controls
             }
 
             Debug.SelectedItem = "";
-            if (result.ElementType == PickingElementType.SkinnedModel)
+            if (result.ElementType == PickingElementType.Moveable)
             {
                 MoveableInstance model = (MoveableInstance)_editor.Level.Objects[result.Element];
                 Debug.SelectedItem = "Moveable '" + _editor.MoveablesObjectIds[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
             }
-            else if (result.ElementType == PickingElementType.StaticModel)
+            else if (result.ElementType == PickingElementType.StaticMesh)
             {
                 StaticMeshInstance model = (StaticMeshInstance)_editor.Level.Objects[result.Element];
                 Debug.SelectedItem = "Static Mesh '" + _editor.StaticMeshesObjectIds[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
@@ -2366,6 +2474,7 @@ namespace TombEditor.Controls
             // Draw the gizmo
             if (_drawGizmo)
             {
+                _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color4.White, 1.0f, 0);
                 _gizmo.ViewProjection = viewProjection;
                 _gizmo.Draw();
             }
