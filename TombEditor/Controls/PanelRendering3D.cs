@@ -171,8 +171,11 @@ namespace TombEditor.Controls
         private GeometricPrimitive _littleSphere;
         private GeometricPrimitive _littleWireframedCube;
         private BasicEffect _basicEffect;
-        private Gizmo _gizmo;
 
+        // Gizmo
+        private Gizmo _gizmo;
+        private bool _drawGizmo = false;
+        
         // Rooms to draw
         private List<int> _roomsToDraw;
 
@@ -1019,6 +1022,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(instance.Position, viewProjection);
+
+                    _drawGizmo = true;
+                    _gizmo.Position = instance.Position;
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1066,6 +1072,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(instance.Position, viewProjection);
+
+                    _drawGizmo = true;
+                    _gizmo.Position = instance.Position;
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1107,7 +1116,8 @@ namespace TombEditor.Controls
                     // Add the line height of the object
                     AddObjectHeightLine(instance.Position, viewProjection);
 
-                    //_gizmo.Draw(instance.Position, viewProjection);
+                    _drawGizmo = true;
+                    _gizmo.Position = instance.Position;
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -1149,6 +1159,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(instance.Position, viewProjection);
+
+                    _drawGizmo = true;
+                    _gizmo.Position = instance.Position;
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -2259,6 +2272,7 @@ namespace TombEditor.Controls
             Debug.Reset();
 
             _drawHeightLine = false;
+            _drawGizmo = false;
 
             // Don't draw anything if device is not ready
             if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1)
@@ -2348,6 +2362,13 @@ namespace TombEditor.Controls
 
             // Draw the height of the object
             if (_drawHeightLine) DrawObjectHeightLine(viewProjection);
+
+            // Draw the gizmo
+            if (_drawGizmo)
+            {
+                _gizmo.ViewProjection = viewProjection;
+                _gizmo.Draw();
+            }
 
             _watch.Stop();
             long mils = _watch.ElapsedMilliseconds;
