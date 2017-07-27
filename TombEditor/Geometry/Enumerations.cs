@@ -7,7 +7,7 @@ namespace TombEditor.Geometry
 {
     public enum PickingElementType : int
     {
-        None = 63,
+        None = 0,
         Block = 1,
         SkinnedModel = 2,
         StaticModel = 3,

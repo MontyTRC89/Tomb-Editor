@@ -50,8 +50,8 @@ namespace TombEditor
         // istanza dell'editor
         private static Editor _instance;
 
-        public Dictionary<string, Texture2D> Textures;
-        public Dictionary<string, Effect> Effects;
+        public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
+        public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public Level Level { get; set; }
         public LightType LightType { get; set; }
         public bool PlaceLight { get; set; }
@@ -66,14 +66,14 @@ namespace TombEditor
         public int NewGeometryType { get; set; }
         public PickingResult StartPickingResult { get; set; }
         public PickingResult PickingResult { get; set; }
-        public int BlockSelectionStartX { get; set; }
-        public int BlockSelectionStartZ { get; set; }
-        public int BlockSelectionEndX { get; set; }
-        public int BlockSelectionEndZ { get; set; }
+        public int BlockSelectionStartX { get; set; } = -1;
+        public int BlockSelectionStartZ { get; set; } = -1;
+        public int BlockSelectionEndX { get; set; } = -1;
+        public int BlockSelectionEndZ { get; set; } = -1;
         public int BlockEditingType { get; set; }
-        public Dictionary<int, string> MoveablesObjectIds { get; set; }
-        public Dictionary<int, string> StaticMeshesObjectIds { get; set; }
-        public int SelectedItem { get; set; }
+        public Dictionary<int, string> MoveablesObjectIds { get; } = new Dictionary<int, string>();
+        public Dictionary<int, string> StaticMeshesObjectIds { get; } = new Dictionary<int, string>();
+        public int SelectedItem { get; set; } = -1;
         public short RoomIndex { get; set; } = -1;
         public bool IsFlipMap { get; set; }
         public System.Drawing.Color FloorColor { get; set; }
@@ -89,10 +89,10 @@ namespace TombEditor
         public bool DrawPortals { get; set; }
         public int SelectedTexture { get; set; } = -1;
         public bool Stamp { get; set; }
-        public Vector2[] UV { get; set; }
+        public Vector2[] UV { get; } = new Vector2[4];
         public TextureTileType TextureTriangle { get; set; }
         public int LightIndex { get; set; } = -1;
-        public List<System.Drawing.Color> Palette { get; set; }
+        public List<System.Drawing.Color> Palette { get; } = new List<System.Drawing.Color>();
         public bool NoCollision { get; set; }
         public bool InvisiblePolygon { get; set; }
         public bool DoubleSided { get; set; }
@@ -110,12 +110,16 @@ namespace TombEditor
         private FormMain _formEditor;
 
         // le griglie XYZ e la griglia free
-        private Buffer<VertexPositionColor>[] _grids;
+        private Buffer<VertexPositionColor>[] _grids = new Buffer<VertexPositionColor>[4];
         private VertexInputLayout _gridLayout;
 
         private Editor()
         {
             _instance = this;
+
+            for (int i = 0; i < 100; i++)
+                StaticMeshesObjectIds.Add(i, "Static Mesh #" + i);
+
         }
 
         public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor)
@@ -130,8 +134,7 @@ namespace TombEditor
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_HIDE);
 #endif
-
-            Palette = new List<System.Drawing.Color>();
+            
             try
             {
                 BinaryReader readerPalette = new BinaryReader(File.OpenRead("Editor\\Palette.bin"));
@@ -167,12 +170,7 @@ namespace TombEditor
             SwapChainGraphicsPresenter presenter = new SwapChainGraphicsPresenter(GraphicsDevice, pp);
             GraphicsDevice.Presenter = presenter;
            
-            // inizializzo le griglie
-            _grids = new Buffer<VertexPositionColor>[4];
-
             // compilo gli effetti
-            Effects = new Dictionary<string, Effect>();
-
             IEnumerable<string> effectFiles = Directory.EnumerateFiles(EditorPath + "\\Editor", "*.fx");
             foreach (string fileName in effectFiles)
             {
@@ -185,8 +183,6 @@ namespace TombEditor
             Effects.Add("Toolkit.BasicEffect", bEffect);
 
             // carico le texture dell'editor
-            Textures = new Dictionary<string, Texture2D>();
-
             IEnumerable<string> textureFiles = Directory.EnumerateFiles(EditorPath + "\\Editor", "*.png");
             foreach (string fileName in textureFiles)
             {
@@ -199,42 +195,18 @@ namespace TombEditor
             Font = SpriteFont.New(GraphicsDevice, fontData);
 
             DebugSprites = new SpriteBatch(GraphicsDevice);
-
-            BlockSelectionStartX = -1;
-            BlockSelectionStartZ = -1;
-            BlockSelectionEndX = -1;
-            BlockSelectionEndX = -1;
-
+            
             // carico gli id degli oggetti
             StreamReader reader = new StreamReader("Editor\\Objects.txt");
-            MoveablesObjectIds = new Dictionary<int, string>();
             while (reader.EndOfStream == false)
             {
                 string line = reader.ReadLine();
                 string[] tokens = line.Split(';');
                 MoveablesObjectIds.Add(Int32.Parse(tokens[0]), tokens[1]);
             }
-
-            StaticMeshesObjectIds = new Dictionary<int, string>();
-            for (int i = 0; i < 100; i++)
-            {
-                StaticMeshesObjectIds.Add(i, "Static Mesh #" + i);
-            }
-
-            RoomIndex = -1;
-            SelectedItem = -1;
-            SelectedTexture = -1;
-
-            UV = new Vector2[4];
-
-            PickingResultEmpty = new PickingResult();
-            PickingResultEmpty.Element = (int)PickingElementType.None;
             
             Debug.Initialize();
-
-
         }
-
 
         public void ChangeLightColorFromPalette()
         {
