@@ -419,7 +419,7 @@ namespace TombEditor
             comboRoom.SelectedIndex = index;
         }
 
-        private void panelRoomAmbientLight_DoubleClick(object sender, EventArgs e)
+        private void panelRoomAmbientLight_Click(object sender, EventArgs e)
         {
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
@@ -887,24 +887,24 @@ namespace TombEditor
              }
          }
          */
-        private void panelLightColor_DoubleClick(object sender, EventArgs e)
+        private void panelLightColor_Click(object sender, EventArgs e)
         {
-            if (_editor.LightIndex != -1)
-            {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+            if (_editor.LightIndex == -1)
+                return;
+            
+            Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
 
-                colorDialog.Color = light.Color;
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                    return;
+            colorDialog.Color = light.Color;
+            if (colorDialog.ShowDialog() != DialogResult.OK)
+                return;
 
-                panelLightColor.BackColor = colorDialog.Color;
+            panelLightColor.BackColor = colorDialog.Color;
 
-                _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Color = colorDialog.Color;
-                _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
-                panel3D.Draw();
-            }
+            _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Color = colorDialog.Color;
+            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+            panel3D.Draw();
         }
 
         public void LoadTextureMapInEditor(Level level)
