@@ -125,6 +125,18 @@ namespace TombEditor.Geometry
                 return _numVerticesInGrid;
             }
         }
+    
+        public Vector2 SectorPos
+        {
+            get
+            {
+                return new Vector2(Position.X, Position.Z);
+            }
+            set
+            {
+                Position = new Vector3(value.X, Position.Y, value.Y);
+            }
+        }
 
         public void InitializeVerticesGrid()
         {

@@ -6,38 +6,38 @@ using System.Windows.Forms;
 using TombLib.Graphics;
 using TombEditor.Geometry;
 using System.Drawing;
+using System.ComponentModel;
 
 namespace TombEditor.Controls
 {
     public class Panel2DGrid : Panel
     {
-        public float DeltaX { get; set; }
-        public float DeltaY { get; set; }
-        public float LastX { get; set; }
-        public float LastY { get; set; }
-        public bool Drag { get; set; }
-        public int SelectedTrigger { get; set; }
-        public int SelectedPortal { get; set; }
-        public int StartX;
-        public int StartY;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int SelectedTrigger { get; set; } = -1;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int SelectedPortal { get; set; } = -1;
 
         private Editor _editor;
         private bool _firstSelection;
-        private Brush _floorBrush;
-        private Brush _wallBrush;
-        private Brush _deathBrush;
-        private Brush _monkeyBrush;
-        private Brush _boxBrush;
-        private Brush _climbBrush;
-        private Brush _notWalkableBrush;
-        private Pen _beetlePen;
-        private Pen _triggerTriggererPen;
-        private Brush _noCollisionBrush;
-        private Brush _triggerBrush;
-        private Pen _climbPen;
-        private Bitmap _selectionBuffer;
-        private Graphics _graphics;
-        private Font _font;
+        private float _deltaX;
+        private float _deltaY;
+        private float _lastX;
+        private float LastY;
+        private int _startX;
+        private int _startY;
+        private bool _drag;
+        private static readonly Brush _floorBrush = new SolidBrush(Editor.ColorFloor);
+        private static readonly Brush _wallBrush = new SolidBrush(Editor.ColorWall);
+        private static readonly Brush _deathBrush = new SolidBrush(Editor.ColorDeath);
+        private static readonly Brush _monkeyBrush = new SolidBrush(Editor.ColorMonkey);
+        private static readonly Brush _boxBrush = new SolidBrush(Editor.ColorBox);
+        private static readonly Brush _notWalkableBrush = new SolidBrush(Editor.ColorNotWalkable);
+        private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 5);
+        private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 5);
+        private static readonly Brush _noCollisionBrush = new SolidBrush(Editor.ColorNoCollision);
+        private static readonly Brush _triggerBrush = new SolidBrush(Editor.ColorTrigger);
+        private static readonly Pen _climbPen = new Pen(Editor.ColorClimb, 5);
+        private static readonly Font _font = new Font("Arial", 8);
 
         private const byte GridStep = 11;
         
@@ -48,31 +48,7 @@ namespace TombEditor.Controls
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
         }
-
-        public void InitializePanel()
-        {
-            _floorBrush = new SolidBrush(_editor.FloorColor);
-            _wallBrush = new SolidBrush(_editor.WallColor);
-            _monkeyBrush = new SolidBrush(_editor.MonkeyColor);
-            _deathBrush = new SolidBrush(_editor.DeathColor);
-            _boxBrush = new SolidBrush(_editor.BoxColor);
-            _climbBrush = new SolidBrush(_editor.ClimbColor);
-            _notWalkableBrush = new SolidBrush(_editor.NotWalkableColor);
-            _noCollisionBrush = new SolidBrush(_editor.NoCollisionColor);
-            _triggerBrush = new SolidBrush(_editor.TriggerColor);
-            _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 5);
-            _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 5);
-
-            _climbPen = new Pen(_climbBrush, 5);
-
-            _selectionBuffer = new Bitmap(Width, Height);
-            _graphics = Graphics.FromImage(_selectionBuffer);
-            SelectedPortal = -1;
-            SelectedTrigger = -1;
-
-            _font = new Font("Arial", 8);
-        }
-
+        
         private int GetZBlock(float z)
         {
             Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
@@ -80,13 +56,11 @@ namespace TombEditor.Controls
             int numZblocks = currentRoom.NumZSectors;
 
             for (int i = 0; i < 20; i++)
-            {
                 if (z >= i && z < (i + 1) * GridStep)
                     if (numZblocks % 2 != 0)
                         return (18 - i);
                     else
                         return (19 - i);
-            }
 
             return 0;
         }
@@ -133,16 +107,16 @@ namespace TombEditor.Controls
             int startX = getStartX(); // (20 - numXblocks) / 2;
             int startY = getStartZ(); // (20 - numZblocks) / 2;
 
-            StartX = startX;
-            StartY = startY;
+            _startX = startX;
+            _startY = startY;
 
             // gestisco il drag & drop
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                LastX = e.X;
+                _lastX = e.X;
                 LastY = e.Y;
 
-                int xBlock = (int)LastX / GridStep;
+                int xBlock = (int)_lastX / GridStep;
                 int zBlock = GetZBlock(LastY); // 19 - (int)(LastY) / GridStep;
 
                 bool foundSomething = false;
@@ -150,10 +124,10 @@ namespace TombEditor.Controls
                 if (SelectedTrigger == -1)
                 {
                     // inizio il ciclo dal primo portale
-                    SelectedPortal = GetNextPortal((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                    SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
                     if (SelectedPortal == -1)
                     {
-                        SelectedTrigger = GetNextTrigger((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
                         if (SelectedTrigger != -1)
                         {
                             foundSomething = true;
@@ -178,10 +152,10 @@ namespace TombEditor.Controls
                 {
                     if (SelectedPortal == -1 && SelectedTrigger != -1)
                     {
-                        SelectedTrigger = GetNextTrigger((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
                         if (SelectedTrigger == -1)
                         {
-                            SelectedPortal = GetNextPortal((int)LastX / GridStep - startX, GetZBlock(LastY) - startY);
+                            SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
                             if (SelectedPortal != -1)
                             {
                                 foundSomething = true;
@@ -214,12 +188,12 @@ namespace TombEditor.Controls
             {
                 if (SelectedPortal == -1)
                 {
-                    if (!Drag)
-                        Drag = true;
-                    LastX = e.X;
+                    if (!_drag)
+                        _drag = true;
+                    _lastX = e.X;
                     LastY = e.Y;
 
-                    int xBlock = (int)LastX / GridStep;
+                    int xBlock = (int)_lastX / GridStep;
                     int zBlock = GetZBlock(LastY);
 
                     /*if (xBlock < 0 || zBlock < 0 || xBlock > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors-1 ||
@@ -298,28 +272,28 @@ namespace TombEditor.Controls
             int startX = getStartX(); // (20 - numXblocks) / 2;
             int startY = getStartZ(); // (20 - numZblocks) / 2;
 
-            StartX = startX;
-            StartY = startY;
-
-            // gestisco il drag & drop e la telecamera
-            if (Drag && e.Button == MouseButtons.Right)
+            _startX = startX;
+            _startY = startY;
+            
+            // manage the drag & drop camera
+            if (_drag && e.Button == MouseButtons.Right)
             {
-                DeltaX = e.X - LastX;
-                DeltaY = e.Y - LastY;
+                _deltaX = e.X - _lastX;
+                _deltaY = e.Y - LastY;
             }
             else
             {
                 if (SelectedPortal == -1)
                 {
-                    if (Drag)
+                    if (_drag)
                     {
-                        LastX = e.X;
+                        _lastX = e.X;
                         LastY = e.Y;
 
                         if (LastY < 0)
                             LastY = 0;
 
-                        int xBlock = (int)LastX / GridStep;
+                        int xBlock = (int)_lastX / GridStep;
                         int zBlock = GetZBlock(LastY);
 
                         _editor.BlockSelectionStartX = (_editor.StartPickingResult.Element >> 5) - startX;
@@ -370,28 +344,28 @@ namespace TombEditor.Controls
             int startX = getStartX();
             int startY = getStartZ();
 
-            StartX = startX;
-            StartY = startY;
+            _startX = startX;
+            _startY = startY;
 
-            // gestisco il drag & drop e la telecamera
+            // manage the drag & drop camera
             if (e.Button == MouseButtons.Right)
             {
-                DeltaX = e.X - LastX;
-                DeltaY = e.Y - LastY;
+                _deltaX = e.X - _lastX;
+                _deltaY = e.Y - LastY;
             }
             else
             {
                 if (SelectedPortal == -1)
                 {
-                    if (Drag)
+                    if (_drag)
                     {
-                        LastX = e.X;
+                        _lastX = e.X;
                         LastY = e.Y;
 
                         if (LastY < 0)
                             LastY = 0;
 
-                        int xBlock = (int)LastX / GridStep;
+                        int xBlock = (int)_lastX / GridStep;
                         int zBlock = GetZBlock(LastY);// 20 - (int)(LastY) / GridStep;
 
                         if (_firstSelection)
@@ -424,10 +398,10 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    LastX = e.X;
+                    _lastX = e.X;
                     LastY = e.Y;
 
-                    int xBlock = (int)LastX / GridStep - startX;
+                    int xBlock = (int)_lastX / GridStep - startX;
                     int zBlock = GetZBlock(LastY) - startY;
 
                     Portal p = _editor.Level.Portals[SelectedPortal];
@@ -449,7 +423,7 @@ namespace TombEditor.Controls
                 }
             }
 
-            Drag = false;
+            _drag = false;
 
             _editor.DrawPanel3D();
             Invalidate();
@@ -475,8 +449,8 @@ namespace TombEditor.Controls
                 int startX = getStartX(); // (20 - numXblocks) / 2;
                 int startY = getStartZ(); // (20 - numZblocks) / 2;
 
-                StartX = startX;
-                StartY = startY;
+                _startX = startX;
+                _startY = startY;
 
                 // Console.WriteLine("X: " + StartX + ", Y: " + StartY);
 
@@ -646,23 +620,23 @@ namespace TombEditor.Controls
 
             SizeF dimension = g.MeasureString(text, _font, this.Width /*- x * GridStep*/, StringFormat.GenericDefault);
 
-            short deltaX = (short)((this.Width - ((StartX + x) * GridStep + dimension.Width + 4.0f)) / GridStep);
-            short deltaZ = (short)((this.Height - (this.Height - (StartY + z) * GridStep + dimension.Height + 4.0f)) / GridStep);
+            short deltaX = (short)((this.Width - ((_startX + x) * GridStep + dimension.Width + 4.0f)) / GridStep);
+            short deltaZ = (short)((this.Height - (this.Height - (_startY + z) * GridStep + dimension.Height + 4.0f)) / GridStep);
 
-            if ((StartX + x) * GridStep + dimension.Width + 4.0f >= this.Width - GridStep)
-                x = (short)((this.Width - dimension.Width - 4.0f) / GridStep - StartX); //  deltaX; // (int)(deltaX Math.Ceiling(dimension.Width / GridStep) - 1;
+            if ((_startX + x) * GridStep + dimension.Width + 4.0f >= this.Width - GridStep)
+                x = (short)((this.Width - dimension.Width - 4.0f) / GridStep - _startX); //  deltaX; // (int)(deltaX Math.Ceiling(dimension.Width / GridStep) - 1;
             else
                 x++;
 
             //this.Width - (StartY + z) * GridStep + dimension.Height + 4.0f >= this.Width
-            if (this.Height - (StartY + z) * GridStep + dimension.Height + 4.0f >= this.Height - GridStep)
-                z = (short)((this.Height - dimension.Height - 4.0f) / GridStep - StartY); // deltaZ; // (int)Math.Ceiling(dimension.Height / GridStep);
+            if (this.Height - (_startY + z) * GridStep + dimension.Height + 4.0f >= this.Height - GridStep)
+                z = (short)((this.Height - dimension.Height - 4.0f) / GridStep - _startY); // deltaZ; // (int)Math.Ceiling(dimension.Height / GridStep);
             else
                 z--;
 
-            g.FillRectangle(Brushes.Yellow, new Rectangle((StartX + x) * GridStep, this.Width - (StartY + z + 1) * GridStep, (int)(dimension.Width + 4.0f), (int)(dimension.Height + 4.0f)));
-            g.DrawRectangle(Pens.Black, new Rectangle((StartX + x) * GridStep, this.Width - (StartY + z + 1) * GridStep, (int)(dimension.Width + 4.0f), (int)(dimension.Height + 4.0f)));
-            g.DrawString(text, _font, Brushes.Black, new RectangleF((StartX + x) * GridStep + 2, this.Width - (StartY + z + 1) * GridStep + 2, dimension.Width, dimension.Height), StringFormat.GenericDefault);
+            g.FillRectangle(Brushes.Yellow, new Rectangle((_startX + x) * GridStep, this.Width - (_startY + z + 1) * GridStep, (int)(dimension.Width + 4.0f), (int)(dimension.Height + 4.0f)));
+            g.DrawRectangle(Pens.Black, new Rectangle((_startX + x) * GridStep, this.Width - (_startY + z + 1) * GridStep, (int)(dimension.Width + 4.0f), (int)(dimension.Height + 4.0f)));
+            g.DrawString(text, _font, Brushes.Black, new RectangleF((_startX + x) * GridStep + 2, this.Width - (_startY + z + 1) * GridStep + 2, dimension.Width, dimension.Height), StringFormat.GenericDefault);
         }
 
         private int GetNextPortal(int x, int z)
