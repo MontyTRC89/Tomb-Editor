@@ -406,6 +406,36 @@ namespace TombEditor.Controls
             Draw();
             _editor.DrawPanelGrid();
         }
+        
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            base.OnMouseDoubleClick(e);
+
+            DoPicking(e.X, e.Y);
+            switch (_editor.PickingResult.ElementType)
+            {
+                case PickingElementType.Trigger:
+                    using (FormTrigger form = new FormTrigger())
+                        form.ShowDialog(this.Parent);
+                    break;
+                case PickingElementType.Sink:
+                    using (FormSink form = new FormSink())
+                        form.ShowDialog(this.Parent);
+                    break;
+                case PickingElementType.FlyByCamera:
+                    using (FormFlybyCamera form = new FormFlybyCamera())
+                        form.ShowDialog(this.Parent);
+                    break;
+                case PickingElementType.SoundSource:
+                    using (FormSound form = new FormSound())
+                        form.ShowDialog(this.Parent);
+                    break;
+                case PickingElementType.SkinnedModel:
+                    using (FormMoveable form = new FormMoveable())
+                        form.ShowDialog(this.Parent);
+                    break;
+            }
+        }
 
         /*protected override void WndProc(ref Message m)
         {
@@ -468,7 +498,7 @@ namespace TombEditor.Controls
 
                 LastX = e.X;
                 LastY = e.Y;
-
+                
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                 {
                     Camera.Move(-DeltaY * 50);
