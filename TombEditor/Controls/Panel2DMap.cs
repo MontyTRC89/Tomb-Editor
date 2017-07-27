@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using TombEditor.Geometry;
 using SharpDX;
 using Color = System.Drawing.Color;
@@ -16,18 +17,27 @@ namespace TombEditor.Controls
     public class Panel2DMap : Panel
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Vector2 Offset { get; set; } = new Vector2(0.0f, 0.0f);
+        public Vector2 ViewPosition { get; set; } = new Vector2(60.0f, 60.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public new float Scale { get; set; } = 4.0f;
+        public float ViewScale { get; set; } = 4.0f;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public float ViewSpeedScaleScroll = 0.001f;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public float ViewSpeedScaleKey = 0.17f;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public float ViewSpeedMoveKey = 107.0f;
 
         private Editor _editor;
-        private HashSet<Room> _roomsToMove; //Set to a valid list if room dragging is active
+        private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Room _roomMouseClicked;
-        private Vector2 _roomMouseOffset; //Relative vector to the position of the room for where it was clicked.
+        private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
+        private Vector2 _viewMoveMouseWorldCoord;
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(170, 20, 200, 200));
         private static readonly Brush _roomsSelectionBrush = new SolidBrush(Color.FromArgb(170, 220, 20, 20));
         private static readonly Brush _roomsDragBrush = new SolidBrush(Color.FromArgb(40, 220, 20, 20));
-        private static readonly Brush _roomsToMoveBrush = new SolidBrush(Color.FromArgb(170, 230, 230, 20));
+        private static readonly Brush _roomsToMoveBrush = new SolidBrush(Color.FromArgb(70, 230, 230, 20));
+        private static readonly Pen _roomBorderPen = new Pen(Color.Black, 1);
+        private static readonly Pen _roomPortalPen = createPenWithDash(Color.FromArgb(220, 7, 70, 70), 1, DashStyle.Dot);
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
         
@@ -37,17 +47,36 @@ namespace TombEditor.Controls
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
-            _editor.RoomIndex = -1;
+        }
+        
+        public void ResetView()
+        {
+            ViewPosition = (new Vector2(Width, Height) * 0.5f - new Vector2(16.0f)) / ViewScale;
+        }
+
+        private static Pen createPenWithDash(Color color, float width, DashStyle dashStyle)
+        {
+            Pen result = new Pen(color, width);
+            result.DashStyle = dashStyle;
+            return result;
         }
 
         private Vector2 FromVisualCoord(PointF pos)
         {
-            return new Vector2((pos.X - Offset.X) / Scale, (pos.Y - Offset.Y) / Scale);
+            return new Vector2((pos.X - Width * 0.5f) / ViewScale + ViewPosition.X, (pos.Y - Height * 0.5f) / ViewScale + ViewPosition.Y);
         }
 
         private PointF ToVisualCoord(Vector2 pos)
         {
-            return new PointF(pos.X * Scale + Offset.X, pos.Y * Scale + Offset.Y);
+            return new PointF((pos.X - ViewPosition.X) * ViewScale + Width * 0.5f, (pos.Y - ViewPosition.Y) * ViewScale  + Height * 0.5f);
+        }
+
+        private void MoveToFixedPoint(PointF VisualPoint, Vector2 WorldPoint)
+        {
+            //Adjust ViewPosition in such a way, that the FixedPoint does not move visually
+            ViewPosition = -WorldPoint;
+            ViewPosition = -FromVisualCoord(VisualPoint);
+            Invalidate();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -56,6 +85,7 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Left)
             {
+                // Try selecting or moving a room
                 Vector2 clickPos = FromVisualCoord(e.Location);
 
                 _roomMouseClicked = DoPicking(clickPos);
@@ -66,20 +96,26 @@ namespace TombEditor.Controls
                 _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
                 _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
 
-                //Update state...
+                // Update state
                 _editor.SelectRoom(_editor.RoomIndex);
-                _editor.UpdateRoomName();
-                _editor.UpdateStatistics();
                 Invalidate();
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                // Move view with mouse curser
+                // Mouse curser is a fixed point
+                _viewMoveMouseWorldCoord = FromVisualCoord(e.Location);
             }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-       
+
             if (e.Button == MouseButtons.Left && (_roomsToMove != null))
-                updateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+                UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+            else if (e.Button == MouseButtons.Right)
+                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -90,8 +126,60 @@ namespace TombEditor.Controls
             {
                 HashSet<Room> roomsToMove = _roomsToMove;
                 _roomsToMove = null;
-                updateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, roomsToMove);
+                UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, roomsToMove);
             }
+            else if (e.Button == MouseButtons.Right)
+                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord);
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
+            ViewScale *= (float)Math.Exp(e.Delta * ViewSpeedScaleScroll);
+            MoveToFixedPoint(e.Location, FixedPointInWorld);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // Make control receive key events as suggested here...
+            // https://stackoverflow.com/questions/20079373/trouble-creating-keydown-event-in-panel
+            switch (keyData)
+            {
+                case Keys.Down:
+                    ViewPosition += new Vector2(0.0f, ViewSpeedMoveKey / ViewScale);
+                    Invalidate();
+                    break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, -ViewSpeedMoveKey / ViewScale);
+                    Invalidate();
+                    break;
+                case Keys.Left:
+                    ViewPosition += new Vector2(-ViewSpeedMoveKey / ViewScale, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.Right:
+                    ViewPosition += new Vector2(ViewSpeedMoveKey / ViewScale, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.PageDown:
+                    ViewScale *= (float)Math.Exp(-ViewSpeedScaleKey);
+                    Invalidate();
+                    break;
+                case Keys.PageUp:
+                    ViewScale *= (float)Math.Exp(ViewSpeedScaleKey);
+                    Invalidate();
+                    break;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            // Make this control able to receive scroll and key board events...
+            base.OnMouseEnter(e);
+            Focus();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -143,7 +231,7 @@ namespace TombEditor.Controls
                             rectangles.Add(new RectangleF(xBegin, z, x - xBegin, 1));
                         }
 
-                    // Try to combine rectangle with the previous row
+                    // Try to combine rectangle with the rectangle of the previous row
                     if ((rectangles.Count >= 2) && ((previousRectangleCount + 1) == rectangles.Count))
                     {
                         RectangleF PreviousRectangle = rectangles[rectangles.Count - 2];
@@ -163,7 +251,7 @@ namespace TombEditor.Controls
                 for (int j = 0; j < rectangles.Count; ++j)
                     rectangles[j] = new RectangleF(
                         ToVisualCoord(new Vector2(rectangles[j].X + room.SectorPos.X, rectangles[j].Y + room.SectorPos.Y)),
-                        new SizeF(rectangles[j].Width * Scale, rectangles[j].Height * Scale));
+                        new SizeF(rectangles[j].Width * ViewScale, rectangles[j].Height * ViewScale));
 
                 // Draw
                 Brush brush = _roomsNormalBrush;
@@ -174,17 +262,23 @@ namespace TombEditor.Controls
                 g.FillRectangles(brush, rectangles.ToArray());
 
                 // Determine outlines of room
-                Pen pen = Pens.Black;
                 for (int z = 1; z < height; ++z)
                     for (int x = 1; x < width; ++x)
                     {
-                        bool wallThis = room.Blocks[x, z].Type != BlockType.Floor;
-                        bool wallAbove = room.Blocks[x, z - 1].Type != BlockType.Floor;
-                        bool wallLeft = room.Blocks[x - 1, z].Type != BlockType.Floor;
+                        Block thisBlock = room.Blocks[x, z];
+                        Block aboveBlock = room.Blocks[x, z - 1];
+                        Block leftBlock = room.Blocks[x - 1, z];
+                        bool wallThis = thisBlock.Type != BlockType.Floor;
+                        bool wallAbove = aboveBlock.Type != BlockType.Floor;
+                        bool wallLeft = leftBlock.Type != BlockType.Floor;
                         if (wallAbove != wallThis)
-                            g.DrawLine(pen, ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)), ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
+                            g.DrawLine((aboveBlock.WallPortal != -1) || (thisBlock.WallPortal != -1) ? _roomPortalPen : _roomBorderPen,
+                                ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
+                                ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
                         if (wallLeft != wallThis)
-                            g.DrawLine(pen, ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)), ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
+                            g.DrawLine((leftBlock.WallPortal != -1) || (thisBlock.WallPortal != -1) ? _roomPortalPen : _roomBorderPen,
+                                ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
+                                ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
                     }
             }
 
@@ -203,7 +297,7 @@ namespace TombEditor.Controls
             }
         };
 
-        private void updateRoomPosition(Vector2 currentRoomPos, Room roomReference, HashSet<Room> roomsToMove)
+        private void UpdateRoomPosition(Vector2 currentRoomPos, Room roomReference, HashSet<Room> roomsToMove)
         {
             currentRoomPos = new Vector2((float)Math.Round(currentRoomPos.X), (float)Math.Round(currentRoomPos.Y));
             //currentRoomPos = Vector2.Clamp(currentRoomPos, new Vector2(0), new Vector2(Level.MaxSectorCoord));
@@ -211,7 +305,7 @@ namespace TombEditor.Controls
             foreach (Room room in roomsToMove)
                 room.SectorPos += roomMovement;
 
-            //Update state...
+            // Update state
             Invalidate();
             _editor.UpdateStatistics();
             _editor.CenterCamera();
@@ -219,7 +313,6 @@ namespace TombEditor.Controls
 
         private IEnumerable<Room> GetSortedRoomList()
         {
-            // First, order the rooms from heighest to lowest
             var roomList = new List<KeyValuePair<float, Room>>();
             foreach (Room room in _editor.Level.Rooms)
                 if (room != null)
@@ -232,7 +325,7 @@ namespace TombEditor.Controls
         {
             IEnumerable<Room> roomList = GetSortedRoomList();
 
-            // Do collision detection for each room from top to bottom...
+            // Do collision detection for each room from top to bottom
             foreach (Room room in roomList)
             {
                 float roomLocalX = pos.X - room.SectorPos.X;
