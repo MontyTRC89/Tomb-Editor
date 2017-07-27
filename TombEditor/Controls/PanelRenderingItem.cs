@@ -20,7 +20,7 @@ namespace TombEditor.Controls
         private Editor _editor;
         private bool _drag;
         private float _lastX;
-        private float _lastY;
+        private float LastY;
         private float _deltaX;
         private float _deltaY;
         private int _animation;
@@ -217,7 +217,7 @@ namespace TombEditor.Controls
             if (e.Button == MouseButtons.Right)
             {
                 _lastX = e.X;
-                _lastY = e.Y;
+                LastY = e.Y;
             }
 
             Draw();
@@ -230,10 +230,10 @@ namespace TombEditor.Controls
             if (_drag && e.Button == MouseButtons.Right)
             {
                 _deltaX = e.X - _lastX;
-                _deltaY = e.Y - _lastY;
+                _deltaY = e.Y - LastY;
 
                 _lastX = e.X;
-                _lastY = e.Y;
+                LastY = e.Y;
 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                 {
@@ -259,7 +259,7 @@ namespace TombEditor.Controls
             if (_drag && e.Button == MouseButtons.Right)
             {
                 _deltaX = e.X - _lastX;
-                _deltaY = e.Y - _lastY;
+                _deltaY = e.Y - LastY;
 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                 {

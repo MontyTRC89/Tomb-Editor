@@ -47,6 +47,16 @@ namespace TombEditor
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
 
+        public static readonly System.Drawing.Color ColorFloor = System.Drawing.Color.FromArgb(0, 190, 190);
+        public static readonly System.Drawing.Color ColorWall = System.Drawing.Color.FromArgb(0, 160, 0);
+        public static readonly System.Drawing.Color ColorTrigger = System.Drawing.Color.FromArgb(200, 0, 200);
+        public static readonly System.Drawing.Color ColorMonkey = System.Drawing.Color.FromArgb(255, 100, 100);
+        public static readonly System.Drawing.Color ColorBox = System.Drawing.Color.FromArgb(100, 100, 100);
+        public static readonly System.Drawing.Color ColorDeath = System.Drawing.Color.FromArgb(100, 240, 100);
+        public static readonly System.Drawing.Color ColorClimb = System.Drawing.Color.FromArgb(0, 100, 0);
+        public static readonly System.Drawing.Color ColorNoCollision = System.Drawing.Color.FromArgb(255, 128, 0, 0);
+        public static readonly System.Drawing.Color ColorNotWalkable = System.Drawing.Color.FromArgb(0, 0, 100);
+
         // istanza dell'editor
         private static Editor _instance;
 
@@ -76,15 +86,6 @@ namespace TombEditor
         public int SelectedItem { get; set; } = -1;
         public short RoomIndex { get; set; } = -1;
         public bool IsFlipMap { get; set; }
-        public System.Drawing.Color FloorColor { get; set; }
-        public System.Drawing.Color WallColor { get; set; }
-        public System.Drawing.Color TriggerColor { get; set; } = System.Drawing.Color.FromArgb(255, 200, 0, 200);
-        public System.Drawing.Color MonkeyColor { get; set; }
-        public System.Drawing.Color BoxColor { get; set; }
-        public System.Drawing.Color DeathColor { get; set; }
-        public System.Drawing.Color ClimbColor { get; set; }
-        public System.Drawing.Color NoCollisionColor { get; set; } = System.Drawing.Color.FromArgb(255, 128, 0, 0);
-        public System.Drawing.Color NotWalkableColor { get; set; }
         public int FlipMap { get; set; } = -1;
         public bool DrawPortals { get; set; }
         public int SelectedTexture { get; set; } = -1;
@@ -318,6 +319,14 @@ namespace TombEditor
             get
             {
                 return _panel3D.Camera;
+            }
+        }
+
+        public Room SelectedRoom
+        {
+            get
+            {
+                return Level.Rooms[RoomIndex];
             }
         }
 
