@@ -27,22 +27,7 @@ namespace TombEditor.Geometry
 
         public Light Clone()
         {
-            Light l = new Geometry.Light();
-
-            l.Color = this.Color;
-            l.Intensity = this.Intensity;
-            l.In = this.In;
-            l.Out = this.Out;
-            l.Active = this.Active;
-            l.Type = this.Type;
-            l.DirectionX = this.DirectionX;
-            l.DirectionY = this.DirectionY;
-            l.Len = this.Len;
-            l.Cutoff = this.Cutoff;
-            l.Position = new Vector3(Position.X, Position.Y, Position.Z);
-            l.Face = Face;
-
-            return l;
+            return (Light)(this.MemberwiseClone());
         }
     }
 
