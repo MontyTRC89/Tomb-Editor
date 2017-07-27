@@ -424,7 +424,7 @@ namespace TombEditor
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
             colorDialog.Color = room.AmbientLight;
-            if (colorDialog.ShowDialog() != DialogResult.OK)
+            if (colorDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             panelRoomAmbientLight.BackColor = colorDialog.Color;
@@ -792,7 +792,7 @@ namespace TombEditor
             using (FormSound formSound = new FormSound())
             {
                 formSound.IsNew = true;
-                if (formSound.ShowDialog() != DialogResult.OK)
+                if (formSound.ShowDialog(this) != DialogResult.OK)
                     return;
 
                 // Add sound
@@ -892,7 +892,7 @@ namespace TombEditor
             Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
 
             colorDialog.Color = light.Color;
-            if (colorDialog.ShowDialog() != DialogResult.OK)
+            if (colorDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             panelLightColor.BackColor = colorDialog.Color;
@@ -1807,7 +1807,7 @@ namespace TombEditor
 
         private void loadTextureMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogTextureMap.ShowDialog() != DialogResult.OK)
+            if (openFileDialogTextureMap.ShowDialog(this) != DialogResult.OK)
                 return;
             LoadTextureMap(openFileDialogTextureMap.FileName);
         }
@@ -1909,7 +1909,7 @@ namespace TombEditor
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogWAD.ShowDialog() != DialogResult.OK)
+            if (openFileDialogWAD.ShowDialog(this) != DialogResult.OK)
                 return;
 
             _editor.Level.LoadWad(openFileDialogWAD.FileName);
@@ -2080,7 +2080,7 @@ namespace TombEditor
                     "Your project will be lost. Do you really want to open an existing project?",
                     "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
-            if (openFileDialogPRJ2.ShowDialog() != DialogResult.OK)
+            if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
             Level level = Level.LoadFromPrj2(openFileDialogPRJ2.FileName);
@@ -2257,7 +2257,7 @@ namespace TombEditor
                     "Your project will be lost. Do you really want to open an existing project?",
                     "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes) return;
 
-            if (openFileDialogPRJ.ShowDialog() != DialogResult.OK)
+            if (openFileDialogPRJ.ShowDialog(this) != DialogResult.OK)
                 return;
 
             using (FormImportPRJ form = new FormImportPRJ())
@@ -2329,7 +2329,7 @@ namespace TombEditor
                 return;
             }
 
-            if (saveFileDialogPRJ2.ShowDialog() != DialogResult.OK)
+            if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
             bool result = Level.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
@@ -2713,7 +2713,7 @@ namespace TombEditor
                 form.Message = "Insert the name of this room:";
                 form.Value = _editor.Level.Rooms[_editor.RoomIndex].Name;
 
-                if (form.ShowDialog() == DialogResult.Cancel)
+                if (form.ShowDialog(this) == DialogResult.Cancel)
                     return;
                 if (form.Value == "")
                     return;
@@ -2990,7 +2990,7 @@ namespace TombEditor
                 StaticMeshInstance instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult.Element];
 
                 colorDialog.Color = instance.Color;
-                if (colorDialog.ShowDialog() != DialogResult.OK)
+                if (colorDialog.ShowDialog(this) != DialogResult.OK)
                     return;
 
                 panelStaticMeshColor.BackColor = colorDialog.Color;
@@ -3420,7 +3420,7 @@ namespace TombEditor
 
             if (_editor.Level.MustSave)
             {
-                if (saveFileDialogPRJ2.ShowDialog() != DialogResult.OK)
+                if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                     return;
                 fileName = saveFileDialogPRJ2.FileName;
             }
