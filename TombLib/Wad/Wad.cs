@@ -705,20 +705,19 @@ namespace TombLib.Wad
 
                     if (poly.Shape == Shape.Triangle)
                     {
-
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, msh.Shades[poly.V1]);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, msh.Shades[poly.V2]);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, msh.Shades[poly.V3]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
                     }
                     else
                     {
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, msh.Shades[poly.V1]);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, msh.Shades[poly.V2]);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, msh.Shades[poly.V4]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
 
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, msh.Shades[poly.V4]);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, msh.Shades[poly.V2]);
-                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, msh.Shades[poly.V3]);
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
+                        AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
 
                     }
                 }

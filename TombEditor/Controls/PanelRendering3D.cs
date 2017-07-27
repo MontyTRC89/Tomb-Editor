@@ -2202,8 +2202,8 @@ namespace TombEditor.Controls
 
             // Sort buckets
             _opaqueBuckets.Sort(new ComparerOpaqueBuckets());
-            _transparentBuckets.Sort(new ComparerOpaqueBuckets());
-            _invisibleBuckets.Sort(new ComparerOpaqueBuckets());
+            _transparentBuckets.Sort(new ComparerTransparentBuckets());
+            _invisibleBuckets.Sort(new ComparerInvisibleBuckets());
 
             Parallel.ForEach<RenderBucket>(_opaqueBuckets, item => PrepareIndexBuffer(item));
 
