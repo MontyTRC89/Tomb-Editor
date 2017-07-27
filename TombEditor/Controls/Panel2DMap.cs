@@ -8,21 +8,29 @@ using TombEditor.Geometry;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Rectangle = System.Drawing.Rectangle;
+using RectangleF = System.Drawing.RectangleF;
+using System.ComponentModel;
 
 namespace TombEditor.Controls
 {
     public class Panel2DMap : Panel
     {
-        private Editor _editor;
-        public float DeltaX { get; set; }
-        public float DeltaY { get; set; }
-        public float LastX { get; set; }
-        public float LastY { get; set; }
-        public bool Drag { get; set; }
-        private Bitmap _selectionBuffer;
-        private Graphics _graphics;
-        private List<int> _roomsToMove;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Vector2 Offset { get; set; } = new Vector2(0.0f, 0.0f);
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new float Scale { get; set; } = 4.0f;
 
+        private Editor _editor;
+        private HashSet<Room> _roomsToMove; //Set to a valid list if room dragging is active
+        private Room _roomMouseClicked;
+        private Vector2 _roomMouseOffset; //Relative vector to the position of the room for where it was clicked.
+        private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(170, 20, 200, 200));
+        private static readonly Brush _roomsSelectionBrush = new SolidBrush(Color.FromArgb(170, 220, 20, 20));
+        private static readonly Brush _roomsDragBrush = new SolidBrush(Color.FromArgb(40, 220, 20, 20));
+        private static readonly Brush _roomsToMoveBrush = new SolidBrush(Color.FromArgb(170, 230, 230, 20));
+        private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
+        private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
+        
         public Panel2DMap()
         {
             _editor = Editor.Instance;
@@ -32,23 +40,14 @@ namespace TombEditor.Controls
             _editor.RoomIndex = -1;
         }
 
-        public void InitializePanel()
+        private Vector2 FromVisualCoord(PointF pos)
         {
-            if (Width != 0 && Height != 0)
-            {
-                if (_selectionBuffer != null)
-                    _selectionBuffer.Dispose();
-                if (_graphics != null)
-                    _graphics.Dispose();
-                _selectionBuffer = new Bitmap(Width, Height);
-                _graphics = Graphics.FromImage(_selectionBuffer);
-            }
+            return new Vector2((pos.X - Offset.X) / Scale, (pos.Y - Offset.Y) / Scale);
         }
 
-        protected override void OnResize(EventArgs eventargs)
+        private PointF ToVisualCoord(Vector2 pos)
         {
-            base.OnResize(eventargs);
-            InitializePanel();
+            return new PointF(pos.X * Scale + Offset.X, pos.Y * Scale + Offset.Y);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -57,284 +56,193 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                if (!Drag)
-                    Drag = true;
+                Vector2 clickPos = FromVisualCoord(e.Location);
 
-                LastX = e.X / 4;
-                LastY = e.Y / 4;
-
-                short roomIndex = (short)DoPicking(e.X, e.Y);
-                if (roomIndex == -1)
-                {
-                    Drag = false;
+                _roomMouseClicked = DoPicking(clickPos);
+                if (_roomMouseClicked == null)
                     return;
-                }
 
-                _editor.RoomIndex = roomIndex;
-                _editor.RoomIndex = _editor.RoomIndex;
-                _editor.SelectRoom(roomIndex);
+                _editor.RoomIndex = _editor.Level.GetRoomIndex(_roomMouseClicked);
+                _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
+                _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
+
+                //Update state...
+                _editor.SelectRoom(_editor.RoomIndex);
                 _editor.UpdateRoomName();
                 _editor.UpdateStatistics();
-
-                _roomsToMove = new List<int>();
-                ResetRoomsVisited();
-                CollectRoomsToMove(_editor.RoomIndex, (int)DeltaX, (int)DeltaY);
+                Invalidate();
             }
-
-            Invalidate();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatistics();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-
-            if (e.Button == MouseButtons.Left && Drag)
-            {
-                Room room = _editor.Level.Rooms[_editor.RoomIndex];
-
-                int tempX = (int)(room.Position.X + e.X / 4 - LastX);
-                int tempY = (int)(room.Position.Z - e.Y / 4 + LastY);
-
-                if (_editor.RoomIndex < 0 || _editor.RoomIndex > 2047 || _editor.Level.Rooms[_editor.RoomIndex] == null ||
-                    tempX < 0 || tempY < 0 || tempX > 160 || tempY > 160)
-                {
-                    Drag = false;
-                    return;
-                }
-
-                DeltaX = e.X / 4 - LastX;
-                DeltaY = e.Y / 4 - LastY;
-
-                LastX = e.X / 4;
-                LastY = e.Y / 4;
-
-                MoveRooms((int)DeltaX, (int)DeltaY);
-                //ResetRoomsVisited();
-                //MoveRoomRecursive(_editor.RoomIndex, (int)DeltaX, (int)DeltaY);
-            }
-
-            Invalidate();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatistics();
+       
+            if (e.Button == MouseButtons.Left && (_roomsToMove != null))
+                updateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
 
-            if (e.Button == MouseButtons.Left && Drag)
+            if (e.Button == MouseButtons.Left && (_roomsToMove != null))
             {
-                Room room = _editor.Level.Rooms[_editor.RoomIndex];
-
-                int tempX = (int)(room.Position.X + e.X / 4 - LastX);
-                int tempY = (int)(room.Position.Z - e.Y / 4 + LastY);
-
-                if (_editor.RoomIndex < 0 || _editor.RoomIndex > 2047 || _editor.Level.Rooms[_editor.RoomIndex] == null ||
-                    tempX < 0 || tempY < 0 || tempX > 160 || tempY > 160)
-                {
-                    Drag = false;
-                    return;
-                }
-
-                DeltaX = e.X / 4 - LastX;
-                DeltaY = e.Y / 4 - LastY;
-
-                LastX = e.X / 4;
-                LastY = e.Y / 4;
-
-                MoveRooms((int)DeltaX, (int)DeltaY);
-                //ResetRoomsVisited();
-                //MoveRoomRecursive(_editor.RoomIndex, (int)DeltaX, (int)DeltaY);
+                HashSet<Room> roomsToMove = _roomsToMove;
+                _roomsToMove = null;
+                updateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, roomsToMove);
             }
-
-            Drag = false;
-            Invalidate();
-            _editor.DrawPanelGrid();
-            _editor.CenterCamera();
-            _editor.UpdateStatistics();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+            g.Clear(Color.White);
 
-            // disegno le linee nere della griglia           
-            for (int x = 0; x < Width; x += 8)
-            {
-                g.DrawLine(Pens.LightGray, new System.Drawing.Point(x, 0), new System.Drawing.Point(x, Height));
-            }
-
-            for (int y = 0; y < Height; y += 8)
-            {
-                g.DrawLine(Pens.LightGray, new System.Drawing.Point(0, y), new System.Drawing.Point(Width, y));
-            }
-
-            if (_editor == null)
-                return;
-            if (_editor.Level == null)
+            if ((_editor == null) || (_editor.Level == null))
                 return;
 
-            // per prima cosa ordino le stanze in modo da disegnarle dalla più alta alla più bassa
-            List<int> roomList = new List<int>();
-            List<int> heightList = new List<int>();
+            // Draw grid lines
+            Vector2 GridLinesStart = FromVisualCoord(new PointF());
+            Vector2 GridLinesEnd = FromVisualCoord(new PointF() + Size);
+            GridLinesStart = Vector2.Clamp(GridLinesStart, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
+            GridLinesEnd = Vector2.Clamp(GridLinesEnd, new Vector2(0.0f), new Vector2(Level.MaxSectorCoord));
+            Point GridLinesStartInt = new Point((int)Math.Floor(GridLinesStart.X), (int)Math.Floor(GridLinesStart.Y));
+            Point GridLinesEndInt = new Point((int)Math.Ceiling(GridLinesEnd.X), (int)Math.Ceiling(GridLinesEnd.Y));
 
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
+            for (int x = GridLinesStartInt.X; x <= GridLinesEndInt.X; ++x)
+                g.DrawLine(((x % 10) == 0) ? _gridPenThick : _gridPenThin,
+                    ToVisualCoord(new Vector2(x, 0)), ToVisualCoord(new Vector2(x, Level.MaxSectorCoord)));
+
+            for (int y = GridLinesStartInt.Y; y <= GridLinesEndInt.Y; ++y)
+                g.DrawLine(((y % 10) == 0) ? _gridPenThick : _gridPenThin, 
+                    ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxSectorCoord, y)));
+
+            // First, order the rooms so that we can than draw them from the highest to the lowest
+            IEnumerable<Room> roomList = GetSortedRoomList();
+
+            // Draw the rooms one by one
+            foreach (Room room in roomList.Reverse())
             {
-                if (_editor.Level.Rooms[i] != null)
+                int width = room.NumXSectors;
+                int height = room.NumZSectors;
+                
+                // Fill area of room with rectangular stripes
+                List<RectangleF> rectangles = new List<RectangleF>();
+                for (int z = 1; z < (height - 1); ++z)
                 {
-                    roomList.Add(i);
-                    heightList.Add((int)_editor.Level.Rooms[i].Position.Y + _editor.Level.Rooms[i].GetHighestCorner());
-                }
-            }
+                    int previousRectangleCount = rectangles.Count;
+                    for (int x = 1; x < (width - 1); ++x)
+                        if (room.Blocks[x, z].Type == BlockType.Floor)
+                        {
+                            int xBegin = x;
+                            // Search for the next sector without a wall
+                            for (; x < (width - 1); ++x)
+                                if (room.Blocks[x, z].Type != BlockType.Floor)
+                                    break;
+                            rectangles.Add(new RectangleF(xBegin, z, x - xBegin, 1));
+                        }
 
-            for (int j = 0; j < (roomList.Count - 1); j++)
-                for (int i = 0; i < (roomList.Count - 1); i++)
-                    if (heightList[i] > heightList[i + 1])
+                    // Try to combine rectangle with the previous row
+                    if ((rectangles.Count >= 2) && ((previousRectangleCount + 1) == rectangles.Count))
                     {
-                        int temp = heightList[i];
-                        heightList[i] = heightList[i + 1];
-                        heightList[i + 1] = temp;
-                        temp = roomList[i];
-                        roomList[i] = roomList[i + 1];
-                        roomList[i + 1] = temp;
+                        RectangleF PreviousRectangle = rectangles[rectangles.Count - 2];
+                        RectangleF ThisRectangle = rectangles[rectangles.Count - 1];
+                        if ((ThisRectangle.X == PreviousRectangle.X) &&
+                            (ThisRectangle.Width == PreviousRectangle.Width) &&
+                            (ThisRectangle.Top == PreviousRectangle.Bottom))
+                        {
+                            rectangles.RemoveAt(rectangles.Count - 1);
+                            PreviousRectangle.Height += 1;
+                            rectangles[rectangles.Count - 1] = PreviousRectangle;
+                        }
                     }
+                }
 
-            // disegno le stanze una per una
-            Room room;
-            Brush brush;
+                // Transform coordinates
+                for (int j = 0; j < rectangles.Count; ++j)
+                    rectangles[j] = new RectangleF(
+                        ToVisualCoord(new Vector2(rectangles[j].X + room.SectorPos.X, rectangles[j].Y + room.SectorPos.Y)),
+                        new SizeF(rectangles[j].Width * Scale, rectangles[j].Height * Scale));
 
-            for (int i = 0; i < roomList.Count; i++)
-            {
-                room = _editor.Level.Rooms[roomList[i]];
-                if (room == null)
-                    continue;
+                // Draw
+                Brush brush = _roomsNormalBrush;
+                if (room == _editor.SelectedRoom)
+                    brush = (_roomsToMove == null) ? _roomsSelectionBrush : _roomsDragBrush;
+                else if ((_roomsToMove != null) && _roomsToMove.Contains(room))
+                    brush = _roomsToMoveBrush;
+                g.FillRectangles(brush, rectangles.ToArray());
 
-                if (roomList[i] == _editor.RoomIndex)
-                    brush = Brushes.Red;
-                else
-                    brush = Brushes.Cyan;
-                if (!Drag || roomList[i] == _editor.RoomIndex)
-                    g.FillRectangle(brush, new Rectangle((int)(room.Position.X + 1) * 4, (Height / 4 - (int)(room.Position.Z + 1) - room.NumZSectors + 3) * 4, (room.NumXSectors - 2) * 4, (room.NumZSectors - 2) * 4));
-                g.DrawRectangle(Pens.Black, new Rectangle((int)(room.Position.X + 1) * 4, (Height / 4 - (int)(room.Position.Z + 1) - room.NumZSectors + 3) * 4, (room.NumXSectors - 2) * 4, (room.NumZSectors - 2) * 4));
+                // Determine outlines of room
+                Pen pen = Pens.Black;
+                for (int z = 1; z < height; ++z)
+                    for (int x = 1; x < width; ++x)
+                    {
+                        bool wallThis = room.Blocks[x, z].Type != BlockType.Floor;
+                        bool wallAbove = room.Blocks[x, z - 1].Type != BlockType.Floor;
+                        bool wallLeft = room.Blocks[x - 1, z].Type != BlockType.Floor;
+                        if (wallAbove != wallThis)
+                            g.DrawLine(pen, ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)), ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
+                        if (wallLeft != wallThis)
+                            g.DrawLine(pen, ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)), ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
+                    }
             }
 
             _editor.UpdateStatistics();
         }
 
-        private int DoPicking(int x, int y)
+        private struct RoomHeightComparer : IComparer<KeyValuePair<float, Room>>
         {
-            // per prima cosa ordino le stanze in modo da disegnarle dalla più alta alla più bassa
-            List<int> roomList = new List<int>();
-            List<int> heightList = new List<int>();
-
-            for (int i = 0; i < Level.MaxNumberOfRooms; i++)
+            public int Compare(KeyValuePair<float, Room> x, KeyValuePair<float, Room> y)
             {
-                if (_editor.Level.Rooms[i] != null)
-                {
-                    roomList.Add(i);
-                    heightList.Add((int)_editor.Level.Rooms[i].Position.Y + _editor.Level.Rooms[i].GetHighestCorner());
-                }
+                if (x.Key < y.Key)
+                    return 1;
+                if (x.Key > y.Key)
+                    return -1;
+                return 0;
             }
+        };
 
-            for (int j = 0; j < (roomList.Count - 1); j++)
-                for (int i = 0; i < (roomList.Count - 1); i++)
-                    if (heightList[i] > heightList[i + 1])
-                    {
-                        int temp = heightList[i];
-                        heightList[i] = heightList[i + 1];
-                        heightList[i + 1] = temp;
-                        temp = roomList[i];
-                        roomList[i] = roomList[i + 1];
-                        roomList[i + 1] = temp;
-                    }
+        private void updateRoomPosition(Vector2 currentRoomPos, Room roomReference, HashSet<Room> roomsToMove)
+        {
+            currentRoomPos = new Vector2((float)Math.Round(currentRoomPos.X), (float)Math.Round(currentRoomPos.Y));
+            //currentRoomPos = Vector2.Clamp(currentRoomPos, new Vector2(0), new Vector2(Level.MaxSectorCoord));
+            Vector2 roomMovement = currentRoomPos - roomReference.SectorPos;
+            foreach (Room room in roomsToMove)
+                room.SectorPos += roomMovement;
 
-            // pulisco il buffer
-            _graphics.Clear(Color.White);
-
-            // disegno le stanze una per una
-            Room room;
-            Brush brush;
-
-            for (int i = 0; i < roomList.Count; i++)
-            {
-                room = _editor.Level.Rooms[roomList[i]];
-                brush = new SolidBrush(Color.FromArgb((0xff << 24) + roomList[i]));
-                _graphics.FillRectangle(brush, new Rectangle((int)(room.Position.X + 1) * 4, (Height / 4 - (int)(room.Position.Z + 1) - room.NumZSectors + 3) * 4, (room.NumXSectors - 2) * 4, (room.NumZSectors - 2) * 4));
-            }
-
-            // recupero l'id della stanza in base al colore
-            Color pickColor = _selectionBuffer.GetPixel(x, y);
-            int roomId = (pickColor.G << 8) + pickColor.B;
-            if (roomId == 65535)
-                roomId = -1;
-
-            return roomId;
+            //Update state...
+            Invalidate();
+            _editor.UpdateStatistics();
+            _editor.CenterCamera();
         }
 
-        public void MoveRoomRecursive(int room, int deltaX, int deltaY)
+        private IEnumerable<Room> GetSortedRoomList()
         {
-            _editor.Level.Rooms[room].Visited = true;
-
-            for (int i = 0; i < _editor.Level.Portals.Count; i++)
-            {
-                Portal p = _editor.Level.Portals.ElementAt(i).Value;
-
-                if (p.Room == room)
-                {
-                    if (_editor.Level.Rooms[p.AdjoiningRoom].Visited)
-                        continue;
-                    MoveRoomRecursive(p.AdjoiningRoom, deltaX, deltaY);
-                }
-            }
-
-            _editor.Level.Rooms[room].Position += new Vector3(deltaX, 0, -deltaY);
+            // First, order the rooms from heighest to lowest
+            var roomList = new List<KeyValuePair<float, Room>>();
+            foreach (Room room in _editor.Level.Rooms)
+                if (room != null)
+                    roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
+            roomList.Sort(new RoomHeightComparer());
+            return roomList.Select(roomKey => roomKey.Value);
         }
 
-        public void MoveRooms(int deltaX, int deltaY)
+        private Room DoPicking(Vector2 pos)
         {
-            for (int i = 0; i < _roomsToMove.Count; i++)
+            IEnumerable<Room> roomList = GetSortedRoomList();
+
+            // Do collision detection for each room from top to bottom...
+            foreach (Room room in roomList)
             {
-                _editor.Level.Rooms[_roomsToMove[i]].Position += new Vector3(deltaX, 0, -deltaY);
-            }
-        }
-
-        public void CollectRoomsToMove(int room, int deltaX, int deltaY)
-        {
-            _editor.Level.Rooms[room].Visited = true;
-
-            for (int i = 0; i < _editor.Level.Portals.Count; i++)
-            {
-                Portal p = _editor.Level.Portals.ElementAt(i).Value;
-
-                if (p.Room == room)
-                {
-                    if (_editor.Level.Rooms[p.AdjoiningRoom].Visited)
-                        continue;
-                    CollectRoomsToMove(p.AdjoiningRoom, deltaX, deltaY);
-                }
+                float roomLocalX = pos.X - room.SectorPos.X;
+                float roomLocalZ = pos.Y - room.SectorPos.Y;
+                if ((roomLocalX >= 1) && (roomLocalZ >= 1) && (roomLocalX < (room.NumXSectors - 1)) && (roomLocalZ < (room.NumZSectors - 1)))
+                    if (room.Blocks[(int)roomLocalX, (int)roomLocalZ].Type == BlockType.Floor)
+                        return room;
             }
 
-            _roomsToMove.Add(room);
-
-            // Add also the flipped room
-            if (_editor.Level.Rooms[room].Flipped && _editor.Level.Rooms[room].AlternateRoom != -1 &&
-                !_editor.Level.Rooms[_editor.Level.Rooms[room].AlternateRoom].Visited)
-            {
-                _roomsToMove.Add(_editor.Level.Rooms[room].AlternateRoom);
-            }
-        }
-
-        private void ResetRoomsVisited()
-        {
-            for (int i = 0; i < Level.MaxNumberOfRooms; i++)
-            {
-                if (_editor.Level.Rooms[i] != null)
-                {
-                    _editor.Level.Rooms[i].Visited = false;
-                }
-            }
+            return null;
         }
     }
 }

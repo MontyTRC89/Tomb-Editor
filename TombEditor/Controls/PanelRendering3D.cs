@@ -3222,34 +3222,34 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f));
 
                     if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Electricity) != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.DeathColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Death) != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.DeathColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Lava) != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.DeathColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.MonkeyColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorMonkey));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Box) != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.BoxColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorBox));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.NotWalkableColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNotWalkable));
                     if (_editor.Level.Rooms[room].Blocks[x, z].Climb[0] ||
                         _editor.Level.Rooms[room].Blocks[x, z].Climb[1] ||
                         _editor.Level.Rooms[room].Blocks[x, z].Climb[2] ||
                         _editor.Level.Rooms[room].Blocks[x, z].Climb[3])
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.ClimbColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorClimb));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].NoCollisionFloor &&
                         (index == (int)BlockFaces.Floor || index == (int)BlockFaces.FloorTriangle2)))
                     {
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.NoCollisionColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNoCollision));
                         noCollision = true;
                     }
                     if (_editor.Level.Rooms[room].Blocks[x, z].Triggers.Count != 0)
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.TriggerColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorTrigger));
                     if ((_editor.Level.Rooms[room].Blocks[x, z].NoCollisionCeiling &&
                         (index == (int)BlockFaces.Ceiling || index == (int)BlockFaces.CeilingTriangle2)))
                     {
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.NoCollisionColor));
+                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNoCollision));
                         noCollision = true;
                     }
                 }
