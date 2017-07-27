@@ -16,7 +16,7 @@ namespace TombEditor.Controls
 
         private bool _drag;
         private float _lastX;
-        private float _lastY;
+        private float LastY;
         private float _deltaX;
         private float _deltaY;
 
@@ -59,7 +59,7 @@ namespace TombEditor.Controls
 
             _drag = true;
             _lastX = e.X;
-            _lastY = e.Y;
+            LastY = e.Y;
 
             _editor.InvisiblePolygon = false;
         }
@@ -73,15 +73,15 @@ namespace TombEditor.Controls
                 _editor.InvisiblePolygon = false;
 
                 _deltaX = e.X - _lastX;
-                _deltaY = e.Y - _lastY;
+                _deltaY = e.Y - LastY;
 
                 _x = (short)(Math.Floor(_lastX / 16.0f) * 16);
-                _y = (short)(Math.Floor(_lastY / 16.0f) * 16);
+                _y = (short)(Math.Floor(LastY / 16.0f) * 16);
                 _w = (short)(Math.Ceiling(_deltaX / 16.0f) * 16);
                 _h = (short)(Math.Ceiling(_deltaY / 16.0f) * 16);
 
                 // verifico di non aver attraversato una pagina
-                short page = (short)(Math.Floor(_lastY / 256.0f));
+                short page = (short)(Math.Floor(LastY / 256.0f));
                 short maxHeight = (short)(256 - (_y - 256 * page));
                 short maxWidth = (short)(256 - _x);
                 if (_h > maxHeight)
@@ -116,10 +116,10 @@ namespace TombEditor.Controls
             _editor.InvisiblePolygon = false;
 
             _deltaX = e.X - _lastX;
-            _deltaY = e.Y - _lastY;
+            _deltaY = e.Y - LastY;
 
             // _x = (short) (Math.Floor(_lastX / 16.0f) * 16);
-            //    _y = (short)(Math.Floor(_lastY / 16.0f) * 16);
+            //    _y = (short)(Math.Floor(LastY / 16.0f) * 16);
             _w = (short)(Math.Ceiling(_deltaX / 16.0f) * 16);
             _h = (short)(Math.Ceiling(_deltaY / 16.0f) * 16);
 
@@ -142,7 +142,7 @@ namespace TombEditor.Controls
             LevelTexture sample;
 
             // verifico di non aver attraversato una pagina
-            short page = (short)(Math.Floor(_lastY / 256.0f));
+            short page = (short)(Math.Floor(LastY / 256.0f));
 
             if (Math.Abs(_deltaX) < 8 && Math.Abs(_deltaY) < 8)
             {
@@ -151,15 +151,15 @@ namespace TombEditor.Controls
                 {
                     sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
 
-                    if (_lastX >= sample.X && _lastX <= sample.X + sample.Width && _lastY >= sample.Y + sample.Page * 256 &&
-                        _lastY <= sample.Y + sample.Page * 256 + sample.Height)
+                    if (_lastX >= sample.X && _lastX <= sample.X + sample.Width && LastY >= sample.Y + sample.Page * 256 &&
+                        LastY <= sample.Y + sample.Page * 256 + sample.Height)
                     {
                         sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
                     }
                     else
                     {
                         _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
-                        _y = (short)(Math.Floor(_lastY / 64.0f) * 64);
+                        _y = (short)(Math.Floor(LastY / 64.0f) * 64);
                         _w = 64;
                         _h = 64;
 
@@ -170,7 +170,7 @@ namespace TombEditor.Controls
                 else
                 {
                     _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
-                    _y = (short)(Math.Floor(_lastY / 64.0f) * 64);
+                    _y = (short)(Math.Floor(LastY / 64.0f) * 64);
                     _w = 64;
                     _h = 64;
 
@@ -179,7 +179,7 @@ namespace TombEditor.Controls
                 }
 
                 /*    _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
-                    _y = (short)(Math.Floor(_lastY / 64.0f) * 64);
+                    _y = (short)(Math.Floor(LastY / 64.0f) * 64);
                     _w = 64;
                     _h = 64;*/
             }
@@ -198,26 +198,26 @@ namespace TombEditor.Controls
             }
 
             // trovo il triangolo
-            if (_lastX >= sample.X && _lastX <= sample.X + sample.Width / 2 && _lastY >= sample.Y + page * 256 &&
-                _lastY <= sample.Y + page * 256 + sample.Height / 2)
+            if (_lastX >= sample.X && _lastX <= sample.X + sample.Width / 2 && LastY >= sample.Y + page * 256 &&
+                LastY <= sample.Y + page * 256 + sample.Height / 2)
             {
                 _triangle = TextureTileType.TriangleNW;
             }
 
-            if (_lastX >= sample.X + sample.Width / 2 && _lastX <= sample.X + sample.Width && _lastY >= sample.Y + page * 256 &&
-                _lastY <= sample.Y + page * 256 + sample.Height / 2)
+            if (_lastX >= sample.X + sample.Width / 2 && _lastX <= sample.X + sample.Width && LastY >= sample.Y + page * 256 &&
+                LastY <= sample.Y + page * 256 + sample.Height / 2)
             {
                 _triangle = TextureTileType.TriangleNE;
             }
 
-            if (_lastX >= sample.X + sample.Width / 2 && _lastX <= sample.X + sample.Width && _lastY >= sample.Y + page * 256 + sample.Height / 2 &&
-                _lastY <= sample.Y + page * 256 + sample.Height)
+            if (_lastX >= sample.X + sample.Width / 2 && _lastX <= sample.X + sample.Width && LastY >= sample.Y + page * 256 + sample.Height / 2 &&
+                LastY <= sample.Y + page * 256 + sample.Height)
             {
                 _triangle = TextureTileType.TriangleSE;
             }
 
-            if (_lastX >= sample.X && _lastX <= sample.X + sample.Width / 2 && _lastY >= sample.Y + page * 256 + sample.Height / 2 &&
-                _lastY <= sample.Y + page * 256 + sample.Height)
+            if (_lastX >= sample.X && _lastX <= sample.X + sample.Width / 2 && LastY >= sample.Y + page * 256 + sample.Height / 2 &&
+                LastY <= sample.Y + page * 256 + sample.Height)
             {
                 _triangle = TextureTileType.TriangleSW;
             }

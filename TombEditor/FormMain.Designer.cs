@@ -2550,15 +2550,8 @@
             // 
             // panel2DGrid
             // 
-            this.panel2DGrid.DeltaX = 0F;
-            this.panel2DGrid.DeltaY = 0F;
-            this.panel2DGrid.Drag = false;
-            this.panel2DGrid.LastX = 0F;
-            this.panel2DGrid.LastY = 0F;
             this.panel2DGrid.Location = new System.Drawing.Point(4, 24);
             this.panel2DGrid.Name = "panel2DGrid";
-            this.panel2DGrid.SelectedPortal = 0;
-            this.panel2DGrid.SelectedTrigger = 0;
             this.panel2DGrid.Size = new System.Drawing.Size(220, 220);
             this.panel2DGrid.TabIndex = 81;
             // 
@@ -2589,19 +2582,11 @@
             // panel3D
             // 
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Camera = null;
-            this.panel3D.DeltaVector = new SharpDX.Vector3(0F, 0F, 0F);
-            this.panel3D.DeltaX = 0;
-            this.panel3D.DeltaY = 0;
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3D.Drag = false;
-            this.panel3D.LastX = 0;
-            this.panel3D.LastY = 0;
             this.panel3D.LightIndex = 0;
             this.panel3D.Location = new System.Drawing.Point(3, 3);
             this.panel3D.Name = "panel3D";
             this.panel3D.Presenter = null;
-            this.panel3D.RoomIndex = 0;
             this.panel3D.Size = new System.Drawing.Size(1291, 667);
             this.panel3D.TabIndex = 11;
             // 
@@ -2618,12 +2603,7 @@
             // 
             // panel2DMap
             // 
-            this.panel2DMap.DeltaX = 0F;
-            this.panel2DMap.DeltaY = 0F;
             this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2DMap.Drag = false;
-            this.panel2DMap.LastX = 0F;
-            this.panel2DMap.LastY = 0F;
             this.panel2DMap.Location = new System.Drawing.Point(3, 3);
             this.panel2DMap.Name = "panel2DMap";
             this.panel2DMap.Size = new System.Drawing.Size(1291, 667);
