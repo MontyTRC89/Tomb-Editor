@@ -58,7 +58,7 @@ namespace TombEditor
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(16, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.Size = new System.Drawing.Size(72, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Trigger Type:";
             // 
@@ -288,7 +288,7 @@ namespace TombEditor
             this.MinimizeBox = false;
             this.Name = "FormTrigger";
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trigger editor";
             this.Load += new System.EventHandler(this.FormTrigger_Load);
             this.ResumeLayout(false);

@@ -33,13 +33,13 @@ namespace TombEditor
         {
             this.components = new System.ComponentModel.Container();
             this.panelTextureContainer = new System.Windows.Forms.Panel();
+            this.picTextureMap = new TombEditor.Controls.PanelTextureSounds(this.components);
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox(this.components);
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.imgList = new System.Windows.Forms.ImageList(this.components);
             this.timerPreview = new System.Windows.Forms.Timer(this.components);
-            this.picTextureMap = new TombEditor.Controls.PanelTextureSounds(this.components);
             this.panelTextureContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTextureMap)).BeginInit();
             this.SuspendLayout();
@@ -53,6 +53,20 @@ namespace TombEditor
             this.panelTextureContainer.Name = "panelTextureContainer";
             this.panelTextureContainer.Size = new System.Drawing.Size(286, 477);
             this.panelTextureContainer.TabIndex = 24;
+            // 
+            // picTextureMap
+            // 
+            this.picTextureMap.ContainerForm = null;
+            this.picTextureMap.IsTextureSelected = false;
+            this.picTextureMap.Location = new System.Drawing.Point(-1, 0);
+            this.picTextureMap.Name = "picTextureMap";
+            this.picTextureMap.Page = ((short)(0));
+            this.picTextureMap.SelectedX = ((short)(0));
+            this.picTextureMap.SelectedY = ((short)(0));
+            this.picTextureMap.Size = new System.Drawing.Size(256, 567);
+            this.picTextureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.picTextureMap.TabIndex = 0;
+            this.picTextureMap.TabStop = false;
             // 
             // butAssignSound
             // 
@@ -125,20 +139,6 @@ namespace TombEditor
             // 
             this.timerPreview.Interval = 33;
             // 
-            // picTextureMap
-            // 
-            this.picTextureMap.ContainerForm = null;
-            this.picTextureMap.IsTextureSelected = false;
-            this.picTextureMap.Location = new System.Drawing.Point(-1, 0);
-            this.picTextureMap.Name = "picTextureMap";
-            this.picTextureMap.Page = ((short)(0));
-            this.picTextureMap.SelectedX = ((short)(0));
-            this.picTextureMap.SelectedY = ((short)(0));
-            this.picTextureMap.Size = new System.Drawing.Size(256, 567);
-            this.picTextureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.picTextureMap.TabIndex = 0;
-            this.picTextureMap.TabStop = false;
-            // 
             // FormTextureSounds
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -154,7 +154,7 @@ namespace TombEditor
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormTextureSounds";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Texture sounds";
             this.Load += new System.EventHandler(this.FormTextureSounds_Load);
             this.panelTextureContainer.ResumeLayout(false);

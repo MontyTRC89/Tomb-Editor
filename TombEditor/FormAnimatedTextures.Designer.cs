@@ -138,7 +138,7 @@ namespace TombEditor
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(13, 151);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(48, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(49, 13);
             this.darkLabel2.TabIndex = 35;
             this.darkLabel2.Text = "Textures";
             // 
@@ -321,7 +321,7 @@ namespace TombEditor
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormAnimatedTextures";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animated textures";
             this.Load += new System.EventHandler(this.FormSink_Load);
             this.panelTextureContainer.ResumeLayout(false);

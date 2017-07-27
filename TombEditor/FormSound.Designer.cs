@@ -215,7 +215,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormSound";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sound source";
             this.Load += new System.EventHandler(this.FormSound_Load);
             ((System.ComponentModel.ISupportInitialize)(this.lstSamples)).EndInit();

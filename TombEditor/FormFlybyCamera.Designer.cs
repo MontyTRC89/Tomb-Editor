@@ -375,7 +375,7 @@ namespace TombEditor
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormFlybyCamera";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Flyby camera";
             this.Load += new System.EventHandler(this.FormFlybyCamera_Load);
             this.ResumeLayout(false);
