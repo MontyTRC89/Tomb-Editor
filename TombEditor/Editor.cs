@@ -253,9 +253,12 @@ namespace TombEditor
             if (result.HasErrors)
             {
                 string errors = "";
-
-                foreach (SharpDX.Toolkit.Diagnostics.LogMessage err in result.Logger.Messages)
+                foreach (var err in result.Logger.Messages)
                     errors += err + Environment.NewLine;
+
+                // Hide all forms because we otherwise crash when trying to render the form for showing the message box.
+                foreach (Form form in Application.OpenForms)
+                    form.Hide();
 
                 MessageBox.Show("Could not compile effect '" + fileName + "'" + Environment.NewLine + errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
@@ -318,11 +321,6 @@ namespace TombEditor
                 _gridLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, _grids[0]);
         }
 
-        public void Log(string message)
-        {
-            Console.WriteLine(message);
-        }
-        
         public void LoadStaticMeshColorInUI()
         {
             _formEditor.LoadStaticMeshColorInUI();

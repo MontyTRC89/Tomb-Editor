@@ -10,8 +10,6 @@
 struct PixelInputType
 {
 	float4 Position : SV_POSITION;
-	float2 UV : TEXCOORD0;
-	float2 EditorUV : TEXCOORD1;
 	float4 Color : COLOR0;
 };
 
@@ -25,15 +23,8 @@ bool SelectionEnabled;
 PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
-
-	// Calcolo la posizione finale
 	output.Position = mul(input.Position, ModelViewProjection);
-
-	// Passo le coordinate UV al pixel shader
-	output.UV = input.UV;
-	output.EditorUV = input.EditorUV;
 	output.Color = input.Color;
-
 	return output;
 }
 

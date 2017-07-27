@@ -37,15 +37,10 @@ sampler TextureSampler;
 PixelInputType VS(VertexInputType input)
 {
     PixelInputType output;
-    
-    // Calcolo la posizione finale
     output.Position = mul(input.Position, ModelViewProjection);
-    
-	// Passo le coordinate UV al pixel shader
 	output.UV = input.UV;
 	output.EditorUV = input.EditorUV;
-	output.Color = input.Color;
-
+	output.Color = input.Color * (1.0f / 255.0f);
     return output;
 }
 
@@ -54,36 +49,29 @@ PixelInputType VS(VertexInputType input)
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS(PixelInputType input) : SV_TARGET
 {
-	float4 pixel;
-
 	if (Saved)
 	{
 		return float4(0, 1, 0, 1);
 	}
 	else
 	{
-		float2 uv;
-
-		if (EditorTextureEnabled)
-			uv = input.EditorUV;
-		else
-			uv = input.UV;
-
+		float2 uv = EditorTextureEnabled ? input.EditorUV : input.UV;
+		
+		float4 pixel;
 		if (TextureEnabled)
 		{
 			pixel = Texture.Sample(TextureSampler, uv);
 			if (SelectionEnabled) pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 			if (LightingEnabled)
 			{
-				float4 col = float4(input.Color.x / 255.0f, input.Color.y / 255.0f, input.Color.z / 255.0f, 1.0f);
-
-				pixel = clamp(pixel * col * 2.0f, 0, 1);
-				//pixel.w = 1.0f;
+				float3 colorAdd = clamp(input.Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
+				float3 colorMul = min(input.Color.xyz * 2.0f, 1.0f);
+				pixel.xyz = pixel.xyz * colorMul + colorAdd;
 			}
 		}
 		else
 		{
-			float3 distance = length(float4(CameraPosition, 1.0f) - input.Position);
+			float distance = length(float4(CameraPosition, 1.0f) - input.Position);
 			float LINE_SIZE = 0.025f * (1024000 - distance) / 1024000;
 
 			pixel = float4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -92,7 +80,8 @@ float4 PS(PixelInputType input) : SV_TARGET
 				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) && Shape == 0)
 			{
 				pixel = Color;
-				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
+				if (SelectionEnabled) 
+					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
 			}
 
 			if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) &&
@@ -101,7 +90,8 @@ float4 PS(PixelInputType input) : SV_TARGET
 					input.EditorUV.y > 1.0f + LINE_SIZE - input.EditorUV.x) && Shape == 1 && SplitMode == 1)
 			{
 				pixel = Color;
-				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
+				if (SelectionEnabled)
+					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
 			}
 
 			if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) &&
@@ -110,12 +100,12 @@ float4 PS(PixelInputType input) : SV_TARGET
 					input.EditorUV.y > +LINE_SIZE + input.EditorUV.x) && Shape == 1 && SplitMode == 0)
 			{
 				pixel = Color;
-				if (SelectionEnabled) pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
+				if (SelectionEnabled) 
+					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
 			}
 		}
+		return pixel;
 	}
-
-	return pixel;
 }
 
 technique10 Textured
