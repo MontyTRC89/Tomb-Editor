@@ -67,7 +67,8 @@ namespace TombEditor.Geometry
             public byte _height;
         }
 
-        public const int MaxNumberOfRooms = 512;
+        public const short MaxSectorCoord = 255;
+        public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
 
         public Dictionary<int, LevelTexture> TextureSamples { get; } =
@@ -95,6 +96,38 @@ namespace TombEditor.Geometry
         public Level()
         {
             _editor = Editor.Instance;
+        }
+
+        public short GetRoomIndex(Room room)
+        {
+            for (short i = 0; i < MaxNumberOfRooms; ++i)
+                if (Rooms[i] == room)
+                    return i;
+            return -1;
+        }
+        
+        public HashSet<Room> GetConnectedRooms(Room startingRoom)
+        {
+            HashSet<Room> result = new HashSet<Room>();
+            GetConnectedRoomsRecursively(result, startingRoom);
+            if (startingRoom.Flipped && (startingRoom.AlternateRoom != -1))
+                GetConnectedRoomsRecursively(result, Rooms[startingRoom.AlternateRoom]);
+            return result;
+        }
+
+        private void GetConnectedRoomsRecursively(HashSet<Room> result, Room startingRoom)
+        {
+            result.Add(startingRoom);
+            foreach (int PortalIndex in startingRoom.Portals)
+            {
+                Room room = Rooms[Portals[PortalIndex].AdjoiningRoom];
+                if (!result.Contains(room))
+                {
+                    GetConnectedRoomsRecursively(result, room);
+                    if (room.Flipped && (room.AlternateRoom != -1))
+                        GetConnectedRoomsRecursively(result, Rooms[room.AlternateRoom]);
+                }
+            }
         }
 
         public int AddTexture(short x, short y, short w, short h)
@@ -278,8 +311,8 @@ namespace TombEditor.Geometry
 
             var level = new Level();
 
-            //try
-            //{
+            try
+            {
                 // Open file
                 var reader = new BinaryReaderEx(File.OpenRead(filename));
 
@@ -2800,13 +2833,13 @@ namespace TombEditor.Geometry
                         }
                     }
                 }
-           /* }
+            }
             catch (Exception ex)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError(
                     "There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
                 return null;
-            }*/
+            }
 
             foreach (var portal in level.Portals)
             {

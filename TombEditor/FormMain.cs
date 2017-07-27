@@ -442,19 +442,10 @@ namespace TombEditor
 
             // Initialize controls
             _editor = Editor.Instance;
-            _editor.BoxColor = butBox.BackColor;
-            _editor.DeathColor = butDeath.BackColor;
-            _editor.FloorColor = butFloor.BackColor;
-            _editor.MonkeyColor = butMonkey.BackColor;
-            _editor.WallColor = butWall.BackColor;
-            _editor.NotWalkableColor = butNotWalkableBox.BackColor;
-            _editor.ClimbColor = butClimbNorth.BackColor;
             _editor.Initialize(panel3D, panel2DGrid, this);
             _editor.Mode = EditorMode.Geometry;
 
             panel3D.InitializePanel();
-            panel2DGrid.InitializePanel();
-            panel2DMap.InitializePanel();
             panelItem.InitializePanel();
 
             logger.Info("Creating new empty level");
