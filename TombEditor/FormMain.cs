@@ -789,19 +789,16 @@ namespace TombEditor
         private void butAddSoundSource_Click(object sender, EventArgs e)
         {
             // Select sound
-            FormSound formSound = new TombEditor.FormSound();
-            formSound.IsNew = true;
-            if (formSound.ShowDialog() != DialogResult.OK)
+            using (FormSound formSound = new FormSound())
             {
-                formSound.Dispose();
-                return;
+                formSound.IsNew = true;
+                if (formSound.ShowDialog() != DialogResult.OK)
+                    return;
+
+                // Add sound
+                _editor.SoundID = formSound.SoundID;
+                _editor.Action = EditorAction.PlaceSound;
             }
-
-            formSound.Dispose();
-
-            // Add sound
-            _editor.SoundID = formSound.SoundID;
-            _editor.Action = EditorAction.PlaceSound;
         }
 
         private void butAddSink_Click(object sender, EventArgs e)
@@ -1125,14 +1122,16 @@ namespace TombEditor
             }
             else if (panel2DGrid.SelectedTrigger != -1)
             {
-                FormTrigger formTrigger = new TombEditor.FormTrigger();
-                formTrigger.TriggerID = panel2DGrid.SelectedTrigger;
-                formTrigger.Trigger = _editor.Level.Triggers[panel2DGrid.SelectedTrigger];
+                using (FormTrigger formTrigger = new FormTrigger())
+                {
+                    formTrigger.TriggerID = panel2DGrid.SelectedTrigger;
+                    formTrigger.Trigger = _editor.Level.Triggers[panel2DGrid.SelectedTrigger];
 
-                if (formTrigger.ShowDialog() != DialogResult.OK)
-                    return;
+                    if (formTrigger.ShowDialog(this) != DialogResult.OK)
+                        return;
 
-                _editor.Level.Triggers[panel2DGrid.SelectedTrigger] = formTrigger.Trigger;
+                    _editor.Level.Triggers[panel2DGrid.SelectedTrigger] = formTrigger.Trigger;
+                }
 
                 //_editor.DrawPanel3D();
                 _editor.DrawPanelGrid();
@@ -1258,7 +1257,7 @@ namespace TombEditor
                     // Add trigger is T key was pressed
                     if (addTrigger)
                     {
-                        EditorActions.AddTrigger(xMin, xMax, zMin, zMax);
+                        EditorActions.AddTrigger(this, xMin, xMax, zMin, zMax);
                         return;
                     }
 
@@ -1384,9 +1383,8 @@ namespace TombEditor
                             break;
 
                         case Keys.O:
-                            FormMoveable formMoveable = new FormMoveable();
-                            formMoveable.ShowDialog();
-                            formMoveable.Dispose();
+                            using (FormMoveable formMoveable = new FormMoveable())
+                                formMoveable.ShowDialog(this);
                             break;
                     }
                 }
@@ -1675,9 +1673,8 @@ namespace TombEditor
                             break;
 
                         case Keys.O:
-                            FormFlybyCamera formFlyby = new FormFlybyCamera();
-                            formFlyby.ShowDialog();
-                            formFlyby.Dispose();
+                            using (FormFlybyCamera formFlyby = new FormFlybyCamera())
+                                formFlyby.ShowDialog(this);
                             break;
                     }
                 }
@@ -1729,9 +1726,8 @@ namespace TombEditor
                             break;
 
                         case Keys.O:
-                            FormSink formSink = new FormSink();
-                            formSink.ShowDialog();
-                            formSink.Dispose();
+                            using (FormSink formSink = new FormSink())
+                                formSink.ShowDialog(this);
                             break;
                     }
                 }
@@ -1784,9 +1780,8 @@ namespace TombEditor
                             break;
 
                         case Keys.O:
-                            FormSound formSound = new FormSound();
-                            formSound.ShowDialog();
-                            formSound.Dispose();
+                            using (FormSound formSound = new FormSound())
+                                formSound.ShowDialog(this);
                             break;
                     }
                 }
@@ -2265,21 +2260,23 @@ namespace TombEditor
             if (openFileDialogPRJ.ShowDialog() != DialogResult.OK)
                 return;
 
-            FormImportPRJ form = new FormImportPRJ();
-            form.FileName = openFileDialogPRJ.FileName;
-            if (form.ShowDialog() != DialogResult.OK || form.Level == null)
+            using (FormImportPRJ form = new FormImportPRJ())
             {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "There was an error while importing project file. File may be in use or may be corrupted", "Error");
-                return;
+                form.FileName = openFileDialogPRJ.FileName;
+                if (form.ShowDialog() != DialogResult.OK || form.Level == null)
+                {
+                    DarkUI.Forms.DarkMessageBox.ShowError(
+                        "There was an error while importing project file. File may be in use or may be corrupted", "Error");
+                    return;
+                }
+
+                // Clean all resources before creating a new level
+                if (_editor.Level != null)
+                    _editor.Level.Dispose();
+
+                // Set the new level and update UI
+                _editor.Level = form.Level;
             }
-
-            // Clean all resources before creating a new level
-            if (_editor.Level != null)
-                _editor.Level.Dispose();
-
-            // Set the new level and update UI
-            _editor.Level = form.Level;
             LoadTextureMapInEditor(_editor.Level);
 
             LoadWadInInterface();
@@ -2433,8 +2430,8 @@ namespace TombEditor
                 return;
             }
 
-            FormBuildLevel form = new FormBuildLevel();
-            form.ShowDialog();
+            using (FormBuildLevel form = new FormBuildLevel())
+                form.ShowDialog(this);
         }
 
         private void BuilLevel()
@@ -2461,9 +2458,11 @@ namespace TombEditor
                 return;
             }
 
-            FormBuildLevel form = new FormBuildLevel();
-            form.LaunchGameAfterCompile = true;
-            form.ShowDialog();
+            using (FormBuildLevel form = new FormBuildLevel())
+            {
+                form.LaunchGameAfterCompile = true;
+                form.ShowDialog(this);
+            }
 
             ProcessStartInfo info = new ProcessStartInfo();
 
@@ -2485,8 +2484,8 @@ namespace TombEditor
 
         private void darkButton15_Click(object sender, EventArgs e)
         {
-            FormAnimatedTextures form = new TombEditor.FormAnimatedTextures();
-            form.ShowDialog();
+            using (FormAnimatedTextures form = new FormAnimatedTextures())
+                form.ShowDialog(this);
         }
 
         private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2496,8 +2495,8 @@ namespace TombEditor
 
         private void butTextureSounds_Click(object sender, EventArgs e)
         {
-            FormTextureSounds form = new TombEditor.FormTextureSounds();
-            form.ShowDialog();
+            using (FormTextureSounds form = new FormTextureSounds())
+                form.ShowDialog(this);
         }
 
         private void textureSoundsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2708,19 +2707,20 @@ namespace TombEditor
 
         private void butEditRoomName_Click(object sender, EventArgs e)
         {
-            FormInputBox form = new TombEditor.FormInputBox();
+            using (FormInputBox form = new FormInputBox())
+            {
+                form.Title = "Edit room's name";
+                form.Message = "Insert the name of this room:";
+                form.Value = _editor.Level.Rooms[_editor.RoomIndex].Name;
 
-            form.Title = "Edit room's name";
-            form.Message = "Insert the name of this room:";
-            form.Value = _editor.Level.Rooms[_editor.RoomIndex].Name;
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
+                if (form.Value == "")
+                    return;
 
-            if (form.ShowDialog() == DialogResult.Cancel)
-                return;
-            if (form.Value == "")
-                return;
-
-            _editor.Level.Rooms[_editor.RoomIndex].Name = form.Value;
-            comboRoom.Items[comboRoom.SelectedIndex] = comboRoom.SelectedIndex + ": " + form.Value;
+                _editor.Level.Rooms[_editor.RoomIndex].Name = form.Value;
+                comboRoom.Items[comboRoom.SelectedIndex] = comboRoom.SelectedIndex + ": " + form.Value;
+            }
         }
 
         private void butGridWalls_Click(object sender, EventArgs e)
@@ -3083,19 +3083,21 @@ namespace TombEditor
             int trigger = Int32.Parse(lstTriggers.Text.Split(' ')[0]);
             string triggerDescription = _editor.Level.Triggers[trigger].ToString();
 
-            FormTrigger formTrigger = new TombEditor.FormTrigger();
-            formTrigger.TriggerID = trigger;
-            formTrigger.Trigger = _editor.Level.Triggers[trigger];
+            using (FormTrigger formTrigger = new FormTrigger())
+            {
+                formTrigger.TriggerID = trigger;
+                formTrigger.Trigger = _editor.Level.Triggers[trigger];
 
-            if (formTrigger.ShowDialog() != DialogResult.OK)
-                return;
+                if (formTrigger.ShowDialog(this) != DialogResult.OK)
+                    return;
 
-            _editor.Level.Triggers[trigger] = formTrigger.Trigger;
+                _editor.Level.Triggers[trigger] = formTrigger.Trigger;
 
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.ResetSelection();
-            _editor.LoadTriggersInUI();
+                _editor.DrawPanel3D();
+                _editor.DrawPanelGrid();
+                _editor.ResetSelection();
+                _editor.LoadTriggersInUI();
+            }
         }
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -3649,7 +3651,7 @@ namespace TombEditor
             int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
             int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
 
-            EditorActions.AddTrigger(xMin, xMax, zMin, zMax);
+            EditorActions.AddTrigger(this, xMin, xMax, zMin, zMax);
 
             LoadTriggersInUI();
         }

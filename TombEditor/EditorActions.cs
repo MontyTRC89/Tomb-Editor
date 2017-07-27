@@ -747,30 +747,32 @@ namespace TombEditor
             SmartBuildGeometry(_editor.RoomIndex, xMin, xMax + 1, zMin, zMax + 1);
         }
 
-        public static void AddTrigger(int xMin, int xMax, int zMin, int zMax)
+        public static void AddTrigger(IWin32Window parent, int xMin, int xMax, int zMin, int zMax)
         {
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
                 return;
 
             TriggerInstance trigger = null;
-            FormTrigger formTrigger = new FormTrigger();
-            formTrigger.TriggerID = -1;
-            if (formTrigger.ShowDialog() != DialogResult.OK)
-                return;
-            trigger = formTrigger.Trigger;
-            trigger.Room = _editor.RoomIndex;
-            trigger.ID = _editor.Level.GetNewTriggerId();
-            trigger.X = (byte)xMin;
-            trigger.Z = (byte)zMin;
-            trigger.NumXBlocks = (byte)(xMax - xMin + 1);
-            trigger.NumZBlocks = (byte)(zMax - zMin + 1);
-            _editor.Level.Triggers.Add(trigger.ID, trigger);
-
-            for (int x = xMin; x <= xMax; x++)
+            using (FormTrigger formTrigger = new FormTrigger())
             {
-                for (int z = zMin; z <= zMax; z++)
+                formTrigger.TriggerID = -1;
+                if (formTrigger.ShowDialog(parent) != DialogResult.OK)
+                    return;
+                trigger = formTrigger.Trigger;
+                trigger.Room = _editor.RoomIndex;
+                trigger.ID = _editor.Level.GetNewTriggerId();
+                trigger.X = (byte)xMin;
+                trigger.Z = (byte)zMin;
+                trigger.NumXBlocks = (byte)(xMax - xMin + 1);
+                trigger.NumZBlocks = (byte)(zMax - zMin + 1);
+                _editor.Level.Triggers.Add(trigger.ID, trigger);
+
+                for (int x = xMin; x <= xMax; x++)
                 {
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Triggers.Add(trigger.ID);
+                    for (int z = zMin; z <= zMax; z++)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Triggers.Add(trigger.ID);
+                    }
                 }
             }
         }
