@@ -278,8 +278,8 @@ namespace TombEditor.Geometry
 
             var level = new Level();
 
-            try
-            {
+            //try
+            //{
                 // Open file
                 var reader = new BinaryReaderEx(File.OpenRead(filename));
 
@@ -2800,13 +2800,13 @@ namespace TombEditor.Geometry
                         }
                     }
                 }
-            }
+           /* }
             catch (Exception ex)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError(
                     "There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
                 return null;
-            }
+            }*/
 
             foreach (var portal in level.Portals)
             {
