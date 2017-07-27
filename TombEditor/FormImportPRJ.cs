@@ -83,14 +83,14 @@ namespace TombEditor
 
         public string OpenTGA()
         {
-            if (openFileDialogTGA.ShowDialog() != DialogResult.OK)
+            if (openFileDialogTGA.ShowDialog(this) != DialogResult.OK)
                 return "";
             return openFileDialogTGA.FileName;
         }
 
         public string OpenWAD()
         {
-            if (openFileDialogWAD.ShowDialog() != DialogResult.OK)
+            if (openFileDialogWAD.ShowDialog(this) != DialogResult.OK)
                 return "";
             return openFileDialogWAD.FileName;
         }
