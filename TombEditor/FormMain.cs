@@ -1321,7 +1321,7 @@ namespace TombEditor
                         EditorActions.EditFace(xMin, xMax, zMin, zMax, action, sub);
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel)
+                else if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
                 {
                     switch (e.KeyCode)
                     {
@@ -1379,7 +1379,7 @@ namespace TombEditor
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+                else if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
                 {
                     switch (e.KeyCode)
                     {
@@ -2976,7 +2976,7 @@ namespace TombEditor
 
         private void panelStaticMeshColor_DoubleClick(object sender, EventArgs e)
         {
-            if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+            if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
             {
                 StaticMeshInstance instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult.Element];
 
@@ -3013,7 +3013,7 @@ namespace TombEditor
                             _lastSearchResult = i;
 
                             PickingResult pickingResult = new PickingResult();
-                            pickingResult.ElementType = PickingElementType.SkinnedModel;
+                            pickingResult.ElementType = PickingElementType.Moveable;
                             pickingResult.Element = moveable.ID;
                             _editor.PickingResult = pickingResult;
 
