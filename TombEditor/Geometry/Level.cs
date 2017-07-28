@@ -91,12 +91,6 @@ namespace TombEditor.Geometry
         public string WadFile { get; private set; }
         public bool MustSave { get; set; } // Used for Save and Save as logic
         public string FileName { get; private set; }
-        public readonly Editor _editor;
-
-        public Level()
-        {
-            _editor = Editor.Instance;
-        }
 
         public short GetRoomIndex(Room room)
         {
@@ -130,7 +124,29 @@ namespace TombEditor.Geometry
             }
         }
 
-        public int AddTexture(short x, short y, short w, short h)
+        public IEnumerable<Room> GetVerticallyAscendingRoomList()
+        {
+            var roomList = new List<KeyValuePair<float, Room>>();
+            foreach (Room room in Rooms)
+                if (room != null)
+                    roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
+            roomList.Sort(new RoomHeightComparer());
+            return roomList.Select(roomKey => roomKey.Value);
+        }
+
+        private struct RoomHeightComparer : IComparer<KeyValuePair<float, Room>>
+        {
+            public int Compare(KeyValuePair<float, Room> x, KeyValuePair<float, Room> y)
+            {
+                if (x.Key < y.Key)
+                    return -1;
+                if (x.Key > y.Key)
+                    return 1;
+                return 0;
+            }
+        };
+
+        public int AddTexture(short x, short y, short w, short h, bool IsDoubleSided, bool IsTransparent)
         {
             short newX = x;
             short newY = y;
@@ -140,7 +156,7 @@ namespace TombEditor.Geometry
             {
                 if (texture.X == newX && (texture.Y + 256 * texture.Page) == newY && texture.Width == w &&
                     texture.Height == h
-                    && texture.DoubleSided == _editor.DoubleSided && texture.Transparent == _editor.Transparent)
+                    && texture.DoubleSided == IsDoubleSided && texture.Transparent == IsTransparent)
                     return texture.ID;
             }
 
@@ -165,8 +181,8 @@ namespace TombEditor.Geometry
                 Height = h,
                 Page = page,
                 ID = id,
-                Transparent = _editor.Transparent,
-                DoubleSided = _editor.DoubleSided
+                Transparent = IsTransparent,
+                DoubleSided = IsDoubleSided
             };
 
             TextureSamples.Add(id, newTexture);
@@ -187,7 +203,7 @@ namespace TombEditor.Geometry
             GC.Collect();
         }
 
-        public void LoadTextureMap(string filename)
+        public void LoadTextureMap(string filename, GraphicsDevice device)
         {
             logger.Warn("Loading texture map");
 
@@ -208,41 +224,44 @@ namespace TombEditor.Geometry
 
             logger.Debug("Building 2048x2048 texture atlas for DirectX");
 
-            // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
-            // textures.
-            using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+            if (device != null)
             {
-                using (var g = Graphics.FromImage(tempBitmap))
+                // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
+                // textures.
+                using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                 {
-                    int currentXblock = 0;
-                    int currentYblock = 0;
-                    for (int i = 0; i < numPages; i++)
+                    using (var g = Graphics.FromImage(tempBitmap))
                     {
-                        var src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
-                        var dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256, 256);
+                        int currentXblock = 0;
+                        int currentYblock = 0;
+                        for (int i = 0; i < numPages; i++)
+                        {
+                            var src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
+                            var dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256, 256);
 
-                        g.DrawImage(_textureMap, dest, src, GraphicsUnit.Pixel);
+                            g.DrawImage(_textureMap, dest, src, GraphicsUnit.Pixel);
 
-                        currentXblock++;
-                        if (currentXblock != 8)
-                            continue;
+                            currentXblock++;
+                            if (currentXblock != 8)
+                                continue;
 
-                        currentXblock = 0;
-                        currentYblock++;
+                            currentXblock = 0;
+                            currentYblock++;
+                        }
                     }
+
+                    // Clean up DirectX texture
+                    if (Textures.ContainsKey(0))
+                    {
+                        logger.Debug("Cleaning memory used by a previous texture map");
+
+                        Textures[0].Dispose();
+                        Textures.Remove(0);
+                    }
+
+                    // Create DirectX texture
+                    Textures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(device, tempBitmap));
                 }
-
-                // Clean up DirectX texture
-                if (Textures.ContainsKey(0))
-                {
-                    logger.Debug("Cleaning memory used by a previous texture map");
-
-                    Textures[0].Dispose();
-                    Textures.Remove(0);
-                }
-
-                // Create DirectX texture
-                Textures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(_editor.GraphicsDevice, tempBitmap));
             }
 
             TextureFile = filename;
@@ -253,13 +272,13 @@ namespace TombEditor.Geometry
             logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
         }
 
-        public void LoadWad(string filename)
+        public void LoadWad(string filename, GraphicsDevice device)
         {
             // Load the WAD
             Wad = Wad.LoadWad(filename);
             WadFile = filename;
 
-            Wad.GraphicsDevice = _editor.GraphicsDevice;
+            Wad.GraphicsDevice = device;
             Wad.PrepareDataForDirectX();
 
             // Prepare vertex buffers and index buffers
@@ -305,7 +324,7 @@ namespace TombEditor.Geometry
             return i;
         }
 
-        public static Level LoadFromPrj(string filename, FormImportPRJ form)
+        public static Level LoadFromPrj(string filename, FormImportPRJ form, GraphicsDevice device)
         {
             GC.Collect();
 
@@ -1198,7 +1217,7 @@ namespace TombEditor.Geometry
                     }
                 }
                 
-                level.LoadTextureMap(textureFilename);
+                level.LoadTextureMap(textureFilename, device);
 
                 form.ReportProgress(50, "Converted '" + textureFilename + "' to PNG format");
 
@@ -1267,7 +1286,7 @@ namespace TombEditor.Geometry
 
                 form.ReportProgress(55, "Loading WAD '" + wadName + "'");
 
-                level.LoadWad(wadPath + "\\" + wadBase + ".wad");
+                level.LoadWad(wadPath + "\\" + wadBase + ".wad", device);
 
                 form.ReportProgress(60, "WAD loaded");
 
@@ -2863,7 +2882,7 @@ namespace TombEditor.Geometry
             return level;
         }
 
-        public static Level LoadFromPrj2(string filename)
+        public static Level LoadFromPrj2(string filename, GraphicsDevice device)
         {
             Level level = new Level();
 
@@ -3370,10 +3389,10 @@ namespace TombEditor.Geometry
             }
 
             // Now it's time to load texturs
-            level.LoadTextureMap(level.TextureFile);
+            level.LoadTextureMap(level.TextureFile, device);
 
             // Now it's time to load WAD
-            level.LoadWad(level.WadFile);
+            level.LoadWad(level.WadFile, device);
 
             // Now fill the structures loaded from PRJ2 
             for (int i = 0; i < level.Triggers.Count; i++)
