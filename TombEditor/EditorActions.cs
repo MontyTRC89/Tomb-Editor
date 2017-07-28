@@ -2951,5 +2951,77 @@ namespace TombEditor
 
             SmartBuildGeometry(roomIndex, xMin, xMax, zMin, zMax);
         }
+
+        public static void DeletePortal(int id)
+        {
+            int otherPortalId = _editor.Level.Portals[id].OtherID;
+
+            Portal current = _editor.Level.Portals[id];
+            Portal other = _editor.Level.Portals[otherPortalId];
+
+            for (int x = current.X; x < current.X + current.NumXBlocks; x++)
+            {
+                for (int z = current.Z; z < current.Z + current.NumZBlocks; z++)
+                {
+                    if (current.Direction == PortalDirection.Floor)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorPortal = -1;
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorOpacity = PortalOpacity.None;
+                    }
+
+                    if (current.Direction == PortalDirection.Ceiling)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingPortal = -1;
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingOpacity = PortalOpacity.None;
+                    }
+
+                    if (current.Direction == PortalDirection.North || current.Direction == PortalDirection.South ||
+                        current.Direction == PortalDirection.West || current.Direction == PortalDirection.East)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WallPortal = -1;
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WallOpacity = PortalOpacity.None;
+                    }
+                }
+            }
+
+            for (int x = other.X; x < other.X + other.NumXBlocks; x++)
+            {
+                for (int z = other.Z; z < other.Z + other.NumZBlocks; z++)
+                {
+                    if (other.Direction == PortalDirection.Ceiling)
+                    {
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].CeilingPortal = -1;
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].CeilingOpacity = PortalOpacity.None;
+                    }
+
+                    if (other.Direction == PortalDirection.Floor)
+                    {
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].FloorPortal = -1;
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].FloorOpacity = PortalOpacity.None;
+                    }
+
+                    if (other.Direction == PortalDirection.North || other.Direction == PortalDirection.South ||
+                        other.Direction == PortalDirection.West || other.Direction == PortalDirection.East)
+                    {
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].WallPortal = -1;
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].WallOpacity = PortalOpacity.None;
+                    }
+                }
+            }
+
+            _editor.Level.Rooms[_editor.Level.Portals[id].Room].Portals.Remove(id);
+            _editor.Level.Rooms[_editor.Level.Portals[otherPortalId].Room].Portals.Remove(otherPortalId);
+
+            _editor.Level.Portals.Remove(id);
+            _editor.Level.Portals.Remove(otherPortalId);
+
+            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+
+            _editor.Level.Rooms[other.Room].BuildGeometry();
+            _editor.Level.Rooms[other.Room].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[other.Room].UpdateBuffers();
+        }
     }
 }
