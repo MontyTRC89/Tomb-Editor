@@ -1024,6 +1024,10 @@ namespace TombEditor.Controls
                     message = "Fog bulb";
 
                 message += " (" + _editor.LightIndex + ")";
+                
+                // Object position
+                message += Environment.NewLine + GetObjectPositionString(light.Position);
+                
                 Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                 Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                 _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
@@ -1060,6 +1064,10 @@ namespace TombEditor.Controls
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
                     string message = "Camera (" + instance.ID + ")";
+
+                    // Object position
+                    message += Environment.NewLine + GetObjectPositionString(instance.Position);
+
                     Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
@@ -1110,6 +1118,10 @@ namespace TombEditor.Controls
                     _editor.PickingResult.Element == instance.ID)
                 {
                     string message = "Flyby Camera (" + flyby.Sequence + ":" + flyby.Number + ")";
+
+                    // Object position
+                    message += Environment.NewLine + GetObjectPositionString(instance.Position);
+
                     Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
@@ -1152,7 +1164,12 @@ namespace TombEditor.Controls
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+
                     var message = "Sink (" + instance.ID + ")";
+
+                    // Object position
+                    message += Environment.NewLine + GetObjectPositionString(instance.Position);
+
                     var modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
@@ -1196,7 +1213,12 @@ namespace TombEditor.Controls
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
                     SoundInstance sound = (SoundInstance)instance;
+
                     string message = "Sound Source (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundID] + ") (" + instance.ID + ")";
+
+                    // Object position
+                    message += Environment.NewLine + GetObjectPositionString(instance.Position);
+
                     Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
@@ -1327,6 +1349,9 @@ namespace TombEditor.Controls
 
                     string debugMessage = _editor.MoveablesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
 
+                    // Object position
+                    debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
+
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
@@ -1419,6 +1444,9 @@ namespace TombEditor.Controls
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     string debugMessage = _editor.StaticMeshesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+
+                    // Object position
+                    debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -2357,11 +2385,6 @@ namespace TombEditor.Controls
             _invisibleBuckets.Sort(new ComparerInvisibleBuckets());
 
             Parallel.ForEach<RenderBucket>(_opaqueBuckets, item => PrepareIndexBuffer(item));
-
-            /*for (int i = 0; i < _opaqueBuckets.Count; i++)
-            {
-                _opaqueBuckets[i].IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.New(Editor.Instance.GraphicsDevice, _opaqueBuckets[i].Indices.ToArray(), BufferFlags.IndexBuffer);
-            }*/
         }
 
         private void PrepareIndexBuffer(RenderBucket item)
@@ -3400,6 +3423,37 @@ namespace TombEditor.Controls
             }
         }
 
+        private float GetObjectHeight(Vector3 position)
+        {
+            int xBlock = (int)Math.Floor(position.X / 1024.0f);
+            int zBlock = (int)Math.Floor(position.Z / 1024.0f);
+
+            // Get the base floor height
+            int floorHeight = _editor.Level.Rooms[_editor.RoomIndex].GetLowestFloorCorner(xBlock, zBlock);
+
+            // Get the distance between point and floor in units
+            float height = position.Y - (float)floorHeight * 256.0f;
+
+            return height;
+        }
+
+        private string GetObjectPositionString(Vector3 position)
+        {
+            int xBlock = (int)Math.Floor(position.X / 1024.0f);
+            int zBlock = (int)Math.Floor(position.Z / 1024.0f);
+
+            // Get the base floor height
+            int floorHeight = _editor.Level.Rooms[_editor.RoomIndex].GetLowestFloorCorner(xBlock, zBlock);
+
+            // Get the distance between point and floor in units
+            float height = position.Y - (float)floorHeight * 256.0f;
+
+            string message = "Position: [" + position.X + ", " + position.Y + ", " + position.Z + "]";
+            message += Environment.NewLine + "Height: " + Math.Round(height * 256.0f) + " units(" + height + " clicks)";
+
+            return message;
+        }
+
         private void AddObjectHeightLine(Vector3 position, Matrix viewProjection)
         {
             int xBlock = (int)Math.Floor(position.X / 1024.0f);
@@ -3425,12 +3479,12 @@ namespace TombEditor.Controls
             _objectHeightLineVertex = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             // Add the text description
-            Vector3 meanPosition = new Vector3(position.X, position.Y / 2.0f, position.Z);
+            /*Vector3 meanPosition = new Vector3(position.X, position.Y / 2.0f, position.Z);
             Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
             Vector3 screenPos = Vector3.Project(meanPosition, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                             _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
-            Debug.AddString("Height: " + Math.Round(height * 256.0f) + " units (" + height + " clicks)", screenPos);
+            //Debug.AddString("Height: " + Math.Round(height * 256.0f) + " units (" + height + " clicks)", screenPos);*/
 
             _drawHeightLine = true;
         }
