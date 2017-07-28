@@ -60,6 +60,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            panel2DMap.Invalidate();
         }
 
         public void LoadTriggersInUI()
@@ -112,6 +113,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            panel2DMap.Invalidate();
         }
 
         private void butBox_Click(object sender, EventArgs e)
@@ -149,6 +151,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            panel2DMap.Invalidate();
         }
 
         private void butClimbNorth_Click(object sender, EventArgs e)
@@ -1054,6 +1057,7 @@ namespace TombEditor
             _editor.Level.Rooms[other.Room].BuildGeometry();
             _editor.Level.Rooms[other.Room].CalculateLightingForThisRoom();
             _editor.Level.Rooms[other.Room].UpdateBuffers();
+            panel2DMap.Invalidate();
         }
 
         private void FormMainNew_KeyDown(object sender, KeyEventArgs e)
