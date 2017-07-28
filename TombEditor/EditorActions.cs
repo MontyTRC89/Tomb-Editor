@@ -864,38 +864,95 @@ namespace TombEditor
                         delta = (float)Math.Floor(delta / 512.0f) * 512.0f;
                     break;
             }
+
+            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+
             if (typ != ObjectType.Light)
             {
+                Vector3 newPosition = new Vector3(_editor.Level.Objects[id].Position.X,
+                                              _editor.Level.Objects[id].Position.Y,
+                                              _editor.Level.Objects[id].Position.Z);
+
                 switch (axis)
                 {
                     case GizmoAxis.X:
-                        _editor.Level.Objects[id].Position += new Vector3(delta, 0.0f, 0.0f);
+                        newPosition += new Vector3(delta, 0.0f, 0.0f);
                         break;
 
                     case GizmoAxis.Y:
-                        _editor.Level.Objects[id].Position += new Vector3(0.0f, delta, 0.0f);
+                        newPosition += new Vector3(0.0f, delta, 0.0f);
                         break;                
                    
                     case GizmoAxis.Z:
-                        _editor.Level.Objects[id].Position += new Vector3(0.0f, 0.0f, delta);
+                        newPosition += new Vector3(0.0f, 0.0f, delta);
                         break;
+                }
+
+                var x = (int)Math.Floor(newPosition.X /1024.0f);
+                var z = (int)Math.Floor(newPosition.Z / 1024.0f);
+
+                if (x < 0.0f || z < 0.0f || x > room.NumXSectors - 1 || z > room.NumZSectors - 1)
+                {
+                    return;
+                }
+
+                var lowest = room.GetLowestFloorCorner(x, z);
+                var highest = room.GetHighestCeilingCorner(x, z);
+
+                // Don't go outside room boundaries
+                if (newPosition.X < 1024.0f || newPosition.X > (room.NumXSectors - 1) * 1024.0f ||
+                    newPosition.Z < 1024.0f || newPosition.Z > (room.NumZSectors - 1) * 1024.0f ||
+                    newPosition.Y < lowest * 256.0f || newPosition.Y > (room.Ceiling + highest) * 256.0f)
+                {
+                    return;
+                }
+                else
+                {
+                    _editor.Level.Objects[id].Position = newPosition;
                 }
             }
             else
             {
+                Vector3 newPosition = new Vector3(_editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position.X,
+                                                  _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position.Y,
+                                                  _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position.Z);
+
                 switch (axis)
                 {
                     case GizmoAxis.X:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position += new Vector3(delta, 0.0f, 0.0f);
+                        newPosition += new Vector3(delta, 0.0f, 0.0f);
                         break;
 
                     case GizmoAxis.Y:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position += new Vector3(0.0f, delta, 0.0f);
+                        newPosition += new Vector3(0.0f, delta, 0.0f);
                         break;
 
                     case GizmoAxis.Z:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position += new Vector3(0.0f, 0.0f, delta);
+                        newPosition += new Vector3(0.0f, 0.0f, delta);
                         break;
+                }
+
+                var x = (int)Math.Floor(newPosition.X / 1024.0f);
+                var z = (int)Math.Floor(newPosition.Z / 1024.0f);
+
+                if (x < 0.0f || z < 0.0f || x > room.NumXSectors - 1 || z > room.NumZSectors - 1)
+                {
+                    return;
+                }
+
+                var lowest = room.GetLowestFloorCorner(x, z);
+                var highest = room.GetHighestCeilingCorner(x, z);
+
+                // Don't go outside room boundaries
+                if (newPosition.X < 1024.0f || newPosition.X > (room.NumXSectors - 1) * 1024.0f ||
+                    newPosition.Z < 1024.0f || newPosition.Z > (room.NumZSectors - 1) * 1024.0f ||
+                    newPosition.Y < lowest * 256.0f || newPosition.Y > (room.Ceiling + highest) * 256.0f)
+                {
+                    return;
+                }
+                else
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position = newPosition;
                 }
             }
         }
