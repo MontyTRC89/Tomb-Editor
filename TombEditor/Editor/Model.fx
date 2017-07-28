@@ -42,6 +42,9 @@ float4 PS(PixelInputType input) : SV_TARGET
 	if (TextureEnabled)
 	{
 		pixel = Texture.Sample(TextureSampler, input.UV);
+
+		//if (pixel.x == 1.0f && pixel.y == 0.0f && pixel.z == 1.0f) return float4(0.0f, 0.0f, 0.0f, 0.0f);
+
 		if (SelectionEnabled) 
 			pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 	}

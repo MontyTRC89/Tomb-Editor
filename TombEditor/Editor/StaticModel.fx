@@ -42,6 +42,8 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel = Texture.Sample(TextureSampler, input.UV);
+	//if (pixel.x == 1.0f && pixel.y == 0.0f && pixel.z == 1.0f) return float4(0.0f, 0.0f, 0.0f, 0.0f);
+
 	if (TextureEnabled)
 	{
 		if (SelectionEnabled)
