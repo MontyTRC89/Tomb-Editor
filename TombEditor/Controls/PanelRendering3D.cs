@@ -496,7 +496,7 @@ namespace TombEditor.Controls
 
                         ray.Intersects(ref plane, out intersection);
                         delta = intersection.X - (_gizmo.Position.X + 1024.0f);
-                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                       // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
                     }
 
                     if (_editor.PickingResult.GizmoAxis == GizmoAxis.Y)
@@ -506,7 +506,7 @@ namespace TombEditor.Controls
 
                         ray.Intersects(ref plane, out intersection);
                         delta = intersection.Y - (_gizmo.Position.Y + 1024.0f);
-                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                        //delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
                     }
 
                     if (_editor.PickingResult.GizmoAxis == GizmoAxis.Z)
@@ -516,50 +516,52 @@ namespace TombEditor.Controls
 
                         ray.Intersects(ref plane, out intersection);
                         delta = intersection.Z - (_gizmo.Position.Z - 1024.0f);
-                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                       // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
                     }
+
+                    bool smooth = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Camera)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, 
-                                                 _editor.PickingResult.GizmoAxis, delta);                                                     
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);                                                     
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta);
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Sink)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta);
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta);
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Light)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Light, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta);
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
                         _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta);
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta);
+                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     Draw();
@@ -3449,7 +3451,7 @@ namespace TombEditor.Controls
             float height = position.Y - (float)floorHeight * 256.0f;
 
             string message = "Position: [" + position.X + ", " + position.Y + ", " + position.Z + "]";
-            message += Environment.NewLine + "Height: " + Math.Round(height * 256.0f) + " units(" + height + " clicks)";
+            message += Environment.NewLine + "Height: " + Math.Round(height) + " units(" + (height / 256.0f) + " clicks)";
 
             return message;
         }
