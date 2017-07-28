@@ -248,7 +248,7 @@ namespace TombEditor.Compilers
                     newRoom.Vertices[j] = rv;
                 }
 
-                ConvertGeometry(room, newRoom, indicesDictionary);
+                ConvertGeometry(ref room, ref newRoom, indicesDictionary);
 
                 // Build portals
                 var tempIdPortals = new List<int>();
@@ -270,9 +270,9 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                ConvertPortals(tempIdPortals, room, newRoom);
+                ConvertPortals(tempIdPortals, ref room, ref newRoom);
 
-                ConvertSectors(room, newRoom);
+                ConvertSectors(ref room, ref newRoom);
 
                 var tempStaticMeshes = room.StaticMeshes
                     .Select(staticMesh => (StaticMeshInstance)_editor.Level.Objects[staticMesh])
@@ -291,7 +291,7 @@ namespace TombEditor.Compilers
                 newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.Count;
                 newRoom.StaticMeshes = tempStaticMeshes.ToArray();
 
-                ConvertLights(room, newRoom);
+                ConvertLights(ref room, ref newRoom);
 
                 _rooms[_roomsIdTable[i]] = newRoom;
             }
@@ -299,7 +299,7 @@ namespace TombEditor.Compilers
             ReportProgress(25, "    Number of rooms: " + _rooms.Length);
         }
 
-        private void ConvertGeometry(Room room, tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary)
+        private void ConvertGeometry(ref Room room, ref tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary)
         {
             var tempRectangles = new List<tr_face4>();
             var tempTriangles = new List<tr_face3>();
@@ -407,7 +407,7 @@ namespace TombEditor.Compilers
             newRoom.NumTriangles = (ushort)tempTriangles.Count;
         }
 
-        private static void ConvertLights(Room room, tr_room newRoom)
+        private static void ConvertLights(ref Room room, ref tr_room newRoom)
         {
             var result = new List<tr4_room_light>();
             foreach (var light in room.Lights.Where(l => l.Type != LightType.Effect))
@@ -485,7 +485,7 @@ namespace TombEditor.Compilers
             newRoom.Lights = result.ToArray();
         }
 
-        private void ConvertSectors(Room room, tr_room newRoom)
+        private void ConvertSectors(ref Room room, ref tr_room newRoom)
         {
             newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
             newRoom.AuxSectors = new tr_sector_aux[room.NumXSectors, room.NumZSectors];
@@ -497,16 +497,7 @@ namespace TombEditor.Compilers
                     var sector = new tr_room_sector();
                     var aux = new tr_sector_aux();
 
-                    /* if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 || room.Blocks[x, z].Type == BlockType.Wall ||
-                            Math.Abs(room.Blocks[x, z].FloorSlopeX) > 2 || Math.Abs(room.Blocks[x, z].FloorSlopeZ) > 2)
-                        {*/
-                    sector.BoxIndex = 0x7ff6;
-                    /*  }*
-                          else
-                          {
-                              sector.BoxIndex = sound;
-                          }*/
-
+                    sector.BoxIndex = 0x7ff6;                   
                     sector.FloorDataIndex = 0;
 
                     if (room.Blocks[x, z].FloorPortal >= 0)
@@ -637,7 +628,7 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(IEnumerable<int> tempIdPortals, Room room, tr_room newRoom)
+        private void ConvertPortals(IEnumerable<int> tempIdPortals, ref Room room, ref tr_room newRoom)
         {
             var result = new List<tr_room_portal>();
 
@@ -1169,7 +1160,7 @@ namespace TombEditor.Compilers
                         foreach (var face in room.Blocks[x, z].Faces.Where(f => f.Defined && f.Texture != -1))
                         {
                             // Build (or get) the texture info
-                            face.NewTexture = BuildTextureInfo(face);
+                            face.NewTexture = BuildRoomTextureInfo(face);
                         }
                     }
                 }
