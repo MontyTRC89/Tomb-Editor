@@ -3488,13 +3488,16 @@ namespace TombEditor.Geometry
                     const int versionCode = 2;
                     writer.Write(versionCode);
 
+                    string textureFileName = Utils.GetRelativePath(filename, level.TextureFile);
+                    string wadFileName = Utils.GetRelativePath(filename, level.WadFile);
+
                     // Write texture map
-                    var textureFile = System.Text.Encoding.UTF8.GetBytes(level.TextureFile);
+                    var textureFile = System.Text.Encoding.UTF8.GetBytes(textureFileName);
                     int numBytes = textureFile.Length;
                     writer.Write(numBytes);
                     writer.Write(textureFile);
 
-                    var wadFile = System.Text.Encoding.UTF8.GetBytes(level.WadFile);
+                    var wadFile = System.Text.Encoding.UTF8.GetBytes(wadFileName);
                     numBytes = wadFile.Length;
                     writer.Write(numBytes);
                     writer.Write(wadFile);
