@@ -3724,6 +3724,9 @@ namespace TombEditor
         { }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
-        { }
+        {
+            string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
+                                                  "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
+        }
     }
 }
