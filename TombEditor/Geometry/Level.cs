@@ -1051,8 +1051,7 @@ namespace TombEditor.Geometry
                                     break;
                             }
 
-                            room.Blocks[x, z] =
-                                new Block(level, room, typ, BlockFlags.None, 20)
+                            room.Blocks[x, z] = new Block(typ, BlockFlags.None, 20)
                                 {
                                     QAFaces =
                                     {
@@ -3169,7 +3168,7 @@ namespace TombEditor.Geometry
                     {
                         for (int x = 0; x < room.NumXSectors; x++)
                         {
-                            var b = new Block(level, room, BlockType.Floor, BlockFlags.None, 0)
+                            var b = new Block(BlockType.Floor, BlockFlags.None, 0)
                             {
                                 Type = (BlockType) reader.ReadByte(),
                                 Flags = (BlockFlags) reader.ReadInt16(),
