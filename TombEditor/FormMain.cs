@@ -60,6 +60,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            panel2DMap.Invalidate();
         }
 
         public void LoadTriggersInUI()
@@ -112,6 +113,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            panel2DMap.Invalidate();
         }
 
         private void butBox_Click(object sender, EventArgs e)
@@ -149,6 +151,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            panel2DMap.Invalidate();
         }
 
         private void butClimbNorth_Click(object sender, EventArgs e)
@@ -1054,6 +1057,7 @@ namespace TombEditor
             _editor.Level.Rooms[other.Room].BuildGeometry();
             _editor.Level.Rooms[other.Room].CalculateLightingForThisRoom();
             _editor.Level.Rooms[other.Room].UpdateBuffers();
+            panel2DMap.Invalidate();
         }
 
         private void FormMainNew_KeyDown(object sender, KeyEventArgs e)
@@ -1819,7 +1823,7 @@ namespace TombEditor
         private void LoadTextureMap(string filename)
         {
             _editor.SelectedTexture = -1;
-            _editor.Level.LoadTextureMap(filename);
+            _editor.Level.LoadTextureMap(filename, _editor.GraphicsDevice);
             panelTextureMap.Image = _editor.Level._textureMap;
             panelTextureMap.Height = _editor.Level._textureMap.Height;
             panelTextureMap.Invalidate();
@@ -1895,7 +1899,7 @@ namespace TombEditor
             }
 
             DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
-            _editor.Level.LoadTextureMap(pngFilePath);
+            _editor.Level.LoadTextureMap(pngFilePath, _editor.GraphicsDevice);
         }
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1903,7 +1907,7 @@ namespace TombEditor
             if (openFileDialogWAD.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            _editor.Level.LoadWad(openFileDialogWAD.FileName);
+            _editor.Level.LoadWad(openFileDialogWAD.FileName, _editor.GraphicsDevice);
             LoadWadInInterface();
 
             // MessageBox.Show("WAD was loaded without errors", "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2074,7 +2078,7 @@ namespace TombEditor
             if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            Level level = Level.LoadFromPrj2(openFileDialogPRJ2.FileName);
+            Level level = Level.LoadFromPrj2(openFileDialogPRJ2.FileName, _editor.GraphicsDevice);
             if (level == null)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError(
