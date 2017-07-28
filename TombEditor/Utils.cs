@@ -30,8 +30,8 @@ namespace TombEditor
 
         public static void ConvertTextureTo256Width(ref Bitmap bitmap)
         {
-            if ((bitmap.Height % 256) != 0)
-                throw new ArgumentException("Image height must be of a multiple of 256 pixels.");
+            if ((bitmap.Height % 64) != 0)
+                throw new ArgumentException("Image height must be of a multiple of 64 pixels.");
             if (bitmap.Width == 256)
                 return;
             if (bitmap.Width != 512)

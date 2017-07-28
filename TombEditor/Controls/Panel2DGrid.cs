@@ -32,11 +32,11 @@ namespace TombEditor.Controls
         private static readonly Brush _monkeyBrush = new SolidBrush(Editor.ColorMonkey);
         private static readonly Brush _boxBrush = new SolidBrush(Editor.ColorBox);
         private static readonly Brush _notWalkableBrush = new SolidBrush(Editor.ColorNotWalkable);
-        private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 5);
-        private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 5);
+        private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 4);
+        private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 4);
         private static readonly Brush _noCollisionBrush = new SolidBrush(Editor.ColorNoCollision);
         private static readonly Brush _triggerBrush = new SolidBrush(Editor.ColorTrigger);
-        private static readonly Pen _climbPen = new Pen(Editor.ColorClimb, 5);
+        private static readonly Pen _climbPen = new Pen(Editor.ColorClimb, 4);
         private static readonly Font _font = new Font("Arial", 8);
 
         private const byte GridStep = 11;
@@ -514,18 +514,12 @@ namespace TombEditor.Controls
 
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Beetle) != 0)
                         {
-                            g.DrawLine(_beetlePen, new PointF((startX + x) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep));
-                            g.DrawLine(_beetlePen, new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
-                            g.DrawLine(_beetlePen, new PointF((startX + x) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep));
-                            g.DrawLine(_beetlePen, new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
+                            g.DrawRectangle(_beetlePen, new Rectangle((startX + x) * GridStep + 2, (19 - (startY + z - 3 / GridStep) - d) * GridStep + 2, GridStep - 3, GridStep - 3));
                         }
 
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.TriggerTriggerer) != 0)
                         {
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep));
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep));
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
+                            g.DrawRectangle(_triggerTriggererPen, new Rectangle((startX + x) * GridStep + 2, (19 - (startY + z - 3 / GridStep) - d) * GridStep + 2, GridStep - 3, GridStep - 3));
                         }
                     }
                 }

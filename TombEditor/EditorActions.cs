@@ -839,8 +839,31 @@ namespace TombEditor
             }
         }
 
-        public static void MoveObject(ObjectType typ, int id, GizmoAxis axis, float delta)
+        public static void MoveObject(ObjectType typ, int id, GizmoAxis axis, float delta, bool smooth)
         {
+            switch (axis)
+            {
+                case GizmoAxis.X:
+                    if (smooth)
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    else
+                        delta = (float)Math.Floor(delta / 512.0f) * 512.0f;
+                    break;
+
+                case GizmoAxis.Y:
+                    if (smooth)
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    else
+                        delta = (float)Math.Floor(delta / 128.0f) * 128.0f;
+                    break;
+
+                case GizmoAxis.Z:
+                    if (smooth)
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    else
+                        delta = (float)Math.Floor(delta / 512.0f) * 512.0f;
+                    break;
+            }
             if (typ != ObjectType.Light)
             {
                 switch (axis)
@@ -1235,6 +1258,7 @@ namespace TombEditor
 
                 instance.Position = new Vector3(x * 1024 + 512, y * 256, z * 1024 + 512);
                 instance.Invisible = false;
+                instance.SoundID = (short)id;
 
                 _editor.Action = EditorAction.None;
                 _editor.Level.Objects.Add(instance.ID, instance);
