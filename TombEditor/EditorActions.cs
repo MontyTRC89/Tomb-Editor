@@ -1154,17 +1154,17 @@ namespace TombEditor
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].DoubleSided = false;
 
                 Vector2[] UV = new Vector2[4];
-                
+
                 LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture];
 
                 int yBlock = (int)(texture.Page / 8);
                 int xBlock = (int)(texture.Page % 8);
 
-                UV[0] = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
-                UV[1] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
+                UV[0] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
+                UV[1] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
                 ;
-                UV[2] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
-                UV[3] = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
+                UV[2] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
+                UV[3] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
 
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].RectangleUV[0] = UV[0];
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].RectangleUV[1] = UV[1];
