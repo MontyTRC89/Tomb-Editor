@@ -163,7 +163,7 @@ namespace TombEditor.Controls
                         _w = 64;
                         _h = 64;
 
-                        _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h);
+                        _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
                         sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
                     }
                 }
@@ -174,7 +174,7 @@ namespace TombEditor.Controls
                     _w = 64;
                     _h = 64;
 
-                    _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h);
+                    _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
                     sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
                 }
 
@@ -193,7 +193,7 @@ namespace TombEditor.Controls
                     _w = maxWidth;
 
                 // trascinamento prolungato, tile di forma variabile
-                _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h);
+                _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
                 sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
             }
 
