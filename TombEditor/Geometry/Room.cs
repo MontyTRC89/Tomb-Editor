@@ -90,11 +90,11 @@ namespace TombEditor.Geometry
                     Block block;
                     if (x == 0 || z == 0 || x == NumXSectors - 1 || z == NumZSectors - 1)
                     {
-                        block = new Block(level, this, BlockType.BorderWall, BlockFlags.None, Ceiling);
+                        block = new Block(BlockType.BorderWall, BlockFlags.None, Ceiling);
                     }
                     else
                     {
-                        block = new Block(level, this, BlockType.Floor, BlockFlags.None, Ceiling);
+                        block = new Block(BlockType.Floor, BlockFlags.None, Ceiling);
                     }
 
                     Blocks[x, z] = block;

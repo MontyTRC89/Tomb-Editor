@@ -2563,7 +2563,6 @@ namespace TombEditor
                     for (int z = 1; z < numZSectors - 1; z++)
                     {
                         newRoom.Blocks[x, z] = room.Blocks[x + xMin - 1, z + zMin - 1].Clone();
-                        newRoom.Blocks[x, z].Room = newRoom;
 
                         for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
                         {
@@ -2649,7 +2648,6 @@ namespace TombEditor
                     for (int z = 1; z < numZSectors - 1; z++)
                     {
                         newRoom.Blocks[x, z] = room.Blocks[x + xMin - 1, z + zMin - 1].Clone();
-                        newRoom.Blocks[x, z].Room = newRoom;
 
                         room.Blocks[x + xMin - 1, z + zMin - 1].Type = BlockType.Wall;
 
@@ -3207,7 +3205,6 @@ namespace TombEditor
                     for (int z = 0; z < numZSectors; z++)
                     {
                         newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
-                        newRoom.Blocks[x, z].Room = newRoom;
                         newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1
                             ? duplicatedPortals[room.Blocks[x, z].FloorPortal]
                             : -1);

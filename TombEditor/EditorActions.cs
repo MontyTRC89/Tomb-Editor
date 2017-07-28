@@ -1437,7 +1437,6 @@ namespace TombEditor
                 for (int z = 1; z < numZSectors - 1; z++)
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x + xMin - 1, z + zMin - 1].Clone();
-                    newRoom.Blocks[x, z].Room = newRoom;
 
                     /* for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
                      {
