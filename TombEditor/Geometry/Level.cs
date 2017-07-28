@@ -130,21 +130,11 @@ namespace TombEditor.Geometry
             foreach (Room room in Rooms)
                 if (room != null)
                     roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
-            roomList.Sort(new RoomHeightComparer());
-            return roomList.Select(roomKey => roomKey.Value);
+            var result = roomList
+                .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
+                .Select(roomKey => roomKey.Value).ToList();
+            return result;
         }
-
-        private struct RoomHeightComparer : IComparer<KeyValuePair<float, Room>>
-        {
-            public int Compare(KeyValuePair<float, Room> x, KeyValuePair<float, Room> y)
-            {
-                if (x.Key < y.Key)
-                    return -1;
-                if (x.Key > y.Key)
-                    return 1;
-                return 0;
-            }
-        };
 
         public int AddTexture(short x, short y, short w, short h, bool IsDoubleSided, bool IsTransparent)
         {
