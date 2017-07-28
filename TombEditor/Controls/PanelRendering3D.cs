@@ -245,7 +245,7 @@ namespace TombEditor.Controls
             _littleWireframedCube = GeometricPrimitive.LinesCube.New(_editor.GraphicsDevice);
 
             // This sphere will be scaled up and down multiple times for using as In & Out of lights
-            _sphere = GeometricPrimitive.Sphere.New(_editor.GraphicsDevice, 1024, 8);
+            _sphere = GeometricPrimitive.Sphere.New(_editor.GraphicsDevice, 1024, 6);
 
             //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
             _littleCube = GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 256);
@@ -550,6 +550,7 @@ namespace TombEditor.Controls
                         EditorActions.MoveObject(EditorActions.ObjectType.Light, _editor.PickingResult.Element,
                                                  _editor.PickingResult.GizmoAxis, delta, smooth);
                         _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+                        _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
