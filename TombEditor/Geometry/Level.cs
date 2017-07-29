@@ -2895,7 +2895,7 @@ namespace TombEditor.Geometry
         
         public static Level LoadFromPrj2(string filename, GraphicsDevice device)
         {
-            Level level = new Level();
+            var level = new Level();
 
             try
             {
@@ -2966,8 +2966,8 @@ namespace TombEditor.Geometry
                         {
                             ID = reader.ReadInt32(),
                             OtherID = reader.ReadInt32(),
-                            Room = level.Rooms[reader.ReadInt16()],
-                            AdjoiningRoom = level.Rooms[reader.ReadInt16()],
+                            Room = level.GetOrCreateRoom(reader.ReadInt16()),
+                            AdjoiningRoom = level.GetOrCreateRoom(reader.ReadInt16()),
                             Direction = (PortalDirection) reader.ReadByte(),
                             X = reader.ReadByte(),
                             Z = reader.ReadByte(),
@@ -3023,7 +3023,7 @@ namespace TombEditor.Geometry
 
                         o.Type = objectType;
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        o.Room = level.Rooms[reader.ReadInt16()];
+                        o.Room = level.GetOrCreateRoom(reader.ReadInt16());
                         o.OCB = reader.ReadInt16();
                         o.Rotation = reader.ReadInt16();
                         o.Invisible = reader.ReadBoolean();
@@ -3109,7 +3109,7 @@ namespace TombEditor.Geometry
                                 [3] = reader.ReadBoolean(),
                                 [4] = reader.ReadBoolean()
                             },
-                            Room = level.Rooms[reader.ReadInt16()]
+                            Room = level.GetOrCreateRoom(reader.ReadInt16())
                         };
 
 
@@ -3130,20 +3130,18 @@ namespace TombEditor.Geometry
                         bool defined = reader.ReadBoolean();
                         if (!defined)
                         {
+                            if(level.Rooms[i] != null)
+                                logger.Warn($"Room {i} is used, but is marked as undefined");
                             level.Rooms[i] = null;
                             continue;
                         }
 
-                        var room = new Room(level)
-                        {
-                            Name = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(100)).Trim(),
-                            Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle()),
-                            Ceiling = reader.ReadInt16(),
-                            NumXSectors = reader.ReadByte(),
-                            NumZSectors = reader.ReadByte()
-                        };
-
-
+                        var room = level.GetOrCreateRoom(i);
+                        room.Name = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(100)).Trim();
+                        room.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                        room.Ceiling = reader.ReadInt16();
+                        room.NumXSectors = reader.ReadByte();
+                        room.NumZSectors = reader.ReadByte();
                         room.Blocks = new Block[room.NumXSectors, room.NumZSectors];
 
                         for (int z = 0; z < room.NumZSectors; z++)
@@ -3275,7 +3273,7 @@ namespace TombEditor.Geometry
                         room.AmbientLight =
                             Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
                         room.Flipped = reader.ReadBoolean();
-                        room.AlternateRoom = level.Rooms[reader.ReadInt16()];
+                        room.AlternateRoom = level.GetOrCreateRoom(reader.ReadInt16());
                         room.AlternateGroup = reader.ReadInt16();
                         room.WaterLevel = reader.ReadInt16();
                         room.MistLevel = reader.ReadInt16();
@@ -3291,14 +3289,14 @@ namespace TombEditor.Geometry
                         room.FlagWater = reader.ReadBoolean();
                         room.FlagQuickSand = reader.ReadBoolean();
                         room.Flipped = reader.ReadBoolean();
-                        room.BaseRoom = level.Rooms[reader.ReadInt16()];
+                        room.BaseRoom = level.GetOrCreateRoom(reader.ReadInt16());
                         room.ExcludeFromPathFinding = reader.ReadBoolean();
 
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();
 
-                        level.Rooms[i] = room;
+                        System.Diagnostics.Debug.Assert(ReferenceEquals(room, level.Rooms[i]));
                     }
 
                     int numAnimatedSets = reader.ReadInt32();
@@ -3892,6 +3890,14 @@ namespace TombEditor.Geometry
                 // Delete trigger
                 Triggers.Remove(t);
             }
+        }
+
+        private Room GetOrCreateRoom(int index)
+        {
+            if(index < 0 || index >= Rooms.Length)
+                return null;
+            
+            return Rooms[index] ?? (Rooms[index] = new Room(this));
         }
     }
 }
