@@ -119,6 +119,7 @@
     <Compile Include="Controls\LightParameterController.Designer.cs">
       <DependentUpon>LightParameterController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>

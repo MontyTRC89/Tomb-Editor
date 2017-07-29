@@ -100,13 +100,25 @@ namespace TombEditor.Geometry
             foreach (int portalIndex in startingRoom.Portals)
             {
                 var room = Portals[portalIndex].AdjoiningRoom;
-                if (result.Contains(room))
-                    continue;
-
-                GetConnectedRoomsRecursively(result, room);
-                if (room.Flipped && (room.AlternateRoom != null))
-                    GetConnectedRoomsRecursively(result, room.AlternateRoom);
+                if (!result.Contains(room))
+                {
+                    GetConnectedRoomsRecursively(result, room);
+                    if (room.Flipped && (room.AlternateRoom != null))
+                        GetConnectedRoomsRecursively(result, room.AlternateRoom);
+                }
             }
+        }
+
+        public IEnumerable<Room> GetVerticallyAscendingRoomList()
+        {
+            var roomList = new List<KeyValuePair<float, Room>>();
+            foreach (Room room in Rooms)
+                if (room != null)
+                    roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
+            var result = roomList
+                .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
+                .Select(roomKey => roomKey.Value).ToList();
+            return result;
         }
 
         public int AddTexture(short x, short y, short w, short h, bool isDoubleSided, bool isTransparent)
@@ -299,7 +311,6 @@ namespace TombEditor.Geometry
                 // Open file
                 using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
                 {
-
                     form.ReportProgress(0, "Begin of PRJ import");
 
                     logger.Warn("Opening Winroomedit PRJ file");
@@ -3420,9 +3431,11 @@ namespace TombEditor.Geometry
                 {
                     case ObjectInstanceType.Moveable:
                         obj.Room.Moveables.Add(objectId);
+                        ((MoveableInstance) obj).Model = level.Wad.Moveables[(uint) ((MoveableInstance) obj).ObjectId];
                         break;
                     case ObjectInstanceType.StaticMesh:
                         obj.Room.StaticMeshes.Add(objectId);
+                        ((StaticMeshInstance) obj).Model = level.Wad.StaticMeshes[(uint) ((StaticMeshInstance) obj).ObjectId];
                         break;
                     case ObjectInstanceType.Camera:
                         obj.Room.Cameras.Add(objectId);
@@ -3435,19 +3448,6 @@ namespace TombEditor.Geometry
                         break;
                     case ObjectInstanceType.FlyByCamera:
                         obj.Room.FlyByCameras.Add(objectId);
-                        break;
-                    default:
-                        if (objectType == ObjectInstanceType.Moveable)
-                        {
-                            uint oid = (uint) ((MoveableInstance) obj).ObjectId;
-                            ((MoveableInstance) obj).Model = level.Wad.Moveables[oid];
-                        }
-
-                        else if (objectType == ObjectInstanceType.StaticMesh)
-                        {
-                            uint oid = (uint) ((StaticMeshInstance) obj).ObjectId;
-                            ((StaticMeshInstance) obj).Model = level.Wad.StaticMeshes[oid];
-                        }
                         break;
                 }
             }
@@ -3886,8 +3886,9 @@ namespace TombEditor.Geometry
                     writer.Flush();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.Error(ex);
                 return false;
             }
 

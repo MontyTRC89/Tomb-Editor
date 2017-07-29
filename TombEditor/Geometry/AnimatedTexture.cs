@@ -6,6 +6,8 @@ namespace TombEditor.Geometry
     {
         public short X { get; set; }
         public short Y { get; set; }
+        public short Width { get; set; }
+        public short Height { get; set; }
         public short Page { get; set; }
         public short NewId { get; set; }
 

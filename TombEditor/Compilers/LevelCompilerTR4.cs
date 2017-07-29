@@ -923,6 +923,8 @@ namespace TombEditor.Compilers
 
                 int animatedSet = -1;
                 int animatedTextureTile = -1;
+                short deltaX = 0;
+                short deltaY = 0;
 
                 for (int i = 0; i < _level.AnimatedTextures.Count; i++)
                 {
@@ -930,14 +932,17 @@ namespace TombEditor.Compilers
                     {
                         var current = _level.AnimatedTextures[i].Textures[j];
 
-                        /* if ((tex.Width == 64 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page) ||
-                             (tex.Width == 32 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page)*/
-
-                        if (current.X != tex.X || current.Y != tex.Y || current.Page != tex.Page)
+                        // Check if texture is contained in an animated range
+                        if (!(tex.X >= current.X && (tex.X + tex.Width) <= (current.X + 64) &&
+                              tex.Y >= current.Y && (tex.Y + tex.Height) <= (current.Y + 64) && 
+                              tex.Page == current.Page))
                             continue;
-
+                                                
                         animatedSet = i;
                         animatedTextureTile = j;
+
+                        deltaX = (short)(tex.X - current.X);
+                        deltaY = (short)(tex.Y - current.Y);
 
                         break;
                     }
@@ -958,7 +963,10 @@ namespace TombEditor.Compilers
                         var variant = _level.AnimatedTextures[animatedSet].Variants[i];
                         bool isTriangle = face.Shape == BlockFaceShape.Triangle;
 
+                        var current = _level.AnimatedTextures[animatedSet].Textures[animatedTextureTile];
+
                         if (variant.Flipped != face.Flipped || variant.Size != tex.Width ||
+                            variant.DeltaX != (tex.X - current.X) || variant.DeltaY != (tex.Y - current.Y) ||
                             variant.Transparent != face.Transparent ||
                             ((!variant.IsTriangle || !isTriangle || variant.Triangle != face.TextureTriangle) &&
                              (variant.IsTriangle || isTriangle)))
@@ -976,7 +984,9 @@ namespace TombEditor.Compilers
                             Flipped = face.Flipped,
                             Triangle = face.TextureTriangle,
                             IsTriangle = face.Shape == BlockFaceShape.Triangle,
-                            Transparent = face.Transparent
+                            Transparent = face.Transparent,
+                            DeltaX = deltaX,
+                            DeltaY = deltaY
                         };
 
                         for (int j = 0; j < _level.AnimatedTextures[animatedSet].Textures.Count; j++)
@@ -1024,12 +1034,15 @@ namespace TombEditor.Compilers
             // Flags
             tile.Flags = 0x8000;
 
-            tile.Xsize = (uint) tex.Width - 1;
-            tile.Ysize = (uint) tex.Height - 1;
+            tile.Xsize = (uint)aSet.Size - 1; // tex.Width - 1;
+            tile.Ysize = (uint)aSet.Size - 1; // tex.Height - 1;
 
-            int tmpWidth = tex.Width - 1;
-            int tmpHeight = tex.Height - 1;
+            int tmpWidth = aSet.Size - 1; // tex.Width - 1;
+            int tmpHeight = aSet.Size - 1; // tex.Height - 1;
 
+            byte theX = (byte)(tex.NewX + aSet.DeltaX);
+            byte theY = (byte)(tex.NewY + aSet.DeltaY);
+            
             // Texture UV
             if (aSet.IsTriangle)
             {
@@ -1042,25 +1055,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleNW:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
@@ -1069,25 +1082,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleNE:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth - 1),
+                                Xcoordinate = (byte) (theX + tmpWidth - 1),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
@@ -1096,25 +1109,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleSE:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
@@ -1123,25 +1136,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleSW:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
@@ -1156,25 +1169,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleNW:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight - 1),
+                                Ycoordinate = (byte) (theY + tmpHeight - 1),
                                 Ypixel = 255
                             };
 
@@ -1183,25 +1196,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleNE:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
@@ -1210,25 +1223,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleSE:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
@@ -1237,25 +1250,25 @@ namespace TombEditor.Compilers
                         case TextureTileType.TriangleSW:
                             tile.Vertices[0] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
                             tile.Vertices[1] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                                Xcoordinate = (byte) (theX + tmpWidth),
                                 Xpixel = 255,
-                                Ycoordinate = (byte) tex.NewY,
+                                Ycoordinate = (byte) theY,
                                 Ypixel = 0
                             };
 
                             tile.Vertices[2] = new tr_object_texture_vert
                             {
-                                Xcoordinate = (byte) tex.NewX,
+                                Xcoordinate = (byte) theX,
                                 Xpixel = 0,
-                                Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                                Ycoordinate = (byte) (theY + tmpHeight),
                                 Ypixel = 255
                             };
 
@@ -1280,33 +1293,33 @@ namespace TombEditor.Compilers
                 {
                     tile.Vertices[0] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) tex.NewX,
+                        Xcoordinate = (byte) theX,
                         Xpixel = 0,
-                        Ycoordinate = (byte) tex.NewY,
+                        Ycoordinate = (byte) theY,
                         Ypixel = 0
                     };
 
                     tile.Vertices[1] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                        Xcoordinate = (byte) (theX + tmpWidth),
                         Xpixel = 255,
-                        Ycoordinate = (byte) tex.NewY,
+                        Ycoordinate = (byte) theY,
                         Ypixel = 0
                     };
 
                     tile.Vertices[2] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                        Xcoordinate = (byte) (theX + tmpWidth),
                         Xpixel = 255,
-                        Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                        Ycoordinate = (byte) (theY + tmpHeight),
                         Ypixel = 255
                     };
 
                     tile.Vertices[3] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) tex.NewX,
+                        Xcoordinate = (byte) theX,
                         Xpixel = 0,
-                        Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                        Ycoordinate = (byte) (theY + tmpHeight),
                         Ypixel = 255
                     };
                 }
@@ -1314,33 +1327,33 @@ namespace TombEditor.Compilers
                 {
                     tile.Vertices[0] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                        Xcoordinate = (byte) (theX + tmpWidth),
                         Xpixel = 255,
-                        Ycoordinate = (byte) tex.NewY,
+                        Ycoordinate = (byte) theY,
                         Ypixel = 0
                     };
 
                     tile.Vertices[1] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) tex.NewX,
+                        Xcoordinate = (byte) theX,
                         Xpixel = 0,
-                        Ycoordinate = (byte) tex.NewY,
+                        Ycoordinate = (byte) theY,
                         Ypixel = 0
                     };
 
                     tile.Vertices[2] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) tex.NewX,
+                        Xcoordinate = (byte) theX,
                         Xpixel = 0,
-                        Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                        Ycoordinate = (byte) (theY + tmpHeight),
                         Ypixel = 255
                     };
 
                     tile.Vertices[3] = new tr_object_texture_vert
                     {
-                        Xcoordinate = (byte) (tex.NewX + tmpWidth),
+                        Xcoordinate = (byte) (theX + tmpWidth),
                         Xpixel = 255,
-                        Ycoordinate = (byte) (tex.NewY + tmpHeight),
+                        Ycoordinate = (byte) (theY + tmpHeight),
                         Ypixel = 255
                     };
 

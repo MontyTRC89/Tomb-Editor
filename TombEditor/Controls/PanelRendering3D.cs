@@ -1626,6 +1626,10 @@ namespace TombEditor.Controls
 
         private void DoPicking(float x, float y)
         {
+            // Reset the Viewport because GraphicsDevice is shared also with item panel
+            _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
+
+            // Get the current ViewProjection matrix
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
             // For picking, I'll check first sphere/cubes bounding boxes and then eventually
@@ -1880,7 +1884,7 @@ namespace TombEditor.Controls
                     }
                 }
             }
-
+            
             // Now check geometry
             for (byte sx = 0; sx < room.NumXSectors; sx++)
             {

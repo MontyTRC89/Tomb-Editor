@@ -10,6 +10,7 @@ using System.IO;
 using System.Diagnostics;
 using TombEngine;
 using NLog;
+using TombLib.Graphics;
 
 namespace TombEditor
 {
@@ -486,6 +487,8 @@ namespace TombEditor
             this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
             logger.Info("Tomb Editor is ready :)");
+
+            Draw();
         }
 
         private void but3D_Click(object sender, EventArgs e)
@@ -984,7 +987,57 @@ namespace TombEditor
         }
 
         private void ResetInterface()
+        { }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // I intercept arrow keys here otherwise they would processed by the form and 
+            // camera would move only if Panel3D is focused
+            if (((keyData & Keys.Left) == Keys.Left || 
+                 (keyData & Keys.Right) == Keys.Right ||
+                 (keyData & Keys.Up) == Keys.Up || 
+                 (keyData & Keys.Down) == Keys.Down ||
+                 (keyData & Keys.PageUp) == Keys.PageUp ||
+                 (keyData & Keys.PageDown) == Keys.PageDown) &&
+                 !((keyData & Keys.Control) == Keys.Control ||
+                   (keyData & Keys.Shift) == Keys.Shift))
+            {
+                float rotateFactor = 0.1f;
+                float zoomFactor = 0.1f;
+
+                switch (keyData)
+                {
+                    case Keys.Up:
+                        ((ArcBallCamera)_editor.Camera).Rotate(0, rotateFactor);
+                        break;
+
+                    case Keys.Down:
+                        ((ArcBallCamera)_editor.Camera).Rotate(0, -rotateFactor);
+                        break;
+
+                    case Keys.Left:
+                        ((ArcBallCamera)_editor.Camera).Rotate(rotateFactor, 0);
+                        break;
+
+                    case Keys.Right:
+                        ((ArcBallCamera)_editor.Camera).Rotate(-rotateFactor, 0);
+                        break;
+
+                    case Keys.PageUp:
+                        ((ArcBallCamera)_editor.Camera).Move(zoomFactor);
+                        break;
+
+                    case Keys.PageDown:
+                        ((ArcBallCamera)_editor.Camera).Move(-zoomFactor);
+                        break;
+                }
+
+                Draw();
+
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void FormMainNew_KeyDown(object sender, KeyEventArgs e)
@@ -1054,9 +1107,7 @@ namespace TombEditor
                     _editor.Level.Triggers[panel2DGrid.SelectedTrigger] = formTrigger.Trigger;
                 }
 
-                //_editor.DrawPanel3D();
                 _editor.DrawPanelGrid();
-                //_editor.ResetSelection();
                 _editor.LoadTriggersInUI();
 
                 return;
@@ -1254,38 +1305,7 @@ namespace TombEditor
                 else if (_editor.PickingResult._elementType == PickingElementType.Moveable)
                 {
                     switch (e.KeyCode)
-                    {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /*case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.Up, e.Shift);
-                            break;
-
-                        case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.Down, e.Shift);
-                            break;
-
-                        case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.West, e.Shift);
-                            break;
-
-                        case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.East, e.Shift);
-                            break;
-
-                        case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.North, e.Shift);
-                            break;
-
-                        case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.South, e.Shift);
-                            break;*/
-
+                    {                        
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Moveable ID = " +
                                                                         _editor.PickingResult._element + "?",
@@ -1314,37 +1334,6 @@ namespace TombEditor
                 {
                     switch (e.KeyCode)
                     {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /*case Keys.Q:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.Up, e.Shift);
-                            break;
-
-                        case Keys.A:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.Down, e.Shift);
-                            break;
-
-                        case Keys.Left:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.West, e.Shift);
-                            break;
-
-                        case Keys.Right:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.East, e.Shift);
-                            break;
-
-                        case Keys.Up:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.North, e.Shift);
-                            break;
-
-                        case Keys.Down:
-                            EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.South, e.Shift);
-                            break;*/
-
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
                                     "Do you really want to delete Static mesh ID = " +
@@ -1371,17 +1360,6 @@ namespace TombEditor
 
                     switch (e.KeyCode)
                     {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /*case Keys.Q:
-                            EditorActions.MoveLight(_editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.Up, e.Shift);
-                            break;
-
-                        case Keys.A:
-                            EditorActions.MoveLight(_editor.PickingResult.Element,
-                                EditorActions.MoveObjectDirections.Down, e.Shift);
-                            break;*/
-
                         case Keys.Left:
                             if (e.Control)
                             {
@@ -1392,13 +1370,7 @@ namespace TombEditor
 
                                 UpdateLightUI();
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*else
-                                {
-                                    EditorActions.MoveLight(_editor.PickingResult.Element,
-                                        EditorActions.MoveObjectDirections.West, e.Shift);
-                                }*/
-
+                            
                             break;
 
                         case Keys.Right:
@@ -1411,13 +1383,7 @@ namespace TombEditor
 
                                 UpdateLightUI();
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*else
-                                    {
-                                        EditorActions.MoveLight(_editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.East, e.Shift);
-                                    }*/
-
+                            
                             break;
 
                         case Keys.Up:
@@ -1430,13 +1396,7 @@ namespace TombEditor
 
                                 UpdateLightUI();
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*else
-                                        {
-                                            EditorActions.MoveLight(_editor.PickingResult.Element,
-                                                EditorActions.MoveObjectDirections.North, e.Shift);
-                                        }*/
-
+                            
                             break;
 
                         case Keys.Down:
@@ -1474,38 +1434,7 @@ namespace TombEditor
                 else if (_editor.PickingResult._elementType == PickingElementType.Camera)
                 {
                     switch (e.KeyCode)
-                    {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /* case Keys.Q:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.Up, e.Shift);
-                                        break;
-
-                                    case Keys.A:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.Down, e.Shift);
-                                        break;
-
-                                    case Keys.Left:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.West, e.Shift);
-                                        break;
-
-                                    case Keys.Right:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.East, e.Shift);
-                                        break;
-
-                                    case Keys.Up:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.North, e.Shift);
-                                        break;
-
-                                    case Keys.Down:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                                            EditorActions.MoveObjectDirections.South, e.Shift);
-                                        break;*/
-
+                    {                        
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Camera ID = " +
                                                                         _editor.PickingResult._element + "?",
@@ -1524,28 +1453,11 @@ namespace TombEditor
                 {
                     switch (e.KeyCode)
                     {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /* case Keys.Q:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
-                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
-                                        break;
-
-                                    case Keys.A:
-                                        EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
-                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
-                                        break;*/
-
                         case Keys.Left:
                             if (e.Control)
                             {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult._element, 0, -1);
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*else
-                                            {
-                                                EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
-                                                    _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
-                                            }*/
 
                             break;
 
@@ -1554,13 +1466,7 @@ namespace TombEditor
                             {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult._element, 0, 1);
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*else
-                                                {
-                                                    EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
-                                                        _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
-                                                }*/
-
+                            
                             break;
 
                         case Keys.Up:
@@ -1568,13 +1474,7 @@ namespace TombEditor
                             {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult._element, 1, 0);
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*else
-                                                    {
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
-                                                    }*/
-
+                            
                             break;
 
                         case Keys.Down:
@@ -1582,13 +1482,7 @@ namespace TombEditor
                             {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult._element, -1, 0);
                             }
-                            // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                            /*  else
-                                                        {
-                                                            EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera,
-                                                                _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
-                                                        }*/
-
+                            
                             break;
 
                         case Keys.Delete:
@@ -1614,38 +1508,7 @@ namespace TombEditor
                 else if (_editor.PickingResult._elementType == PickingElementType.Sink)
                 {
                     switch (e.KeyCode)
-                    {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /*case Keys.Q:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                            EditorActions.MoveObjectDirections.Up, e.Shift);
-                                                        break;
-
-                                                    case Keys.A:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                            EditorActions.MoveObjectDirections.Down, e.Shift);
-                                                        break;
-
-                                                    case Keys.Left:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                            EditorActions.MoveObjectDirections.West, e.Shift);
-                                                        break;
-
-                                                    case Keys.Right:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                            EditorActions.MoveObjectDirections.East, e.Shift);
-                                                        break;
-
-                                                    case Keys.Up:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                            EditorActions.MoveObjectDirections.North, e.Shift);
-                                                        break;
-
-                                                    case Keys.Down:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                            EditorActions.MoveObjectDirections.South, e.Shift);
-                                                        break;*/
-
+                    {                        
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Sink ID = " +
                                                                         _editor.PickingResult._element + "?",
@@ -1668,38 +1531,7 @@ namespace TombEditor
                 else if (_editor.PickingResult._elementType == PickingElementType.SoundSource)
                 {
                     switch (e.KeyCode)
-                    {
-                        // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
-                        /* case Keys.Q:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Up, e.Shift);
-                                                        break;
-
-                                                    case Keys.A:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.Down, e.Shift);
-                                                        break;
-
-                                                    case Keys.Left:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.West, e.Shift);
-                                                        break;
-
-                                                    case Keys.Right:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.East, e.Shift);
-                                                        break;
-
-                                                    case Keys.Up:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.North, e.Shift);
-                                                        break;
-
-                                                    case Keys.Down:
-                                                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource,
-                                                            _editor.PickingResult.Element, EditorActions.MoveObjectDirections.South, e.Shift);
-                                                        break;*/
-
+                    {                        
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
                                     "Do you really want to delete Sound source ID = " +

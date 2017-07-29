@@ -1,0 +1,510 @@
+﻿using SharpDX;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Drawing;
+using System.Windows.Forms;
+using TombEditor.Geometry;
+using Color = System.Drawing.Color;
+using RectangleF = System.Drawing.RectangleF;
+using System.Drawing.Drawing2D;
+
+namespace TombEditor.Controls
+{
+    public class DepthBar
+    {
+        public const float MinDepth = -128;
+        public const float MaxDepth = 127;
+        public float SelectedLimit0 { get; set; } = MinDepth;
+        public float SelectedLimit1 { get; set; } = MaxDepth;
+        public readonly List<Vector2> DepthProbes = new List<Vector2>();
+        public event Action InvalidateParent;
+        public event Action<Room> SelectRoom;
+        public event Action RoomsMoved;
+
+        private const float _marginX = 2.0f;
+        private const float _marginY = 48.0f;
+        private const float _barWidth = 36.0f;
+        private const float _explainationStringMargin = 4.0f;
+        private const int _heightStringCount = 17;
+        private const float _heightStringLineLength = 8.0f;
+        private const float _heightStringLineDistance = 3.0f;
+        private const float _selectionInsideOffset = -1.0f;
+        private const float _selectionOutsideOffset = -2.0f;
+        private const float _selectionMaxPixelDistanceForMove = 8.0f;
+        private const float _minDepthDifferenceBetweenIndependentlyMergedSequences = 12.0f;
+
+        private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
+        private Room _roomMouseClicked;
+        private float _roomMouseOffset; // Relative depth difference to where it was clicked.
+        private bool _roomMouseMoveStarted;
+        private bool IsExtendedViewActive { get { return _roomMouseMoveStarted && (_roomsToMove != null); } }
+
+        public static readonly StringFormat ProbeStringLayout = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
+        public static readonly Font ProbeFont = new Font("Arial", 18.0f, FontStyle.Regular, GraphicsUnit.Pixel);
+        public static readonly Pen ProbePen = new Pen(Color.FromArgb(120, 0, 120), 2);
+        private static readonly Font _heightStringFont = new Font("Arial", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
+        private static readonly StringFormat _heightStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
+        private static readonly Font _explainationStringFont = _heightStringFont;
+        private static readonly StringFormat _explainationStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
+        private static readonly Brush _explainationStringBrush = new SolidBrush(Color.Black);
+        private const string _explainationString = "Press the middle mouse button on the map to add a depth bar.\nPress the middle mouse button on the depth bar, to remove it.";
+        private static readonly Brush _backgroundBrush = new SolidBrush(Color.FromArgb(245, 245, 245));
+        private static readonly Pen _outlinePen = new Pen(Color.Black, 1);
+        private static readonly Pen _heightLinesPen = new Pen(Color.LightGray, 1);
+        private static readonly Pen _heightLinesBigPen = new Pen(Color.LightGray, 3);
+        private static readonly Pen _sequenceSeperatorPen = _outlinePen;
+        private static readonly Pen _portalPen = new Pen(Color.Black, 1) { DashStyle = DashStyle.Dot };
+        private static readonly Pen _roomBoundsPen = _outlinePen;
+        private static readonly Pen _selectionPen = new Pen(Color.DarkBlue, 4);
+        private static readonly Brush _roomsNormalBrush = new SolidBrush(Editor.ColorFloor);
+        private static readonly Brush _roomsSelectionBrush = new SolidBrush(Color.FromArgb(220, 20, 20));
+        private static readonly Brush _roomsWallBrush = new SolidBrush(Editor.ColorWall);
+        private static readonly Brush _roomsToMoveBrush = new SolidBrush(Color.FromArgb(255, 230, 230, 80));
+        private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
+
+        private struct RelevantRoom
+        {
+            public Room Room;
+            public Block Block;
+            public float MinDepth;
+            public float MaxDepth;
+        }
+        
+        private enum SelectionMode
+        {
+            None,
+            SelectedLimit0,
+            SelectedLimit1,
+            RoomMove
+        }
+        private SelectionMode _selectionMode = SelectionMode.None;
+
+        public RectangleF getBarArea(Size parentControlSize)
+        {
+            float barsWidth = _barWidth * (DepthProbes.Count + 1);
+            return new RectangleF(
+                parentControlSize.Width - barsWidth - _marginX, _marginY,
+                barsWidth, Math.Max(parentControlSize.Height - 2 * _marginY, 64.0f));
+        }
+
+        private static float FromVisualY(RectangleF barArea, float y)
+        {
+            float depth = MaxDepth - ((y - barArea.Y) / barArea.Height) * (MaxDepth - MinDepth);
+            depth = Math.Max(Math.Min(depth, MaxDepth), MinDepth);
+            return depth;
+        }
+        
+        private static float ToVisualY(RectangleF barArea, float depth)
+        {
+            return ((MaxDepth - depth) / (MaxDepth - MinDepth)) * barArea.Height + barArea.Y;
+        }
+        
+        /// <returns>true, if the selection should continue in the background of the bar.</returns>
+        public bool MouseDown(MouseEventArgs e, Size parentControlSize, Level level, Vector2 clickPos)
+        {
+            _selectionMode = SelectionMode.None;
+
+            // check if the mouse click was in the bar area
+            RectangleF barArea = getBarArea(parentControlSize);
+            RectangleF selectionArea = barArea;
+            selectionArea.Inflate(2.0f, _selectionMaxPixelDistanceForMove * 0.8f);
+            if (!selectionArea.Contains(e.Location))
+                return true;
+
+            if (e.Button == MouseButtons.Left)
+            {
+                // check if the mouse click was on one of the two sliders
+                float distanceToSelectedLimit0 = Math.Abs(e.Y - ToVisualY(barArea, SelectedLimit0));
+                float distanceToSelectedLimit1 = Math.Abs(e.Y - ToVisualY(barArea, SelectedLimit1));
+                if (distanceToSelectedLimit0 < distanceToSelectedLimit1)
+                {
+                    if (distanceToSelectedLimit0 < _selectionMaxPixelDistanceForMove)
+                        _selectionMode = SelectionMode.SelectedLimit0;
+                }
+                else
+                {
+                    if (distanceToSelectedLimit1 < _selectionMaxPixelDistanceForMove)
+                        _selectionMode = SelectionMode.SelectedLimit1;
+                }
+
+                // check if a the click happend on a room
+                if (barArea.Contains(e.Location) && (_selectionMode == SelectionMode.None))
+                    for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
+                    {
+                        RectangleF groupArea = groupGetArea(barArea, groupIndex);
+                        if (groupArea.Contains(e.Location))
+                        {
+                            float mouseDepth = FromVisualY(barArea, e.Y);
+                            List<List<RelevantRoom>> roomSequences = groupBuildRoomSequences(level.GetVerticallyAscendingRoomList(), level, clickPos, groupIndex);
+                            float sequenceWidth = groupArea.Width / roomSequences.Count;
+                            for (int i = 0; i < roomSequences.Count; ++i)
+                            {
+                                float posX0 = groupArea.X + sequenceWidth * i;
+                                float posX1 = groupArea.X + sequenceWidth * (i + 1);
+                                if ((e.X >= posX0) && (e.X <= posX1))
+                                    for (int j = roomSequences[i].Count - 1; j >= 0; --j)
+                                        if ((mouseDepth <= roomSequences[i][j].MaxDepth) && (mouseDepth >= roomSequences[i][j].MinDepth))
+                                        {
+                                            _roomMouseClicked = roomSequences[i][j].Room;
+                                            _roomsToMove = level.GetConnectedRooms(_roomMouseClicked);
+                                            _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
+                                            _roomMouseMoveStarted = false;
+                                            SelectRoom?.Invoke(_roomMouseClicked);
+                                            InvalidateParent?.Invoke();
+                                            _selectionMode = SelectionMode.RoomMove;
+                                            return false;
+                                        }
+                            }
+                            break;
+                        }
+                    }
+            }
+            else if ((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton1))
+                for (int groupIndex = 0; groupIndex < DepthProbes.Count; ++groupIndex)
+                {
+                    RectangleF groupArea = groupGetArea(barArea, groupIndex);
+                    if (groupArea.Contains(e.Location))
+                    {
+                        DepthProbes.RemoveAt(groupIndex);
+                        InvalidateParent?.Invoke();
+                        break;
+                    }
+                }
+
+            return false;
+        }
+
+        public void MouseMove(MouseEventArgs e, Size parentControlSize)
+        {
+            RectangleF barArea = getBarArea(parentControlSize);
+            
+            switch (_selectionMode)
+            {
+                case SelectionMode.SelectedLimit0:
+                    SelectedLimit0 = FromVisualY(barArea, e.Y);
+                    InvalidateParent?.Invoke();
+                    break;
+                case SelectionMode.SelectedLimit1:
+                    SelectedLimit1 = FromVisualY(barArea, e.Y);
+                    InvalidateParent?.Invoke();
+                    break;
+                case SelectionMode.RoomMove:
+                    float destinationHeight = ((float)Math.Round(FromVisualY(barArea, e.Y) - _roomMouseOffset));
+
+                    // limit room movement to valid range
+                    float maxHeight = MaxDepth;
+                    float minHeight = MinDepth;
+                    foreach (Room room in _roomsToMove)
+                    {
+                        float roomUpperLimit = MaxDepth - (room.Position.Y - _roomMouseClicked.Position.Y + room.GetHighestCorner());
+                        float roomLowerLimit = MinDepth - (room.Position.Y - _roomMouseClicked.Position.Y + room.GetLowestCorner());
+                        maxHeight = Math.Min(maxHeight, roomUpperLimit);
+                        minHeight = Math.Max(minHeight, roomLowerLimit);
+                    }
+                    destinationHeight = Math.Max(Math.Min(destinationHeight, maxHeight), minHeight);
+
+                    // do movement
+                    float heightChange = destinationHeight - _roomMouseClicked.Position.Y;
+                    foreach (Room room in _roomsToMove)
+                        room.Position += new Vector3(0, heightChange, 0);
+
+                    // Update state
+                    _roomMouseMoveStarted = true;
+                    InvalidateParent?.Invoke();
+                    RoomsMoved?.Invoke();
+                    break;
+            }
+        }
+
+        public void MouseUp(MouseEventArgs e, Size parentControlSize)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                _selectionMode = SelectionMode.None;
+                if (_roomsToMove != null)
+                    InvalidateParent?.Invoke();
+                _roomsToMove = null;
+                _roomMouseClicked = null;
+                _roomMouseMoveStarted = false;
+            }
+        }
+
+        public void Draw(PaintEventArgs e, Size parentControlSize, Level level, Vector2 curserPos, Room selectedRoom = null, HashSet<Room> additionalRoomsToMove = null)
+        {
+            RectangleF barArea = getBarArea(parentControlSize);
+            float selectedLimit0PosY = ToVisualY(barArea, SelectedLimit0);
+            float selectedLimit1PosY = ToVisualY(barArea, SelectedLimit1);
+            
+            // Draw explaination string
+            if (barArea.IntersectsWith(e.ClipRectangle))
+            {
+                RectangleF explainationStringArea = new RectangleF(new PointF(), parentControlSize);
+                explainationStringArea.Inflate(-_explainationStringMargin, -_explainationStringMargin);
+                e.Graphics.DrawString(_explainationString, _explainationStringFont, _explainationStringBrush, explainationStringArea, _explainationStringLayout);
+            }
+
+            // Draw box
+            e.Graphics.FillRectangle(_backgroundBrush, barArea);
+
+            // Draw height lines
+            if (barArea.IntersectsWith(e.ClipRectangle))
+                for (int depth = (int)MinDepth; depth <= (int)MaxDepth; ++depth)
+                {
+                    float posY = ToVisualY(barArea, depth);
+                    e.Graphics.DrawLine(_heightLinesPen, barArea.Left, posY, barArea.Right, posY);
+                }
+
+            // Draw height strings
+            for (int i = 0; i <= _heightStringCount; ++i)
+            {
+                float depth = MaxDepth - ((MaxDepth - MinDepth) / _heightStringCount) * i;
+                float posY = ToVisualY(barArea, depth);
+
+                // Hide height string when close to selection limits
+                float distanceToSelectionLimit0 = Math.Abs(posY - selectedLimit0PosY);
+                float distanceToSelectionLimit1 = Math.Abs(posY - selectedLimit1PosY);
+                if (Math.Min(distanceToSelectionLimit0, distanceToSelectionLimit1) > (_heightStringFont.Height * 0.85f))
+                {
+                    DrawHeightString(e, barArea, _outlinePen, depth);
+                    e.Graphics.DrawLine(_heightLinesBigPen, barArea.Left, posY, barArea.Right, posY);
+                }
+            }
+
+            // Draw depth bar numbers
+            if (!barArea.Contains(e.ClipRectangle))
+                for (int groupIndex = 0; groupIndex < DepthProbes.Count; ++groupIndex)
+                {
+                    RectangleF groupArea = groupGetArea(barArea, groupIndex);
+                    e.Graphics.DrawString(groupIndex.ToString(), ProbeFont, ProbePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
+                }
+
+            // Draw depth bar content
+            if (barArea.IntersectsWith(e.ClipRectangle))
+            {
+                IEnumerable<Room> sortedRoomList = level.GetVerticallyAscendingRoomList();
+                
+                // Draw group
+                for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
+                {
+                    RectangleF groupArea = groupGetArea(barArea, groupIndex);
+                    if (!groupArea.IntersectsWith(e.ClipRectangle))
+                        continue;
+
+                    // Draw sequences
+                    List<List<RelevantRoom>> roomSequences = groupBuildRoomSequences(sortedRoomList, level, curserPos, groupIndex);
+                    float sequenceWidth = groupArea.Width / roomSequences.Count;
+                    for (int roomSequenceIndex = 0; roomSequenceIndex < roomSequences.Count; ++roomSequenceIndex)
+                    {
+                        var roomSequence = roomSequences[roomSequenceIndex];
+                        float posX0 = groupArea.X + sequenceWidth * roomSequenceIndex;
+                        float posX1 = groupArea.X + sequenceWidth * (roomSequenceIndex + 1);
+                        for (int i = 0; i < roomSequence.Count; ++i)
+                        {
+                            RelevantRoom room = roomSequence[i];
+                            float posY0 = ToVisualY(groupArea, room.MaxDepth);
+                            float posY1 = ToVisualY(groupArea, room.MinDepth);
+
+                            // Draw fill color for room
+                            Brush colorBrush = _roomsNormalBrush;
+                            if (room.Room == selectedRoom)
+                                colorBrush = _roomsSelectionBrush;
+                            else if ((RoomsToMove != null) && RoomsToMove.Contains(selectedRoom))
+                                colorBrush = _roomsToMoveBrush;
+                            else if ((additionalRoomsToMove != null) && additionalRoomsToMove.Contains(selectedRoom))
+                                colorBrush = _roomsToMoveBrush;
+                            else if ((room.Block != null) && (room.Block.Type != BlockType.Floor))
+                                colorBrush = _roomsWallBrush;
+                            e.Graphics.FillRectangle(colorBrush, posX0, posY0, posX1 - posX0, posY1 - posY0);
+                            if (!CheckRoom(room.MinDepth, room.MaxDepth))
+                                e.Graphics.FillRectangle(_roomsOutsideOverdraw, posX0, posY0, posX1 - posX0, posY1 - posY0);
+
+                            // Find portals on the selected sector
+                            Pen belowPen = _roomBoundsPen;
+                            if ((room.Block != null) && (room.Block.FloorPortal != -1))
+                            {
+                                Room portalRoom = level.Rooms[level.Portals[room.Block.FloorPortal].AdjoiningRoom];
+                                if (((i - 1) >= 0) && (roomSequence[i - 1].Room == portalRoom))
+                                    belowPen = _portalPen;
+                            }
+                            Pen abovePen = _roomBoundsPen;
+                            if ((room.Block != null) && (room.Block.CeilingPortal != -1))
+                            {
+                                Room portalRoom = level.Rooms[level.Portals[room.Block.CeilingPortal].AdjoiningRoom];
+                                if (((i + 1) < roomSequence.Count) && (roomSequence[i + 1].Room == portalRoom))
+                                    abovePen = _portalPen;
+                            }
+
+                            //Draw room borders
+                            e.Graphics.DrawLine(belowPen, posX0, posY1, posX1, posY1);
+                            e.Graphics.DrawLine(abovePen, posX0, posY0, posX1, posY0);
+                            e.Graphics.DrawLine(_sequenceSeperatorPen, posX0, posY0, posX0, posY1);
+                            e.Graphics.DrawLine(_sequenceSeperatorPen, posX1, posY0, posX1, posY1);
+                        }
+                    }
+                }
+            }
+
+            // Draw selection range
+            DrawHeightString(e, barArea, _selectionPen, SelectedLimit0);
+            DrawHeightString(e, barArea, _selectionPen, SelectedLimit1);
+            PointF[] selectionLines = new PointF[4];
+            selectionLines[0] = new PointF(barArea.Right + _selectionInsideOffset, selectedLimit1PosY);
+            selectionLines[1] = new PointF(barArea.Left + _selectionOutsideOffset, selectedLimit1PosY);
+            selectionLines[2] = new PointF(barArea.Left + _selectionOutsideOffset, selectedLimit0PosY);
+            selectionLines[3] = new PointF(barArea.Right + _selectionInsideOffset, selectedLimit0PosY);
+            e.Graphics.DrawLines(_selectionPen, selectionLines);
+
+            // Draw outline around the groups
+            for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
+            {
+                RectangleF groupArea = groupGetArea(barArea, groupIndex);
+                e.Graphics.DrawRectangle(_outlinePen, groupArea.X, groupArea.Y, groupArea.Width, groupArea.Height);
+            }
+        }
+
+        private static void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth)
+        {
+            if (barArea.Contains(e.ClipRectangle))
+                return;
+
+            float screenPosY = ToVisualY(barArea, depth);
+            e.Graphics.DrawLine(pen, barArea.X, screenPosY, barArea.X - _heightStringLineLength, screenPosY);
+
+            string text = string.Format("y = {0:F1}", depth);
+            RectangleF textArea = new RectangleF(0.0f, screenPosY - _heightStringFont.Height,
+                barArea.X - (_heightStringLineDistance + _heightStringLineLength), _heightStringFont.Height * 2);
+            e.Graphics.DrawString(text, _heightStringFont, pen.Brush, textArea, _heightStringLayout);
+        }
+
+        private int GroupCount
+        {
+            get { return DepthProbes.Count + 1; }
+        }
+        
+        public RectangleF groupGetArea(RectangleF barArea, int groupIndex)
+        {
+            return new RectangleF(barArea.Right - (groupIndex + 1) * _barWidth, barArea.Y, _barWidth, barArea.Height);
+        }
+
+        private List<List<RelevantRoom>> groupBuildRoomSequences(IEnumerable<Room> sortedRoomList, Level level, Vector2 curserPos, int groupIndex)
+        {
+            // Decide what bar is at the given index
+            Vector2 probePos = groupIndex == DepthProbes.Count ? curserPos : DepthProbes[groupIndex];
+            bool shouldCheckRoomsToMove = (groupIndex == DepthProbes.Count) && (_roomsToMove != null) && _roomMouseMoveStarted;
+
+            // Iterate over all rooms under the curser and add them to the room sequences
+            var roomSequences = new List<List<RelevantRoom>>();
+            foreach (Room room in sortedRoomList)
+            {
+                Vector2 roomLocal = probePos - room.SectorPos;
+                bool CollidesWithProbe = (roomLocal.X >= 1) && (roomLocal.Y >= 1) && (roomLocal.X < (room.NumXSectors - 1)) && (roomLocal.Y < (room.NumZSectors - 1));
+                if (shouldCheckRoomsToMove ? _roomsToMove.Contains(room) : CollidesWithProbe)
+                {
+                    Block block = CollidesWithProbe ? room.Blocks[(int)(roomLocal.X), (int)(roomLocal.Y)] : null;
+                    RelevantRoom relevantRoom = new RelevantRoom
+                        {
+                            Room = room,
+                            Block = block,
+                            MinDepth = room.Position.Y + room.GetLowestCorner(),
+                            MaxDepth = room.Position.Y + room.GetHighestCorner()
+                        };
+
+                    // Search for a fit in the sequence for rooms it the current room is connected to on this sector
+                    if ((block != null) && (block.FloorPortal != -1))
+                    {
+                        Portal portal = level.Portals[block.FloorPortal];
+                        Room roomAbove = level.Rooms[portal.AdjoiningRoom];
+                        foreach (var roomSequence in roomSequences)
+                            if (roomSequence.Last().Room == roomAbove)
+                            {
+                                roomSequence.Add(relevantRoom);
+                                goto AddedRoomSucessfully;
+                            }
+                    }
+                    roomSequences.Add(new List<RelevantRoom>());
+                    roomSequences.Last().Add(relevantRoom);
+                    AddedRoomSucessfully:
+                    ;
+                }
+            }
+
+            // Also try moving rooms into the same sequence that are connected directly, just not on the square that is selected
+            for (int i = 1; i < roomSequences.Count; ++i) // triangular iteration
+            {
+                var roomSequenceAbove = roomSequences[i];
+                foreach (int portalIndex in roomSequenceAbove[0].Room.Portals)
+                {
+                    Portal portal = level.Portals[portalIndex];
+                    Room connectedRoom = level.Rooms[portal.AdjoiningRoom];
+
+                    for (int j = 0; j < i; ++j)
+                    {
+                        var roomSequenceBelow = roomSequences[j];
+                        if (roomSequences[j].Last().Room == connectedRoom)
+                        {
+                            float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
+                            if (distanceBetweenSequences >= 0.0)
+                            {
+                                roomSequences[j].AddRange(roomSequences[i]);
+                                roomSequences.RemoveAt(i);
+                                --i;
+                                goto NextRoom;
+                            }
+                        }
+                    }
+                }
+                NextRoom:
+                ;
+            }
+
+            // Try to merge independent sequences if they are sufficently far apart
+            for (int i = 0; i < roomSequences.Count; ++i)
+            {
+                var roomSequenceAbove = roomSequences[i];
+                for (int j = 0; j < roomSequences.Count; ++j)
+                {
+                    var roomSequenceBelow = roomSequences[j];
+                    float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
+                    if (distanceBetweenSequences >= _minDepthDifferenceBetweenIndependentlyMergedSequences)
+                    {
+                        roomSequenceBelow.AddRange(roomSequenceAbove);
+                        roomSequences.RemoveAt(i);
+                        --i;
+                        goto NextRoom;
+                    }
+                }
+                NextRoom:
+                ;
+            }
+
+            return roomSequences;
+        }
+
+        public float SelectedMin
+        {
+            get { return Math.Min(SelectedLimit0, SelectedLimit1); }
+        }
+
+        public float SelectedMax
+        {
+            get { return Math.Max(SelectedLimit0, SelectedLimit1); }
+        }
+
+        public HashSet<Room> RoomsToMove
+        {
+            get { return _roomsToMove; }
+        }
+
+        public bool CheckRoom(float roomMinDepth, float roomMaxDepth)
+        {
+            return (roomMinDepth >= SelectedMin) && (roomMaxDepth <= SelectedMax);
+        }
+
+        public bool CheckRoom(Room room)
+        {
+            return CheckRoom(room.Position.Y + room.GetLowestCorner(), room.Position.Y + room.GetHighestCorner());
+        }
+    };
+}
