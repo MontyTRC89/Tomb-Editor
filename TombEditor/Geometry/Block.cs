@@ -37,19 +37,15 @@ namespace TombEditor.Geometry
         public bool NoCollisionFloor { get; set; }
         public bool NoCollisionCeiling { get; set; }
         public List<int> Triggers { get; set; } = new List<int>();
-        public Room Room { get; set; }
-        public Level Level { get; set; }
         public DiagonalSplit FloorDiagonalSplit { get; set; }
         public DiagonalSplitType FloorDiagonalSplitType { get; set; }
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
         public DiagonalSplitType CeilingDiagonalSplitType { get; set; }
 
-        public Block(Level level, Room room, BlockType type, BlockFlags flags, short height)
+        public Block(BlockType type, BlockFlags flags, short height)
         {
             Type = type;
             Flags = flags;
-            Level = level;
-            Room = room;
 
             for (int i = 0; i < 29; i++)
             {
@@ -104,7 +100,7 @@ namespace TombEditor.Geometry
 
         public Block Clone()
         {
-            Block b = new Geometry.Block(Level, Room, Type, Flags, 0);
+            Block b = new Geometry.Block(Type, Flags, 0);
 
             for (int i = 0; i < 4; i++)
                 b.QAFaces[i] = QAFaces[i];

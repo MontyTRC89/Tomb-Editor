@@ -561,7 +561,7 @@ namespace TombEditor.Compilers
             }
         }
 
-        private short BuildTextureInfo(BlockFace face)
+        private short BuildRoomTextureInfo(BlockFace face)
         {
             var tile = new tr_object_texture();
             var tex = _tempTexturesArray[_texturesIdTable[face.Texture]];
@@ -926,6 +926,9 @@ namespace TombEditor.Compilers
                     for (int j = 0; j < _level.AnimatedTextures[i].Textures.Count; j++)
                     {
                         var current = _level.AnimatedTextures[i].Textures[j];
+
+                       /* if ((tex.Width == 64 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page) ||
+                            (tex.Width == 32 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page)*/
 
                         if (current.X != tex.X || current.Y != tex.Y || current.Page != tex.Page)
                             continue;

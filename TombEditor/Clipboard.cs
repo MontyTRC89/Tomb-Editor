@@ -41,12 +41,12 @@ namespace TombEditor
 
             OriginalRoom = _editor.RoomIndex;
 
-            if (_editor.PickingResult.ElementType == PickingElementType.SkinnedModel)
+            if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
             {
                 ElementType = ClipboardElementType.Moveable;
                 ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.StaticModel)
+            else if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
             {
                 ElementType = ClipboardElementType.StaticMesh;
                 ElementID = _editor.PickingResult.Element;
