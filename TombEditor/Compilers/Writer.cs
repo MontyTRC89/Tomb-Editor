@@ -12,167 +12,49 @@ namespace TombEditor.Compilers
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(File.OpenWrite("temp.bin")))
             {
-
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 const int filler = 0;
                 writer.Write(filler);
 
-                _numRooms = (ushort)_rooms.Length;
-                writer.Write(_numRooms);
+                var numRooms = (ushort) _rooms.Length;
+                writer.Write(numRooms);
 
-                long offset;
-                long offset2;
-                for (var i = 0; i < _numRooms; i++)
+                for (var i = 0; i < _rooms.Length; i++)
                 {
-                    writer.WriteBlock(_rooms[i].Info);
-
-                    offset = writer.BaseStream.Position;
-
-                    const int numdw = 0;
-                    writer.Write(numdw);
-
-                    var tmp = (ushort)_rooms[i].Vertices.Length;
-                    writer.Write(tmp);
-                    writer.WriteBlockArray(_rooms[i].Vertices);
-
-                    tmp = (ushort)_rooms[i].Rectangles.Length;
-                    writer.Write(tmp);
-                    if (tmp != 0)
-                    {
-                        for (var k = 0; k < _rooms[i].Rectangles.Length; k++)
-                        {
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[0]);
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[1]);
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[2]);
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[3]);
-                            writer.Write(_rooms[i].Rectangles[k].Texture);
-                        }
-                    }
-
-                    tmp = (ushort)_rooms[i].Triangles.Length;
-                    writer.Write(tmp);
-                    if (tmp != 0)
-                    {
-                        for (var k = 0; k < _rooms[i].Triangles.Length; k++)
-                        {
-                            writer.Write(_rooms[i].Triangles[k].Vertices[0]);
-                            writer.Write(_rooms[i].Triangles[k].Vertices[1]);
-                            writer.Write(_rooms[i].Triangles[k].Vertices[2]);
-                            writer.Write(_rooms[i].Triangles[k].Texture);
-                        }
-                    }
-
-                    // For sprites, not used
-                    tmp = 0;
-                    writer.Write(tmp);
-
-                    // Now save current offset and calculate the size of the geometry
-                    offset2 = writer.BaseStream.Position;
-                    // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    ushort roomGeometrySize = (ushort)((offset2 - offset - 4) / 2);
-
-                    // Save the size of the geometry
-                    writer.BaseStream.Seek(offset, SeekOrigin.Begin);
-                    writer.Write(roomGeometrySize);
-                    writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
-
-                    // Write portals
-                    tmp = (ushort)_rooms[i].Portals.Length;
-                    writer.WriteBlock(tmp);
-                    if (tmp != 0)
-                        writer.WriteBlockArray(_rooms[i].Portals);
-
-                    // Write sectors
-                    writer.Write(_rooms[i].NumZSectors);
-                    writer.Write(_rooms[i].NumXSectors);
-                    writer.WriteBlockArray(_rooms[i].Sectors);
-
-                    // Write room color
-                    writer.Write(_rooms[i].AmbientIntensity1);
-                    writer.Write(_rooms[i].AmbientIntensity2);
-
-                    // Write lights
-                    tmp = (ushort)_rooms[i].Lights.Length;
-                    writer.WriteBlock(tmp);
-                    if (tmp != 0)
-                        writer.WriteBlockArray(_rooms[i].Lights);
-
-                    // Write static meshes
-                    tmp = (ushort)_rooms[i].StaticMeshes.Length;
-                    writer.WriteBlock(tmp);
-                    if (tmp != 0)
-                        writer.WriteBlockArray(_rooms[i].StaticMeshes);
-
-                    // Write final data
-                    writer.Write(_rooms[i].AlternateRoom);
-                    writer.Write(_rooms[i].Flags);
-                    writer.Write(_rooms[i].WaterScheme);
-                    writer.Write(_rooms[i].ReverbInfo);
-                    writer.Write(_rooms[i].AlternateGroup);
+                    _rooms[i].Write(writer);
                 }
 
                 // Write floordata
-                _numFloorData = (uint)_floorData.Length;
-                writer.Write(_numFloorData);
+                var numFloorData = (uint) _floorData.Length;
+                writer.Write(numFloorData);
                 writer.WriteBlockArray(_floorData);
 
                 // Write meshes
-                offset = writer.BaseStream.Position;
+                var offset = writer.BaseStream.Position;
 
-                _numMeshData = 0;
-                writer.Write(_numMeshData);
+                const int numMeshData = 0;
+                writer.Write(numMeshData);
                 var totalMeshSize = 0;
 
                 for (var i = 0; i < _meshes.Length; i++)
                 {
-                    long meshOffset1 = writer.BaseStream.Position;
+                    var meshSize = _meshes[i].WriteTr4(writer);
 
-                    writer.WriteBlock(_meshes[i].Centre);
-                    writer.Write(_meshes[i].Radius);
-
-                    writer.Write(_meshes[i].NumVertices);
-                    writer.WriteBlockArray(_meshes[i].Vertices);
-
-                    writer.Write(_meshes[i].NumNormals);
-                    if (_meshes[i].NumNormals > 0)
-                    {
-                        writer.WriteBlockArray(_meshes[i].Normals);
-                    }
-                    else
-                    {
-                        writer.WriteBlockArray(_meshes[i].Lights);
-                    }
-
-                    writer.Write(_meshes[i].NumTexturedRectangles);
-                    writer.WriteBlockArray(_meshes[i].TexturedRectangles);
-
-                    writer.Write(_meshes[i].NumTexturedTriangles);
-                    writer.WriteBlockArray(_meshes[i].TexturedTriangles);
-
-                    var meshOffset2 = writer.BaseStream.Position;
-                    var meshSize = (meshOffset2 - meshOffset1);
-                    if (meshSize % 4 != 0)
-                    {
-                        const ushort tempFiller = 0;
-                        writer.Write(tempFiller);
-                        meshSize += 2;
-                    }
-
-                    for (var n = 0; n < _numMeshPointers; n++)
+                    for (var n = 0; n < _meshPointers.Length; n++)
                     {
                         if (wad.HelperPointers[n] == i)
                         {
-                            _meshPointers[n] = (uint)totalMeshSize;
+                            _meshPointers[n] = (uint) totalMeshSize;
                         }
                     }
 
-                    totalMeshSize += (int)meshSize;
+                    totalMeshSize += (int) meshSize;
                 }
 
-                offset2 = writer.BaseStream.Position;
+                var offset2 = writer.BaseStream.Position;
                 // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
+                uint meshDataSize = (uint) ((offset2 - offset - 4) / 2);
 
                 // Save the size of the meshes
                 writer.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -180,80 +62,80 @@ namespace TombEditor.Compilers
                 writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                 // Write mesh pointers
-                writer.Write(_numMeshPointers);
+                writer.Write((uint) _meshPointers.Length);
                 writer.WriteBlockArray(_meshPointers);
 
                 // Write animations' data
-                writer.Write(_numAnimations);
+                writer.Write((uint) _animations.Length);
                 writer.WriteBlockArray(_animations);
 
-                writer.Write(_numStateChanges);
+                writer.Write((uint) _stateChanges.Length);
                 writer.WriteBlockArray(_stateChanges);
 
-                writer.Write(_numAnimDispatches);
+                writer.Write((uint) _animDispatches.Length);
                 writer.WriteBlockArray(_animDispatches);
 
-                writer.Write(_numAnimCommands);
+                writer.Write((uint) _animCommands.Length);
                 writer.WriteBlockArray(_animCommands);
 
-                writer.Write(_numMeshTrees);
+                writer.Write((uint) _meshTrees.Length);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write(_numFrames);
+                writer.Write((uint) _frames.Length);
                 writer.WriteBlockArray(_frames);
 
-                writer.Write(_numMoveables);
+                writer.Write((uint) _moveables.Length);
                 writer.WriteBlockArray(_moveables);
 
-                writer.Write(_numStaticMeshes);
+                writer.Write((uint) _staticMeshes.Length);
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                _spr = new byte[] { 0x53, 0x50, 0x52 };
+                _spr = new byte[] {0x53, 0x50, 0x52};
                 writer.WriteBlockArray(_spr);
 
-                writer.Write(_numSpriteTextures);
+                writer.Write((uint) _spriteTextures.Length);
                 writer.WriteBlockArray(_spriteTextures);
 
-                writer.Write(_numSpriteSequences);
+                writer.Write((uint) _spriteSequences.Length);
                 writer.WriteBlockArray(_spriteSequences);
 
                 // Write camera, flyby and sound sources
-                writer.Write(_numCameras);
+                writer.Write((uint) _cameras.Length);
                 writer.WriteBlockArray(_cameras);
 
-                writer.Write(_numFlyByCameras);
+                writer.Write((uint) _flyByCameras.Length);
                 writer.WriteBlockArray(_flyByCameras);
 
-                writer.Write(_numSoundSources);
+                writer.Write((uint) _soundSources.Length);
                 writer.WriteBlockArray(_soundSources);
 
                 // Write pathfinding data
-                writer.Write(_numBoxes);
+                writer.Write((uint) _boxes.Length);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write(_numOverlaps);
+                writer.Write((uint) _overlaps.Length);
                 writer.WriteBlockArray(_overlaps);
 
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone1_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 //   writer.WriteBlockArray(Zones);
@@ -262,7 +144,7 @@ namespace TombEditor.Compilers
                 writer.Write(_numAnimatedTextures);
 
                 // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                short numSets = (short)_animatedTextures.Length;
+                short numSets = (short) _animatedTextures.Length;
                 writer.Write(numSets);
 
                 for (var i = 0; i < _animatedTextures.Length; i++)
@@ -276,20 +158,19 @@ namespace TombEditor.Compilers
                 }
 
                 // Write object textures
-                var tex = new byte[] { 0x00, 0x54, 0x45, 0x58 };
+                var tex = new byte[] {0x00, 0x54, 0x45, 0x58};
                 writer.WriteBlockArray(tex);
 
                 _objectTextures = _tempObjectTextures.ToArray();
-                _numObjectTextures = (uint)_objectTextures.Length;
 
-                writer.Write(_numObjectTextures);
+                writer.Write((uint) _objectTextures.Length);
                 writer.WriteBlockArray(_objectTextures);
 
                 // Write items and AI objects
-                writer.Write(_numItems);
+                writer.Write((uint) _items.Length);
                 writer.WriteBlockArray(_items);
 
-                writer.Write(_numAiItems);
+                writer.Write((uint) _aiItems.Length);
                 writer.WriteBlockArray(_aiItems);
 
                 const short numDemo = 0;
@@ -303,17 +184,16 @@ namespace TombEditor.Compilers
                 using (var readerSounds = new BinaryReaderEx(File.OpenRead(
                     _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx")))
                 {
-
                     /*byte[] sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);
                     readerSounds.ReadBytes(370 * 2);*/
 
                     soundMap = readerSounds.ReadBytes(370 * 2);
-                    _numSoundDetails = (uint)readerSounds.ReadInt32();
-                    soundDetails = readerSounds.ReadBytes((int)_numSoundDetails * 8);
+                    _numSoundDetails = (uint) readerSounds.ReadInt32();
+                    soundDetails = readerSounds.ReadBytes((int) _numSoundDetails * 8);
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    numSampleIndices = (uint)readerSounds.ReadInt32();
-                    sampleIndices = readerSounds.ReadBytes((int)numSampleIndices * 4);
+                    numSampleIndices = (uint) readerSounds.ReadInt32();
+                    sampleIndices = readerSounds.ReadBytes((int) numSampleIndices * 4);
                 }
 
                 writer.Write(soundMap);
@@ -336,7 +216,7 @@ namespace TombEditor.Compilers
                 {
                     ReportProgress(90, "Writing final level");
 
-                    var version = new byte[] { 0x54, 0x52, 0x34, 0x00 };
+                    var version = new byte[] {0x54, 0x52, 0x34, 0x00};
                     writer.WriteBlockArray(version);
 
                     ReportProgress(95, "Writing textures");
@@ -359,11 +239,11 @@ namespace TombEditor.Compilers
 
                     ReportProgress(95, "Compressing geometry data");
 
-                    var geometrySize = (int)reader.BaseStream.Length;
+                    var geometrySize = (int) reader.BaseStream.Length;
                     var levelData = reader.ReadBytes(geometrySize);
                     var buffer = Utils.CompressDataZLIB(levelData);
-                    _levelUncompressedSize = (uint)geometrySize;
-                    _levelCompressedSize = (uint)buffer.Length;
+                    _levelUncompressedSize = (uint) geometrySize;
+                    _levelCompressedSize = (uint) buffer.Length;
 
                     ReportProgress(80, "Writing goemetry data");
 
@@ -393,11 +273,10 @@ namespace TombEditor.Compilers
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(File.OpenWrite(_dest)))
             {
-
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 // Write version
-                var version = new byte[] { 0x38, 0x00, 0x18, 0xFF };
+                var version = new byte[] {0x38, 0x00, 0x18, 0xFF};
                 writer.WriteBlockArray(version);
 
                 using (var readerPalette = new BinaryReader(File.OpenRead("Editor\\palette.bin")))
@@ -428,12 +307,12 @@ namespace TombEditor.Compilers
                 const int filler = 0;
                 writer.Write(filler);
 
-                _numRooms = (ushort)_rooms.Length;
-                writer.Write(_numRooms);
+                var numRooms = (ushort) _rooms.Length;
+                writer.Write(numRooms);
 
                 long offset;
                 long offset2;
-                for (var i = 0; i < _numRooms; i++)
+                for (var i = 0; i < _rooms.Length; i++)
                 {
                     writer.WriteBlock(_rooms[i].Info);
 
@@ -442,34 +321,27 @@ namespace TombEditor.Compilers
                     const int numdw = 0;
                     writer.Write(numdw);
 
-                    var tmp = (ushort)_rooms[i].Vertices.Length;
+                    var tmp = (ushort) _rooms[i].Vertices.Length;
                     writer.Write(tmp);
                     writer.WriteBlockArray(_rooms[i].Vertices);
 
-                    tmp = (ushort)_rooms[i].Rectangles.Length;
+                    tmp = (ushort) _rooms[i].Rectangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
                         for (var k = 0; k < _rooms[i].Rectangles.Length; k++)
                         {
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[0]);
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[1]);
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[2]);
-                            writer.Write(_rooms[i].Rectangles[k].Vertices[3]);
-                            writer.Write(_rooms[i].Rectangles[k].Texture);
+                            _rooms[i].Rectangles[k].Write(writer);
                         }
                     }
 
-                    tmp = (ushort)_rooms[i].Triangles.Length;
+                    tmp = (ushort) _rooms[i].Triangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
                         for (var k = 0; k < _rooms[i].Triangles.Length; k++)
                         {
-                            writer.Write(_rooms[i].Triangles[k].Vertices[0]);
-                            writer.Write(_rooms[i].Triangles[k].Vertices[1]);
-                            writer.Write(_rooms[i].Triangles[k].Vertices[2]);
-                            writer.Write(_rooms[i].Triangles[k].Texture);
+                            _rooms[i].Triangles[k].Write(writer);
                         }
                     }
 
@@ -480,7 +352,7 @@ namespace TombEditor.Compilers
                     // Now save current offset and calculate the size of the geometry
                     offset2 = writer.BaseStream.Position;
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    ushort roomGeometrySize = (ushort)((offset2 - offset - 4) / 2);
+                    ushort roomGeometrySize = (ushort) ((offset2 - offset - 4) / 2);
 
                     // Save the size of the geometry
                     writer.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -488,7 +360,7 @@ namespace TombEditor.Compilers
                     writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                     // Write portals
-                    tmp = (ushort)_rooms[i].Portals.Length;
+                    tmp = (ushort) _rooms[i].Portals.Length;
                     writer.WriteBlock(tmp);
                     if (tmp != 0)
                         writer.WriteBlockArray(_rooms[i].Portals);
@@ -503,7 +375,7 @@ namespace TombEditor.Compilers
                     writer.Write(_rooms[i].AmbientIntensity2);
 
                     // Write lights
-                    tmp = (ushort)_rooms[i].Lights.Length;
+                    tmp = (ushort) _rooms[i].Lights.Length;
                     writer.WriteBlock(tmp);
 
                     for (var j = 0; j < tmp; j++)
@@ -515,14 +387,14 @@ namespace TombEditor.Compilers
 
                         int intensity = light.Intensity;
                         // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                        int falloff = (int)light.Out;
+                        int falloff = (int) light.Out;
 
                         writer.Write(intensity);
                         writer.Write(falloff);
                     }
 
                     // Write static meshes
-                    tmp = (ushort)_rooms[i].StaticMeshes.Length;
+                    tmp = (ushort) _rooms[i].StaticMeshes.Length;
                     writer.WriteBlock(tmp);
                     if (tmp != 0)
                         writer.WriteBlockArray(_rooms[i].StaticMeshes);
@@ -536,92 +408,37 @@ namespace TombEditor.Compilers
                 }
 
                 // Write floordata
-                _numFloorData = (uint)_floorData.Length;
-                writer.Write(_numFloorData);
+                var numFloorData = (uint) _floorData.Length;
+                writer.Write(numFloorData);
                 writer.WriteBlockArray(_floorData);
 
                 // Write meshes
                 offset = writer.BaseStream.Position;
 
-                _numMeshData = 0;
-                writer.Write(_numMeshData);
+                const int numMeshData = 0;
+                writer.Write(numMeshData);
                 var totalMeshSize = 0;
 
                 for (var i = 0; i < _meshes.Length; i++)
                 {
-                    var meshOffset1 = writer.BaseStream.Position;
+                    var meshSize = _meshes[i].WriteTr3(writer);
 
-                    writer.WriteBlock(_meshes[i].Centre);
-                    writer.Write(_meshes[i].Radius);
-
-                    writer.Write(_meshes[i].NumVertices);
-                    writer.WriteBlockArray(_meshes[i].Vertices);
-
-                    writer.Write(_meshes[i].NumNormals);
-                    if (_meshes[i].NumNormals > 0)
-                    {
-                        writer.WriteBlockArray(_meshes[i].Normals);
-                    }
-                    else
-                    {
-                        writer.WriteBlockArray(_meshes[i].Lights);
-                    }
-
-                    writer.Write(_meshes[i].NumTexturedRectangles);
-                    for (var k = 0; k < _meshes[i].NumTexturedRectangles; k++)
-                    {
-                        writer.Write(_meshes[i].TexturedRectangles[k].Vertices[0]);
-                        writer.Write(_meshes[i].TexturedRectangles[k].Vertices[1]);
-                        writer.Write(_meshes[i].TexturedRectangles[k].Vertices[2]);
-                        writer.Write(_meshes[i].TexturedRectangles[k].Vertices[3]);
-                        writer.Write(_meshes[i].TexturedRectangles[k].Texture);
-
-                    }
-                    // writer.WriteBlockArray(Meshes[i].TexturedRectangles);
-
-                    writer.Write(_meshes[i].NumTexturedTriangles);
-                    for (var k = 0; k < _meshes[i].NumTexturedTriangles; k++)
-                    {
-                        writer.Write(_meshes[i].TexturedTriangles[k].Vertices[0]);
-                        writer.Write(_meshes[i].TexturedTriangles[k].Vertices[1]);
-                        writer.Write(_meshes[i].TexturedTriangles[k].Vertices[2]);
-                        writer.Write(_meshes[i].TexturedTriangles[k].Texture);
-
-                    }
-
-                    //  writer.WriteBlockArray(Meshes[i].TexturedTriangles);
-
-                    writer.Write(_meshes[i].NumColoredRectangles);
-                    //writer.WriteBlockArray(Meshes[i].ColoredRectangles);
-
-                    writer.Write(_meshes[i].NumColoredTriangles);
-                    //writer.WriteBlockArray(Meshes[i].ColoredTriangles);
-
-                    var meshOffset2 = writer.BaseStream.Position;
-                    var meshSize = meshOffset2 - meshOffset1;
-                    if (meshSize % 4 != 0)
-                    {
-                        const ushort tempFiller = 0;
-                        writer.Write(tempFiller);
-                        meshSize += 2;
-                    }
-
-                    for (var n = 0; n < _numMeshPointers; n++)
+                    for (var n = 0; n < _meshPointers.Length; n++)
                     {
                         if (wad.HelperPointers[n] == i)
                         {
-                            _meshPointers[n] = (uint)totalMeshSize;
+                            _meshPointers[n] = (uint) totalMeshSize;
                         }
                     }
 
-                    totalMeshSize += (int)meshSize;
+                    totalMeshSize += (int) meshSize;
 
                     //if (i < NumMeshes - 1) MeshPointers[i + 1] = MeshPointers[i] + (uint)meshSize;
                 }
 
                 offset2 = writer.BaseStream.Position;
                 // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
+                uint meshDataSize = (uint) ((offset2 - offset - 4) / 2);
 
                 // Save the size of the meshes
                 writer.BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -629,54 +446,41 @@ namespace TombEditor.Compilers
                 writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                 // Write mesh pointers
-                writer.Write(_numMeshPointers);
+                writer.Write((uint) _meshPointers.Length);
                 writer.WriteBlockArray(_meshPointers);
 
                 // Write animations' data
-                writer.Write(_numAnimations);
+                writer.Write((uint) _animations.Length);
                 foreach (var anim in _animations)
                 {
-                    writer.Write(anim.FrameOffset);
-                    writer.Write(anim.FrameRate);
-                    writer.Write(anim.FrameSize);
-                    writer.Write(anim.StateID);
-                    writer.Write(anim.Speed);
-                    writer.Write(anim.Accel);
-                    writer.Write(anim.FrameStart);
-                    writer.Write(anim.FrameEnd);
-                    writer.Write(anim.NextAnimation);
-                    writer.Write(anim.NextFrame);
-                    writer.Write(anim.NumStateChanges);
-                    writer.Write(anim.StateChangeOffset);
-                    writer.Write(anim.NumAnimCommands);
-                    writer.Write(anim.AnimCommand);
+                    anim.Write(writer);
                 }
 
-                writer.Write(_numStateChanges);
+                writer.Write((uint) _stateChanges.Length);
                 writer.WriteBlockArray(_stateChanges);
 
-                writer.Write(_numAnimDispatches);
+                writer.Write((uint) _animDispatches.Length);
                 writer.WriteBlockArray(_animDispatches);
 
-                writer.Write(_numAnimCommands);
+                writer.Write((uint) _animCommands.Length);
                 writer.WriteBlockArray(_animCommands);
 
-                writer.Write(_numMeshTrees);
+                writer.Write((uint) _meshTrees.Length);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write(_numFrames);
+                writer.Write((uint) _frames.Length);
                 writer.WriteBlockArray(_frames);
 
-                writer.Write(_numMoveables);
+                writer.Write((uint) _moveables.Length);
                 writer.WriteBlockArray(_moveables);
 
-                writer.Write(_numStaticMeshes);
+                writer.Write((uint) _staticMeshes.Length);
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
                 using (var readerSprites = new BinaryReader(File.OpenRead("sprites3.bin")))
                 {
-                    var bufferSprites = readerSprites.ReadBytes((int)readerSprites.BaseStream.Length);
+                    var bufferSprites = readerSprites.ReadBytes((int) readerSprites.BaseStream.Length);
                     writer.Write(bufferSprites);
                 }
 
@@ -687,38 +491,38 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(SpriteSequences);
                 */
                 // Write camera, flyby and sound sources
-                writer.Write(_numCameras);
+                writer.Write((uint) _cameras.Length);
                 writer.WriteBlockArray(_cameras);
 
-                writer.Write(_numSoundSources);
+                writer.Write((uint) _soundSources.Length);
                 writer.WriteBlockArray(_soundSources);
 
                 // Write pathfinding data
-                writer.Write(_numBoxes);
+                writer.Write((uint) _boxes.Length);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write(_numOverlaps);
+                writer.Write((uint) _overlaps.Length);
                 writer.WriteBlockArray(_overlaps);
 
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone1_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < _numBoxes; i++)
+                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 //   writer.WriteBlockArray(Zones);
@@ -726,9 +530,7 @@ namespace TombEditor.Compilers
                 // Write animated textures
                 writer.Write(_numAnimatedTextures);
 
-                // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                short numSets = (short)_animatedTextures.Length;
-                writer.Write(numSets);
+                writer.Write((short) _animatedTextures.Length);
 
                 for (var i = 0; i < _animatedTextures.Length; i++)
                 {
@@ -743,10 +545,9 @@ namespace TombEditor.Compilers
 
                 // Write object textures
                 _objectTextures = _tempObjectTextures.ToArray();
-                _numObjectTextures = (uint)_objectTextures.Length;
 
-                writer.Write(_numObjectTextures);
-                for (var j = 0; j < _numObjectTextures; j++)
+                writer.Write((uint) _objectTextures.Length);
+                for (var j = 0; j < _objectTextures.Length; j++)
                 {
                     writer.Write(_objectTextures[j].Attributes);
                     writer.Write(_objectTextures[j].Tile);
@@ -754,7 +555,7 @@ namespace TombEditor.Compilers
                 }
 
                 // Write items and AI objects
-                writer.Write(_numItems);
+                writer.Write((uint) _items.Length);
                 writer.WriteBlockArray(_items);
 
                 var lightmap = new byte[8192];
@@ -770,10 +571,10 @@ namespace TombEditor.Compilers
                     new BinaryReaderEx(
                         File.OpenRead(@"Graphics\Wads\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx")))
                 {
-                    sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
+                    sfxBuffer = readerSounds.ReadBytes((int) readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);
                     readerSounds.ReadBytes(370 * 2);
-                    _numSoundDetails = (uint)readerSounds.ReadInt16();
+                    _numSoundDetails = (uint) readerSounds.ReadInt16();
                 }
 
                 writer.WriteBlockArray(sfxBuffer);

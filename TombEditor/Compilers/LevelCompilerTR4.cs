@@ -46,59 +46,37 @@ namespace TombEditor.Compilers
         private uint _levelUncompressedSize;
         private uint _levelCompressedSize;
 
-        private ushort _numRooms;
         private tr_room[] _rooms;
 
-        private uint _numFloorData;
         private ushort[] _floorData;
 
-        private uint _numMeshData;
         private tr_mesh[] _meshes;
 
-        private uint _numMeshPointers;
         private uint[] _meshPointers;
-        private uint _numAnimations;
         private tr_animation[] _animations;
-        private uint _numStateChanges;
         private tr_state_change[] _stateChanges;
-        private uint _numAnimDispatches;
         private tr_anim_dispatch[] _animDispatches;
-        private uint _numAnimCommands;
         private short[] _animCommands;
-        private uint _numMeshTrees;
         private int[] _meshTrees;
-        private uint _numFrames;
         private short[] _frames;
-        private uint _numMoveables;
         private tr_moveable[] _moveables;
-        private uint _numStaticMeshes;
         private tr_staticmesh[] _staticMeshes;
 
         private byte[] _spr;
 
-        private uint _numSpriteTextures;
         private tr_sprite_texture[] _spriteTextures;
-        private uint _numSpriteSequences;
         private tr_sprite_sequence[] _spriteSequences;
-        private uint _numCameras;
         private tr_camera[] _cameras;
-        private uint _numFlyByCameras;
         private tr4_flyby_camera[] _flyByCameras;
-        private uint _numSoundSources;
         private tr_sound_source[] _soundSources;
-        private uint _numBoxes;
         private tr_box[] _boxes;
-        private uint _numOverlaps;
         private ushort[] _overlaps;
         private tr_zone[] _zones;
         private uint _numAnimatedTextures;
         private tr_animatedTextures_set[] _animatedTextures;
 
-        private uint _numObjectTextures;
         private tr_object_texture[] _objectTextures;
-        private uint _numItems;
         private tr_item[] _items;
-        private uint _numAiItems;
         private tr_ai_item[] _aiItems;
 
         private uint _numSoundDetails;
@@ -256,10 +234,9 @@ namespace TombEditor.Compilers
                 tempSoundSources.Add(source);
             }
 
-            _numSoundSources = (uint) tempSoundSources.Count;
             _soundSources = tempSoundSources.ToArray();
 
-            ReportProgress(41, "    Number of sound sources: " + _numSoundSources);
+            ReportProgress(41, "    Number of sound sources: " + _soundSources.Length);
         }
 
         private void BuildCamerasAndSinks()
@@ -323,7 +300,6 @@ namespace TombEditor.Compilers
                 tempCameras.Add(camera);
             }
 
-            _numCameras = (uint) tempCameras.Count;
             _cameras = tempCameras.ToArray();
 
             var tempFlyby = new List<tr4_flyby_camera>();
@@ -360,7 +336,6 @@ namespace TombEditor.Compilers
 
             tempFlyby.Sort(new ComparerFlyBy());
 
-            _numFlyByCameras = (uint) tempFlyby.Count;
             _flyByCameras = tempFlyby.ToArray();
 
             ReportProgress(45, "    Number of cameras: " + _cameraTable.Count);
@@ -381,9 +356,8 @@ namespace TombEditor.Compilers
                     reader.ReadUInt32();
 
                     //Sprite texture array
-                    _numSpriteTextures = reader.ReadUInt32();
-                    _spriteTextures = new tr_sprite_texture[_numSpriteTextures];
-                    for (int i = 0; i < _numSpriteTextures; i++)
+                    _spriteTextures = new tr_sprite_texture[reader.ReadUInt32()];
+                    for (int i = 0; i < _spriteTextures.Length; i++)
                     {
                         byte[] buffer;
                         reader.ReadBlockArray(out buffer, 16);
@@ -448,9 +422,7 @@ namespace TombEditor.Compilers
                     }
 
                     // Sprite sequences
-                    _numSpriteSequences = reader.ReadUInt32();
-                    _spriteSequences = new tr_sprite_sequence[_numSpriteSequences];
-                    reader.ReadBlockArray(out _spriteSequences, _numSpriteSequences);
+                    reader.ReadBlockArray(out _spriteSequences, reader.ReadUInt32());
                 }
         }
 
@@ -462,9 +434,8 @@ namespace TombEditor.Compilers
 
             ReportProgress(12, "    Number of animations: " + wad.Animations.Count);
 
-            _numAnimations = (uint) wad.Animations.Count;
             _animations = new tr_animation[wad.Animations.Count];
-            for (int i = 0; i < _numAnimations; i++)
+            for (int i = 0; i < _animations.Length; i++)
             {
                 _animations[i] = new tr_animation
                 {
@@ -489,9 +460,8 @@ namespace TombEditor.Compilers
 
             ReportProgress(13, "    Number of state changes: " + wad.Changes.Count);
 
-            _numStateChanges = (uint) wad.Changes.Count;
             _stateChanges = new tr_state_change[wad.Changes.Count];
-            for (int i = 0; i < _numStateChanges; i++)
+            for (int i = 0; i < _stateChanges.Length; i++)
             {
                 _stateChanges[i] = new tr_state_change
                 {
@@ -503,9 +473,8 @@ namespace TombEditor.Compilers
 
             ReportProgress(14, "    Number of animation dispatches: " + wad.Dispatches.Count);
 
-            _numAnimDispatches = (uint) wad.Dispatches.Count;
             _animDispatches = new tr_anim_dispatch[wad.Dispatches.Count];
-            for (int i = 0; i < _numAnimDispatches; i++)
+            for (int i = 0; i < _animDispatches.Length; i++)
             {
                 _animDispatches[i] = new tr_anim_dispatch
                 {
@@ -518,41 +487,36 @@ namespace TombEditor.Compilers
 
             ReportProgress(15, "    Number of animation commands: " + wad.Commands.Count);
 
-            _numAnimCommands = (uint) wad.Commands.Count;
             _animCommands = new short[wad.Commands.Count];
-            for (int i = 0; i < _numAnimCommands; i++)
+            for (int i = 0; i < _animCommands.Length; i++)
             {
                 _animCommands[i] = wad.Commands[i];
             }
 
-            _numMeshTrees = (uint) wad.Links.Count;
             _meshTrees = new int[wad.Links.Count];
-            for (int i = 0; i < _numMeshTrees; i++)
+            for (int i = 0; i < _meshTrees.Length; i++)
             {
                 _meshTrees[i] = wad.Links[i];
             }
 
             ReportProgress(16, "    Number of keyframes: " + wad.KeyFrames.Count);
 
-            _numFrames = (uint) wad.KeyFrames.Count;
             _frames = new short[wad.KeyFrames.Count];
-            for (int i = 0; i < _numFrames; i++)
+            for (int i = 0; i < _frames.Length; i++)
             {
                 _frames[i] = wad.KeyFrames[i];
             }
 
-            _numMeshPointers = (uint) wad.Pointers.Count;
             _meshPointers = new uint[wad.Pointers.Count];
-            for (int i = 0; i < _numMeshPointers; i++)
+            for (int i = 0; i < _meshPointers.Length; i++)
             {
                 _meshPointers[i] = wad.Pointers[i];
             }
 
             ReportProgress(17, "    Number of moveables: " + wad.Moveables.Count);
 
-            _numMoveables = (uint) wad.Moveables.Count;
             _moveables = new tr_moveable[wad.Moveables.Count];
-            for (int i = 0; i < _numMoveables; i++)
+            for (int i = 0; i < _moveables.Length; i++)
             {
                 _moveables[i] = new tr_moveable
                 {
@@ -567,9 +531,8 @@ namespace TombEditor.Compilers
 
             ReportProgress(18, "    Number of static meshes: " + wad.StaticMeshes.Count);
 
-            _numStaticMeshes = (uint) wad.StaticMeshes.Count;
             _staticMeshes = new tr_staticmesh[wad.StaticMeshes.Count];
-            for (int i = 0; i < _numStaticMeshes; i++)
+            for (int i = 0; i < _staticMeshes.Length; i++)
             {
                 _staticMeshes[i] = new tr_staticmesh
                 {
@@ -1899,7 +1862,6 @@ namespace TombEditor.Compilers
                 tempItems.Add(item);
             }
 
-            _numItems = (uint) tempItems.Count;
             _items = tempItems.ToArray();
 
             foreach (var instance in _aiObjectsTable.Keys.Select(obj => (MoveableInstance) _editor.Level.Objects[obj]))
@@ -1935,11 +1897,10 @@ namespace TombEditor.Compilers
                 tempAiObjects.Add(item);
             }
 
-            _numAiItems = (uint) tempAiObjects.Count;
             _aiItems = tempAiObjects.ToArray();
 
-            ReportProgress(30, "    Number of items: " + _numItems);
-            ReportProgress(31, "    Number of AI objects: " + _numAiItems);
+            ReportProgress(30, "    Number of items: " + _items.Length);
+            ReportProgress(31, "    Number of AI objects: " + _aiItems.Length);
         }
 
         private int TextureInfoExists(tr_object_texture txt)

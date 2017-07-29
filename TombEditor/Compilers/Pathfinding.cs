@@ -480,13 +480,9 @@ namespace TombEditor.Compilers
                 aFlyZone++;
             }
 
-            _numBoxes = (uint) _boxes.Length;
-            _numOverlaps = (uint) _overlaps.Length;
-
-
-            ReportProgress(60, "    Number of boxes: " + _numBoxes);
-            ReportProgress(60, "    Number of overlaps: " + _numOverlaps);
-            ReportProgress(60, "    Number of zones: " + _numBoxes);
+            ReportProgress(60, "    Number of boxes: " + _boxes.Length);
+            ReportProgress(60, "    Number of overlaps: " + _overlaps.Length);
+            ReportProgress(60, "    Number of zones: " + _boxes.Length);
         }
 
         private bool BoxesOverlap(int b1, int b2, out bool jump)
