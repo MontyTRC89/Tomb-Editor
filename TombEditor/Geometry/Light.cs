@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Drawing;
-using SharpDX;
+﻿using SharpDX;
 
 namespace TombEditor.Geometry
 {
@@ -29,11 +24,5 @@ namespace TombEditor.Geometry
         {
             return (Light)(this.MemberwiseClone());
         }
-    }
-
-    public struct RayPathPoint
-    {
-        public int X;
-        public int Z;
     }
 }

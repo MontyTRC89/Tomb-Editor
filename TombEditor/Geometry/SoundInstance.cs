@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
-    public class SoundInstance : IObjectInstance
+    public class SoundInstance : ObjectInstance
     {
-        public short SoundID { get; set; }
+        public short SoundId { get; set; }
 
         public short Flags { get; set; }
 
@@ -15,14 +10,14 @@ namespace TombEditor.Geometry
             : base(ObjectInstanceType.Sound, id, room)
         { }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             return new SoundInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
@@ -35,7 +30,7 @@ namespace TombEditor.Geometry
                     [4] = Bits[4]
                 },
                 Type = Type,
-                SoundID = SoundID,
+                SoundId = SoundId,
                 Flags = Flags
             };
         }

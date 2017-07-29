@@ -1,8 +1,4 @@
 ﻿using SharpDX;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TombEditor.Geometry
 {
@@ -18,30 +14,29 @@ namespace TombEditor.Geometry
         FlyByCamera
     }
 
-    public abstract class IObjectInstance
+    public abstract class ObjectInstance
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public Room Room { get; set; }
         public Vector3 Position { get; set; }
-        public short OCB { get; set; }
+        public short Ocb { get; set; }
         public short Rotation { get; set; }
         public bool Invisible { get; set; }
         public bool ClearBody { get; set; }
-        public bool[] Bits { get; set; }
+        public bool[] Bits { get; set; } = { false, false, false, false, false };
         public ObjectInstanceType Type { get; set; }
         public byte X { get; set; }
         public byte Z { get; set; }
         public short Y { get; set; }
 
-        public IObjectInstance(ObjectInstanceType type, int id, Room room)
+        protected ObjectInstance(ObjectInstanceType type, int id, Room room)
         {
-            ID = id;
+            Id = id;
             Room = room;
             Type = type;
-            Bits = new bool[] { false, false, false, false, false };
         }
 
-        public abstract IObjectInstance Clone();
+        public abstract ObjectInstance Clone();
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {

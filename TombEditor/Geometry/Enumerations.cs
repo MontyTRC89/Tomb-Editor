@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TombEditor.Geometry
 {
@@ -25,12 +23,12 @@ namespace TombEditor.Geometry
 
     public struct PickingResult
     {
-        public PickingElementType ElementType;
-        public int SubElementType;
-        public int Element;
-        public int SubElement;
-        public bool Gizmo;
-        public GizmoAxis GizmoAxis;
+        public PickingElementType _elementType;
+        public int _subElementType;
+        public int _element;
+        public int _subElement;
+        public bool _gizmo;
+        public GizmoAxis _gizmoAxis;
     }
 
     public enum GizmoAxis : byte
@@ -61,6 +59,7 @@ namespace TombEditor.Geometry
         Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum TextureTileType : byte
     {
         Rectangle,
@@ -128,8 +127,8 @@ namespace TombEditor.Geometry
         Variable = 10,
         PlayAudio = 11,
         FlyByCamera = 12,
-        CutsceneOrParameterNG = 13,
-        FMV = 14
+        CutsceneOrParameterNg = 13,
+        Fmv = 14
     }
 
     [Flags]
@@ -160,11 +159,13 @@ namespace TombEditor.Geometry
         DirectionY
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum SplitType : byte
     {
         None, NWtoSE, NEtoSW
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum DiagonalSplit : byte
     {
         None = 0,
@@ -183,6 +184,7 @@ namespace TombEditor.Geometry
         Wall = 4
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BlockFaces : byte
     {
         NorthQA = 0, SouthQA = 1, WestQA = 2, EastQA = 3, DiagonalQA = 4,

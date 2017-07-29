@@ -1,31 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TombLib.Graphics;
-using TombLib.Wad;
-using SharpDX;
+﻿using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
-    public class StaticMeshInstance : IObjectInstance
+    public class StaticMeshInstance : ObjectInstance
     {
         public StaticModel Model { get; set; }
-        public int ObjectID { get; set; }
+        public int ObjectId { get; set; }
         public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
 
         public StaticMeshInstance(int id, Room room)
             : base(ObjectInstanceType.StaticMesh, id, room)
         { }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             return new StaticMeshInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
@@ -39,7 +33,7 @@ namespace TombEditor.Geometry
                 },
                 Type = Type,
                 Model = Model,
-                ObjectID = ObjectID,
+                ObjectId = ObjectId,
                 Color = Color
             };
         }

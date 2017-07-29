@@ -37,40 +37,40 @@ namespace TombEditor
 
             OriginalRoom = _editor.SelectedRoom;
 
-            if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
+            if (_editor.PickingResult._elementType == PickingElementType.Moveable)
             {
                 ElementType = ClipboardElementType.Moveable;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
+            else if (_editor.PickingResult._elementType == PickingElementType.StaticMesh)
             {
                 ElementType = ClipboardElementType.StaticMesh;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.Camera)
+            else if (_editor.PickingResult._elementType == PickingElementType.Camera)
             {
                 ElementType = ClipboardElementType.Camera;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
+            else if (_editor.PickingResult._elementType == PickingElementType.FlyByCamera)
             {
                 ElementType = ClipboardElementType.FlybyCamera;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.Sink)
+            else if (_editor.PickingResult._elementType == PickingElementType.Sink)
             {
                 ElementType = ClipboardElementType.Sink;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
+            else if (_editor.PickingResult._elementType == PickingElementType.SoundSource)
             {
                 ElementType = ClipboardElementType.SoundSource;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
-            else if (_editor.PickingResult.ElementType == PickingElementType.Light)
+            else if (_editor.PickingResult._elementType == PickingElementType.Light)
             {
                 ElementType = ClipboardElementType.Light;
-                ElementID = _editor.PickingResult.Element;
+                ElementID = _editor.PickingResult._element;
             }
         }
 
@@ -82,17 +82,17 @@ namespace TombEditor
 
             bool hasPastedSomething = false;
 
-            if (_editor.PickingResult.ElementType == PickingElementType.Block)
+            if (_editor.PickingResult._elementType == PickingElementType.Block)
             {
-                int x = _editor.PickingResult.Element >> 5;
-                int z = _editor.PickingResult.Element & 31;
+                int x = _editor.PickingResult._element >> 5;
+                int z = _editor.PickingResult._element & 31;
 
                 Block block = room.Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                 Vector3 position = new Vector3(x * 1024 + 512, y * 256, z * 1024 + 512);
 
-                IObjectInstance instance;
+                ObjectInstance instance;
 
                 switch (ElementType)
                 {
@@ -121,11 +121,11 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectId();
+                        instance.Id = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
-                        _editor.Level.Objects.Add(instance.ID, instance);
-                        room.Cameras.Add(instance.ID);
+                        _editor.Level.Objects.Add(instance.Id, instance);
+                        room.Cameras.Add(instance.Id);
 
                         hasPastedSomething = true;
 
@@ -138,11 +138,11 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectId();
+                        instance.Id = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
-                        _editor.Level.Objects.Add(instance.ID, instance);
-                        room.FlyByCameras.Add(instance.ID);
+                        _editor.Level.Objects.Add(instance.Id, instance);
+                        room.FlyByCameras.Add(instance.Id);
 
                         hasPastedSomething = true;
 
@@ -155,11 +155,11 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectId();
+                        instance.Id = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
-                        _editor.Level.Objects.Add(instance.ID, instance);
-                        room.Sinks.Add(instance.ID);
+                        _editor.Level.Objects.Add(instance.Id, instance);
+                        room.Sinks.Add(instance.Id);
 
                         hasPastedSomething = true;
 
@@ -172,11 +172,11 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectId();
+                        instance.Id = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
-                        _editor.Level.Objects.Add(instance.ID, instance);
-                        room.SoundSources.Add(instance.ID);
+                        _editor.Level.Objects.Add(instance.Id, instance);
+                        room.SoundSources.Add(instance.Id);
 
                         hasPastedSomething = true;
 
@@ -189,11 +189,11 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectId();
+                        instance.Id = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
-                        _editor.Level.Objects.Add(instance.ID, instance);
-                        room.Moveables.Add(instance.ID);
+                        _editor.Level.Objects.Add(instance.Id, instance);
+                        room.Moveables.Add(instance.Id);
 
                         hasPastedSomething = true;
 
@@ -206,11 +206,11 @@ namespace TombEditor
                         instance.Y = (short)y;
                         instance.Z = (byte)z;
                         instance.Position = position;
-                        instance.ID = _editor.Level.GetNewObjectId();
+                        instance.Id = _editor.Level.GetNewObjectId();
                         instance.Room = room;
 
-                        _editor.Level.Objects.Add(instance.ID, instance);
-                        room.StaticMeshes.Add(instance.ID);
+                        _editor.Level.Objects.Add(instance.Id, instance);
+                        room.StaticMeshes.Add(instance.Id);
 
                         hasPastedSomething = true;
 

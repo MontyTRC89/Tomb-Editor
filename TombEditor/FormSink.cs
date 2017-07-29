@@ -31,16 +31,16 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            SinkInstance sink = (SinkInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            SinkInstance sink = (SinkInstance)_editor.Level.Objects[_editor.PickingResult._element];
 
             comboStrength.SelectedIndex = sink.Strength;
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            SinkInstance sink = (SinkInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            SinkInstance sink = (SinkInstance)_editor.Level.Objects[_editor.PickingResult._element];
             sink.Strength = (short)comboStrength.SelectedIndex;
-            _editor.Level.Objects[_editor.PickingResult.Element] = sink;
+            _editor.Level.Objects[_editor.PickingResult._element] = sink;
 
             DialogResult = DialogResult.OK;
             this.Close();

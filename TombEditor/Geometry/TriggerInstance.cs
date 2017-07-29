@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
-    public class TriggerInstance : IObjectInstance
+    public class TriggerInstance : ObjectInstance
     {
         public byte NumXBlocks { get; set; }
         public byte NumZBlocks { get; set; }
@@ -14,8 +9,6 @@ namespace TombEditor.Geometry
         public int Target { get; set; }
         public short Timer { get; set; }
         public bool OneShot { get; set; }
-
-        private Editor _editor = Editor.Instance;
 
         public TriggerInstance(int id, Room room)
             : base(ObjectInstanceType.Trigger, id, room)
@@ -54,12 +47,12 @@ namespace TombEditor.Geometry
             if (TriggerType == TriggerType.Trigger)
                 output = "Trigger";
 
-            output += " (" + ID + ") for ";
+            output += " (" + Id + ") for ";
 
             if (TargetType == TriggerTargetType.Camera)
             {
-                CameraInstance instance = (CameraInstance)_editor.Level.Objects[Target];
-                output += "Camera (" + instance.ID + ")";
+                CameraInstance instance = (CameraInstance)Editor.Instance.Level.Objects[Target];
+                output += "Camera (" + instance.Id + ")";
             }
 
             if (TargetType == TriggerTargetType.FinishLevel)
@@ -93,22 +86,18 @@ namespace TombEditor.Geometry
                 output += "FlybyCamera (FLYBY" + /*instance.ID +*/ ")";
             }
 
-            if (TargetType == TriggerTargetType.FMV)
+            if (TargetType == TriggerTargetType.Fmv)
             {
                 output += "FMV (" + Target + ")";
             }
 
             if (TargetType == TriggerTargetType.Object)
             {
-                IObjectInstance instance = _editor.Level.Objects[Target];
+                var instance = Editor.Instance.Level.Objects[Target];
                 if (instance.Type == ObjectInstanceType.Moveable)
                 {
-                    MoveableInstance moveable = (MoveableInstance)instance;
-                    output += _editor.MoveablesObjectIds[(int)moveable.Model.ObjectID] + " (" + instance.ID + ")";
-                }
-                else
-                {
-
+                    var moveable = (MoveableInstance)instance;
+                    output += Editor.Instance.MoveablesObjectIds[(int)moveable.Model.ObjectID] + " (" + instance.Id + ")";
                 }
             }
 
@@ -124,27 +113,27 @@ namespace TombEditor.Geometry
 
             if (TargetType == TriggerTargetType.Sink)
             {
-                SinkInstance instance = (SinkInstance)_editor.Level.Objects[Target];
-                output += "Sink (" + instance.ID + ")";
+                var instance = (SinkInstance)Editor.Instance.Level.Objects[Target];
+                output += "Sink (" + instance.Id + ")";
             }
 
             if (TargetType == TriggerTargetType.Target)
             {
-                IObjectInstance instance = _editor.Level.Objects[Target];
-                output += "Camera Target (" + instance.ID + ")";
+                var instance = Editor.Instance.Level.Objects[Target];
+                output += "Camera Target (" + instance.Id + ")";
             }
 
             return output;
         }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             return new TriggerInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,

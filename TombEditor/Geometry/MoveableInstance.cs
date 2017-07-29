@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TombLib.Graphics;
-using TombLib.Wad;
-using SharpDX;
+﻿using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
-    public class MoveableInstance : IObjectInstance
+    public class MoveableInstance : ObjectInstance
     {
         public SkinnedModel Model { get; set; }
-        public int ObjectID { get; set; }
+        public int ObjectId { get; set; }
 
         public MoveableInstance(int id, Room room)
             : base(ObjectInstanceType.Moveable, id, room)
         { }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             return new MoveableInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
@@ -38,7 +32,7 @@ namespace TombEditor.Geometry
                 },
                 Type = Type,
                 Model = Model,
-                ObjectID = ObjectID
+                ObjectId = ObjectId
             };
         }
     }

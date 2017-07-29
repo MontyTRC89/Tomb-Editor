@@ -69,8 +69,8 @@ namespace TombEditor
 
             if (!IsNew)
             {
-                SoundInstance sound = (SoundInstance)_editor.Level.Objects[_editor.PickingResult.Element];
-                SoundID = sound.SoundID;
+                SoundInstance sound = (SoundInstance)_editor.Level.Objects[_editor.PickingResult._element];
+                SoundID = sound.SoundId;
                 tbSound.Text = _sounds[SoundID];
                 cbBit1.Checked = sound.Bits[0];
                 cbBit2.Checked = sound.Bits[1];
@@ -88,14 +88,14 @@ namespace TombEditor
 
             if (!IsNew)
             {
-                SoundInstance sound = (SoundInstance)_editor.Level.Objects[_editor.PickingResult.Element];
-                sound.SoundID = row.ID;
+                SoundInstance sound = (SoundInstance)_editor.Level.Objects[_editor.PickingResult._element];
+                sound.SoundId = row.ID;
                 sound.Bits[0] = cbBit1.Checked;
                 sound.Bits[1] = cbBit2.Checked;
                 sound.Bits[2] = cbBit3.Checked;
                 sound.Bits[3] = cbBit4.Checked;
                 sound.Bits[4] = cbBit5.Checked;
-                _editor.Level.Objects[_editor.PickingResult.Element] = sound;
+                _editor.Level.Objects[_editor.PickingResult._element] = sound;
             }
             else
             {

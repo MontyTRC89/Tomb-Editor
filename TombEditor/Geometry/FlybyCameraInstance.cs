@@ -5,14 +5,14 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
-    public class FlybyCameraInstance : IObjectInstance
+    public class FlybyCameraInstance : ObjectInstance
     {
         public short Sequence { get; set; }
         public short Timer { get; set; }
         public short Roll { get; set; }
         public short Number { get; set; }
         public short Speed { get; set; }
-        public short FOV { get; set; } = 45;
+        public short Fov { get; set; } = 45;
         public bool[] Flags { get; set; } = new bool[16];
         public bool Fixed { get; set; }
         public short DirectionX { get; set; }
@@ -22,14 +22,14 @@ namespace TombEditor.Geometry
             : base(ObjectInstanceType.FlyByCamera, id, room)
         { }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             var instance = new FlybyCameraInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
@@ -47,7 +47,7 @@ namespace TombEditor.Geometry
                 Roll = Roll,
                 Number = Number,
                 Speed = Speed,
-                FOV = FOV
+                Fov = Fov
             };
 
 

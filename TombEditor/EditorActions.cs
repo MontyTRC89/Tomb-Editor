@@ -597,7 +597,6 @@ namespace TombEditor
                                                                  Math.Max(0, zMin - 1), Math.Min(_editor.SelectedRoom.NumZSectors, zMax + 1));
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
-            room.AdjustObjectsHeight();
 
             List<int> portalsToTravel = new List<int>();
 
@@ -759,18 +758,18 @@ namespace TombEditor
                     return;
                 trigger = formTrigger.Trigger;
                 trigger.Room = _editor.SelectedRoom;
-                trigger.ID = _editor.Level.GetNewTriggerId();
+                trigger.Id = _editor.Level.GetNewTriggerId();
                 trigger.X = (byte)xMin;
                 trigger.Z = (byte)zMin;
                 trigger.NumXBlocks = (byte)(xMax - xMin + 1);
                 trigger.NumZBlocks = (byte)(zMax - zMin + 1);
-                _editor.Level.Triggers.Add(trigger.ID, trigger);
+                _editor.Level.Triggers.Add(trigger.Id, trigger);
 
                 for (int x = xMin; x <= xMax; x++)
                 {
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Triggers.Add(trigger.ID);
+                        _editor.SelectedRoom.Blocks[x, z].Triggers.Add(trigger.Id);
                     }
                 }
             }
@@ -959,13 +958,13 @@ namespace TombEditor
 
         public static void RotateObject(ObjectType typ, int id, int sign, bool smoothMove)
         {
-            _editor.Level.Objects[_editor.PickingResult.Element].Rotation += (short)(sign * (smoothMove ? 5 : 45));
+            _editor.Level.Objects[_editor.PickingResult._element].Rotation += (short)(sign * (smoothMove ? 5 : 45));
 
-            if (_editor.Level.Objects[_editor.PickingResult.Element].Rotation == 360)
-                _editor.Level.Objects[_editor.PickingResult.Element].Rotation = 0;
+            if (_editor.Level.Objects[_editor.PickingResult._element].Rotation == 360)
+                _editor.Level.Objects[_editor.PickingResult._element].Rotation = 0;
 
-            if (_editor.Level.Objects[_editor.PickingResult.Element].Rotation < 0)
-                _editor.Level.Objects[_editor.PickingResult.Element].Rotation += 360;
+            if (_editor.Level.Objects[_editor.PickingResult._element].Rotation < 0)
+                _editor.Level.Objects[_editor.PickingResult._element].Rotation += 360;
         }
 
         public static void DeleteObject(ObjectType typ, int id)
@@ -1165,10 +1164,10 @@ namespace TombEditor
                 UV[2] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
                 UV[3] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
 
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[0] = UV[0];
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[1] = UV[1];
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[2] = UV[2];
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[3] = UV[3];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[0] = UV[0];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[1] = UV[1];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[2] = UV[2];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[3] = UV[3];
 
                 /*
                 *  1----2    Split 0: 231 413  
@@ -1181,57 +1180,57 @@ namespace TombEditor
                 {
                     if (_editor.TextureTriangle == TextureTileType.TriangleNW)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[0];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[1];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[3];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[0];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[1];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[3];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[0];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[1];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[3];
                         }
                     }
 
                     if (_editor.TextureTriangle == TextureTileType.TriangleNE)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[1];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[2];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[0];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[1];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[2];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[0];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[1];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[2];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[0];
                         }
                     }
 
                     if (_editor.TextureTriangle == TextureTileType.TriangleSE)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[2];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[3];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[1];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[2];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[3];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[1];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[2];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[3];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[1];
                         }
                     }
 
                     if (_editor.TextureTriangle == TextureTileType.TriangleSW)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[3];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[0];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[2];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[3];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[0];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[2];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[3];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[0];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[2];
                         }
                     }
                 }
@@ -1259,8 +1258,8 @@ namespace TombEditor
                 instance.Model = _editor.Level.Wad.Moveables[(uint)id];
                 instance.Invisible = false;
 
-                _editor.Level.Objects.Add(instance.ID, instance);
-                _editor.SelectedRoom.Moveables.Add(instance.ID);
+                _editor.Level.Objects.Add(instance.Id, instance);
+                _editor.SelectedRoom.Moveables.Add(instance.Id);
             }
             else if (typ == ObjectType.StaticMesh)
             {
@@ -1274,8 +1273,8 @@ namespace TombEditor
                 instance.Invisible = false;
                 instance.Color = System.Drawing.Color.FromArgb(255, 128, 128, 128);
 
-                _editor.Level.Objects.Add(instance.ID, instance);
-                _editor.SelectedRoom.StaticMeshes.Add(instance.ID);
+                _editor.Level.Objects.Add(instance.Id, instance);
+                _editor.SelectedRoom.StaticMeshes.Add(instance.Id);
             }
             else if (typ == ObjectType.Camera)
             {
@@ -1288,8 +1287,8 @@ namespace TombEditor
                 instance.Invisible = false;
 
                 _editor.Action = EditorAction.None;
-                _editor.Level.Objects.Add(instance.ID, instance);
-                _editor.SelectedRoom.Cameras.Add(instance.ID);
+                _editor.Level.Objects.Add(instance.Id, instance);
+                _editor.SelectedRoom.Cameras.Add(instance.Id);
             }
             else if (typ == ObjectType.FlybyCamera)
             {
@@ -1302,8 +1301,8 @@ namespace TombEditor
                 instance.Invisible = false;
 
                 _editor.Action = EditorAction.None;
-                _editor.Level.Objects.Add(instance.ID, instance);
-                _editor.SelectedRoom.FlyByCameras.Add(instance.ID);
+                _editor.Level.Objects.Add(instance.Id, instance);
+                _editor.SelectedRoom.FlyByCameras.Add(instance.Id);
             }
             else if (typ == ObjectType.SoundSource)
             {
@@ -1314,11 +1313,11 @@ namespace TombEditor
 
                 instance.Position = new Vector3(x * 1024 + 512, y * 256, z * 1024 + 512);
                 instance.Invisible = false;
-                instance.SoundID = (short)id;
+                instance.SoundId = (short)id;
 
                 _editor.Action = EditorAction.None;
-                _editor.Level.Objects.Add(instance.ID, instance);
-                _editor.SelectedRoom.SoundSources.Add(instance.ID);
+                _editor.Level.Objects.Add(instance.Id, instance);
+                _editor.SelectedRoom.SoundSources.Add(instance.Id);
             }
             else if (typ == ObjectType.Sink)
             {
@@ -1331,8 +1330,8 @@ namespace TombEditor
                 instance.Invisible = false;
 
                 _editor.Action = EditorAction.None;
-                _editor.Level.Objects.Add(instance.ID, instance);
-                _editor.SelectedRoom.Sinks.Add(instance.ID);
+                _editor.Level.Objects.Add(instance.Id, instance);
+                _editor.SelectedRoom.Sinks.Add(instance.Id);
             }
         }
 
@@ -1435,7 +1434,7 @@ namespace TombEditor
 
             for (int i = 0; i < _editor.Level.Objects.Count; i++)
             {
-                IObjectInstance obj = _editor.Level.Objects.ElementAt(i).Value;
+                ObjectInstance obj = _editor.Level.Objects.ElementAt(i).Value;
                 if (obj.Room == _editor.SelectedRoom)
                 {
                     if (obj.Position.X < (newX + 1) * 1024 || obj.Position.X > (newX + numXSectors - 1) * 1024 ||
@@ -1447,32 +1446,32 @@ namespace TombEditor
                             TriggerInstance trigger = _editor.Level.Triggers.ElementAt(j).Value;
 
                             if (trigger.TargetType == TriggerTargetType.Camera && obj.Type == ObjectInstanceType.Camera &&
-                                trigger.Target == obj.ID)
+                                trigger.Target == obj.Id)
                             {
-                                triggersToRemove.Add(trigger.ID);
+                                triggersToRemove.Add(trigger.Id);
                             }
 
                             if (trigger.TargetType == TriggerTargetType.FlyByCamera && obj.Type == ObjectInstanceType.FlyByCamera &&
                                 trigger.Target == ((FlybyCameraInstance)obj).Sequence)
                             {
-                                triggersToRemove.Add(trigger.ID);
+                                triggersToRemove.Add(trigger.Id);
                             }
 
                             if (trigger.TargetType == TriggerTargetType.Sink && obj.Type == ObjectInstanceType.Sink &&
-                                trigger.Target == obj.ID)
+                                trigger.Target == obj.Id)
                             {
-                                triggersToRemove.Add(trigger.ID);
+                                triggersToRemove.Add(trigger.Id);
                             }
 
                             if (trigger.TargetType == TriggerTargetType.Object && obj.Type == ObjectInstanceType.Moveable &&
-                                trigger.Target == obj.ID)
+                                trigger.Target == obj.Id)
                             {
-                                triggersToRemove.Add(trigger.ID);
+                                triggersToRemove.Add(trigger.Id);
                             }
                         }
 
                         // Remove the object
-                        objectsToRemove.Add(obj.ID);
+                        objectsToRemove.Add(obj.Id);
                     }
                 }
             }
@@ -1608,7 +1607,7 @@ namespace TombEditor
                     trigger.X -= (byte)newX;
                     trigger.Z -= (byte)newZ;
 
-                    _editor.Level.Triggers[trigger.ID] = trigger;
+                    _editor.Level.Triggers[trigger.Id] = trigger;
                 }
             }
 
@@ -2136,7 +2135,7 @@ namespace TombEditor
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
                     int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = 1;
                     currentRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     currentRoomPortal.Direction = PortalDirection.West;
@@ -2145,10 +2144,10 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
-                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.ID);
+                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
+                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.Id);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = 1;
                     otherRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     otherRoomPortal.Direction = PortalDirection.East;
@@ -2157,17 +2156,17 @@ namespace TombEditor
                     otherRoomPortal.AdjoiningRoom = _editor.SelectedRoom;
                     otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
 
-                    _editor.Level.Portals.Add(otherRoomPortal.ID, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal.ID);
+                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
+                    found.Portals.Add(otherRoomPortal.Id);
 
-                    currentRoomPortal.OtherID = otherRoomPortal.ID;
-                    otherRoomPortal.OtherID = currentRoomPortal.ID;
+                    currentRoomPortal.OtherId = otherRoomPortal.Id;
+                    otherRoomPortal.OtherId = currentRoomPortal.Id;
 
                     // Set the portal ID in sectors
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        _editor.SelectedRoom.Blocks[0, z].WallPortal = currentRoomPortal.ID;
-                        found.Blocks[otherRoom.NumXSectors - 1, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal.ID;
+                        _editor.SelectedRoom.Blocks[0, z].WallPortal = currentRoomPortal.Id;
+                        found.Blocks[otherRoom.NumXSectors - 1, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal.Id;
                     }
 
                     // Build geometry for current room
@@ -2252,7 +2251,7 @@ namespace TombEditor
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
                     int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = 1;
                     currentRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     currentRoomPortal.Direction = PortalDirection.East;
@@ -2261,10 +2260,10 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
-                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.ID);
+                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
+                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.Id);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = 1;
                     otherRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     otherRoomPortal.Direction = PortalDirection.West;
@@ -2273,17 +2272,17 @@ namespace TombEditor
                     otherRoomPortal.AdjoiningRoom = _editor.SelectedRoom;
                     otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
 
-                    _editor.Level.Portals.Add(otherRoomPortal.ID, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal.ID);
+                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
+                    found.Portals.Add(otherRoomPortal.Id);
 
-                    currentRoomPortal.OtherID = otherRoomPortal.ID;
-                    otherRoomPortal.OtherID = currentRoomPortal.ID;
+                    currentRoomPortal.OtherId = otherRoomPortal.Id;
+                    otherRoomPortal.OtherId = currentRoomPortal.Id;
 
                     // Set the portal ID in sectors
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        _editor.SelectedRoom.Blocks[numXblocks - 1, z].WallPortal = currentRoomPortal.ID;
-                        found.Blocks[0, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal.ID;
+                        _editor.SelectedRoom.Blocks[numXblocks - 1, z].WallPortal = currentRoomPortal.Id;
+                        found.Blocks[0, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal.Id;
                     }
 
                     // Build geometry for current room
@@ -2368,7 +2367,7 @@ namespace TombEditor
                     byte xPortalOther = (byte)(xPortalWorld - otherRoom.Position.X);
                     byte zPortalOther = (byte)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     currentRoomPortal.NumZBlocks = 1;
                     currentRoomPortal.Direction = PortalDirection.North;
@@ -2377,10 +2376,10 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
-                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.ID);
+                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
+                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.Id);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     otherRoomPortal.NumZBlocks = 1;
                     otherRoomPortal.Direction = PortalDirection.South;
@@ -2389,17 +2388,17 @@ namespace TombEditor
                     otherRoomPortal.AdjoiningRoom = _editor.SelectedRoom;
                     otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
 
-                    _editor.Level.Portals.Add(otherRoomPortal.ID, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal.ID);
+                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
+                    found.Portals.Add(otherRoomPortal.Id);
 
-                    currentRoomPortal.OtherID = otherRoomPortal.ID;
-                    otherRoomPortal.OtherID = currentRoomPortal.ID;
+                    currentRoomPortal.OtherId = otherRoomPortal.Id;
+                    otherRoomPortal.OtherId = currentRoomPortal.Id;
 
                     // Set portal ID in sectors
                     for (int x = xMin; x <= xMax; x++)
                     {
-                        _editor.SelectedRoom.Blocks[x, numZblocks - 1].WallPortal = currentRoomPortal.ID;
-                        found.Blocks[x + xPortalOther - xMin, 0].WallPortal = otherRoomPortal.ID;
+                        _editor.SelectedRoom.Blocks[x, numZblocks - 1].WallPortal = currentRoomPortal.Id;
+                        found.Blocks[x + xPortalOther - xMin, 0].WallPortal = otherRoomPortal.Id;
                     }
 
                     // Build geometry for current room
@@ -2484,7 +2483,7 @@ namespace TombEditor
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
                     int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     currentRoomPortal.NumZBlocks = 1;
                     currentRoomPortal.Direction = PortalDirection.South;
@@ -2493,10 +2492,10 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
-                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.ID);
+                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
+                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.Id);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     otherRoomPortal.NumZBlocks = 1;
                     otherRoomPortal.Direction = PortalDirection.North;
@@ -2505,17 +2504,17 @@ namespace TombEditor
                     otherRoomPortal.AdjoiningRoom = _editor.SelectedRoom;
                     otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
 
-                    _editor.Level.Portals.Add(otherRoomPortal.ID, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal.ID);
+                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
+                    found.Portals.Add(otherRoomPortal.Id);
 
-                    currentRoomPortal.OtherID = otherRoomPortal.ID;
-                    otherRoomPortal.OtherID = currentRoomPortal.ID;
+                    currentRoomPortal.OtherId = otherRoomPortal.Id;
+                    otherRoomPortal.OtherId = currentRoomPortal.Id;
 
                     // Set portal ID in sectors
                     for (int x = xMin; x <= xMax; x++)
                     {
-                        _editor.SelectedRoom.Blocks[x, 0].WallPortal = currentRoomPortal.ID;
-                        found.Blocks[x + xPortalOther - xMin, otherRoom.NumZSectors - 1].WallPortal = otherRoomPortal.ID;
+                        _editor.SelectedRoom.Blocks[x, 0].WallPortal = currentRoomPortal.Id;
+                        found.Blocks[x + xPortalOther - xMin, otherRoom.NumZSectors - 1].WallPortal = otherRoomPortal.Id;
                     }
 
                     // Build geometry for current room
@@ -2711,7 +2710,7 @@ namespace TombEditor
                     Portal currentRoomPortal = new Portal(0, _editor.SelectedRoom);
                     Portal otherRoomPortal = new Portal(0, found);
 
-                    currentRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(xMax - xMin + 1);
                     currentRoomPortal.NumZBlocks = (byte)(zMax - zMin + 1);
                     currentRoomPortal.Direction = PortalDirection.Floor;
@@ -2720,15 +2719,15 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.ID, currentRoomPortal);
-                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.ID);
+                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
+                    _editor.SelectedRoom.Portals.Add(currentRoomPortal.Id);
 
                     int lowXmin = xMin + (int)(room.Position.X - otherRoom.Position.X);
                     int lowXmax = xMax + (int)(room.Position.X - otherRoom.Position.X);
                     int lowZmin = zMin + (int)(room.Position.Z - otherRoom.Position.Z);
                     int lowZmax = zMax + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                    otherRoomPortal.ID = _editor.Level.GetNewPortalId();
+                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(lowXmax - lowXmin + 1);
                     otherRoomPortal.NumZBlocks = (byte)(lowZmax - lowZmin + 1);
                     otherRoomPortal.Direction = PortalDirection.Ceiling;
@@ -2737,18 +2736,18 @@ namespace TombEditor
                     otherRoomPortal.AdjoiningRoom = _editor.SelectedRoom;
                     otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
 
-                    _editor.Level.Portals.Add(otherRoomPortal.ID, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal.ID);
+                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
+                    found.Portals.Add(otherRoomPortal.Id);
 
-                    currentRoomPortal.OtherID = otherRoomPortal.ID;
-                    otherRoomPortal.OtherID = currentRoomPortal.ID;
+                    currentRoomPortal.OtherId = otherRoomPortal.Id;
+                    otherRoomPortal.OtherId = currentRoomPortal.Id;
 
                     // Set floor portal ID
                     for (int x = xMin; x <= xMax; x++)
                     {
                         for (int z = zMin; z <= zMax; z++)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].FloorPortal = currentRoomPortal.ID;
+                            _editor.SelectedRoom.Blocks[x, z].FloorPortal = currentRoomPortal.Id;
                         }
                     }
 
@@ -2757,7 +2756,7 @@ namespace TombEditor
                     {
                         for (int z = otherRoomPortal.Z; z <= otherRoomPortal.Z + otherRoomPortal.NumZBlocks - 1; z++)
                         {
-                            found.Blocks[x, z].CeilingPortal = otherRoomPortal.ID;
+                            found.Blocks[x, z].CeilingPortal = otherRoomPortal.Id;
                         }
                     }
 
@@ -2930,7 +2929,7 @@ namespace TombEditor
 
         public static void DeletePortal(int id)
         {
-            int otherPortalId = _editor.Level.Portals[id].OtherID;
+            int otherPortalId = _editor.Level.Portals[id].OtherId;
 
             Portal current = _editor.Level.Portals[id];
             Portal other = _editor.Level.Portals[otherPortalId];

@@ -32,7 +32,7 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult._element];
 
             cbBit0.Checked = flyby.Flags[0];
             cbBit1.Checked = flyby.Flags[1];
@@ -55,13 +55,13 @@ namespace TombEditor
             tbSequence.Text = flyby.Sequence.ToString();
             tbSpeed.Text = flyby.Speed.ToString();
             tbNumber.Text = flyby.Number.ToString();
-            tbFOV.Text = flyby.FOV.ToString();
+            tbFOV.Text = flyby.Fov.ToString();
             tbRoll.Text = flyby.Roll.ToString();
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult._element];
 
             flyby.Flags[0] = cbBit0.Checked;
             flyby.Flags[1] = cbBit1.Checked;
@@ -85,9 +85,9 @@ namespace TombEditor
             flyby.Roll = Int16.Parse(tbRoll.Text);
             flyby.Sequence = Int16.Parse(tbSequence.Text);
             flyby.Number = Int16.Parse(tbNumber.Text);
-            flyby.FOV = Int16.Parse(tbFOV.Text);
+            flyby.Fov = Int16.Parse(tbFOV.Text);
 
-            _editor.Level.Objects[_editor.PickingResult.Element] = flyby;
+            _editor.Level.Objects[_editor.PickingResult._element] = flyby;
 
             DialogResult = DialogResult.OK;
             this.Close();

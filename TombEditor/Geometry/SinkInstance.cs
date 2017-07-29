@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
-    public class SinkInstance : IObjectInstance
+    public class SinkInstance : ObjectInstance
     {
         public short Strength { get; set; }
 
@@ -13,14 +8,14 @@ namespace TombEditor.Geometry
             : base(ObjectInstanceType.Sink, id, room)
         { }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             return new SinkInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,

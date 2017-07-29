@@ -698,9 +698,9 @@ namespace TombEditor
 
         private void SetPortalOpacity(PortalOpacity opacity)
         {
-            if (_editor.PickingResult.ElementType == PickingElementType.Portal)
+            if (_editor.PickingResult._elementType == PickingElementType.Portal)
             {
-                Portal portal = _editor.Level.Portals[_editor.PickingResult.Element];
+                Portal portal = _editor.Level.Portals[_editor.PickingResult._element];
 
                 for (int x = portal.X; x < portal.X + portal.NumXBlocks; x++)
                 {
@@ -1028,7 +1028,7 @@ namespace TombEditor
                 }
 
                 if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Portal ID = " +
-                                                            _editor.PickingResult.Element + "?",
+                                                            _editor.PickingResult._element + "?",
                         "Confirm delete",
                         DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                 {
@@ -1064,7 +1064,7 @@ namespace TombEditor
             else
             {
                 if (_editor.Mode == EditorMode.Geometry &&
-                    _editor.PickingResult.ElementType == PickingElementType.Block)
+                    _editor.PickingResult._elementType == PickingElementType.Block)
                 {
                     // Prepare selection boundaries
                     int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
@@ -1251,7 +1251,7 @@ namespace TombEditor
                         EditorActions.EditFace(xMin, xMax, zMin, zMax, action, sub);
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
+                else if (_editor.PickingResult._elementType == PickingElementType.Moveable)
                 {
                     switch (e.KeyCode)
                     {
@@ -1288,19 +1288,19 @@ namespace TombEditor
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Moveable ID = " +
-                                                                        _editor.PickingResult.Element + "?",
+                                                                        _editor.PickingResult._element + "?",
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteObject(EditorActions.ObjectType.Moveable,
-                                    _editor.PickingResult.Element);
+                                    _editor.PickingResult._element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
                             break;
 
                         case Keys.R:
-                            EditorActions.RotateObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
+                            EditorActions.RotateObject(EditorActions.ObjectType.Moveable, _editor.PickingResult._element,
                                 1, e.Shift);
                             break;
 
@@ -1310,7 +1310,7 @@ namespace TombEditor
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
+                else if (_editor.PickingResult._elementType == PickingElementType.StaticMesh)
                 {
                     switch (e.KeyCode)
                     {
@@ -1348,12 +1348,12 @@ namespace TombEditor
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
                                     "Do you really want to delete Static mesh ID = " +
-                                    _editor.PickingResult.Element + "?",
+                                    _editor.PickingResult._element + "?",
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteObject(EditorActions.ObjectType.StaticMesh,
-                                    _editor.PickingResult.Element);
+                                    _editor.PickingResult._element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1361,13 +1361,13 @@ namespace TombEditor
 
                         case Keys.R:
                             EditorActions.RotateObject(EditorActions.ObjectType.StaticMesh,
-                                _editor.PickingResult.Element, 1, e.Shift);
+                                _editor.PickingResult._element, 1, e.Shift);
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.Light)
+                else if (_editor.PickingResult._elementType == PickingElementType.Light)
                 {
-                    Light light = _editor.SelectedRoom.Lights[_editor.PickingResult.Element];
+                    Light light = _editor.SelectedRoom.Lights[_editor.PickingResult._element];
 
                     switch (e.KeyCode)
                     {
@@ -1387,7 +1387,7 @@ namespace TombEditor
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
                                 {
-                                    EditorActions.MoveLightCone(_editor.PickingResult.Element, 0, -1);
+                                    EditorActions.MoveLightCone(_editor.PickingResult._element, 0, -1);
                                 }
 
                                 UpdateLightUI();
@@ -1406,7 +1406,7 @@ namespace TombEditor
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
                                 {
-                                    EditorActions.MoveLightCone(_editor.PickingResult.Element, 0, 1);
+                                    EditorActions.MoveLightCone(_editor.PickingResult._element, 0, 1);
                                 }
 
                                 UpdateLightUI();
@@ -1425,7 +1425,7 @@ namespace TombEditor
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
                                 {
-                                    EditorActions.MoveLightCone(_editor.PickingResult.Element, 1, 0);
+                                    EditorActions.MoveLightCone(_editor.PickingResult._element, 1, 0);
                                 }
 
                                 UpdateLightUI();
@@ -1444,14 +1444,14 @@ namespace TombEditor
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
                                 {
-                                    EditorActions.MoveLightCone(_editor.PickingResult.Element, -1, 0);
+                                    EditorActions.MoveLightCone(_editor.PickingResult._element, -1, 0);
                                 }
 
                                 UpdateLightUI();
                             }
                             else
                             {
-                                EditorActions.MoveLight(_editor.PickingResult.Element,
+                                EditorActions.MoveLight(_editor.PickingResult._element,
                                     EditorActions.MoveObjectDirections.South, e.Shift);
                             }
                             break;
@@ -1461,7 +1461,7 @@ namespace TombEditor
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
-                                EditorActions.DeleteLight(_editor.PickingResult.Element);
+                                EditorActions.DeleteLight(_editor.PickingResult._element);
 
                                 _editor.LightIndex = -1;
                                 _editor.Action = EditorAction.None;
@@ -1471,7 +1471,7 @@ namespace TombEditor
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.Camera)
+                else if (_editor.PickingResult._elementType == PickingElementType.Camera)
                 {
                     switch (e.KeyCode)
                     {
@@ -1508,19 +1508,19 @@ namespace TombEditor
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Camera ID = " +
-                                                                        _editor.PickingResult.Element + "?",
+                                                                        _editor.PickingResult._element + "?",
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteObject(EditorActions.ObjectType.Camera,
-                                    _editor.PickingResult.Element);
+                                    _editor.PickingResult._element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
+                else if (_editor.PickingResult._elementType == PickingElementType.FlyByCamera)
                 {
                     switch (e.KeyCode)
                     {
@@ -1538,7 +1538,7 @@ namespace TombEditor
                         case Keys.Left:
                             if (e.Control)
                             {
-                                EditorActions.MoveFlybyCone(_editor.PickingResult.Element, 0, -1);
+                                EditorActions.MoveFlybyCone(_editor.PickingResult._element, 0, -1);
                             }
                             // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
                             /*else
@@ -1552,7 +1552,7 @@ namespace TombEditor
                         case Keys.Right:
                             if (e.Control)
                             {
-                                EditorActions.MoveFlybyCone(_editor.PickingResult.Element, 0, 1);
+                                EditorActions.MoveFlybyCone(_editor.PickingResult._element, 0, 1);
                             }
                             // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
                             /*else
@@ -1566,7 +1566,7 @@ namespace TombEditor
                         case Keys.Up:
                             if (e.Control)
                             {
-                                EditorActions.MoveFlybyCone(_editor.PickingResult.Element, 1, 0);
+                                EditorActions.MoveFlybyCone(_editor.PickingResult._element, 1, 0);
                             }
                             // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
                             /*else
@@ -1580,7 +1580,7 @@ namespace TombEditor
                         case Keys.Down:
                             if (e.Control)
                             {
-                                EditorActions.MoveFlybyCone(_editor.PickingResult.Element, -1, 0);
+                                EditorActions.MoveFlybyCone(_editor.PickingResult._element, -1, 0);
                             }
                             // DEPRECATED: now we have gizmo, to be removed after gizmo working at 100%
                             /*  else
@@ -1594,12 +1594,12 @@ namespace TombEditor
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
                                     "Do you really want to delete Flyby camera ID = " +
-                                    _editor.PickingResult.Element + "?",
+                                    _editor.PickingResult._element + "?",
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteObject(EditorActions.ObjectType.FlybyCamera,
-                                    _editor.PickingResult.Element);
+                                    _editor.PickingResult._element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1611,7 +1611,7 @@ namespace TombEditor
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.Sink)
+                else if (_editor.PickingResult._elementType == PickingElementType.Sink)
                 {
                     switch (e.KeyCode)
                     {
@@ -1648,12 +1648,12 @@ namespace TombEditor
 
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete Sink ID = " +
-                                                                        _editor.PickingResult.Element + "?",
+                                                                        _editor.PickingResult._element + "?",
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteObject(EditorActions.ObjectType.Sink,
-                                    _editor.PickingResult.Element);
+                                    _editor.PickingResult._element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1665,7 +1665,7 @@ namespace TombEditor
                             break;
                     }
                 }
-                else if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
+                else if (_editor.PickingResult._elementType == PickingElementType.SoundSource)
                 {
                     switch (e.KeyCode)
                     {
@@ -1703,12 +1703,12 @@ namespace TombEditor
                         case Keys.Delete:
                             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
                                     "Do you really want to delete Sound source ID = " +
-                                    _editor.PickingResult.Element + "?",
+                                    _editor.PickingResult._element + "?",
                                     "Confirm delete",
                                     DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                             {
                                 EditorActions.DeleteObject(EditorActions.ObjectType.SoundSource,
-                                    _editor.PickingResult.Element);
+                                    _editor.PickingResult._element);
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
 
@@ -1740,7 +1740,7 @@ namespace TombEditor
         {
             _editor.LightIndex = -1;
             _editor.SelectedItem = -1;
-            _editor.PickingResult = new PickingResult {ElementType = PickingElementType.None};
+            _editor.PickingResult = new PickingResult {_elementType = PickingElementType.None};
             _editor.BlockSelectionStartX = -1;
             _editor.BlockSelectionStartZ = -1;
             _editor.BlockSelectionEndX = -1;
@@ -1905,7 +1905,7 @@ namespace TombEditor
 
         public void LoadStaticMeshColorInUI()
         {
-            var instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult.Element];
+            var instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult._element];
             panelStaticMeshColor.BackColor = instance.Color;
         }
 
@@ -1959,7 +1959,7 @@ namespace TombEditor
 
         private void butCropRoom_Click(object sender, EventArgs e)
         {
-            if (_editor.Mode != EditorMode.Geometry || _editor.PickingResult.ElementType != PickingElementType.Block)
+            if (_editor.Mode != EditorMode.Geometry || _editor.PickingResult._elementType != PickingElementType.Block)
                 return;
 
             int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
@@ -2168,7 +2168,7 @@ namespace TombEditor
 
         public void EditLight()
         {
-            _editor.LightIndex = _editor.PickingResult.Element;
+            _editor.LightIndex = _editor.PickingResult._element;
             UpdateLightUI();
         }
 
@@ -2446,7 +2446,7 @@ namespace TombEditor
 
         private void butCopyRoom_Click(object sender, EventArgs e)
         {
-            if (_editor.Mode != EditorMode.Geometry || _editor.PickingResult.ElementType != PickingElementType.Block)
+            if (_editor.Mode != EditorMode.Geometry || _editor.PickingResult._elementType != PickingElementType.Block)
                 return;
 
             int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
@@ -2517,7 +2517,7 @@ namespace TombEditor
 
         private void butSplitRoom_Click(object sender, EventArgs e)
         {
-            if (_editor.Mode != EditorMode.Geometry || _editor.PickingResult.ElementType != PickingElementType.Block)
+            if (_editor.Mode != EditorMode.Geometry || _editor.PickingResult._elementType != PickingElementType.Block)
                 return;
 
             int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
@@ -2867,10 +2867,10 @@ namespace TombEditor
 
         private void panelStaticMeshColor_DoubleClick(object sender, EventArgs e)
         {
-            if (_editor.PickingResult.ElementType != PickingElementType.StaticMesh)
+            if (_editor.PickingResult._elementType != PickingElementType.StaticMesh)
                 return;
 
-            var instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult.Element];
+            var instance = (StaticMeshInstance) _editor.Level.Objects[_editor.PickingResult._element];
 
             colorDialog.Color = instance.Color;
             if (colorDialog.ShowDialog(this) != DialogResult.OK)
@@ -2879,7 +2879,7 @@ namespace TombEditor
             panelStaticMeshColor.BackColor = colorDialog.Color;
             instance.Color = colorDialog.Color;
 
-            _editor.Level.Objects[_editor.PickingResult.Element] = instance;
+            _editor.Level.Objects[_editor.PickingResult._element] = instance;
 
             panel3D.Draw();
         }
@@ -2908,8 +2908,8 @@ namespace TombEditor
 
                 var pickingResult = new PickingResult
                 {
-                    ElementType = PickingElementType.Moveable,
-                    Element = moveable.ID
+                    _elementType = PickingElementType.Moveable,
+                    _element = moveable.Id
                 };
                 _editor.PickingResult = pickingResult;
 
@@ -3071,20 +3071,20 @@ namespace TombEditor
 
                 int portalId = _editor.Level.GetNewPortalId();
                 var newPortal = p.ClonePortal();
-                newPortal.ID = portalId;
+                newPortal.Id = portalId;
                 newPortal.Flipped = true;
 
                 p.Flipped = true;
-                _editor.Level.Portals[p.ID] = p;
+                _editor.Level.Portals[p.Id] = p;
 
-                duplicatedPortals.Add(p.ID, portalId);
+                duplicatedPortals.Add(p.Id, portalId);
                 _editor.Level.Portals.Add(portalId, newPortal);
             }
 
             for (int i = 0; i < duplicatedPortals.Count; i++)
             {
                 var p = _editor.Level.Portals[duplicatedPortals.ElementAt(i).Key];
-                _editor.Level.Portals[p.OtherID].OtherIDFlipped = duplicatedPortals.ElementAt(i).Value;
+                _editor.Level.Portals[p.OtherId].OtherIdFlipped = duplicatedPortals.ElementAt(i).Value;
             }
 
             byte numXSectors = (byte) (room.NumXSectors);
@@ -3162,33 +3162,33 @@ namespace TombEditor
                     var trigger = _editor.Level.Triggers.ElementAt(j).Value;
 
                     if (trigger.TargetType == TriggerTargetType.Camera && obj.Type == ObjectInstanceType.Camera &&
-                        trigger.Target == obj.ID)
+                        trigger.Target == obj.Id)
                     {
-                        triggersToRemove.Add(trigger.ID);
+                        triggersToRemove.Add(trigger.Id);
                     }
 
                     if (trigger.TargetType == TriggerTargetType.FlyByCamera &&
                         obj.Type == ObjectInstanceType.FlyByCamera &&
                         trigger.Target == ((FlybyCameraInstance) obj).Sequence)
                     {
-                        triggersToRemove.Add(trigger.ID);
+                        triggersToRemove.Add(trigger.Id);
                     }
 
                     if (trigger.TargetType == TriggerTargetType.Sink && obj.Type == ObjectInstanceType.Sink &&
-                        trigger.Target == obj.ID)
+                        trigger.Target == obj.Id)
                     {
-                        triggersToRemove.Add(trigger.ID);
+                        triggersToRemove.Add(trigger.Id);
                     }
 
                     if (trigger.TargetType == TriggerTargetType.Object && obj.Type == ObjectInstanceType.Moveable &&
-                        trigger.Target == obj.ID)
+                        trigger.Target == obj.Id)
                     {
-                        triggersToRemove.Add(trigger.ID);
+                        triggersToRemove.Add(trigger.Id);
                     }
                 }
 
                 // Remove the object
-                objectsToRemove.Add(obj.ID);
+                objectsToRemove.Add(obj.Id);
             }
 
             // Remove objects and triggers

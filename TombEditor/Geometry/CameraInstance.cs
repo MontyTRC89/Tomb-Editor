@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
-    public class CameraInstance : IObjectInstance
+    public class CameraInstance : ObjectInstance
     {
         public short Sequence { get; set; }
         public short Timer { get; set; }
         public short Roll { get; set; }
         public short Number { get; set; }
         public short Speed { get; set; }
-        public short FOV { get; set; }
+        public short Fov { get; set; }
         public short Flags { get; set; }
         public bool Fixed { get; set; }
 
@@ -20,14 +15,14 @@ namespace TombEditor.Geometry
             : base(ObjectInstanceType.Camera, id, room)
         { }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
             return new CameraInstance(0, Room)
             {
                 X = X,
                 Y = Y,
                 Z = Z,
-                OCB = OCB,
+                Ocb = Ocb,
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
@@ -45,7 +40,7 @@ namespace TombEditor.Geometry
                 Roll = Roll,
                 Number = Number,
                 Speed = Speed,
-                FOV = FOV,
+                Fov = Fov,
                 Flags = Flags,
                 Fixed = Fixed
             };

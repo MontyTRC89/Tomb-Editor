@@ -133,8 +133,8 @@ namespace TombEditor.Controls
                             foundSomething = true;
 
                             PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Trigger;
-                            result.Element = SelectedTrigger;
+                            result._elementType = PickingElementType.Trigger;
+                            result._element = SelectedTrigger;
                             _editor.PickingResult = result;
                         }
                     }
@@ -143,8 +143,8 @@ namespace TombEditor.Controls
                         foundSomething = true;
 
                         PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Portal;
-                        result.Element = SelectedPortal;
+                        result._elementType = PickingElementType.Portal;
+                        result._element = SelectedPortal;
                         _editor.PickingResult = result;
                     }
                 }
@@ -161,8 +161,8 @@ namespace TombEditor.Controls
                                 foundSomething = true;
 
                                 PickingResult result = new PickingResult();
-                                result.ElementType = PickingElementType.Portal;
-                                result.Element = SelectedPortal;
+                                result._elementType = PickingElementType.Portal;
+                                result._element = SelectedPortal;
                                 _editor.PickingResult = result;
                             }
                         }
@@ -171,8 +171,8 @@ namespace TombEditor.Controls
                             foundSomething = true;
 
                             PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Trigger;
-                            result.Element = SelectedTrigger;
+                            result._elementType = PickingElementType.Trigger;
+                            result._element = SelectedTrigger;
                             _editor.PickingResult = result;
                         }
                     }
@@ -232,10 +232,10 @@ namespace TombEditor.Controls
                     }
 
                     PickingResult result = new PickingResult();
-                    result.ElementType = PickingElementType.Block;
-                    result.SubElementType = 0;
-                    result.Element = (xBlock << 5) + (zBlock & 31);
-                    result.SubElementType = 25;
+                    result._elementType = PickingElementType.Block;
+                    result._subElementType = 0;
+                    result._element = (xBlock << 5) + (zBlock & 31);
+                    result._subElementType = 25;
 
                     _editor.PickingResult = result;
                     _editor.StartPickingResult = result;
@@ -289,8 +289,8 @@ namespace TombEditor.Controls
                         int xBlock = (int)_lastX / GridStep;
                         int zBlock = GetZBlock(_lastY);
 
-                        _editor.BlockSelectionStartX = (_editor.StartPickingResult.Element >> 5) - startX;
-                        _editor.BlockSelectionStartZ = (_editor.StartPickingResult.Element & 31) - startY;
+                        _editor.BlockSelectionStartX = (_editor.StartPickingResult._element >> 5) - startX;
+                        _editor.BlockSelectionStartZ = (_editor.StartPickingResult._element & 31) - startY;
                         _editor.BlockEditingType = 0;
                         _editor.BlockSelectionEndX = xBlock - startX;
                         _editor.BlockSelectionEndZ = zBlock - startY;
@@ -307,10 +307,10 @@ namespace TombEditor.Controls
                         _firstSelection = true;
 
                         PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Block;
-                        result.SubElementType = 0;
-                        result.Element = (xBlock << 5) + (zBlock & 31);
-                        result.SubElementType = 25;
+                        result._elementType = PickingElementType.Block;
+                        result._subElementType = 0;
+                        result._element = (xBlock << 5) + (zBlock & 31);
+                        result._subElementType = 25;
 
                         _editor.PickingResult = result;
                     }
@@ -381,10 +381,10 @@ namespace TombEditor.Controls
                         }
 
                         PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Block;
-                        result.SubElementType = 0;
-                        result.Element = (xBlock << 5) + (zBlock & 31);
-                        result.SubElementType = 25;
+                        result._elementType = PickingElementType.Block;
+                        result._subElementType = 0;
+                        result._element = (xBlock << 5) + (zBlock & 31);
+                        result._subElementType = 25;
 
                         _editor.PickingResult = result;
                     }
@@ -647,7 +647,7 @@ namespace TombEditor.Controls
                 var theRoom = _editor.SelectedRoom;
 
                 if (p.Room == theRoom && x >= p.X && x < p.X + p.NumXBlocks && z >= p.Z && z < p.Z + p.NumZBlocks)
-                    return p.ID;
+                    return p.Id;
             }
 
             return -1;
@@ -670,7 +670,7 @@ namespace TombEditor.Controls
                 TriggerInstance t = _editor.Level.Triggers.ElementAt(i).Value;
 
                 if (t.Room == _editor.SelectedRoom && x >= t.X && x < t.X + t.NumXBlocks && z >= t.Z && z < t.Z + t.NumZBlocks)
-                    return t.ID;
+                    return t.Id;
             }
 
             return -1;

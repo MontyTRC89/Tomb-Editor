@@ -229,9 +229,9 @@ namespace TombEditor.Compilers
 
                             // First, we fix the sector height
                             if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte) (room.compiled.Info.YBottom / 256.0f - 0x0f);
+                                sector.Floor = (sbyte) (room._compiled.Info.YBottom / 256.0f - 0x0f);
                             else
-                                sector.Floor = (sbyte) (room.compiled.Info.YBottom / 256.0f -
+                                sector.Floor = (sbyte) (room._compiled.Info.YBottom / 256.0f -
                                                         room.GetHighestFloorCorner(x, z));
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE ||
@@ -392,7 +392,7 @@ namespace TombEditor.Compilers
                                 {
                                     // First, we fix the sector height
                                     sector.Floor =
-                                        (sbyte) (room.compiled.Info.YBottom / 256.0f -
+                                        (sbyte) (room._compiled.Info.YBottom / 256.0f -
                                                  room.GetHighestFloorCorner(x, z));
 
                                     // Then we have to find the axis of the triangulation
@@ -675,10 +675,10 @@ namespace TombEditor.Compilers
 
                                 // First, we fix the sector height
                                 if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte) (room.compiled.Info.YBottom / 256.0f - 0x0f);
+                                    sector.Floor = (sbyte) (room._compiled.Info.YBottom / 256.0f - 0x0f);
                                 else
                                     sector.Floor =
-                                        (sbyte) (room.compiled.Info.YBottom / 256.0f -
+                                        (sbyte) (room._compiled.Info.YBottom / 256.0f -
                                                  room.GetHighestFloorCorner(x, z));
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE ||

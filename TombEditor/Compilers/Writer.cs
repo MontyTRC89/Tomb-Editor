@@ -23,7 +23,7 @@ namespace TombEditor.Compilers
 
                 foreach (var r in _editor.Level.Rooms.Where(r => r != null))
                 {
-                    r.compiled.Write(writer);
+                    r._compiled.Write(writer);
                 }
 
                 // Write floordata
@@ -315,34 +315,34 @@ namespace TombEditor.Compilers
                 long offset2;
                 foreach (var room in _level.Rooms.Where(r => r != null))
                 {
-                    writer.WriteBlock(room.compiled.Info);
+                    writer.WriteBlock(room._compiled.Info);
 
                     offset = writer.BaseStream.Position;
 
                     const int numdw = 0;
                     writer.Write(numdw);
 
-                    var tmp = (ushort) room.compiled.Vertices.Length;
+                    var tmp = (ushort) room._compiled.Vertices.Length;
                     writer.Write(tmp);
-                    writer.WriteBlockArray(room.compiled.Vertices);
+                    writer.WriteBlockArray(room._compiled.Vertices);
 
-                    tmp = (ushort) room.compiled.Rectangles.Length;
+                    tmp = (ushort) room._compiled.Rectangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
-                        for (var k = 0; k < room.compiled.Rectangles.Length; k++)
+                        for (var k = 0; k < room._compiled.Rectangles.Length; k++)
                         {
-                            room.compiled.Rectangles[k].Write(writer);
+                            room._compiled.Rectangles[k].Write(writer);
                         }
                     }
 
-                    tmp = (ushort) room.compiled.Triangles.Length;
+                    tmp = (ushort) room._compiled.Triangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
-                        for (var k = 0; k < room.compiled.Triangles.Length; k++)
+                        for (var k = 0; k < room._compiled.Triangles.Length; k++)
                         {
-                            room.compiled.Triangles[k].Write(writer);
+                            room._compiled.Triangles[k].Write(writer);
                         }
                     }
 
@@ -361,27 +361,27 @@ namespace TombEditor.Compilers
                     writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                     // Write portals
-                    tmp = (ushort) room.compiled.Portals.Length;
+                    tmp = (ushort) room._compiled.Portals.Length;
                     writer.WriteBlock(tmp);
                     if (tmp != 0)
-                        writer.WriteBlockArray(room.compiled.Portals);
+                        writer.WriteBlockArray(room._compiled.Portals);
 
                     // Write sectors
-                    writer.Write(room.compiled.NumZSectors);
-                    writer.Write(room.compiled.NumXSectors);
-                    writer.WriteBlockArray(room.compiled.Sectors);
+                    writer.Write(room._compiled.NumZSectors);
+                    writer.Write(room._compiled.NumXSectors);
+                    writer.WriteBlockArray(room._compiled.Sectors);
 
                     // Write room color
-                    writer.Write(room.compiled.AmbientIntensity1);
-                    writer.Write(room.compiled.AmbientIntensity2);
+                    writer.Write(room._compiled.AmbientIntensity1);
+                    writer.Write(room._compiled.AmbientIntensity2);
 
                     // Write lights
-                    tmp = (ushort) room.compiled.Lights.Length;
+                    tmp = (ushort) room._compiled.Lights.Length;
                     writer.WriteBlock(tmp);
 
                     for (var j = 0; j < tmp; j++)
                     {
-                        var light = room.compiled.Lights[j];
+                        var light = room._compiled.Lights[j];
                         writer.Write(light.X);
                         writer.Write(light.Y);
                         writer.Write(light.Z);
@@ -395,17 +395,17 @@ namespace TombEditor.Compilers
                     }
 
                     // Write static meshes
-                    tmp = (ushort) room.compiled.StaticMeshes.Length;
+                    tmp = (ushort) room._compiled.StaticMeshes.Length;
                     writer.WriteBlock(tmp);
                     if (tmp != 0)
-                        writer.WriteBlockArray(room.compiled.StaticMeshes);
+                        writer.WriteBlockArray(room._compiled.StaticMeshes);
 
                     // Write final data
-                    writer.Write(room.compiled.AlternateRoom);
-                    writer.Write(room.compiled.Flags);
-                    writer.Write(room.compiled.WaterScheme);
-                    writer.Write(room.compiled.ReverbInfo);
-                    writer.Write(room.compiled.AlternateGroup);
+                    writer.Write(room._compiled.AlternateRoom);
+                    writer.Write(room._compiled.Flags);
+                    writer.Write(room._compiled.WaterScheme);
+                    writer.Write(room._compiled.ReverbInfo);
+                    writer.Write(room._compiled.AlternateGroup);
                 }
 
                 // Write floordata

@@ -28,7 +28,7 @@ namespace TombEditor
 
         private void FormObject_Load(object sender, EventArgs e)
         {
-            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult._element];
 
             cbBit1.Checked = instance.Bits[0];
             cbBit2.Checked = instance.Bits[1];
@@ -39,7 +39,7 @@ namespace TombEditor
             cbInvisible.Checked = instance.Invisible;
             cbClearBody.Checked = instance.ClearBody;
 
-            tbOCB.Text = instance.OCB.ToString();
+            tbOCB.Text = instance.Ocb.ToString();
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -50,7 +50,7 @@ namespace TombEditor
                 return;
             }
 
-            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult.Element];
+            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult._element];
 
             instance.Bits[0] = cbBit1.Checked;
             instance.Bits[1] = cbBit2.Checked;
@@ -61,7 +61,7 @@ namespace TombEditor
             instance.Invisible = cbInvisible.Checked;
             instance.ClearBody = cbClearBody.Checked;
 
-            instance.OCB = Int16.Parse(tbOCB.Text);
+            instance.Ocb = Int16.Parse(tbOCB.Text);
 
             DialogResult = DialogResult.OK;
             this.Close();

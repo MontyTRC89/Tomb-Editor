@@ -273,7 +273,7 @@ namespace TombEditor.Compilers
 
                 ConvertLights(room, ref newRoom);
 
-                room.compiled = newRoom;
+                room._compiled = newRoom;
             }
 
             ReportProgress(25, "    Number of rooms: " + _level.Rooms.Count(r => r != null));
@@ -1042,7 +1042,7 @@ namespace TombEditor.Compilers
                 texture.Variants = new List<AnimatedTextureSequenceVariant>();
                 foreach (var texture2 in texture.Textures)
                 {
-                    texture2.NewID = -1;
+                    texture2.NewId = -1;
                 }
             }
 
@@ -1062,7 +1062,7 @@ namespace TombEditor.Compilers
                 // don't count for unused textures
                 // if (oldSample.UsageCount <= 0) continue;
 
-                oldSample.OldID = oldSample.ID;
+                oldSample.OldId = oldSample.Id;
 
                 tempTexturesList.Add(oldSample);
             }
@@ -1124,7 +1124,7 @@ namespace TombEditor.Compilers
                 tex.NewPage = tex.Page;
 
                 if (!tex.Animated)
-                    _texturesIdTable.Add(tex.OldID, i);
+                    _texturesIdTable.Add(tex.OldId, i);
                 else
                     _level.AnimatedTextures[tex.AnimatedSequence].Textures[tex.AnimatedTexture].Texture = tex;
             }
@@ -1170,9 +1170,9 @@ namespace TombEditor.Compilers
                 {
                     for (var k = 0; k < texture.Tiles.Count; k++)
                     {
-                        if (texture.Tiles[k].NewID == -1)
+                        if (texture.Tiles[k].NewId == -1)
                         {
-                            texture.Tiles[k].NewID = BuildAnimatedTextureInfo(texture,
+                            texture.Tiles[k].NewId = BuildAnimatedTextureInfo(texture,
                                 textureSet.Textures[k].Texture);
                         }
                     }
@@ -1190,9 +1190,9 @@ namespace TombEditor.Compilers
                     var tempTextureIds = new List<short>();
                     foreach (var tile in sequence.Tiles)
                     {
-                        tempTextureIds.Add((short) tile.NewID);
-                        if (!_animTexturesGeneral.Contains(tile.NewID))
-                            _animTexturesGeneral.Add(tile.NewID);
+                        tempTextureIds.Add((short) tile.NewId);
+                        if (!_animTexturesGeneral.Contains(tile.NewId))
+                            _animTexturesGeneral.Add(tile.NewId);
 
                         _numAnimatedTextures++;
                     }
@@ -1229,7 +1229,7 @@ namespace TombEditor.Compilers
             {
                 // Get current portal and its paired portal
                 var currentPortal = _level.Portals.ElementAt(i).Value;
-                var otherPortal = _level.Portals[currentPortal.OtherID];
+                var otherPortal = _level.Portals[currentPortal.OtherId];
 
                 // If the light was already averaged, then continue loop
                 //if (currentPortal.LightAveraged) continue;
@@ -1442,8 +1442,8 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                _level.Portals[currentPortal.ID].LightAveraged = true;
-                _level.Portals[otherPortal.ID].LightAveraged = true;
+                _level.Portals[currentPortal.Id].LightAveraged = true;
+                _level.Portals[otherPortal.Id].LightAveraged = true;
             }
         }
 
