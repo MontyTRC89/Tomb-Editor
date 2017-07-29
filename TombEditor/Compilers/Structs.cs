@@ -166,11 +166,11 @@ namespace TombEditor.Compilers
         public tr_sector_aux[,] AuxSectors;
 
         public TextureSounds[,] TextureSounds;
-        public List<int> ReachableRooms;
+        public List<Room> ReachableRooms;
         public bool Visited;
         public bool Flipped;
-        public short FlippedRoom;
-        public short BaseRoom;
+        public Room FlippedRoom;
+        public Room BaseRoom;
         public Room OriginalRoom;
 
         public void Write(BinaryWriterEx writer)

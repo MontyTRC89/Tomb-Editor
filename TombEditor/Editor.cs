@@ -84,7 +84,7 @@ namespace TombEditor
         public Dictionary<int, string> MoveablesObjectIds { get; } = new Dictionary<int, string>();
         public Dictionary<int, string> StaticMeshesObjectIds { get; } = new Dictionary<int, string>();
         public int SelectedItem { get; set; } = -1;
-        public short RoomIndex { get; set; } = -1;
+        public Room SelectedRoom { get; set; }
         public bool IsFlipMap { get; set; }
         public int FlipMap { get; set; } = -1;
         public bool DrawPortals { get; set; }
@@ -322,14 +322,6 @@ namespace TombEditor
             }
         }
 
-        public Room SelectedRoom
-        {
-            get
-            {
-                return Level.Rooms[RoomIndex];
-            }
-        }
-
         public void LoadTextureMapInEditor(Level level)
         {
             _formEditor.LoadTextureMapInEditor(level);
@@ -337,16 +329,16 @@ namespace TombEditor
 
         public string UpdateStatistics()
         {
-            if (RoomIndex == -1 || Level.Rooms[RoomIndex] == null)
+            if (SelectedRoom == null || SelectedRoom == null)
                 return "";
 
-            string stats = "Room X: " + Level.Rooms[RoomIndex].Position.X.ToString();
-            stats += " Y floor: " + (Level.Rooms[RoomIndex].Position.Y + Level.Rooms[RoomIndex].GetLowestCorner());
-            stats += " Y ceiling: " + (Level.Rooms[RoomIndex].Position.Y + Level.Rooms[RoomIndex].GetHighestCorner());
-            stats += " Z: " + Level.Rooms[RoomIndex].Position.Z.ToString();
-            stats += "    Size: " + (Level.Rooms[RoomIndex].NumXSectors - 2).ToString();
+            string stats = "Room X: " + SelectedRoom.Position.X.ToString();
+            stats += " Y floor: " + (SelectedRoom.Position.Y + SelectedRoom.GetLowestCorner());
+            stats += " Y ceiling: " + (SelectedRoom.Position.Y + SelectedRoom.GetHighestCorner());
+            stats += " Z: " + SelectedRoom.Position.Z.ToString();
+            stats += "    Size: " + (SelectedRoom.NumXSectors - 2).ToString();
             stats += "x";
-            stats += (Level.Rooms[RoomIndex].NumZSectors - 2).ToString();
+            stats += (SelectedRoom.NumZSectors - 2).ToString();
             stats += "    ";
             stats += "Portals: " + Level.Portals.Count;
             stats += "    ";
@@ -364,7 +356,7 @@ namespace TombEditor
             _formEditor.ResetSelection();
         }
 
-        public void SelectRoom(int index)
+        public void SelectRoom(Room room)
         {
             LightIndex = -1;
             BlockSelectionStartX = -1;
@@ -373,14 +365,14 @@ namespace TombEditor
             BlockSelectionEndX = -1;
             LoadTriggersInUI();
     
-            _formEditor.SelectRoom(index);
+            _formEditor.SelectRoom(room);
         }
 
         public void UpdateRoomName()
         {
-            if (RoomIndex == -1)
+            if (SelectedRoom == null)
                 return;
-            //_formEditor.UpdateLabelRoom(Level.Rooms[RoomIndex].Name);
+            //_formEditor.UpdateLabelRoom(Level.Rooms[SelectedRoom].Name);
         }
 
         public void DrawPanel2DMessage(string message)

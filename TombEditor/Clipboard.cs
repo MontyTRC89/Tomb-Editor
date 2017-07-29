@@ -1,8 +1,4 @@
 ﻿using SharpDX;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TombEditor.Geometry;
 
 namespace TombEditor
@@ -30,7 +26,7 @@ namespace TombEditor
     {
         public static ClipboardElementType ElementType { get; set; }
         public static int ElementID { get; set; }
-        public static int OriginalRoom { get; set; }
+        public static Room OriginalRoom { get; set; }
         public static PasteAction Action { get; set; }
 
         private static Editor _editor;
@@ -39,7 +35,7 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            OriginalRoom = _editor.RoomIndex;
+            OriginalRoom = _editor.SelectedRoom;
 
             if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
             {
@@ -82,7 +78,7 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            short room = _editor.RoomIndex;
+            var room = _editor.SelectedRoom;
 
             bool hasPastedSomething = false;
 
@@ -91,7 +87,7 @@ namespace TombEditor
                 int x = _editor.PickingResult.Element >> 5;
                 int z = _editor.PickingResult.Element & 31;
 
-                Block block = _editor.Level.Rooms[room].Blocks[x, z];
+                Block block = room.Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                 Vector3 position = new Vector3(x * 1024 + 512, y * 256, z * 1024 + 512);
@@ -101,18 +97,18 @@ namespace TombEditor
                 switch (ElementType)
                 {
                     case ClipboardElementType.Light:
-                        Light light = _editor.Level.Rooms[OriginalRoom].Lights[ElementID].Clone();
+                        Light light = OriginalRoom.Lights[ElementID].Clone();
 
                         light.X = x;
                         light.Y = y;
                         light.Z = z;
                         light.Position = position;
 
-                        _editor.Level.Rooms[room].Lights.Add(light);
+                        room.Lights.Add(light);
 
-                        _editor.Level.Rooms[room].BuildGeometry();
-                        _editor.Level.Rooms[room].CalculateLightingForThisRoom();
-                        _editor.Level.Rooms[room].UpdateBuffers();
+                        room.BuildGeometry();
+                        room.CalculateLightingForThisRoom();
+                        room.UpdateBuffers();
 
                         hasPastedSomething = true;
 
@@ -129,7 +125,7 @@ namespace TombEditor
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
-                        _editor.Level.Rooms[room].Cameras.Add(instance.ID);
+                        room.Cameras.Add(instance.ID);
 
                         hasPastedSomething = true;
 
@@ -146,7 +142,7 @@ namespace TombEditor
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
-                        _editor.Level.Rooms[room].FlyByCameras.Add(instance.ID);
+                        room.FlyByCameras.Add(instance.ID);
 
                         hasPastedSomething = true;
 
@@ -163,7 +159,7 @@ namespace TombEditor
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
-                        _editor.Level.Rooms[room].Sinks.Add(instance.ID);
+                        room.Sinks.Add(instance.ID);
 
                         hasPastedSomething = true;
 
@@ -180,7 +176,7 @@ namespace TombEditor
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
-                        _editor.Level.Rooms[room].SoundSources.Add(instance.ID);
+                        room.SoundSources.Add(instance.ID);
 
                         hasPastedSomething = true;
 
@@ -197,7 +193,7 @@ namespace TombEditor
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
-                        _editor.Level.Rooms[room].Moveables.Add(instance.ID);
+                        room.Moveables.Add(instance.ID);
 
                         hasPastedSomething = true;
 
@@ -214,7 +210,7 @@ namespace TombEditor
                         instance.Room = room;
 
                         _editor.Level.Objects.Add(instance.ID, instance);
-                        _editor.Level.Rooms[room].StaticMeshes.Add(instance.ID);
+                        room.StaticMeshes.Add(instance.ID);
 
                         hasPastedSomething = true;
 
@@ -227,7 +223,7 @@ namespace TombEditor
             {
                 Action = PasteAction.None;
                 ElementType = ClipboardElementType.None;
-                OriginalRoom = -1;
+                OriginalRoom = null;
                 ElementID = -1;
                 _editor.ResetPanel3DCursor();
             }

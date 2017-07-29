@@ -92,12 +92,12 @@ namespace TombEditor.Controls
                 if (_roomMouseClicked == null)
                     return;
 
-                _editor.RoomIndex = _editor.Level.GetRoomIndex(_roomMouseClicked);
+                _editor.SelectedRoom = _roomMouseClicked;
                 _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
                 _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
 
                 // Update state
-                _editor.SelectRoom(_editor.RoomIndex);
+                _editor.SelectRoom(_editor.SelectedRoom);
                 Invalidate();
             }
             else if (e.Button == MouseButtons.Right)

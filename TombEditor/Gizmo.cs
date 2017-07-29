@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpDX;
+﻿using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using TombEditor.Geometry;
 
@@ -12,17 +7,18 @@ namespace TombEditor
     public class Gizmo
     {
         public Vector3 Position { get; set; }
-        public Matrix ViewProjection { get; set; }
+        public Matrix ViewProjection { private get; set; }
 
-        private Editor _editor;
-        private RasterizerState _rasterizerWireframe;
+        private readonly Editor _editor;
+        private readonly RasterizerState _rasterizerWireframe;
 
         // Geometry of the gizmo
-        private Buffer<EditorVertex> _linesBuffer;
-        private GeometricPrimitive _sphere;
-        private SharpDX.Color4 _red;
-        private SharpDX.Color4 _green;
-        private SharpDX.Color4 _blue;
+        private readonly Buffer<EditorVertex> _linesBuffer;
+
+        private readonly GeometricPrimitive _sphere;
+        private readonly Color4 _red;
+        private readonly Color4 _green;
+        private readonly Color4 _blue;
 
         public Gizmo()
         {
@@ -33,26 +29,23 @@ namespace TombEditor
             _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
 
             // Initialize the gizmo geometry
-            EditorVertex v0 = new EditorVertex();
-            v0.Position = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+            var v0 = new EditorVertex {Position = new Vector4(0.0f, 0.0f, 0.0f, 1.0f)};
 
-            EditorVertex vX = new EditorVertex();
-            vX.Position = new Vector4(1024.0f, 0.0f, 0.0f, 1.0f);
+            var vX = new EditorVertex {Position = new Vector4(1024.0f, 0.0f, 0.0f, 1.0f)};
 
-            EditorVertex vY = new EditorVertex();
-            vY.Position = new Vector4(0.0f, 1024.0f, 0.0f, 1.0f);
+            var vY = new EditorVertex {Position = new Vector4(0.0f, 1024.0f, 0.0f, 1.0f)};
 
-            EditorVertex vZ = new EditorVertex();
-            vZ.Position = new Vector4(0.0f, 0.0f, -1024.0f, 1.0f);
+            var vZ = new EditorVertex {Position = new Vector4(0.0f, 0.0f, -1024.0f, 1.0f)};
 
-            EditorVertex[] vertices = new EditorVertex[] { v0, vX, v0, vY, v0, vZ };
+            var vertices = new[] {v0, vX, v0, vY, v0, vZ};
 
-            _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            _linesBuffer =
+                Buffer.Vertex.New(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _sphere = GeometricPrimitive.Sphere.New(_editor.GraphicsDevice, 128.0f, 16);
 
             // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
+            var renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
             {
                 CullMode = SharpDX.Direct3D11.CullMode.None,
                 DepthBias = 0,
@@ -75,10 +68,11 @@ namespace TombEditor
             _editor.GraphicsDevice.SetVertexBuffer(_linesBuffer);
             _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesBuffer));
 
-            Effect solidEffect = _editor.Effects["Solid"];
+            var solidEffect = _editor.Effects["Solid"];
 
-            Matrix model = Matrix.Translation(Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
-            Matrix modelViewProjection = model * ViewProjection;
+            var model = Matrix.Translation(Position) *
+                        Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
+            var modelViewProjection = model * ViewProjection;
 
             solidEffect.Parameters["ModelViewProjection"].SetValue(modelViewProjection);
             solidEffect.Parameters["SelectionEnabled"].SetValue(false);
@@ -107,7 +101,8 @@ namespace TombEditor
             _editor.GraphicsDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
             // X axis sphere
-            model = Matrix.Translation(Position + Vector3.UnitX * 1024.0f) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+            model = Matrix.Translation(Position + Vector3.UnitX * 1024.0f) *
+                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * ViewProjection);
             solidEffect.Parameters["Color"].SetValue(_red);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -115,7 +110,8 @@ namespace TombEditor
             _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
             // Y axis sphere
-            model = Matrix.Translation(Position + Vector3.UnitY * 1024.0f) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+            model = Matrix.Translation(Position + Vector3.UnitY * 1024.0f) *
+                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * ViewProjection);
             solidEffect.Parameters["Color"].SetValue(_green);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -123,13 +119,13 @@ namespace TombEditor
             _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
             // Z axis sphere
-            model = Matrix.Translation(Position - Vector3.UnitZ * 1024.0f) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+            model = Matrix.Translation(Position - Vector3.UnitZ * 1024.0f) *
+                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * ViewProjection);
             solidEffect.Parameters["Color"].SetValue(_blue);
             solidEffect.CurrentTechnique.Passes[0].Apply();
 
             _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-
         }
     }
 }

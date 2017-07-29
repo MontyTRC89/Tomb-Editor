@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
+using TombEditor.Compilers;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombEditor.Geometry
 {
     public class Room
     {
+        public tr_room compiled;
+        
         public string Name { get; set; }
         public Vector3 Position { get; set; }
         public short Ceiling { get; set; }
@@ -26,11 +29,11 @@ namespace TombEditor.Geometry
         public List<int> Cameras { get; set; } = new List<int>();
         public List<int> FlyByCameras { get; set; } = new List<int>();
         public List<int> Portals { get; set; } = new List<int>();
-        public short BaseRoom { get; set; } = -1;
+        public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
         public bool Visited { get; set; }
         public List<EditorVertex> OptimizedVertices { get; set; }
-        public short AlternateRoom { get; set; } = -1;
+        public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = 0;
         public short WaterLevel { get; set; }
         public short MistLevel { get; set; }
@@ -62,7 +65,7 @@ namespace TombEditor.Geometry
             InitializeVerticesGrid();
         }
 
-        public Room(Level level, int posx, int posy, int posz, byte numXSectors, byte numZSectors, short ceiling)
+        public void Init(int posx, int posy, int posz, byte numXSectors, byte numZSectors, short ceiling)
         {
             Position = new Vector3(posx, posy, posz);
             NumXSectors = numXSectors;
@@ -77,9 +80,8 @@ namespace TombEditor.Geometry
             Sinks = new List<int>();
             SoundSources = new List<int>();
             Portals = new List<int>();
-            Level = level;
-            AlternateRoom = -1;
-            BaseRoom = -1;
+            AlternateRoom = null;
+            BaseRoom = null;
 
             Blocks = new Block[numXSectors, numZSectors];
 
@@ -474,11 +476,11 @@ namespace TombEditor.Geometry
                         if (Blocks[x, z].WallPortal != -1)
                         {
                             Portal portal = FindPortal(x, z, PortalDirection.South);
-                            Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                            if (Flipped && BaseRoom != -1)
+                            Room adjoiningRoom = portal.AdjoiningRoom;
+                            if (Flipped && BaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
-                                    adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                    adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
                             int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
@@ -509,11 +511,11 @@ namespace TombEditor.Geometry
                         if (Blocks[x, z].WallPortal != -1)
                         {
                             Portal portal = FindPortal(x, z, PortalDirection.North);
-                            Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                            if (Flipped && BaseRoom != -1)
+                            Room adjoiningRoom = portal.AdjoiningRoom;
+                            if (Flipped && BaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
-                                    adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                    adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
                             int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
@@ -543,11 +545,11 @@ namespace TombEditor.Geometry
                         if (Blocks[x, z].WallPortal != -1)
                         {
                             Portal portal = FindPortal(x, z, PortalDirection.West);
-                            Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                            if (Flipped && BaseRoom != -1)
+                            Room adjoiningRoom = portal.AdjoiningRoom;
+                            if (Flipped && BaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
-                                    adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                    adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
                             int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
@@ -577,11 +579,11 @@ namespace TombEditor.Geometry
                         if (Blocks[x, z].WallPortal != -1)
                         {
                             Portal portal = FindPortal(x, z, PortalDirection.East);
-                            Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                            if (Flipped && BaseRoom != -1)
+                            Room adjoiningRoom = portal.AdjoiningRoom;
+                            if (Flipped && BaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
-                                    adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                    adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
                             int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
@@ -1155,11 +1157,11 @@ namespace TombEditor.Geometry
                     if (Blocks[x, z].WallPortal != -1)
                     {
                         Portal portal = FindPortal(x, z, PortalDirection.South);
-                        Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                        if (Flipped && BaseRoom != -1)
+                        Room adjoiningRoom = portal.AdjoiningRoom;
+                        if (Flipped && BaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
-                                adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
                         int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
@@ -1276,11 +1278,11 @@ namespace TombEditor.Geometry
                     if (Blocks[x, z].WallPortal != -1)
                     {
                         Portal portal = FindPortal(x, z, PortalDirection.North);
-                        Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                        if (Flipped && BaseRoom != -1)
+                        Room adjoiningRoom = portal.AdjoiningRoom;
+                        if (Flipped && BaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
-                                adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
                         int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
@@ -1396,11 +1398,11 @@ namespace TombEditor.Geometry
                     if (Blocks[x, z].WallPortal != -1)
                     {
                         Portal portal = FindPortal(x, z, PortalDirection.West);
-                        Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
-                        if (Flipped && BaseRoom != -1)
+                        Room adjoiningRoom = portal.AdjoiningRoom;
+                        if (Flipped && BaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
-                                adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
 
@@ -1727,12 +1729,12 @@ namespace TombEditor.Geometry
                     if (Blocks[x, z].WallPortal != -1)
                     {
                         Portal portal = FindPortal(x, z, PortalDirection.East);
-                        Room adjoiningRoom = Level.Rooms[portal.AdjoiningRoom];
+                        Room adjoiningRoom = portal.AdjoiningRoom;
 
-                        if (Flipped && BaseRoom != -1)
+                        if (Flipped && BaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
-                                adjoiningRoom = Level.Rooms[adjoiningRoom.AlternateRoom];
+                                adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
                         int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);

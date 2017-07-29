@@ -12,7 +12,7 @@ namespace TombEditor.Geometry
         public byte NumZBlocks { get; set; }
         public int OtherID { get; set; }
         public int OtherIDFlipped { get; set; }
-        public short AdjoiningRoom { get; set; }
+        public Room AdjoiningRoom { get; set; }
         public short PrjThingIndex { get; set; }
         public short PrjOtherThingIndex { get; set; }
         public bool PrjAdjusted { get; set; }
@@ -22,7 +22,7 @@ namespace TombEditor.Geometry
         public List<int> Vertices { get; set; }
         public bool LightAveraged { get; set; }
 
-        public Portal(int id, short room) : base(ObjectInstanceType.Portal, id, room)
+        public Portal(int id, Room room) : base(ObjectInstanceType.Portal, id, room)
         {
             OtherIDFlipped = -1;
             Vertices = new List<int>();
@@ -30,18 +30,16 @@ namespace TombEditor.Geometry
 
         public Portal ClonePortal()
         {
-            Portal p = new Geometry.Portal(0, 0);
-
-            p.Direction = Direction;
-            p.X = X;
-            p.Z = Z;
-            p.NumXBlocks = NumXBlocks;
-            p.NumZBlocks = NumZBlocks;
-            p.OtherID = OtherID;
-            p.AdjoiningRoom = AdjoiningRoom;
-            p.Room = Room;
-            
-            return p;
+            return new Portal(0, Room)
+            {
+                Direction = Direction,
+                X = X,
+                Z = Z,
+                NumXBlocks = NumXBlocks,
+                NumZBlocks = NumZBlocks,
+                OtherID = OtherID,
+                AdjoiningRoom = AdjoiningRoom
+            };
         }
 
         public override IObjectInstance Clone()

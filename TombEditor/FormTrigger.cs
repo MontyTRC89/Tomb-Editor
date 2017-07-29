@@ -285,7 +285,7 @@ namespace TombEditor
         private void butOK_Click(object sender, EventArgs e)
         {
             if (TriggerID == -1)
-                Trigger = new Geometry.TriggerInstance(0, 0);
+                Trigger = new TriggerInstance(0, _editor.Level.Rooms[0]);
 
             Trigger.TriggerType = (TriggerType)comboType.SelectedIndex;
             Trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedIndex;

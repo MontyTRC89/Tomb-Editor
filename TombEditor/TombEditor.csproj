@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clipboard.cs" />
+      <Compile Include="Compilers\Extensions.cs"/>
     <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />

@@ -19,10 +19,10 @@ namespace TombEditor.Compilers
             {
                 if (x.Sequence != y.Sequence)
                     return x.Sequence > y.Sequence ? 1 : -1;
-                
+
                 if (x.Index == y.Index)
                     return 0;
-                
+
                 return x.Index > y.Index ? 1 : -1;
             }
         }
@@ -45,8 +45,6 @@ namespace TombEditor.Compilers
 
         private uint _levelUncompressedSize;
         private uint _levelCompressedSize;
-
-        private tr_room[] _rooms;
 
         private ushort[] _floorData;
 
@@ -105,6 +103,7 @@ namespace TombEditor.Compilers
 
         // Animated textures
         private List<int> _animTexturesRooms = new List<int>();
+
         private List<int> _animTexturesGeneral = new List<int>();
 
         private byte[] _bufferSamples;
@@ -212,7 +211,8 @@ namespace TombEditor.Compilers
 
             _soundSourcesTable = new Dictionary<int, int>();
 
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sound).Select(obj => obj.Key))
+            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sound)
+                .Select(obj => obj.Key))
             {
                 _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
             }
@@ -224,9 +224,9 @@ namespace TombEditor.Compilers
             {
                 var source = new tr_sound_source
                 {
-                    X = (int) (_rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X),
-                    Y = (int) (_rooms[_roomsIdTable[instance.Room]].Info.YBottom - instance.Position.Y),
-                    Z = (int) (_rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z),
+                    X = (int) (instance.Room.compiled.Info.X + instance.Position.X),
+                    Y = (int) (instance.Room.compiled.Info.YBottom - instance.Position.Y),
+                    Z = (int) (instance.Room.compiled.Info.Z + instance.Position.Z),
                     SoundID = (ushort) instance.SoundID,
                     Flags = 0x80
                 };
@@ -245,19 +245,22 @@ namespace TombEditor.Compilers
 
             int k = 0;
             _cameraTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Camera).Select(obj => obj.Key))
+            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Camera)
+                .Select(obj => obj.Key))
             {
                 _cameraTable.Add(obj, k++);
             }
 
             _sinkTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sink).Select(obj => obj.Key))
+            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sink)
+                .Select(obj => obj.Key))
             {
                 _sinkTable.Add(obj, k++);
             }
 
             _flybyTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.FlyByCamera).Select(obj => obj.Key))
+            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.FlyByCamera)
+                .Select(obj => obj.Key))
             {
                 _flybyTable.Add(obj, k++);
             }
@@ -268,10 +271,10 @@ namespace TombEditor.Compilers
             {
                 var camera = new tr_camera
                 {
-                    X = (int) (_rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X),
-                    Y = (int) (_rooms[_roomsIdTable[instance.Room]].Info.YBottom - instance.Position.Y),
-                    Z = (int) (_rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z),
-                    Room = (short) _roomsIdTable[instance.Room]
+                    X = (int) (instance.Room.compiled.Info.X + instance.Position.X),
+                    Y = (int) (instance.Room.compiled.Info.YBottom - instance.Position.Y),
+                    Z = (int) (instance.Room.compiled.Info.Z + instance.Position.Z),
+                    Room = (short) _level.Rooms.ReferenceIndexOf(instance.Room)
                 };
 
                 if (instance.Fixed)
@@ -283,18 +286,18 @@ namespace TombEditor.Compilers
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _sinkTable.Keys.Select(sink => (SinkInstance) _editor.Level.Objects[sink]))
             {
-                var newRoom = _rooms[_roomsIdTable[instance.Room]];
-
                 int xSector = (int) Math.Floor(instance.Position.X / 1024);
                 int zSector = (int) Math.Floor(instance.Position.Z / 1024);
 
                 var camera = new tr_camera
                 {
-                    X = (int) (_rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X),
-                    Y = (int) (_rooms[_roomsIdTable[instance.Room]].Info.YBottom - instance.Position.Y),
-                    Z = (int) (_rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z),
+                    X = (int) (instance.Room.compiled.Info.X + instance.Position.X),
+                    Y = (int) (instance.Room.compiled.Info.YBottom - instance.Position.Y),
+                    Z = (int) (instance.Room.compiled.Info.Z + instance.Position.Z),
                     Room = instance.Strength,
-                    Flags = (ushort) ((newRoom.Sectors[newRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7f00) >> 4)
+                    Flags = (ushort) ((instance.Room.compiled
+                                           .Sectors[instance.Room.compiled.NumZSectors * xSector + zSector].BoxIndex &
+                                       0x7f00) >> 4)
                 };
 
                 tempCameras.Add(camera);
@@ -304,14 +307,15 @@ namespace TombEditor.Compilers
 
             var tempFlyby = new List<tr4_flyby_camera>();
 
-            foreach (var instance in  _flybyTable.Keys.Select(flyby => (FlybyCameraInstance) _editor.Level.Objects[flyby]))
+            foreach (var instance in _flybyTable.Keys.Select(
+                flyby => (FlybyCameraInstance) _editor.Level.Objects[flyby]))
             {
                 var flyby = new tr4_flyby_camera
                 {
-                    X = (int) (_rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X),
-                    Y = (int) (_rooms[_roomsIdTable[instance.Room]].Info.YBottom - instance.Position.Y),
-                    Z = (int) (_rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z),
-                    Room = _roomsIdTable[instance.Room],
+                    X = (int) (instance.Room.compiled.Info.X + instance.Position.X),
+                    Y = (int) (instance.Room.compiled.Info.YBottom - instance.Position.Y),
+                    Z = (int) (instance.Room.compiled.Info.Z + instance.Position.Z),
+                    Room = _level.Rooms.ReferenceIndexOf(instance.Room),
                     FOV = (ushort) (182 * instance.FOV),
                     Roll = (short) (182 * instance.Roll),
                     Timer = (ushort) instance.Timer,
@@ -345,85 +349,84 @@ namespace TombEditor.Compilers
 
         private void BuildSprites()
         {
-                ReportProgress(9, "Building sprites");
-                ReportProgress(9, "Reading " + _editor.Level.Wad.OriginalWad.BaseName + ".swd");
+            ReportProgress(9, "Building sprites");
+            ReportProgress(9, "Reading " + _editor.Level.Wad.OriginalWad.BaseName + ".swd");
 
-                using (var reader = new BinaryReaderEx(File.OpenRead(
-                    _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".swd")))
+            using (var reader = new BinaryReaderEx(File.OpenRead(
+                _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".swd")))
+            {
+                // Version
+                reader.ReadUInt32();
+
+                //Sprite texture array
+                _spriteTextures = new tr_sprite_texture[reader.ReadUInt32()];
+                for (int i = 0; i < _spriteTextures.Length; i++)
                 {
+                    byte[] buffer;
+                    reader.ReadBlockArray(out buffer, 16);
 
-                    // Version
-                    reader.ReadUInt32();
-
-                    //Sprite texture array
-                    _spriteTextures = new tr_sprite_texture[reader.ReadUInt32()];
-                    for (int i = 0; i < _spriteTextures.Length; i++)
+                    _spriteTextures[i] = new tr_sprite_texture
                     {
-                        byte[] buffer;
-                        reader.ReadBlockArray(out buffer, 16);
+                        Tile = (ushort) (_numRoomTexturePages + _numobjectTexturePages),
+                        X = buffer[0],
+                        Y = buffer[1],
+                        Width = (ushort) (buffer[5] * 256),
+                        Height = (ushort) (buffer[7] * 256),
+                        LeftSide = buffer[0],
+                        TopSide = buffer[1],
+                        RightSide = (short) (buffer[0] + buffer[5] + 1),
+                        BottomSide = (short) (buffer[1] + buffer[7] + 1)
+                    };
+                }
 
-                        _spriteTextures[i] = new tr_sprite_texture
-                        {
-                            Tile = (ushort) (_numRoomTexturePages + _numobjectTexturePages),
-                            X = buffer[0],
-                            Y = buffer[1],
-                            Width = (ushort) (buffer[5] * 256),
-                            Height = (ushort) (buffer[7] * 256),
-                            LeftSide = buffer[0],
-                            TopSide = buffer[1],
-                            RightSide = (short) (buffer[0] + buffer[5] + 1),
-                            BottomSide = (short) (buffer[1] + buffer[7] + 1)
-                        };
-                    }
+                // Unknown value
+                int spriteDataSize = reader.ReadInt32();
 
-                    // Unknown value
-                    int spriteDataSize = reader.ReadInt32();
+                // Load the real sprite texture data
+                _numSpriteTexturePages = spriteDataSize / (65536 * 3);
+                if ((spriteDataSize % (65536 * 3)) != 0)
+                    _numSpriteTexturePages++;
 
-                    // Load the real sprite texture data
-                    _numSpriteTexturePages = spriteDataSize / (65536 * 3);
-                    if ((spriteDataSize % (65536 * 3)) != 0)
-                        _numSpriteTexturePages++;
+                _spriteTexturePages = new byte[256 * 256 * _numSpriteTexturePages * 4];
 
-                    _spriteTexturePages = new byte[256 * 256 * _numSpriteTexturePages * 4];
+                int bytesRead = 0;
 
-                    int bytesRead = 0;
+                for (int y = 0; y < _numSpriteTexturePages * 256; y++)
+                {
+                    if (bytesRead == spriteDataSize)
+                        break;
 
-                    for (int y = 0; y < _numSpriteTexturePages * 256; y++)
+                    for (int x = 0; x < 256; x++)
                     {
                         if (bytesRead == spriteDataSize)
                             break;
 
-                        for (int x = 0; x < 256; x++)
+                        byte r = reader.ReadByte();
+                        byte g = reader.ReadByte();
+                        byte b = reader.ReadByte();
+
+                        bytesRead += 3;
+
+                        if (r == 255 & g == 0 && b == 255)
                         {
-                            if (bytesRead == spriteDataSize)
-                                break;
-
-                            byte r = reader.ReadByte();
-                            byte g = reader.ReadByte();
-                            byte b = reader.ReadByte();
-
-                            bytesRead += 3;
-
-                            if (r == 255 & g == 0 && b == 255)
-                            {
-                                _spriteTexturePages[y * 1024 + 4 * x + 0] = 0;
-                                _spriteTexturePages[y * 1024 + 4 * x + 1] = 0;
-                                _spriteTexturePages[y * 1024 + 4 * x + 2] = 0;
-                                _spriteTexturePages[y * 1024 + 4 * x + 3] = 0;
-                            }
-                            else
-                            {
-                                _spriteTexturePages[y * 1024 + 4 * x + 0] = b;
-                                _spriteTexturePages[y * 1024 + 4 * x + 1] = g;
-                                _spriteTexturePages[y * 1024 + 4 * x + 2] = r;
-                                _spriteTexturePages[y * 1024 + 4 * x + 3] = 255;
-                            }
+                            _spriteTexturePages[y * 1024 + 4 * x + 0] = 0;
+                            _spriteTexturePages[y * 1024 + 4 * x + 1] = 0;
+                            _spriteTexturePages[y * 1024 + 4 * x + 2] = 0;
+                            _spriteTexturePages[y * 1024 + 4 * x + 3] = 0;
+                        }
+                        else
+                        {
+                            _spriteTexturePages[y * 1024 + 4 * x + 0] = b;
+                            _spriteTexturePages[y * 1024 + 4 * x + 1] = g;
+                            _spriteTexturePages[y * 1024 + 4 * x + 2] = r;
+                            _spriteTexturePages[y * 1024 + 4 * x + 3] = 255;
                         }
                     }
-
-                    // Sprite sequences
-                    reader.ReadBlockArray(out _spriteSequences, reader.ReadUInt32());
                 }
+
+                // Sprite sequences
+                reader.ReadBlockArray(out _spriteSequences, reader.ReadUInt32());
+            }
         }
 
         private void CopyWadData()
@@ -917,7 +920,7 @@ namespace TombEditor.Compilers
                 // Is this texture part of an animated set?
                 if ((tex.Width != 64 || tex.Height != 64) && (tex.Width != 32 || tex.Height != 32))
                     return (short) newId;
-                
+
                 int animatedSet = -1;
                 int animatedTextureTile = -1;
 
@@ -927,12 +930,12 @@ namespace TombEditor.Compilers
                     {
                         var current = _level.AnimatedTextures[i].Textures[j];
 
-                       /* if ((tex.Width == 64 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page) ||
-                            (tex.Width == 32 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page)*/
+                        /* if ((tex.Width == 64 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page) ||
+                             (tex.Width == 32 && current.X == tex.X && current.Y == tex.Y && current.Page == tex.Page)*/
 
                         if (current.X != tex.X || current.Y != tex.Y || current.Page != tex.Page)
                             continue;
-                        
+
                         animatedSet = i;
                         animatedTextureTile = j;
 
@@ -942,7 +945,7 @@ namespace TombEditor.Compilers
 
                 if (animatedSet == -1)
                     return (short) newId;
-                    
+
                 {
                     if (!_animTexturesRooms.Contains(newId & 0x7fff))
                         _animTexturesRooms.Add(newId & 0x7fff);
@@ -960,7 +963,7 @@ namespace TombEditor.Compilers
                             ((!variant.IsTriangle || !isTriangle || variant.Triangle != face.TextureTriangle) &&
                              (variant.IsTriangle || isTriangle)))
                             continue;
-                        
+
                         foundVariant = i;
                         break;
                     }
@@ -997,7 +1000,7 @@ namespace TombEditor.Compilers
 
                 return (short) newId;
             }
-            
+
             if (face.DoubleSided)
                 test = test | 0x8000;
             return (short) test;
@@ -1348,56 +1351,50 @@ namespace TombEditor.Compilers
             int test = TextureInfoExists(tile);
             if (test != -1)
                 return (short) test;
-            
+
             _tempObjectTextures.Add(tile);
             int newId = _tempObjectTextures.Count - 1;
 
             return (short) newId;
         }
 
-        private tr_room_sector GetSector(int room, int x, int z)
+        private static tr_room_sector GetSector(Room room, int x, int z)
         {
-            return _rooms[room].Sectors[_rooms[room].NumZSectors * x + z];
+            return room.compiled.Sectors[room.compiled.NumZSectors * x + z];
         }
 
-        private void SaveSector(int room, int x, int z, tr_room_sector sector)
+        private static void SaveSector(Room room, int x, int z, tr_room_sector sector)
         {
-            _rooms[room].Sectors[_rooms[room].NumZSectors * x + z] = sector;
+            room.compiled.Sectors[room.compiled.NumZSectors * x + z] = sector;
         }
 
         private void GetAllReachableRooms()
         {
-            for (int i = 0; i < _level.Rooms.Length; i++)
+            foreach (var room in _level.Rooms.Where(r => r != null))
             {
-                if (_level.Rooms[i] == null)
-                    continue;
-
-                _level.Rooms[i].Visited = false;
-                _rooms[_roomsIdTable[i]].ReachableRooms = new List<int>();
+                room.Visited = false;
+                room.compiled.ReachableRooms = new List<Room>();
             }
 
-            for (int i = 0; i < _level.Rooms.Length; i++)
+            foreach (var room in _level.Rooms.Where(r => r != null))
             {
-                if (_level.Rooms[i] == null)
-                    continue;
-
-                GetAllReachableRoomsUp(i, i);
-                GetAllReachableRoomsDown(i, i);
+                GetAllReachableRoomsUp(room, room);
+                GetAllReachableRoomsDown(room, room);
             }
         }
 
-        private void GetAllReachableRoomsUp(int baseRoom, int currentRoom)
+        private void GetAllReachableRoomsUp(Room baseRoom, Room currentRoom)
         {
-            _level.Rooms[currentRoom].Visited = true;
+            currentRoom.Visited = true;
 
             // Wall portals
             foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
-                
-                if (!_rooms[_roomsIdTable[baseRoom]].ReachableRooms.Contains(_roomsIdTable[p.AdjoiningRoom]))
-                    _rooms[_roomsIdTable[baseRoom]].ReachableRooms.Add(_roomsIdTable[p.AdjoiningRoom]);
+
+                if (!baseRoom.compiled.ReachableRooms.Contains(p.AdjoiningRoom))
+                    baseRoom.compiled.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
             // Ceiling portals
@@ -1406,26 +1403,26 @@ namespace TombEditor.Compilers
                 if (p.Direction != PortalDirection.Ceiling)
                     continue;
 
-                if (_rooms[_roomsIdTable[baseRoom]].ReachableRooms.Contains(_roomsIdTable[p.AdjoiningRoom]))
+                if (baseRoom.compiled.ReachableRooms.Contains(p.AdjoiningRoom))
                     continue;
-                
-                _rooms[_roomsIdTable[baseRoom]].ReachableRooms.Add(_roomsIdTable[p.AdjoiningRoom]);
+
+                baseRoom.compiled.ReachableRooms.Add(p.AdjoiningRoom);
                 GetAllReachableRoomsUp(baseRoom, p.AdjoiningRoom);
             }
         }
 
-        private void GetAllReachableRoomsDown(int baseRoom, int currentRoom)
+        private void GetAllReachableRoomsDown(Room baseRoom, Room currentRoom)
         {
-            _level.Rooms[currentRoom].Visited = true;
+            currentRoom.Visited = true;
 
             // portali laterali
             foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
-                
-                if (!_rooms[_roomsIdTable[baseRoom]].ReachableRooms.Contains(_roomsIdTable[p.AdjoiningRoom]))
-                    _rooms[_roomsIdTable[baseRoom]].ReachableRooms.Add(_roomsIdTable[p.AdjoiningRoom]);
+
+                if (!baseRoom.compiled.ReachableRooms.Contains(p.AdjoiningRoom))
+                    baseRoom.compiled.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
             foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
@@ -1433,18 +1430,17 @@ namespace TombEditor.Compilers
                 if (p.Direction != PortalDirection.Floor)
                     continue;
 
-                if (_rooms[_roomsIdTable[baseRoom]].ReachableRooms.Contains(_roomsIdTable[p.AdjoiningRoom]))
+                if (baseRoom.compiled.ReachableRooms.Contains(p.AdjoiningRoom))
                     continue;
-                
-                _rooms[_roomsIdTable[baseRoom]].ReachableRooms.Add(_roomsIdTable[p.AdjoiningRoom]);
+
+                baseRoom.compiled.ReachableRooms.Add(p.AdjoiningRoom);
                 GetAllReachableRoomsDown(baseRoom, p.AdjoiningRoom);
             }
         }
 
-        private bool BuildBox(int i, int x, int z, int xm, int xM, int zm, int zM, out tr_box_aux box)
+        private bool BuildBox(Room room, int x, int z, int xm, int xM, int zm, int zM, out tr_box_aux box)
         {
-            var room = _rooms[i];
-            var aux = room.AuxSectors[x, z];
+            var aux = room.compiled.AuxSectors[x, z];
 
             int xMin = 0;
             int xMax = 0;
@@ -1457,7 +1453,7 @@ namespace TombEditor.Compilers
             // Find box corners in direction -X
             for (int x2 = xc; x2 > 0; x2--)
             {
-                var aux2 = room.AuxSectors[x2, zc];
+                var aux2 = room.compiled.AuxSectors[x2, zc];
 
                 if (aux2.WallPortal != -1)
                 {
@@ -1475,7 +1471,7 @@ namespace TombEditor.Compilers
             // Find box corners in direction +X
             for (int x2 = xc; x2 < room.NumXSectors - 1; x2++)
             {
-                var aux2 = room.AuxSectors[x2, zc];
+                var aux2 = room.compiled.AuxSectors[x2, zc];
 
                 if (aux2.WallPortal != -1)
                 {
@@ -1496,7 +1492,7 @@ namespace TombEditor.Compilers
                 int tmpZ = 0;
                 for (int z2 = zc; z2 > 0; z2--)
                 {
-                    var aux2 = room.AuxSectors[x2, z2];
+                    var aux2 = room.compiled.AuxSectors[x2, z2];
 
                     if (aux2.WallPortal != -1)
                     {
@@ -1523,7 +1519,7 @@ namespace TombEditor.Compilers
 
                 for (int z2 = zc; z2 < room.NumZSectors - 1; z2++)
                 {
-                    var aux2 = room.AuxSectors[x2, z2];
+                    var aux2 = room.compiled.AuxSectors[x2, z2];
 
                     if (aux2.WallPortal != -1)
                     {
@@ -1545,21 +1541,21 @@ namespace TombEditor.Compilers
 
             box = new tr_box_aux
             {
-                Xmin = (byte) (xMin + room.Info.X / 1024),
-                Xmax = (byte) (xMax + room.Info.X / 1024 + 1),
-                Zmin = (byte) (zMin + room.Info.Z / 1024),
-                Zmax = (byte) (zMax + room.Info.Z / 1024 + 1),
-                TrueFloor = GetMostDownFloor(i, x, z),
+                Xmin = (byte) (xMin + room.compiled.Info.X / 1024),
+                Xmax = (byte) (xMax + room.compiled.Info.X / 1024 + 1),
+                Zmin = (byte) (zMin + room.compiled.Info.Z / 1024),
+                Zmax = (byte) (zMax + room.compiled.Info.Z / 1024 + 1),
+                TrueFloor = GetMostDownFloor(room, x, z),
                 IsolatedBox = aux.Box,
                 Monkey = aux.Monkey,
                 Portal = aux.Portal,
-                Room = (short) i
+                Room = (short) _level.Rooms.ReferenceIndexOf(room)
             };
 
             // Cut the box if needed
             if (xm == 0 || zm == 0 || xM == 0 || zM == 0)
                 return true;
-            
+
             if (box.Xmin < xm)
                 box.Xmin = (byte) xm;
             if (box.Xmax > xM)
@@ -1578,38 +1574,38 @@ namespace TombEditor.Compilers
             return true;
         }
 
-        private short GetMostDownFloor(int room, int x, int z)
+        private short GetMostDownFloor(Room room, int x, int z)
         {
             while (true)
             {
                 var sector = GetSector(room, x, z);
                 if (sector.RoomBelow == 255)
                 {
-                    var aux3 = _rooms[room].AuxSectors[x, z];
+                    var aux3 = room.compiled.AuxSectors[x, z];
                     return (short) (aux3.LowestFloor * 256);
                 }
 
-                var room1 = _rooms[room];
-                var room2 = _rooms[sector.RoomBelow];
+                var room1 = room;
+                var room2 = _editor.Level.Rooms[sector.RoomBelow];
 
-                int x2 = room1.Info.X / 1024 + x - room2.Info.X / 1024;
-                int z2 = room1.Info.Z / 1024 + z - room2.Info.Z / 1024;
+                int x2 = room1.compiled.Info.X / 1024 + x - room2.compiled.Info.X / 1024;
+                int z2 = room1.compiled.Info.Z / 1024 + z - room2.compiled.Info.Z / 1024;
 
-                var sector2 = GetSector(sector.RoomBelow, x2, z2);
-                var aux2 = _rooms[sector.RoomBelow].AuxSectors[x2, z2];
+                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
+                var aux2 = _editor.Level.Rooms[sector.RoomBelow].compiled.AuxSectors[x2, z2];
 
                 if (sector2.RoomBelow == 255 || aux2.IsFloorSolid)
                 {
                     return (short) (aux2.LowestFloor * 256);
                 }
-                
-                room = sector.RoomBelow;
+
+                room = _editor.Level.Rooms[sector.RoomBelow];
                 x = x2;
                 z = z2;
             }
         }
 
-        private bool GetMostDownFloorAndRoom(int room, int x, int z, out int roomIndex, out short floor)
+        private bool GetMostDownFloorAndRoom(Room room, int x, int z, out Room roomIndex, out short floor)
         {
             while (true)
             {
@@ -1621,52 +1617,52 @@ namespace TombEditor.Compilers
                     return true;
                 }
 
-                var room1 = _rooms[room];
-                var room2 = _rooms[sector.RoomBelow];
+                var room1 = room;
+                var room2 = _editor.Level.Rooms[sector.RoomBelow];
 
-                int x2 = room1.Info.X / 1024 + x - room2.Info.X / 1024;
-                int z2 = room1.Info.Z / 1024 + z - room2.Info.Z / 1024;
+                int x2 = room1.compiled.Info.X / 1024 + x - room2.compiled.Info.X / 1024;
+                int z2 = room1.compiled.Info.Z / 1024 + z - room2.compiled.Info.Z / 1024;
 
-                var sector2 = GetSector(sector.RoomBelow, x2, z2);
+                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
 
                 if (sector2.RoomBelow != 255)
                 {
-                    room = sector.RoomBelow;
+                    room = _editor.Level.Rooms[sector.RoomBelow];
                     x = x2;
                     z = z2;
                     continue;
                 }
 
-                roomIndex = sector.RoomBelow;
+                roomIndex = _editor.Level.Rooms[sector.RoomBelow];
                 floor = sector2.Floor;
                 return true;
             }
         }
 
-        private bool FindMonkeyFloor(int room, int x, int z)
+        private bool FindMonkeyFloor(Room room, int x, int z)
         {
             while (true)
             {
                 var sector = GetSector(room, x, z);
                 if (sector.RoomBelow == 255)
                 {
-                    return _rooms[room].AuxSectors[x, z].Monkey;
+                    return room.compiled.AuxSectors[x, z].Monkey;
                 }
 
-                var room1 = _rooms[room];
-                var room2 = _rooms[sector.RoomBelow];
+                var room1 = room;
+                var room2 = _editor.Level.Rooms[sector.RoomBelow];
 
-                int x2 = room1.Info.X / 1024 + x - room2.Info.X / 1024;
-                int z2 = room1.Info.Z / 1024 + z - room2.Info.Z / 1024;
+                int x2 = room1.compiled.Info.X / 1024 + x - room2.compiled.Info.X / 1024;
+                int z2 = room1.compiled.Info.Z / 1024 + z - room2.compiled.Info.Z / 1024;
 
-                var sector2 = GetSector(sector.RoomBelow, x2, z2);
+                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
 
                 if (sector2.RoomBelow == 255)
                 {
-                    return _rooms[sector.RoomBelow].AuxSectors[x2, z2].Monkey;
+                    return _editor.Level.Rooms[sector.RoomBelow].compiled.AuxSectors[x2, z2].Monkey;
                 }
 
-                room = sector.RoomBelow;
+                room = _editor.Level.Rooms[sector.RoomBelow];
                 x = x2;
                 z = z2;
             }
@@ -1832,11 +1828,11 @@ namespace TombEditor.Compilers
             {
                 var item = new tr_item
                 {
-                    X = (int) (_rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X),
-                    Y = (int) (_rooms[_roomsIdTable[instance.Room]].Info.YBottom - instance.Position.Y),
-                    Z = (int) (_rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z),
+                    X = (int) (instance.Room.compiled.Info.X + instance.Position.X),
+                    Y = (int) (instance.Room.compiled.Info.YBottom - instance.Position.Y),
+                    Z = (int) (instance.Room.compiled.Info.Z + instance.Position.Z),
                     ObjectID = (short) instance.Model.ObjectID,
-                    Room = (short) _roomsIdTable[instance.Room],
+                    Room = (short) _level.Rooms.ReferenceIndexOf(instance.Room),
                     Angle = (short) (instance.Rotation / 45 * 8192),
                     Intensity1 = -1,
                     Intensity2 = instance.OCB
@@ -1871,11 +1867,11 @@ namespace TombEditor.Compilers
             {
                 var item = new tr_ai_item
                 {
-                    X = (int) (_rooms[_roomsIdTable[instance.Room]].Info.X + instance.Position.X),
-                    Y = (int) (_rooms[_roomsIdTable[instance.Room]].Info.YBottom - instance.Position.Y),
-                    Z = (int) (_rooms[_roomsIdTable[instance.Room]].Info.Z + instance.Position.Z),
+                    X = (int) (instance.Room.compiled.Info.X + instance.Position.X),
+                    Y = (int) (instance.Room.compiled.Info.YBottom - instance.Position.Y),
+                    Z = (int) (instance.Room.compiled.Info.Z + instance.Position.Z),
                     ObjectID = (ushort) instance.Model.ObjectID,
-                    Room = (ushort) _roomsIdTable[instance.Room]
+                    Room = (ushort) _level.Rooms.ReferenceIndexOf(instance.Room)
                 };
 
                 short angle = instance.Rotation;
@@ -2317,7 +2313,7 @@ namespace TombEditor.Compilers
             int test = TextureInfoExists(tile);
             if (test != -1)
                 return (short) test;
-            
+
             _tempObjectTextures.Add(tile);
             int newId = _tempObjectTextures.Count - 1;
 

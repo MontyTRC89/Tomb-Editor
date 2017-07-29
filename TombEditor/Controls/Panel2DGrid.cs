@@ -51,7 +51,7 @@ namespace TombEditor.Controls
         
         private int GetZBlock(float z)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.SelectedRoom;
             int numXblocks = currentRoom.NumXSectors;
             int numZblocks = currentRoom.NumZSectors;
 
@@ -67,7 +67,7 @@ namespace TombEditor.Controls
 
         private int getStartX()
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.SelectedRoom;
             int numXblocks = currentRoom.NumXSectors;
             int numZblocks = currentRoom.NumZSectors;
 
@@ -79,7 +79,7 @@ namespace TombEditor.Controls
 
         private int getStartZ()
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.SelectedRoom;
             int numXblocks = currentRoom.NumXSectors;
             int numZblocks = currentRoom.NumZSectors;
 
@@ -95,12 +95,12 @@ namespace TombEditor.Controls
 
             if (_editor == null)
                 return;
-            if (_editor.RoomIndex == -1)
+            if (_editor.SelectedRoom == null)
                 return;
 
             _editor.ResetPanel2DMessage();
 
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.SelectedRoom;
             int numXblocks = currentRoom.NumXSectors;
             int numZblocks = currentRoom.NumZSectors;
 
@@ -196,13 +196,6 @@ namespace TombEditor.Controls
                     int xBlock = (int)_lastX / GridStep;
                     int zBlock = GetZBlock(_lastY);
 
-                    /*if (xBlock < 0 || zBlock < 0 || xBlock > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors-1 ||
-                        zBlock > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
-                    {
-                        Drag = false;
-                        return;
-                    }*/
-
                     _firstSelection = false;
 
                     // se qualcuno dei valori X o Z è pari a -1 allora è una prima selezione
@@ -262,10 +255,10 @@ namespace TombEditor.Controls
 
             if (_editor == null)
                 return;
-            if (_editor.RoomIndex == -1)
+            if (_editor.SelectedRoom == null)
                 return;
 
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.SelectedRoom;
             int numXblocks = currentRoom.NumXSectors;
             int numZblocks = currentRoom.NumZSectors;
 
@@ -306,10 +299,10 @@ namespace TombEditor.Controls
                             _editor.BlockSelectionEndX = 0;
                         if (_editor.BlockSelectionEndZ < 0)
                             _editor.BlockSelectionEndZ = 0;
-                        if (_editor.BlockSelectionEndX > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1)
-                            _editor.BlockSelectionEndX = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1;
-                        if (_editor.BlockSelectionEndZ > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
-                            _editor.BlockSelectionEndZ = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1;
+                        if (_editor.BlockSelectionEndX > _editor.SelectedRoom.NumXSectors - 1)
+                            _editor.BlockSelectionEndX = _editor.SelectedRoom.NumXSectors - 1;
+                        if (_editor.BlockSelectionEndZ > _editor.SelectedRoom.NumZSectors - 1)
+                            _editor.BlockSelectionEndZ = _editor.SelectedRoom.NumZSectors - 1;
 
                         _firstSelection = true;
 
@@ -334,10 +327,10 @@ namespace TombEditor.Controls
 
             if (_editor == null)
                 return;
-            if (_editor.RoomIndex == -1)
+            if (_editor.SelectedRoom == null)
                 return;
 
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+            Room currentRoom = _editor.SelectedRoom;
             int numXblocks = currentRoom.NumXSectors;
             int numZblocks = currentRoom.NumZSectors;
 
@@ -377,10 +370,10 @@ namespace TombEditor.Controls
                                 _editor.BlockSelectionEndX = 0;
                             if (_editor.BlockSelectionEndZ < 0)
                                 _editor.BlockSelectionEndZ = 0;
-                            if (_editor.BlockSelectionEndX > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1)
-                                _editor.BlockSelectionEndX = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1;
-                            if (_editor.BlockSelectionEndZ > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
-                                _editor.BlockSelectionEndZ = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1;
+                            if (_editor.BlockSelectionEndX > _editor.SelectedRoom.NumXSectors - 1)
+                                _editor.BlockSelectionEndX = _editor.SelectedRoom.NumXSectors - 1;
+                            if (_editor.BlockSelectionEndZ > _editor.SelectedRoom.NumZSectors - 1)
+                                _editor.BlockSelectionEndZ = _editor.SelectedRoom.NumZSectors - 1;
 
                             _editor.LoadTriggersInUI();
 
@@ -439,10 +432,10 @@ namespace TombEditor.Controls
 
                 if (_editor == null)
                     return;
-                if (_editor.RoomIndex == -1)
+                if (_editor.SelectedRoom == null)
                     return;
 
-                Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
+                Room currentRoom = _editor.SelectedRoom;
                 int numXblocks = currentRoom.NumXSectors;
                 int numZblocks = currentRoom.NumZSectors;
 
@@ -642,7 +635,7 @@ namespace TombEditor.Controls
             //   x = x + StartX;
             //  z = z + StartY;
 
-            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+            Room room = _editor.SelectedRoom;
 
             for (int i = index; i < _editor.Level.Portals.Count; i++)
             {
@@ -651,7 +644,7 @@ namespace TombEditor.Controls
 
                 Portal p = _editor.Level.Portals.ElementAt(i).Value;
 
-                int theRoom = _editor.RoomIndex; // (room.Flipped && room.BaseRoom != -1 ? room.BaseRoom : _editor.RoomIndex);
+                var theRoom = _editor.SelectedRoom;
 
                 if (p.Room == theRoom && x >= p.X && x < p.X + p.NumXBlocks && z >= p.Z && z < p.Z + p.NumZBlocks)
                     return p.ID;
@@ -676,7 +669,7 @@ namespace TombEditor.Controls
 
                 TriggerInstance t = _editor.Level.Triggers.ElementAt(i).Value;
 
-                if (t.Room == _editor.RoomIndex && x >= t.X && x < t.X + t.NumXBlocks && z >= t.Z && z < t.Z + t.NumZBlocks)
+                if (t.Room == _editor.SelectedRoom && x >= t.X && x < t.X + t.NumXBlocks && z >= t.Z && z < t.Z + t.NumZBlocks)
                     return t.ID;
             }
 

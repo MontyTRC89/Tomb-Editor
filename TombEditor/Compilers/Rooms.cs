@@ -12,31 +12,11 @@ namespace TombEditor.Compilers
         {
             ReportProgress(20, "Building rooms");
 
-            // Map editor room indices to final level indices
-            _roomsIdTable = new Dictionary<int, int>();
-            var lastRoom = 0;
-
-            for (var i = 0; i < _level.Rooms.Length - 1; i++)
-            {
-                var room = _level.Rooms[i];
-                if (room == null)
-                    continue;
-
-                _roomsIdTable.Add(i, lastRoom);
-                lastRoom++;
-            }
-
             // Average lighting at the portals
             MatchPortalShades();
 
-            _rooms = new tr_room[_roomsIdTable.Count];
-
-            for (var i = 0; i < _level.Rooms.Length - 1; i++)
+            foreach (var room in _level.Rooms.Where(r => r != null))
             {
-                var room = _level.Rooms[i];
-                if (room == null)
-                    continue;
-
                 var newRoom = new tr_room
                 {
                     OriginalRoom = room,
@@ -54,11 +34,13 @@ namespace TombEditor.Compilers
                     NumXSectors = room.NumXSectors,
                     NumZSectors = room.NumZSectors,
                     AlternateRoom =
-                        (short) (room.Flipped && room.AlternateRoom != -1 ? _roomsIdTable[room.AlternateRoom] : -1),
-                    AlternateGroup = (byte) (room.Flipped && room.AlternateRoom != -1 ? room.AlternateGroup : 0),
+                        (short) _level.Rooms.ReferenceIndexOf(room.Flipped && room.AlternateRoom != null
+                            ? room.AlternateRoom
+                            : null),
+                    AlternateGroup = (byte) (room.Flipped && room.AlternateRoom != null ? room.AlternateGroup : 0),
                     Flipped = room.Flipped,
-                    FlippedRoom = (short) (room.AlternateRoom != -1 ? _roomsIdTable[room.AlternateRoom] : -1),
-                    BaseRoom = (short) (room.BaseRoom != -1 ? _roomsIdTable[room.BaseRoom] : -1),
+                    FlippedRoom = room.AlternateRoom,
+                    BaseRoom = room.BaseRoom,
                     AmbientIntensity2 = (ushort) (0x0000 + room.AmbientLight.R),
                     AmbientIntensity1 = (ushort) ((room.AmbientLight.G << 8) + room.AmbientLight.B),
                     ReverbInfo = (byte) room.Reverberation,
@@ -99,7 +81,7 @@ namespace TombEditor.Compilers
                             if (room.Blocks[x, z].FloorPortal == -1)
                                 continue;
 
-                            if (!_level.Rooms[_level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom].FlagWater)
+                            if (!_level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.FlagWater)
                                 continue;
 
                             if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
@@ -109,9 +91,7 @@ namespace TombEditor.Compilers
 
                     if (waterPortals.Count != 0)
                     {
-                        var foundWaterRoom = _level.Portals[waterPortals[0]].AdjoiningRoom;
-
-                        var waterRoom = _level.Rooms[foundWaterRoom];
+                        var waterRoom = _level.Portals[waterPortals[0]].AdjoiningRoom;
 
                         if (!room.FlagReflection && waterRoom.WaterLevel == 1)
                             newRoom.WaterScheme = 0x06;
@@ -161,7 +141,7 @@ namespace TombEditor.Compilers
                 }
 
                 if (room.FlagMist)
-                    newRoom.WaterScheme += (byte)room.MistLevel;
+                    newRoom.WaterScheme += (byte) room.MistLevel;
 
                 var lowest = -room.GetLowestCorner() * 256 + newRoom.Info.YBottom;
 
@@ -173,7 +153,7 @@ namespace TombEditor.Compilers
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
                     {
-                        var base1 = (short)((x << 9) + (z << 4));
+                        var base1 = (short) ((x << 9) + (z << 4));
 
                         for (var n = 0; n < room.NumVerticesInGrid[x, z]; n++)
                         {
@@ -190,14 +170,14 @@ namespace TombEditor.Compilers
 
                     var v = new tr_vertex
                     {
-                        X = (short)room.OptimizedVertices[j].Position.X,
-                        Y = (short)(-room.OptimizedVertices[j].Position.Y + newRoom.Info.YBottom),
-                        Z = (short)room.OptimizedVertices[j].Position.Z
+                        X = (short) room.OptimizedVertices[j].Position.X,
+                        Y = (short) (-room.OptimizedVertices[j].Position.Y + newRoom.Info.YBottom),
+                        Z = (short) room.OptimizedVertices[j].Position.Z
                     };
 
                     rv.Vertex = v;
                     rv.Lighting1 = 0;
-                    rv.Lighting2 = (short)Pack24BitColorTo16Bit(room.OptimizedVertices[j].FaceColor);
+                    rv.Lighting2 = (short) Pack24BitColorTo16Bit(room.OptimizedVertices[j].FaceColor);
                     rv.Attributes = 0;
 
                     // Water special effects
@@ -248,7 +228,7 @@ namespace TombEditor.Compilers
                     newRoom.Vertices[j] = rv;
                 }
 
-                ConvertGeometry(ref room, ref newRoom, indicesDictionary);
+                ConvertGeometry(room, ref newRoom, indicesDictionary);
 
                 // Build portals
                 var tempIdPortals = new List<int>();
@@ -270,36 +250,36 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                ConvertPortals(tempIdPortals, ref room, ref newRoom);
+                ConvertPortals(tempIdPortals, room, ref newRoom);
 
-                ConvertSectors(ref room, ref newRoom);
+                ConvertSectors(room, ref newRoom);
 
                 var tempStaticMeshes = room.StaticMeshes
-                    .Select(staticMesh => (StaticMeshInstance)_editor.Level.Objects[staticMesh])
+                    .Select(staticMesh => (StaticMeshInstance) _editor.Level.Objects[staticMesh])
                     .Select(instance => new tr_room_staticmesh
                     {
-                        X = (uint)(newRoom.Info.X + instance.Position.X),
-                        Y = (uint)(newRoom.Info.YBottom - instance.Position.Y),
-                        Z = (uint)(newRoom.Info.Z + instance.Position.Z),
-                        Rotation = (ushort)(instance.Rotation / 45 * 8192),
-                        ObjectID = (ushort)instance.Model.ObjectID,
+                        X = (uint) (newRoom.Info.X + instance.Position.X),
+                        Y = (uint) (newRoom.Info.YBottom - instance.Position.Y),
+                        Z = (uint) (newRoom.Info.Z + instance.Position.Z),
+                        Rotation = (ushort) (instance.Rotation / 45 * 8192),
+                        ObjectID = (ushort) instance.Model.ObjectID,
                         Intensity1 = Pack24BitColorTo16Bit(instance.Color),
                         Intensity2 = 0
                     })
                     .ToList();
 
-                newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.Count;
+                newRoom.NumStaticMeshes = (ushort) tempStaticMeshes.Count;
                 newRoom.StaticMeshes = tempStaticMeshes.ToArray();
 
-                ConvertLights(ref room, ref newRoom);
+                ConvertLights(room, ref newRoom);
 
-                _rooms[_roomsIdTable[i]] = newRoom;
+                room.compiled = newRoom;
             }
 
-            ReportProgress(25, "    Number of rooms: " + _rooms.Length);
+            ReportProgress(25, "    Number of rooms: " + _level.Rooms.Count(r => r != null));
         }
 
-        private void ConvertGeometry(ref Room room, ref tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary)
+        private void ConvertGeometry(Room room, ref tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary)
         {
             var tempRectangles = new List<tr_face4>();
             var tempTriangles = new List<tr_face3>();
@@ -399,15 +379,15 @@ namespace TombEditor.Compilers
                     }
                 }
             }
-            
+
             newRoom.Rectangles = tempRectangles.ToArray();
             newRoom.Triangles = tempTriangles.ToArray();
 
-            newRoom.NumRectangles = (ushort)tempRectangles.Count;
-            newRoom.NumTriangles = (ushort)tempTriangles.Count;
+            newRoom.NumRectangles = (ushort) tempRectangles.Count;
+            newRoom.NumTriangles = (ushort) tempTriangles.Count;
         }
 
-        private static void ConvertLights(ref Room room, ref tr_room newRoom)
+        private static void ConvertLights(Room room, ref tr_room newRoom)
         {
             var result = new List<tr4_room_light>();
             foreach (var light in room.Lights.Where(l => l.Type != LightType.Effect))
@@ -481,11 +461,11 @@ namespace TombEditor.Compilers
                 result.Add(newLight);
             }
 
-            newRoom.NumLights = (ushort)result.Count;
+            newRoom.NumLights = (ushort) result.Count;
             newRoom.Lights = result.ToArray();
         }
 
-        private void ConvertSectors(ref Room room, ref tr_room newRoom)
+        private void ConvertSectors(Room room, ref tr_room newRoom)
         {
             newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
             newRoom.AuxSectors = new tr_sector_aux[room.NumXSectors, room.NumZSectors];
@@ -497,20 +477,20 @@ namespace TombEditor.Compilers
                     var sector = new tr_room_sector();
                     var aux = new tr_sector_aux();
 
-                    sector.BoxIndex = 0x7ff6;                   
+                    sector.BoxIndex = 0x7ff6;
                     sector.FloorDataIndex = 0;
 
                     if (room.Blocks[x, z].FloorPortal >= 0)
                         sector.RoomBelow =
-                            (byte) _roomsIdTable[
-                                _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom];
+                            (byte) _level.Rooms.ReferenceIndexOf(_editor.Level.Portals[room.Blocks[x, z].FloorPortal]
+                                .AdjoiningRoom);
                     else
                         sector.RoomBelow = 0xff;
 
                     if (room.Blocks[x, z].CeilingPortal >= 0)
                         sector.RoomAbove =
-                            (byte) _roomsIdTable[
-                                _editor.Level.Portals[room.Blocks[x, z].CeilingPortal].AdjoiningRoom];
+                            (byte) _level.Rooms.ReferenceIndexOf(_editor.Level.Portals[room.Blocks[x, z].CeilingPortal]
+                                .AdjoiningRoom);
                     else
                         sector.RoomAbove = 0xff;
 
@@ -556,7 +536,7 @@ namespace TombEditor.Compilers
                             (room.Blocks[x, z].IsFloorSolid && room.Blocks[x, z].NoCollisionFloor))
                         {
                             var portal = _editor.Level.Portals[room.Blocks[x, z].FloorPortal];
-                            sector.RoomBelow = (byte) _roomsIdTable[portal.AdjoiningRoom];
+                            sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
                         }
                         else
                         {
@@ -594,10 +574,10 @@ namespace TombEditor.Compilers
                         aux.CeilingPortal = -1;
                     }
 
-                    if (room.Blocks[x, z].WallPortal != -1 &&
-                        room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
+                    if (room.Blocks[x, z].WallPortal != -1 && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
                         aux.WallPortal =
-                            _roomsIdTable[_editor.Level.Portals[room.Blocks[x, z].WallPortal].AdjoiningRoom];
+                            _level.Rooms.ReferenceIndexOf(_editor.Level.Portals[room.Blocks[x, z].WallPortal]
+                                .AdjoiningRoom);
                     else
                         aux.WallPortal = -1;
 
@@ -628,7 +608,7 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(IEnumerable<int> tempIdPortals, ref Room room, ref tr_room newRoom)
+        private void ConvertPortals(IEnumerable<int> tempIdPortals, Room room, ref tr_room newRoom)
         {
             var result = new List<tr_room_portal>();
 
@@ -641,7 +621,7 @@ namespace TombEditor.Compilers
 
                 var newPortal = new tr_room_portal
                 {
-                    AdjoiningRoom = (ushort) _roomsIdTable[portal.AdjoiningRoom],
+                    AdjoiningRoom = (ushort) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom),
                     Vertices = new tr_vertex[4]
                 };
 
@@ -1045,7 +1025,7 @@ namespace TombEditor.Compilers
                 result.Add(newPortal);
             }
 
-            newRoom.NumPortals = (ushort)result.Count;
+            newRoom.NumPortals = (ushort) result.Count;
             newRoom.Portals = result.ToArray();
         }
 
@@ -1210,7 +1190,7 @@ namespace TombEditor.Compilers
                     var tempTextureIds = new List<short>();
                     foreach (var tile in sequence.Tiles)
                     {
-                        tempTextureIds.Add((short)tile.NewID);
+                        tempTextureIds.Add((short) tile.NewID);
                         if (!_animTexturesGeneral.Contains(tile.NewID))
                             _animTexturesGeneral.Add(tile.NewID);
 
@@ -1221,7 +1201,7 @@ namespace TombEditor.Compilers
                         continue;
 
                     newSet.Textures = tempTextureIds.ToArray();
-                    newSet.NumTextures = (short)(newSet.Textures.Length - 1);
+                    newSet.NumTextures = (short) (newSet.Textures.Length - 1);
                     tempAnimatedTextures.Add(newSet);
                     _numAnimatedTextures++;
                 }
@@ -1255,14 +1235,14 @@ namespace TombEditor.Compilers
                 //if (currentPortal.LightAveraged) continue;
 
                 // Get the rooms
-                var currentRoom = _level.Rooms[currentPortal.Room];
-                var otherRoom = _level.Rooms[otherPortal.Room];
+                var currentRoom = currentPortal.Room;
+                var otherRoom = otherPortal.Room;
 
                 if (currentPortal.Direction == PortalDirection.North)
                 {
                     for (int x = currentPortal.X; x <= currentPortal.X + currentPortal.NumXBlocks; x++)
                     {
-                        var facingX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
+                        var facingX = x + (int) (currentRoom.Position.X - otherRoom.Position.X);
 
                         for (var m = 0; m < currentRoom.NumVerticesInGrid[x, currentRoom.NumZSectors - 1]; m++)
                         {
@@ -1276,9 +1256,9 @@ namespace TombEditor.Compilers
                                                       otherRoom.Position.Y * -256.0f))
                                     continue;
 
-                                var meanR = (int)(v1.FaceColor.X + v2.FaceColor.X) >> 1;
-                                var meanG = (int)(v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
-                                var meanB = (int)(v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
+                                var meanR = (int) (v1.FaceColor.X + v2.FaceColor.X) >> 1;
+                                var meanG = (int) (v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
+                                var meanB = (int) (v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
 
                                 v1.FaceColor.X = meanR;
                                 v1.FaceColor.Y = meanG;
@@ -1294,9 +1274,6 @@ namespace TombEditor.Compilers
                                 break;
                             }
                         }
-
-                        _level.Rooms[currentPortal.Room] = currentRoom;
-                        _level.Rooms[otherPortal.Room] = otherRoom;
                     }
                 }
 
@@ -1304,7 +1281,7 @@ namespace TombEditor.Compilers
                 {
                     for (int x = currentPortal.X; x <= currentPortal.X + currentPortal.NumXBlocks; x++)
                     {
-                        var facingX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
+                        var facingX = x + (int) (currentRoom.Position.X - otherRoom.Position.X);
 
                         for (var m = 0; m < currentRoom.NumVerticesInGrid[x, 1]; m++)
                         {
@@ -1318,9 +1295,9 @@ namespace TombEditor.Compilers
                                                       otherRoom.Position.Y * -256.0f))
                                     continue;
 
-                                var meanR = (int)(v1.FaceColor.X + v2.FaceColor.X) >> 1;
-                                var meanG = (int)(v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
-                                var meanB = (int)(v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
+                                var meanR = (int) (v1.FaceColor.X + v2.FaceColor.X) >> 1;
+                                var meanG = (int) (v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
+                                var meanB = (int) (v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
 
                                 v1.FaceColor.X = meanR;
                                 v1.FaceColor.Y = meanG;
@@ -1336,9 +1313,6 @@ namespace TombEditor.Compilers
                                 break;
                             }
                         }
-
-                        _level.Rooms[currentPortal.Room] = currentRoom;
-                        _level.Rooms[otherPortal.Room] = otherRoom;
                     }
                 }
 
@@ -1346,7 +1320,7 @@ namespace TombEditor.Compilers
                 {
                     for (int z = currentPortal.Z; z <= currentPortal.Z + currentPortal.NumZBlocks; z++)
                     {
-                        var facingZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
+                        var facingZ = z + (int) (currentRoom.Position.Z - otherRoom.Position.Z);
 
                         for (var m = 0; m < currentRoom.NumVerticesInGrid[currentRoom.NumXSectors - 1, z]; m++)
                         {
@@ -1360,9 +1334,9 @@ namespace TombEditor.Compilers
                                                       otherRoom.Position.Y * -256.0f))
                                     continue;
 
-                                var meanR = (int)(v1.FaceColor.X + v2.FaceColor.X) >> 1;
-                                var meanG = (int)(v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
-                                var meanB = (int)(v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
+                                var meanR = (int) (v1.FaceColor.X + v2.FaceColor.X) >> 1;
+                                var meanG = (int) (v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
+                                var meanB = (int) (v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
 
                                 v1.FaceColor.X = meanR;
                                 v1.FaceColor.Y = meanG;
@@ -1378,9 +1352,6 @@ namespace TombEditor.Compilers
                                 break;
                             }
                         }
-
-                        _level.Rooms[currentPortal.Room] = currentRoom;
-                        _level.Rooms[otherPortal.Room] = otherRoom;
                     }
                 }
 
@@ -1388,7 +1359,7 @@ namespace TombEditor.Compilers
                 {
                     for (int z = currentPortal.Z; z <= currentPortal.Z + currentPortal.NumZBlocks; z++)
                     {
-                        var facingZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
+                        var facingZ = z + (int) (currentRoom.Position.Z - otherRoom.Position.Z);
 
                         for (var m = 0; m < currentRoom.NumVerticesInGrid[1, z]; m++)
                         {
@@ -1402,9 +1373,9 @@ namespace TombEditor.Compilers
                                                       otherRoom.Position.Y * -256.0f))
                                     continue;
 
-                                var meanR = (int)(v1.FaceColor.X + v2.FaceColor.X) >> 1;
-                                var meanG = (int)(v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
-                                var meanB = (int)(v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
+                                var meanR = (int) (v1.FaceColor.X + v2.FaceColor.X) >> 1;
+                                var meanG = (int) (v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
+                                var meanB = (int) (v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
 
                                 v1.FaceColor.X = meanR;
                                 v1.FaceColor.Y = meanG;
@@ -1420,9 +1391,6 @@ namespace TombEditor.Compilers
                                 break;
                             }
                         }
-
-                        _level.Rooms[currentPortal.Room] = currentRoom;
-                        _level.Rooms[otherPortal.Room] = otherRoom;
                     }
                 }
 
@@ -1435,8 +1403,8 @@ namespace TombEditor.Compilers
                         {
                             for (int x = currentPortal.X; x <= currentPortal.X + currentPortal.NumXBlocks; x++)
                             {
-                                var facingX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
-                                var facingZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
+                                var facingX = x + (int) (currentRoom.Position.X - otherRoom.Position.X);
+                                var facingZ = z + (int) (currentRoom.Position.Z - otherRoom.Position.Z);
 
                                 for (var m = 0; m < currentRoom.NumVerticesInGrid[x, z]; m++)
                                 {
@@ -1451,9 +1419,9 @@ namespace TombEditor.Compilers
                                              otherRoom.Position.Y * -256.0f))
                                             continue;
 
-                                        var meanR = (int)(v1.FaceColor.X + v2.FaceColor.X) >> 1;
-                                        var meanG = (int)(v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
-                                        var meanB = (int)(v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
+                                        var meanR = (int) (v1.FaceColor.X + v2.FaceColor.X) >> 1;
+                                        var meanG = (int) (v1.FaceColor.Y + v2.FaceColor.Y) >> 1;
+                                        var meanB = (int) (v1.FaceColor.Z + v2.FaceColor.Z) >> 1;
 
                                         v1.FaceColor.X = meanR;
                                         v1.FaceColor.Y = meanG;
@@ -1469,9 +1437,6 @@ namespace TombEditor.Compilers
                                         break;
                                     }
                                 }
-
-                                _level.Rooms[currentPortal.Room] = currentRoom;
-                                _level.Rooms[otherPortal.Room] = otherRoom;
                             }
                         }
                     }
@@ -1484,13 +1449,13 @@ namespace TombEditor.Compilers
 
         private static ushort Pack24BitColorTo16Bit(Vector4 color)
         {
-            var r1 = (ushort)color.X;
-            var g1 = (ushort)color.Y;
-            var b1 = (ushort)color.Z;
+            var r1 = (ushort) color.X;
+            var g1 = (ushort) color.Y;
+            var b1 = (ushort) color.Z;
 
-            var r = (ushort)Math.Floor(color.X / 8);
-            var g = (ushort)Math.Floor(color.Y / 8);
-            var b = (ushort)Math.Floor(color.Z / 8);
+            var r = (ushort) Math.Floor(color.X / 8);
+            var g = (ushort) Math.Floor(color.Y / 8);
+            var b = (ushort) Math.Floor(color.Z / 8);
 
             if (r1 < 8)
                 r = 0;
@@ -1515,8 +1480,8 @@ namespace TombEditor.Compilers
             else
             {
                 tmp |= 0;
-                tmp |= (ushort)(r << 10);
-                tmp |= (ushort)(g << 5);
+                tmp |= (ushort) (r << 10);
+                tmp |= (ushort) (g << 5);
                 tmp |= b;
             }
 
@@ -1525,13 +1490,13 @@ namespace TombEditor.Compilers
 
         private static ushort Pack24BitColorTo16Bit(System.Drawing.Color color)
         {
-            var r1 = (ushort)color.R;
-            var g1 = (ushort)color.G;
-            var b1 = (ushort)color.B;
+            var r1 = (ushort) color.R;
+            var g1 = (ushort) color.G;
+            var b1 = (ushort) color.B;
 
-            var r = (ushort)(color.R / 8);
-            var g = (ushort)(color.G / 8);
-            var b = (ushort)(color.B / 8);
+            var r = (ushort) (color.R / 8);
+            var g = (ushort) (color.G / 8);
+            var b = (ushort) (color.B / 8);
 
             if (r1 < 8)
                 r = 0;
@@ -1549,9 +1514,9 @@ namespace TombEditor.Compilers
             else
             {
                 tmp |= 0;
-                tmp |= (ushort)((b << 10) & 0x7c00);
-                tmp |= (ushort)((g << 5) & 0x03e0);
-                tmp |= (ushort)(r & 0x1f);
+                tmp |= (ushort) ((b << 10) & 0x7c00);
+                tmp |= (ushort) ((g << 5) & 0x03e0);
+                tmp |= (ushort) (r & 0x1f);
             }
 
             return tmp;

@@ -17,7 +17,7 @@ namespace TombEditor.Geometry
 
         private Editor _editor = Editor.Instance;
 
-        public TriggerInstance(int id, short room)
+        public TriggerInstance(int id, Room room)
             : base(ObjectInstanceType.Trigger, id, room)
         { }
 
@@ -139,23 +139,25 @@ namespace TombEditor.Geometry
 
         public override IObjectInstance Clone()
         {
-            TriggerInstance instance = new TriggerInstance(0, Room);
-
-            instance.X = X;
-            instance.Y = Y;
-            instance.Z = Z;
-            instance.OCB = OCB;
-            instance.Rotation = Rotation;
-            instance.Invisible = Invisible;
-            instance.ClearBody = ClearBody;
-            instance.Bits[0] = Bits[0];
-            instance.Bits[1] = Bits[1];
-            instance.Bits[2] = Bits[2];
-            instance.Bits[3] = Bits[3];
-            instance.Bits[4] = Bits[4];
-            instance.Type = Type;
-
-            return instance;
+            return new TriggerInstance(0, Room)
+            {
+                X = X,
+                Y = Y,
+                Z = Z,
+                OCB = OCB,
+                Rotation = Rotation,
+                Invisible = Invisible,
+                ClearBody = ClearBody,
+                Bits =
+                {
+                    [0] = Bits[0],
+                    [1] = Bits[1],
+                    [2] = Bits[2],
+                    [3] = Bits[3],
+                    [4] = Bits[4]
+                },
+                Type = Type
+            };
         }
     }
 }

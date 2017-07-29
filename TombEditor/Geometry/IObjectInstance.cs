@@ -21,7 +21,7 @@ namespace TombEditor.Geometry
     public abstract class IObjectInstance
     {
         public int ID { get; set; }
-        public short Room { get; set; }
+        public Room Room { get; set; }
         public Vector3 Position { get; set; }
         public short OCB { get; set; }
         public short Rotation { get; set; }
@@ -33,7 +33,7 @@ namespace TombEditor.Geometry
         public byte Z { get; set; }
         public short Y { get; set; }
 
-        public IObjectInstance(ObjectInstanceType type, int id, short room)
+        public IObjectInstance(ObjectInstanceType type, int id, Room room)
         {
             ID = id;
             Room = room;
