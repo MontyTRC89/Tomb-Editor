@@ -934,8 +934,7 @@ namespace TombEditor.Compilers
                               tex.Y >= current.Y && (tex.Y + tex.Height) <= (current.Y + 64) && 
                               tex.Page == current.Page))
                             continue;
-
-                        
+                                                
                         animatedSet = i;
                         animatedTextureTile = j;
 
@@ -961,7 +960,10 @@ namespace TombEditor.Compilers
                         var variant = _level.AnimatedTextures[animatedSet].Variants[i];
                         bool isTriangle = face.Shape == BlockFaceShape.Triangle;
 
+                        var current = _level.AnimatedTextures[animatedSet].Textures[animatedTextureTile];
+
                         if (variant.Flipped != face.Flipped || variant.Size != tex.Width ||
+                            variant.DeltaX != (tex.X - current.X) || variant.DeltaY != (tex.Y - current.Y) ||
                             variant.Transparent != face.Transparent ||
                             ((!variant.IsTriangle || !isTriangle || variant.Triangle != face.TextureTriangle) &&
                              (variant.IsTriangle || isTriangle)))
