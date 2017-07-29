@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using TombEditor.Geometry;
+using TombLib.IO;
 
 namespace TombEditor.Compilers
 {
@@ -33,19 +35,34 @@ namespace TombEditor.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_face4
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public ushort[] Vertices;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
         public short Texture;
         public short LightingEffect;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.Write(Vertices[0]);
+            writer.Write(Vertices[1]);
+            writer.Write(Vertices[2]);
+            writer.Write(Vertices[3]);
+            writer.Write(Texture);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_face3
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public ushort[] Vertices;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
         public short Texture;
         public short LightingEffect;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.Write(Vertices[0]);
+            writer.Write(Vertices[1]);
+            writer.Write(Vertices[2]);
+            writer.Write(Texture);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -62,8 +79,7 @@ namespace TombEditor.Compilers
     {
         public ushort AdjoiningRoom;
         public tr_vertex Normal;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public tr_vertex[] Vertices;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public tr_vertex[] Vertices;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -148,6 +164,7 @@ namespace TombEditor.Compilers
 
         // Helper data
         public tr_sector_aux[,] AuxSectors;
+
         public TextureSounds[,] TextureSounds;
         public List<int> ReachableRooms;
         public bool Visited;
@@ -155,6 +172,88 @@ namespace TombEditor.Compilers
         public short FlippedRoom;
         public short BaseRoom;
         public int OriginalRoomId;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.WriteBlock(Info);
+
+            var offset = writer.BaseStream.Position;
+
+            const int numdw = 0;
+            writer.Write(numdw);
+
+            var tmp = (ushort) Vertices.Length;
+            writer.Write(tmp);
+            writer.WriteBlockArray(Vertices);
+
+            tmp = (ushort) Rectangles.Length;
+            writer.Write(tmp);
+            if (tmp != 0)
+            {
+                for (var k = 0; k < Rectangles.Length; k++)
+                {
+                    Rectangles[k].Write(writer);
+                }
+            }
+
+            tmp = (ushort) Triangles.Length;
+            writer.Write(tmp);
+            if (tmp != 0)
+            {
+                for (var k = 0; k < Triangles.Length; k++)
+                {
+                    Triangles[k].Write(writer);
+                }
+            }
+
+            // For sprites, not used
+            tmp = 0;
+            writer.Write(tmp);
+
+            // Now save current offset and calculate the size of the geometry
+            var offset2 = writer.BaseStream.Position;
+            // ReSharper disable once SuggestVarOrType_BuiltInTypes
+            ushort roomGeometrySize = (ushort) ((offset2 - offset - 4) / 2);
+
+            // Save the size of the geometry
+            writer.BaseStream.Seek(offset, SeekOrigin.Begin);
+            writer.Write(roomGeometrySize);
+            writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
+
+            // Write portals
+            tmp = (ushort) Portals.Length;
+            writer.WriteBlock(tmp);
+            if (tmp != 0)
+                writer.WriteBlockArray(Portals);
+
+            // Write sectors
+            writer.Write(NumZSectors);
+            writer.Write(NumXSectors);
+            writer.WriteBlockArray(Sectors);
+
+            // Write room color
+            writer.Write(AmbientIntensity1);
+            writer.Write(AmbientIntensity2);
+
+            // Write lights
+            tmp = (ushort) Lights.Length;
+            writer.WriteBlock(tmp);
+            if (tmp != 0)
+                writer.WriteBlockArray(Lights);
+
+            // Write static meshes
+            tmp = (ushort) StaticMeshes.Length;
+            writer.WriteBlock(tmp);
+            if (tmp != 0)
+                writer.WriteBlockArray(StaticMeshes);
+
+            // Write final data
+            writer.Write(AlternateRoom);
+            writer.Write(Flags);
+            writer.Write(WaterScheme);
+            writer.Write(ReverbInfo);
+            writer.Write(AlternateGroup);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -177,6 +276,97 @@ namespace TombEditor.Compilers
         public tr_face3[] ColoredTriangles;
         public int MeshSize;
         public int MeshPointer;
+
+        public long WriteTr4(BinaryWriterEx writer)
+        {
+            long meshOffset1 = writer.BaseStream.Position;
+
+            writer.WriteBlock(Centre);
+            writer.Write(Radius);
+
+            writer.Write(NumVertices);
+            writer.WriteBlockArray(Vertices);
+
+            writer.Write(NumNormals);
+            if (NumNormals > 0)
+            {
+                writer.WriteBlockArray(Normals);
+            }
+            else
+            {
+                writer.WriteBlockArray(Lights);
+            }
+
+            writer.Write(NumTexturedRectangles);
+            writer.WriteBlockArray(TexturedRectangles);
+
+            writer.Write(NumTexturedTriangles);
+            writer.WriteBlockArray(TexturedTriangles);
+
+            var meshOffset2 = writer.BaseStream.Position;
+            var meshSize = (meshOffset2 - meshOffset1);
+            if (meshSize % 4 != 0)
+            {
+                const ushort tempFiller = 0;
+                writer.Write(tempFiller);
+                meshSize += 2;
+            }
+
+            return meshSize;
+        }
+
+        public long WriteTr3(BinaryWriterEx writer)
+        {
+            var meshOffset1 = writer.BaseStream.Position;
+
+            writer.WriteBlock(Centre);
+            writer.Write(Radius);
+
+            writer.Write(NumVertices);
+            writer.WriteBlockArray(Vertices);
+
+            writer.Write(NumNormals);
+            if (NumNormals > 0)
+            {
+                writer.WriteBlockArray(Normals);
+            }
+            else
+            {
+                writer.WriteBlockArray(Lights);
+            }
+
+            writer.Write(NumTexturedRectangles);
+            for (var k = 0; k < NumTexturedRectangles; k++)
+            {
+                TexturedRectangles[k].Write(writer);
+            }
+            // writer.WriteBlockArray(Meshes[i].TexturedRectangles);
+
+            writer.Write(NumTexturedTriangles);
+            for (var k = 0; k < NumTexturedTriangles; k++)
+            {
+                TexturedTriangles[k].Write(writer);
+            }
+
+            //  writer.WriteBlockArray(Meshes[i].TexturedTriangles);
+
+            writer.Write(NumColoredRectangles);
+            //writer.WriteBlockArray(Meshes[i].ColoredRectangles);
+
+            writer.Write(NumColoredTriangles);
+            //writer.WriteBlockArray(Meshes[i].ColoredTriangles);
+
+            var meshOffset2 = writer.BaseStream.Position;
+            var meshSize = meshOffset2 - meshOffset1;
+            if (meshSize % 4 != 0)
+            {
+                const ushort tempFiller = 0;
+                writer.Write(tempFiller);
+                meshSize += 2;
+            }
+
+            return meshSize;
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -273,6 +463,24 @@ namespace TombEditor.Compilers
         public ushort StateChangeOffset;
         public ushort NumAnimCommands;
         public ushort AnimCommand;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.Write(FrameOffset);
+            writer.Write(FrameRate);
+            writer.Write(FrameSize);
+            writer.Write(StateID);
+            writer.Write(Speed);
+            writer.Write(Accel);
+            writer.Write(FrameStart);
+            writer.Write(FrameEnd);
+            writer.Write(NextAnimation);
+            writer.Write(NextFrame);
+            writer.Write(NumStateChanges);
+            writer.Write(StateChangeOffset);
+            writer.Write(NumAnimCommands);
+            writer.Write(AnimCommand);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -407,8 +615,7 @@ namespace TombEditor.Compilers
         public ushort Attributes;
         public ushort Tile;
         public ushort Flags;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public tr_object_texture_vert[] Vertices;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public tr_object_texture_vert[] Vertices;
         public uint Unknown1;
         public uint Unknown2;
         public uint Xsize;
