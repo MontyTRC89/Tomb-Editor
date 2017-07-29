@@ -90,11 +90,11 @@ namespace TombEditor.Geometry
                     Block block;
                     if (x == 0 || z == 0 || x == NumXSectors - 1 || z == NumZSectors - 1)
                     {
-                        block = new Block(level, this, BlockType.BorderWall, BlockFlags.None, Ceiling);
+                        block = new Block(BlockType.BorderWall, BlockFlags.None, Ceiling);
                     }
                     else
                     {
-                        block = new Block(level, this, BlockType.Floor, BlockFlags.None, Ceiling);
+                        block = new Block(BlockType.Floor, BlockFlags.None, Ceiling);
                     }
 
                     Blocks[x, z] = block;
@@ -533,7 +533,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, false);
                     }
 
-                    // East border wall
+                    // West border wall
                     if (x == 0 && z != 0 && z != NumZSectors - 1 &&
                         !(Blocks[1, z].Type == BlockType.Wall &&
                          (Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.SE)))
@@ -552,10 +552,10 @@ namespace TombEditor.Geometry
 
                             int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
 
-                            if (adjoiningRoom.Blocks[1, facingZ].Type == BlockType.Wall &&
-                                (adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.NW ||
-                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.SW))
+                            if (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].Type == BlockType.Wall &&
+                                (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
+                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.NW ||
+                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.SW))
                             {
                                 addMiddle = true;
                             }
@@ -567,7 +567,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, false);
                     }
 
-                    // West border wall
+                    // East border wall
                     if (x == NumXSectors - 1 && z != 0 && z != NumZSectors - 1 &&
                         !(Blocks[NumXSectors - 2, z].Type == BlockType.Wall &&
                          (Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.SW)))
@@ -586,10 +586,10 @@ namespace TombEditor.Geometry
 
                             int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
 
-                            if (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].Type == BlockType.Wall &&
-                                (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.NE ||
-                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.SE))
+                            if (adjoiningRoom.Blocks[1, facingZ].Type == BlockType.Wall &&
+                                (adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
+                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.NE ||
+                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.SE))
                             {
                                 addMiddle = true;
                             }

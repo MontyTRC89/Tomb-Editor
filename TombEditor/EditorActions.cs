@@ -839,6 +839,125 @@ namespace TombEditor
             }
         }
 
+        public static void MoveObject(ObjectType typ, int id, GizmoAxis axis, float delta, bool smooth)
+        {
+            switch (axis)
+            {
+                case GizmoAxis.X:
+                    if (smooth)
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    else
+                        delta = (float)Math.Floor(delta / 512.0f) * 512.0f;
+                    break;
+
+                case GizmoAxis.Y:
+                    if (smooth)
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    else
+                        delta = (float)Math.Floor(delta / 128.0f) * 128.0f;
+                    break;
+
+                case GizmoAxis.Z:
+                    if (smooth)
+                        delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                    else
+                        delta = (float)Math.Floor(delta / 512.0f) * 512.0f;
+                    break;
+            }
+
+            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+
+            if (typ != ObjectType.Light)
+            {
+                Vector3 newPosition = new Vector3(_editor.Level.Objects[id].Position.X,
+                                              _editor.Level.Objects[id].Position.Y,
+                                              _editor.Level.Objects[id].Position.Z);
+
+                switch (axis)
+                {
+                    case GizmoAxis.X:
+                        newPosition += new Vector3(delta, 0.0f, 0.0f);
+                        break;
+
+                    case GizmoAxis.Y:
+                        newPosition += new Vector3(0.0f, delta, 0.0f);
+                        break;                
+                   
+                    case GizmoAxis.Z:
+                        newPosition += new Vector3(0.0f, 0.0f, delta);
+                        break;
+                }
+
+                var x = (int)Math.Floor(newPosition.X /1024.0f);
+                var z = (int)Math.Floor(newPosition.Z / 1024.0f);
+
+                if (x < 0.0f || z < 0.0f || x > room.NumXSectors - 1 || z > room.NumZSectors - 1)
+                {
+                    return;
+                }
+
+                var lowest = room.GetLowestFloorCorner(x, z);
+                var highest = room.GetHighestCeilingCorner(x, z);
+
+                // Don't go outside room boundaries
+                if (newPosition.X < 1024.0f || newPosition.X > (room.NumXSectors - 1) * 1024.0f ||
+                    newPosition.Z < 1024.0f || newPosition.Z > (room.NumZSectors - 1) * 1024.0f ||
+                    newPosition.Y < lowest * 256.0f || newPosition.Y > (room.Ceiling + highest) * 256.0f)
+                {
+                    return;
+                }
+                else
+                {
+                    _editor.Level.Objects[id].Position = newPosition;
+                }
+            }
+            else
+            {
+                Vector3 newPosition = new Vector3(_editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position.X,
+                                                  _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position.Y,
+                                                  _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position.Z);
+
+                switch (axis)
+                {
+                    case GizmoAxis.X:
+                        newPosition += new Vector3(delta, 0.0f, 0.0f);
+                        break;
+
+                    case GizmoAxis.Y:
+                        newPosition += new Vector3(0.0f, delta, 0.0f);
+                        break;
+
+                    case GizmoAxis.Z:
+                        newPosition += new Vector3(0.0f, 0.0f, delta);
+                        break;
+                }
+
+                var x = (int)Math.Floor(newPosition.X / 1024.0f);
+                var z = (int)Math.Floor(newPosition.Z / 1024.0f);
+
+                if (x < 0.0f || z < 0.0f || x > room.NumXSectors - 1 || z > room.NumZSectors - 1)
+                {
+                    return;
+                }
+
+                var lowest = room.GetLowestFloorCorner(x, z);
+                var highest = room.GetHighestCeilingCorner(x, z);
+
+                // Don't go outside room boundaries
+                if (newPosition.X < 1024.0f || newPosition.X > (room.NumXSectors - 1) * 1024.0f ||
+                    newPosition.Z < 1024.0f || newPosition.Z > (room.NumZSectors - 1) * 1024.0f ||
+                    newPosition.Y < lowest * 256.0f || newPosition.Y > (room.Ceiling + highest) * 256.0f)
+                {
+                    return;
+                }
+                else
+                {
+                    _editor.Level.Rooms[_editor.RoomIndex].Lights[id].Position = newPosition;
+                }
+            }
+        }
+
+
         public static void RotateObject(ObjectType typ, int id, int sign, bool smoothMove)
         {
             _editor.Level.Objects[_editor.PickingResult.Element].Rotation += (short)(sign * (smoothMove ? 5 : 45));
@@ -1035,17 +1154,17 @@ namespace TombEditor
                     _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].DoubleSided = false;
 
                 Vector2[] UV = new Vector2[4];
-                
+
                 LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture];
 
                 int yBlock = (int)(texture.Page / 8);
                 int xBlock = (int)(texture.Page % 8);
 
-                UV[0] = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
-                UV[1] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
+                UV[0] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
+                UV[1] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
                 ;
-                UV[2] = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
-                UV[3] = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
+                UV[2] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
+                UV[3] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
 
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].RectangleUV[0] = UV[0];
                 _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[(int)faceType].RectangleUV[1] = UV[1];
@@ -1196,6 +1315,7 @@ namespace TombEditor
 
                 instance.Position = new Vector3(x * 1024 + 512, y * 256, z * 1024 + 512);
                 instance.Invisible = false;
+                instance.SoundID = (short)id;
 
                 _editor.Action = EditorAction.None;
                 _editor.Level.Objects.Add(instance.ID, instance);
@@ -1374,7 +1494,6 @@ namespace TombEditor
                 for (int z = 1; z < numZSectors - 1; z++)
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x + xMin - 1, z + zMin - 1].Clone();
-                    newRoom.Blocks[x, z].Room = newRoom;
 
                     /* for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
                      {
@@ -2831,6 +2950,78 @@ namespace TombEditor
             }
 
             SmartBuildGeometry(roomIndex, xMin, xMax, zMin, zMax);
+        }
+
+        public static void DeletePortal(int id)
+        {
+            int otherPortalId = _editor.Level.Portals[id].OtherID;
+
+            Portal current = _editor.Level.Portals[id];
+            Portal other = _editor.Level.Portals[otherPortalId];
+
+            for (int x = current.X; x < current.X + current.NumXBlocks; x++)
+            {
+                for (int z = current.Z; z < current.Z + current.NumZBlocks; z++)
+                {
+                    if (current.Direction == PortalDirection.Floor)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorPortal = -1;
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].FloorOpacity = PortalOpacity.None;
+                    }
+
+                    if (current.Direction == PortalDirection.Ceiling)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingPortal = -1;
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].CeilingOpacity = PortalOpacity.None;
+                    }
+
+                    if (current.Direction == PortalDirection.North || current.Direction == PortalDirection.South ||
+                        current.Direction == PortalDirection.West || current.Direction == PortalDirection.East)
+                    {
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WallPortal = -1;
+                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].WallOpacity = PortalOpacity.None;
+                    }
+                }
+            }
+
+            for (int x = other.X; x < other.X + other.NumXBlocks; x++)
+            {
+                for (int z = other.Z; z < other.Z + other.NumZBlocks; z++)
+                {
+                    if (other.Direction == PortalDirection.Ceiling)
+                    {
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].CeilingPortal = -1;
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].CeilingOpacity = PortalOpacity.None;
+                    }
+
+                    if (other.Direction == PortalDirection.Floor)
+                    {
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].FloorPortal = -1;
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].FloorOpacity = PortalOpacity.None;
+                    }
+
+                    if (other.Direction == PortalDirection.North || other.Direction == PortalDirection.South ||
+                        other.Direction == PortalDirection.West || other.Direction == PortalDirection.East)
+                    {
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].WallPortal = -1;
+                        _editor.Level.Rooms[other.Room].Blocks[x, z].WallOpacity = PortalOpacity.None;
+                    }
+                }
+            }
+
+            _editor.Level.Rooms[_editor.Level.Portals[id].Room].Portals.Remove(id);
+            _editor.Level.Rooms[_editor.Level.Portals[otherPortalId].Room].Portals.Remove(otherPortalId);
+
+            _editor.Level.Portals.Remove(id);
+            _editor.Level.Portals.Remove(otherPortalId);
+
+            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
+            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+
+            _editor.Level.Rooms[other.Room].BuildGeometry();
+            _editor.Level.Rooms[other.Room].CalculateLightingForThisRoom();
+            _editor.Level.Rooms[other.Room].UpdateBuffers();
         }
     }
 }

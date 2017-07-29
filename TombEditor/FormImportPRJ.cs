@@ -37,7 +37,7 @@ namespace TombEditor
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            Level = Level.LoadFromPrj(FileName, this);
+            Level = Level.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -62,7 +62,7 @@ namespace TombEditor
         private void FormBuildLevel_Shown(object sender, EventArgs e)
         {
             GC.Collect();
-            Level = Level.LoadFromPrj(FileName, this);
+            Level = Level.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
             GC.Collect();
         }
 

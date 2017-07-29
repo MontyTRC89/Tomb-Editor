@@ -10,11 +10,22 @@ using TombEditor.Geometry;
 using zlib;
 using System.Diagnostics;
 using NLog;
+using System.Runtime.InteropServices;
 
 namespace TombEditor
 {
-    class Utils
+    public class Utils
     {
+        private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
+        private const int FILE_ATTRIBUTE_NORMAL = 0x80;
+
+        [DllImport("shlwapi.dll", SetLastError = true)]
+        private static extern int PathRelativePathTo(StringBuilder pszPath, string pszFrom, int dwAttrFrom, 
+                                                     string pszTo, int dwAttrTo);
+
+        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
+        static extern bool PathIsRelative([In] string lpszPath);
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public static Vector3 PositionInWorldCoordinates(Vector3 pos)
@@ -30,8 +41,8 @@ namespace TombEditor
 
         public static void ConvertTextureTo256Width(ref Bitmap bitmap)
         {
-            if ((bitmap.Height % 256) != 0)
-                throw new ArgumentException("Image height must be of a multiple of 256 pixels.");
+            if ((bitmap.Height % 64) != 0)
+                throw new ArgumentException("Image height must be of a multiple of 64 pixels.");
             if (bitmap.Width == 256)
                 return;
             if (bitmap.Width != 512)
@@ -143,6 +154,21 @@ namespace TombEditor
             }
 
             return outData;
+        }
+
+        public static string GetRelativePath(string prjFileName, string fileName)
+        {
+            // If fileName is already a relative path return it, PathRelativePathTo() would return error
+            if (PathIsRelative(fileName)) return fileName;
+
+            string pathOfPrj = Path.GetDirectoryName(prjFileName) + "\\";
+
+            // Use PathRelativePathTo() for returning the relative path
+            StringBuilder sb = new StringBuilder(260);
+            int result = PathRelativePathTo(sb, pathOfPrj, FILE_ATTRIBUTE_DIRECTORY, fileName, FILE_ATTRIBUTE_NORMAL);
+            if (result == 0) throw new Exception();
+
+            return sb.ToString();
         }
     }
 }

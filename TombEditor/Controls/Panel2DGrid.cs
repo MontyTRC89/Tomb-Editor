@@ -22,7 +22,7 @@ namespace TombEditor.Controls
         private float _deltaX;
         private float _deltaY;
         private float _lastX;
-        private float LastY;
+        private float _lastY;
         private int _startX;
         private int _startY;
         private bool _drag;
@@ -32,11 +32,11 @@ namespace TombEditor.Controls
         private static readonly Brush _monkeyBrush = new SolidBrush(Editor.ColorMonkey);
         private static readonly Brush _boxBrush = new SolidBrush(Editor.ColorBox);
         private static readonly Brush _notWalkableBrush = new SolidBrush(Editor.ColorNotWalkable);
-        private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 5);
-        private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 5);
+        private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 4);
+        private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 4);
         private static readonly Brush _noCollisionBrush = new SolidBrush(Editor.ColorNoCollision);
         private static readonly Brush _triggerBrush = new SolidBrush(Editor.ColorTrigger);
-        private static readonly Pen _climbPen = new Pen(Editor.ColorClimb, 5);
+        private static readonly Pen _climbPen = new Pen(Editor.ColorClimb, 4);
         private static readonly Font _font = new Font("Arial", 8);
 
         private const byte GridStep = 11;
@@ -114,20 +114,20 @@ namespace TombEditor.Controls
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 _lastX = e.X;
-                LastY = e.Y;
+                _lastY = e.Y;
 
                 int xBlock = (int)_lastX / GridStep;
-                int zBlock = GetZBlock(LastY); // 19 - (int)(LastY) / GridStep;
+                int zBlock = GetZBlock(_lastY); // 19 - (int)(LastY) / GridStep;
 
                 bool foundSomething = false;
 
                 if (SelectedTrigger == -1)
                 {
                     // inizio il ciclo dal primo portale
-                    SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
+                    SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
                     if (SelectedPortal == -1)
                     {
-                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
+                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
                         if (SelectedTrigger != -1)
                         {
                             foundSomething = true;
@@ -152,10 +152,10 @@ namespace TombEditor.Controls
                 {
                     if (SelectedPortal == -1 && SelectedTrigger != -1)
                     {
-                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
+                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
                         if (SelectedTrigger == -1)
                         {
-                            SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(LastY) - startY);
+                            SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
                             if (SelectedPortal != -1)
                             {
                                 foundSomething = true;
@@ -191,10 +191,10 @@ namespace TombEditor.Controls
                     if (!_drag)
                         _drag = true;
                     _lastX = e.X;
-                    LastY = e.Y;
+                    _lastY = e.Y;
 
                     int xBlock = (int)_lastX / GridStep;
-                    int zBlock = GetZBlock(LastY);
+                    int zBlock = GetZBlock(_lastY);
 
                     /*if (xBlock < 0 || zBlock < 0 || xBlock > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors-1 ||
                         zBlock > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
@@ -279,7 +279,7 @@ namespace TombEditor.Controls
             if (_drag && e.Button == MouseButtons.Right)
             {
                 _deltaX = e.X - _lastX;
-                _deltaY = e.Y - LastY;
+                _deltaY = e.Y - _lastY;
             }
             else
             {
@@ -288,13 +288,13 @@ namespace TombEditor.Controls
                     if (_drag)
                     {
                         _lastX = e.X;
-                        LastY = e.Y;
+                        _lastY = e.Y;
 
-                        if (LastY < 0)
-                            LastY = 0;
+                        if (_lastY < 0)
+                            _lastY = 0;
 
                         int xBlock = (int)_lastX / GridStep;
-                        int zBlock = GetZBlock(LastY);
+                        int zBlock = GetZBlock(_lastY);
 
                         _editor.BlockSelectionStartX = (_editor.StartPickingResult.Element >> 5) - startX;
                         _editor.BlockSelectionStartZ = (_editor.StartPickingResult.Element & 31) - startY;
@@ -351,7 +351,7 @@ namespace TombEditor.Controls
             if (e.Button == MouseButtons.Right)
             {
                 _deltaX = e.X - _lastX;
-                _deltaY = e.Y - LastY;
+                _deltaY = e.Y - _lastY;
             }
             else
             {
@@ -360,13 +360,13 @@ namespace TombEditor.Controls
                     if (_drag)
                     {
                         _lastX = e.X;
-                        LastY = e.Y;
+                        _lastY = e.Y;
 
-                        if (LastY < 0)
-                            LastY = 0;
+                        if (_lastY < 0)
+                            _lastY = 0;
 
                         int xBlock = (int)_lastX / GridStep;
-                        int zBlock = GetZBlock(LastY);// 20 - (int)(LastY) / GridStep;
+                        int zBlock = GetZBlock(_lastY);// 20 - (int)(LastY) / GridStep;
 
                         if (_firstSelection)
                         {
@@ -399,10 +399,10 @@ namespace TombEditor.Controls
                 else
                 {
                     _lastX = e.X;
-                    LastY = e.Y;
+                    _lastY = e.Y;
 
                     int xBlock = (int)_lastX / GridStep - startX;
-                    int zBlock = GetZBlock(LastY) - startY;
+                    int zBlock = GetZBlock(_lastY) - startY;
 
                     Portal p = _editor.Level.Portals[SelectedPortal];
 
@@ -514,18 +514,12 @@ namespace TombEditor.Controls
 
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Beetle) != 0)
                         {
-                            g.DrawLine(_beetlePen, new PointF((startX + x) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep));
-                            g.DrawLine(_beetlePen, new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
-                            g.DrawLine(_beetlePen, new PointF((startX + x) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep));
-                            g.DrawLine(_beetlePen, new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
+                            g.DrawRectangle(_beetlePen, new Rectangle((startX + x) * GridStep + 2, (19 - (startY + z - 3 / GridStep) - d) * GridStep + 2, GridStep - 3, GridStep - 3));
                         }
 
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.TriggerTriggerer) != 0)
                         {
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep));
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep));
-                            g.DrawLine(_triggerTriggererPen, new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
+                            g.DrawRectangle(_triggerTriggererPen, new Rectangle((startX + x) * GridStep + 2, (19 - (startY + z - 3 / GridStep) - d) * GridStep + 2, GridStep - 3, GridStep - 3));
                         }
                     }
                 }

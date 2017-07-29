@@ -9,8 +9,8 @@ namespace TombEditor.Geometry
     {
         None = 0,
         Block = 1,
-        SkinnedModel = 2,
-        StaticModel = 3,
+        Moveable = 2,
+        StaticMesh = 3,
         Light = 4,
         Camera = 5,
         SoundSource = 6,
@@ -29,6 +29,16 @@ namespace TombEditor.Geometry
         public int SubElementType;
         public int Element;
         public int SubElement;
+        public bool Gizmo;
+        public GizmoAxis GizmoAxis;
+    }
+
+    public enum GizmoAxis : byte
+    {
+        None,
+        X,
+        Y, 
+        Z
     }
 
     public enum BlockType : byte
