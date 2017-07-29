@@ -2694,7 +2694,7 @@ namespace TombEditor.Controls
         {
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
-                string message = (_roomsToDraw[i].Name != null ? _roomsToDraw[i].Name : "Room " + _roomsToDraw[i]);
+                string message = (_roomsToDraw[i].Name != null ? _roomsToDraw[i].Name : "Room " + _editor.Level.Rooms.ReferenceIndexOf(_roomsToDraw[i]));
 
                 Vector3 pos = _roomsToDraw[i].Position;
                 Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(pos)) * viewProjection;

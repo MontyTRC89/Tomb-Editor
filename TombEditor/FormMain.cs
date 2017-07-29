@@ -3117,7 +3117,7 @@ namespace TombEditor
                 newRoom.Lights.Add(room.Lights[i].Clone());
             }
 
-            newRoom.Name = "(Flipped of " + _editor.SelectedRoom + ") Room " + found;
+            newRoom.Name = "(Flipped of " + _editor.Level.Rooms.ReferenceIndexOf(_editor.SelectedRoom) + ") Room " + found;
 
             _editor.SelectedRoom.Flipped = true;
             _editor.SelectedRoom.AlternateGroup = (short) (comboFlipMap.SelectedIndex - 1);
