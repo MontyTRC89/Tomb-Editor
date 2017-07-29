@@ -138,7 +138,7 @@ namespace TombEditor
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(13, 151);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(49, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(48, 13);
             this.darkLabel2.TabIndex = 35;
             this.darkLabel2.Text = "Textures";
             // 
@@ -177,7 +177,7 @@ namespace TombEditor
             "Normal",
             "Half Rotate",
             "Full Rotate"});
-            this.comboEffect.Location = new System.Drawing.Point(80, 116);
+            this.comboEffect.Location = new System.Drawing.Point(80, 89);
             this.comboEffect.Name = "comboEffect";
             this.comboEffect.Size = new System.Drawing.Size(218, 24);
             this.comboEffect.TabIndex = 39;
@@ -186,7 +186,7 @@ namespace TombEditor
             // 
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(13, 119);
+            this.darkLabel3.Location = new System.Drawing.Point(13, 92);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(39, 13);
             this.darkLabel3.TabIndex = 38;
