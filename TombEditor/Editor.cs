@@ -135,19 +135,9 @@ namespace TombEditor
             var handle = GetConsoleWindow();
             ShowWindow(handle, SW_HIDE);
 #endif
-            
-            try
-            {
-                BinaryReader readerPalette = new BinaryReader(File.OpenRead("Editor\\Palette.bin"));
+            using (BinaryReader readerPalette = new BinaryReader(File.OpenRead("Editor\\Palette.bin")))
                 while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
-                {
                     Palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
-                }
-
-                readerPalette.Close();
-            }
-            catch (Exception)
-            { }
 
             _panel3D = renderControl;
             _panelGrid = grid;
@@ -196,15 +186,15 @@ namespace TombEditor
             Font = SpriteFont.New(GraphicsDevice, fontData);
 
             DebugSprites = new SpriteBatch(GraphicsDevice);
-            
+
             // carico gli id degli oggetti
-            StreamReader reader = new StreamReader("Editor\\Objects.txt");
-            while (reader.EndOfStream == false)
-            {
-                string line = reader.ReadLine();
-                string[] tokens = line.Split(';');
-                MoveablesObjectIds.Add(Int32.Parse(tokens[0]), tokens[1]);
-            }
+            using (StreamReader reader = new StreamReader("Editor\\Objects.txt"))
+                while (reader.EndOfStream == false)
+                {
+                    string line = reader.ReadLine();
+                    string[] tokens = line.Split(';');
+                    MoveablesObjectIds.Add(Int32.Parse(tokens[0]), tokens[1]);
+                }
             
             Debug.Initialize();
         }
@@ -382,17 +372,7 @@ namespace TombEditor
                 return;
             //_formEditor.UpdateLabelRoom(Level.Rooms[RoomIndex].Name);
         }
-
-        public void DrawPanel2DMessage(string message)
-        {
-            // _formEditor.DrawPanel2DMessage(message);
-        }
-
-        public void ResetPanel2DMessage()
-        {
-            // _formEditor.ResetPanel2DMessage();
-        }
-
+        
         public void CenterCamera()
         {
             _formEditor.CenterCamera();

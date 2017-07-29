@@ -152,8 +152,9 @@ namespace TombEditor.Compilers
                 _miscTextureUncompressedSize = (uint)uncMiscTexture.Length;
                 _miscTextureCompressedSize = (uint)_miscTexture.Length;
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "An exception occured while loading font and sky.");
                 return false;
             }
 

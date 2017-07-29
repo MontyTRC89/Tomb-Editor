@@ -2841,10 +2841,11 @@ namespace TombEditor.Geometry
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
+                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "There was an error while importing the PRJ file.");
                 DarkUI.Forms.DarkMessageBox.ShowError(
-                    "There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
+                    "There was an error while importing the PRJ file. Message: " + exc.Message, "Error");
                 return null;
             }
 
@@ -3394,8 +3395,9 @@ namespace TombEditor.Geometry
                 reader.ReadInt32();
                 reader.ReadInt32();
             }
-            catch (Exception)
+            catch (Exception exc)
             {
+                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "There was an error while importing the PRJ file.");
                 return null;
             }
 
@@ -3894,8 +3896,9 @@ namespace TombEditor.Geometry
                     writer.Flush();
                 }
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
+                logger.Log(LogLevel.Info, exc, "An exception occured while saving to *.prj2");
                 return false;
             }
 
