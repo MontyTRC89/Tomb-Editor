@@ -1961,19 +1961,8 @@ namespace TombEditor
                 {
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        if (currentRoom.Blocks[x, z].Type != BlockType.Floor || currentRoom.Blocks[x, z].FloorPortal != -1)
-                        {
-                            DarkUI.Forms.DarkMessageBox.ShowError("Can't reset some blocks to floor because some of them are a portal or a border wall",
-                                                                  "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                            return;
-                        }
-                    }
-                }
-
-                for (int x = xMin; x <= xMax; x++)
-                {
-                    for (int z = zMin; z <= zMax; z++)
-                    {
+                        if (currentRoom.Blocks[x, z].Type == BlockType.BorderWall)
+                            continue;
                         _editor.Level.Rooms[roomIndex].Blocks[x, z].SplitFloor = false;
                         _editor.Level.Rooms[roomIndex].Blocks[x, z].Type = BlockType.Floor;
                         _editor.Level.Rooms[roomIndex].Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
@@ -1994,19 +1983,8 @@ namespace TombEditor
                 {
                     for (int z = zMin; z <= zMax; z++)
                     {
-                        if (currentRoom.Blocks[x, z].Type != BlockType.Floor || currentRoom.Blocks[x, z].CeilingPortal != -1)
-                        {
-                            DarkUI.Forms.DarkMessageBox.ShowError("Can't reset some blocks to ceiling because some of them are a portal or a border wall",
-                                                                  "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                            return;
-                        }
-                    }
-                }
-
-                for (int x = xMin; x <= xMax; x++)
-                {
-                    for (int z = zMin; z <= zMax; z++)
-                    {
+                        if (currentRoom.Blocks[x, z].Type == BlockType.BorderWall)
+                            continue;
                         _editor.Level.Rooms[roomIndex].Blocks[x, z].SplitCeiling = false;
                         _editor.Level.Rooms[roomIndex].Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
                     }
