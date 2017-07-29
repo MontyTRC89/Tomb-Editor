@@ -11,7 +11,9 @@ namespace TombEditor.Geometry
         public TextureTileType Triangle { get; set; }
         public bool Flipped { get; set; }
         public int AnimatedSequence { get; set; }
-        public int Size { get; set; }
+        public short Size { get; set; }
+        public short DeltaX { get; set; }
+        public short DeltaY { get; set; }
         public bool Transparent { get; set; }
         public List<AnimatedTextureVariantTile> Tiles { get; set; } = new List<AnimatedTextureVariantTile>();
     }

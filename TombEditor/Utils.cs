@@ -166,7 +166,7 @@ namespace TombEditor
             // Use PathRelativePathTo() for returning the relative path
             StringBuilder sb = new StringBuilder(260);
             int result = PathRelativePathTo(sb, pathOfPrj, FILE_ATTRIBUTE_DIRECTORY, fileName, FILE_ATTRIBUTE_NORMAL);
-            if (result == 0) throw new Exception();
+            if (result == 0) return fileName;
 
             return sb.ToString();
         }

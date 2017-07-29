@@ -489,6 +489,8 @@ namespace TombEditor
             this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
             logger.Info("Tomb Editor is ready :)");
+
+            Draw();
         }
 
         private void LoadTextureMap()

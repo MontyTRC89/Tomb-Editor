@@ -3434,19 +3434,18 @@ namespace TombEditor.Geometry
                     case ObjectInstanceType.FlyByCamera:
                         level.Rooms[roomIndex].FlyByCameras.Add(objectId);
                         break;
-                    default:
-                        if (objectType == ObjectInstanceType.Moveable)
-                        {
-                            uint oid = (uint) ((MoveableInstance) obj).ObjectID;
-                            ((MoveableInstance) obj).Model = level.Wad.Moveables[oid];
-                        }
+                }
 
-                        else if (objectType == ObjectInstanceType.StaticMesh)
-                        {
-                            uint oid = (uint) ((StaticMeshInstance) obj).ObjectID;
-                            ((StaticMeshInstance) obj).Model = level.Wad.StaticMeshes[oid];
-                        }
-                        break;
+                if (objectType == ObjectInstanceType.Moveable)
+                {
+                    uint oid = (uint)((MoveableInstance)obj).ObjectID;
+                    ((MoveableInstance)obj).Model = level.Wad.Moveables[oid];
+                }
+
+                else if (objectType == ObjectInstanceType.StaticMesh)
+                {
+                    uint oid = (uint)((StaticMeshInstance)obj).ObjectID;
+                    ((StaticMeshInstance)obj).Model = level.Wad.StaticMeshes[oid];
                 }
             }
 
@@ -3884,7 +3883,7 @@ namespace TombEditor.Geometry
                     writer.Flush();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
