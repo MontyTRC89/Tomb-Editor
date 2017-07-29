@@ -1005,11 +1005,14 @@ namespace TombEditor
             if (((keyData & Keys.Left) == Keys.Left || 
                  (keyData & Keys.Right) == Keys.Right ||
                  (keyData & Keys.Up) == Keys.Up || 
-                 (keyData & Keys.Down) == Keys.Down) &&
+                 (keyData & Keys.Down) == Keys.Down ||
+                 (keyData & Keys.PageUp) == Keys.PageUp ||
+                 (keyData & Keys.PageDown) == Keys.PageDown) &&
                  !((keyData & Keys.Control) == Keys.Control ||
                    (keyData & Keys.Shift) == Keys.Shift))
             {
                 float rotateFactor = 0.1f;
+                float zoomFactor = 0.1f;
 
                 switch (keyData)
                 {
@@ -1027,6 +1030,14 @@ namespace TombEditor
 
                     case Keys.Right:
                         ((ArcBallCamera)_editor.Camera).Rotate(-rotateFactor, 0);
+                        break;
+
+                    case Keys.PageUp:
+                        ((ArcBallCamera)_editor.Camera).Move(zoomFactor);
+                        break;
+
+                    case Keys.PageDown:
+                        ((ArcBallCamera)_editor.Camera).Move(-zoomFactor);
                         break;
                 }
 
