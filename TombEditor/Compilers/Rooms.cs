@@ -39,7 +39,7 @@ namespace TombEditor.Compilers
 
                 var newRoom = new tr_room
                 {
-                    OriginalRoomId = i,
+                    OriginalRoom = room,
                     TextureSounds = new TextureSounds[room.NumXSectors, room.NumZSectors],
                     Lights = new tr4_room_light[0],
                     StaticMeshes = new tr_room_staticmesh[0],

@@ -171,7 +171,7 @@ namespace TombEditor.Compilers
         public bool Flipped;
         public short FlippedRoom;
         public short BaseRoom;
-        public int OriginalRoomId;
+        public Room OriginalRoom;
 
         public void Write(BinaryWriterEx writer)
         {

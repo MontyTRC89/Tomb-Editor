@@ -46,7 +46,7 @@ namespace TombEditor.Compilers
                         var aux = room.AuxSectors[x, z];
 
                         // If this room is excluded from pathfinding or this sector is a Not Walkable Floor
-                        if (_level.Rooms[room.OriginalRoomId].ExcludeFromPathFinding || aux.NotWalkableFloor)
+                        if (room.OriginalRoom.ExcludeFromPathFinding || aux.NotWalkableFloor)
                         {
                             sector.BoxIndex = (short) (0x7ff0 | (byte) room.TextureSounds[x, z]);
                             SaveSector(i, x, z, sector);
@@ -153,7 +153,7 @@ namespace TombEditor.Compilers
                         var aux = room.AuxSectors[x, z];
 
                         // If this room is excluded from pathfinding or this sector is a Not Walkable Floor
-                        if (_level.Rooms[room.OriginalRoomId].ExcludeFromPathFinding || aux.NotWalkableFloor)
+                        if (room.OriginalRoom.ExcludeFromPathFinding || aux.NotWalkableFloor)
                         {
                             sector.BoxIndex = (short) (0x7ff0 | (byte) room.TextureSounds[x, z]);
                             SaveSector(i, x, z, sector);
@@ -795,7 +795,7 @@ namespace TombEditor.Compilers
             while (isOutside)
             {
                 currentRoom = _rooms[roomIndex];
-                editorRoom = _level.Rooms[currentRoom.OriginalRoomId];
+                editorRoom = currentRoom.OriginalRoom;
 
                 xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
                 zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
@@ -841,7 +841,7 @@ namespace TombEditor.Compilers
             // If I am here, I've probed that I can reach the requested X, Z
             // Now I have to check if the floor under that sector is solid
             currentRoom = _rooms[roomIndex];
-            editorRoom = _level.Rooms[currentRoom.OriginalRoomId];
+            editorRoom = currentRoom.OriginalRoom;
 
             xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
             zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
@@ -861,14 +861,13 @@ namespace TombEditor.Compilers
 
                 // If floor portal is toggle opacity 1 and not one of the two rooms are water rooms
                 if (editorRoom.Blocks[xInRoom, zInRoom].FloorOpacity == PortalOpacity.Opacity1 &&
-                    !(editorRoom.FlagWater ^ _editor.Level
-                          .Rooms[_rooms[_roomsIdTable[portal.AdjoiningRoom]].OriginalRoomId].FlagWater))
+                    !(editorRoom.FlagWater ^ _rooms[_roomsIdTable[portal.AdjoiningRoom]].OriginalRoom.FlagWater))
                 {
                     return true;
                 }
 
                 currentRoom = _rooms[roomIndex];
-                editorRoom = _level.Rooms[currentRoom.OriginalRoomId];
+                editorRoom = currentRoom.OriginalRoom;
 
                 xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
                 zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
