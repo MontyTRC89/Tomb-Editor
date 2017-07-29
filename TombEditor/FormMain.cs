@@ -451,6 +451,7 @@ namespace TombEditor
 
             panel3D.InitializePanel();
             panelItem.InitializePanel();
+            panel2DMap.ResetView();
 
             logger.Info("Creating new empty level");
 
