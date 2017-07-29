@@ -1669,6 +1669,7 @@ namespace TombEditor
                 }
                 catch (Exception exc)
                 {
+                    NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "There was an error while converting TGA in PNG format.");
                     DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. " + exc.Message, "Error");
                     return;
                 }

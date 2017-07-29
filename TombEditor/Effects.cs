@@ -30,9 +30,10 @@ namespace TombEditor
                 if (Picking == null)
                     return false;
             }
-            catch (Exception ex)
+            catch (Exception exc)
             {
-                MessageBox.Show("Could not load effect file. " + Environment.NewLine + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "Could not load effect file.");
+                MessageBox.Show("Could not load effect file. " + Environment.NewLine + exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -50,6 +51,7 @@ namespace TombEditor
                 foreach (SharpDX.Toolkit.Diagnostics.LogMessage err in result.Logger.Messages)
                     errors += err + Environment.NewLine;
 
+                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, "Could not compile effect '" + name + ".fx'");
                 MessageBox.Show("Could not compile effect '" + name + ".fx'" + Environment.NewLine + errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
