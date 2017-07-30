@@ -379,7 +379,7 @@ namespace TombEditor.Controls
                             _firstSelection = false;
 
                             // if one of the four corners of the selection is equal to -1, then is a first selection
-                            if (_editor.BlockSelectionAvailable)
+                            if (!_editor.BlockSelectionAvailable)
                             {
                                 _editor.BlockSelectionStart = new System.Drawing.Point(newPicking.Element >> 5, newPicking.Element & 31);
                                 _editor.BlockSelectionEnd = _editor.BlockSelectionStart;
