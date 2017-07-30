@@ -1396,7 +1396,7 @@ namespace TombEditor.Controls
                     var theRoom = modelInfo.Room;
 
                     world = model.AnimationTransforms[i] * Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                                Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
+                                Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(theRoom.Position));
                     worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
 
                     skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
@@ -3650,7 +3650,7 @@ namespace TombEditor.Controls
                                           1.0f);
 
                 EditorVertex v2 = new EditorVertex();
-                v1.Position = new Vector4(flybyCameras[i + 1].Position.X + room2pos.X,
+                v2.Position = new Vector4(flybyCameras[i + 1].Position.X + room2pos.X,
                                           flybyCameras[i + 1].Position.Y + room2pos.Y,
                                           flybyCameras[i + 1].Position.Z + room2pos.Z,
                                           1.0f);
