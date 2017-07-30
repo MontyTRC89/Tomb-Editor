@@ -147,6 +147,15 @@ namespace TombEditor.Controls
             }
         }
 
+        private class ComparerFlybyCameras : IComparer<FlybyCameraInstance>
+        {
+            public int Compare(FlybyCameraInstance x, FlybyCameraInstance y)
+            {
+                int result = (x.Number > y.Number ? 1 : -1);
+                return result;
+            }
+        }
+
         public int RoomIndex { get; set; }
         public int DeltaX { get; set; }
         public int DeltaY { get; set; }
@@ -191,8 +200,12 @@ namespace TombEditor.Controls
         private List<int> MoveablesToDraw;
         private List<int> StaticMeshesToDraw;
 
-        private Buffer<EditorVertex> _objectHeightLineVertex;
+        // Debug lines
+        private Buffer<EditorVertex> _objectHeightLineVertexBuffer;
         private bool _drawHeightLine = false;
+
+        private Buffer<EditorVertex> _flybyPathVertexBuffer;
+        private bool _drawFlybyPath = false;
 
         private Effect _roomEffect;
 
@@ -805,23 +818,42 @@ namespace TombEditor.Controls
             _editor.DrawPanelGrid();
         }
 
-        private void DrawObjectHeightLine(Matrix viewProjection)
+        private void DrawDebugLines(Matrix viewProjection)
         {
-            _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
-            _editor.GraphicsDevice.SetVertexBuffer(_objectHeightLineVertex);
-            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _objectHeightLineVertex));
+            if (!_drawFlybyPath && !_drawHeightLine) return;
 
+            _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
+            
             Effect solidEffect = _editor.Effects["Solid"];
 
-            Matrix model = Matrix.Identity * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
-
-            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
             solidEffect.Parameters["SelectionEnabled"].SetValue(false);
 
-            solidEffect.CurrentTechnique.Passes[0].Apply();
+            if (_drawHeightLine)
+            {
+                _editor.GraphicsDevice.SetVertexBuffer(_objectHeightLineVertexBuffer);
+                _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _objectHeightLineVertexBuffer));
 
-            _editor.GraphicsDevice.Draw(PrimitiveType.LineList, 2);
+                Matrix model = Matrix.Identity * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _editor.GraphicsDevice.Draw(PrimitiveType.LineList, 2);
+            }
+
+            if (_drawFlybyPath)
+            {
+                _editor.GraphicsDevice.SetVertexBuffer(_flybyPathVertexBuffer);
+                _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
+
+                Matrix model = Matrix.Identity;
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _editor.GraphicsDevice.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
+            }
         }
 
         private void DrawLights(Matrix viewProjection, int room)
@@ -1102,6 +1134,9 @@ namespace TombEditor.Controls
 
                     _drawGizmo = true;
                     _gizmo.Position = instance.Position;
+
+                    // Add the flyby path
+                    AddFlybyPath(((FlybyCameraInstance)instance).Sequence);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
@@ -2353,10 +2388,11 @@ namespace TombEditor.Controls
             Stopwatch _watch = new Stopwatch();
             _watch.Start();
 
+            // Reset gizmo and debug strings and lines
             Debug.Reset();
-
             _drawHeightLine = false;
             _drawGizmo = false;
+            _drawFlybyPath = false;
 
             // Don't draw anything if device is not ready
             if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1)
@@ -2445,7 +2481,7 @@ namespace TombEditor.Controls
             DrawLights(viewProjection, _editor.RoomIndex);
 
             // Draw the height of the object
-            if (_drawHeightLine) DrawObjectHeightLine(viewProjection);
+            DrawDebugLines(viewProjection);
 
             // Draw the gizmo
             if (_drawGizmo)
@@ -3428,8 +3464,8 @@ namespace TombEditor.Controls
             EditorVertex[] vertices = new EditorVertex[] { v1, v2 };
 
             // Prepare the Vertex Buffer
-            if (_objectHeightLineVertex != null) _objectHeightLineVertex.Dispose();
-            _objectHeightLineVertex = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            if (_objectHeightLineVertexBuffer != null) _objectHeightLineVertexBuffer.Dispose();
+            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             // Add the text description
             /*Vector3 meanPosition = new Vector3(position.X, position.Y / 2.0f, position.Z);
@@ -3440,6 +3476,54 @@ namespace TombEditor.Controls
             //Debug.AddString("Height: " + Math.Round(height * 256.0f) + " units (" + height + " clicks)", screenPos);*/
 
             _drawHeightLine = true;
+        }
+
+        private void AddFlybyPath(int sequence)
+        {
+            // Collect all flyby cameras
+            List<FlybyCameraInstance> flybyCameras = new List<FlybyCameraInstance>();
+
+            foreach (IObjectInstance obj in _editor.Level.Objects.Values)
+            {
+                if (obj.Type == ObjectInstanceType.FlyByCamera)
+                {
+                    FlybyCameraInstance instance = (FlybyCameraInstance)obj;
+                    if (instance.Sequence == sequence) flybyCameras.Add(instance);
+                }
+            }
+
+            // Sort cameras
+            flybyCameras.Sort(new ComparerFlybyCameras());
+
+            // Create a vertex array
+            List<EditorVertex> vertices = new List<EditorVertex>();
+
+            for (int i = 0; i < flybyCameras.Count - 1; i++)
+            {
+                Vector3 room1pos = Utils.PositionInWorldCoordinates(_editor.Level.Rooms[flybyCameras[i].Room].Position);
+                Vector3 room2pos = Utils.PositionInWorldCoordinates(_editor.Level.Rooms[flybyCameras[i + 1].Room].Position);
+
+                EditorVertex v1 = new EditorVertex();
+                v1.Position = new Vector4(flybyCameras[i].Position.X + room1pos.X,
+                                          flybyCameras[i].Position.Y + room1pos.Y,
+                                          flybyCameras[i].Position.Z + room1pos.Z,
+                                          1.0f);
+
+                EditorVertex v2 = new EditorVertex();
+                v1.Position = new Vector4(flybyCameras[i + 1].Position.X + room2pos.X,
+                                          flybyCameras[i + 1].Position.Y + room2pos.Y,
+                                          flybyCameras[i + 1].Position.Z + room2pos.Z,
+                                          1.0f);
+
+                vertices.Add(v1);
+                vertices.Add(v2);
+            }
+                       
+            // Prepare the Vertex Buffer
+            if (_flybyPathVertexBuffer != null) _flybyPathVertexBuffer.Dispose();
+            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+            _drawFlybyPath = true;
         }
     }
 }
