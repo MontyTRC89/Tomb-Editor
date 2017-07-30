@@ -364,9 +364,8 @@ namespace TombEditor.Controls
                 else if ((_depthBar.RoomsToMove != null) && _depthBar.RoomsToMove.Contains(room))
                     brush = _roomsToMoveBrush;
 
-
-
-                e.Graphics.FillRectangles(brush, rectangles.ToArray());
+                if (rectangles.Count > 0)
+                    e.Graphics.FillRectangles(brush, rectangles.ToArray());
             }
 
             if (drawOutline)
