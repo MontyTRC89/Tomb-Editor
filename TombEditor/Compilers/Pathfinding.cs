@@ -16,6 +16,8 @@ namespace TombEditor.Compilers
             // Fix monkey on portals
             foreach (var fixRoom in _editor.Level.Rooms)
             {
+                if (fixRoom == null) continue;
+
                 for (int x = 0; x < fixRoom.NumXSectors; x++)
                 {
                     for (int z = 0; z < fixRoom.NumZSectors; z++)
@@ -34,6 +36,8 @@ namespace TombEditor.Compilers
             // First build boxes except portal boxes
             foreach (var room in _editor.Level.Rooms)
             {
+                if (room == null) continue;
+
                 for (var x = 1; x < room.NumXSectors - 1; x++)
                 {
                     for (var z = 1; z < room.NumZSectors - 1; z++)
@@ -139,6 +143,8 @@ namespace TombEditor.Compilers
             // Now build only boxes of horizontal portals
             foreach (var room in _editor.Level.Rooms)
             {
+                if (room == null) continue;
+
                 for (var x = 1; x < room.NumXSectors - 1; x++)
                 {
                     for (var z = 1; z < room.NumZSectors - 1; z++)
