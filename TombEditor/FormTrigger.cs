@@ -74,7 +74,7 @@ namespace TombEditor
                             MoveableInstance mov = (MoveableInstance)instance;
 
                             _items.Add(instance.ID);
-                            comboParameter.Items.Add(_editor.MoveablesObjectIds[(int)mov.Model.ObjectID] + " ID = " + instance.ID + ", Room = " + instance.Room +
+                            comboParameter.Items.Add(_editor.MoveableNames[(int)mov.Model.ObjectID] + " ID = " + instance.ID + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
                             if (TriggerID != -1 && Trigger.Target == instance.ID)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;

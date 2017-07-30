@@ -6,15 +6,12 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using DarkUI;
 using TombEditor.Geometry;
 using SharpDX;
 using TombEditor.Compilers;
 using System.IO;
-using System.Runtime;
 using System.Diagnostics;
 using TombEngine;
-using System.Runtime.InteropServices;
 using NLog;
 using TombLib.Graphics;
 
@@ -50,12 +47,17 @@ namespace TombEditor
             panelItem.Draw();
         }
 
+        public void DrawPanelMap2D()
+        {
+            panel2DGrid.Invalidate();
+        }
+
         private void butFloor_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.SetFloor(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
@@ -68,14 +70,14 @@ namespace TombEditor
         {
             lstTriggers.Items.Clear();
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 List<int> triggers = new List<int>();
 
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 if (xMin < 1 || zMin < 1 || xMax > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1 ||
                     zMax > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
@@ -103,18 +105,23 @@ namespace TombEditor
             }
         }
 
+        public void Update2DGrid()
+        {
+            panel2DGrid.Invalidate();
+        }
+
         private void butWall_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.SetWall(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
-            panel2DMap.Invalidate();
+            _editor.DrawPanel3D();
         }
 
         private void butBox_Click(object sender, EventArgs e)
@@ -523,10 +530,6 @@ namespace TombEditor
             multiPage1.SelectedIndex = 0;
             _editor.Mode = EditorMode.Geometry;
             _editor.Action = EditorAction.None;
-            _editor.BlockSelectionStartX = -1;
-            _editor.BlockSelectionStartZ = -1;
-            _editor.BlockSelectionEndX = -1;
-            _editor.BlockSelectionEndZ = -1;
             _editor.BlockEditingType = 0;
             _editor.LightIndex = -1;
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
@@ -546,10 +549,6 @@ namespace TombEditor
             multiPage1.SelectedIndex = 1;
             _editor.Mode = EditorMode.Map2D;
             _editor.Action = EditorAction.None;
-            _editor.BlockSelectionStartX = -1;
-            _editor.BlockSelectionStartZ = -1;
-            _editor.BlockSelectionEndX = -1;
-            _editor.BlockSelectionEndZ = -1;
             _editor.BlockEditingType = 0;
             _editor.LightIndex = -1;
 
@@ -566,10 +565,6 @@ namespace TombEditor
             multiPage1.SelectedIndex = 0;
             _editor.Mode = EditorMode.FaceEdit;
             _editor.Action = EditorAction.None;
-            _editor.BlockSelectionStartX = -1;
-            _editor.BlockSelectionStartZ = -1;
-            _editor.BlockSelectionEndX = -1;
-            _editor.BlockSelectionEndZ = -1;
             _editor.BlockEditingType = 0;
 
             ResetSelection();
@@ -587,10 +582,6 @@ namespace TombEditor
             multiPage1.SelectedIndex = 0;
             _editor.Mode = EditorMode.Lighting;
             _editor.Action = EditorAction.None;
-            _editor.BlockSelectionStartX = -1;
-            _editor.BlockSelectionStartZ = -1;
-            _editor.BlockSelectionEndX = -1;
-            _editor.BlockSelectionEndZ = -1;
             _editor.LightIndex = -1;
             _editor.BlockEditingType = 0;
 
@@ -944,13 +935,13 @@ namespace TombEditor
             for (int i = 0; i < _editor.Level.Wad.Moveables.Count; i++)
             {
                 comboItems.Items.Add(
-                    _editor.MoveablesObjectIds[(int) (_editor.Level.Wad.Moveables.ElementAt(i).Value.ObjectID)]);
+                    _editor.MoveableNames[(int) (_editor.Level.Wad.Moveables.ElementAt(i).Value.ObjectID)]);
             }
 
             for (int i = 0; i < _editor.Level.Wad.StaticMeshes.Count; i++)
             {
                 comboItems.Items.Add(
-                    _editor.StaticMeshesObjectIds[(int) (_editor.Level.Wad.StaticMeshes.ElementAt(i).Value.ObjectID)]);
+                    _editor.StaticNames[(int) (_editor.Level.Wad.StaticMeshes.ElementAt(i).Value.ObjectID)]);
             }
 
             comboItems.SelectedIndex = 0;
@@ -1028,27 +1019,27 @@ namespace TombEditor
                 switch (keyData)
                 {
                     case Keys.Up:
-                        ((ArcBallCamera)_editor.Camera).Rotate(0, rotateFactor);
+                        (_editor.Camera as ArcBallCamera)?.Rotate(0, rotateFactor);
                         break;
 
                     case Keys.Down:
-                        ((ArcBallCamera)_editor.Camera).Rotate(0, -rotateFactor);
+                        (_editor.Camera as ArcBallCamera)?.Rotate(0, -rotateFactor);
                         break;
 
                     case Keys.Left:
-                        ((ArcBallCamera)_editor.Camera).Rotate(rotateFactor, 0);
+                        (_editor.Camera as ArcBallCamera)?.Rotate(rotateFactor, 0);
                         break;
 
                     case Keys.Right:
-                        ((ArcBallCamera)_editor.Camera).Rotate(-rotateFactor, 0);
+                        (_editor.Camera as ArcBallCamera)?.Rotate(-rotateFactor, 0);
                         break;
 
                     case Keys.PageUp:
-                        ((ArcBallCamera)_editor.Camera).Move(zoomFactor);
+                        (_editor.Camera as ArcBallCamera)?.Move(zoomFactor);
                         break;
 
                     case Keys.PageDown:
-                        ((ArcBallCamera)_editor.Camera).Move(-zoomFactor);
+                        (_editor.Camera as ArcBallCamera)?.Move(-zoomFactor);
                         break;
                 }
 
@@ -1137,19 +1128,18 @@ namespace TombEditor
                 if (_editor.Mode == EditorMode.Geometry &&
                     _editor.PickingResult.ElementType == PickingElementType.Block)
                 {
-                    // Prepare selection boundaries
-                    int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                    int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                    int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                    int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
                     // If one of the four corners of selection is not valid, then do nothing
-                    if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
+                    if (!_editor.BlockSelectionAvailable)
                         return;
 
+                    // Prepare selection boundaries
+                    int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                    int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                    int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                    int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                    
                     int face = 0;
                     short increment = 0;
-                    bool addTrigger = false;
 
                     EditorActions.FaceEditorActions action = EditorActions.FaceEditorActions.EntireFace;
                     EditorActions.FaceSubdivisions sub = EditorActions.FaceSubdivisions.Q;
@@ -1231,29 +1221,19 @@ namespace TombEditor
                             break;
 
                         case Keys.Escape:
-                            _editor.BlockSelectionStartX = -1;
-                            _editor.BlockSelectionStartZ = -1;
-                            _editor.BlockSelectionEndX = -1;
-                            _editor.BlockSelectionEndZ = -1;
+                            _editor.BlockSelectionReset();
                             _editor.BlockEditingType = 0;
                             return;
 
                         case Keys.T:
-                            addTrigger = true;
-                            break;
+                            EditorActions.AddTrigger(this, xMin, xMax, zMin, zMax);
+                            return;
 
                         default:
                             return;
                     }
-
-                    // Add trigger is T key was pressed
-                    if (addTrigger)
-                    {
-                        EditorActions.AddTrigger(this, xMin, xMax, zMin, zMax);
-                        return;
-                    }
-
-                    if (e.Control && !addTrigger && _editor.BlockEditingType == 0)
+                    
+                    if (e.Control && _editor.BlockEditingType == 0)
                     {
                         int xMinSpecial = Math.Max(0, xMin - 1);
                         int zMinSpecial = Math.Max(0, zMin - 1);
@@ -1263,8 +1243,6 @@ namespace TombEditor
                         EditorActions.SpecialRaiseFloorOrCeiling(face, increment,
                                                                  xMinSpecial, xMaxSpecial, zMinSpecial, zMaxSpecial,
                                                                  xMin, xMax, zMin, zMax);
-                        ///_editor.DrawPanel3D();
-                        //return;
                     }
 
                     if (!diagonal)
@@ -1384,49 +1362,34 @@ namespace TombEditor
                             if (e.Control)
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
-                                {
                                     EditorActions.MoveLightCone(_editor.PickingResult.Element, 0, -1);
-                                }
-
                                 UpdateLightUI();
                             }
-                            
                             break;
 
                         case Keys.Right:
                             if (e.Control)
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
-                                {
                                     EditorActions.MoveLightCone(_editor.PickingResult.Element, 0, 1);
-                                }
-
                                 UpdateLightUI();
                             }
-                            
                             break;
 
                         case Keys.Up:
                             if (e.Control)
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
-                                {
                                     EditorActions.MoveLightCone(_editor.PickingResult.Element, 1, 0);
-                                }
-
                                 UpdateLightUI();
                             }
-                            
                             break;
 
                         case Keys.Down:
                             if (e.Control)
                             {
                                 if (light.Type == LightType.Spot || light.Type == LightType.Sun)
-                                {
                                     EditorActions.MoveLightCone(_editor.PickingResult.Element, -1, 0);
-                                }
-
                                 UpdateLightUI();
                             }
                             else
@@ -1447,7 +1410,6 @@ namespace TombEditor
                                 _editor.Action = EditorAction.None;
                                 _editor.PickingResult = Editor.PickingResultEmpty;
                             }
-
                             break;
                     }
                 }
@@ -1475,34 +1437,22 @@ namespace TombEditor
                     {
                         case Keys.Left:
                             if (e.Control)
-                            {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult.Element, 0, -1);
-                            }
-
                             break;
 
                         case Keys.Right:
                             if (e.Control)
-                            {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult.Element, 0, 1);
-                            }
-                            
                             break;
 
                         case Keys.Up:
                             if (e.Control)
-                            {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult.Element, 1, 0);
-                            }
-                            
                             break;
 
                         case Keys.Down:
                             if (e.Control)
-                            {
                                 EditorActions.MoveFlybyCone(_editor.PickingResult.Element, -1, 0);
-                            }
-                            
                             break;
 
                         case Keys.Delete:
@@ -1575,7 +1525,6 @@ namespace TombEditor
             }
 
             _editor.DrawPanel3D();
-
             _editor.DrawPanelGrid();
 
             e.Handled = true;
@@ -1593,10 +1542,7 @@ namespace TombEditor
             _editor.LightIndex = -1;
             _editor.SelectedItem = -1;
             _editor.PickingResult = new PickingResult {ElementType = PickingElementType.None};
-            _editor.BlockSelectionStartX = -1;
-            _editor.BlockSelectionStartZ = -1;
-            _editor.BlockSelectionEndX = -1;
-            _editor.BlockSelectionEndZ = -1;
+            _editor.BlockSelectionReset();
             _editor.BlockEditingType = 0;
             //if (_editor.Mode != EditorMode.FaceEdit) _editor.SelectedTexture = -1;
         }
@@ -1816,10 +1762,10 @@ namespace TombEditor
         {
             if (_editor.Mode == EditorMode.Geometry && _editor.PickingResult.ElementType == PickingElementType.Block)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
                     return;
@@ -2305,10 +2251,10 @@ namespace TombEditor
         {
             if (_editor.Mode == EditorMode.Geometry && _editor.PickingResult.ElementType == PickingElementType.Block)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
                     return;
@@ -2390,10 +2336,10 @@ namespace TombEditor
         {
             if (_editor.Mode == EditorMode.Geometry && _editor.PickingResult.ElementType == PickingElementType.Block)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
                     return;
@@ -2618,10 +2564,10 @@ namespace TombEditor
 
         private void RandomFloor(short sign)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
@@ -2639,10 +2585,10 @@ namespace TombEditor
         {
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
@@ -2660,10 +2606,10 @@ namespace TombEditor
         {
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
@@ -2681,10 +2627,10 @@ namespace TombEditor
         {
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             if (xMin == -1 || xMax == -1 || zMin == -1 || zMax == -1)
             {
@@ -3420,14 +3366,12 @@ namespace TombEditor
 
         private void butAddTrigger_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.AddTrigger(this, xMin, xMax, zMin, zMax);
-
-            LoadTriggersInUI();
         }
 
         private void butDrawHorizon_Click(object sender, EventArgs e)
@@ -3452,10 +3396,10 @@ namespace TombEditor
 
         private void butCeiling_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.SetCeiling(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
@@ -3465,10 +3409,10 @@ namespace TombEditor
 
         private void butDiagonalFloor_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.SetDiagonalFloorSplit(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
@@ -3478,10 +3422,10 @@ namespace TombEditor
 
         private void butDiagonalCeiling_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.SetDiagonalCeilingSplit(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 
@@ -3491,10 +3435,10 @@ namespace TombEditor
 
         private void butDiagonalWall_Click(object sender, EventArgs e)
         {
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             EditorActions.SetDiagonalWallSplit(_editor.RoomIndex, xMin, xMax, zMin, zMax);
 

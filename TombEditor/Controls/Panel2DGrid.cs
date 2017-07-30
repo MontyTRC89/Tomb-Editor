@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using TombLib.Graphics;
-using TombEditor.Geometry;
 using System.Drawing;
 using System.ComponentModel;
+using TombLib.Graphics;
+using TombEditor.Geometry;
+using Rectangle = System.Drawing.Rectangle;
+
 
 namespace TombEditor.Controls
 {
@@ -19,15 +21,12 @@ namespace TombEditor.Controls
 
         private Editor _editor;
         private bool _firstSelection;
-        private float _deltaX;
-        private float _deltaY;
-        private float _lastX;
-        private float _lastY;
-        private int _startX;
-        private int _startY;
         private bool _drag;
+        private static readonly Pen _gridPen = Pens.Black;
+        private static readonly Brush _portalBrush = new SolidBrush(Color.Black);
         private static readonly Brush _floorBrush = new SolidBrush(Editor.ColorFloor);
         private static readonly Brush _wallBrush = new SolidBrush(Editor.ColorWall);
+        private static readonly Brush _borderWallBrush = new SolidBrush(Color.Gray);
         private static readonly Brush _deathBrush = new SolidBrush(Editor.ColorDeath);
         private static readonly Brush _monkeyBrush = new SolidBrush(Editor.ColorMonkey);
         private static readonly Brush _boxBrush = new SolidBrush(Editor.ColorBox);
@@ -36,11 +35,18 @@ namespace TombEditor.Controls
         private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 4);
         private static readonly Brush _noCollisionBrush = new SolidBrush(Editor.ColorNoCollision);
         private static readonly Brush _triggerBrush = new SolidBrush(Editor.ColorTrigger);
-        private static readonly Pen _climbPen = new Pen(Editor.ColorClimb, 4);
+        private static readonly Brush _climbBrush = new SolidBrush(Editor.ColorClimb);
+        private static readonly float _climbWidth = 4;
         private static readonly Font _font = new Font("Arial", 8);
+        private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
+        private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
+        private static readonly Pen _selectionPen = new Pen(Color.Red, 2);
+        private static readonly Brush _messageBackground = new SolidBrush(Color.Yellow);
+        private static readonly Pen _messagePen = Pens.Black;
+        private const float _textMargin = 2.0f;
+        private const float _gridStep = 11.0f;
+        private const int _gridSize = 20;
 
-        private const byte GridStep = 11;
-        
         public Panel2DGrid()
         {
             _editor = Editor.Instance;
@@ -48,86 +54,61 @@ namespace TombEditor.Controls
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
         }
-        
-        private int GetZBlock(float z)
+
+        private RectangleF getVisualRoomArea()
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-            int numXblocks = currentRoom.NumXSectors;
-            int numZblocks = currentRoom.NumZSectors;
-
-            for (int i = 0; i < 20; i++)
-                if (z >= i && z < (i + 1) * GridStep)
-                    if (numZblocks % 2 != 0)
-                        return (18 - i);
-                    else
-                        return (19 - i);
-
-            return 0;
+            Room currentRoom = _editor.SelectedRoom;
+            return new RectangleF(
+                _gridStep * ((_gridSize - currentRoom.NumXSectors) / 2),
+                _gridStep * ((_gridSize - currentRoom.NumZSectors) / 2),
+                _gridStep * currentRoom.NumXSectors,
+                _gridStep * currentRoom.NumZSectors);
         }
 
-        private int getStartX()
+        private PointF toVisualCoord(Point point)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-            int numXblocks = currentRoom.NumXSectors;
-            int numZblocks = currentRoom.NumZSectors;
-
-            int startX = (int)(20 - numXblocks) / 2;
-            //if (numXblocks % 2 != 0) startX++;
-
-            return startX;
+            RectangleF roomArea = getVisualRoomArea();
+            return new PointF(point.X * _gridStep + roomArea.X, roomArea.Bottom - (point.Y + 1) * _gridStep);
         }
 
-        private int getStartZ()
+        private RectangleF toVisualCoord(SharpDX.Rectangle area)
         {
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-            int numXblocks = currentRoom.NumXSectors;
-            int numZblocks = currentRoom.NumZSectors;
+            RectangleF roomArea = getVisualRoomArea();
+            PointF convertedPoint0 = toVisualCoord(new Point(area.Left, area.Top));
+            PointF convertedPoint1 = toVisualCoord(new Point(area.Right, area.Bottom));
+            return RectangleF.FromLTRB(
+                Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
+                Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
+        }
 
-            int startZ = (int)(20 - numZblocks) / 2;
-            // if (numZblocks % 2 != 0) startZ++;
-
-            return startZ;
+        private Point fromVisualCoord(PointF point)
+        {
+            RectangleF roomArea = getVisualRoomArea();
+            return new Point(
+                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
+                (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-
-            if (_editor == null)
+            
+            if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
-            if (_editor.RoomIndex == -1)
-                return;
-
-            _editor.ResetPanel2DMessage();
-
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-            int numXblocks = currentRoom.NumXSectors;
-            int numZblocks = currentRoom.NumZSectors;
-
-            int startX = getStartX(); // (20 - numXblocks) / 2;
-            int startY = getStartZ(); // (20 - numZblocks) / 2;
-
-            _startX = startX;
-            _startY = startY;
-
-            // gestisco il drag & drop
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            
+            // Manage the drag & drop camera
+            if (e.Button == MouseButtons.Right)
             {
-                _lastX = e.X;
-                _lastY = e.Y;
-
-                int xBlock = (int)_lastX / GridStep;
-                int zBlock = GetZBlock(_lastY); // 19 - (int)(LastY) / GridStep;
-
+                Point roomPoint = fromVisualCoord(e.Location);
                 bool foundSomething = false;
 
                 if (SelectedTrigger == -1)
                 {
-                    // inizio il ciclo dal primo portale
-                    SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
+                    // Start the cycle from the first portal
+                    SelectedPortal = GetNextPortal(roomPoint);
                     if (SelectedPortal == -1)
                     {
-                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
+                        SelectedTrigger = GetNextTrigger(roomPoint);
                         if (SelectedTrigger != -1)
                         {
                             foundSomething = true;
@@ -148,33 +129,30 @@ namespace TombEditor.Controls
                         _editor.PickingResult = result;
                     }
                 }
-                else
+                else if (SelectedPortal == -1)
                 {
-                    if (SelectedPortal == -1 && SelectedTrigger != -1)
+                    SelectedTrigger = GetNextTrigger(roomPoint);
+                    if (SelectedTrigger == -1)
                     {
-                        SelectedTrigger = GetNextTrigger((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
-                        if (SelectedTrigger == -1)
-                        {
-                            SelectedPortal = GetNextPortal((int)_lastX / GridStep - startX, GetZBlock(_lastY) - startY);
-                            if (SelectedPortal != -1)
-                            {
-                                foundSomething = true;
-
-                                PickingResult result = new PickingResult();
-                                result.ElementType = PickingElementType.Portal;
-                                result.Element = SelectedPortal;
-                                _editor.PickingResult = result;
-                            }
-                        }
-                        else
+                        SelectedPortal = GetNextPortal(roomPoint);
+                        if (SelectedPortal != -1)
                         {
                             foundSomething = true;
 
                             PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Trigger;
-                            result.Element = SelectedTrigger;
+                            result.ElementType = PickingElementType.Portal;
+                            result.Element = SelectedPortal;
                             _editor.PickingResult = result;
                         }
+                    }
+                    else
+                    {
+                        foundSomething = true;
+
+                        PickingResult result = new PickingResult();
+                        result.ElementType = PickingElementType.Trigger;
+                        result.Element = SelectedTrigger;
+                        _editor.PickingResult = result;
                     }
                 }
 
@@ -183,503 +161,256 @@ namespace TombEditor.Controls
                     SelectedPortal = -1;
                     SelectedTrigger = -1;
                 }
+
+                // Update state
+                _editor.DrawPanel3D();
+                _editor.UpdateStatistics();
+                Invalidate();
             }
-            else
+            else if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1))
             {
-                if (SelectedPortal == -1)
+                _drag = true;
+                _firstSelection = false;
+                Point roomPoint = fromVisualCoord(e.Location);
+
+                // If any of the X or Z values is equal to - 1 then it is a first selection
+                if (_editor.BlockSelectionStart.X == -1 || _editor.BlockSelectionStart.Y == -1)
                 {
-                    if (!_drag)
-                        _drag = true;
-                    _lastX = e.X;
-                    _lastY = e.Y;
-
-                    int xBlock = (int)_lastX / GridStep;
-                    int zBlock = GetZBlock(_lastY);
-
-                    /*if (xBlock < 0 || zBlock < 0 || xBlock > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors-1 ||
-                        zBlock > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
-                    {
-                        Drag = false;
-                        return;
-                    }*/
-
-                    _firstSelection = false;
-
-                    // se qualcuno dei valori X o Z è pari a -1 allora è una prima selezione
-                    if (_editor.BlockSelectionStartX == -1 || _editor.BlockSelectionStartZ == -1)
-                    {
-                        _editor.BlockSelectionStartX = xBlock;
-                        _editor.BlockSelectionStartZ = zBlock;
-                        _editor.BlockSelectionEndX = _editor.BlockSelectionStartX;
-                        _editor.BlockSelectionEndZ = _editor.BlockSelectionStartZ;
-                        _firstSelection = true;
-                        _editor.BlockEditingType = 0;
-                    }
-                    else
-                    {
-                        int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                        int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                        int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                        int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
-                        if (xBlock >= xMin && xBlock <= xMax && xBlock != -1 && zBlock >= zMin && zBlock <= zMax)
-                        {
-                            // non è una prima selezione perchè sto facendo click su un intervallo già selezionato
-                            _firstSelection = false;
-                        }
-                        else
-                        {
-                            _editor.BlockSelectionStartX = xBlock - startX;
-                            _editor.BlockSelectionStartZ = zBlock - startY;
-                            _editor.BlockSelectionEndX = _editor.BlockSelectionStartX;
-                            _editor.BlockSelectionEndZ = _editor.BlockSelectionStartZ;
-                            _firstSelection = true;
-                            _editor.BlockEditingType = 0;
-                        }
-                    }
-
-                    PickingResult result = new PickingResult();
-                    result.ElementType = PickingElementType.Block;
-                    result.SubElementType = 0;
-                    result.Element = (xBlock << 5) + (zBlock & 31);
-                    result.SubElementType = 25;
-
-                    _editor.PickingResult = result;
-                    _editor.StartPickingResult = result;
-
-                    SelectedTrigger = -1;
-                    SelectedPortal = -1;
+                    _editor.BlockSelectionStart = roomPoint;
+                    _editor.BlockSelectionEnd = roomPoint;
+                    _firstSelection = true;
+                    _editor.BlockEditingType = 0;
                 }
-            }
+                else if (_editor.BlockSelection.Contains(roomPoint))
+                {
+                    // This is not a first selection because the clicking happend on an already selected range
+                    _firstSelection = false;
+                }
+                else
+                {
+                    _editor.BlockSelectionStart = roomPoint;
+                    _editor.BlockSelectionEnd = roomPoint;
+                    _firstSelection = true;
+                    _editor.BlockEditingType = 0;
+                }
 
-            _editor.DrawPanel3D();
-            Invalidate();
+                PickingResult result = new PickingResult();
+                result.ElementType = PickingElementType.Block;
+                result.SubElementType = 0;
+                result.Element = (roomPoint.X << 5) + (roomPoint.Y & 31);
+                result.SubElementType = 25;
+                _editor.PickingResult = result;
+
+                SelectedTrigger = -1;
+                SelectedPortal = -1;
+
+                // Update state
+                _editor.DrawPanel3D();
+                _editor.UpdateStatistics();
+                Invalidate();
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-
-            if (_editor == null)
-                return;
-            if (_editor.RoomIndex == -1)
-                return;
-
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-            int numXblocks = currentRoom.NumXSectors;
-            int numZblocks = currentRoom.NumZSectors;
-
-            int startX = getStartX(); // (20 - numXblocks) / 2;
-            int startY = getStartZ(); // (20 - numZblocks) / 2;
-
-            _startX = startX;
-            _startY = startY;
             
-            // manage the drag & drop camera
-            if (_drag && e.Button == MouseButtons.Right)
+            if ((_editor == null) || (_editor.SelectedRoom == null))
+                return;
+            
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _drag)
             {
-                _deltaX = e.X - _lastX;
-                _deltaY = e.Y - _lastY;
+                Point roomPoint = fromVisualCoord(e.Location);
+
+                //_editor.BlockSelectionStart = new Point(_editor.StartPickingResult.Element >> 5, _editor.StartPickingResult.Element & 31);
+                _editor.BlockSelectionEnd = roomPoint;
+                _editor.BlockEditingType = 0;
+                _firstSelection = true;
+
+                PickingResult result = new PickingResult();
+                result.ElementType = PickingElementType.Block;
+                result.SubElementType = 0;
+                result.Element = (roomPoint.X << 5) + (roomPoint.Y & 31);
+                result.SubElementType = 25;
+                _editor.PickingResult = result;
+
+                // Update state
+                _editor.DrawPanel3D();
+                _editor.UpdateStatistics();
+                Invalidate();
             }
-            else
-            {
-                if (SelectedPortal == -1)
-                {
-                    if (_drag)
-                    {
-                        _lastX = e.X;
-                        _lastY = e.Y;
-
-                        if (_lastY < 0)
-                            _lastY = 0;
-
-                        int xBlock = (int)_lastX / GridStep;
-                        int zBlock = GetZBlock(_lastY);
-
-                        _editor.BlockSelectionStartX = (_editor.StartPickingResult.Element >> 5) - startX;
-                        _editor.BlockSelectionStartZ = (_editor.StartPickingResult.Element & 31) - startY;
-                        _editor.BlockEditingType = 0;
-                        _editor.BlockSelectionEndX = xBlock - startX;
-                        _editor.BlockSelectionEndZ = zBlock - startY;
-
-                        if (_editor.BlockSelectionEndX < 0)
-                            _editor.BlockSelectionEndX = 0;
-                        if (_editor.BlockSelectionEndZ < 0)
-                            _editor.BlockSelectionEndZ = 0;
-                        if (_editor.BlockSelectionEndX > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1)
-                            _editor.BlockSelectionEndX = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1;
-                        if (_editor.BlockSelectionEndZ > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
-                            _editor.BlockSelectionEndZ = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1;
-
-                        _firstSelection = true;
-
-                        PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Block;
-                        result.SubElementType = 0;
-                        result.Element = (xBlock << 5) + (zBlock & 31);
-                        result.SubElementType = 25;
-
-                        _editor.PickingResult = result;
-                    }
-                }
-            }
-
-            _editor.DrawPanel3D();
-            Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
 
-            if (_editor == null)
+            if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
-            if (_editor.RoomIndex == -1)
-                return;
-
-            Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-            int numXblocks = currentRoom.NumXSectors;
-            int numZblocks = currentRoom.NumZSectors;
-
-            int startX = getStartX();
-            int startY = getStartZ();
-
-            _startX = startX;
-            _startY = startY;
-
-            // manage the drag & drop camera
-            if (e.Button == MouseButtons.Right)
+            
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _drag && _firstSelection)
             {
-                _deltaX = e.X - _lastX;
-                _deltaY = e.Y - _lastY;
+                _editor.LoadTriggersInUI();
+                _editor.BlockEditingType = 0;
             }
-            else
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal != -1))
             {
-                if (SelectedPortal == -1)
+                Point roomPoint = fromVisualCoord(e.Location);
+                
+                Portal p = _editor.Level.Portals[SelectedPortal];
+                if (p.Area.Contains(roomPoint))
                 {
-                    if (_drag)
-                    {
-                        _lastX = e.X;
-                        _lastY = e.Y;
-
-                        if (_lastY < 0)
-                            _lastY = 0;
-
-                        int xBlock = (int)_lastX / GridStep;
-                        int zBlock = GetZBlock(_lastY);// 20 - (int)(LastY) / GridStep;
-
-                        if (_firstSelection)
-                        {
-                            _editor.BlockSelectionEndX = xBlock - startX;
-                            _editor.BlockSelectionEndZ = zBlock - startY;
-
-                            if (_editor.BlockSelectionEndX < 0)
-                                _editor.BlockSelectionEndX = 0;
-                            if (_editor.BlockSelectionEndZ < 0)
-                                _editor.BlockSelectionEndZ = 0;
-                            if (_editor.BlockSelectionEndX > _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1)
-                                _editor.BlockSelectionEndX = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors - 1;
-                            if (_editor.BlockSelectionEndZ > _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1)
-                                _editor.BlockSelectionEndZ = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors - 1;
-
-                            _editor.LoadTriggersInUI();
-
-                            _editor.BlockEditingType = 0;
-                        }
-
-                        PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Block;
-                        result.SubElementType = 0;
-                        result.Element = (xBlock << 5) + (zBlock & 31);
-                        result.SubElementType = 25;
-
-                        _editor.PickingResult = result;
-                    }
+                    _editor.SelectRoom(p.AdjoiningRoom);
+                    _editor.ResetSelection();
+                    _editor.ResetCamera();
                 }
                 else
                 {
-                    _lastX = e.X;
-                    _lastY = e.Y;
-
-                    int xBlock = (int)_lastX / GridStep - startX;
-                    int zBlock = GetZBlock(_lastY) - startY;
-
-                    Portal p = _editor.Level.Portals[SelectedPortal];
-
-                    if (xBlock >= p.X && xBlock <= p.X + p.NumXBlocks && zBlock >= p.Z && zBlock <= p.Z + p.NumZBlocks)
-                    {
-                        _editor.SelectRoom(p.AdjoiningRoom);
-                        _editor.ResetSelection();
-                        _editor.ResetCamera();
-                    }
-                    else
-                    {
-                        SelectedPortal = -1;
-                        Invalidate();
-                    }
-
                     SelectedPortal = -1;
-                    SelectedTrigger = -1;
+                    Invalidate();
                 }
+
+                SelectedPortal = -1;
+                SelectedTrigger = -1;
+
+                // Update state
+                _editor.DrawPanel3D();
+                _editor.UpdateStatistics();
+                Invalidate();
             }
 
             _drag = false;
-
-            _editor.DrawPanel3D();
-            Invalidate();
         }
         
         protected override void OnPaint(PaintEventArgs e)
         {
             try
             {
-                Graphics g = e.Graphics;
+                e.Graphics.Clear(Color.White);
 
-                g.FillRectangle(Brushes.White, new Rectangle(0, 0, 320, 320));
-
-                if (_editor == null)
-                    return;
-                if (_editor.RoomIndex == -1)
+                if ((_editor == null) || (_editor.SelectedRoom == null))
                     return;
 
-                Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
-                int numXblocks = currentRoom.NumXSectors;
-                int numZblocks = currentRoom.NumZSectors;
-
-                int startX = getStartX(); // (20 - numXblocks) / 2;
-                int startY = getStartZ(); // (20 - numZblocks) / 2;
-
-                _startX = startX;
-                _startY = startY;
-
-                // Console.WriteLine("X: " + StartX + ", Y: " + StartY);
-
-                // disegno i confini della stanza
-                g.FillRectangle(Brushes.Gray, new Rectangle(startX * GridStep, (startY + numZblocks - 1) * GridStep, numXblocks * GridStep, GridStep));
-                g.FillRectangle(Brushes.Gray, new Rectangle(startX * GridStep, startY * GridStep, GridStep, GridStep * numZblocks));
-                g.FillRectangle(Brushes.Gray, new Rectangle(startX * GridStep, startY * GridStep, numXblocks * GridStep, GridStep));
-                g.FillRectangle(Brushes.Gray, new Rectangle((startX + numXblocks - 1) * GridStep, startY * GridStep, GridStep, GridStep * numZblocks));
-
-                // disegno il pavimento
-                g.FillRectangle(_floorBrush, new Rectangle((startX + 1) * GridStep, (startY + 1) * GridStep, (numXblocks - 2) * GridStep, (numZblocks - 2) * GridStep));
-
-                int d = (numZblocks % 2 != 0 ? 1 : 0);
-
-                // disegno i muri verdi
-                for (int x = 0; x < numXblocks; x++)
-                {
-                    for (int z = 0; z < numZblocks; z++)
+                Room currentRoom = _editor.SelectedRoom;
+                RectangleF roomArea = getVisualRoomArea();
+                
+                // Draw tiles
+                for (int x = 0; x < currentRoom.NumXSectors; x++)
+                    for (int z = 0; z < currentRoom.NumZSectors; z++)
                     {
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Death) != 0)
-                            g.FillRectangle(_deathBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
+                        RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep + 1, _gridStep + 1);
+                        Block block = currentRoom.Blocks[x, z];
 
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Electricity) != 0)
-                            g.FillRectangle(_deathBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
+                        // Draw floor tile
+                        if (block.Triggers.Count != 0)
+                            e.Graphics.FillRectangle(_triggerBrush, rectangle);
+                        else if ((block.FloorPortal != -1 && !block.IsFloorSolid) || block.CeilingPortal != -1 || block.WallPortal != -1)
+                            e.Graphics.FillRectangle(_portalBrush, rectangle);
+                        else if (block.Type == BlockType.BorderWall)
+                            e.Graphics.FillRectangle(_borderWallBrush, rectangle);
+                        else if (block.Type == BlockType.Wall)
+                            e.Graphics.FillRectangle(_wallBrush, rectangle);
+                        else if (block.Flags.HasFlag(BlockFlags.NotWalkableFloor))
+                            e.Graphics.FillRectangle(_notWalkableBrush, rectangle);
+                        else if (block.Flags.HasFlag(BlockFlags.Box))
+                            e.Graphics.FillRectangle(_boxBrush, rectangle);
+                        else if (block.Flags.HasFlag(BlockFlags.Monkey))
+                            e.Graphics.FillRectangle(_monkeyBrush, rectangle);
+                        else if (block.Flags.HasFlag(BlockFlags.Death) || block.Flags.HasFlag(BlockFlags.Electricity) || block.Flags.HasFlag(BlockFlags.Lava))
+                            e.Graphics.FillRectangle(_deathBrush, rectangle);
+                        else if (block.NoCollisionFloor || block.NoCollisionCeiling)
+                            e.Graphics.FillRectangle(_noCollisionBrush, rectangle);
+                        else
+                            e.Graphics.FillRectangle(_floorBrush, rectangle);
 
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Lava) != 0)
-                            g.FillRectangle(_deathBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
-                            g.FillRectangle(_monkeyBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Box) != 0)
-                            g.FillRectangle(_boxBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
-                            g.FillRectangle(_notWalkableBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if (currentRoom.Blocks[x, z].Type == BlockType.Wall)
-                            g.FillRectangle(_wallBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if ((currentRoom.Blocks[x, z].FloorPortal != -1 && !currentRoom.Blocks[x, z].IsFloorSolid) || currentRoom.Blocks[x, z].CeilingPortal != -1 || currentRoom.Blocks[x, z].WallPortal != -1)
-                            g.FillRectangle(Brushes.Black, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if (currentRoom.Blocks[x, z].Triggers.Count != 0)
-                            g.FillRectangle(_triggerBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if (currentRoom.Blocks[x, z].NoCollisionFloor || currentRoom.Blocks[x, z].NoCollisionCeiling)
-                            g.FillRectangle(_noCollisionBrush, new Rectangle((startX + x) * GridStep, (19 - (startY + z) - d) * GridStep, GridStep, GridStep));
-
-                        if (currentRoom.Blocks[x, z].Climb[0])
-                            g.DrawLine(_climbPen, new PointF((startX + x) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z - 3 / GridStep) - d) * GridStep));
-
-                        if (currentRoom.Blocks[x, z].Climb[1])
-                            g.DrawLine(_climbPen, new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 1 - 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
-
-                        if (currentRoom.Blocks[x, z].Climb[2])
-                            g.DrawLine(_climbPen, new PointF((startX + x) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep), new PointF((startX + x + 1) * GridStep, (19 - (startY + z + 3 / GridStep - 1) - d) * GridStep));
-
-                        if (currentRoom.Blocks[x, z].Climb[3])
-                            g.DrawLine(_climbPen, new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z) - d) * GridStep), new PointF((startX + x + 3 / GridStep) * GridStep, (19 - (startY + z - 1) - d) * GridStep));
-
-                        if ((currentRoom.Blocks[x, z].Flags & BlockFlags.Beetle) != 0)
-                        {
-                            g.DrawRectangle(_beetlePen, new Rectangle((startX + x) * GridStep + 2, (19 - (startY + z - 3 / GridStep) - d) * GridStep + 2, GridStep - 3, GridStep - 3));
-                        }
-
+                        //Draw additional features on floor tile
+                        if (block.Climb[0])
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
+                        if (block.Climb[1])
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
+                        if (block.Climb[2])
+                        e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
+                        if (block.Climb[3])
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
+                        RectangleF beetleTriggerRectangle = rectangle;
+                        beetleTriggerRectangle.Inflate(-2, -2);
+                        if ((block.Flags & BlockFlags.Beetle) != 0)
+                            e.Graphics.DrawRectangle(_beetlePen, beetleTriggerRectangle);
                         if ((currentRoom.Blocks[x, z].Flags & BlockFlags.TriggerTriggerer) != 0)
-                        {
-                            g.DrawRectangle(_triggerTriggererPen, new Rectangle((startX + x) * GridStep + 2, (19 - (startY + z - 3 / GridStep) - d) * GridStep + 2, GridStep - 3, GridStep - 3));
-                        }
+                            e.Graphics.DrawRectangle(_triggerTriggererPen, beetleTriggerRectangle);
                     }
-                }
 
-                // disegno le linee nere della griglia           
-                for (int x = 0; x < 320; x += GridStep)
-                {
-                    g.DrawLine(Pens.Black, new Point(x, 0), new Point(x, 320));
-                }
+                // Draw black grid lines           
+                for (float x = 0; x < Width; x += _gridStep)
+                    e.Graphics.DrawLine(_gridPen, x, 0, x, 320);
 
-                for (int y = 0; y < 320; y += GridStep)
-                {
-                    g.DrawLine(Pens.Black, new Point(0, y), new Point(320, y));
-                }
+                for (float y = 0; y < Height; y += _gridStep)
+                    e.Graphics.DrawLine(_gridPen, 0, y, 320, y);
 
+                // Draw selection
                 if (SelectedPortal != -1)
                 {
-                    Portal p = _editor.Level.Portals[SelectedPortal];
-
-                    int xMin = p.X;
-                    int xMax = p.X + p.NumXBlocks - 1;
-                    int zMin = p.Z;
-                    int zMax = p.Z + p.NumZBlocks - 1;
-
-                    Pen pen = new Pen(Brushes.YellowGreen, 2);
-
-                    g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - p.NumZBlocks) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin - p.NumZBlocks) * GridStep));
-                    g.DrawLine(pen, new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin - p.NumZBlocks) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin) * GridStep));   // v
-                    g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin) * GridStep));
-                    g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - p.NumZBlocks) * GridStep), new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep));
-
-                    string text = "Portal ";
-                    if (p.Direction == PortalDirection.Floor)
-                        text += " (On Floor) ";
-                    if (p.Direction == PortalDirection.Ceiling)
-                        text += " (On Ceiling) ";
-                    text += "to Room #" + p.AdjoiningRoom.ToString();
-
-                    DrawMessage(g, text, p.X, p.Z);
+                    Portal portal = _editor.Level.Portals[SelectedPortal];
+                    e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
+                    DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
                 }
                 else if (SelectedTrigger != -1)
                 {
-                    TriggerInstance t = _editor.Level.Triggers[SelectedTrigger];
-
-                    int xMin = t.X;
-                    int xMax = t.X + t.NumXBlocks - 1;
-                    int zMin = t.Z;
-                    int zMax = t.Z + t.NumZBlocks - 1;
-                    Pen pen = new Pen(Brushes.White, 2);
-
-                    g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - t.NumZBlocks) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin - t.NumZBlocks) * GridStep));
-                    g.DrawLine(pen, new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin - t.NumZBlocks) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin) * GridStep));   // v
-                    g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin) * GridStep));
-                    g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - t.NumZBlocks) * GridStep), new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep));
-
-
-                    string text = t.ToString();
-
-                    DrawMessage(g, text, t.X, t.Z);
+                    TriggerInstance trigger = _editor.Level.Triggers[SelectedTrigger];
+                    e.Graphics.DrawRectangle(_selectedTriggerPen, toVisualCoord(trigger.Area));
+                    DrawMessage(e, trigger.ToString(), toVisualCoord(new Point(trigger.X + trigger.NumXBlocks / 2, trigger.Z + trigger.NumZBlocks)));
                 }
-                else
+                else if (_editor.BlockSelectionAvailable)
                 {
-                    // disegno il riquadro rosso di selezione
-                    if (_editor.BlockSelectionStartX != -1 && _editor.BlockSelectionStartZ != -1 && _editor.BlockSelectionEndX != -1 && _editor.BlockSelectionEndZ != -1)
-                    {
-                        int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                        int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                        int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                        int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-
-                        Pen pen = new Pen(Brushes.Red, 2);
-
-                        int numX = xMax - xMin + 1;
-                        int numZ = zMax - zMin + 1;
-
-                        g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - numZ) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin - numZ) * GridStep));
-                        g.DrawLine(pen, new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin - numZ) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin) * GridStep));   // v
-                        g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep), new Point((startX + xMax + 1) * GridStep, (startY + numZblocks - zMin) * GridStep));
-                        g.DrawLine(pen, new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin - numZ) * GridStep), new Point((startX + xMin) * GridStep, (startY + numZblocks - zMin) * GridStep)); // v ovest
-                    }
+                    e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.BlockSelection));
                 }
             }
-            catch (Exception)
-            { }
-
-            _editor.UpdateStatistics();
-        }
-
-        private void DrawMessage(Graphics g, string text, int x, int z)
-        {
-            //_editor.DrawPanel2DMessage(text);
-
-            SizeF dimension = g.MeasureString(text, _font, this.Width /*- x * GridStep*/, StringFormat.GenericDefault);
-
-            short deltaX = (short)((this.Width - ((_startX + x) * GridStep + dimension.Width + 4.0f)) / GridStep);
-            short deltaZ = (short)((this.Height - (this.Height - (_startY + z) * GridStep + dimension.Height + 4.0f)) / GridStep);
-
-            if ((_startX + x) * GridStep + dimension.Width + 4.0f >= this.Width - GridStep)
-                x = (short)((this.Width - dimension.Width - 4.0f) / GridStep - _startX); //  deltaX; // (int)(deltaX Math.Ceiling(dimension.Width / GridStep) - 1;
-            else
-                x++;
-
-            //this.Width - (StartY + z) * GridStep + dimension.Height + 4.0f >= this.Width
-            if (this.Height - (_startY + z) * GridStep + dimension.Height + 4.0f >= this.Height - GridStep)
-                z = (short)((this.Height - dimension.Height - 4.0f) / GridStep - _startY); // deltaZ; // (int)Math.Ceiling(dimension.Height / GridStep);
-            else
-                z--;
-
-            g.FillRectangle(Brushes.Yellow, new Rectangle((_startX + x) * GridStep, this.Width - (_startY + z + 1) * GridStep, (int)(dimension.Width + 4.0f), (int)(dimension.Height + 4.0f)));
-            g.DrawRectangle(Pens.Black, new Rectangle((_startX + x) * GridStep, this.Width - (_startY + z + 1) * GridStep, (int)(dimension.Width + 4.0f), (int)(dimension.Height + 4.0f)));
-            g.DrawString(text, _font, Brushes.Black, new RectangleF((_startX + x) * GridStep + 2, this.Width - (_startY + z + 1) * GridStep + 2, dimension.Width, dimension.Height), StringFormat.GenericDefault);
-        }
-
-        private int GetNextPortal(int x, int z)
-        {
-            int index = SelectedPortal;
-            if (index == -1)
-                index = 0;
-
-            //   x = x + StartX;
-            //  z = z + StartY;
-
-            Room room = _editor.Level.Rooms[_editor.RoomIndex];
-
-            for (int i = index; i < _editor.Level.Portals.Count; i++)
+            catch (Exception exc)
             {
-                if (i == SelectedPortal)
-                    continue;
-
-                Portal p = _editor.Level.Portals.ElementAt(i).Value;
-
-                int theRoom = _editor.RoomIndex; // (room.Flipped && room.BaseRoom != -1 ? room.BaseRoom : _editor.RoomIndex);
-
-                if (p.Room == theRoom && x >= p.X && x < p.X + p.NumXBlocks && z >= p.Z && z < p.Z + p.NumZBlocks)
-                    return p.ID;
+                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "An exception occured while drawing the 2D grid.");
             }
+        }
 
+        private void DrawMessage(PaintEventArgs e, string text, PointF visualPos)
+        {
+            // Measure how much area is required for the message
+            RectangleF textRectangle = new RectangleF(visualPos, 
+                e.Graphics.MeasureString(text, _font, this.Width, StringFormat.GenericDefault));
+            textRectangle.Offset(textRectangle.Width * -0.5f, 0.0f);
+            textRectangle.Inflate(_textMargin, _textMargin);
+
+            // Move the area so that it is always visible
+            textRectangle.Offset(-Math.Min(textRectangle.Left, 0.0f), -Math.Min(textRectangle.Top, 0.0f));
+            textRectangle.Offset(-Math.Max(textRectangle.Right - Width, 0.0f), -Math.Max(textRectangle.Bottom - Height, 0.0f));
+
+            // Draw the message
+            e.Graphics.FillRectangle(_messageBackground, textRectangle);
+            e.Graphics.DrawRectangle(_messagePen, textRectangle);
+            textRectangle.Inflate(-_textMargin, -_textMargin);
+            e.Graphics.DrawString(text, _font, _messagePen.Brush, textRectangle, StringFormat.GenericDefault);
+        }
+
+        private int GetNextPortal(Point point)
+        {
+            for (int i = 1; i <= _editor.Level.Portals.Count; i++)
+            {
+                int index = (i + SelectedPortal) % _editor.Level.Portals.Count;
+                Portal portal = _editor.Level.Portals.ElementAt(index).Value;
+                if ((_editor.RoomIndex == portal.Room) && portal.Area.Contains(point))
+                    return portal.ID;
+            }
             return -1;
         }
 
-        private int GetNextTrigger(int x, int z)
+        private int GetNextTrigger(Point point)
         {
-            int index = SelectedTrigger;
-            if (index == -1)
-                index = 0;
-
-            //    x = x - StartX;
-            //   z = z - StartY;
-
-            for (int i = index; i < _editor.Level.Triggers.Count; i++)
+            for (int i = 1; i <= _editor.Level.Triggers.Count; i++)
             {
-                if (i == SelectedTrigger)
-                    continue;
-
-                TriggerInstance t = _editor.Level.Triggers.ElementAt(i).Value;
-
-                if (t.Room == _editor.RoomIndex && x >= t.X && x < t.X + t.NumXBlocks && z >= t.Z && z < t.Z + t.NumZBlocks)
-                    return t.ID;
+                int index = (i + SelectedTrigger) % _editor.Level.Triggers.Count;
+                TriggerInstance trigger = _editor.Level.Triggers.ElementAt(index).Value;
+                if ((_editor.RoomIndex == trigger.Room) && trigger.Area.Contains(point))
+                    return trigger.ID;
             }
-
             return -1;
         }
     }

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
-using SharpDX.Toolkit;
 using SharpDX.Toolkit.Graphics;
 using System.Windows.Forms;
 using System.IO;
 using TombLib.Graphics;
 using TombEditor.Geometry;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombEditor.Controls;
 using SharpDX.Direct3D;
 using System.Runtime.InteropServices;
@@ -38,15 +36,6 @@ namespace TombEditor
 
     public class Editor
     {
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
-
         public static readonly System.Drawing.Color ColorFloor = System.Drawing.Color.FromArgb(0, 190, 190);
         public static readonly System.Drawing.Color ColorWall = System.Drawing.Color.FromArgb(0, 160, 0);
         public static readonly System.Drawing.Color ColorTrigger = System.Drawing.Color.FromArgb(200, 0, 200);
@@ -64,7 +53,6 @@ namespace TombEditor
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public Level Level { get; set; }
         public LightType LightType { get; set; }
-        public bool PlaceLight { get; set; }
         public Control RenderControl { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
         public SpriteFont Font { get; set; }
@@ -73,23 +61,18 @@ namespace TombEditor
         public EditorMode Mode { get; set; }
         public EditorSubAction SubAction { get; set; }
         public EditorItemType ItemType { get; set; }
-        public int NewGeometryType { get; set; }
-        public PickingResult StartPickingResult { get; set; }
         public PickingResult PickingResult { get; set; }
-        public int BlockSelectionStartX { get; set; } = -1;
-        public int BlockSelectionStartZ { get; set; } = -1;
-        public int BlockSelectionEndX { get; set; } = -1;
-        public int BlockSelectionEndZ { get; set; } = -1;
+        public System.Drawing.Point BlockSelectionStart { get; set; } = new System.Drawing.Point(-1, -1);
+        public System.Drawing.Point BlockSelectionEnd { get; set; } = new System.Drawing.Point(-1, -1);
         public int BlockEditingType { get; set; }
-        public Dictionary<int, string> MoveablesObjectIds { get; } = new Dictionary<int, string>();
-        public Dictionary<int, string> StaticMeshesObjectIds { get; } = new Dictionary<int, string>();
+        public Dictionary<int, string> MoveableNames { get; } = new Dictionary<int, string>();
+        public Dictionary<int, string> StaticNames { get; } = new Dictionary<int, string>();
         public int SelectedItem { get; set; } = -1;
         public short RoomIndex { get; set; } = -1;
         public bool IsFlipMap { get; set; }
         public int FlipMap { get; set; } = -1;
         public bool DrawPortals { get; set; }
         public int SelectedTexture { get; set; } = -1;
-        public bool Stamp { get; set; }
         public Vector2[] UV { get; } = new Vector2[4];
         public TextureTileType TextureTriangle { get; set; }
         public int LightIndex { get; set; } = -1;
@@ -101,9 +84,6 @@ namespace TombEditor
         public bool DrawRoomNames { get; set; }
         public bool DrawHorizon { get; set; }
         public float FPS { get; set; }
-        //public bool TriangleFaceEdit { get; set; }
-        public int XSave;
-        public int ZSave;
         public short SoundID { get; set; }
 
         private Panel2DGrid _panelGrid;
@@ -119,7 +99,7 @@ namespace TombEditor
             _instance = this;
 
             for (int i = 0; i < 100; i++)
-                StaticMeshesObjectIds.Add(i, "Static Mesh #" + i);
+                StaticNames.Add(i, "Static Mesh #" + i);
 
         }
 
@@ -193,7 +173,7 @@ namespace TombEditor
                 {
                     string line = reader.ReadLine();
                     string[] tokens = line.Split(';');
-                    MoveablesObjectIds.Add(Int32.Parse(tokens[0]), tokens[1]);
+                    MoveableNames.Add(Int32.Parse(tokens[0]), tokens[1]);
                 }
             
             Debug.Initialize();
@@ -299,6 +279,11 @@ namespace TombEditor
             _panel3D.Draw();
         }
 
+        public void DrawPanelMap2D()
+        {
+            _formEditor.DrawPanelMap2D();
+        }
+
         public void ResetCamera()
         {
             _panel3D.ResetCamera();
@@ -357,15 +342,12 @@ namespace TombEditor
         public void SelectRoom(int index)
         {
             LightIndex = -1;
-            BlockSelectionStartX = -1;
-            BlockSelectionStartZ = -1;
-            BlockSelectionEndX = -1;
-            BlockSelectionEndX = -1;
+            BlockSelectionReset();
             LoadTriggersInUI();
     
             _formEditor.SelectRoom(index);
         }
-
+        
         public void UpdateRoomName()
         {
             if (RoomIndex == -1)
@@ -386,6 +368,29 @@ namespace TombEditor
         public void EditLight()
         {
             _formEditor.EditLight();
+        }
+
+        // The rectangle is (-1, -1, -1, 1) when nothing is selected.
+        // The "Right" and "Bottom" point of the rectangle is inclusive.
+        public Rectangle BlockSelection
+        {
+            get
+            {
+                return new SharpDX.Rectangle(
+                    Math.Min(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Min(BlockSelectionStart.Y, BlockSelectionEnd.Y),
+                    Math.Max(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Max(BlockSelectionStart.Y, BlockSelectionEnd.Y));
+            }
+        }
+
+        public void BlockSelectionReset()
+        {
+            BlockSelectionStart = new System.Drawing.Point(-1, -1);
+            BlockSelectionEnd = new System.Drawing.Point(-1, -1);
+        }
+
+        public bool BlockSelectionAvailable
+        {
+           get { return (BlockSelectionStart.X != -1) && (BlockSelectionStart.Y != -1) && (BlockSelectionEnd.X != -1) && (BlockSelectionEnd.Y != -1); }
         }
     }
 }

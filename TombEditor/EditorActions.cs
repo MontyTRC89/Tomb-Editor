@@ -10,7 +10,7 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
-    public class EditorActions
+    public static class EditorActions
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -775,6 +775,9 @@ namespace TombEditor
                     }
                 }
             }
+            _editor.LoadTriggersInUI();
+            _editor.UpdateRoomName();
+            _editor.DrawPanelGrid();
         }
 
         public static void MoveObject(ObjectType typ, int id, MoveObjectDirections direction, bool smoothMove)
@@ -1625,7 +1628,7 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[room];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1720,7 +1723,7 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[room];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1815,7 +1818,7 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[room];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1916,7 +1919,7 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[roomIndex];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1954,7 +1957,7 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[roomIndex];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1976,7 +1979,7 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[roomIndex];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1997,12 +2000,12 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -2018,12 +2021,12 @@ namespace TombEditor
         {
             Room currentRoom = _editor.Level.Rooms[_editor.RoomIndex];
 
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -2038,10 +2041,10 @@ namespace TombEditor
         public static bool AddPortal()
         {
             // Get selection's boundary
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             Room room = _editor.Level.Rooms[_editor.RoomIndex];
 

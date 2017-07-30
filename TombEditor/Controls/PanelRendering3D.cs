@@ -10,8 +10,6 @@ using TombEditor.Geometry;
 using SharpDX.Toolkit.Graphics;
 using TombLib.Wad;
 using TombLib.Graphics;
-using RastDesc = SharpDX.Direct3D11.RasterizerStateDescription;
-using DepthDesc = SharpDX.Direct3D11.DepthStencilStateDescription;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
@@ -306,9 +304,11 @@ namespace TombEditor.Controls
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
                 // Do picking on the scene
-                DoPicking(e.X, e.Y);
+                PickingResult newPicking = DoPicking(e.X, e.Y);
+                _editor.PickingResult = newPicking;
 
-                if (_editor.PickingResult.Gizmo) return;
+                if (newPicking.Gizmo)
+                    return;
 
                 // Try to paste or stamp
                 if (Clipboard.Action != PasteAction.None && Clipboard.Paste())
@@ -320,16 +320,13 @@ namespace TombEditor.Controls
                         // Check if is a first selection or not, because I must cycle arrows
                         if (_editor.Action == EditorAction.None)
                         {
-                            int xBlock = _editor.PickingResult.Element >> 5;
-                            int zBlock = _editor.PickingResult.Element & 31;
+                            int xBlock = newPicking.Element >> 5;
+                            int zBlock = newPicking.Element & 31;
 
                             // if was not selected a block, then exit
-                            if (_editor.PickingResult.ElementType != PickingElementType.Block)
+                            if (newPicking.ElementType != PickingElementType.Block)
                             {
-                                _editor.BlockSelectionStartX = -1;
-                                _editor.BlockSelectionStartZ = -1;
-                                _editor.BlockSelectionEndX = -1;
-                                _editor.BlockSelectionEndZ = -1;
+                                _editor.BlockSelectionReset();
                                 _firstSelection = true;
                                 _editor.BlockEditingType = 0;
                                 return;
@@ -337,7 +334,7 @@ namespace TombEditor.Controls
 
                             if ((Control.ModifierKeys & Keys.Alt) == Keys.Alt)
                             {
-                                BlockFaces face = (BlockFaces)_editor.PickingResult.SubElement;
+                                BlockFaces face = (BlockFaces)newPicking.SubElement;
 
                                 if (face == BlockFaces.Floor || face == BlockFaces.FloorTriangle2)
                                 {
@@ -355,21 +352,19 @@ namespace TombEditor.Controls
                             _firstSelection = false;
 
                             // if one of the four corners of the selection is equal to -1, then is a first selection
-                            if (_editor.BlockSelectionStartX == -1 || _editor.BlockSelectionStartZ == -1)
+                            if (_editor.BlockSelectionStart.X == -1 || _editor.BlockSelectionStart.Y == -1)
                             {
-                                _editor.BlockSelectionStartX = _editor.PickingResult.Element >> 5;
-                                _editor.BlockSelectionStartZ = _editor.PickingResult.Element & 31;
-                                _editor.BlockSelectionEndX = _editor.BlockSelectionStartX;
-                                _editor.BlockSelectionEndZ = _editor.BlockSelectionStartZ;
+                                _editor.BlockSelectionStart = new System.Drawing.Point(newPicking.Element >> 5, newPicking.Element & 31);
+                                _editor.BlockSelectionEnd = _editor.BlockSelectionStart;
                                 _firstSelection = true;
                                 _editor.BlockEditingType = 0;
                             }
                             else
                             {
-                                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                                 if (xBlock >= xMin && xBlock <= xMax && xBlock != -1 && zBlock >= zMin && zBlock <= zMax)
                                 {
@@ -378,16 +373,12 @@ namespace TombEditor.Controls
                                 }
                                 else
                                 {
-                                    _editor.BlockSelectionStartX = _editor.PickingResult.Element >> 5;
-                                    _editor.BlockSelectionStartZ = _editor.PickingResult.Element & 31;
-                                    _editor.BlockSelectionEndX = _editor.BlockSelectionStartX;
-                                    _editor.BlockSelectionEndZ = _editor.BlockSelectionStartZ;
+                                    _editor.BlockSelectionStart = new System.Drawing.Point(newPicking.Element >> 5, newPicking.Element & 31);
+                                    _editor.BlockSelectionEnd = _editor.BlockSelectionStart;
                                     _firstSelection = true;
                                     _editor.BlockEditingType = 0;
                                 }
                             }
-
-                            _editor.StartPickingResult = _editor.PickingResult;
                         }
                         break;
 
@@ -416,8 +407,9 @@ namespace TombEditor.Controls
         {
             base.OnMouseDoubleClick(e);
 
-            DoPicking(e.X, e.Y);
-            switch (_editor.PickingResult.ElementType)
+            PickingResult newPicking = DoPicking(e.X, e.Y);
+            _editor.PickingResult = newPicking;
+            switch (newPicking.ElementType)
             {
                 case PickingElementType.Trigger:
                     using (FormTrigger form = new FormTrigger())
@@ -569,57 +561,38 @@ namespace TombEditor.Controls
 
                     return;
                 }
-
-                // Do the picking if we are not moving the gizmo
-                DoPicking(e.X, e.Y);
-
-                // calcolo X e Z del blocco selezionato
-                int xBlock = _editor.PickingResult.Element >> 5;
-                int zBlock = _editor.PickingResult.Element & 31;
-
+                
+                // calculate block selection
                 switch (_editor.Mode)
                 {
                     case EditorMode.Geometry:
                         if (_editor.Action == EditorAction.None)
                         {
-                            // se la selezione ha come x o z uguali a -1 allora non la inizio neanche
+                            PickingResult newPicking = DoPicking(e.X, e.Y);
                             if (_editor.PickingResult.ElementType != PickingElementType.Block)
                             {
-                                _editor.BlockSelectionStartX = -1;
-                                _editor.BlockSelectionStartZ = -1;
-                                _editor.BlockSelectionEndX = -1;
-                                _editor.BlockSelectionEndZ = -1;
+                                _editor.BlockSelectionReset();
                                 _firstSelection = true;
                                 _editor.BlockEditingType = 0;
 
                                 return;
                             }
-
-                            int startX = _editor.StartPickingResult.Element >> 5;
-                            int startZ = _editor.StartPickingResult.Element & 31;
-
+                            
                             if (_firstSelection)
                             {
-                                _editor.BlockSelectionStartX = _editor.StartPickingResult.Element >> 5;
-                                _editor.BlockSelectionStartZ = _editor.StartPickingResult.Element & 31;
-                                _editor.BlockSelectionEndX = xBlock;
-                                _editor.BlockSelectionEndZ = zBlock;
+                                _editor.BlockSelectionEnd = new System.Drawing.Point(newPicking.Element >> 5, newPicking.Element & 31);
                                 _editor.BlockEditingType = 0;
                                 _firstSelection = true;
                             }
                         }
-
                         break;
 
                     case EditorMode.Map2D:
-
                         break;
 
                     case EditorMode.FaceEdit:
                         if (_editor.Action == EditorAction.None)
-                        {
                             PlaceTexture();
-                        }
 
                         break;
                 }
@@ -664,14 +637,6 @@ namespace TombEditor.Controls
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                //DoPicking(e.X, e.Y);
-
-                // calcolo X e Z del blocco selezionato
-                int xBlock = _editor.PickingResult.Element >> 5;
-                int zBlock = _editor.PickingResult.Element & 31;
-
-                // _editor.LightIndex = -1;
-
                 switch (_editor.Mode)
                 {
                     case EditorMode.Geometry:
@@ -690,10 +655,7 @@ namespace TombEditor.Controls
                                 // se la selezione ha come x o z uguali a -1 allora non la inizio neanche
                                 if (_editor.PickingResult.ElementType != PickingElementType.Block)
                                 {
-                                    _editor.BlockSelectionStartX = -1;
-                                    _editor.BlockSelectionStartZ = -1;
-                                    _editor.BlockSelectionEndX = -1;
-                                    _editor.BlockSelectionEndZ = -1;
+                                    _editor.BlockSelectionReset();
                                     _firstSelection = true;
                                     _editor.BlockEditingType = 0;
 
@@ -703,13 +665,8 @@ namespace TombEditor.Controls
                                 // verifico se si tratta di una prima selezione o no
                                 if (_firstSelection)
                                 {
-                                    _editor.BlockSelectionEndX = xBlock;
-                                    _editor.BlockSelectionEndZ = zBlock;
-
-                                    logger.Debug($"Selected range: ({_editor.BlockSelectionStartX}, {_editor.BlockSelectionStartZ}) - ({_editor.BlockSelectionEndX}, {_editor.BlockSelectionEndZ})");
-
+                                    logger.Debug($"Selected range: ({_editor.BlockSelectionStart.X}, {_editor.BlockSelectionStart.Y}) - ({_editor.BlockSelectionEnd.X}, {_editor.BlockSelectionEnd.Y})");
                                     _editor.LoadTriggersInUI();
-
                                     _editor.BlockEditingType = 0;
                                 }
                                 else
@@ -1350,7 +1307,7 @@ namespace TombEditor.Controls
                     Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = _editor.MoveablesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+                    string debugMessage = _editor.MoveableNames[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
@@ -1449,7 +1406,7 @@ namespace TombEditor.Controls
                     Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                                     _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = _editor.StaticMeshesObjectIds[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+                    string debugMessage = _editor.StaticNames[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
@@ -1532,7 +1489,7 @@ namespace TombEditor.Controls
             return new Ray(nearPoint, direction);
         }
 
-        private void DoPicking(float x, float y)
+        private PickingResult DoPicking(float x, float y)
         {
             // Reset the Viewport because GraphicsDevice is shared also with item panel
             _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
@@ -1548,7 +1505,7 @@ namespace TombEditor.Controls
 
             float minDistance = float.MaxValue;
             float distance = 0;
-            PickingResult tempResult = new PickingResult();
+            PickingResult result = new PickingResult();
 
             // The gizmo has the priority
             // Don't init a new PickingResult, because we also need the current selected object
@@ -1558,40 +1515,28 @@ namespace TombEditor.Controls
                 BoundingSphere sphereX = new BoundingSphere(_gizmo.Position + Vector3.UnitX * 1024.0f, 64.0f);
                 if (ray.Intersects(ref sphereX, out distance))
                 {
-                    PickingResult currentResult = _editor.PickingResult;
-
-                    currentResult.Gizmo = true;
-                    currentResult.GizmoAxis = GizmoAxis.X;
-
-                    _editor.PickingResult = currentResult;
-
-                    return;
+                    result = _editor.PickingResult;
+                    result.Gizmo = true;
+                    result.GizmoAxis = GizmoAxis.X;
+                    return result;
                 }
 
                 BoundingSphere sphereY = new BoundingSphere(_gizmo.Position + Vector3.UnitY * 1024.0f, 64.0f);
                 if (ray.Intersects(ref sphereY, out distance))
                 {
-                    PickingResult currentResult = _editor.PickingResult;
-
-                    currentResult.Gizmo = true;
-                    currentResult.GizmoAxis = GizmoAxis.Y;
-
-                    _editor.PickingResult = currentResult;
-
-                    return;
+                    result = _editor.PickingResult;
+                    result.Gizmo = true;
+                    result.GizmoAxis = GizmoAxis.Y;
+                    return result;
                 }
 
                 BoundingSphere sphereZ = new BoundingSphere(_gizmo.Position - Vector3.UnitZ * 1024.0f, 64.0f);
                 if (ray.Intersects(ref sphereZ, out distance))
                 {
-                    PickingResult currentResult = _editor.PickingResult;
-
-                    currentResult.Gizmo = true;
-                    currentResult.GizmoAxis = GizmoAxis.Z;
-
-                    _editor.PickingResult = currentResult;
-
-                    return;
+                    result = _editor.PickingResult;
+                    result.Gizmo = true;
+                    result.GizmoAxis = GizmoAxis.Z;
+                    return result;
                 }
             }
 
@@ -1603,8 +1548,8 @@ namespace TombEditor.Controls
                 if (ray.Intersects(ref sphere, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
-                    tempResult.ElementType = PickingElementType.Light;
-                    tempResult.Element = i;
+                    result.ElementType = PickingElementType.Light;
+                    result.Element = i;
                 }
             }
 
@@ -1617,8 +1562,8 @@ namespace TombEditor.Controls
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
-                    tempResult.ElementType = PickingElementType.Sink;
-                    tempResult.Element = room.Sinks[i];
+                    result.ElementType = PickingElementType.Sink;
+                    result.Element = room.Sinks[i];
                 }
             }
 
@@ -1631,8 +1576,8 @@ namespace TombEditor.Controls
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
-                    tempResult.ElementType = PickingElementType.Camera;
-                    tempResult.Element = room.Cameras[i];
+                    result.ElementType = PickingElementType.Camera;
+                    result.Element = room.Cameras[i];
                 }
             }
 
@@ -1645,8 +1590,8 @@ namespace TombEditor.Controls
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
-                    tempResult.ElementType = PickingElementType.SoundSource;
-                    tempResult.Element = room.SoundSources[i];
+                    result.ElementType = PickingElementType.SoundSource;
+                    result.Element = room.SoundSources[i];
                 }
             }
 
@@ -1659,8 +1604,8 @@ namespace TombEditor.Controls
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
-                    tempResult.ElementType = PickingElementType.FlyByCamera;
-                    tempResult.Element = room.FlyByCameras[i];
+                    result.ElementType = PickingElementType.FlyByCamera;
+                    result.Element = room.FlyByCameras[i];
                 }
             }
 
@@ -1719,8 +1664,8 @@ namespace TombEditor.Controls
                             if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && distance < minDistance)
                             {
                                 minDistance = distance;
-                                tempResult.ElementType = PickingElementType.Moveable;
-                                tempResult.Element = room.Moveables[i];
+                                result.ElementType = PickingElementType.Moveable;
+                                result.Element = room.Moveables[i];
                             }
                         }
                     }
@@ -1780,8 +1725,8 @@ namespace TombEditor.Controls
                         if (ray.Intersects(ref p1, ref p2, ref p3, out distance) && distance < minDistance)
                         {
                             minDistance = distance;
-                            tempResult.ElementType = PickingElementType.StaticMesh;
-                            tempResult.Element = room.StaticMeshes[i];
+                            result.ElementType = PickingElementType.StaticMesh;
+                            result.Element = room.StaticMeshes[i];
                         }
                     }
                 }
@@ -1801,16 +1746,14 @@ namespace TombEditor.Controls
                         if (room.RayIntersectsFace(ref ray, ref face, out distance) && distance < minDistance)
                         {
                             minDistance = distance;
-                            tempResult.ElementType = PickingElementType.Block;
-                            tempResult.Element = (sx << 5) + sz;
-                            tempResult.SubElement = f;
+                            result.ElementType = PickingElementType.Block;
+                            result.Element = (sx << 5) + sz;
+                            result.SubElement = f;
                         }
                     }
                 }
             }
-
-            PickingResult result = tempResult;
-
+            
             switch (result.ElementType)
             {
                 case PickingElementType.Moveable:
@@ -1846,15 +1789,15 @@ namespace TombEditor.Controls
             if (result.ElementType == PickingElementType.Moveable)
             {
                 MoveableInstance model = (MoveableInstance)_editor.Level.Objects[result.Element];
-                Debug.SelectedItem = "Moveable '" + _editor.MoveablesObjectIds[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
+                Debug.SelectedItem = "Moveable '" + _editor.MoveableNames[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
             }
             else if (result.ElementType == PickingElementType.StaticMesh)
             {
                 StaticMeshInstance model = (StaticMeshInstance)_editor.Level.Objects[result.Element];
-                Debug.SelectedItem = "Static Mesh '" + _editor.StaticMeshesObjectIds[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
+                Debug.SelectedItem = "Static Mesh '" + _editor.StaticNames[(int)model.Model.ObjectID] + "' (" + result.Element + ")";
             }
 
-            _editor.PickingResult = result;
+            return result;
         }
 
         private void RotateTexture()
@@ -2818,10 +2761,10 @@ namespace TombEditor.Controls
                 }
 
                 // Calculate the bounds of the current selection
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 bool noCollision = false;
 

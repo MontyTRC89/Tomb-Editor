@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,9 +45,25 @@ namespace TombEditor.Geometry
             return p;
         }
 
+        public Rectangle Area
+        {
+            get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
+        }
+
         public override IObjectInstance Clone()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            string text = "Portal ";
+            if (Direction == PortalDirection.Floor)
+                text += " (On Floor) ";
+            if (Direction == PortalDirection.Ceiling)
+                text += " (On Ceiling) ";
+            text += "to Room #" + AdjoiningRoom.ToString();
+            return text;
         }
     }
 }
