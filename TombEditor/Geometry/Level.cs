@@ -2609,7 +2609,7 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
-                                                            newRot = (sbyte)(newRot + 1);
+                                                            newRot = (sbyte)(newRot + 2);
                                                         }
 
                                                         theBlock.Faces[faceIndex].TextureTriangle =
@@ -2670,6 +2670,8 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
+
+                                                            newRot = (sbyte)(newRot + 2);
                                                         }
 
                                                         theBlock.Faces[faceIndex].TextureTriangle =
@@ -2731,7 +2733,7 @@ namespace TombEditor.Geometry
                                                             theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                             theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
-                                                            newRot = (sbyte)(newRot + 1);
+                                                            newRot = (sbyte)(newRot + 2);
                                                         }
 
                                                         theBlock.Faces[faceIndex].TextureTriangle =
