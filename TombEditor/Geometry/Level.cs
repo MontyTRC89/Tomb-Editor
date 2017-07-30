@@ -2826,7 +2826,7 @@ namespace TombEditor.Geometry
                     }
                 }
 
-                // Check that there are no uninitialized room
+                // Check that there are uninitialized rooms
                 foreach (Room room in level.Rooms)
                     if (room != null)
                         if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
@@ -3389,7 +3389,7 @@ namespace TombEditor.Geometry
                     reader.ReadInt32();
                 }
 
-                // Check that there are no uninitialized room
+                // Check that there are uninitialized rooms
                 foreach (Room room in level.Rooms)
                     if (room != null)
                         if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
