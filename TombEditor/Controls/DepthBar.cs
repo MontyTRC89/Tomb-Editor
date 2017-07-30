@@ -360,7 +360,7 @@ namespace TombEditor.Controls
             for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
             {
                 RectangleF groupArea = groupGetArea(barArea, groupIndex);
-                e.Graphics.DrawRectangle(_outlinePen, groupArea.X, groupArea.Y, groupArea.Width, groupArea.Height);
+                e.Graphics.DrawRectangle(_outlinePen, groupArea);
             }
         }
 
