@@ -10,7 +10,7 @@ namespace TombEditor.Geometry
     public class Room
     {
         public tr_room _compiled;
-        
+
         public string Name { get; set; }
         public Vector3 Position { get; set; }
         public short Ceiling { get; set; }
@@ -52,7 +52,7 @@ namespace TombEditor.Geometry
         public Vector3 Centre { get; private set; }
         public bool ExcludeFromPathFinding { get; set; }
         private byte[,,] _iterations;
-                
+
         public Room(Level level)
         {
             Level = level;
@@ -111,8 +111,8 @@ namespace TombEditor.Geometry
 
         public Vector2 SectorPos
         {
-            get => new Vector2(Position.X, Position.Z);
-            set => Position = new Vector3(value.X, Position.Y, value.Y);
+            get { return new Vector2(Position.X, Position.Z); }
+            set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
         public void InitializeVerticesGrid()
@@ -154,7 +154,7 @@ namespace TombEditor.Geometry
                 {
                     if (VerticesGrid[x, z, j].Position.Y != Vertices[i].Position.Y)
                         continue;
-                    
+
                     var v = Vertices[i];
                     v.FaceColor = VerticesGrid[x, z, j].FaceColor;
                     Vertices[i] = v;
@@ -170,7 +170,7 @@ namespace TombEditor.Geometry
         {
             if (ws0 == ws1 && ws1 == ws2 && ws2 == ws3)
                 return;
-            
+
             // Calculate the slope
             int topHeight = GetHighestCeilingCorner(x, z);
             int lowHeight = GetLowestCeilingCorner(x, z);
@@ -224,7 +224,7 @@ namespace TombEditor.Geometry
         {
             if (qa0 == qa1 && qa1 == qa2 && qa2 == qa3)
                 return;
-            
+
             // Calculate the slope
             int topHeight = GetHighestFloorCorner(x, z);
             int lowHeight = GetLowestFloorCorner(x, z);
@@ -586,7 +586,7 @@ namespace TombEditor.Geometry
                                                                     new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
                                                                     new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
                                                                     new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                                                    face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
+                                                                    face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                                     e1, e2, e3, e4);
                             }
                             else
@@ -695,7 +695,7 @@ namespace TombEditor.Geometry
                                         AddTriangle(x, z, BlockFaces.Floor, new Vector3((x + 1) * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
                                                                             new Vector3((x + 1) * 1024.0f, y2 * 256.0f, z * 1024.0f),
                                                                             new Vector3(x * 1024.0f, y3 * 256.0f, (z + 1) * 1024.0f),
-                                                                            face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e2, e3, e1);
+                                                                            face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e2, e3, e1);
                                     }
 
                                     if (addTriangle2)
@@ -704,7 +704,7 @@ namespace TombEditor.Geometry
                                         AddTriangle(x, z, BlockFaces.FloorTriangle2, new Vector3(x * 1024.0f, y4 * 256.0f, z * 1024.0f),
                                                                                      new Vector3(x * 1024.0f, y5 * 256.0f, (z + 1) * 1024.0f),
                                                                                      new Vector3((x + 1) * 1024.0f, y6 * 256.0f, z * 1024.0f),
-                                                                                     face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e4, e1, e3, 0);
+                                                                                     face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e4, e1, e3, 0);
                                     }
                                 }
                                 else
@@ -714,7 +714,7 @@ namespace TombEditor.Geometry
                                         AddTriangle(x, z, BlockFaces.Floor, new Vector3(x * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
                                                                             new Vector3((x + 1) * 1024.0f, y2 * 256.0f, (z + 1) * 1024.0f),
                                                                             new Vector3(x * 1024.0f, y3 * 256.0f, z * 1024.0f),
-                                                                            face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
+                                                                            face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
                                     }
 
                                     if (addTriangle2)
@@ -723,7 +723,7 @@ namespace TombEditor.Geometry
                                         AddTriangle(x, z, BlockFaces.FloorTriangle2, new Vector3((x + 1) * 1024.0f, y4 * 256.0f, z * 1024.0f),
                                                                                      new Vector3(x * 1024.0f, y5 * 256.0f, z * 1024.0f),
                                                                                      new Vector3((x + 1) * 1024.0f, y6 * 256.0f, (z + 1) * 1024.0f),
-                                                                                     face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e3, e4, e2, 1);
+                                                                                     face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e3, e4, e2, 1);
                                     }
                                 }
                             }
@@ -746,26 +746,26 @@ namespace TombEditor.Geometry
                                 AddTriangle(x, z, BlockFaces.Floor, new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
                                                                     new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
                                                                     new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
-                                                                    face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e2, e3, e1);
+                                                                    face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e2, e3, e1);
 
                                 face = Blocks[x, z].Faces[(int)BlockFaces.FloorTriangle2];
                                 AddTriangle(x, z, BlockFaces.FloorTriangle2, new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
                                                                              new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
                                                                              new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
-                                                                             face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e4, e1, e3);
+                                                                             face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e4, e1, e3);
                             }
                             else
                             {
                                 AddTriangle(x, z, BlockFaces.Floor, new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
                                                                     new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
                                                                     new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                                                    face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
+                                                                    face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
 
                                 face = Blocks[x, z].Faces[(int)BlockFaces.FloorTriangle2];
                                 AddTriangle(x, z, BlockFaces.FloorTriangle2, new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
                                                                              new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
                                                                              new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
-                                                                             face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e3, e4, e2, 1);
+                                                                             face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e3, e4, e2, 1);
                             }
                         }
                     }
@@ -795,14 +795,14 @@ namespace TombEditor.Geometry
                             (Blocks[x, z].CeilingPortal < 0 || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
                             !Blocks[x, z].IsCeilingSolid && Blocks[x, z].Type != BlockType.Wall)
                             continue;
-                        
+
                         if (Blocks[x, z].SplitCeiling == false && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
                         {
                             AddRectangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x) * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x) * 1024.0f, (Ceiling + ws3) * 256.0f, (z) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, (z) * 1024.0f),
-                                face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
+                                face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                 e2, e1, e4, e3);
                         }
                         else
@@ -914,7 +914,7 @@ namespace TombEditor.Geometry
                                     AddTriangle(x, z, BlockFaces.Ceiling, new Vector3(x * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
                                         new Vector3(x * 1024.0f, y2 * 256.0f, z * 1024.0f),
                                         new Vector3((x + 1) * 1024.0f, y3 * 256.0f, (z + 1) * 1024.0f),
-                                        face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e4, e2, 1);
+                                        face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e4, e2, 1);
                                 }
 
                                 if (addTriangle2)
@@ -923,7 +923,7 @@ namespace TombEditor.Geometry
                                     AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3((x + 1) * 1024.0f, y4 * 256.0f, (z) * 1024.0f),
                                         new Vector3((x + 1) * 1024.0f, y5 * 256.0f, (z + 1) * 1024.0f),
                                         new Vector3((x) * 1024.0f, y6 * 256.0f, z * 1024.0f),
-                                        face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e3, e2, e4, 1);
+                                        face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e3, e2, e4, 1);
                                 }
                             }
                             else
@@ -933,7 +933,7 @@ namespace TombEditor.Geometry
                                     AddTriangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
                                         new Vector3((x) * 1024.0f, y2 * 256.0f, (z + 1) * 1024.0f),
                                         new Vector3((x + 1) * 1024.0f, y3 * 256.0f, (z) * 1024.0f),
-                                        face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e2, e1, e3);
+                                        face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e2, e1, e3);
                                 }
 
                                 if (addTriangle2)
@@ -942,7 +942,7 @@ namespace TombEditor.Geometry
                                     AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3(x * 1024.0f, y4 * 256.0f, (z) * 1024.0f),
                                         new Vector3((x + 1) * 1024.0f, y5 * 256.0f, z * 1024.0f),
                                         new Vector3((x) * 1024.0f, y6 * 256.0f, (z + 1) * 1024.0f),
-                                        face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e4, e3, e1);
+                                        face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e4, e3, e1);
                                 }
                             }
                         }
@@ -953,7 +953,7 @@ namespace TombEditor.Geometry
                             (Blocks[x, z].CeilingPortal == -1 || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
                             !Blocks[x, z].IsCeilingSolid)
                             continue;
-                        
+
                         int split = GetBestCeilingSplit(x, z, ws0, ws1, ws2, ws3);
                         if (Blocks[x, z].SplitCeilingType == 1)
                             split = split == 0 ? 1 : 0;
@@ -965,26 +965,26 @@ namespace TombEditor.Geometry
                             AddTriangle(x, z, BlockFaces.Ceiling, new Vector3(x * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3(x * 1024.0f, (Ceiling + ws3) * 256.0f, z * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
-                                face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e4, e2, 1);
+                                face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e4, e2, 1);
 
                             face = Blocks[x, z].Faces[(int)BlockFaces.CeilingTriangle2];
                             AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, (z) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x) * 1024.0f, (Ceiling + ws3) * 256.0f, z * 1024.0f),
-                                face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e3, e2, e4, 1);
+                                face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e3, e2, e4, 1);
                         }
                         else
                         {
                             AddTriangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x) * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, (z) * 1024.0f),
-                                face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e2, e1, e3);
+                                face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e2, e1, e3);
 
                             face = Blocks[x, z].Faces[(int)BlockFaces.CeilingTriangle2];
                             AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3(x * 1024.0f, (Ceiling + ws3) * 256.0f, (z) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, z * 1024.0f),
                                 new Vector3((x) * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
-                                face.TriangleUv2[0], face.TriangleUv2[1], face.TriangleUv2[2], e4, e3, e1);
+                                face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e4, e3, e1);
                         }
                     }
                 }
@@ -1007,7 +1007,7 @@ namespace TombEditor.Geometry
 
                         if (face.Vertices == null || face.Vertices.Length == 0)
                             continue;
-                        
+
                         Blocks[x, z].Faces[f].StartVertex = (short)Vertices.Count;
                         int baseIndex = Vertices.Count;
 
@@ -1756,62 +1756,55 @@ namespace TombEditor.Geometry
                 }
 
                 // Poligoni QA e ED
-                face = Blocks[x, z].Faces[(int)qaFace];
-
-                // QA
-                if (qA > yA && qB > yB)
-                    AddRectangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
-                        e1, e2, e3, e4);
-                else if (qA > yA && qB == yB && qB >= (qA - yA))
-                    AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
-                else if (qA == yA && qB > yB && qA >= (qB - yB))
-                    AddTriangle(x, z, qaFace, new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
-                else if (qA > yA && qB == yB && qB < (qA - yA))
-                    AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
-                else if (qA == yA && qB > yB && qA < (qB - yB))
-                    AddTriangle(x, z, qaFace, new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
-
-                // ED
-                if (subdivide)
+                if (floor)
                 {
-                    yA = fA;
-                    yB = fB;
+                    face = Blocks[x, z].Faces[(int)qaFace];
 
-                    face = Blocks[x, z].Faces[(int)edFace];
+                    // QA
+                    if (qA > yA && qB > yB)
+                        AddRectangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                                                               new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                                                               new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                               new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                               face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
+                                                               e1, e2, e3, e4);
+                    else if (qA == yA && qB > yB)
+                        AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                              face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
+                    else if (qA > yA && qB == yB)
+                        AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                              new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                              face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
 
-                    if (eA > yA && eB > yB)
-                        AddRectangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
-                            e1, e2, e3, e4);
-                    else if (eA > yA && eB == yB)
-                        AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
-                            face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
-                    else if (eA == yA && eB > yB)
-                        AddTriangle(x, z, edFace, new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
-                            face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
+                    // ED
+                    if (subdivide)
+                    {
+                        yA = fA;
+                        yB = fB;
+
+                        face = Blocks[x, z].Faces[(int)edFace];
+
+                        if (eA > yA && eB > yB)
+                            AddRectangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
+                                                                   new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
+                                                                   new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                                   new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                                   face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
+                                                                   e1, e2, e3, e4);
+                        else if (eA > yA && eB == yB)
+                            AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                                  new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                                  face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
+                        else if (eA == yA && eB > yB)
+                            AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                                  face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
+                    }
                 }
             }
 
@@ -1841,28 +1834,18 @@ namespace TombEditor.Geometry
                                                                new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                                new Vector3(xB * 1024.0f, (Ceiling + wB) * 256.0f, zB * 1024.0f),
                                                                new Vector3(xA * 1024.0f, (Ceiling + wA) * 256.0f, zA * 1024.0f),
-                                                               face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
+                                                               face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                                e1, e2, e3, e4);
-                    else if (wA < yA && wB == yB && wB >= (yA + wA))
+                    else if (wA < yA && wB == yB)
                         AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
                                                               new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                               new Vector3(xA * 1024.0f, (Ceiling + wA) * 256.0f, zA * 1024.0f),
-                                                              face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
-                    else if (wA == yA && wB < yB && wA >= (yB + wB))
-                        AddTriangle(x, z, wsFace, new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+                                                              face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
+                    else if (wA == yA && wB < yB)
+                        AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                               new Vector3(xB * 1024.0f, (Ceiling + wB) * 256.0f, zB * 1024.0f),
-                                                              new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                              face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
-                    else if (wA < yA && wB == yB && wB < (yA + wA))
-                        AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, (Ceiling + wA) * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                              face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
-                    else if (wA == yA && wB < yB && wA < (yB + wB))
-                        AddTriangle(x, z, wsFace, new Vector3(xB * 1024.0f, (Ceiling + wB) * 256.0f, zB * 1024.0f),
-                                                              new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                              face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
+                                                              face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
 
                     // RF
                     if (subdivide)
@@ -1877,18 +1860,18 @@ namespace TombEditor.Geometry
                                                                    new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                                    new Vector3(xB * 1024.0f, (Ceiling + rB) * 256.0f, zB * 1024.0f),
                                                                    new Vector3(xA * 1024.0f, (Ceiling + rA) * 256.0f, zA * 1024.0f),
-                                                                   face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
+                                                                   face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                                    e1, e2, e3, e4);
                         else if (rA < yA && rB == yB)
                             AddTriangle(x, z, rfFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
                                                                   new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                                   new Vector3(xA * 1024.0f, (Ceiling + rA) * 256.0f, zA * 1024.0f),
-                                                                  face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
+                                                                  face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
                         else if (rA == yA && rB < yB)
-                            AddTriangle(x, z, rfFace, new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+                            AddTriangle(x, z, rfFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                                   new Vector3(xB * 1024.0f, (Ceiling + rB) * 256.0f, zB * 1024.0f),
-                                                                  new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                                  face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
+                                                                  face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
                     }
                 }
             }
@@ -1896,48 +1879,34 @@ namespace TombEditor.Geometry
             // Poligoni WS e RF
             if (!middle)
                 return;
-            
+
             face = Blocks[x, z].Faces[(int)middleFace];
 
             yA = wA > cA ? cA : wA;
             yB = wB > cB ? cB : wB;
             int yD = qA < fA ? fA : qA;
             int yC = qB < fB ? fB : qB;
-
             // middle
             if (Ceiling + yA != yD && Ceiling + yB != yC)
                 AddRectangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                    new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
-                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                    face.RectangleUv[0], face.RectangleUv[1], face.RectangleUv[2], face.RectangleUv[3],
-                    e1, e2, e3, e4);
+                                                       new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+                                                       new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
+                                                       new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
+                                                       face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
+                                                       e1, e2, e3, e4);
 
-            else if (Ceiling + yA != yD && Ceiling + yB == yC && yC >= (Ceiling + yA + yD))
+            else if (Ceiling + yA != yD && Ceiling + yB == yC)
                 AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                    new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                    face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
+                                                      new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+                                                      new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
+                                                      face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
 
-            else if (Ceiling + yA == yD && Ceiling + yB != yC && yD >= (Ceiling + yB + yC))
-                AddTriangle(x, z, middleFace, new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
-                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                    face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
-
-            else if (Ceiling + yA != yD && Ceiling + yB == yC && yC < (Ceiling + yA + yD))
-                AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                    new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                    new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                    face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e4, 1);
-
-            else if (Ceiling + yA == yD && Ceiling + yB != yC && yD < (Ceiling + yB + yC))
-                AddTriangle(x, z, middleFace, new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
-                    new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                    new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                    face.TriangleUv[0], face.TriangleUv[1], face.TriangleUv[2], e1, e2, e3);
+            else if (Ceiling + yA == yD && Ceiling + yB != yC)
+                AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
+                                                   new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+                                                   new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
+                                            face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
         }
-
         public static bool IsQuad(int x, int z, int h1, int h2, int h3, int h4, bool horizontal = false)
         {
             var p1 = new Vector3(x * 1024.0f, h1 * 256.0f, z * 1024.0f);
@@ -1950,7 +1919,7 @@ namespace TombEditor.Geometry
 
             if (plane1.Normal != plane2.Normal)
                 return false;
-            
+
             return !horizontal || (plane1.Normal == Vector3.UnitY || plane1.Normal == -Vector3.UnitY);
         }
 
@@ -2537,7 +2506,7 @@ namespace TombEditor.Geometry
 
             if (deltaX == 0)
                 return true;
-            
+
             int fracX = (((minX >> 10) + 1) << 10) - minX;
             int currentX = ((minX >> 10) + 1) << 10;
             int currentZ = deltaZ * fracX / (deltaX + 1) + zPoint;
@@ -2545,7 +2514,7 @@ namespace TombEditor.Geometry
 
             if (currentX > maxX)
                 return true;
-            
+
             do
             {
                 int currentXblock = currentX / 1024;
@@ -2644,7 +2613,7 @@ namespace TombEditor.Geometry
 
             if (deltaZ == 0)
                 return true;
-            
+
             int fracZ = (((minZ >> 10) + 1) << 10) - minZ;
             int currentZ = ((minZ >> 10) + 1) << 10;
             int currentX = deltaX * fracZ / (deltaZ + 1) + xPoint;
@@ -2652,7 +2621,7 @@ namespace TombEditor.Geometry
 
             if (currentZ > maxZ)
                 return true;
-            
+
             do
             {
                 int currentXblock = currentX / 1024;
@@ -2739,171 +2708,171 @@ namespace TombEditor.Geometry
                     {
                         case LightType.Light:
                         case LightType.Shadow:
-                        {
-                            // Get the distance between light and vertex
-                            float distance = Math.Abs((p - light.Position).Length());
-
-                            // If distance is greater than light out radius, then skip this light
-                            if (distance > light.Out * 1024.0f)
-                                continue;
-
-                            // Calculate light diffuse value
-                            int diffuse = (int)(light.Intensity * 8192);
-
-                            // Calculate the length squared of the normal vector
-                            float dotN = Vector3.Dot(n, n);
-
-                            // Do raytracing
-                            if (dotN <= 0 ||
-                                !RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Z) ||
-                                !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
-                                !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                             {
-                                continue;
-                            }
+                                // Get the distance between light and vertex
+                                float distance = Math.Abs((p - light.Position).Length());
 
-                            // Calculate the attenuation
-                            var attenuaton = (light.Out * 1024.0f - distance) / (light.Out * 1024.0f - light.In * 1024.0f);
-                            if (attenuaton > 1.0f)
-                                attenuaton = 1.0f;
-                            if (attenuaton <= 0.0f)
-                                continue;
+                                // If distance is greater than light out radius, then skip this light
+                                if (distance > light.Out * 1024.0f)
+                                    continue;
 
-                            // Calculate final light color
-                            int finalIntensity = (int)(dotN * attenuaton * diffuse);
+                                // Calculate light diffuse value
+                                int diffuse = (int)(light.Intensity * 8192);
 
-                            r += finalIntensity * light.Color.R / 8192;
-                            g += finalIntensity * light.Color.G / 8192;
-                            b += finalIntensity * light.Color.B / 8192;
-                        }
-                            break;
-                        case LightType.Effect:
-                        {
-                            int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
-                            int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
-                            int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
-                            int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
+                                // Calculate the length squared of the normal vector
+                                float dotN = Vector3.Dot(n, n);
 
-                            // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
-                            // ReSharper disable CompareOfFloatsByEqualityOperator
-                            if (((p.X == x1 && p.Z == z1) || (p.X == x1 && p.Z == z2) || (p.X == x2 && p.Z == z1) ||
-                                 (p.X == x2 && p.Z == z2)) && p.Y <= light.Position.Y)
-                            {
-                                int finalIntensity = (int)(light.Intensity * 8192 * 0.25f);
+                                // Do raytracing
+                                if (dotN <= 0 ||
+                                    !RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                                    !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
+                                    !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
+                                {
+                                    continue;
+                                }
+
+                                // Calculate the attenuation
+                                var attenuaton = (light.Out * 1024.0f - distance) / (light.Out * 1024.0f - light.In * 1024.0f);
+                                if (attenuaton > 1.0f)
+                                    attenuaton = 1.0f;
+                                if (attenuaton <= 0.0f)
+                                    continue;
+
+                                // Calculate final light color
+                                int finalIntensity = (int)(dotN * attenuaton * diffuse);
 
                                 r += finalIntensity * light.Color.R / 8192;
                                 g += finalIntensity * light.Color.G / 8192;
                                 b += finalIntensity * light.Color.B / 8192;
                             }
-                            // ReSharper restore CompareOfFloatsByEqualityOperator
-                        }
+                            break;
+                        case LightType.Effect:
+                            {
+                                int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
+                                int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
+                                int x2 = (int)(Math.Ceiling(light.Position.X / 1024.0f) * 1024);
+                                int z2 = (int)(Math.Ceiling(light.Position.Z / 1024.0f) * 1024);
+
+                                // TODO: winroomedit was supporting effect lights placed on vertical faces and effects light was applied to owning face
+                                // ReSharper disable CompareOfFloatsByEqualityOperator
+                                if (((p.X == x1 && p.Z == z1) || (p.X == x1 && p.Z == z2) || (p.X == x2 && p.Z == z1) ||
+                                     (p.X == x2 && p.Z == z2)) && p.Y <= light.Position.Y)
+                                {
+                                    int finalIntensity = (int)(light.Intensity * 8192 * 0.25f);
+
+                                    r += finalIntensity * light.Color.R / 8192;
+                                    g += finalIntensity * light.Color.G / 8192;
+                                    b += finalIntensity * light.Color.B / 8192;
+                                }
+                                // ReSharper restore CompareOfFloatsByEqualityOperator
+                            }
                             break;
                         case LightType.Sun:
-                        {
-                            // Do raytracing now for saving CPU later
-                            if (!RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Z) ||
-                                !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
-                                !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                             {
-                                continue;
+                                // Do raytracing now for saving CPU later
+                                if (!RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                                    !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
+                                    !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
+                                {
+                                    continue;
+                                }
+
+                                // Calculate the light direction
+                                var lightDirection = Vector3.Zero;
+
+                                lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
+                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
+                                lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
+
+                                lightDirection.Normalize();
+
+                                // calcolo la luce diffusa
+                                float diffuse = -Vector3.Dot(lightDirection, n);
+
+                                if (diffuse <= 0)
+                                    continue;
+
+                                if (diffuse > 1)
+                                    diffuse = 1.0f;
+
+
+                                int finalIntensity = (int)(diffuse * light.Intensity * 8192);
+                                if (finalIntensity < 0)
+                                    continue;
+
+                                r += finalIntensity * light.Color.R / 8192;
+                                g += finalIntensity * light.Color.G / 8192;
+                                b += finalIntensity * light.Color.B / 8192;
                             }
-
-                            // Calculate the light direction
-                            var lightDirection = Vector3.Zero;
-
-                            lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
-                            lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
-                            lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
-
-                            lightDirection.Normalize();
-
-                            // calcolo la luce diffusa
-                            float diffuse = -Vector3.Dot(lightDirection, n);
-
-                            if (diffuse <= 0)
-                                continue;
-
-                            if (diffuse > 1)
-                                diffuse = 1.0f;
-
-
-                            int finalIntensity = (int)(diffuse * light.Intensity * 8192);
-                            if (finalIntensity < 0)
-                                continue;
-
-                            r += finalIntensity * light.Color.R / 8192;
-                            g += finalIntensity * light.Color.G / 8192;
-                            b += finalIntensity * light.Color.B / 8192;
-                        }
                             break;
                         case LightType.Spot:
-                        {
-                            // Calculate the ray from light to vertex
-                            var lightVector = p - light.Position;
-                            lightVector.Y = -lightVector.Y;
-                            lightVector.Normalize();
-
-                            // Get the distance between light and vertex
-                            float distance = Math.Abs((p - light.Position).Length());
-
-                            // If distance is greater than light length, then skip this light
-                            if (distance > light.Cutoff * 1024.0f)
-                                continue;
-
-                            // Calculate the light direction
-                            var lightDirection = Vector3.Zero;
-
-                            lightDirection.X = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
-                            lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
-                            lightDirection.Z = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
-
-                            lightDirection.Normalize();
-
-                            // Calculate the cosines values for In, Out
-                            double d = -Vector3.Dot(lightVector, lightDirection);
-                            double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.In));
-                            double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.Out));
-
-                            if (d < cosO2)
-                                continue;
-
-                            if (!RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Z) ||
-                                !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
-                                !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                             {
-                                continue;
+                                // Calculate the ray from light to vertex
+                                var lightVector = p - light.Position;
+                                lightVector.Y = -lightVector.Y;
+                                lightVector.Normalize();
+
+                                // Get the distance between light and vertex
+                                float distance = Math.Abs((p - light.Position).Length());
+
+                                // If distance is greater than light length, then skip this light
+                                if (distance > light.Cutoff * 1024.0f)
+                                    continue;
+
+                                // Calculate the light direction
+                                var lightDirection = Vector3.Zero;
+
+                                lightDirection.X = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
+                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
+                                lightDirection.Z = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
+
+                                lightDirection.Normalize();
+
+                                // Calculate the cosines values for In, Out
+                                double d = -Vector3.Dot(lightVector, lightDirection);
+                                double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.In));
+                                double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.Out));
+
+                                if (d < cosO2)
+                                    continue;
+
+                                if (!RayTraceCheckFloorCeiling((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Z) ||
+                                    !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
+                                    !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
+                                {
+                                    continue;
+                                }
+
+                                // Calculate light diffuse value
+                                float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
+                                if (factor > 1.0f)
+                                    factor = 1.0f;
+                                if (factor <= 0.0f)
+                                    continue;
+
+                                float attenuation = 1.0f;
+                                if (distance >= light.Len * 1024.0f)
+                                    attenuation = 1.0f - (distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f);
+
+                                if (attenuation > 1.0f)
+                                    attenuation = 1.0f;
+                                if (attenuation < 0.0f)
+                                    continue;
+
+                                n.Y = -n.Y;
+
+                                float dot1 = Vector3.Dot(lightDirection, n);
+                                if (dot1 < 0.0f)
+                                    continue;
+                                if (dot1 > 1.0f)
+                                    dot1 = 1.0f;
+
+                                int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
+
+                                r += finalIntensity * light.Color.R / 8192;
+                                g += finalIntensity * light.Color.G / 8192;
+                                b += finalIntensity * light.Color.B / 8192;
                             }
-
-                            // Calculate light diffuse value
-                            float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
-                            if (factor > 1.0f)
-                                factor = 1.0f;
-                            if (factor <= 0.0f)
-                                continue;
-
-                            float attenuation = 1.0f;
-                            if (distance >= light.Len * 1024.0f)
-                                attenuation = 1.0f - (distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f);
-
-                            if (attenuation > 1.0f)
-                                attenuation = 1.0f;
-                            if (attenuation < 0.0f)
-                                continue;
-
-                            n.Y = -n.Y;
-
-                            float dot1 = Vector3.Dot(lightDirection, n);
-                            if (dot1 < 0.0f)
-                                continue;
-                            if (dot1 > 1.0f)
-                                dot1 = 1.0f;
-
-                            int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
-
-                            r += finalIntensity * light.Color.R / 8192;
-                            g += finalIntensity * light.Color.G / 8192;
-                            b += finalIntensity * light.Color.B / 8192;
-                        }
                             break;
                     }
                 }

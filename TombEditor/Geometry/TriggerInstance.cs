@@ -1,4 +1,10 @@
-﻿namespace TombEditor.Geometry
+﻿using SharpDX;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace TombEditor.Geometry
 {
     public class TriggerInstance : ObjectInstance
     {
@@ -97,7 +103,7 @@
                 if (instance.Type == ObjectInstanceType.Moveable)
                 {
                     var moveable = (MoveableInstance)instance;
-                    output += Editor.Instance.MoveablesObjectIds[(int)moveable.Model.ObjectID] + " (" + instance.Id + ")";
+                    output += Editor.Instance.MoveableNames[(int)moveable.Model.ObjectID] + " (" + instance.Id + ")";
                 }
             }
 
@@ -124,6 +130,11 @@
             }
 
             return output;
+        }
+
+        public Rectangle Area
+        {
+            get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
         }
 
         public override ObjectInstance Clone()

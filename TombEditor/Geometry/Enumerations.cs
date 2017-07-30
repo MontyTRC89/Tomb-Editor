@@ -23,19 +23,19 @@ namespace TombEditor.Geometry
 
     public struct PickingResult
     {
-        public PickingElementType _elementType;
-        public int _subElementType;
-        public int _element;
-        public int _subElement;
-        public bool _gizmo;
-        public GizmoAxis _gizmoAxis;
+        public PickingElementType ElementType { get; set; }
+        public int SubElementType { get; set; }
+        public int Element { get; set; }
+        public int SubElement { get; set; }
+        public bool Gizmo { get; set; }
+        public GizmoAxis GizmoAxis { get; set; }
     }
 
     public enum GizmoAxis : byte
     {
         None,
         X,
-        Y, 
+        Y,
         Z
     }
 
@@ -194,7 +194,7 @@ namespace TombEditor.Geometry
         NorthRF = 20, SouthRF = 21, WestRF = 22, EastRF = 23, DiagonalRF = 24,
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
-    
+
     public enum BlockFaceShape : byte
     {
         Rectangle, Triangle

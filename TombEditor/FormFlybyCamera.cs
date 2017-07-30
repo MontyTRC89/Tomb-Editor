@@ -32,7 +32,7 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult._element];
+            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult.Element];
 
             cbBit0.Checked = flyby.Flags[0];
             cbBit1.Checked = flyby.Flags[1];
@@ -61,7 +61,7 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult._element];
+            FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[_editor.PickingResult.Element];
 
             flyby.Flags[0] = cbBit0.Checked;
             flyby.Flags[1] = cbBit1.Checked;
@@ -87,7 +87,7 @@ namespace TombEditor
             flyby.Number = Int16.Parse(tbNumber.Text);
             flyby.Fov = Int16.Parse(tbFOV.Text);
 
-            _editor.Level.Objects[_editor.PickingResult._element] = flyby;
+            _editor.Level.Objects[_editor.PickingResult.Element] = flyby;
 
             DialogResult = DialogResult.OK;
             this.Close();

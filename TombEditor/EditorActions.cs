@@ -10,7 +10,7 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
-    public class EditorActions
+    public static class EditorActions
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -773,6 +773,9 @@ namespace TombEditor
                     }
                 }
             }
+            _editor.LoadTriggersInUI();
+            _editor.UpdateRoomName();
+            _editor.DrawPanelGrid();
         }
 
         public static void MoveObject(ObjectType typ, int id, MoveObjectDirections direction, bool smoothMove)
@@ -879,14 +882,14 @@ namespace TombEditor
 
                     case GizmoAxis.Y:
                         newPosition += new Vector3(0.0f, delta, 0.0f);
-                        break;                
-                   
+                        break;
+
                     case GizmoAxis.Z:
                         newPosition += new Vector3(0.0f, 0.0f, delta);
                         break;
                 }
 
-                var x = (int)Math.Floor(newPosition.X /1024.0f);
+                var x = (int)Math.Floor(newPosition.X / 1024.0f);
                 var z = (int)Math.Floor(newPosition.Z / 1024.0f);
 
                 if (x < 0.0f || z < 0.0f || x > room.NumXSectors - 1 || z > room.NumZSectors - 1)
@@ -958,13 +961,13 @@ namespace TombEditor
 
         public static void RotateObject(ObjectType typ, int id, int sign, bool smoothMove)
         {
-            _editor.Level.Objects[_editor.PickingResult._element].Rotation += (short)(sign * (smoothMove ? 5 : 45));
+            _editor.Level.Objects[_editor.PickingResult.Element].Rotation += (short)(sign * (smoothMove ? 5 : 45));
 
-            if (_editor.Level.Objects[_editor.PickingResult._element].Rotation == 360)
-                _editor.Level.Objects[_editor.PickingResult._element].Rotation = 0;
+            if (_editor.Level.Objects[_editor.PickingResult.Element].Rotation == 360)
+                _editor.Level.Objects[_editor.PickingResult.Element].Rotation = 0;
 
-            if (_editor.Level.Objects[_editor.PickingResult._element].Rotation < 0)
-                _editor.Level.Objects[_editor.PickingResult._element].Rotation += 360;
+            if (_editor.Level.Objects[_editor.PickingResult.Element].Rotation < 0)
+                _editor.Level.Objects[_editor.PickingResult.Element].Rotation += 360;
         }
 
         public static void DeleteObject(ObjectType typ, int id)
@@ -999,7 +1002,7 @@ namespace TombEditor
             }
 
             _editor.Level.DeleteObject(id);
-        }        
+        }
 
         public static void MoveLight(int id, MoveObjectDirections direction, bool smoothMove)
         {
@@ -1160,14 +1163,13 @@ namespace TombEditor
 
                 UV[0] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
                 UV[1] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
-                ;
                 UV[2] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
                 UV[3] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
 
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[0] = UV[0];
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[1] = UV[1];
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[2] = UV[2];
-                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUv[3] = UV[3];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[0] = UV[0];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[1] = UV[1];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[2] = UV[2];
+                _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].RectangleUV[3] = UV[3];
 
                 /*
                 *  1----2    Split 0: 231 413  
@@ -1180,57 +1182,57 @@ namespace TombEditor
                 {
                     if (_editor.TextureTriangle == TextureTileType.TriangleNW)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[0];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[1];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[3];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[0];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[1];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[3];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[0];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[1];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[3];
                         }
                     }
 
                     if (_editor.TextureTriangle == TextureTileType.TriangleNE)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[1];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[2];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[0];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[1];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[2];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[0];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[1];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[2];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[0];
                         }
                     }
 
                     if (_editor.TextureTriangle == TextureTileType.TriangleSE)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[2];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[3];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[1];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[2];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[3];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[1];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[2];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[3];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[1];
                         }
                     }
 
                     if (_editor.TextureTriangle == TextureTileType.TriangleSW)
                     {
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[0] = UV[3];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[1] = UV[0];
-                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv[2] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[0] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[1] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV[2] = UV[2];
 
                         if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                         {
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[0] = UV[3];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[1] = UV[0];
-                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUv2[2] = UV[2];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[0] = UV[3];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[1] = UV[0];
+                            _editor.SelectedRoom.Blocks[x, z].Faces[(int)faceType].TriangleUV2[2] = UV[2];
                         }
                     }
                 }
@@ -1623,7 +1625,7 @@ namespace TombEditor
 
         public static void SetDiagonalFloorSplit(Room currentRoom, int xMin, int xMax, int zMin, int zMax)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1716,7 +1718,7 @@ namespace TombEditor
 
         public static void SetDiagonalCeilingSplit(Room currentRoom, int xMin, int xMax, int zMin, int zMax)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1809,7 +1811,7 @@ namespace TombEditor
 
         public static void SetDiagonalWallSplit(Room currentRoom, int xMin, int xMax, int zMin, int zMax)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1908,7 +1910,7 @@ namespace TombEditor
 
         public static void SetWall(Room currentRoom, int xMin, int xMax, int zMin, int zMax)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1944,7 +1946,7 @@ namespace TombEditor
 
         public static void SetFloor(Room currentRoom, int xMin, int xMax, int zMin, int zMax)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1964,7 +1966,7 @@ namespace TombEditor
 
         public static void SetCeiling(Room currentRoom, int xMin, int xMax, int zMin, int zMax)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -1983,12 +1985,12 @@ namespace TombEditor
 
         public static void ToggleBlockFlag(BlockFlags flag)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -2002,12 +2004,12 @@ namespace TombEditor
 
         public static void ToggleClimb(int direction)
         {
-            if (_editor.BlockSelectionStartX != -1)
+            if (_editor.BlockSelectionAvailable)
             {
-                int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-                int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-                int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
                 for (int x = xMin; x <= xMax; x++)
                 {
@@ -2022,10 +2024,10 @@ namespace TombEditor
         public static bool AddPortal()
         {
             // Get selection's boundary
-            int xMin = Math.Min(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int xMax = Math.Max(_editor.BlockSelectionStartX, _editor.BlockSelectionEndX);
-            int zMin = Math.Min(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
-            int zMax = Math.Max(_editor.BlockSelectionStartZ, _editor.BlockSelectionEndZ);
+            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
+            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
+            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
             Room room = _editor.SelectedRoom;
 
@@ -2755,7 +2757,7 @@ namespace TombEditor
             return false;
         }
 
-        public static void SpecialRaiseFloorOrCeiling(int face, short increment, 
+        public static void SpecialRaiseFloorOrCeiling(int face, short increment,
                                                       int xMinSpecial, int xMaxSpecial, int zMinSpecial, int zMaxSpecial,
                                                       int xMin, int xMax, int zMin, int zMax)
         {

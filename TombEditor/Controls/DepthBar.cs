@@ -161,7 +161,7 @@ namespace TombEditor.Controls
                         }
                     }
             }
-            else if ((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton1))
+            else if ((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton1) || (e.Button == MouseButtons.XButton2))
                 for (int groupIndex = 0; groupIndex < DepthProbes.Count; ++groupIndex)
                 {
                     RectangleF groupArea = groupGetArea(barArea, groupIndex);
@@ -360,7 +360,7 @@ namespace TombEditor.Controls
             for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
             {
                 RectangleF groupArea = groupGetArea(barArea, groupIndex);
-                e.Graphics.DrawRectangle(_outlinePen, groupArea.X, groupArea.Y, groupArea.Width, groupArea.Height);
+                e.Graphics.DrawRectangle(_outlinePen, groupArea);
             }
         }
 

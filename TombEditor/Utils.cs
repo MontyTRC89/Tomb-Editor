@@ -5,16 +5,14 @@ using System.Text;
 using SharpDX;
 using System.Drawing;
 using System.IO;
-using System.Drawing.Imaging;
 using TombEditor.Geometry;
 using zlib;
-using System.Diagnostics;
 using NLog;
 using System.Runtime.InteropServices;
 
 namespace TombEditor
 {
-    public class Utils
+    public static class Utils
     {
         private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
         private const int FILE_ATTRIBUTE_NORMAL = 0x80;
@@ -169,6 +167,54 @@ namespace TombEditor
             if (result == 0) return fileName;
 
             return sb.ToString();
+        }
+
+        public static bool Contains(this SharpDX.Rectangle This, Point point)
+        {
+            return This.Contains(point.X, point.Y);
+        }
+        
+        public static void DrawRectangle(this Graphics g, Pen pen, System.Drawing.RectangleF rectangle)
+        {
+            g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
+        }
+
+        public static Point Max(this Point point0, Point point1)
+        {
+            return new Point(Math.Max(point0.X, point1.X), Math.Max(point0.Y, point1.Y));
+        }
+
+        public static PointF Max(this PointF point0, PointF point1)
+        {
+            return new PointF(Math.Max(point0.X, point1.X), Math.Max(point0.Y, point1.Y));
+        }
+
+        public static Point Min(this Point point0, Point point1)
+        {
+            return new Point(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
+        }
+
+        public static PointF Min(this PointF point0, PointF point1)
+        {
+            return new PointF(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
+        }
+        
+        public static bool ContainedBetween(this Point point, Point point0, Point point1)
+        {
+            return
+                (point.X <= Math.Min(point0.X, point1.X)) &&
+                (point.Y <= Math.Min(point0.Y, point1.Y)) &&
+                (point.X >= Math.Max(point0.X, point1.X)) &&
+                (point.X >= Math.Max(point0.X, point1.X));
+        }
+
+        public static bool ContainedBetween(this PointF point, PointF point0, PointF point1)
+        {
+            return
+                (point.X <= Math.Min(point0.X, point1.X)) &&
+                (point.Y <= Math.Min(point0.Y, point1.Y)) &&
+                (point.X >= Math.Max(point0.X, point1.X)) &&
+                (point.X >= Math.Max(point0.X, point1.X));
         }
     }
 }

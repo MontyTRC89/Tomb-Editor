@@ -23,7 +23,7 @@ namespace TombEditor
         {
             InitializeComponent();
         }
-        
+
         private void FormTrigger_Load(object sender, EventArgs e)
         {
             if (TriggerID == -1)
@@ -74,7 +74,7 @@ namespace TombEditor
                             MoveableInstance mov = (MoveableInstance)instance;
 
                             _items.Add(instance.Id);
-                            comboParameter.Items.Add(_editor.MoveablesObjectIds[(int)mov.Model.ObjectID] + " ID = " + instance.Id + ", Room = " + instance.Room +
+                            comboParameter.Items.Add(_editor.MoveableNames[(int)mov.Model.ObjectID] + " ID = " + instance.Id + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
                             if (TriggerID != -1 && Trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;

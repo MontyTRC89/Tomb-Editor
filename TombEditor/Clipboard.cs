@@ -37,40 +37,40 @@ namespace TombEditor
 
             OriginalRoom = _editor.SelectedRoom;
 
-            if (_editor.PickingResult._elementType == PickingElementType.Moveable)
+            if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
             {
                 ElementType = ClipboardElementType.Moveable;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult._elementType == PickingElementType.StaticMesh)
+            else if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
             {
                 ElementType = ClipboardElementType.StaticMesh;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult._elementType == PickingElementType.Camera)
+            else if (_editor.PickingResult.ElementType == PickingElementType.Camera)
             {
                 ElementType = ClipboardElementType.Camera;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult._elementType == PickingElementType.FlyByCamera)
+            else if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
             {
                 ElementType = ClipboardElementType.FlybyCamera;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult._elementType == PickingElementType.Sink)
+            else if (_editor.PickingResult.ElementType == PickingElementType.Sink)
             {
                 ElementType = ClipboardElementType.Sink;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult._elementType == PickingElementType.SoundSource)
+            else if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
             {
                 ElementType = ClipboardElementType.SoundSource;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
-            else if (_editor.PickingResult._elementType == PickingElementType.Light)
+            else if (_editor.PickingResult.ElementType == PickingElementType.Light)
             {
                 ElementType = ClipboardElementType.Light;
-                ElementID = _editor.PickingResult._element;
+                ElementID = _editor.PickingResult.Element;
             }
         }
 
@@ -82,10 +82,10 @@ namespace TombEditor
 
             bool hasPastedSomething = false;
 
-            if (_editor.PickingResult._elementType == PickingElementType.Block)
+            if (_editor.PickingResult.ElementType == PickingElementType.Block)
             {
-                int x = _editor.PickingResult._element >> 5;
-                int z = _editor.PickingResult._element & 31;
+                int x = _editor.PickingResult.Element >> 5;
+                int z = _editor.PickingResult.Element & 31;
 
                 Block block = room.Blocks[x, z];
                 int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -227,7 +227,7 @@ namespace TombEditor
                 ElementID = -1;
                 _editor.ResetPanel3DCursor();
             }
-            
+
             return hasPastedSomething;
         }
     }

@@ -28,7 +28,7 @@ namespace TombEditor
 
         private void FormObject_Load(object sender, EventArgs e)
         {
-            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult._element];
+            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult.Element];
 
             cbBit1.Checked = instance.Bits[0];
             cbBit2.Checked = instance.Bits[1];
@@ -50,7 +50,7 @@ namespace TombEditor
                 return;
             }
 
-            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult._element];
+            MoveableInstance instance = (MoveableInstance)_editor.Level.Objects[_editor.PickingResult.Element];
 
             instance.Bits[0] = cbBit1.Checked;
             instance.Bits[1] = cbBit2.Checked;
