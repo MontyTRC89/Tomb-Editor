@@ -396,8 +396,8 @@ namespace TombEditor.Controls
             {
                 int index = (i + SelectedPortal) % _editor.Level.Portals.Count;
                 Portal portal = _editor.Level.Portals.ElementAt(index).Value;
-                if ((_editor.RoomIndex == portal.Room) && portal.Area.Contains(point))
-                    return portal.ID;
+                if ((_editor.SelectedRoom == portal.Room) && portal.Area.Contains(point))
+                    return portal.Id;
             }
             return -1;
         }
@@ -408,8 +408,8 @@ namespace TombEditor.Controls
             {
                 int index = (i + SelectedTrigger) % _editor.Level.Triggers.Count;
                 TriggerInstance trigger = _editor.Level.Triggers.ElementAt(index).Value;
-                if ((_editor.RoomIndex == trigger.Room) && trigger.Area.Contains(point))
-                    return trigger.ID;
+                if ((_editor.SelectedRoom == trigger.Room) && trigger.Area.Contains(point))
+                    return trigger.Id;
             }
             return -1;
         }

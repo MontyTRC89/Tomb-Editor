@@ -28,7 +28,7 @@ namespace TombLib.Graphics
         }
         public static Bitmap LoadToBitmap(string path)
         {
-            using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 return LoadToBitmap(stream);
         }
         public static Texture2D LoadToTexture(GraphicsDevice graphicsDevice, Bitmap bitmap)

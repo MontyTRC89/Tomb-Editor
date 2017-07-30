@@ -73,7 +73,7 @@ namespace TombEditor.Controls
             if (_editor.LightIndex == -1)
                 return;
 
-            Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+            Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
 
             switch (LightParameter)
             {
@@ -200,7 +200,7 @@ namespace TombEditor.Controls
             SetParameters();
 
             // Get the current light
-            Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+            Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
 
             float newValue = _value;
 
@@ -242,7 +242,7 @@ namespace TombEditor.Controls
             SetParameters();
 
             // Get the current light
-            Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+            Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
 
             float newValue = _value;
 
@@ -287,42 +287,42 @@ namespace TombEditor.Controls
 
             if (_editor.LightIndex != -1)
             {
-                Light light = _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex];
+                Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
 
                 switch (LightParameter)
                 {
                     case LightParameter.Intensity:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Intensity = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].Intensity = _value;
                         break;
 
                     case LightParameter.In:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].In = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].In = _value;
                         break;
 
                     case LightParameter.Out:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Out = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].Out = _value;
                         break;
 
                     case LightParameter.Len:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Len = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].Len = _value;
                         break;
 
                     case LightParameter.CutOff:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].Cutoff = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].Cutoff = _value;
                         break;
 
                     case LightParameter.DirectionX:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionX = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].DirectionX = _value;
                         break;
 
                     case LightParameter.DirectionY:
-                        _editor.Level.Rooms[_editor.RoomIndex].Lights[_editor.LightIndex].DirectionY = _value;
+                        _editor.SelectedRoom.Lights[_editor.LightIndex].DirectionY = _value;
                         break;
                 }
 
-                //_editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-                _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                //_editor.SelectedRoom.BuildGeometry();
+                _editor.SelectedRoom.CalculateLightingForThisRoom();
+                _editor.SelectedRoom.UpdateBuffers();
 
                 _editor.DrawPanel3D();
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using SharpDX.Toolkit.Graphics;
 using SharpDX;
 
@@ -30,10 +26,7 @@ namespace TombEditor.Geometry
                 return false;
             if (Normal != b.Normal)
                 return false;
-            if (FaceColor != b.FaceColor)
-                return false;
-
-            return true;
+            return FaceColor == b.FaceColor;
         }
     }
 }
