@@ -10,6 +10,7 @@ using System.IO;
 using System.Diagnostics;
 using TombEngine;
 using NLog;
+using TombEditor.Geometry.IO;
 using TombLib.Graphics;
 
 namespace TombEditor
@@ -1802,7 +1803,7 @@ namespace TombEditor
             if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            Level level = Level.LoadFromPrj2(openFileDialogPRJ2.FileName, _editor.GraphicsDevice, this);
+            Level level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, _editor.GraphicsDevice, this);
             if (level == null)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError(
@@ -2049,7 +2050,7 @@ namespace TombEditor
             if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            bool result = Level.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
+            bool result = Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
 
             if (!result)
             {
@@ -3072,7 +3073,7 @@ namespace TombEditor
                 fileName = _editor.Level.FileName;
             }
 
-            bool result = Level.SaveToPrj2(fileName, _editor.Level);
+            bool result = Prj2Writer.SaveToPrj2(fileName, _editor.Level);
 
             if (!result)
             {

@@ -212,6 +212,9 @@
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
+      <Compile Include="Geometry\IO\Prj2Loader.cs"/>
+      <Compile Include="Geometry\IO\Prj2Writer.cs"/>
+      <Compile Include="Geometry\IO\PrjLoader.cs"/>
     <Compile Include="Geometry\ObjectInstance.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cube.cs" />
@@ -615,7 +618,6 @@
       <Name>TombLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
