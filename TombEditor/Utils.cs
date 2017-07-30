@@ -216,5 +216,22 @@ namespace TombEditor
                 (point.X >= Math.Max(point0.X, point1.X)) &&
                 (point.X >= Math.Max(point0.X, point1.X));
         }
+
+        public static int ReferenceIndexOf<T>(this IEnumerable<T> enumerable, T needle)
+        {
+            if (needle == null)
+                return -1;
+
+            int i = 0;
+            foreach (var t in enumerable.Where(e => e != null))
+            {
+                if (ReferenceEquals(t, needle))
+                    return i;
+
+                ++i;
+            }
+
+            return -1;
+        }
     }
 }

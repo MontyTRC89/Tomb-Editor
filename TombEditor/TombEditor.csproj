@@ -103,7 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clipboard.cs" />
-      <Compile Include="Compilers\Extensions.cs"/>
     <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
@@ -119,7 +118,7 @@
     <Compile Include="Controls\LightParameterController.Designer.cs">
       <DependentUpon>LightParameterController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DepthBar.cs"/>
+    <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -143,7 +142,6 @@
     </Compile>
     <Compile Include="Debug.cs" />
     <Compile Include="EditorActions.cs" />
-    <Compile Include="EditorUtils.cs" />
     <Compile Include="FormSplash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,7 +212,7 @@
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
-    <Compile Include="Geometry\IObjectInstance.cs" />
+    <Compile Include="Geometry\ObjectInstance.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cube.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Plane.cs" />
