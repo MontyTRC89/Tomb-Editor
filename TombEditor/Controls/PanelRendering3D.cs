@@ -1355,6 +1355,9 @@ namespace TombEditor.Controls
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
 
+                    // Add OCB
+                    if (modelInfo.OCB != 0) debugMessage += Environment.NewLine + "OCB: " + modelInfo.OCB;
+
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
