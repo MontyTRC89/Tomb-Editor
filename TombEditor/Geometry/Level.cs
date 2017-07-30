@@ -1047,16 +1047,16 @@ namespace TombEditor.Geometry
                                     typ = BlockType.Wall;
                                     break;
                                 case 0x06:
-                                    typ = BlockType.BorderWall; // BlockType.WallPortal;
+                                    typ = BlockType.BorderWall;  
                                     break;
                                 case 0x03:
-                                    typ = BlockType.Floor; // BlockType.FloorPortal;
+                                    typ = BlockType.Floor; 
                                     break;
                                 case 0x05:
-                                    typ = BlockType.Floor; // BlockType.CeilingPortal;
+                                    typ = BlockType.Floor; 
                                     break;
                                 case 0x07:
-                                    typ = BlockType.Floor; // BlockType.FloorPortal;
+                                    typ = BlockType.Floor; 
                                     break;
                             }
 
@@ -1151,10 +1151,8 @@ namespace TombEditor.Geometry
                 logger.Info("All rooms loaded");
 
                 // Read unused things indices
-                //      byte[] bufIndices=reader.ReadBytes(13136);
-
                 int dwNumThings = reader.ReadInt32(); // number of things in the map
-                int dwMaxThings = reader.ReadInt32(); // always 2000
+                int dwMaxThings = reader.ReadInt32(); // always 2000?
                 reader.ReadBytes(dwMaxThings * 4);
 
                 int dwNumLights = reader.ReadInt32(); // number of lights in the map
@@ -1673,7 +1671,7 @@ namespace TombEditor.Geometry
                                         }
 
                                         if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && defined &&
-                                            lh1 == minHeight /*&& otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall*/)
+                                            lh1 == minHeight)
                                         {
                                             level.Rooms[otherPortal.Room].Blocks[lowX, lowZ].IsFloorSolid = false;
                                         }
@@ -2231,7 +2229,6 @@ namespace TombEditor.Geometry
                                                 (yBlock * 256.0f + texture2.Y + 0.5f) / 2048.0f);
                                             uv[1] = new Vector2((xBlock * 256.0f + texture2.X + texture2.Width - 0.5f) / 2048.0f,
                                                 (yBlock * 256.0f + texture2.Y + 0.5f) / 2048.0f);
-
                                             uv[2] = new Vector2((xBlock * 256.0f + texture2.X + texture2.Width - 0.5f) / 2048.0f,
                                                 (yBlock * 256.0f + texture2.Y + texture2.Height - 0.5f) / 2048.0f);
                                             uv[3] = new Vector2((xBlock * 256.0f + texture2.X + 0.5f) / 2048.0f,
@@ -2299,9 +2296,9 @@ namespace TombEditor.Geometry
                                                         }
                                                         else
                                                         {
-                                                            theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
-                                                            theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
-                                                            theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+                                                            theBlock.Faces[faceIndex].TriangleUV[0] = uv[1]; 
+                                                            theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
+                                                            theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
 
                                                             newRot = (sbyte)(newRot + 2);
                                                         }
@@ -2360,8 +2357,8 @@ namespace TombEditor.Geometry
                                                         else
                                                         {
                                                             theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
-                                                            theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
-                                                            theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+                                                            theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                            theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
                                                             newRot = (sbyte)(newRot + 2);
                                                         }
@@ -2420,8 +2417,8 @@ namespace TombEditor.Geometry
                                                         else
                                                         {
                                                             theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
-                                                            theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
-                                                            theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+                                                            theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                            theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
                                                             newRot = (sbyte)(newRot + 2);
                                                         }

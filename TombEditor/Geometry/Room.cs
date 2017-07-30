@@ -1860,7 +1860,7 @@ namespace TombEditor.Geometry
                                                               new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                                               new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                                               face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
-                    
+
                     // ED
                     if (subdivide)
                     {
@@ -1928,7 +1928,7 @@ namespace TombEditor.Geometry
                                                               new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                               new Vector3(xB * 1024.0f, (Ceiling + wB) * 256.0f, zB * 1024.0f),
                                                               face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
-                    
+
                     // RF
                     if (subdivide)
                     {
@@ -1989,29 +1989,18 @@ namespace TombEditor.Geometry
                                                            face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                            e1, e2, e3, e4);
 
-                else if (Ceiling + yA != yD && Ceiling + yB == yC && yC >= (Ceiling + yA + yD))
+                else if (Ceiling + yA != yD && Ceiling + yB == yC)
                     AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
                                                           new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
                                                           new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                                                           face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
 
-                else if (Ceiling + yA == yD && Ceiling + yB != yC && yD >= (Ceiling + yB + yC))
-                    AddTriangle(x, z, middleFace, new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                       new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
-                                                       new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                                                       face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
-
-                else if (Ceiling + yA != yD && Ceiling + yB == yC && yC < (Ceiling + yA + yD))
-                    AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                                                         new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                         new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                         face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
-
-                else if (Ceiling + yA == yD && Ceiling + yB != yC && yD < (Ceiling + yB + yC))
-                    AddTriangle(x, z, middleFace, new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
-                                                       new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
+                else if (Ceiling + yA == yD && Ceiling + yB != yC)
+                    AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
                                                        new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+                                                       new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                                                        face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
+
             }
         }
 
