@@ -2874,7 +2874,7 @@ namespace TombEditor.Geometry
             return level;
         }
 
-        public static Level LoadFromPrj2(string filename, GraphicsDevice device)
+        public static Level LoadFromPrj2(string filename, GraphicsDevice device, FormMain form)
         {
             Level level = new Level();
 
@@ -2916,37 +2916,59 @@ namespace TombEditor.Geometry
                 int stringLength = reader.ReadInt32();
                 level.TextureFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
 
-                // Little hack
-                if (!File.Exists(level.TextureFile))
-                    level.TextureFile = "coastal.png";
+                // Check if texture file exists
+                if (level.TextureFile == "" || !File.Exists(level.TextureFile))
+                {
+                    logger.Error("Can't find texture map!");
+                    
+                    if (DarkUI.Forms.DarkMessageBox.ShowWarning("The texture map '" + level.TextureFile + " could not be found. Do you want to browse it or cancel opening project?",
+                                                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    {
+                        logger.Error("PRJ2 loading canceled");
+                        reader.Close();
+                        return null;
+                    }
 
-                /* if (level.TextureFile == "" || !File.Exists(level.TextureFile))
-                 {
-                     Debug.Log("Can't find texture map!", DebugType.Error);
+                    // Ask for texture file
+                    string textureFile = form.BrowseTextureMap();
+                    if (textureFile == "")
+                    {
+                        logger.Error("PRJ2 loading canceled");
+                        reader.Close();
+                        return null;
+                    }
 
-                     if (DarkUI.Forms.DarkMessageBox.ShowWarning("The texture map '" + level.TextureFile + " could not be found. Do you want to browse it or cancel opening project?",
-                                                                 "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                     {
-                         Debug.Log("PRJ2 loading canceled", DebugType.Error);
-                         reader.Close();
-                         return null;
-                     }
-
-                     // Ask for TGA file
-                     tgaName = form.OpenTGA();
-                     if (tgaName == "")
-                     {
-                         Debug.Log("PRJ import canceled", DebugType.Error);
-                         reader.Close();
-                         return null;
-                     }
-                 }*/
+                    level.TextureFile = textureFile;
+                }
 
                 //Read WAD file
                 stringLength = reader.ReadInt32();
                 level.WadFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
-                if (!File.Exists(level.WadFile))
-                    level.WadFile = "graphics\\wads\\coastal.wad";
+
+                // Check if WAD file exists
+                if (level.WadFile == "" || !File.Exists(level.WadFile))
+                {
+                    logger.Error("Can't find WAD!");
+
+                    if (DarkUI.Forms.DarkMessageBox.ShowWarning("The WAD '" + level.WadFile + " could not be found. Do you want to browse it or cancel opening project?",
+                                                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    {
+                        logger.Error("PRJ2 loading canceled");
+                        reader.Close();
+                        return null;
+                    }
+
+                    // Ask for texture file
+                    string wadFile = form.BrowseWAD();
+                    if (wadFile == "")
+                    {
+                        logger.Error("PRJ2 loading canceled");
+                        reader.Close();
+                        return null;
+                    }
+
+                    level.WadFile = wadFile;
+                }
 
                 // Read fillers
                 reader.ReadInt32();
