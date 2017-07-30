@@ -324,14 +324,14 @@ namespace TombEditor.Controls
                             Pen belowPen = _roomBoundsPen;
                             if ((room.Block != null) && (room.Block.FloorPortal != -1))
                             {
-                                Room portalRoom = level.Rooms[level.Portals[room.Block.FloorPortal].AdjoiningRoom];
+                                Room portalRoom = level.Portals[room.Block.FloorPortal].AdjoiningRoom;
                                 if (((i - 1) >= 0) && (roomSequence[i - 1].Room == portalRoom))
                                     belowPen = _portalPen;
                             }
                             Pen abovePen = _roomBoundsPen;
                             if ((room.Block != null) && (room.Block.CeilingPortal != -1))
                             {
-                                Room portalRoom = level.Rooms[level.Portals[room.Block.CeilingPortal].AdjoiningRoom];
+                                Room portalRoom = level.Portals[room.Block.CeilingPortal].AdjoiningRoom;
                                 if (((i + 1) < roomSequence.Count) && (roomSequence[i + 1].Room == portalRoom))
                                     abovePen = _portalPen;
                             }
@@ -415,7 +415,7 @@ namespace TombEditor.Controls
                     if ((block != null) && (block.FloorPortal != -1))
                     {
                         Portal portal = level.Portals[block.FloorPortal];
-                        Room roomAbove = level.Rooms[portal.AdjoiningRoom];
+                        Room roomAbove = portal.AdjoiningRoom;
                         foreach (var roomSequence in roomSequences)
                             if (roomSequence.Last().Room == roomAbove)
                             {
@@ -437,7 +437,7 @@ namespace TombEditor.Controls
                 foreach (int portalIndex in roomSequenceAbove[0].Room.Portals)
                 {
                     Portal portal = level.Portals[portalIndex];
-                    Room connectedRoom = level.Rooms[portal.AdjoiningRoom];
+                    Room connectedRoom = portal.AdjoiningRoom;
 
                     for (int j = 0; j < i; ++j)
                     {

@@ -39,7 +39,7 @@ namespace TombEditor
             cbInvisible.Checked = instance.Invisible;
             cbClearBody.Checked = instance.ClearBody;
 
-            tbOCB.Text = instance.OCB.ToString();
+            tbOCB.Text = instance.Ocb.ToString();
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -61,7 +61,7 @@ namespace TombEditor
             instance.Invisible = cbInvisible.Checked;
             instance.ClearBody = cbClearBody.Checked;
 
-            instance.OCB = Int16.Parse(tbOCB.Text);
+            instance.Ocb = Int16.Parse(tbOCB.Text);
 
             DialogResult = DialogResult.OK;
             this.Close();

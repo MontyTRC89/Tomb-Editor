@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
-    public class TriggerInstance : IObjectInstance
+    public class TriggerInstance : ObjectInstance
     {
         public byte NumXBlocks { get; set; }
         public byte NumZBlocks { get; set; }
@@ -16,9 +16,7 @@ namespace TombEditor.Geometry
         public short Timer { get; set; }
         public bool OneShot { get; set; }
 
-        private Editor _editor = Editor.Instance;
-
-        public TriggerInstance(int id, short room)
+        public TriggerInstance(int id, Room room)
             : base(ObjectInstanceType.Trigger, id, room)
         { }
 
@@ -55,12 +53,12 @@ namespace TombEditor.Geometry
             if (TriggerType == TriggerType.Trigger)
                 output = "Trigger";
 
-            output += " (" + ID + ") for ";
+            output += " (" + Id + ") for ";
 
             if (TargetType == TriggerTargetType.Camera)
             {
-                CameraInstance instance = (CameraInstance)_editor.Level.Objects[Target];
-                output += "Camera (" + instance.ID + ")";
+                CameraInstance instance = (CameraInstance)Editor.Instance.Level.Objects[Target];
+                output += "Camera (" + instance.Id + ")";
             }
 
             if (TargetType == TriggerTargetType.FinishLevel)
@@ -94,22 +92,18 @@ namespace TombEditor.Geometry
                 output += "FlybyCamera (FLYBY" + /*instance.ID +*/ ")";
             }
 
-            if (TargetType == TriggerTargetType.FMV)
+            if (TargetType == TriggerTargetType.Fmv)
             {
                 output += "FMV (" + Target + ")";
             }
 
             if (TargetType == TriggerTargetType.Object)
             {
-                IObjectInstance instance = _editor.Level.Objects[Target];
+                var instance = Editor.Instance.Level.Objects[Target];
                 if (instance.Type == ObjectInstanceType.Moveable)
                 {
-                    MoveableInstance moveable = (MoveableInstance)instance;
-                    output += _editor.MoveableNames[(int)moveable.Model.ObjectID] + " (" + instance.ID + ")";
-                }
-                else
-                {
-
+                    var moveable = (MoveableInstance)instance;
+                    output += Editor.Instance.MoveableNames[(int)moveable.Model.ObjectID] + " (" + instance.Id + ")";
                 }
             }
 
@@ -125,14 +119,14 @@ namespace TombEditor.Geometry
 
             if (TargetType == TriggerTargetType.Sink)
             {
-                SinkInstance instance = (SinkInstance)_editor.Level.Objects[Target];
-                output += "Sink (" + instance.ID + ")";
+                var instance = (SinkInstance)Editor.Instance.Level.Objects[Target];
+                output += "Sink (" + instance.Id + ")";
             }
 
             if (TargetType == TriggerTargetType.Target)
             {
-                IObjectInstance instance = _editor.Level.Objects[Target];
-                output += "Camera Target (" + instance.ID + ")";
+                var instance = Editor.Instance.Level.Objects[Target];
+                output += "Camera Target (" + instance.Id + ")";
             }
 
             return output;
@@ -143,25 +137,27 @@ namespace TombEditor.Geometry
             get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
         }
 
-        public override IObjectInstance Clone()
+        public override ObjectInstance Clone()
         {
-            TriggerInstance instance = new TriggerInstance(0, Room);
-
-            instance.X = X;
-            instance.Y = Y;
-            instance.Z = Z;
-            instance.OCB = OCB;
-            instance.Rotation = Rotation;
-            instance.Invisible = Invisible;
-            instance.ClearBody = ClearBody;
-            instance.Bits[0] = Bits[0];
-            instance.Bits[1] = Bits[1];
-            instance.Bits[2] = Bits[2];
-            instance.Bits[3] = Bits[3];
-            instance.Bits[4] = Bits[4];
-            instance.Type = Type;
-
-            return instance;
+            return new TriggerInstance(0, Room)
+            {
+                X = X,
+                Y = Y,
+                Z = Z,
+                Ocb = Ocb,
+                Rotation = Rotation,
+                Invisible = Invisible,
+                ClearBody = ClearBody,
+                Bits =
+                {
+                    [0] = Bits[0],
+                    [1] = Bits[1],
+                    [2] = Bits[2],
+                    [3] = Bits[3],
+                    [4] = Bits[4]
+                },
+                Type = Type
+            };
         }
     }
 }

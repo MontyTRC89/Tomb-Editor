@@ -55,7 +55,7 @@ namespace TombEditor
             tbSequence.Text = flyby.Sequence.ToString();
             tbSpeed.Text = flyby.Speed.ToString();
             tbNumber.Text = flyby.Number.ToString();
-            tbFOV.Text = flyby.FOV.ToString();
+            tbFOV.Text = flyby.Fov.ToString();
             tbRoll.Text = flyby.Roll.ToString();
         }
 
@@ -85,7 +85,7 @@ namespace TombEditor
             flyby.Roll = Int16.Parse(tbRoll.Text);
             flyby.Sequence = Int16.Parse(tbSequence.Text);
             flyby.Number = Int16.Parse(tbNumber.Text);
-            flyby.FOV = Int16.Parse(tbFOV.Text);
+            flyby.Fov = Int16.Parse(tbFOV.Text);
 
             _editor.Level.Objects[_editor.PickingResult.Element] = flyby;
 

@@ -13,6 +13,7 @@ using TombLib.Graphics;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
+using TombEditor.Compilers;
 
 namespace TombEditor.Controls
 {
@@ -40,8 +41,7 @@ namespace TombEditor.Controls
 
         private class RenderBucket
         {
-            public byte MainRoom { get; set; }
-            public int Room { get; set; }
+            public Room Room { get; set; }
             public int Texture { get; set; }
             public byte DoubleSided { get; set; }
             public int X { get; set; }
@@ -65,85 +65,106 @@ namespace TombEditor.Controls
 
         private class ComparerOpaqueBuckets : IComparer<RenderBucket>
         {
+            private readonly Room[] _rooms;
+
+            public ComparerOpaqueBuckets(Room[] rooms)
+            {
+                _rooms = rooms;
+            }
+
             public int Compare(RenderBucket x, RenderBucket y)
             {
                 if (x == null || y == null)
                     return 0;
-                int result = (x.MainRoom > y.MainRoom ? -1 : 1);
-                if (x.MainRoom == y.MainRoom)
-                    result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
-                if (x.DoubleSided == y.DoubleSided)
-                    result = (x.Room > y.Room ? 1 : -1);
-                if (x.Room == y.Room)
-                    result = (x.Texture > y.Texture ? 1 : -1);
-                if (x.Texture == y.Texture)
-                    return 0;
 
-                return result;
+                int result = x.DoubleSided.CompareTo(y.DoubleSided);
+                if (result != 0)
+                    return result;
+                result = _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                if (result != 0)
+                    return result;
+                return x.Texture.CompareTo(y.Texture);
             }
         }
 
         private class ComparerTransparentBuckets : IComparer<RenderBucket>
         {
+            private readonly Room[] _rooms;
+
+            public ComparerTransparentBuckets(Room[] rooms)
+            {
+                _rooms = rooms;
+            }
+
             public int Compare(RenderBucket x, RenderBucket y)
             {
-                int result = (x.Distance < y.Distance ? 1 : -1);
-                if (x.Distance == y.Distance)
-                    result = (x.DoubleSided > y.DoubleSided ? 1 : -1);
-                if (x.DoubleSided == y.DoubleSided)
-                    result = (x.Room > y.Room ? 1 : -1);
-                if (x.Room == y.Room)
-                    result = (x.Texture > y.Texture ? 1 : -1);
-                if (x.Texture == y.Texture)
-                    return 0;
-
-                return result;
+                int result = x.Distance.CompareTo(y.Distance);
+                if (result != 0)
+                    return result;
+                result = x.DoubleSided.CompareTo(y.DoubleSided);
+                if (result != 0)
+                    return result;
+                result = _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                if (result != 0)
+                    return result;
+                return x.Texture.CompareTo(y.Texture);
             }
         }
 
         private class ComparerInvisibleBuckets : IComparer<RenderBucket>
         {
+            private readonly Room[] _rooms;
+
+            public ComparerInvisibleBuckets(Room[] rooms)
+            {
+                _rooms = rooms;
+            }
+
             public int Compare(RenderBucket x, RenderBucket y)
             {
-                if (x.Room == y.Room)
-                    return 0;
-                if (x.Room > y.Room)
-                    return 1;
-                return -1;
+                return _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
             }
         }
 
         private class ComparerMoveables : IComparer<int>
         {
+            private readonly Room[] _rooms;
+
+            public ComparerMoveables(Room[] rooms)
+            {
+                _rooms = rooms;
+            }
+
             public int Compare(int x, int y)
             {
-                MoveableInstance instanceX = (MoveableInstance)Editor.Instance.Level.Objects[x];
-                MoveableInstance instanceY = (MoveableInstance)Editor.Instance.Level.Objects[y];
+                var instanceX = (MoveableInstance) Editor.Instance.Level.Objects[x];
+                var instanceY = (MoveableInstance) Editor.Instance.Level.Objects[y];
 
-                int result = (instanceX.ObjectID > instanceY.ObjectID ? 1 : -1);
-                if (instanceX.ObjectID == instanceY.ObjectID)
-                    result = (instanceX.Room > instanceY.Room ? 1 : -1);
-                if (instanceX.Room == instanceY.Room)
-                    return 0;
-
-                return result;
+                int result = instanceX.ObjectId.CompareTo(instanceY.ObjectId);
+                if (result != 0)
+                    return result;
+                return _rooms.ReferenceIndexOf(instanceX.Room).CompareTo(_rooms.ReferenceIndexOf(instanceY.Room));
             }
         }
 
         private class ComparerStaticMeshes : IComparer<int>
         {
+            private readonly Room[] _rooms;
+
+            public ComparerStaticMeshes(Room[] rooms)
+            {
+                _rooms = rooms;
+            }
+
             public int Compare(int x, int y)
             {
-                StaticMeshInstance instanceX = (StaticMeshInstance)Editor.Instance.Level.Objects[x];
-                StaticMeshInstance instanceY = (StaticMeshInstance)Editor.Instance.Level.Objects[y];
+                var instanceX = (StaticMeshInstance) Editor.Instance.Level.Objects[x];
+                var instanceY = (StaticMeshInstance) Editor.Instance.Level.Objects[y];
 
-                int result = (instanceX.ObjectID > instanceY.ObjectID ? 1 : -1);
-                if (instanceX.ObjectID == instanceY.ObjectID)
-                    result = (instanceX.Room > instanceY.Room ? 1 : -1);
-                if (instanceX.Room == instanceY.Room)
-                    return 0;
-
-                return result;
+                int result = instanceX.ObjectId.CompareTo(instanceY.ObjectId);
+                if (result != 0)
+                    return result;
+                return _rooms.ReferenceIndexOf(instanceX.Room).CompareTo(_rooms.ReferenceIndexOf(instanceY.Room));
             }
         }
 
@@ -162,29 +183,29 @@ namespace TombEditor.Controls
         private Editor _editor;
         private bool _firstSelection;
         private RasterizerState _rasterizerWireframe;
-        private GeometricPrimitive _cube;
         private GeometricPrimitive _sphere;
         private GeometricPrimitive _cone;
         private GeometricPrimitive _littleCube;
         private GeometricPrimitive _littleSphere;
-        private GeometricPrimitive _littleWireframedCube;
-        private BasicEffect _basicEffect;
 
         // Gizmo
         private Gizmo _gizmo;
+
         private bool _drawGizmo = false;
-        
+
         // Rooms to draw
-        private List<int> _roomsToDraw;
+        private List<Room> _roomsToDraw;
 
         // Geometry buckets to draw
         private List<RenderBucket> _opaqueBuckets;
+
         private List<RenderBucket> _solidBuckets;
         private List<RenderBucket> _transparentBuckets;
         private List<RenderBucket> _invisibleBuckets;
 
         // Items to draw
         private List<int> _camerasToDraw;
+
         private List<int> _sinksToDraw;
         private List<int> _flybyToDraw;
         private List<int> _soundSourcesToDraw;
@@ -202,17 +223,19 @@ namespace TombEditor.Controls
 
             _editor = Editor.Instance;
         }
-        
+
         public void ResetCamera()
         {
-            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+            Room room = _editor.SelectedRoom;
 
             // Point the camera to the room's centre
-            Vector3 target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f, room.Position.Y * 256.0f + room.Ceiling * 64.0f,
-                                         room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
+            Vector3 target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f,
+                room.Position.Y * 256.0f + room.Ceiling * 64.0f,
+                room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000, 1000000);
+            Camera = new ArcBallCamera(target, (float) Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000,
+                1000000);
         }
 
         public void InitializePanel()
@@ -220,27 +243,30 @@ namespace TombEditor.Controls
             logger.Info("Starting DirectX 11");
 
             // Initialize the viewport, after the panel is added and sized on the form
-            PresentationParameters pp = new PresentationParameters();
-            pp.BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
-            pp.BackBufferWidth = Width;
-            pp.BackBufferHeight = Height;
-            pp.DepthStencilFormat = DepthFormat.Depth24Stencil8;
-            pp.DeviceWindowHandle = this;
-            pp.IsFullScreen = false;
-            pp.MultiSampleCount = MSAALevel.None;
-            pp.PresentationInterval = PresentInterval.Immediate;
-            pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
-            pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
+            var pp = new PresentationParameters
+            {
+                BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
+                BackBufferWidth = Width,
+                BackBufferHeight = Height,
+                DepthStencilFormat = DepthFormat.Depth24Stencil8,
+                DeviceWindowHandle = this,
+                IsFullScreen = false,
+                MultiSampleCount = MSAALevel.None,
+                PresentationInterval = PresentInterval.Immediate,
+                RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer,
+                Flags = SharpDX.DXGI.SwapChainFlags.None
+            };
 
             Presenter = new SwapChainGraphicsPresenter(_editor.GraphicsDevice, pp);
             Viewport = new Viewport(0, 0, Width, Height, 10.0f, 100000.0f);
 
             // Initialize the Arc-Ball Camera
-            Camera = new ArcBallCamera(Vector3.Zero, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000, 1000, 1000000);
+            Camera = new ArcBallCamera(Vector3.Zero, (float) Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000,
+                1000, 1000000);
 
             // Maybe I could use this as bounding box, scaling it properly before drawing
-            _cube = GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 1024);
-            _littleWireframedCube = GeometricPrimitive.LinesCube.New(_editor.GraphicsDevice);
+            GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 1024);
+            GeometricPrimitive.LinesCube.New(_editor.GraphicsDevice);
 
             // This sphere will be scaled up and down multiple times for using as In & Out of lights
             _sphere = GeometricPrimitive.Sphere.New(_editor.GraphicsDevice, 1024, 6);
@@ -252,22 +278,23 @@ namespace TombEditor.Controls
             _cone = GeometricPrimitive.Cone.New(_editor.GraphicsDevice, 1024, 1024, 18);
 
             // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
-            _basicEffect = new BasicEffect(_editor.GraphicsDevice);
+            new BasicEffect(_editor.GraphicsDevice);
 
             // Initialize the rasterizer state for wireframe drawing
-            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
-            {
-                CullMode = SharpDX.Direct3D11.CullMode.None,
-                DepthBias = 0,
-                DepthBiasClamp = 0,
-                FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
-                IsAntialiasedLineEnabled = true,
-                IsDepthClipEnabled = true,
-                IsFrontCounterClockwise = false,
-                IsMultisampleEnabled = true,
-                IsScissorEnabled = false,
-                SlopeScaledDepthBias = 0
-            };
+            SharpDX.Direct3D11.RasterizerStateDescription renderStateDesc =
+                new SharpDX.Direct3D11.RasterizerStateDescription
+                {
+                    CullMode = SharpDX.Direct3D11.CullMode.None,
+                    DepthBias = 0,
+                    DepthBiasClamp = 0,
+                    FillMode = SharpDX.Direct3D11.FillMode.Wireframe,
+                    IsAntialiasedLineEnabled = true,
+                    IsDepthClipEnabled = true,
+                    IsFrontCounterClockwise = false,
+                    IsMultisampleEnabled = true,
+                    IsScissorEnabled = false,
+                    SlopeScaledDepthBias = 0
+                };
 
             _rasterizerWireframe = RasterizerState.New(_editor.GraphicsDevice, renderStateDesc);
 
@@ -352,7 +379,7 @@ namespace TombEditor.Controls
                             _firstSelection = false;
 
                             // if one of the four corners of the selection is equal to -1, then is a first selection
-                            if (_editor.BlockSelectionStart.X == -1 || _editor.BlockSelectionStart.Y == -1)
+                            if (_editor.BlockSelectionAvailable)
                             {
                                 _editor.BlockSelectionStart = new System.Drawing.Point(newPicking.Element >> 5, newPicking.Element & 31);
                                 _editor.BlockSelectionEnd = _editor.BlockSelectionStart;
@@ -366,7 +393,8 @@ namespace TombEditor.Controls
                                 int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
                                 int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
-                                if (xBlock >= xMin && xBlock <= xMax && xBlock != -1 && zBlock >= zMin && zBlock <= zMax)
+                                if (xBlock >= xMin && xBlock <= xMax && xBlock != -1 && zBlock >= zMin &&
+                                    zBlock <= zMax)
                                 {
                                     // is not a first selection
                                     _firstSelection = false;
@@ -402,7 +430,7 @@ namespace TombEditor.Controls
             Draw();
             _editor.DrawPanelGrid();
         }
-        
+
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDoubleClick(e);
@@ -449,7 +477,7 @@ namespace TombEditor.Controls
 
             // Right click is for camera motion
             if (Drag && e.Button == MouseButtons.Right)
-            {                
+            {
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                 {
                     Camera.Move(-DeltaY * 50);
@@ -460,7 +488,7 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    Camera.Rotate((float)(DeltaX / 500.0f), (float)(-DeltaY / 500.0f));
+                    Camera.Rotate((float) (DeltaX / 500.0f), (float) (-DeltaY / 500.0f));
                 }
             }
             else if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -474,10 +502,11 @@ namespace TombEditor.Controls
                     Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
                     // For picking, I'll check first sphere/cubes bounding boxes and then eventually
-                    Room room = _editor.Level.Rooms[_editor.RoomIndex];
+                    Room room = _editor.SelectedRoom;
 
                     // First get the ray in 3D space from X, Y mouse coordinates
-                    Ray ray = Ray.GetPickRay((int)e.X, (int)e.Y, _editor.GraphicsDevice.Viewport, Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
+                    Ray ray = Ray.GetPickRay((int) e.X, (int) e.Y, _editor.GraphicsDevice.Viewport,
+                        Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
 
                     float delta = 0;
 
@@ -488,7 +517,7 @@ namespace TombEditor.Controls
 
                         ray.Intersects(ref plane, out intersection);
                         delta = intersection.X - (_gizmo.Position.X + 1024.0f);
-                       // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                        // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
                     }
 
                     if (_editor.PickingResult.GizmoAxis == GizmoAxis.Y)
@@ -508,53 +537,53 @@ namespace TombEditor.Controls
 
                         ray.Intersects(ref plane, out intersection);
                         delta = intersection.Z - (_gizmo.Position.Z - 1024.0f);
-                       // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
+                        // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
                     }
 
                     bool smooth = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Camera)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element, 
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);                                                     
+                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Sink)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Light)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Light, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
-                        _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-                        _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        _editor.SelectedRoom.CalculateLightingForThisRoom();
+                        _editor.SelectedRoom.UpdateBuffers();
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
                     {
                         EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                                                 _editor.PickingResult.GizmoAxis, delta, smooth);
+                            _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     Draw();
@@ -813,7 +842,8 @@ namespace TombEditor.Controls
 
             Effect solidEffect = _editor.Effects["Solid"];
 
-            Matrix model = Matrix.Identity * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+            Matrix model = Matrix.Identity *
+                           Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
 
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -824,9 +854,9 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.Draw(PrimitiveType.LineList, 2);
         }
 
-        private void DrawLights(Matrix viewProjection, int room)
+        private void DrawLights(Matrix viewProjection, Room room)
         {
-            if (room == -1)
+            if (room == null)
                 return;
 
             _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
@@ -835,10 +865,10 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
             Effect solidEffect = _editor.Effects["Solid"];
-            
-            for (int i = 0; i < _editor.Level.Rooms[room].Lights.Count; i++)
+
+            for (int i = 0; i < room.Lights.Count; i++)
             {
-                Light light = _editor.Level.Rooms[room].Lights[i];
+                Light light = room.Lights[i];
 
                 /*if (light.Type==LightType.Spot)
                 {
@@ -864,7 +894,8 @@ namespace TombEditor.Controls
                     continue;
                 }*/
 
-                Matrix model = Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                Matrix model = Matrix.Translation(light.Position) *
+                               Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                 solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 
                 if (light.Type == LightType.Light)
@@ -893,7 +924,7 @@ namespace TombEditor.Controls
 
             if (_editor.LightIndex != -1)
             {
-                Light light = _editor.Level.Rooms[room].Lights[_editor.LightIndex];
+                Light light = room.Lights[_editor.LightIndex];
 
                 if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
                 {
@@ -903,22 +934,27 @@ namespace TombEditor.Controls
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow)
                     {
-                        Matrix model = Matrix.Scaling(light.In * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                        Matrix model = Matrix.Scaling(light.In * 2.0f) * Matrix.Translation(light.Position) *
+                                       Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-                        _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                        _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList,
+                            _littleSphere.IndexBuffer.ElementCount);
                     }
 
-                    if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
+                    if (light.Type == LightType.Light || light.Type == LightType.Shadow ||
+                        light.Type == LightType.FogBulb)
                     {
-                        Matrix model = Matrix.Scaling(light.Out * 2.0f) * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                        Matrix model = Matrix.Scaling(light.Out * 2.0f) * Matrix.Translation(light.Position) *
+                                       Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-                        _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                        _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList,
+                            _littleSphere.IndexBuffer.ElementCount);
                     }
                 }
                 else if (light.Type == LightType.Spot)
@@ -928,12 +964,15 @@ namespace TombEditor.Controls
                     _editor.GraphicsDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
 
                     // Inner cone
-                    float coneAngle = (float)Math.Atan2(512, 1024);
+                    float coneAngle = (float) Math.Atan2(512, 1024);
                     float lenScaleH = light.Len;
                     float lenScaleW = MathUtil.DegreesToRadians(light.In) / coneAngle * lenScaleH;
 
-                    Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
-                    Matrix Model = Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) *
+                                      Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
+                    Matrix Model = Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation *
+                                   Matrix.Translation(light.Position) *
+                                   Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(Model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -945,7 +984,9 @@ namespace TombEditor.Controls
                     float cutoffScaleH = light.Cutoff;
                     float cutoffScaleW = MathUtil.DegreesToRadians(light.Out) / coneAngle * cutoffScaleH;
 
-                    Matrix model2 = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    Matrix model2 = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation *
+                                    Matrix.Translation(light.Position) *
+                                    Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model2 * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -958,9 +999,11 @@ namespace TombEditor.Controls
                     _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
                     _editor.GraphicsDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
 
-                    Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
+                    Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.DirectionX)) *
+                                      Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.DirectionY));
 
-                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Position) *
+                                   Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -984,13 +1027,16 @@ namespace TombEditor.Controls
                     message = "Fog bulb";
 
                 message += " (" + _editor.LightIndex + ")";
-                
+
                 // Object position
                 message += Environment.NewLine + GetObjectPositionString(light.Position);
-                
-                Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
-                Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+
+                Matrix modelViewProjection =
+                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) *
+                    viewProjection;
+                Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height,
+                    _editor.GraphicsDevice.Viewport.MinDepth,
+                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
                 Debug.AddString(message, screenPos);
 
                 // Add the line height of the object
@@ -1004,40 +1050,46 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawObjects(Matrix viewProjection, int room)
+        private void DrawObjects(Matrix viewProjection, Room room)
         {
             Effect effect = _editor.Effects["Solid"];
 
             _editor.GraphicsDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _editor.GraphicsDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-            
+
             for (int i = 0; i < _camerasToDraw.Count; i++)
             {
-                IObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
+                ObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
                 var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
-                if (_editor.PickingResult.ElementType == PickingElementType.Camera && instance.ID == _editor.PickingResult.Element)
+                if (_editor.PickingResult.ElementType == PickingElementType.Camera &&
+                    instance.Id == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    string message = "Camera (" + instance.ID + ")";
+                    string message = "Camera (" + instance.Id + ")";
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(instance.Position);
 
-                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
-                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+                    Matrix modelViewProjection =
+                        Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) *
+                        viewProjection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                        _editor.GraphicsDevice.Viewport.MinDepth,
+                        _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
-                        if ((trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Camera) && trigger.Target == instance.ID)
+                        if ((trigger.TargetType == TriggerTargetType.Object ||
+                             trigger.TargetType == TriggerTargetType.Camera) && trigger.Target == instance.Id)
                         {
-                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1050,7 +1102,8 @@ namespace TombEditor.Controls
                     _gizmo.Position = instance.Position;
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                Matrix model = Matrix.Translation(instance.Position) *
+                               Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
 
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
@@ -1061,37 +1114,43 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _flybyToDraw.Count; i++)
             {
-                IObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
+                ObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
                 Vector4 color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera && instance.ID == _editor.PickingResult.Element)
+                if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera &&
+                    instance.Id == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
                 }
 
-                FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
+                FlybyCameraInstance flyby = (FlybyCameraInstance) instance;
 
                 if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera &&
-                    _editor.PickingResult.Element == instance.ID)
+                    _editor.PickingResult.Element == instance.Id)
                 {
                     string message = "Flyby Camera (" + flyby.Sequence + ":" + flyby.Number + ")";
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(instance.Position);
 
-                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
-                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+                    Matrix modelViewProjection =
+                        Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) *
+                        viewProjection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                        _editor.GraphicsDevice.Viewport.MinDepth,
+                        _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
-                        if ((trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == instance.ID)
+                        if ((trigger.TargetType == TriggerTargetType.Object ||
+                             trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == instance.Id)
                         {
-                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1104,7 +1163,8 @@ namespace TombEditor.Controls
                     _gizmo.Position = instance.Position;
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                Matrix model = Matrix.Translation(instance.Position) *
+                               Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
 
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
@@ -1115,31 +1175,37 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _sinksToDraw.Count; i++)
             {
-                IObjectInstance instance = _editor.Level.Objects[_sinksToDraw[i]];
+                ObjectInstance instance = _editor.Level.Objects[_sinksToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
                 Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.PickingResult.ElementType == PickingElementType.Sink && instance.ID == _editor.PickingResult.Element)
+                if (_editor.PickingResult.ElementType == PickingElementType.Sink &&
+                    instance.Id == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    var message = "Sink (" + instance.ID + ")";
+                    var message = "Sink (" + instance.Id + ")";
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(instance.Position);
 
-                    var modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
-                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+                    var modelViewProjection =
+                        Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) *
+                        viewProjection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                        _editor.GraphicsDevice.Viewport.MinDepth,
+                        _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
-                        if ((trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.ID)
+                        if ((trigger.TargetType == TriggerTargetType.Object ||
+                             trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.Id)
                         {
-                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1152,7 +1218,8 @@ namespace TombEditor.Controls
                     _gizmo.Position = instance.Position;
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                Matrix model = Matrix.Translation(instance.Position) *
+                               Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1162,33 +1229,39 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _soundSourcesToDraw.Count; i++)
             {
-                IObjectInstance instance = _editor.Level.Objects[_soundSourcesToDraw[i]];
+                ObjectInstance instance = _editor.Level.Objects[_soundSourcesToDraw[i]];
 
                 _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
 
                 Vector4 color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
-                if (_editor.PickingResult.ElementType == PickingElementType.SoundSource && instance.ID == _editor.PickingResult.Element)
+                if (_editor.PickingResult.ElementType == PickingElementType.SoundSource &&
+                    instance.Id == _editor.PickingResult.Element)
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _editor.GraphicsDevice.SetRasterizerState(_rasterizerWireframe);
 
-                    SoundInstance sound = (SoundInstance)instance;
+                    SoundInstance sound = (SoundInstance) instance;
 
-                    string message = "Sound Source (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundID] + ") (" + instance.ID + ")";
+                    string message = "Sound Source (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundId] + ") (" +
+                                     instance.Id + ")";
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(instance.Position);
 
-                    Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
-                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+                    Matrix modelViewProjection =
+                        Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) *
+                        viewProjection;
+                    Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                        _editor.GraphicsDevice.Viewport.MinDepth,
+                        _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
-                        if ((trigger.TargetType == TriggerTargetType.Object) && trigger.Target == instance.ID)
+                        if ((trigger.TargetType == TriggerTargetType.Object) && trigger.Target == instance.Id)
                         {
-                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1201,7 +1274,8 @@ namespace TombEditor.Controls
                     _gizmo.Position = instance.Position;
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position));
+                Matrix model = Matrix.Translation(instance.Position) *
+                               Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1216,18 +1290,21 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _flybyToDraw.Count; i++)
             {
-                IObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
+                ObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
 
-                FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
+                FlybyCameraInstance flyby = (FlybyCameraInstance) instance;
 
                 // Outer cone
-                float coneAngle = (float)Math.Atan2(512, 1024);
+                float coneAngle = (float) Math.Atan2(512, 1024);
                 float cutoffScaleH = 1;
-                float cutoffScaleW = MathUtil.DegreesToRadians(flyby.FOV / 2) / coneAngle * cutoffScaleH;
+                float cutoffScaleW = MathUtil.DegreesToRadians(flyby.Fov / 2) / coneAngle * cutoffScaleH;
 
-                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(flyby.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(flyby.DirectionY));
+                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(flyby.DirectionX)) *
+                                  Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(flyby.DirectionY));
 
-                Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
+                Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation *
+                               Matrix.Translation(flyby.Position) *
+                               Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -1235,7 +1312,7 @@ namespace TombEditor.Controls
                 _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
             }
 
-            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);         
+            _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
         }
 
         private void DrawMoveables(Matrix viewProjection)
@@ -1243,7 +1320,7 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
             Effect skinnedModelEffect = _editor.Effects["Model"];
-            
+
             skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
             skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
 
@@ -1254,13 +1331,13 @@ namespace TombEditor.Controls
 
             for (int k = 0; k < MoveablesToDraw.Count; k++)
             {
-                MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[MoveablesToDraw[k]];
+                MoveableInstance modelInfo = (MoveableInstance) _editor.Level.Objects[MoveablesToDraw[k]];
 
                 Debug.NumMoveables++;
 
                 SkinnedModel model = modelInfo.Model;
-                
-                if (k == 0 || model.ObjectID != _lastObject.ObjectID)
+
+                if (k == 0 || model.ObjectID != _lastObject.ObjectId)
                 {
                     _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
                     _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
@@ -1268,10 +1345,12 @@ namespace TombEditor.Controls
 
                 if (k == 0)
                 {
-                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                    _editor.GraphicsDevice.SetVertexInputLayout(
+                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
                 }
 
-                if (_editor.PickingResult.ElementType == PickingElementType.Moveable && _editor.PickingResult.Element == modelInfo.ID)
+                if (_editor.PickingResult.ElementType == PickingElementType.Moveable &&
+                    _editor.PickingResult.Element == modelInfo.Id)
                     skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(true);
                 else
                     skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
@@ -1285,11 +1364,13 @@ namespace TombEditor.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    int theRoom = modelInfo.Room;
+                    var theRoom = modelInfo.Room;
 
-                    world = model.AnimationTransforms[i] * Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                                Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
-                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
+                    world = model.AnimationTransforms[i] *
+                            Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                            Matrix.Translation(modelInfo.Position) *
+                            Matrix.Translation(Utils.PositionInWorldCoordinates(theRoom.Position));
+                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(theRoom.Position));
 
                     skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
@@ -1301,26 +1382,28 @@ namespace TombEditor.Controls
                 }
 
                 if (_editor.PickingResult.ElementType == PickingElementType.Moveable &&
-                    _editor.PickingResult.Element == modelInfo.ID)
+                    _editor.PickingResult.Element == modelInfo.Id)
                 {
                     Matrix modelViewProjection = worldDebug * viewProjection;
-                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width,
+                        Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                        _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = _editor.MoveableNames[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+                    string debugMessage = _editor.MoveableNames[(int)model.ObjectID] + " (" + modelInfo.Id + ")";
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
 
                     // Add OCB
-                    if (modelInfo.OCB != 0) debugMessage += Environment.NewLine + "OCB: " + modelInfo.OCB;
+                    if (modelInfo.Ocb != 0) debugMessage += Environment.NewLine + "OCB: " + modelInfo.Ocb;
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
-                        if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.ID)
+                        if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.Id)
                         {
-                            debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                            trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1343,7 +1426,7 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
             Effect staticMeshEffect = _editor.Effects["StaticModel"];
-            
+
             staticMeshEffect.Parameters["TextureEnabled"].SetValue(true);
             staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
             staticMeshEffect.Parameters["LightEnabled"].SetValue(true);
@@ -1355,15 +1438,16 @@ namespace TombEditor.Controls
 
             for (int k = 0; k < StaticMeshesToDraw.Count; k++)
             {
-                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[StaticMeshesToDraw[k]];
+                StaticMeshInstance modelInfo = (StaticMeshInstance) _editor.Level.Objects[StaticMeshesToDraw[k]];
                 StaticModel model = modelInfo.Model;
 
                 if (k == 0)
-                { 
-                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
+                {
+                    _editor.GraphicsDevice.SetVertexInputLayout(
+                        VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
                 }
 
-                if (k == 0 || model.ObjectID != _lastObject.ObjectID)
+                if (k == 0 || model.ObjectID != _lastObject.ObjectId)
                 {
                     _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
                     _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
@@ -1371,7 +1455,8 @@ namespace TombEditor.Controls
 
                 Debug.NumStaticMeshes++;
 
-                bool SelectionEnabled = _editor.PickingResult.ElementType == PickingElementType.StaticMesh && _editor.PickingResult.Element == modelInfo.ID;
+                bool SelectionEnabled = _editor.PickingResult.ElementType == PickingElementType.StaticMesh &&
+                                        _editor.PickingResult.Element == modelInfo.Id;
                 staticMeshEffect.Parameters["SelectionEnabled"].SetValue(SelectionEnabled);
                 staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(modelInfo.Color));
 
@@ -1380,15 +1465,16 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    int theRoom = modelInfo.Room;
+                    var theRoom = modelInfo.Room;
 
                     StaticMesh mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
                     world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                                Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
-                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[theRoom].Position));
+                            Matrix.Translation(modelInfo.Position) *
+                            Matrix.Translation(Utils.PositionInWorldCoordinates(theRoom.Position));
+                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(theRoom.Position));
 
                     staticMeshEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
@@ -1400,13 +1486,14 @@ namespace TombEditor.Controls
                 }
 
                 if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh &&
-                    _editor.PickingResult.Element == modelInfo.ID)
+                    _editor.PickingResult.Element == modelInfo.Id)
                 {
                     Matrix modelViewProjection = worldDebug * viewProjection;
-                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                    _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
+                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width,
+                        Height, _editor.GraphicsDevice.Viewport.MinDepth,
+                        _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = _editor.StaticNames[(int)model.ObjectID] + " (" + modelInfo.ID + ")";
+                    string debugMessage = _editor.StaticNames[(int)model.ObjectID] + " (" + modelInfo.Id + ")";
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(modelInfo.Position);
@@ -1414,9 +1501,10 @@ namespace TombEditor.Controls
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
-                        if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.ID)
+                        if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.Id)
                         {
-                            debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.ID + " in Room #" + trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                            trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1434,7 +1522,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawSkyBox(Matrix viewProjection, int room)
+        private void DrawSkyBox(Matrix viewProjection)
         {
             if (_editor.Level.Wad == null)
                 return;
@@ -1444,7 +1532,7 @@ namespace TombEditor.Controls
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.Opaque);
 
             Effect skinnedModelEffect = _editor.Effects["Model"];
-            
+
             skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
             skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
 
@@ -1454,7 +1542,8 @@ namespace TombEditor.Controls
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
 
-            _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
+            _editor.GraphicsDevice.SetVertexInputLayout(
+                VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
 
             _editor.GraphicsDevice.SetVertexBuffer(0, skinnedModel.VertexBuffer);
             _editor.GraphicsDevice.SetIndexBuffer(skinnedModel.IndexBuffer, true);
@@ -1463,7 +1552,9 @@ namespace TombEditor.Controls
             {
                 SkinnedMesh mesh = skinnedModel.Meshes[i];
 
-                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] * Matrix.Translation(new Vector3(Camera.Position.X, Camera.Position.Y - 5120.0f, Camera.Position.Z));
+                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] *
+                                     Matrix.Translation(new Vector3(Camera.Position.X, Camera.Position.Y - 5120.0f,
+                                         Camera.Position.Z));
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
 
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
@@ -1480,8 +1571,10 @@ namespace TombEditor.Controls
             Vector3 farPoint = new Vector3(mousePosition, 1);
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
-            nearPoint = _editor.GraphicsDevice.Viewport.Unproject(nearPoint, viewProjection, Matrix.Identity, Matrix.Identity);
-            farPoint = _editor.GraphicsDevice.Viewport.Unproject(farPoint, viewProjection, Matrix.Identity, Matrix.Identity);
+            nearPoint = _editor.GraphicsDevice.Viewport.Unproject(nearPoint, viewProjection, Matrix.Identity,
+                Matrix.Identity);
+            farPoint = _editor.GraphicsDevice.Viewport.Unproject(farPoint, viewProjection, Matrix.Identity,
+                Matrix.Identity);
 
             Vector3 direction = farPoint - nearPoint;
             direction.Normalize();
@@ -1498,10 +1591,11 @@ namespace TombEditor.Controls
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
             // For picking, I'll check first sphere/cubes bounding boxes and then eventually
-            Room room = _editor.Level.Rooms[_editor.RoomIndex];
+            Room room = _editor.SelectedRoom;
 
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = Ray.GetPickRay((int)x, (int)y, _editor.GraphicsDevice.Viewport, Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
+            Ray ray = Ray.GetPickRay((int) x, (int) y, _editor.GraphicsDevice.Viewport,
+                Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
 
             float minDistance = float.MaxValue;
             float distance = 0;
@@ -1557,8 +1651,9 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.Sinks.Count; i++)
             {
                 distance = 0;
-                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.Sinks[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                                                  _editor.Level.Objects[room.Sinks[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                BoundingBox box = new BoundingBox(
+                    _editor.Level.Objects[room.Sinks[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                    _editor.Level.Objects[room.Sinks[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
@@ -1571,8 +1666,9 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.Cameras.Count; i++)
             {
                 distance = 0;
-                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.Cameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                                                  _editor.Level.Objects[room.Cameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                BoundingBox box = new BoundingBox(
+                    _editor.Level.Objects[room.Cameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                    _editor.Level.Objects[room.Cameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
@@ -1585,8 +1681,9 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.SoundSources.Count; i++)
             {
                 distance = 0;
-                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.SoundSources[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                                                  _editor.Level.Objects[room.SoundSources[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                BoundingBox box = new BoundingBox(
+                    _editor.Level.Objects[room.SoundSources[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                    _editor.Level.Objects[room.SoundSources[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
@@ -1599,8 +1696,9 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.FlyByCameras.Count; i++)
             {
                 distance = 0;
-                BoundingBox box = new BoundingBox(_editor.Level.Objects[room.FlyByCameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                                                  _editor.Level.Objects[room.FlyByCameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                BoundingBox box = new BoundingBox(
+                    _editor.Level.Objects[room.FlyByCameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
+                    _editor.Level.Objects[room.FlyByCameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
                 {
                     minDistance = distance;
@@ -1613,7 +1711,7 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.Moveables.Count; i++)
             {
                 distance = 0;
-                MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[room.Moveables[i]];
+                MoveableInstance modelInfo = (MoveableInstance) _editor.Level.Objects[room.Moveables[i]];
 
                 SkinnedModel model = modelInfo.Model;
                 model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
@@ -1622,8 +1720,9 @@ namespace TombEditor.Controls
                 {
                     SkinnedMesh mesh = model.Meshes[j];
 
-                    Matrix world = model.AnimationTransforms[j] * Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                                    Matrix.Translation(modelInfo.Position);
+                    Matrix world = model.AnimationTransforms[j] *
+                                   Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                   Matrix.Translation(modelInfo.Position);
 
                     Vector3 centre = mesh.BoundingSphere.Center;
 
@@ -1636,7 +1735,7 @@ namespace TombEditor.Controls
                     Vector3.Transform(ref max, ref world, out transformedMax);
 
                     BoundingBox box = new BoundingBox(new Vector3(transformedMin.X, transformedMin.Y, transformedMin.Z),
-                                                      new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
+                        new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
 
                     distance = 0;
                     if (ray.Intersects(ref box, out distance) && distance < minDistance)
@@ -1676,14 +1775,14 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.StaticMeshes.Count; i++)
             {
                 distance = 0;
-                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[room.StaticMeshes[i]];
+                StaticMeshInstance modelInfo = (StaticMeshInstance) _editor.Level.Objects[room.StaticMeshes[i]];
 
                 StaticModel model = modelInfo.Model;
 
                 StaticMesh mesh = model.Meshes[0];
 
                 Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                                Matrix.Translation(modelInfo.Position);
+                               Matrix.Translation(modelInfo.Position);
 
                 Vector3 centre = mesh.BoundingSphere.Center;
 
@@ -1697,7 +1796,7 @@ namespace TombEditor.Controls
                 Vector3.Transform(ref max, ref world, out transformedMax);
 
                 BoundingBox box = new BoundingBox(new Vector3(transformedMin.X, transformedMin.Y, transformedMin.Z),
-                                                  new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
+                    new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
 
                 distance = 0;
                 if (ray.Intersects(ref box, out distance) && distance < minDistance)
@@ -1810,47 +1909,56 @@ namespace TombEditor.Controls
                 return;
 
             // salvo un puntatore alla faccia per accesso rapido
-            BlockFace face = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement];
-            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+            BlockFace face = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement];
+            BlockFaces faceType = (BlockFaces) _editor.PickingResult.SubElement;
 
             if (_editor.InvisiblePolygon || face.Invisible)
                 return;
 
             if (face.Shape == BlockFaceShape.Triangle)
             {
-                Vector2 temp3 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = temp3;
+                Vector2 temp3 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] =
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] =
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = temp3;
 
                 if (faceType == BlockFaces.FloorTriangle2)
                 {
-                    Vector2 temp4 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = temp4;
+                    Vector2 temp4 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement]
+                        .TriangleUV2[2];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = _editor
+                        .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = _editor
+                        .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = temp4;
                 }
 
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation += 1;
-                if (_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation == 3)
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation = 0;
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation += 1;
+                if (_editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation == 3)
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation = 0;
             }
             else
             {
-                Vector2 temp2 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0] = temp2;
+                Vector2 temp2 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement]
+                    .RectangleUV[3];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3] = _editor
+                    .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2] = _editor
+                    .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1] = _editor
+                    .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0] = temp2;
 
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation += 1;
-                if (_editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation == 4)
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation = 0;
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation += 1;
+                if (_editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation == 4)
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].Rotation = 0;
             }
 
-            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+            _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.CalculateLightingForThisRoom();
+            _editor.SelectedRoom.UpdateBuffers();
         }
 
         private void FlipTexture()
@@ -1863,8 +1971,8 @@ namespace TombEditor.Controls
                 return;
 
             // salvo un puntatore alla faccia per accesso rapido
-            BlockFace face = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement];
-            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+            BlockFace face = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement];
+            BlockFaces faceType = (BlockFaces) _editor.PickingResult.SubElement;
 
             if (_editor.InvisiblePolygon || face.Invisible || face.Texture == -1)
                 return;
@@ -1884,92 +1992,114 @@ namespace TombEditor.Controls
 
                 if (_editor.TextureTriangle == TextureTileType.TriangleNW)
                 {
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[1];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[0];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[2];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[1];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[0];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[2];
 
                     if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[1];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[0];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] =
+                            UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] =
+                            UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] =
+                            UV[2];
                     }
                 }
 
                 if (_editor.TextureTriangle == TextureTileType.TriangleNE)
                 {
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[0];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[3];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[1];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[0];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[3];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[1];
 
                     if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[0];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[3];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] =
+                            UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] =
+                            UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] =
+                            UV[1];
                     }
                 }
 
                 if (_editor.TextureTriangle == TextureTileType.TriangleSE)
                 {
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[3];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[2];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[0];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[3];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[2];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[0];
 
                     if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[3];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[2];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] =
+                            UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] =
+                            UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] =
+                            UV[0];
                     }
                 }
 
                 if (_editor.TextureTriangle == TextureTileType.TriangleSW)
                 {
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[2];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[1];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[3];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = UV[2];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = UV[1];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = UV[3];
 
                     if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
                     {
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = UV[2];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = UV[1];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = UV[3];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] =
+                            UV[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] =
+                            UV[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] =
+                            UV[3];
                     }
                 }
 
                 for (int k = 0; k < face.Rotation; k++)
                 {
-                    Vector2 temp3 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0];
-                    _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = temp3;
+                    Vector2 temp3 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement]
+                        .TriangleUV[2];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[2] = _editor
+                        .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[1] = _editor
+                        .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0];
+                    _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV[0] = temp3;
 
                     if (faceType == BlockFaces.FloorTriangle2)
                     {
-                        Vector2 temp4 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0];
-                        _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] = temp4;
+                        Vector2 temp4 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement]
+                            .TriangleUV2[2];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[2] =
+                            _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[1] =
+                            _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0];
+                        _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].TriangleUV2[0] =
+                            temp4;
                     }
                 }
             }
             else
             {
-                Vector2 temp2 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0] = temp2;
+                Vector2 temp2 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement]
+                    .RectangleUV[1];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[1] = _editor
+                    .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[0] = temp2;
 
-                temp2 = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3] = _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2];
-                _editor.Level.Rooms[_editor.RoomIndex].Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2] = temp2;
+                temp2 = _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[3] = _editor
+                    .SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2];
+                _editor.SelectedRoom.Blocks[x, z].Faces[_editor.PickingResult.SubElement].RectangleUV[2] = temp2;
             }
 
             face.Flipped = !face.Flipped;
 
-            _editor.Level.Rooms[_editor.RoomIndex].BuildGeometry();
-            _editor.Level.Rooms[_editor.RoomIndex].CalculateLightingForThisRoom();
-            _editor.Level.Rooms[_editor.RoomIndex].UpdateBuffers();
+            _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.CalculateLightingForThisRoom();
+            _editor.SelectedRoom.UpdateBuffers();
         }
 
         private void PlaceTexture()
@@ -1983,7 +2113,7 @@ namespace TombEditor.Controls
             if (_editor.PickingResult.SubElement > 28)
                 return;
 
-            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+            BlockFaces faceType = (BlockFaces) _editor.PickingResult.SubElement;
             EditorActions.PlaceTexture(x, z, faceType);
         }
 
@@ -1992,8 +2122,8 @@ namespace TombEditor.Controls
             // Recover the X and Z coordinates of the face
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
-  
-            BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
+
+            BlockFaces faceType = (BlockFaces) _editor.PickingResult.SubElement;
 
             EditorActions.PlaceNoCollision(x, z, faceType);
         }
@@ -2079,27 +2209,27 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
-                if (_roomsToDraw[i] == _editor.RoomIndex)
+                if (_roomsToDraw[i] == _editor.SelectedRoom)
                 {
-                    _camerasToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Cameras);
-                    _sinksToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Sinks);
-                    _flybyToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].FlyByCameras);
-                    _soundSourcesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].SoundSources);
+                    _camerasToDraw.AddRange(_roomsToDraw[i].Cameras);
+                    _sinksToDraw.AddRange(_roomsToDraw[i].Sinks);
+                    _flybyToDraw.AddRange(_roomsToDraw[i].FlyByCameras);
+                    _soundSourcesToDraw.AddRange(_roomsToDraw[i].SoundSources);
                 }
 
-                MoveablesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].Moveables);
-                StaticMeshesToDraw.AddRange(_editor.Level.Rooms[_roomsToDraw[i]].StaticMeshes);
+                MoveablesToDraw.AddRange(_roomsToDraw[i].Moveables);
+                StaticMeshesToDraw.AddRange(_roomsToDraw[i].StaticMeshes);
             }
 
-            MoveablesToDraw.Sort(new ComparerMoveables());
-            StaticMeshesToDraw.Sort(new ComparerStaticMeshes());
+            MoveablesToDraw.Sort(new ComparerMoveables(_editor.Level.Rooms));
+            StaticMeshesToDraw.Sort(new ComparerStaticMeshes(_editor.Level.Rooms));
         }
 
-        private void CollectRoomsToDraw(int room)
+        private void CollectRoomsToDraw(Room room)
         {
             // New iterative version of the function 
 
-            Stack<int> stackRooms = new Stack<int>();
+            Stack<Room> stackRooms = new Stack<Room>();
             Stack<int> stackLimits = new Stack<int>();
 
             stackRooms.Push(room);
@@ -2107,7 +2237,7 @@ namespace TombEditor.Controls
 
             while (stackRooms.Count > 0)
             {
-                int theRoom = stackRooms.Pop();
+                var theRoom = stackRooms.Pop();
                 int theLimit = stackLimits.Pop();
 
                 if (theLimit > Configuration.DrawRoomsMaxDepth)
@@ -2115,34 +2245,34 @@ namespace TombEditor.Controls
 
                 if (_editor.IsFlipMap)
                 {
-                    if (!_editor.Level.Rooms[theRoom].Flipped)
+                    if (!theRoom.Flipped)
                     {
-                        _editor.Level.Rooms[theRoom].Visited = true;
+                        theRoom.Visited = true;
                         _roomsToDraw.Add(theRoom);
                     }
                     else
                     {
-                        if (_editor.Level.Rooms[theRoom].AlternateRoom != -1)
+                        if (theRoom.AlternateRoom != null)
                         {
-                            _editor.Level.Rooms[theRoom].Visited = true;
-                            _roomsToDraw.Add(_editor.Level.Rooms[theRoom].AlternateRoom);
+                            theRoom.Visited = true;
+                            _roomsToDraw.Add(theRoom.AlternateRoom);
                         }
                         else
                         {
-                            _editor.Level.Rooms[theRoom].Visited = true;
+                            theRoom.Visited = true;
                             _roomsToDraw.Add(theRoom);
                         }
                     }
                 }
                 else
                 {
-                    _editor.Level.Rooms[theRoom].Visited = true;
+                    theRoom.Visited = true;
                     _roomsToDraw.Add(theRoom);
                 }
 
-                for (int p = 0; p < _editor.Level.Rooms[theRoom].Portals.Count; p++)
+                for (int p = 0; p < theRoom.Portals.Count; p++)
                 {
-                    Portal portal = _editor.Level.Portals[_editor.Level.Rooms[theRoom].Portals[p]];
+                    Portal portal = _editor.Level.Portals[theRoom.Portals[p]];
 
                     Vector3 normal = Vector3.Zero;
 
@@ -2168,7 +2298,8 @@ namespace TombEditor.Controls
                     if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1)
                         continue;
 
-                    if (portal.Room == theRoom && !_editor.Level.Rooms[portal.AdjoiningRoom].Visited && !stackRooms.Contains(portal.AdjoiningRoom))
+                    if (portal.Room == theRoom && !portal.AdjoiningRoom.Visited &&
+                        !stackRooms.Contains(portal.AdjoiningRoom))
                     {
                         stackRooms.Push(portal.AdjoiningRoom);
                         stackLimits.Push(theLimit + 1);
@@ -2190,31 +2321,32 @@ namespace TombEditor.Controls
             // Build buckets
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
-                int room = _roomsToDraw[i];
+                var room = _roomsToDraw[i];
 
-                for (int x = 0; x < _editor.Level.Rooms[room].NumXSectors; x++)
+                for (int x = 0; x < room.NumXSectors; x++)
                 {
-                    for (int z = 0; z < _editor.Level.Rooms[room].NumZSectors; z++)
+                    for (int z = 0; z < room.NumZSectors; z++)
                     {
-                        for (int f = 0; f < _editor.Level.Rooms[room].Blocks[x, z].Faces.Count(); f++)
+                        for (int f = 0; f < room.Blocks[x, z].Faces.Count(); f++)
                         {
-                            face = _editor.Level.Rooms[room].Blocks[x, z].Faces[f];
+                            face = room.Blocks[x, z].Faces[f];
 
                             //float dot = Vector3.Dot(-viewVector, face.Plane.Normal);
                             //if (dot < 0.01f) continue;
 
                             if (face.Defined)
                             {
-                                if ((_editor.Mode == EditorMode.Geometry && room == _editor.RoomIndex) ||
+                                if ((_editor.Mode == EditorMode.Geometry && room == _editor.SelectedRoom) ||
                                     (face.Texture == -1 && !face.Invisible))
                                 {
-                                    RenderBucket bucket = new RenderBucket();
-
-                                    bucket.FaceType = (BlockFaces)f;
-                                    bucket.Face = face;
-                                    bucket.X = x;
-                                    bucket.Z = z;
-                                    bucket.Room = room;
+                                    RenderBucket bucket = new RenderBucket
+                                    {
+                                        FaceType = (BlockFaces) f,
+                                        Face = face,
+                                        X = x,
+                                        Z = z,
+                                        Room = room
+                                    };
 
                                     _solidBuckets.Add(bucket);
                                 }
@@ -2222,33 +2354,35 @@ namespace TombEditor.Controls
                                 {
                                     if (face.Invisible)
                                     {
-                                        RenderBucket bucket = new RenderBucket();
-
-                                        bucket.FaceType = (BlockFaces)f;
-                                        bucket.Face = face;
-                                        bucket.X = x;
-                                        bucket.Z = z;
-                                        bucket.Invisible = (byte)(face.Invisible ? 1 : 0);
-                                        bucket.Texture = face.Texture;
-                                        bucket.Room = room;
+                                        RenderBucket bucket = new RenderBucket
+                                        {
+                                            FaceType = (BlockFaces) f,
+                                            Face = face,
+                                            X = x,
+                                            Z = z,
+                                            Invisible = (byte) (face.Invisible ? 1 : 0),
+                                            Texture = face.Texture,
+                                            Room = room
+                                        };
 
                                         _invisibleBuckets.Add(bucket);
                                     }
                                     else if (face.Texture == -1)
                                     {
-                                        if (_editor.Mode == EditorMode.FaceEdit && room == _editor.RoomIndex)
+                                        if (_editor.Mode == EditorMode.FaceEdit && room == _editor.SelectedRoom)
                                         {
-                                            RenderBucket bucket = new RenderBucket();
-
-                                            bucket.FaceType = (BlockFaces)f;
-                                            bucket.Face = face;
-                                            bucket.X = x;
-                                            bucket.Z = z;
-                                            bucket.Room = room;
+                                            RenderBucket bucket = new RenderBucket
+                                            {
+                                                FaceType = (BlockFaces) f,
+                                                Face = face,
+                                                X = x,
+                                                Z = z,
+                                                Room = room
+                                            };
 
                                             _solidBuckets.Add(bucket);
                                         }
-                                    } 
+                                    }
                                     else
                                     {
                                         if (!face.Transparent && !face.Invisible)
@@ -2257,7 +2391,8 @@ namespace TombEditor.Controls
                                             for (int b = 0; b < _opaqueBuckets.Count; b++)
                                             {
                                                 RenderBucket currentBucket = _opaqueBuckets[b];
-                                                if (currentBucket.Room == room && currentBucket.DoubleSided == (face.DoubleSided ? 1 : 0))
+                                                if (currentBucket.Room == room && currentBucket.DoubleSided ==
+                                                    (face.DoubleSided ? 1 : 0))
                                                 {
                                                     found = b;
                                                     break;
@@ -2266,46 +2401,50 @@ namespace TombEditor.Controls
 
                                             if (found == -1)
                                             {
-                                                RenderBucket bucket = new RenderBucket();
-
-                                                bucket.DoubleSided = (byte)(face.DoubleSided ? 1 : 0);
-                                                bucket.Room = room;
+                                                RenderBucket bucket = new RenderBucket
+                                                {
+                                                    DoubleSided = (byte) (face.DoubleSided ? 1 : 0),
+                                                    Room = room
+                                                };
 
                                                 _opaqueBuckets.Add(bucket);
 
                                                 found = _opaqueBuckets.Count - 1;
                                             }
 
-                                            _opaqueBuckets[found].Indices.AddRange(face.IndicesForSolidBucketsRendering);
+                                            _opaqueBuckets[found].Indices
+                                                .AddRange(face.IndicesForSolidBucketsRendering);
                                         }
                                         else if (face.Invisible)
                                         {
-                                            RenderBucket bucket = new RenderBucket();
-
-                                            bucket.FaceType = (BlockFaces)f;
-                                            bucket.Face = face;
-                                            bucket.X = x;
-                                            bucket.Z = z;
-                                            bucket.Invisible = (byte)(1);
-                                            bucket.Texture = face.Texture;
-                                            bucket.Room = room;
+                                            RenderBucket bucket = new RenderBucket
+                                            {
+                                                FaceType = (BlockFaces) f,
+                                                Face = face,
+                                                X = x,
+                                                Z = z,
+                                                Invisible = (byte) (1),
+                                                Texture = face.Texture,
+                                                Room = room
+                                            };
 
                                             _invisibleBuckets.Add(bucket);
                                         }
                                         else if (face.Transparent)
                                         {
-                                            RenderBucket bucket = new RenderBucket();
-
-                                            bucket.FaceType = (BlockFaces)f;
-                                            bucket.Face = face;
-                                            bucket.X = x;
-                                            bucket.Z = z;
-                                            bucket.DoubleSided = (byte)(face.DoubleSided ? 1 : 0);
-                                            bucket.Texture = face.Texture;
-                                            bucket.Room = room;
+                                            RenderBucket bucket = new RenderBucket
+                                            {
+                                                FaceType = (BlockFaces) f,
+                                                Face = face,
+                                                X = x,
+                                                Z = z,
+                                                DoubleSided = (byte) (face.DoubleSided ? 1 : 0),
+                                                Texture = face.Texture,
+                                                Room = room,
+                                                Plane = face.Plane
+                                            };
 
                                             // calcolo il piano passante per la faccia
-                                            bucket.Plane = face.Plane;
 
                                             // calcolo il centro della faccia
                                             Vector4 centre = Vector4.Zero;
@@ -2333,18 +2472,19 @@ namespace TombEditor.Controls
             }
 
             // Sort buckets
-            _opaqueBuckets.Sort(new ComparerOpaqueBuckets());
-            _transparentBuckets.Sort(new ComparerTransparentBuckets());
-            _invisibleBuckets.Sort(new ComparerInvisibleBuckets());
+            _opaqueBuckets.Sort(new ComparerOpaqueBuckets(_editor.Level.Rooms));
+            _transparentBuckets.Sort(new ComparerTransparentBuckets(_editor.Level.Rooms));
+            _invisibleBuckets.Sort(new ComparerInvisibleBuckets(_editor.Level.Rooms));
 
-            Parallel.ForEach<RenderBucket>(_opaqueBuckets, item => PrepareIndexBuffer(item));
+            Parallel.ForEach(_opaqueBuckets, PrepareIndexBuffer);
         }
 
         private void PrepareIndexBuffer(RenderBucket item)
         {
-            item.IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.New(Editor.Instance.GraphicsDevice, item.Indices.ToArray(), BufferFlags.IndexBuffer);
+            item.IndexBuffer = SharpDX.Toolkit.Graphics.Buffer.New(Editor.Instance.GraphicsDevice,
+                item.Indices.ToArray(), BufferFlags.IndexBuffer);
         }
-        
+
         public void Draw()
         {
             if (DesignMode)
@@ -2359,32 +2499,34 @@ namespace TombEditor.Controls
             _drawGizmo = false;
 
             // Don't draw anything if device is not ready
-            if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null || _editor.RoomIndex == -1)
+            if (_editor.GraphicsDevice == null || _editor.GraphicsDevice.Presenter == null ||
+                _editor.SelectedRoom == null)
                 return;
 
             // reset the backbuffer
             _editor.GraphicsDevice.Presenter = Presenter;
             _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
-            _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer, _editor.GraphicsDevice.Presenter.BackBuffer);
+            _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer,
+                _editor.GraphicsDevice.Presenter.BackBuffer);
             _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
-                                         (!_editor.IsFlipMap ? Color.CornflowerBlue : Color.LightCoral), 1.0f, 0);
+                (!_editor.IsFlipMap ? Color.CornflowerBlue : Color.LightCoral), 1.0f, 0);
             _editor.GraphicsDevice.SetDepthStencilState(_editor.GraphicsDevice.DepthStencilStates.Default);
-            
+
             // verify that editor is ready
             if (_editor.Level == null)
                 return;
             if (_editor.Level.Rooms.Length == 0)
                 return;
-            if (_editor.Level.Rooms[_editor.RoomIndex] == null)
+            if (_editor.SelectedRoom == null)
                 return;
-            if (_editor.Level.Rooms[_editor.RoomIndex].VertexBuffer == null)
+            if (_editor.SelectedRoom.VertexBuffer == null)
                 return;
 
             //Precalculate the view projection matrix
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
             // First collect rooms to draw
-            _roomsToDraw = new List<int>();
+            _roomsToDraw = new List<Room>();
 
             // Reset visited flag for collecting rooms
             for (int i = 0; i < _editor.Level.Rooms.Length; i++)
@@ -2396,9 +2538,9 @@ namespace TombEditor.Controls
 
             // Collect rooms to draw
             if (_editor.DrawPortals)
-                CollectRoomsToDraw(_editor.RoomIndex);
+                CollectRoomsToDraw(_editor.SelectedRoom);
             else
-                _roomsToDraw.Add(_editor.RoomIndex);
+                _roomsToDraw.Add(_editor.SelectedRoom);
 
             Debug.NumRooms = _roomsToDraw.Count;
 
@@ -2408,9 +2550,9 @@ namespace TombEditor.Controls
 
             // Draw the skybox if present
             if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) &&
-                 _editor != null && _editor.Level != null && _editor.Level.Wad != null && _editor.DrawHorizon)
+                _editor != null && _editor.Level != null && _editor.Level.Wad != null && _editor.DrawHorizon)
             {
-                DrawSkyBox(viewProjection, _editor.RoomIndex);
+                DrawSkyBox(viewProjection);
                 _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
             }
 
@@ -2442,7 +2584,7 @@ namespace TombEditor.Controls
             DrawObjects(viewProjection, _roomsToDraw[0]);
 
             // Draw light objects and bounding volumes only for current room
-            DrawLights(viewProjection, _editor.RoomIndex);
+            DrawLights(viewProjection, _editor.SelectedRoom);
 
             // Draw the height of the object
             if (_drawHeightLine) DrawObjectHeightLine(viewProjection);
@@ -2468,10 +2610,10 @@ namespace TombEditor.Controls
 
             logger.Debug($"Draw Call! {mils}ms");
         }
-        
+
         private void RenderTask1(object viewProjection_)
         {
-            Matrix viewProjection = (Matrix)viewProjection_;
+            Matrix viewProjection = (Matrix) viewProjection_;
 
             // Collect objects to draw
             CollectObjectsToDraw();
@@ -2482,7 +2624,7 @@ namespace TombEditor.Controls
 
         private void RenderTask2(object viewProjection_)
         {
-            Matrix viewProjection = (Matrix)viewProjection_;
+            Matrix viewProjection = (Matrix) viewProjection_;
 
             // Add room names
             if (_editor.DrawRoomNames)
@@ -2498,26 +2640,27 @@ namespace TombEditor.Controls
         {
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
-                string message = (_editor.Level.Rooms[_roomsToDraw[i]].Name != null ? _editor.Level.Rooms[_roomsToDraw[i]].Name : "Room " + _roomsToDraw[i]);
+                string message = (_roomsToDraw[i].Name != null ? _roomsToDraw[i].Name : "Room " + _editor.Level.Rooms.ReferenceIndexOf(_roomsToDraw[i]));
 
-                Vector3 pos = _editor.Level.Rooms[_roomsToDraw[i]].Position;
+                Vector3 pos = _roomsToDraw[i].Position;
                 Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(pos)) * viewProjection;
-                Vector3 screenPos = Vector3.Project(_editor.Level.Rooms[_roomsToDraw[i]].Centre, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                Vector3 screenPos = Vector3.Project(_roomsToDraw[i].Centre, 0, 0, Width, Height,
+                    _editor.GraphicsDevice.Viewport.MinDepth,
+                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
                 Debug.AddString(message, screenPos);
             }
         }
 
         private void AddDirectionsToDebug(Matrix viewProjection)
         {
-            float xBlocks = _editor.Level.Rooms[_editor.RoomIndex].NumXSectors / 2.0f * 1024.0f;
-            float zBlocks = _editor.Level.Rooms[_editor.RoomIndex].NumZSectors / 2.0f * 1024.0f;
+            float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
+            float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = { "North", "South", "East", "West" };
+            string[] messages = {"North", "South", "East", "West"};
             Vector3[] positions = new Vector3[4];
 
-            Vector3 centre = _editor.Level.Rooms[_editor.RoomIndex].Centre;
-            Vector3 pos = Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position);
+            Vector3 centre = _editor.SelectedRoom.Centre;
+            Vector3 pos = Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position);
 
             positions[0] = centre + new Vector3(0, 0, zBlocks);
             positions[1] = centre + new Vector3(0, 0, -zBlocks);
@@ -2528,8 +2671,9 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < 4; i++)
             {
-                Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                                                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
+                Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height,
+                    _editor.GraphicsDevice.Viewport.MinDepth,
+                    _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
                 Debug.AddString(messages[i], screenPos);
             }
         }
@@ -2549,18 +2693,19 @@ namespace TombEditor.Controls
             {
                 RenderBucket bucket = _opaqueBuckets[i];
 
-                int room = bucket.Room;
-                
+                var room = bucket.Room;
+
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
                     // Load the vertex buffer in the GPU and set the world matrix
-                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
-                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
+                    _editor.GraphicsDevice.SetVertexBuffer(room.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, room.VertexBuffer));
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
+                    bool lights = (room != _editor.SelectedRoom ||
+                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
                 }
 
@@ -2579,14 +2724,16 @@ namespace TombEditor.Controls
                 if (_lastBucket == null)
                 {
                     _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0]);
-                    _roomEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
+                    _roomEffect.Parameters["TextureSampler"]
+                        .SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
                 }
 
                 _roomEffect.CurrentTechnique.Passes[0].Apply();
 
                 // Draw the face
-                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
-                
+                _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList,
+                    bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
+
                 Debug.NumVertices += bucket.IndexBuffer.ElementCount;
                 Debug.NumTriangles += bucket.IndexBuffer.ElementCount / 3;
 
@@ -2613,19 +2760,19 @@ namespace TombEditor.Controls
             {
                 RenderBucket bucket = _invisibleBuckets[i];
 
-                int room = bucket.Room;
+                var room = bucket.Room;
                 int x = bucket.X;
                 int z = bucket.Z;
-                int index = (int)bucket.FaceType;
+                int index = (int) bucket.FaceType;
                 BlockFace face = bucket.Face;
 
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
                     // Load the vertex buffer in the GPU and set the world matrix
-                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
-                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
+                    _editor.GraphicsDevice.SetVertexBuffer(room.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, room.VertexBuffer));
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
                 }
 
                 // Set shape
@@ -2667,22 +2814,23 @@ namespace TombEditor.Controls
             {
                 RenderBucket bucket = _transparentBuckets[i];
 
-                int room = bucket.Room;
+                var room = bucket.Room;
                 int x = bucket.X;
                 int z = bucket.Z;
-                int index = (int)bucket.FaceType;
+                int index = (int) bucket.FaceType;
                 BlockFace face = bucket.Face;
 
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
                     // Load the vertex buffer in the GPU and set the world matrix
-                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
-                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
+                    _editor.GraphicsDevice.SetVertexBuffer(room.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, room.VertexBuffer));
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
+                    bool lights = (room != _editor.SelectedRoom ||
+                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
                 }
 
@@ -2702,7 +2850,8 @@ namespace TombEditor.Controls
 
                     LevelTexture textureSample = _editor.Level.TextureSamples[face.Texture];
                     _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0 /*textureSample.Page*/]);
-                    _roomEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
+                    _roomEffect.Parameters["TextureSampler"]
+                        .SetResource(_editor.GraphicsDevice.SamplerStates.AnisotropicWrap);
                 }
 
                 // Set shape
@@ -2744,19 +2893,20 @@ namespace TombEditor.Controls
                 RenderBucket bucket = _solidBuckets[i];
                 int x = bucket.X;
                 int z = bucket.Z;
-                int index = (int)bucket.FaceType;
-                int room = bucket.Room;
-                
+                int index = (int) bucket.FaceType;
+                var room = bucket.Room;
+
                 // If room is changed, setup vertex buffers, world matrix and lighting
                 if (_lastBucket == null || _lastBucket.Room != bucket.Room)
                 {
                     // Load the vertex buffer in the GPU and set the world matrix
-                    _editor.GraphicsDevice.SetVertexBuffer(_editor.Level.Rooms[room].VertexBuffer);
-                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _editor.Level.Rooms[room].VertexBuffer));
-                    _roomEffect.Parameters["ModelViewProjection"].SetValue(_editor.Level.Rooms[room].Transform * viewProjection);
+                    _editor.GraphicsDevice.SetVertexBuffer(room.VertexBuffer);
+                    _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, room.VertexBuffer));
+                    _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    bool lights = (room != _editor.RoomIndex || (room == _editor.RoomIndex && _editor.Mode == EditorMode.Lighting));
+                    bool lights = (room != _editor.SelectedRoom ||
+                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
                 }
 
@@ -2880,9 +3030,9 @@ namespace TombEditor.Controls
                                 break;
                         }
                     }
-                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 || 
-                             (_editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.Wall &&
-                              _editor.Level.Rooms[room].Blocks[x, z].Type != BlockType.BorderWall))
+                    else if (index == 4 || index == 9 || index == 14 || index == 19 || index == 24 ||
+                             (room.Blocks[x, z].Type != BlockType.Wall &&
+                              room.Blocks[x, z].Type != BlockType.BorderWall))
                     {
                         _roomEffect.Parameters["TextureEnabled"].SetValue(false);
                         _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
@@ -2892,13 +3042,13 @@ namespace TombEditor.Controls
                         // applico le texture delle frecce ai muri
                         int qa, ed, rf, ws, middle;
 
-                        if (z == _editor.Level.Rooms[room].NumZSectors - 1)
+                        if (z == room.NumZSectors - 1)
                         {
-                            qa = (int)BlockFaces.SouthQA;
-                            ws = (int)BlockFaces.SouthWS;
-                            ed = (int)BlockFaces.SouthED;
-                            rf = (int)BlockFaces.SouthRF;
-                            middle = (int)BlockFaces.SouthMiddle;
+                            qa = (int) BlockFaces.SouthQA;
+                            ws = (int) BlockFaces.SouthWS;
+                            ed = (int) BlockFaces.SouthED;
+                            rf = (int) BlockFaces.SouthRF;
+                            middle = (int) BlockFaces.SouthMiddle;
 
                             switch (_editor.BlockEditingType)
                             {
@@ -2989,13 +3139,13 @@ namespace TombEditor.Controls
                             }
                         }
 
-                        if (x == _editor.Level.Rooms[room].NumXSectors - 1)
+                        if (x == room.NumXSectors - 1)
                         {
-                            qa = (int)BlockFaces.WestQA;
-                            ws = (int)BlockFaces.WestWS;
-                            ed = (int)BlockFaces.WestED;
-                            rf = (int)BlockFaces.WestRF;
-                            middle = (int)BlockFaces.WestMiddle;
+                            qa = (int) BlockFaces.WestQA;
+                            ws = (int) BlockFaces.WestWS;
+                            ed = (int) BlockFaces.WestED;
+                            rf = (int) BlockFaces.WestRF;
+                            middle = (int) BlockFaces.WestMiddle;
 
                             switch (_editor.BlockEditingType)
                             {
@@ -3089,11 +3239,11 @@ namespace TombEditor.Controls
 
                         if (z == 0)
                         {
-                            qa = (int)BlockFaces.NorthQA;
-                            ws = (int)BlockFaces.NorthWS;
-                            ed = (int)BlockFaces.NorthED;
-                            rf = (int)BlockFaces.NorthRF;
-                            middle = (int)BlockFaces.NorthMiddle;
+                            qa = (int) BlockFaces.NorthQA;
+                            ws = (int) BlockFaces.NorthWS;
+                            ed = (int) BlockFaces.NorthED;
+                            rf = (int) BlockFaces.NorthRF;
+                            middle = (int) BlockFaces.NorthMiddle;
 
                             switch (_editor.BlockEditingType)
                             {
@@ -3187,11 +3337,11 @@ namespace TombEditor.Controls
 
                         if (x == 0)
                         {
-                            qa = (int)BlockFaces.EastQA;
-                            ws = (int)BlockFaces.EastWS;
-                            ed = (int)BlockFaces.EastED;
-                            rf = (int)BlockFaces.EastRF;
-                            middle = (int)BlockFaces.EastMiddle;
+                            qa = (int) BlockFaces.EastQA;
+                            ws = (int) BlockFaces.EastWS;
+                            ed = (int) BlockFaces.EastED;
+                            rf = (int) BlockFaces.EastRF;
+                            middle = (int) BlockFaces.EastMiddle;
 
                             switch (_editor.BlockEditingType)
                             {
@@ -3281,7 +3431,6 @@ namespace TombEditor.Controls
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
                             }
                         }
-
                     }
                 }
                 else
@@ -3306,33 +3455,33 @@ namespace TombEditor.Controls
                 {
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f));
 
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Electricity) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.Electricity) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Death) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.Death) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Lava) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.Lava) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorMonkey));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.Box) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.Box) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorBox));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNotWalkable));
-                    if (_editor.Level.Rooms[room].Blocks[x, z].Climb[0] ||
-                        _editor.Level.Rooms[room].Blocks[x, z].Climb[1] ||
-                        _editor.Level.Rooms[room].Blocks[x, z].Climb[2] ||
-                        _editor.Level.Rooms[room].Blocks[x, z].Climb[3])
+                    if (room.Blocks[x, z].Climb[0] ||
+                        room.Blocks[x, z].Climb[1] ||
+                        room.Blocks[x, z].Climb[2] ||
+                        room.Blocks[x, z].Climb[3])
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorClimb));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].NoCollisionFloor &&
-                        (index == (int)BlockFaces.Floor || index == (int)BlockFaces.FloorTriangle2)))
+                    if ((room.Blocks[x, z].NoCollisionFloor &&
+                         (index == (int) BlockFaces.Floor || index == (int) BlockFaces.FloorTriangle2)))
                     {
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNoCollision));
                         noCollision = true;
                     }
-                    if (_editor.Level.Rooms[room].Blocks[x, z].Triggers.Count != 0)
+                    if (room.Blocks[x, z].Triggers.Count != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorTrigger));
-                    if ((_editor.Level.Rooms[room].Blocks[x, z].NoCollisionCeiling &&
-                        (index == (int)BlockFaces.Ceiling || index == (int)BlockFaces.CeilingTriangle2)))
+                    if ((room.Blocks[x, z].NoCollisionCeiling &&
+                         (index == (int) BlockFaces.Ceiling || index == (int) BlockFaces.CeilingTriangle2)))
                     {
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNoCollision));
                         noCollision = true;
@@ -3342,19 +3491,19 @@ namespace TombEditor.Controls
                 // Portals
                 if (index < 25)
                 {
-                    if (_editor.Level.Rooms[room].Blocks[x, z].WallPortal != -1)
+                    if (room.Blocks[x, z].WallPortal != -1)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
                 if ((index == 25 || index == 26) && !noCollision)
                 {
-                    if (_editor.Level.Rooms[room].Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != -1)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
                 if ((index == 27 || index == 28) && !noCollision)
                 {
-                    if (_editor.Level.Rooms[room].Blocks[x, z].CeilingPortal != -1)
+                    if (room.Blocks[x, z].CeilingPortal != -1)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
@@ -3367,7 +3516,8 @@ namespace TombEditor.Controls
 
                 _roomEffect.CurrentTechnique.Passes[0].Apply();
 
-                _editor.GraphicsDevice.Draw(PrimitiveType.TriangleList, bucket.Face.Vertices.Length, bucket.Face.StartVertex);
+                _editor.GraphicsDevice.Draw(PrimitiveType.TriangleList, bucket.Face.Vertices.Length,
+                    bucket.Face.StartVertex);
 
                 Debug.NumVertices += bucket.Face.Vertices.Length;
                 Debug.NumTriangles += bucket.Face.Vertices.Length / 3;
@@ -3378,45 +3528,46 @@ namespace TombEditor.Controls
 
         private float GetObjectHeight(Vector3 position)
         {
-            int xBlock = (int)Math.Floor(position.X / 1024.0f);
-            int zBlock = (int)Math.Floor(position.Z / 1024.0f);
+            int xBlock = (int) Math.Floor(position.X / 1024.0f);
+            int zBlock = (int) Math.Floor(position.Z / 1024.0f);
 
             // Get the base floor height
-            int floorHeight = _editor.Level.Rooms[_editor.RoomIndex].GetLowestFloorCorner(xBlock, zBlock);
+            int floorHeight = _editor.SelectedRoom.GetLowestFloorCorner(xBlock, zBlock);
 
             // Get the distance between point and floor in units
-            float height = position.Y - (float)floorHeight * 256.0f;
+            float height = position.Y - (float) floorHeight * 256.0f;
 
             return height;
         }
 
         private string GetObjectPositionString(Vector3 position)
         {
-            int xBlock = (int)Math.Floor(position.X / 1024.0f);
-            int zBlock = (int)Math.Floor(position.Z / 1024.0f);
+            int xBlock = (int) Math.Floor(position.X / 1024.0f);
+            int zBlock = (int) Math.Floor(position.Z / 1024.0f);
 
             // Get the base floor height
-            int floorHeight = _editor.Level.Rooms[_editor.RoomIndex].GetLowestFloorCorner(xBlock, zBlock);
+            int floorHeight = _editor.SelectedRoom.GetLowestFloorCorner(xBlock, zBlock);
 
             // Get the distance between point and floor in units
-            float height = position.Y - (float)floorHeight * 256.0f;
+            float height = position.Y - (float) floorHeight * 256.0f;
 
             string message = "Position: [" + position.X + ", " + position.Y + ", " + position.Z + "]";
-            message += Environment.NewLine + "Height: " + Math.Round(height) + " units(" + (height / 256.0f) + " clicks)";
+            message += Environment.NewLine + "Height: " + Math.Round(height) + " units(" + (height / 256.0f) +
+                       " clicks)";
 
             return message;
         }
 
         private void AddObjectHeightLine(Vector3 position, Matrix viewProjection)
         {
-            int xBlock = (int)Math.Floor(position.X / 1024.0f);
-            int zBlock = (int)Math.Floor(position.Z / 1024.0f);
+            int xBlock = (int) Math.Floor(position.X / 1024.0f);
+            int zBlock = (int) Math.Floor(position.Z / 1024.0f);
 
             // Get the base floor height
-            int floorHeight = _editor.Level.Rooms[_editor.RoomIndex].GetLowestFloorCorner(xBlock, zBlock);
+            int floorHeight = _editor.SelectedRoom.GetLowestFloorCorner(xBlock, zBlock);
 
             // Get the distance between point and floor in clicks
-            float height = position.Y / 256.0f - (float)floorHeight;
+            float height = position.Y / 256.0f - (float) floorHeight;
 
             // Prepare two vertices for the line
             EditorVertex v1 = new EditorVertex();
@@ -3425,15 +3576,16 @@ namespace TombEditor.Controls
             EditorVertex v2 = new EditorVertex();
             v2.Position = new Vector4(position.X, position.Y, position.Z, 1.0f);
 
-            EditorVertex[] vertices = new EditorVertex[] { v1, v2 };
+            EditorVertex[] vertices = new EditorVertex[] {v1, v2};
 
             // Prepare the Vertex Buffer
             if (_objectHeightLineVertex != null) _objectHeightLineVertex.Dispose();
-            _objectHeightLineVertex = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            _objectHeightLineVertex = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice,
+                vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             // Add the text description
             /*Vector3 meanPosition = new Vector3(position.X, position.Y / 2.0f, position.Z);
-            Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[_editor.RoomIndex].Position)) * viewProjection;
+            Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) * viewProjection;
             Vector3 screenPos = Vector3.Project(meanPosition, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
                             _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
 

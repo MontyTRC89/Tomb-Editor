@@ -53,8 +53,8 @@ namespace TombEditor.Controls
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
-            _depthBar.InvalidateParent += delegate { Invalidate(); };
-            _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoom(_editor.Level.GetRoomIndex(room)); Invalidate(); };
+            _depthBar.InvalidateParent += Invalidate;
+            _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoom(room); Invalidate(); };
             _depthBar.RoomsMoved += delegate { _editor.UpdateStatistics(); _editor.CenterCamera(); };
         }
 
@@ -96,12 +96,12 @@ namespace TombEditor.Controls
                 if (_roomMouseClicked == null)
                     return;
 
-                _editor.RoomIndex = _editor.Level.GetRoomIndex(_roomMouseClicked);
+                _editor.SelectedRoom = _roomMouseClicked;
                 _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
                 _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
 
                 // Update state
-                _editor.SelectRoom(_editor.RoomIndex);
+                _editor.SelectRoom(_editor.SelectedRoom);
                 Invalidate();
             }
             else if (e.Button == MouseButtons.Right)

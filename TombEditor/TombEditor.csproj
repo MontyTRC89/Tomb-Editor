@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clipboard.cs" />
+      <Compile Include="Compilers\Extensions.cs"/>
     <Compile Include="Compilers\FloorData.cs" />
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="Controls\LightParameterController.Designer.cs">
       <DependentUpon>LightParameterController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DepthBar.cs" />
+    <Compile Include="Controls\DepthBar.cs"/>
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>

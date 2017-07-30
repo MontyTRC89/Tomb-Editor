@@ -23,7 +23,7 @@ namespace TombEditor
         {
             InitializeComponent();
         }
-        
+
         private void FormTrigger_Load(object sender, EventArgs e)
         {
             if (TriggerID == -1)
@@ -67,16 +67,16 @@ namespace TombEditor
 
                     for (int i = 0; i < _editor.Level.Objects.Count; i++)
                     {
-                        IObjectInstance instance = _editor.Level.Objects.ElementAt(i).Value;
+                        ObjectInstance instance = _editor.Level.Objects.ElementAt(i).Value;
 
                         if (instance.Type == ObjectInstanceType.Moveable)
                         {
                             MoveableInstance mov = (MoveableInstance)instance;
 
-                            _items.Add(instance.ID);
-                            comboParameter.Items.Add(_editor.MoveableNames[(int)mov.Model.ObjectID] + " ID = " + instance.ID + ", Room = " + instance.Room +
+                            _items.Add(instance.Id);
+                            comboParameter.Items.Add(_editor.MoveableNames[(int)mov.Model.ObjectID] + " ID = " + instance.Id + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.ID)
+                            if (TriggerID != -1 && Trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -95,16 +95,16 @@ namespace TombEditor
 
                     for (int i = 0; i < _editor.Level.Objects.Count; i++)
                     {
-                        IObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _editor.Level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.Camera)
                         {
                             CameraInstance mov = (CameraInstance)instance;
 
-                            _items.Add(instance.ID);
-                            comboParameter.Items.Add("Camera ID = " + instance.ID + ", Room = " + instance.Room +
+                            _items.Add(instance.Id);
+                            comboParameter.Items.Add("Camera ID = " + instance.Id + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.ID)
+                            if (TriggerID != -1 && Trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -123,16 +123,16 @@ namespace TombEditor
 
                     for (int i = 0; i < _editor.Level.Objects.Count; i++)
                     {
-                        IObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _editor.Level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.Sink)
                         {
                             SinkInstance mov = (SinkInstance)instance;
 
-                            _items.Add(instance.ID);
-                            comboParameter.Items.Add("Sink ID = " + instance.ID + ", Room = " + instance.Room +
+                            _items.Add(instance.Id);
+                            comboParameter.Items.Add("Sink ID = " + instance.Id + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.ID)
+                            if (TriggerID != -1 && Trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -181,17 +181,17 @@ namespace TombEditor
 
                     for (int i = 0; i < _editor.Level.Objects.Count; i++)
                     {
-                        IObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _editor.Level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.Moveable)
                         {
                             MoveableInstance mov = (MoveableInstance)instance;
-                            if (mov.ObjectID == 422 || 1 == 1)
+                            if (mov.ObjectId == 422 || 1 == 1)
                             {
-                                _items.Add(instance.ID);
-                                comboParameter.Items.Add("Target ID = " + instance.ID + ", Room = " + instance.Room +
+                                _items.Add(instance.Id);
+                                comboParameter.Items.Add("Target ID = " + instance.Id + ", Room = " + instance.Room +
                                                          ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                                if (TriggerID != -1 && Trigger.Target == instance.ID)
+                                if (TriggerID != -1 && Trigger.Target == instance.Id)
                                     comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                             }
                         }
@@ -251,15 +251,15 @@ namespace TombEditor
 
                     for (int i = 0; i < _editor.Level.Objects.Count; i++)
                     {
-                        IObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _editor.Level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.FlyByCamera)
                         {
                             FlybyCameraInstance mov = (FlybyCameraInstance)instance;
-                            _items.Add(instance.ID);
-                            comboParameter.Items.Add("Flyby ID = " + instance.ID + ", Room = " + instance.Room +
+                            _items.Add(instance.Id);
+                            comboParameter.Items.Add("Flyby ID = " + instance.Id + ", Room = " + instance.Room +
                                                          ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.ID)
+                            if (TriggerID != -1 && Trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -269,7 +269,7 @@ namespace TombEditor
 
                     break;
 
-                case TriggerTargetType.FMV:
+                case TriggerTargetType.Fmv:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
 
@@ -285,7 +285,7 @@ namespace TombEditor
         private void butOK_Click(object sender, EventArgs e)
         {
             if (TriggerID == -1)
-                Trigger = new Geometry.TriggerInstance(0, 0);
+                Trigger = new TriggerInstance(0, _editor.Level.Rooms[0]);
 
             Trigger.TriggerType = (TriggerType)comboType.SelectedIndex;
             Trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedIndex;

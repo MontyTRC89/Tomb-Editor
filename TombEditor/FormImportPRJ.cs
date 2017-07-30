@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -70,7 +71,7 @@ namespace TombEditor
         {
             pbStato.Value = progress;
 
-            if (message != null && message != "")
+            if (!string.IsNullOrEmpty(message))
             {
                 lstLog.Items.Add(message);
                 lstLog.SelectedIndex = lstLog.Items.Count - 1;
@@ -81,15 +82,42 @@ namespace TombEditor
             Application.DoEvents();
         }
 
-        public string OpenTGA()
+        public string OpenTGA(string lookFor)
         {
+            if (string.IsNullOrEmpty(lookFor))
+            {
+                openFileDialogTGA.Title = "Import TGA";
+                openFileDialogTGA.Filter = "TGA winroomedit file (*.tga)|*.tga|All files (*.*)|*.*";
+            }
+            else
+            {
+                var fileName = Path.GetFileName(lookFor);
+                
+                openFileDialogTGA.Title = $"Replace {lookFor}";
+                openFileDialogTGA.Filter =
+                    $"{fileName}|{fileName}|TGA winroomedit file (*.tga)|*.tga|All files (*.*)|*.*";
+            }
+            
             if (openFileDialogTGA.ShowDialog(this) != DialogResult.OK)
-                return "";
+                return null;
             return openFileDialogTGA.FileName;
         }
 
-        public string OpenWAD()
+        public string OpenWAD(string lookFor)
         {
+            if (string.IsNullOrEmpty(lookFor))
+            {
+                openFileDialogWAD.Title = "Load WAD";
+                openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
+            }
+            else
+            {
+                var fileName = Path.GetFileName(lookFor);
+                
+                openFileDialogWAD.Title = $"Replace {lookFor}";
+                openFileDialogWAD.Filter = $"{fileName}|{fileName}|Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
+            }
+
             if (openFileDialogWAD.ShowDialog(this) != DialogResult.OK)
                 return "";
             return openFileDialogWAD.FileName;

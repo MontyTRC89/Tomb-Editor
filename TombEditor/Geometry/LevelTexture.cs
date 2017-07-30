@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SharpDX.Toolkit.Graphics;
-using System.Drawing;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
     public class LevelTexture
     {
@@ -16,8 +9,8 @@ namespace TombEditor.Geometry
         public short Page { get; set; }
         public bool Transparent { get; set; }
         public bool DoubleSided { get; set; }
-        public int ID { get; set; }
-        public int OldID { get; set; }
+        public int Id { get; set; }
+        public int OldId { get; set; }
         public int NewX { get; set; }
         public int NewY { get; set; }
         public int NewPage { get; set; }
