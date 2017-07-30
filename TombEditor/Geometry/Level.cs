@@ -2825,6 +2825,12 @@ namespace TombEditor.Geometry
                         }
                     }
                 }
+
+                // Check that there are no uninitialized room
+                foreach (Room room in level.Rooms)
+                    if (room != null)
+                        if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
+                            throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
             }
             catch (Exception ex)
             {
@@ -3382,6 +3388,13 @@ namespace TombEditor.Geometry
                     reader.ReadInt32();
                     reader.ReadInt32();
                 }
+
+                // Check that there are no uninitialized room
+                foreach (Room room in level.Rooms)
+                    if (room != null)
+                        if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
+                            throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+
             }
             catch (Exception ex)
             {
