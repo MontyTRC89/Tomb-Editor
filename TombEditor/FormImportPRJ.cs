@@ -1,15 +1,10 @@
 ﻿using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using TombEditor.Compilers;
 using TombEditor.Geometry;
+using TombEditor.Geometry.IO;
 
 namespace TombEditor
 {
@@ -38,7 +33,7 @@ namespace TombEditor
 
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            Level = Level.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
+            Level = PrjLoader.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -63,7 +58,7 @@ namespace TombEditor
         private void FormBuildLevel_Shown(object sender, EventArgs e)
         {
             GC.Collect();
-            Level = Level.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
+            Level = PrjLoader.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
             GC.Collect();
         }
 
