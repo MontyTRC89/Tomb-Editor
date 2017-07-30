@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TombEditor.Geometry
 {
@@ -25,19 +23,19 @@ namespace TombEditor.Geometry
 
     public struct PickingResult
     {
-        public PickingElementType ElementType;
-        public int SubElementType;
-        public int Element;
-        public int SubElement;
-        public bool Gizmo;
-        public GizmoAxis GizmoAxis;
+        public PickingElementType ElementType { get; set; }
+        public int SubElementType { get; set; }
+        public int Element { get; set; }
+        public int SubElement { get; set; }
+        public bool Gizmo { get; set; }
+        public GizmoAxis GizmoAxis { get; set; }
     }
 
     public enum GizmoAxis : byte
     {
         None,
         X,
-        Y, 
+        Y,
         Z
     }
 
@@ -61,6 +59,7 @@ namespace TombEditor.Geometry
         Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum TextureTileType : byte
     {
         Rectangle,
@@ -128,8 +127,8 @@ namespace TombEditor.Geometry
         Variable = 10,
         PlayAudio = 11,
         FlyByCamera = 12,
-        CutsceneOrParameterNG = 13,
-        FMV = 14
+        CutsceneOrParameterNg = 13,
+        Fmv = 14
     }
 
     [Flags]
@@ -160,11 +159,13 @@ namespace TombEditor.Geometry
         DirectionY
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum SplitType : byte
     {
         None, NWtoSE, NEtoSW
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum DiagonalSplit : byte
     {
         None = 0,
@@ -183,6 +184,7 @@ namespace TombEditor.Geometry
         Wall = 4
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BlockFaces : byte
     {
         NorthQA = 0, SouthQA = 1, WestQA = 2, EastQA = 3, DiagonalQA = 4,
@@ -192,7 +194,7 @@ namespace TombEditor.Geometry
         NorthRF = 20, SouthRF = 21, WestRF = 22, EastRF = 23, DiagonalRF = 24,
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
-    
+
     public enum BlockFaceShape : byte
     {
         Rectangle, Triangle

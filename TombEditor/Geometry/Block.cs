@@ -10,9 +10,13 @@ namespace TombEditor.Geometry
     {
         public BlockType Type { get; set; }
         public BlockFlags Flags { get; set; }
+        // ReSharper disable once InconsistentNaming
         public short[] EDFaces { get; set; } = new short[4];
+        // ReSharper disable once InconsistentNaming
         public short[] QAFaces { get; set; } = new short[4];
+        // ReSharper disable once InconsistentNaming
         public short[] WSFaces { get; set; } = new short[4];
+        // ReSharper disable once InconsistentNaming
         public short[] RFFaces { get; set; } = new short[4];
         public BlockFace[] Faces { get; set; } = new BlockFace[29];
         public byte SplitFoorType { get; set; }
@@ -42,14 +46,14 @@ namespace TombEditor.Geometry
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
         public DiagonalSplitType CeilingDiagonalSplitType { get; set; }
 
-        public Block(BlockType type, BlockFlags flags, short height)
+        public Block(BlockType type, BlockFlags flags)
         {
             Type = type;
             Flags = flags;
 
             for (int i = 0; i < 29; i++)
             {
-                BlockFace face = new BlockFace();
+                var face = new BlockFace();
                 Faces[i] = face;
             }
         }
@@ -58,21 +62,18 @@ namespace TombEditor.Geometry
         {
             get
             {
-                int x = 0;
-                int z = 0;
+                const int x = 0;
+                const int z = 0;
 
-                Vector3 p1 = new Vector3(x * 1024.0f, QAFaces[0] * 256.0f, z * 1024.0f);
-                Vector3 p2 = new Vector3((x + 1) * 1024.0f, QAFaces[1] * 256.0f, z * 1024.0f);
-                Vector3 p3 = new Vector3((x + 1) * 1024.0f, QAFaces[2] * 256.0f, (z + 1) * 1024.0f);
-                Vector3 p4 = new Vector3(x * 1024.0f, QAFaces[3] * 256.0f, (z + 1) * 1024.0f);
+                var p1 = new Vector3(x * 1024.0f, QAFaces[0] * 256.0f, z * 1024.0f);
+                var p2 = new Vector3((x + 1) * 1024.0f, QAFaces[1] * 256.0f, z * 1024.0f);
+                var p3 = new Vector3((x + 1) * 1024.0f, QAFaces[2] * 256.0f, (z + 1) * 1024.0f);
+                var p4 = new Vector3(x * 1024.0f, QAFaces[3] * 256.0f, (z + 1) * 1024.0f);
 
-                Plane plane1 = new Plane(p1, p2, p3);
-                Plane plane2 = new Plane(p1, p2, p4);
+                var plane1 = new Plane(p1, p2, p3);
+                var plane2 = new Plane(p1, p2, p4);
 
-                if (plane1.Normal != plane2.Normal)
-                    return false;
-
-                return true;
+                return plane1.Normal == plane2.Normal;
             }
         }
 
@@ -80,27 +81,24 @@ namespace TombEditor.Geometry
         {
             get
             {
-                int x = 0;
-                int z = 0;
+                const int x = 0;
+                const int z = 0;
 
-                Vector3 p1 = new Vector3(x * 1024.0f, WSFaces[0] * 256.0f, z * 1024.0f);
-                Vector3 p2 = new Vector3((x + 1) * 1024.0f, WSFaces[1] * 256.0f, z * 1024.0f);
-                Vector3 p3 = new Vector3((x + 1) * 1024.0f, WSFaces[2] * 256.0f, (z + 1) * 1024.0f);
-                Vector3 p4 = new Vector3(x * 1024.0f, WSFaces[3] * 256.0f, (z + 1) * 1024.0f);
+                var p1 = new Vector3(x * 1024.0f, WSFaces[0] * 256.0f, z * 1024.0f);
+                var p2 = new Vector3((x + 1) * 1024.0f, WSFaces[1] * 256.0f, z * 1024.0f);
+                var p3 = new Vector3((x + 1) * 1024.0f, WSFaces[2] * 256.0f, (z + 1) * 1024.0f);
+                var p4 = new Vector3(x * 1024.0f, WSFaces[3] * 256.0f, (z + 1) * 1024.0f);
 
-                Plane plane1 = new Plane(p1, p2, p3);
-                Plane plane2 = new Plane(p1, p2, p4);
+                var plane1 = new Plane(p1, p2, p3);
+                var plane2 = new Plane(p1, p2, p4);
 
-                if (plane1.Normal != plane2.Normal)
-                    return false;
-
-                return true;
+                return plane1.Normal == plane2.Normal;
             }
         }
 
         public Block Clone()
         {
-            Block b = new Geometry.Block(Type, Flags, 0);
+            var b = new Block(Type, Flags);
 
             for (int i = 0; i < 4; i++)
                 b.QAFaces[i] = QAFaces[i];
@@ -127,24 +125,6 @@ namespace TombEditor.Geometry
 
             for (int i = 0; i < 4; i++)
                 b.Climb[i] = Climb[i];
-
-            for (int i = 0; i < 29; i++)
-            {
-                BlockFace f = Faces[i];
-                BlockFace newFace = new Geometry.BlockFace();
-
-                newFace.Defined = f.Defined;
-                newFace.DoubleSided = f.DoubleSided;
-                newFace.Flipped = f.Flipped;
-                newFace.Invisible = f.Invisible;
-                newFace.Rotation = f.Rotation;
-                newFace.Shape = f.Shape;
-                newFace.SplitMode = f.SplitMode;
-                newFace.Texture = f.Texture;
-                newFace.TextureTriangle = f.TextureTriangle;
-
-                //if (f.Texture != -1) Level.TextureSamples[f.Texture].UsageCount++;
-            }
 
             return b;
         }

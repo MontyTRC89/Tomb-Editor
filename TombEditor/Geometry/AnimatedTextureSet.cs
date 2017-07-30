@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace TombEditor.Geometry
 {
@@ -21,12 +18,12 @@ namespace TombEditor.Geometry
     public class AnimatedTextureVariantTile
     {
         public int Tile { get; set; }
-        public int NewID { get; set; }
+        public int NewId { get; set; }
 
-        public AnimatedTextureVariantTile(int tile, int newID)
+        public AnimatedTextureVariantTile(int tile, int newId)
         {
-            this.Tile = tile;
-            this.NewID = newID;
+            Tile = tile;
+            NewId = newId;
         }
     }
 
