@@ -2042,7 +2042,7 @@ namespace TombEditor
                 {
                     var roomName = (_editor.Level.Rooms[i].Name == null ? "Room " + i : _editor.Level.Rooms[i].Name);
                     if (_editor.Level.Rooms[i].BaseRoom != null)
-                        roomName = "(Flipped of " + _editor.Level.Rooms[i].BaseRoom + ") " + roomName;
+                        roomName = "(Flipped of " + _editor.Level.Rooms.ReferenceIndexOf(_editor.Level.Rooms[i].BaseRoom) + ") " + roomName;
 
                     comboRoom.Items.Add(i + ": " + roomName);
                 }
