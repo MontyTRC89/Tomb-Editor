@@ -377,13 +377,13 @@ namespace TombEditor.Controls
 
                                 if (face == BlockFaces.Floor || face == BlockFaces.FloorTriangle2)
                                 {
-                                    EditorActions.FlipFloorSplit(xBlock, xBlock, zBlock, zBlock);
+                                    EditorActions.FlipFloorSplit(_editor.SelectedRoom, new Rectangle(xBlock, xBlock, zBlock, zBlock));
                                     return;
                                 }
 
                                 if (face == BlockFaces.Ceiling || face == BlockFaces.CeilingTriangle2)
                                 {
-                                    EditorActions.FlipCeilingSplit(xBlock, xBlock, zBlock, zBlock);
+                                    EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new Rectangle(xBlock, xBlock, zBlock, zBlock));
                                     return;
                                 }
                             }
@@ -552,49 +552,49 @@ namespace TombEditor.Controls
                     }
 
                     bool smooth = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
-
+                    
                     if (_editor.PickingResult.ElementType == PickingElementType.Camera)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.Camera, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.Camera, 
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.FlybyCamera, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.FlybyCamera, 
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Sink)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.Sink, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.Sink,
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.SoundSource, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.SoundSource, 
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Light)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.Light, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.Light,
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                         _editor.SelectedRoom.CalculateLightingForThisRoom();
                         _editor.SelectedRoom.UpdateBuffers();
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.Moveable, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.Moveable, 
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
                     {
-                        EditorActions.MoveObject(EditorActions.ObjectType.StaticMesh, _editor.PickingResult.Element,
-                            _editor.PickingResult.GizmoAxis, delta, smooth);
+                        EditorActions.MoveObject(_editor.SelectedRoom, EditorActions.ObjectType.StaticMesh,
+                            _editor.PickingResult.Element, _editor.PickingResult.GizmoAxis, delta, smooth);
                     }
 
                     Draw();
@@ -2136,7 +2136,7 @@ namespace TombEditor.Controls
                 return;
 
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
-            EditorActions.PlaceTexture(x, z, faceType);
+            EditorActions.PlaceTexture(_editor.SelectedRoom, x, z, faceType);
         }
 
         private void PlaceNoCollision()
@@ -2147,7 +2147,7 @@ namespace TombEditor.Controls
 
             BlockFaces faceType = (BlockFaces)_editor.PickingResult.SubElement;
 
-            EditorActions.PlaceNoCollision(x, z, faceType);
+            EditorActions.PlaceNoCollision(_editor.SelectedRoom, x, z, faceType);
         }
 
         private void PlaceItem()
@@ -2156,9 +2156,9 @@ namespace TombEditor.Controls
             int z = _editor.PickingResult.Element & 31;
 
             if (_editor.ItemType == EditorItemType.Moveable)
-                EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Moveable, _editor.SelectedItem);
+                EditorActions.PlaceObject(_editor.SelectedRoom, x, z, EditorActions.ObjectType.Moveable, _editor.SelectedItem);
             else
-                EditorActions.PlaceObject(x, z, EditorActions.ObjectType.StaticMesh, _editor.SelectedItem);
+                EditorActions.PlaceObject(_editor.SelectedRoom, x, z, EditorActions.ObjectType.StaticMesh, _editor.SelectedItem);
 
             _editor.Action = EditorAction.None;
         }
@@ -2168,7 +2168,7 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Camera, 0);
+            EditorActions.PlaceObject(_editor.SelectedRoom, x, z, EditorActions.ObjectType.Camera, 0);
 
             _editor.Action = EditorAction.None;
         }
@@ -2178,7 +2178,7 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.FlybyCamera, 0);
+            EditorActions.PlaceObject(_editor.SelectedRoom, x, z, EditorActions.ObjectType.FlybyCamera, 0);
 
             _editor.Action = EditorAction.None;
         }
@@ -2188,7 +2188,7 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.Sink, 0);
+            EditorActions.PlaceObject(_editor.SelectedRoom, x, z, EditorActions.ObjectType.Sink, 0);
 
             _editor.Action = EditorAction.None;
         }
@@ -2198,7 +2198,7 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            EditorActions.PlaceObject(x, z, EditorActions.ObjectType.SoundSource, 0);
+            EditorActions.PlaceObject(_editor.SelectedRoom, x, z, EditorActions.ObjectType.SoundSource, 0);
 
             _editor.Action = EditorAction.None;
         }
@@ -2208,7 +2208,7 @@ namespace TombEditor.Controls
             int x = _editor.PickingResult.Element >> 5;
             int z = _editor.PickingResult.Element & 31;
 
-            EditorActions.PlaceLight(x, z, _editor.LightType);
+            EditorActions.PlaceLight(_editor.SelectedRoom, x, z, _editor.LightType);
 
             Invalidate();
 
