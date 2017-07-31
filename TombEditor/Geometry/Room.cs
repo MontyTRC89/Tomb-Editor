@@ -3145,6 +3145,16 @@ namespace TombEditor.Geometry
             return block;
         }
 
+        public Rectangle Area
+        {
+            get
+            {
+                int sectorX = (int)Math.Round(Position.X);
+                int sectorZ = (int)Math.Round(Position.Z);
+                return new Rectangle(sectorX, sectorZ, sectorX + NumXSectors - 1, sectorZ + NumZSectors - 1);
+            }
+        }
+
         ///<param name="x">The X-coordinate. The point at room.Position it at (0, 0)</param>
         ///<param name="z">The Z-coordinate. The point at room.Position it at (0, 0)</param>
         public VerticalArea? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> CombineFloor, Func<float?, float?, float?, float?, float> CombineCeiling)
