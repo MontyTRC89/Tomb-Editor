@@ -57,13 +57,13 @@
             this.newRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
-            this.randomFloorUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.randomFloorDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.randomCeilingUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.randomCeilingDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smoothRandomFloorUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smoothRandomFloorDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smoothRandomCeilingUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.smoothRandomCeilingDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
-            this.averageFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.averageCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flattenFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flattenCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.gridWallsIn3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gridWallsIn5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -463,13 +463,13 @@
             this.newRoomUpToolStripMenuItem,
             this.newRoomDownToolStripMenuItem,
             this.toolStripMenuItem8,
-            this.randomFloorUpToolStripMenuItem,
-            this.randomFloorDownToolStripMenuItem,
-            this.randomCeilingUpToolStripMenuItem,
-            this.randomCeilingDownToolStripMenuItem,
+            this.smoothRandomFloorUpToolStripMenuItem,
+            this.smoothRandomFloorDownToolStripMenuItem,
+            this.smoothRandomCeilingUpToolStripMenuItem,
+            this.smoothRandomCeilingDownToolStripMenuItem,
             this.toolStripMenuItem11,
-            this.averageFloorToolStripMenuItem,
-            this.averageCeilingToolStripMenuItem,
+            this.flattenFloorToolStripMenuItem,
+            this.flattenCeilingToolStripMenuItem,
             this.toolStripSeparator7,
             this.gridWallsIn3ToolStripMenuItem,
             this.gridWallsIn5ToolStripMenuItem});
@@ -537,37 +537,37 @@
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
             this.toolStripMenuItem8.Size = new System.Drawing.Size(229, 6);
             // 
-            // randomFloorUpToolStripMenuItem
+            // smoothRandomFloorUpToolStripMenuItem
             // 
-            this.randomFloorUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomFloorUpToolStripMenuItem.Name = "randomFloorUpToolStripMenuItem";
-            this.randomFloorUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.randomFloorUpToolStripMenuItem.Text = "Smooth random floor up";
-            this.randomFloorUpToolStripMenuItem.Click += new System.EventHandler(this.randomFloorUpToolStripMenuItem_Click);
+            this.smoothRandomFloorUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.smoothRandomFloorUpToolStripMenuItem.Name = "smoothRandomFloorUpToolStripMenuItem";
+            this.smoothRandomFloorUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.smoothRandomFloorUpToolStripMenuItem.Text = "Smooth random floor up";
+            this.smoothRandomFloorUpToolStripMenuItem.Click += new System.EventHandler(this.smoothRandomFloorUpToolStripMenuItem_Click);
             // 
-            // randomFloorDownToolStripMenuItem
+            // smoothRandomFloorDownToolStripMenuItem
             // 
-            this.randomFloorDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomFloorDownToolStripMenuItem.Name = "randomFloorDownToolStripMenuItem";
-            this.randomFloorDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.randomFloorDownToolStripMenuItem.Text = "Smooth random floor down";
-            this.randomFloorDownToolStripMenuItem.Click += new System.EventHandler(this.randomFloorDownToolStripMenuItem_Click);
+            this.smoothRandomFloorDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.smoothRandomFloorDownToolStripMenuItem.Name = "smoothRandomFloorDownToolStripMenuItem";
+            this.smoothRandomFloorDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.smoothRandomFloorDownToolStripMenuItem.Text = "Smooth random floor down";
+            this.smoothRandomFloorDownToolStripMenuItem.Click += new System.EventHandler(this.smoothRandomFloorDownToolStripMenuItem_Click);
             // 
-            // randomCeilingUpToolStripMenuItem
+            // smoothRandomCeilingUpToolStripMenuItem
             // 
-            this.randomCeilingUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomCeilingUpToolStripMenuItem.Name = "randomCeilingUpToolStripMenuItem";
-            this.randomCeilingUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.randomCeilingUpToolStripMenuItem.Text = "Smooth random ceiling up";
-            this.randomCeilingUpToolStripMenuItem.Click += new System.EventHandler(this.randomCeilingUpToolStripMenuItem_Click);
+            this.smoothRandomCeilingUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.smoothRandomCeilingUpToolStripMenuItem.Name = "smoothRandomCeilingUpToolStripMenuItem";
+            this.smoothRandomCeilingUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.smoothRandomCeilingUpToolStripMenuItem.Text = "Smooth random ceiling up";
+            this.smoothRandomCeilingUpToolStripMenuItem.Click += new System.EventHandler(this.smoothRandomCeilingUpToolStripMenuItem_Click);
             // 
-            // randomCeilingDownToolStripMenuItem
+            // smoothRandomCeilingDownToolStripMenuItem
             // 
-            this.randomCeilingDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomCeilingDownToolStripMenuItem.Name = "randomCeilingDownToolStripMenuItem";
-            this.randomCeilingDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.randomCeilingDownToolStripMenuItem.Text = "Smooth random ceiling down";
-            this.randomCeilingDownToolStripMenuItem.Click += new System.EventHandler(this.randomCeilingDownToolStripMenuItem_Click);
+            this.smoothRandomCeilingDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.smoothRandomCeilingDownToolStripMenuItem.Name = "smoothRandomCeilingDownToolStripMenuItem";
+            this.smoothRandomCeilingDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.smoothRandomCeilingDownToolStripMenuItem.Text = "Smooth random ceiling down";
+            this.smoothRandomCeilingDownToolStripMenuItem.Click += new System.EventHandler(this.smoothRandomCeilingDownToolStripMenuItem_Click);
             // 
             // toolStripMenuItem11
             // 
@@ -576,21 +576,21 @@
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
             this.toolStripMenuItem11.Size = new System.Drawing.Size(229, 6);
             // 
-            // averageFloorToolStripMenuItem
+            // flattenFloorToolStripMenuItem
             // 
-            this.averageFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.averageFloorToolStripMenuItem.Name = "averageFloorToolStripMenuItem";
-            this.averageFloorToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.averageFloorToolStripMenuItem.Text = "Average floor";
-            this.averageFloorToolStripMenuItem.Click += new System.EventHandler(this.averageFloorToolStripMenuItem_Click);
+            this.flattenFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.flattenFloorToolStripMenuItem.Name = "flattenFloorToolStripMenuItem";
+            this.flattenFloorToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.flattenFloorToolStripMenuItem.Text = "Flatten floor";
+            this.flattenFloorToolStripMenuItem.Click += new System.EventHandler(this.flattenFloorToolStripMenuItem_Click);
             // 
-            // averageCeilingToolStripMenuItem
+            // flattenCeilingToolStripMenuItem
             // 
-            this.averageCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.averageCeilingToolStripMenuItem.Name = "averageCeilingToolStripMenuItem";
-            this.averageCeilingToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
-            this.averageCeilingToolStripMenuItem.Text = "Average ceiling";
-            this.averageCeilingToolStripMenuItem.Click += new System.EventHandler(this.averageCeilingToolStripMenuItem_Click);
+            this.flattenCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.flattenCeilingToolStripMenuItem.Name = "flattenCeilingToolStripMenuItem";
+            this.flattenCeilingToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.flattenCeilingToolStripMenuItem.Text = "Flatten ceiling";
+            this.flattenCeilingToolStripMenuItem.Click += new System.EventHandler(this.flattenCeilingToolStripMenuItem_Click);
             // 
             // toolStripSeparator7
             // 
@@ -2754,10 +2754,10 @@
         private System.Windows.Forms.ToolStripMenuItem newRoomUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newRoomDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
-        private System.Windows.Forms.ToolStripMenuItem randomFloorUpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem randomFloorDownToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem averageFloorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem averageCeilingToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem smoothRandomFloorUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem smoothRandomFloorDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flattenFloorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem flattenCeilingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addCameraToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addFlybyCameraToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addSinkToolStripMenuItem;
@@ -2840,8 +2840,8 @@
         private System.Windows.Forms.ToolStripStatusLabel labelRoomStatistics;
         private DarkUI.Controls.DarkComboBox comboFlipMap;
         private DarkUI.Controls.DarkLabel darkLabel19;
-        private System.Windows.Forms.ToolStripMenuItem randomCeilingUpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem randomCeilingDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem11;
         private DarkUI.Controls.DarkButton butFindItem;
         private DarkUI.Controls.DarkButton butResetSearch;
