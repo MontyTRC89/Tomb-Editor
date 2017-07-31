@@ -223,7 +223,7 @@ namespace TombEditor
                 return -1;
 
             int i = 0;
-            foreach (var t in enumerable.Where(e => e != null))
+            foreach (var t in enumerable)
             {
                 if (ReferenceEquals(t, needle))
                     return i;
