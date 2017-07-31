@@ -2396,9 +2396,9 @@ namespace TombEditor
             EditorActions.GridWalls5(_editor.SelectedRoom, _editor.BlockSelection);
         }
         
-        private void RandomFloor(short sign)
+        private void SmoothRandomFloor(float strengthDirection)
         {
-            if (!_editor.BlockSelectionAvailable)
+            if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
                     "Error", DarkUI.Forms.DarkDialogButton.Ok);
@@ -2410,126 +2410,83 @@ namespace TombEditor
             int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
             int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
 
-            EditorActions.RandomFloor(sign, _editor.SelectedRoom, xMin, xMax, zMin, zMax);
-
-            _editor.DrawPanel3D();
+            EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.BlockSelection, strengthDirection);
         }
 
-        private void RandomCeiling(short sign)
+        private void SmoothRandomCeiling(float strengthDirection)
         {
-            if (!_editor.BlockSelectionAvailable)
+            if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
                     "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
-            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-
-            EditorActions.RandomCeiling(sign, _editor.SelectedRoom, xMin, xMax, zMin, zMax);
-
-            _editor.DrawPanel3D();
+            EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.BlockSelection, strengthDirection);
         }
 
-        private void AverageFloor()
+        private void FlattenFloor()
         {
-            if (!_editor.BlockSelectionAvailable)
+            if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+            
+            EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.BlockSelection);
+        }
+
+        private void FlattenCeiling()
+        {
+            if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
                     "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
-            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-
-            EditorActions.AverageFloor(_editor.SelectedRoom, xMin, xMax, zMin, zMax);
-
-            _editor.DrawPanel3D();
+            EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.BlockSelection);
         }
 
-        private void AverageCeiling()
+        private void smoothRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!_editor.BlockSelectionAvailable)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
-            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-
-            EditorActions.AverageCeiling(_editor.SelectedRoom, xMin, xMax, zMin, zMax);
-
-            _editor.DrawPanel3D();
+            SmoothRandomFloor(1);
         }
 
-        private void butRandomFloorUp_Click(object sender, EventArgs e)
+        private void smoothRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RandomFloor(1);
+            SmoothRandomFloor(-1);
         }
 
-        private void butRandomFloorDown_Click(object sender, EventArgs e)
+        private void smoothRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RandomFloor(-1);
+            SmoothRandomCeiling(1);
         }
 
-        private void butRandomCeilingUp_Click(object sender, EventArgs e)
+        private void smoothRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RandomCeiling(1);
+            SmoothRandomCeiling(-1);
         }
 
-        private void butRandomCeilingDown_Click(object sender, EventArgs e)
+        private void butFlattenFloor_Click(object sender, EventArgs e)
         {
-            RandomCeiling(-1);
+            FlattenFloor();
         }
 
-        private void randomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
+        private void butFlattenCeiling_Click(object sender, EventArgs e)
         {
-            RandomFloor(1);
+            FlattenCeiling();
         }
 
-        private void randomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
+        private void flattenFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RandomFloor(-1);
+            FlattenFloor();
         }
 
-        private void randomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
+        private void flattenCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RandomCeiling(1);
-        }
-
-        private void randomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RandomCeiling(-1);
-        }
-
-        private void butAverageFloor_Click(object sender, EventArgs e)
-        {
-            AverageFloor();
-        }
-
-        private void butAverageCeiling_Click(object sender, EventArgs e)
-        {
-            AverageCeiling();
-        }
-
-        private void averageFloorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AverageFloor();
-        }
-
-        private void averageCeilingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AverageCeiling();
+            FlattenCeiling();
         }
 
         private void panelStaticMeshColor_DoubleClick(object sender, EventArgs e)

@@ -2822,65 +2822,46 @@ namespace TombEditor
             }
         }
 
-        public static void RandomFloor(short sign, Room room, int xMin, int xMax, int zMin, int zMax)
+        public static void SmoothRandomFloor(Room room, Rectangle area, float strengthDirection)
         {
-            Random r = new Random(new Random().Next());
+            float[,] changes = new float[area.Width + 2, area.Height + 2];
+            Random rng = new Random();
+            for (int x = 1; x <= area.Width; x++)
+                for (int z = 1; z <= area.Height; z++)
+                    changes[x, z] = rng.NextFloat(0, 1) * strengthDirection;
 
-            for (int x = xMin + 1; x <= xMax; x++)
-            {
-                for (int z = zMin + 1; z <= zMax; z++)
-                {
-                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
+            for (int x = 0; x <= area.Width; x++)
+                for (int z = 0; z <= area.Height; z++)
+                    for (int i = 0; i < 4; ++i)
+                        room.Blocks[area.X + x, area.Y + z].QAFaces[i] += 
+                            (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
-                    room.Blocks[x, z].QAFaces[3] += step;
-
-                    if (x > xMin)
-                        room.Blocks[x - 1, z].QAFaces[2] = room.Blocks[x, z].QAFaces[3];
-                    if (z > zMin)
-                        room.Blocks[x, z - 1].QAFaces[0] = room.Blocks[x, z].QAFaces[3];
-
-                    if (x > xMin && z > zMin)
-                    {
-                        room.Blocks[x - 1, z - 1].QAFaces[1] = room.Blocks[x, z].QAFaces[3];
-                    }
-                }
-            }
-
-            SmartBuildGeometry(room, xMin, xMax, zMin, zMax);
+            SmartBuildGeometry(room, area.X, area.Right, area.Y, area.Bottom);
+            _editor.DrawPanel3D();
         }
 
-        public static void RandomCeiling(short sign, Room room, int xMin, int xMax, int zMin, int zMax)
+        public static void SmoothRandomCeiling(Room room, Rectangle area, float strengthDirection)
         {
-            Random r = new Random(new Random().Next());
+            float[,] changes = new float[area.Width + 2, area.Height + 2];
+            Random rng = new Random();
+            for (int x = 1; x <= area.Width; x++)
+                for (int z = 1; z <= area.Height; z++)
+                    changes[x, z] = rng.NextFloat(0, 1) * strengthDirection;
 
-            for (int x = xMin + 1; x <= xMax; x++)
-            {
-                for (int z = zMin + 1; z <= zMax; z++)
-                {
-                    short step = (short)(r.Next(0, 1000) < 500 ? 0 : 1 * sign);
+            for (int x = 0; x <= area.Width; x++)
+                for (int z = 0; z <= area.Height; z++)
+                    for (int i = 0; i < 4; ++i)
+                        room.Blocks[area.X + x, area.Y + z].WSFaces[i] +=
+                            (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
-                    room.Blocks[x, z].WSFaces[3] += step;
-
-                    if (x > xMin)
-                        room.Blocks[x - 1, z].WSFaces[2] = room.Blocks[x, z].WSFaces[3];
-                    if (z > zMin)
-                        room.Blocks[x, z - 1].WSFaces[0] = room.Blocks[x, z].WSFaces[3];
-
-                    if (x > xMin && z > zMin)
-                    {
-                        room.Blocks[x - 1, z - 1].WSFaces[1] = room.Blocks[x, z].WSFaces[3];
-                    }
-                }
-            }
-
-            SmartBuildGeometry(room, xMin, xMax, zMin, zMax);
+            SmartBuildGeometry(room, area.X, area.Right, area.Y, area.Bottom);
+            _editor.DrawPanel3D();
         }
 
-        public static void AverageFloor(Room room, int xMin, int xMax, int zMin, int zMax)
+        public static void FlattenFloor(Room room, Rectangle area)
         {
-            for (int x = xMin; x <= xMax; x++)
-            {
-                for (int z = zMin; z <= zMax; z++)
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     Block b = room.Blocks[x, z];
 
@@ -2891,16 +2872,15 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[i] = mean;
                     }
                 }
-            }
 
-            SmartBuildGeometry(room, xMin, xMax, zMin, zMax);
+            SmartBuildGeometry(room, area.X, area.Right, area.Y, area.Bottom);
+            _editor.DrawPanel3D();
         }
 
-        public static void AverageCeiling(Room room, int xMin, int xMax, int zMin, int zMax)
+        public static void FlattenCeiling(Room room, Rectangle area)
         {
-            for (int x = xMin; x <= xMax; x++)
-            {
-                for (int z = zMin; z <= zMax; z++)
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     Block b = room.Blocks[x, z];
 
@@ -2911,9 +2891,9 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[i] = mean;
                     }
                 }
-            }
 
-            SmartBuildGeometry(room, xMin, xMax, zMin, zMax);
+            SmartBuildGeometry(room, area.X, area.Right, area.Y, area.Bottom);
+            _editor.DrawPanel3D();
         }
 
         public static void GridWalls3(Room room, Rectangle Area)
