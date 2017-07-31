@@ -1386,10 +1386,8 @@ namespace TombEditor
             _editor.SelectedRoom.UpdateBuffers();
         }
 
-        public static void CropRoom(int xMin, int xMax, int zMin, int zMax)
+        public static void CropRoom(Room room, Rectangle newArea)
         {
-            Room room = _editor.SelectedRoom;
-
             if (room.Flipped)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a flipped room", "Error");
@@ -1419,10 +1417,10 @@ namespace TombEditor
                 return;
             }
 
-            byte numXSectors = (byte)(xMax - xMin + 3);
-            byte numZSectors = (byte)(zMax - zMin + 3);
-            int newX = (int)(room.Position.X + xMin - 1);
-            int newZ = (int)(room.Position.Z + zMin - 1);
+            byte numXSectors = (byte)(newArea.Width + 3);
+            byte numZSectors = (byte)(newArea.Height + 3);
+            int newX = (int)(room.Position.X + newArea.X - 1);
+            int newZ = (int)(room.Position.Z + newArea.Y - 1);
             int worldX = newX * 1024;
             int worldZ = newZ * 1024;
 
@@ -1437,7 +1435,7 @@ namespace TombEditor
             for (int i = 0; i < _editor.Level.Objects.Count; i++)
             {
                 ObjectInstance obj = _editor.Level.Objects.ElementAt(i).Value;
-                if (obj.Room == _editor.SelectedRoom)
+                if (obj.Room == room)
                 {
                     if (obj.Position.X < (newX + 1) * 1024 || obj.Position.X > (newX + numXSectors - 1) * 1024 ||
                         obj.Position.Z < (newZ + 1) * 1024 || obj.Position.Z > (newZ + numZSectors - 1) * 1024)
@@ -1494,7 +1492,7 @@ namespace TombEditor
             {
                 for (int z = 1; z < numZSectors - 1; z++)
                 {
-                    newRoom.Blocks[x, z] = room.Blocks[x + xMin - 1, z + zMin - 1].Clone();
+                    newRoom.Blocks[x, z] = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Clone();
 
                     /* for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
                      {
@@ -1504,9 +1502,9 @@ namespace TombEditor
                          }
                      }*/
 
-                    for (int k = 0; k < room.Blocks[x + xMin - 1, z + zMin - 1].Triggers.Count; k++)
+                    for (int k = 0; k < room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers.Count; k++)
                     {
-                        int triggerId = room.Blocks[x + xMin - 1, z + zMin - 1].Triggers[k];
+                        int triggerId = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers[k];
                         if (!triggersToRemove.Contains(triggerId))
                             newRoom.Blocks[x, z].Triggers.Add(triggerId);
                     }
@@ -1604,7 +1602,7 @@ namespace TombEditor
             for (int i = 0; i < _editor.Level.Triggers.Count; i++)
             {
                 TriggerInstance trigger = _editor.Level.Triggers.ElementAt(i).Value;
-                if (trigger.Room == _editor.SelectedRoom)
+                if (trigger.Room == room)
                 {
                     trigger.X -= (byte)newX;
                     trigger.Z -= (byte)newZ;
@@ -1618,9 +1616,20 @@ namespace TombEditor
             newRoom.CalculateLightingForThisRoom();
             newRoom.UpdateBuffers();
 
-            _editor.SelectedRoom = newRoom;
 
-            GC.Collect();
+            // Fix selection if necessary
+            if (_editor.SelectedRoom == room)
+            {
+                _editor.SelectedRoom = newRoom;
+                _editor.BlockSelection = new Rectangle(1, 1, numXSectors - 2, numZSectors - 2);
+            }
+
+            // Update state
+            _editor.CenterCamera();
+            _editor.DrawPanel3D();
+            _editor.DrawPanelGrid();
+            _editor.UpdateStatistics();
+            _editor.UpdateRoomName();
         }
 
         public static void SetDiagonalFloorSplit(Room currentRoom, int xMin, int xMax, int zMin, int zMax)

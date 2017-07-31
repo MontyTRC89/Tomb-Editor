@@ -1750,22 +1750,9 @@ namespace TombEditor
 
         private void butCropRoom_Click(object sender, EventArgs e)
         {
-            if (_editor.Mode == EditorMode.Geometry && _editor.PickingResult.ElementType == PickingElementType.Block)
-            {
-                if (!_editor.BlockSelectionAvailable)
-                    return;
-
-                int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-                int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-                int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-                int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-
-                EditorActions.CropRoom(xMin, xMax, zMin, zMax);
-
-                _editor.CenterCamera();
-                _editor.DrawPanel3D();
-            }
-            _editor.DrawPanel3D();
+            if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
+                return;
+            EditorActions.CropRoom(_editor.SelectedRoom, _editor.BlockSelection);
         }
 
         private void addCameraToolStripMenuItem_Click(object sender, EventArgs e)
