@@ -124,7 +124,7 @@
             this.butGridWalls5 = new DarkUI.Controls.DarkButton();
             this.butRandomFloorDown = new DarkUI.Controls.DarkButton();
             this.butRandomFloorUp = new DarkUI.Controls.DarkButton();
-            this.butGridWalls = new DarkUI.Controls.DarkButton();
+            this.butGridWalls3 = new DarkUI.Controls.DarkButton();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.comboFlipMap = new DarkUI.Controls.DarkComboBox(this.components);
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
@@ -1028,7 +1028,7 @@
             this.panel2.Controls.Add(this.butGridWalls5);
             this.panel2.Controls.Add(this.butRandomFloorDown);
             this.panel2.Controls.Add(this.butRandomFloorUp);
-            this.panel2.Controls.Add(this.butGridWalls);
+            this.panel2.Controls.Add(this.butGridWalls3);
             this.panel2.Controls.Add(this.darkLabel21);
             this.panel2.Controls.Add(this.comboFlipMap);
             this.panel2.Controls.Add(this.darkLabel19);
@@ -1296,17 +1296,17 @@
             this.butRandomFloorUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butRandomFloorUp.Click += new System.EventHandler(this.butRandomFloorUp_Click);
             // 
-            // butGridWalls
+            // butGridWalls3
             // 
-            this.butGridWalls.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butGridWalls.Location = new System.Drawing.Point(12, 680);
-            this.butGridWalls.Name = "butGridWalls";
-            this.butGridWalls.Padding = new System.Windows.Forms.Padding(5);
-            this.butGridWalls.Size = new System.Drawing.Size(125, 23);
-            this.butGridWalls.TabIndex = 52;
-            this.butGridWalls.Text = "Grid walls x3";
-            this.butGridWalls.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butGridWalls.Click += new System.EventHandler(this.butGridWalls_Click);
+            this.butGridWalls3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butGridWalls3.Location = new System.Drawing.Point(12, 680);
+            this.butGridWalls3.Name = "butGridWalls3";
+            this.butGridWalls3.Padding = new System.Windows.Forms.Padding(5);
+            this.butGridWalls3.Size = new System.Drawing.Size(125, 23);
+            this.butGridWalls3.TabIndex = 52;
+            this.butGridWalls3.Text = "Grid walls x3";
+            this.butGridWalls3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butGridWalls3.Click += new System.EventHandler(this.butGridWalls3_Click);
             // 
             // darkLabel21
             // 
@@ -2937,7 +2937,7 @@
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkButton butRandomFloorDown;
         private DarkUI.Controls.DarkButton butRandomFloorUp;
-        private DarkUI.Controls.DarkButton butGridWalls;
+        private DarkUI.Controls.DarkButton butGridWalls3;
         private DarkUI.Controls.DarkLabel darkLabel21;
         private DarkUI.Controls.DarkButton butGridWalls5;
         private DarkUI.Controls.DarkButton butRandomCeilingDown;
