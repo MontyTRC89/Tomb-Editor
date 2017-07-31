@@ -200,8 +200,8 @@
             this.openFileDialogTextureMap = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogWAD = new System.Windows.Forms.OpenFileDialog();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
-            this.but3D = new System.Windows.Forms.ToolStripButton();
             this.but2D = new System.Windows.Forms.ToolStripButton();
+            this.but3D = new System.Windows.Forms.ToolStripButton();
             this.butFaceEdit = new System.Windows.Forms.ToolStripButton();
             this.butLightingMode = new System.Windows.Forms.ToolStripButton();
             this.butCenterCamera = new System.Windows.Forms.ToolStripButton();
@@ -2197,6 +2197,17 @@
             this.darkToolStrip1.TabIndex = 0;
             this.darkToolStrip1.Text = "darkToolStrip1";
             // 
+            // but2D
+            // 
+            this.but2D.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.but2D.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.but2D.Image = global::TombEditor.Properties.Resources._2DView_16;
+            this.but2D.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.but2D.Name = "but2D";
+            this.but2D.Size = new System.Drawing.Size(23, 25);
+            this.but2D.Text = "2D map";
+            this.but2D.Click += new System.EventHandler(this.but2D_Click);
+            // 
             // but3D
             // 
             this.but3D.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -2208,17 +2219,6 @@
             this.but3D.Text = "toolStripButton1";
             this.but3D.ToolTipText = "Geometry mode";
             this.but3D.Click += new System.EventHandler(this.but3D_Click);
-            // 
-            // but2D
-            // 
-            this.but2D.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.but2D.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.but2D.Image = global::TombEditor.Properties.Resources._2DView_16;
-            this.but2D.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.but2D.Name = "but2D";
-            this.but2D.Size = new System.Drawing.Size(24, 24);
-            this.but2D.Text = "2D map";
-            this.but2D.Click += new System.EventHandler(this.but2D_Click);
             // 
             // butFaceEdit
             // 
@@ -2703,8 +2703,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tomb Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Shown += new System.EventHandler(this.FormMainNew_Shown);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormMainNew_KeyDown);
             this.darkMenuStrip1.ResumeLayout(false);
             this.darkMenuStrip1.PerformLayout();
             this.panel2.ResumeLayout(false);

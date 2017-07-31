@@ -95,11 +95,18 @@ namespace TombEditor.Controls
             
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
-            
+            Point roomPoint = fromVisualCoord(e.Location);
+
+            // Move camera to selected sector
+            if (_editor.RelocateCameraActive)
+            {
+                _editor.MoveCameraToSector(roomPoint.X, roomPoint.Y);
+                return;
+            }
+
             // Manage the drag & drop camera
             if (e.Button == MouseButtons.Right)
             {
-                Point roomPoint = fromVisualCoord(e.Location);
                 bool foundSomething = false;
 
                 if (SelectedTrigger == -1)
@@ -171,7 +178,6 @@ namespace TombEditor.Controls
             {
                 _drag = true;
                 _firstSelection = false;
-                Point roomPoint = fromVisualCoord(e.Location);
 
                 // If any of the X or Z values is equal to - 1 then it is a first selection
                 if (_editor.BlockSelectionStart.X == -1 || _editor.BlockSelectionStart.Y == -1)

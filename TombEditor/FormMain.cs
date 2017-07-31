@@ -19,11 +19,9 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private const float _rotationSpeed = 0.1f;
-        private const float _keyboardZoomSpeed = 0.1f;
-
         private Editor _editor;
         private int _lastSearchResult = -1;
+        private bool _pressedZorY = false;
 
         public FormMain()
         {
@@ -456,8 +454,10 @@ namespace TombEditor
             panel3D.Draw();
         }
 
-        private void FormMainNew_Shown(object sender, EventArgs e)
+        protected override void OnShown(EventArgs e)
         {
+            base.OnShown(e);
+
             logger.Info($"Tomb Editor {Application.ProductVersion} is starting");
 
             // Initialize controls
@@ -914,49 +914,23 @@ namespace TombEditor
 
             this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - Untitled";
         }
-        
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+
+        protected override void OnKeyDown(KeyEventArgs e)
         {
-            // I intercept arrow keys here otherwise they would processed by the form and 
-            // camera would move only if Panel3D is focused
-            switch (keyData)
+            base.OnKeyDown(e);
+
+            UpdateCameraRelocationMode(e, true);
+
+            // Set camera relocation mode
+            if ((e.KeyCode == Keys.Y) || (e.KeyCode == Keys.Z))
+                _pressedZorY = true;
+            if (e.Alt && _pressedZorY)
             {
-                case Keys.Up:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(0, _rotationSpeed);
-                    Draw();
-                    return true;
-
-                case Keys.Down:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(0, -_rotationSpeed);
-                    Draw();
-                    return true;
-
-                case Keys.Left:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(_rotationSpeed, 0);
-                    Draw();
-                    return true;
-
-                case Keys.Right:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(-_rotationSpeed, 0);
-                    Draw();
-                    return true;
-
-                case Keys.PageUp:
-                    (_editor.Camera as ArcBallCamera)?.Move(_keyboardZoomSpeed);
-                    Draw();
-                    return true;
-
-                case Keys.PageDown:
-                    (_editor.Camera as ArcBallCamera)?.Move(-_keyboardZoomSpeed);
-                    Draw();
-                    return true;
+                panel3D.Cursor = Cursors.Cross;
+                panel2DGrid.Cursor = Cursors.Cross;
+                _editor.RelocateCameraActive = true;
             }
 
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private void FormMainNew_KeyDown(object sender, KeyEventArgs e)
-        {
             // End paste or stamp
             if (e.KeyCode == Keys.Escape)
             {
@@ -1432,6 +1406,35 @@ namespace TombEditor
             _editor.DrawPanelGrid();
 
             e.Handled = true;
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+            if ((e.KeyCode == Keys.Menu) || (e.KeyCode == Keys.Y) || (e.KeyCode == Keys.Z))
+            {
+                panel3D.Cursor = Cursors.Arrow;
+                panel2DGrid.Cursor = Cursors.Arrow;
+                _editor.RelocateCameraActive = false;
+            }
+            if ((e.KeyCode == Keys.Y) || (e.KeyCode == Keys.Z))
+                _pressedZorY = false;
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+
+            panel3D.Cursor = Cursors.Arrow;
+            panel2DGrid.Cursor = Cursors.Arrow;
+            if (_editor != null)
+                _editor.RelocateCameraActive = false;
+            _pressedZorY = false;
+        }
+        
+        private void UpdateCameraRelocationMode(KeyEventArgs e, bool Up)
+        {
+
         }
 
         private void loadTextureMapToolStripMenuItem_Click(object sender, EventArgs e)
