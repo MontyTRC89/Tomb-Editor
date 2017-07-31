@@ -93,7 +93,7 @@ namespace TombEditor.Geometry.IO
 
                     // Now read the first info about rooms, at the end of the PRJ there will be another block
                     for (int i = 0; i < Level.MaxNumberOfRooms; ++i)
-                        level.Rooms[i] = i >= numRooms ? null : new Room(level);
+                        level.Rooms[i] = null;
 
                     var tempRooms = new Dictionary<int, PrjBlock[,]>();
                     var flipInfos = new List<PrjFlipInfo>();
@@ -131,7 +131,7 @@ namespace TombEditor.Geometry.IO
 
                         reader.ReadInt16();
 
-                        var room = level.Rooms[i];
+                        var room = level.GetOrCreateRoom(i);
                         room.Init(posXBlocks, (int)(yPos / 256.0f), posZBlocks, (byte)numXBlocks, (byte)numZBlocks,
                             0);
 
@@ -153,7 +153,7 @@ namespace TombEditor.Geometry.IO
                             short portalXBlocks = reader.ReadInt16();
                             short portalZBlocks = reader.ReadInt16();
                             reader.ReadInt16();
-                            var portalRoom = level.Rooms[reader.ReadInt16()];
+                            var portalRoom = level.GetOrCreateRoom(reader.ReadInt16());
                             short portalSlot = reader.ReadInt16();
 
                             var portalBuffer = reader.ReadBytes(26);
@@ -207,7 +207,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.Rooms[reader.ReadInt16()];
+                            var objRoom = level.GetOrCreateRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -339,7 +339,7 @@ namespace TombEditor.Geometry.IO
                             }
                             else
                             {
-                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.Rooms[i])
+                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.GetOrCreateRoom(i))
                                 {
                                     X = (byte)objPosX,
                                     Z = (byte)objPosZ,
@@ -467,7 +467,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.Rooms[reader.ReadInt16()];
+                            var objRoom = level.GetOrCreateRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -880,7 +880,7 @@ namespace TombEditor.Geometry.IO
                                 light.Position.Z + 512.0f);
                         }
 
-                        level.Rooms[i] = room;
+                        System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateRoom(i), room));
 
                         progress += (i / (float)numRooms * 0.28f);
 
@@ -1135,22 +1135,24 @@ namespace TombEditor.Geometry.IO
                         if (level.Rooms[i] == null)
                             continue;
 
+                        var room = level.Rooms[i];
+
                         foreach (var info in flipInfos)
                         {
                             if (info._baseRoom == i)
                             {
-                                level.Rooms[i].Flipped = true;
-                                level.Rooms[i].AlternateRoom = level.Rooms[info._flipRoom];
-                                level.Rooms[i].AlternateGroup = info._group;
+                                room.Flipped = true;
+                                room.AlternateRoom = level.Rooms[info._flipRoom];
+                                room.AlternateGroup = info._group;
                             }
 
                             if (info._flipRoom != i)
                                 continue;
 
-                            level.Rooms[i].Flipped = true;
-                            level.Rooms[i].BaseRoom = level.Rooms[info._baseRoom];
-                            level.Rooms[i].AlternateGroup = info._group;
-                            level.Rooms[i].Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
+                            room.Flipped = true;
+                            room.BaseRoom = level.Rooms[info._baseRoom];
+                            room.AlternateGroup = info._group;
+                            room.Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
                                 level.Rooms[info._baseRoom].Position.Y,
                                 level.Rooms[info._baseRoom].Position.Z);
                         }
@@ -1480,9 +1482,9 @@ namespace TombEditor.Geometry.IO
                     form.ReportProgress(85, "Building faces and geometry");
                     for (int i = 0; i < level.Rooms.Length; i++)
                     {
-                        if (level.Rooms[i] == null)
-                            continue;
                         var room = level.Rooms[i];
+                        if (room == null)
+                            continue;
 
                         for (int j = 0; j < room.Lights.Count; j++)
                         {
@@ -1491,7 +1493,7 @@ namespace TombEditor.Geometry.IO
                             light.X = (byte)(room.NumXSectors - light.X - 1);
 
                             light.Position = new Vector3(light.X * 1024 + 512,
-                                -light.Y - level.Rooms[i].Position.Y * 256,
+                                -light.Y - room.Position.Y * 256,
                                 light.Z * 1024 + 512);
                             room.Lights[j] = light;
                         }

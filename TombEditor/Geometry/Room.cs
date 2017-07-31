@@ -62,6 +62,9 @@ namespace TombEditor.Geometry
 
         public void Init(int posx, int posy, int posz, byte numXSectors, byte numZSectors, short ceiling)
         {
+            System.Diagnostics.Debug.Assert(numXSectors > 0);
+            System.Diagnostics.Debug.Assert(numZSectors > 0);
+            
             Position = new Vector3(posx, posy, posz);
             NumXSectors = numXSectors;
             NumZSectors = numZSectors;
