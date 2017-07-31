@@ -529,8 +529,6 @@ namespace TombEditor
             _editor.BlockEditingType = 0;
             _editor.LightIndex = -1;
 
-            ResetSelection();
-
             _editor.DrawPanel3D();
         }
 
@@ -546,8 +544,6 @@ namespace TombEditor
             _editor.Action = EditorAction.None;
             _editor.BlockEditingType = 0;
             _editor.LightIndex = -1;
-
-            ResetSelection();
         }
 
         private void butFaceEdit_Click(object sender, EventArgs e)
@@ -561,9 +557,7 @@ namespace TombEditor
             _editor.Mode = EditorMode.FaceEdit;
             _editor.Action = EditorAction.None;
             _editor.BlockEditingType = 0;
-
-            ResetSelection();
-
+            
             _editor.DrawPanel3D();
         }
 
@@ -579,9 +573,7 @@ namespace TombEditor
             _editor.Action = EditorAction.None;
             _editor.LightIndex = -1;
             _editor.BlockEditingType = 0;
-
-            ResetSelection();
-
+            
             _editor.DrawPanel3D();
         }
 
