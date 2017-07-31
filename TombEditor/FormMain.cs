@@ -914,10 +914,7 @@ namespace TombEditor
 
             this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - Untitled";
         }
-
-        private void ResetInterface()
-        { }
-
+        
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // I intercept arrow keys here otherwise they would processed by the form and 
