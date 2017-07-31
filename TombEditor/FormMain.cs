@@ -19,6 +19,9 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private const float _rotationSpeed = 0.1f;
+        private const float _keyboardZoomSpeed = 0.1f;
+
         private Editor _editor;
         private int _lastSearchResult = -1;
 
@@ -919,48 +922,37 @@ namespace TombEditor
         {
             // I intercept arrow keys here otherwise they would processed by the form and 
             // camera would move only if Panel3D is focused
-            if (((keyData & Keys.Left) == Keys.Left ||
-                 (keyData & Keys.Right) == Keys.Right ||
-                 (keyData & Keys.Up) == Keys.Up ||
-                 (keyData & Keys.Down) == Keys.Down ||
-                 (keyData & Keys.PageUp) == Keys.PageUp ||
-                 (keyData & Keys.PageDown) == Keys.PageDown) &&
-                 !((keyData & Keys.Control) == Keys.Control ||
-                   (keyData & Keys.Shift) == Keys.Shift))
+            switch (keyData)
             {
-                float rotateFactor = 0.1f;
-                float zoomFactor = 0.1f;
+                case Keys.Up:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(0, _rotationSpeed);
+                    Draw();
+                    return true;
 
-                switch (keyData)
-                {
-                    case Keys.Up:
-                        (_editor.Camera as ArcBallCamera)?.Rotate(0, rotateFactor);
-                        break;
+                case Keys.Down:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(0, -_rotationSpeed);
+                    Draw();
+                    return true;
 
-                    case Keys.Down:
-                        (_editor.Camera as ArcBallCamera)?.Rotate(0, -rotateFactor);
-                        break;
+                case Keys.Left:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(_rotationSpeed, 0);
+                    Draw();
+                    return true;
 
-                    case Keys.Left:
-                        (_editor.Camera as ArcBallCamera)?.Rotate(rotateFactor, 0);
-                        break;
+                case Keys.Right:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(-_rotationSpeed, 0);
+                    Draw();
+                    return true;
 
-                    case Keys.Right:
-                        (_editor.Camera as ArcBallCamera)?.Rotate(-rotateFactor, 0);
-                        break;
+                case Keys.PageUp:
+                    (_editor.Camera as ArcBallCamera)?.Move(_keyboardZoomSpeed);
+                    Draw();
+                    return true;
 
-                    case Keys.PageUp:
-                        (_editor.Camera as ArcBallCamera)?.Move(zoomFactor);
-                        break;
-
-                    case Keys.PageDown:
-                        (_editor.Camera as ArcBallCamera)?.Move(-zoomFactor);
-                        break;
-                }
-
-                Draw();
-
-                return true;
+                case Keys.PageDown:
+                    (_editor.Camera as ArcBallCamera)?.Move(-_keyboardZoomSpeed);
+                    Draw();
+                    return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
