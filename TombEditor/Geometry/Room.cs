@@ -49,7 +49,6 @@ namespace TombEditor.Geometry
         public bool FlagHorizon { get; set; }
         public Reverberation Reverberation { get; set; }
         private Level Level { get; }
-        public Vector3 Centre { get; private set; }
         public bool ExcludeFromPathFinding { get; set; }
 
         public Room(Level level)
@@ -285,7 +284,6 @@ namespace TombEditor.Geometry
         {
             Vertices = new List<EditorVertex>();
             OptimizedVertices = new List<EditorVertex>();
-            Centre = new Vector3(0.0f, 0.0f, 0.0f);
 
             var e1 = new Vector2(0.0f, 0.0f);
             var e2 = new Vector2(1.0f, 0.0f);
@@ -1038,9 +1036,6 @@ namespace TombEditor.Geometry
                     }
                 }
             }
-
-            Centre = new Vector3(tempCentre.X, tempCentre.Y, tempCentre.Z);
-            Centre /= totalVertices;
         }
 
         private void AddVerticalFaces(int x, int z, FaceDirection direction, bool floor, bool ceiling, bool middle)
@@ -3126,5 +3121,20 @@ namespace TombEditor.Geometry
 
             return max;
         }
+
+        public Vector3 WorldPos
+        {
+            get { return new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f); }
+        }
+
+        public Vector3 GetLocalCenter()
+        {
+            float ceilingHeight = GetHighestCorner();
+            float floorHeight = GetLowestCorner();
+            float posX = NumXSectors * (0.5f * 1024.0f);
+            float posY = (floorHeight + ceilingHeight - Position.Y) * (0.5f * 256.0f);
+            float posZ = NumZSectors * (0.5f * 1024.0f);
+            return new Vector3(posX, posY, posZ);
+        } 
     }
 }

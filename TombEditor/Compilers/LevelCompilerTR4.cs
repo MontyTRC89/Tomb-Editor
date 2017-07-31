@@ -1690,7 +1690,7 @@ namespace TombEditor.Compilers
             {
                 var newMesh = new tr_mesh
                 {
-                    Centre = new tr_vertex
+                    Center = new tr_vertex
                     {
                         X = oldMesh.SphereX,
                         Y = oldMesh.SphereY,

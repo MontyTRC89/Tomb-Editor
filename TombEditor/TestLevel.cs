@@ -157,7 +157,7 @@ namespace TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_mesh
     {
-        public tr_vertex Centre;
+        public tr_vertex Center;
         public int Radius;
         public short NumVertices;
         public tr_vertex[] Vertices;
@@ -626,7 +626,7 @@ namespace TombEngine
             {
                 long offset1 = reader.BaseStream.Position;
 
-                reader.ReadBlock(out Meshes[l].Centre);
+                reader.ReadBlock(out Meshes[l].Center);
                 reader.ReadBlock(out Meshes[l].Radius);
                 numBytes += 10;
 
@@ -664,7 +664,7 @@ namespace TombEngine
                 if (l == 209)
                 {
                     BinaryWriterEx tmpwriter = new BinaryWriterEx(File.OpenWrite("cleopal.msh"));
-                    tmpwriter.WriteBlock(Meshes[l].Centre);
+                    tmpwriter.WriteBlock(Meshes[l].Center);
                     tmpwriter.WriteBlock(Meshes[l].Radius);
                     tmpwriter.WriteBlock(Meshes[l].NumVertices);
                     tmpwriter.WriteBlockArray(Meshes[l].Vertices);
