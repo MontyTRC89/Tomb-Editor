@@ -8,15 +8,19 @@ namespace TombEditor.Geometry
 {
     public class Block
     {
-        /// <summary> Index of faces on the negative X and negative Z direction </summary>
-        public const int FaceXnZn = 3;
         /// <summary> Index of faces on the negative X and positive Z direction </summary>
         public const int FaceXnZp = 0;
-        /// <summary> Index of faces on the positive X and negative Z direction </summary>
-        public const int FaceXpZn = 2;
         /// <summary> Index of faces on the positive X and positive Z direction </summary>
         public const int FaceXpZp = 1;
-
+        /// <summary> Index of faces on the positive X and negative Z direction </summary>
+        public const int FaceXpZn = 2;
+        /// <summary> Index of faces on the negative X and negative Z direction </summary>
+        public const int FaceXnZn = 3;
+        /// <summary> The x offset of each face index in [0, 4). </summary>
+        public static readonly int[] FaceX = new int[] { 0, 1, 1, 0 };
+        /// <summary> The x offset of each face index in [0, 4). </summary>
+        public static readonly int[] FaceZ = new int[] { 1, 1, 0, 0 };
+        
         public BlockType Type { get; set; }
         public BlockFlags Flags { get; set; }
         // ReSharper disable once InconsistentNaming

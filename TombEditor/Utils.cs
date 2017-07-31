@@ -217,21 +217,46 @@ namespace TombEditor
                 (point.X >= Math.Max(point0.X, point1.X));
         }
 
-        public static int ReferenceIndexOf<T>(this IEnumerable<T> enumerable, T needle)
+        public static int ReferenceIndexOf<T>(this IList<T> list, T needle)
         {
+            // This is not implemented for IEnumerable on purpose to avoid abuse of this method on non ordered containers.
+            // (HashSet, Dictionary, ...)
+
             if (needle == null)
                 return -1;
-
-            int i = 0;
-            foreach (var t in enumerable)
-            {
-                if (ReferenceEquals(t, needle))
+            
+            for (int i = 0; i < list.Count; ++i)
+                if (ReferenceEquals(list[i], needle))
                     return i;
 
-                ++i;
-            }
-
             return -1;
+        }
+
+        public static T TryGet<T>(this T[] array, int index0) where T : class
+        {
+            if ((index0 < 0) || (index0 >= array.GetLength(0)))
+                return null;
+            return array[index0];
+        }
+        
+        public static T TryGet<T>(this T[,] array, int index0, int index1) where T : class
+        {
+            if ((index0 < 0) || (index0 >= array.GetLength(0)))
+                return null;
+            if ((index1 < 0) || (index1 >= array.GetLength(1)))
+                return null;
+            return array[index0, index1];
+        }
+
+        public static T TryGet<T>(this T[,,] array, int index0, int index1, int index2) where T : class
+        {
+            if ((index0 < 0) || (index0 >= array.GetLength(0)))
+                return null;
+            if ((index1 < 0) || (index1 >= array.GetLength(1)))
+                return null;
+            if ((index2 < 0) || (index2 >= array.GetLength(2)))
+                return null;
+            return array[index0, index1, index2];
         }
     }
 }
