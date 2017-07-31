@@ -51,7 +51,6 @@ namespace TombEditor.Geometry
         private Level Level { get; }
         public Vector3 Centre { get; private set; }
         public bool ExcludeFromPathFinding { get; set; }
-        private byte[,,] _iterations;
 
         public Room(Level level)
         {
@@ -130,7 +129,7 @@ namespace TombEditor.Geometry
             watch.Start();
 
             // This is used for iterative mean
-            _iterations = new byte[NumXSectors, NumZSectors, 16];
+            byte[,,] iterations = new byte[NumXSectors, NumZSectors, 16];
 
             for (int x = 0; x < NumXSectors; x++)
             {
@@ -141,7 +140,7 @@ namespace TombEditor.Geometry
                         if (Blocks[x, z].Faces[f].Defined)
                         {
                             // Calculate the lighting of vertices in X, Z of face f
-                            CalculateLighting(x, z, f);
+                            CalculateLighting(iterations, x, z, f);
                         }
                     }
                 }
@@ -2682,7 +2681,7 @@ namespace TombEditor.Geometry
             return true;
         }
 
-        private void CalculateLighting(int x, int z, int f)
+        private void CalculateLighting(byte[,,] iterations, int x, int z, int f)
         {
             var face = Blocks[x, z].Faces[f];
 
@@ -2891,12 +2890,12 @@ namespace TombEditor.Geometry
                 if (b < 0)
                     b = 0;
 
-                vertex.FaceColor.X = (r + _iterations[theX, theZ, ind] * vertex.FaceColor.X) / (_iterations[theX, theZ, ind] + 1);
-                vertex.FaceColor.Y = (g + _iterations[theX, theZ, ind] * vertex.FaceColor.Y) / (_iterations[theX, theZ, ind] + 1);
-                vertex.FaceColor.Z = (b + _iterations[theX, theZ, ind] * vertex.FaceColor.Z) / (_iterations[theX, theZ, ind] + 1);
+                vertex.FaceColor.X = (r + iterations[theX, theZ, ind] * vertex.FaceColor.X) / (iterations[theX, theZ, ind] + 1);
+                vertex.FaceColor.Y = (g + iterations[theX, theZ, ind] * vertex.FaceColor.Y) / (iterations[theX, theZ, ind] + 1);
+                vertex.FaceColor.Z = (b + iterations[theX, theZ, ind] * vertex.FaceColor.Z) / (iterations[theX, theZ, ind] + 1);
                 vertex.FaceColor.W = 255.0f;
 
-                _iterations[theX, theZ, ind]++;
+                iterations[theX, theZ, ind]++;
 
                 VerticesGrid[theX, theZ, ind] = vertex;
             }
