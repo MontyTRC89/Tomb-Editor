@@ -2402,21 +2402,21 @@ namespace TombEditor
                 comboRoom.Items[comboRoom.SelectedIndex] = comboRoom.SelectedIndex + ": " + form.Value;
             }
         }
-
-        private void butGridWalls3_Click(object sender, EventArgs e)
+        
+        private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
                 return;
             EditorActions.GridWalls3(_editor.SelectedRoom, _editor.BlockSelection);
         }
 
-        private void butGridWalls5_Click(object sender, EventArgs e)
+        private void gridWallsIn5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if ((_editor.SelectedRoom == null) || !_editor.BlockSelectionAvailable)
                 return;
             EditorActions.GridWalls5(_editor.SelectedRoom, _editor.BlockSelection);
         }
-
+        
         private void RandomFloor(short sign)
         {
             if (!_editor.BlockSelectionAvailable)

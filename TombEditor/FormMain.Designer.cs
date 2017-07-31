@@ -50,21 +50,23 @@
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stampToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.roomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cropRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripSeparator();
             this.newRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newRoomDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.randomFloorUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.randomFloorDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
             this.randomCeilingUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.randomCeilingDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
             this.averageFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.averageCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripSeparator();
-            this.copyRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cropRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.gridWallsIn3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gridWallsIn5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
@@ -115,17 +117,8 @@
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
             this.butResetSearch = new DarkUI.Controls.DarkButton();
             this.butFindItem = new DarkUI.Controls.DarkButton();
-            this.butAverageCeiling = new DarkUI.Controls.DarkButton();
-            this.butAverageFloor = new DarkUI.Controls.DarkButton();
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
-            this.butRandomCeilingDown = new DarkUI.Controls.DarkButton();
-            this.butRandomCeilingUp = new DarkUI.Controls.DarkButton();
-            this.butGridWalls5 = new DarkUI.Controls.DarkButton();
-            this.butRandomFloorDown = new DarkUI.Controls.DarkButton();
-            this.butRandomFloorUp = new DarkUI.Controls.DarkButton();
-            this.butGridWalls3 = new DarkUI.Controls.DarkButton();
-            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.comboFlipMap = new DarkUI.Controls.DarkComboBox(this.components);
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.butRoomUp = new DarkUI.Controls.DarkButton();
@@ -147,6 +140,7 @@
             this.butItemsNext = new DarkUI.Controls.DarkButton();
             this.butItemsBack = new DarkUI.Controls.DarkButton();
             this.butAddItem = new DarkUI.Controls.DarkButton();
+            this.panelItem = new TombEditor.Controls.PanelRenderingItem();
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
@@ -163,8 +157,17 @@
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
             this.panelTextureContainer = new System.Windows.Forms.Panel();
+            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap(this.components);
             this.panel4 = new System.Windows.Forms.Panel();
+            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
+            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
+            this.numLightOut = new TombEditor.Controls.LightParameterController();
+            this.numLightIn = new TombEditor.Controls.LightParameterController();
+            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
+            this.numLightLen = new TombEditor.Controls.LightParameterController();
+            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
             this.butAddTrigger = new DarkUI.Controls.DarkButton();
+            this.lightPalette = new TombEditor.Controls.PanelPalette(this.components);
             this.lstTriggers = new DarkUI.Controls.DarkListBox(this.components);
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
             this.butEditTrigger = new DarkUI.Controls.DarkButton();
@@ -238,29 +241,19 @@
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
-            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
-            this.numLightOut = new TombEditor.Controls.LightParameterController();
-            this.numLightIn = new TombEditor.Controls.LightParameterController();
-            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
-            this.numLightLen = new TombEditor.Controls.LightParameterController();
-            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
-            this.lightPalette = new TombEditor.Controls.PanelPalette(this.components);
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap(this.components);
-            this.panelItem = new TombEditor.Controls.PanelRenderingItem();
             this.darkMenuStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelTextureTools.SuspendLayout();
             this.panelTextureContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).BeginInit();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.multiPage1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).BeginInit();
             this.SuspendLayout();
             // 
             // darkMenuStrip1
@@ -463,126 +456,34 @@
             // roomsToolStripMenuItem
             // 
             this.roomsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyRoomToolStripMenuItem,
+            this.splitRoomToolStripMenuItem,
+            this.cropRoomToolStripMenuItem,
+            this.toolStripMenuItem14,
             this.newRoomUpToolStripMenuItem,
             this.newRoomDownToolStripMenuItem,
             this.toolStripMenuItem8,
             this.randomFloorUpToolStripMenuItem,
             this.randomFloorDownToolStripMenuItem,
-            this.toolStripMenuItem10,
             this.randomCeilingUpToolStripMenuItem,
             this.randomCeilingDownToolStripMenuItem,
             this.toolStripMenuItem11,
             this.averageFloorToolStripMenuItem,
             this.averageCeilingToolStripMenuItem,
-            this.toolStripMenuItem14,
-            this.copyRoomToolStripMenuItem,
-            this.splitRoomToolStripMenuItem,
-            this.cropRoomToolStripMenuItem});
+            this.toolStripSeparator7,
+            this.gridWallsIn3ToolStripMenuItem,
+            this.gridWallsIn5ToolStripMenuItem});
             this.roomsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.roomsToolStripMenuItem.Name = "roomsToolStripMenuItem";
             this.roomsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.roomsToolStripMenuItem.Text = "Rooms";
-            // 
-            // newRoomUpToolStripMenuItem
-            // 
-            this.newRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newRoomUpToolStripMenuItem.Image = global::TombEditor.Properties.Resources.NewRoomUp_16;
-            this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
-            this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.newRoomUpToolStripMenuItem.Text = "New room up";
-            this.newRoomUpToolStripMenuItem.Click += new System.EventHandler(this.newRoomUpToolStripMenuItem_Click);
-            // 
-            // newRoomDownToolStripMenuItem
-            // 
-            this.newRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newRoomDownToolStripMenuItem.Image = global::TombEditor.Properties.Resources.NewRoomDown_16;
-            this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
-            this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.newRoomDownToolStripMenuItem.Text = "New room down";
-            this.newRoomDownToolStripMenuItem.Click += new System.EventHandler(this.newRoomDownToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem8
-            // 
-            this.toolStripMenuItem8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem8.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(187, 6);
-            // 
-            // randomFloorUpToolStripMenuItem
-            // 
-            this.randomFloorUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomFloorUpToolStripMenuItem.Name = "randomFloorUpToolStripMenuItem";
-            this.randomFloorUpToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.randomFloorUpToolStripMenuItem.Text = "Random floor up";
-            this.randomFloorUpToolStripMenuItem.Click += new System.EventHandler(this.randomFloorUpToolStripMenuItem_Click);
-            // 
-            // randomFloorDownToolStripMenuItem
-            // 
-            this.randomFloorDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomFloorDownToolStripMenuItem.Name = "randomFloorDownToolStripMenuItem";
-            this.randomFloorDownToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.randomFloorDownToolStripMenuItem.Text = "Random floor down";
-            this.randomFloorDownToolStripMenuItem.Click += new System.EventHandler(this.randomFloorDownToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem10
-            // 
-            this.toolStripMenuItem10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem10.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(187, 6);
-            // 
-            // randomCeilingUpToolStripMenuItem
-            // 
-            this.randomCeilingUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomCeilingUpToolStripMenuItem.Name = "randomCeilingUpToolStripMenuItem";
-            this.randomCeilingUpToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.randomCeilingUpToolStripMenuItem.Text = "Random ceiling up";
-            this.randomCeilingUpToolStripMenuItem.Click += new System.EventHandler(this.randomCeilingUpToolStripMenuItem_Click);
-            // 
-            // randomCeilingDownToolStripMenuItem
-            // 
-            this.randomCeilingDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.randomCeilingDownToolStripMenuItem.Name = "randomCeilingDownToolStripMenuItem";
-            this.randomCeilingDownToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.randomCeilingDownToolStripMenuItem.Text = "Random ceiling down";
-            this.randomCeilingDownToolStripMenuItem.Click += new System.EventHandler(this.randomCeilingDownToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem11
-            // 
-            this.toolStripMenuItem11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem11.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(187, 6);
-            // 
-            // averageFloorToolStripMenuItem
-            // 
-            this.averageFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.averageFloorToolStripMenuItem.Name = "averageFloorToolStripMenuItem";
-            this.averageFloorToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.averageFloorToolStripMenuItem.Text = "Average floor";
-            this.averageFloorToolStripMenuItem.Click += new System.EventHandler(this.averageFloorToolStripMenuItem_Click);
-            // 
-            // averageCeilingToolStripMenuItem
-            // 
-            this.averageCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.averageCeilingToolStripMenuItem.Name = "averageCeilingToolStripMenuItem";
-            this.averageCeilingToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.averageCeilingToolStripMenuItem.Text = "Average ceiling";
-            this.averageCeilingToolStripMenuItem.Click += new System.EventHandler(this.averageCeilingToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem14
-            // 
-            this.toolStripMenuItem14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem14.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.Size = new System.Drawing.Size(187, 6);
             // 
             // copyRoomToolStripMenuItem
             // 
             this.copyRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.copyRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.copy_16;
             this.copyRoomToolStripMenuItem.Name = "copyRoomToolStripMenuItem";
-            this.copyRoomToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.copyRoomToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.copyRoomToolStripMenuItem.Text = "Copy room";
             this.copyRoomToolStripMenuItem.Click += new System.EventHandler(this.copyRoomToolStripMenuItem_Click);
             // 
@@ -591,7 +492,7 @@
             this.splitRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.splitRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.split_files_16;
             this.splitRoomToolStripMenuItem.Name = "splitRoomToolStripMenuItem";
-            this.splitRoomToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.splitRoomToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.splitRoomToolStripMenuItem.Text = "Split room";
             this.splitRoomToolStripMenuItem.Click += new System.EventHandler(this.splitRoomToolStripMenuItem_Click);
             // 
@@ -600,9 +501,119 @@
             this.cropRoomToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.cropRoomToolStripMenuItem.Image = global::TombEditor.Properties.Resources.crop_16;
             this.cropRoomToolStripMenuItem.Name = "cropRoomToolStripMenuItem";
-            this.cropRoomToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.cropRoomToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.cropRoomToolStripMenuItem.Text = "Crop room";
             this.cropRoomToolStripMenuItem.Click += new System.EventHandler(this.cropRoomToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem14
+            // 
+            this.toolStripMenuItem14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem14.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem14.Name = "toolStripMenuItem14";
+            this.toolStripMenuItem14.Size = new System.Drawing.Size(229, 6);
+            // 
+            // newRoomUpToolStripMenuItem
+            // 
+            this.newRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomUpToolStripMenuItem.Image = global::TombEditor.Properties.Resources.NewRoomUp_16;
+            this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
+            this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.newRoomUpToolStripMenuItem.Text = "New room up";
+            this.newRoomUpToolStripMenuItem.Click += new System.EventHandler(this.newRoomUpToolStripMenuItem_Click);
+            // 
+            // newRoomDownToolStripMenuItem
+            // 
+            this.newRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newRoomDownToolStripMenuItem.Image = global::TombEditor.Properties.Resources.NewRoomDown_16;
+            this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
+            this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.newRoomDownToolStripMenuItem.Text = "New room down";
+            this.newRoomDownToolStripMenuItem.Click += new System.EventHandler(this.newRoomDownToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem8
+            // 
+            this.toolStripMenuItem8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem8.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(229, 6);
+            // 
+            // randomFloorUpToolStripMenuItem
+            // 
+            this.randomFloorUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.randomFloorUpToolStripMenuItem.Name = "randomFloorUpToolStripMenuItem";
+            this.randomFloorUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.randomFloorUpToolStripMenuItem.Text = "Smooth random floor up";
+            this.randomFloorUpToolStripMenuItem.Click += new System.EventHandler(this.randomFloorUpToolStripMenuItem_Click);
+            // 
+            // randomFloorDownToolStripMenuItem
+            // 
+            this.randomFloorDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.randomFloorDownToolStripMenuItem.Name = "randomFloorDownToolStripMenuItem";
+            this.randomFloorDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.randomFloorDownToolStripMenuItem.Text = "Smooth random floor down";
+            this.randomFloorDownToolStripMenuItem.Click += new System.EventHandler(this.randomFloorDownToolStripMenuItem_Click);
+            // 
+            // randomCeilingUpToolStripMenuItem
+            // 
+            this.randomCeilingUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.randomCeilingUpToolStripMenuItem.Name = "randomCeilingUpToolStripMenuItem";
+            this.randomCeilingUpToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.randomCeilingUpToolStripMenuItem.Text = "Smooth random ceiling up";
+            this.randomCeilingUpToolStripMenuItem.Click += new System.EventHandler(this.randomCeilingUpToolStripMenuItem_Click);
+            // 
+            // randomCeilingDownToolStripMenuItem
+            // 
+            this.randomCeilingDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.randomCeilingDownToolStripMenuItem.Name = "randomCeilingDownToolStripMenuItem";
+            this.randomCeilingDownToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.randomCeilingDownToolStripMenuItem.Text = "Smooth random ceiling down";
+            this.randomCeilingDownToolStripMenuItem.Click += new System.EventHandler(this.randomCeilingDownToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem11
+            // 
+            this.toolStripMenuItem11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem11.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem11.Name = "toolStripMenuItem11";
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(229, 6);
+            // 
+            // averageFloorToolStripMenuItem
+            // 
+            this.averageFloorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.averageFloorToolStripMenuItem.Name = "averageFloorToolStripMenuItem";
+            this.averageFloorToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.averageFloorToolStripMenuItem.Text = "Average floor";
+            this.averageFloorToolStripMenuItem.Click += new System.EventHandler(this.averageFloorToolStripMenuItem_Click);
+            // 
+            // averageCeilingToolStripMenuItem
+            // 
+            this.averageCeilingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.averageCeilingToolStripMenuItem.Name = "averageCeilingToolStripMenuItem";
+            this.averageCeilingToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.averageCeilingToolStripMenuItem.Text = "Average ceiling";
+            this.averageCeilingToolStripMenuItem.Click += new System.EventHandler(this.averageCeilingToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(229, 6);
+            // 
+            // gridWallsIn3ToolStripMenuItem
+            // 
+            this.gridWallsIn3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.gridWallsIn3ToolStripMenuItem.Name = "gridWallsIn3ToolStripMenuItem";
+            this.gridWallsIn3ToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.gridWallsIn3ToolStripMenuItem.Text = "Grid walls in 3";
+            this.gridWallsIn3ToolStripMenuItem.Click += new System.EventHandler(this.gridWallsIn3ToolStripMenuItem_Click);
+            // 
+            // gridWallsIn5ToolStripMenuItem
+            // 
+            this.gridWallsIn5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.gridWallsIn5ToolStripMenuItem.Name = "gridWallsIn5ToolStripMenuItem";
+            this.gridWallsIn5ToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
+            this.gridWallsIn5ToolStripMenuItem.Text = "Grid walls in 5";
+            this.gridWallsIn5ToolStripMenuItem.Click += new System.EventHandler(this.gridWallsIn5ToolStripMenuItem_Click);
             // 
             // itemsToolStripMenuItem
             // 
@@ -973,7 +984,7 @@
             // 
             this.darkLabel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(0, 285);
+            this.darkLabel1.Location = new System.Drawing.Point(2, 258);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(283, 2);
             this.darkLabel1.TabIndex = 17;
@@ -983,7 +994,7 @@
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(9, 440);
+            this.darkLabel3.Location = new System.Drawing.Point(9, 409);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(77, 13);
             this.darkLabel3.TabIndex = 23;
@@ -993,7 +1004,7 @@
             // 
             this.panelRoomAmbientLight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelRoomAmbientLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelRoomAmbientLight.Location = new System.Drawing.Point(12, 456);
+            this.panelRoomAmbientLight.Location = new System.Drawing.Point(12, 425);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 24);
             this.panelRoomAmbientLight.TabIndex = 24;
@@ -1003,7 +1014,7 @@
             // 
             this.darkLabel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(4, 485);
+            this.darkLabel4.Location = new System.Drawing.Point(4, 460);
             this.darkLabel4.Name = "darkLabel4";
             this.darkLabel4.Size = new System.Drawing.Size(281, 2);
             this.darkLabel4.TabIndex = 25;
@@ -1019,17 +1030,8 @@
             this.panel2.Controls.Add(this.cbHorizon);
             this.panel2.Controls.Add(this.butResetSearch);
             this.panel2.Controls.Add(this.butFindItem);
-            this.panel2.Controls.Add(this.butAverageCeiling);
-            this.panel2.Controls.Add(this.butAverageFloor);
             this.panel2.Controls.Add(this.panelStaticMeshColor);
             this.panel2.Controls.Add(this.darkLabel14);
-            this.panel2.Controls.Add(this.butRandomCeilingDown);
-            this.panel2.Controls.Add(this.butRandomCeilingUp);
-            this.panel2.Controls.Add(this.butGridWalls5);
-            this.panel2.Controls.Add(this.butRandomFloorDown);
-            this.panel2.Controls.Add(this.butRandomFloorUp);
-            this.panel2.Controls.Add(this.butGridWalls3);
-            this.panel2.Controls.Add(this.darkLabel21);
             this.panel2.Controls.Add(this.comboFlipMap);
             this.panel2.Controls.Add(this.darkLabel19);
             this.panel2.Controls.Add(this.butRoomUp);
@@ -1086,7 +1088,7 @@
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalWall.Size = new System.Drawing.Size(92, 23);
-            this.butDiagonalWall.TabIndex = 88;
+            this.butDiagonalWall.TabIndex = 89;
             this.butDiagonalWall.Text = "Diag. Wall";
             this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
@@ -1149,7 +1151,7 @@
             // 
             this.cbNoPathfinding.AutoSize = true;
             this.cbNoPathfinding.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbNoPathfinding.Location = new System.Drawing.Point(117, 417);
+            this.cbNoPathfinding.Location = new System.Drawing.Point(117, 386);
             this.cbNoPathfinding.Name = "cbNoPathfinding";
             this.cbNoPathfinding.Size = new System.Drawing.Size(106, 17);
             this.cbNoPathfinding.TabIndex = 81;
@@ -1160,7 +1162,7 @@
             // 
             this.cbHorizon.AutoSize = true;
             this.cbHorizon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbHorizon.Location = new System.Drawing.Point(117, 394);
+            this.cbHorizon.Location = new System.Drawing.Point(117, 363);
             this.cbHorizon.Name = "cbHorizon";
             this.cbHorizon.Size = new System.Drawing.Size(118, 17);
             this.cbHorizon.TabIndex = 62;
@@ -1171,7 +1173,7 @@
             // 
             this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
-            this.butResetSearch.Location = new System.Drawing.Point(214, 649);
+            this.butResetSearch.Location = new System.Drawing.Point(214, 681);
             this.butResetSearch.Name = "butResetSearch";
             this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
             this.butResetSearch.Size = new System.Drawing.Size(60, 23);
@@ -1184,7 +1186,7 @@
             // 
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butFindItem.Image = global::TombEditor.Properties.Resources.search_16;
-            this.butFindItem.Location = new System.Drawing.Point(214, 620);
+            this.butFindItem.Location = new System.Drawing.Point(214, 652);
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Padding = new System.Windows.Forms.Padding(5);
             this.butFindItem.Size = new System.Drawing.Size(60, 23);
@@ -1193,34 +1195,10 @@
             this.butFindItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butFindItem.Click += new System.EventHandler(this.butFindItem_Click);
             // 
-            // butAverageCeiling
-            // 
-            this.butAverageCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAverageCeiling.Location = new System.Drawing.Point(148, 767);
-            this.butAverageCeiling.Name = "butAverageCeiling";
-            this.butAverageCeiling.Padding = new System.Windows.Forms.Padding(5);
-            this.butAverageCeiling.Size = new System.Drawing.Size(125, 23);
-            this.butAverageCeiling.TabIndex = 59;
-            this.butAverageCeiling.Text = "Average ceiling";
-            this.butAverageCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAverageCeiling.Click += new System.EventHandler(this.butAverageCeiling_Click);
-            // 
-            // butAverageFloor
-            // 
-            this.butAverageFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAverageFloor.Location = new System.Drawing.Point(12, 767);
-            this.butAverageFloor.Name = "butAverageFloor";
-            this.butAverageFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butAverageFloor.Size = new System.Drawing.Size(125, 23);
-            this.butAverageFloor.TabIndex = 58;
-            this.butAverageFloor.Text = "Average floor";
-            this.butAverageFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAverageFloor.Click += new System.EventHandler(this.butAverageFloor_Click);
-            // 
             // panelStaticMeshColor
             // 
             this.panelStaticMeshColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelStaticMeshColor.Location = new System.Drawing.Point(214, 551);
+            this.panelStaticMeshColor.Location = new System.Drawing.Point(214, 532);
             this.panelStaticMeshColor.Name = "panelStaticMeshColor";
             this.panelStaticMeshColor.Size = new System.Drawing.Size(60, 20);
             this.panelStaticMeshColor.TabIndex = 43;
@@ -1230,92 +1208,11 @@
             // 
             this.darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(214, 520);
+            this.darkLabel14.Location = new System.Drawing.Point(214, 501);
             this.darkLabel14.Name = "darkLabel14";
             this.darkLabel14.Size = new System.Drawing.Size(66, 30);
             this.darkLabel14.TabIndex = 42;
             this.darkLabel14.Text = "Static mesh color";
-            // 
-            // butRandomCeilingDown
-            // 
-            this.butRandomCeilingDown.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butRandomCeilingDown.Location = new System.Drawing.Point(148, 738);
-            this.butRandomCeilingDown.Name = "butRandomCeilingDown";
-            this.butRandomCeilingDown.Padding = new System.Windows.Forms.Padding(5);
-            this.butRandomCeilingDown.Size = new System.Drawing.Size(125, 23);
-            this.butRandomCeilingDown.TabIndex = 57;
-            this.butRandomCeilingDown.Text = "Random ceiling down";
-            this.butRandomCeilingDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butRandomCeilingDown.Click += new System.EventHandler(this.butRandomCeilingDown_Click);
-            // 
-            // butRandomCeilingUp
-            // 
-            this.butRandomCeilingUp.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butRandomCeilingUp.Location = new System.Drawing.Point(148, 709);
-            this.butRandomCeilingUp.Name = "butRandomCeilingUp";
-            this.butRandomCeilingUp.Padding = new System.Windows.Forms.Padding(5);
-            this.butRandomCeilingUp.Size = new System.Drawing.Size(125, 23);
-            this.butRandomCeilingUp.TabIndex = 56;
-            this.butRandomCeilingUp.Text = "Random ceiling up";
-            this.butRandomCeilingUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butRandomCeilingUp.Click += new System.EventHandler(this.butRandomCeilingUp_Click);
-            // 
-            // butGridWalls5
-            // 
-            this.butGridWalls5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butGridWalls5.Location = new System.Drawing.Point(148, 680);
-            this.butGridWalls5.Name = "butGridWalls5";
-            this.butGridWalls5.Padding = new System.Windows.Forms.Padding(5);
-            this.butGridWalls5.Size = new System.Drawing.Size(125, 23);
-            this.butGridWalls5.TabIndex = 55;
-            this.butGridWalls5.Text = "Grid walls x5";
-            this.butGridWalls5.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butGridWalls5.Click += new System.EventHandler(this.butGridWalls5_Click);
-            // 
-            // butRandomFloorDown
-            // 
-            this.butRandomFloorDown.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butRandomFloorDown.Location = new System.Drawing.Point(12, 738);
-            this.butRandomFloorDown.Name = "butRandomFloorDown";
-            this.butRandomFloorDown.Padding = new System.Windows.Forms.Padding(5);
-            this.butRandomFloorDown.Size = new System.Drawing.Size(125, 23);
-            this.butRandomFloorDown.TabIndex = 54;
-            this.butRandomFloorDown.Text = "Random floor down";
-            this.butRandomFloorDown.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butRandomFloorDown.Click += new System.EventHandler(this.butRandomFloorDown_Click);
-            // 
-            // butRandomFloorUp
-            // 
-            this.butRandomFloorUp.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butRandomFloorUp.Location = new System.Drawing.Point(12, 709);
-            this.butRandomFloorUp.Name = "butRandomFloorUp";
-            this.butRandomFloorUp.Padding = new System.Windows.Forms.Padding(5);
-            this.butRandomFloorUp.Size = new System.Drawing.Size(125, 23);
-            this.butRandomFloorUp.TabIndex = 53;
-            this.butRandomFloorUp.Text = "Random floor up";
-            this.butRandomFloorUp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butRandomFloorUp.Click += new System.EventHandler(this.butRandomFloorUp_Click);
-            // 
-            // butGridWalls3
-            // 
-            this.butGridWalls3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butGridWalls3.Location = new System.Drawing.Point(12, 680);
-            this.butGridWalls3.Name = "butGridWalls3";
-            this.butGridWalls3.Padding = new System.Windows.Forms.Padding(5);
-            this.butGridWalls3.Size = new System.Drawing.Size(125, 23);
-            this.butGridWalls3.TabIndex = 52;
-            this.butGridWalls3.Text = "Grid walls x3";
-            this.butGridWalls3.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butGridWalls3.Click += new System.EventHandler(this.butGridWalls3_Click);
-            // 
-            // darkLabel21
-            // 
-            this.darkLabel21.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel21.Location = new System.Drawing.Point(0, 674);
-            this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(283, 2);
-            this.darkLabel21.TabIndex = 50;
             // 
             // comboFlipMap
             // 
@@ -1337,7 +1234,7 @@
             "5",
             "6",
             "7"});
-            this.comboFlipMap.Location = new System.Drawing.Point(12, 342);
+            this.comboFlipMap.Location = new System.Drawing.Point(12, 311);
             this.comboFlipMap.Name = "comboFlipMap";
             this.comboFlipMap.Size = new System.Drawing.Size(99, 24);
             this.comboFlipMap.TabIndex = 49;
@@ -1348,7 +1245,7 @@
             this.darkLabel19.AutoSize = true;
             this.darkLabel19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel19.Location = new System.Drawing.Point(9, 326);
+            this.darkLabel19.Location = new System.Drawing.Point(9, 295);
             this.darkLabel19.Name = "darkLabel19";
             this.darkLabel19.Size = new System.Drawing.Size(48, 13);
             this.darkLabel19.TabIndex = 48;
@@ -1357,7 +1254,7 @@
             // butRoomUp
             // 
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.RoomRaise_16;
-            this.butRoomUp.Location = new System.Drawing.Point(250, 360);
+            this.butRoomUp.Location = new System.Drawing.Point(250, 329);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomUp.Size = new System.Drawing.Size(24, 24);
@@ -1400,7 +1297,7 @@
             "Medium",
             "Large",
             "Pipe"});
-            this.comboReverberation.Location = new System.Drawing.Point(208, 456);
+            this.comboReverberation.Location = new System.Drawing.Point(208, 425);
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(66, 24);
             this.comboReverberation.TabIndex = 42;
@@ -1410,7 +1307,7 @@
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(205, 440);
+            this.darkLabel18.Location = new System.Drawing.Point(205, 409);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(42, 13);
             this.darkLabel18.TabIndex = 41;
@@ -1432,7 +1329,7 @@
             "2",
             "3",
             "4"});
-            this.comboMist.Location = new System.Drawing.Point(150, 456);
+            this.comboMist.Location = new System.Drawing.Point(150, 425);
             this.comboMist.Name = "comboMist";
             this.comboMist.Size = new System.Drawing.Size(52, 24);
             this.comboMist.TabIndex = 40;
@@ -1443,7 +1340,7 @@
             this.darkLabel17.AutoSize = true;
             this.darkLabel17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel17.Location = new System.Drawing.Point(147, 440);
+            this.darkLabel17.Location = new System.Drawing.Point(147, 409);
             this.darkLabel17.Name = "darkLabel17";
             this.darkLabel17.Size = new System.Drawing.Size(29, 13);
             this.darkLabel17.TabIndex = 39;
@@ -1465,7 +1362,7 @@
             "2",
             "3",
             "4"});
-            this.comboReflection.Location = new System.Drawing.Point(92, 456);
+            this.comboReflection.Location = new System.Drawing.Point(92, 425);
             this.comboReflection.Name = "comboReflection";
             this.comboReflection.Size = new System.Drawing.Size(52, 24);
             this.comboReflection.TabIndex = 38;
@@ -1476,7 +1373,7 @@
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel16.Location = new System.Drawing.Point(89, 440);
+            this.darkLabel16.Location = new System.Drawing.Point(89, 409);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(59, 13);
             this.darkLabel16.TabIndex = 37;
@@ -1486,7 +1383,7 @@
             // 
             this.cbFlagOutside.AutoSize = true;
             this.cbFlagOutside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagOutside.Location = new System.Drawing.Point(117, 371);
+            this.cbFlagOutside.Location = new System.Drawing.Point(117, 340);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(67, 17);
             this.cbFlagOutside.TabIndex = 36;
@@ -1497,7 +1394,7 @@
             // 
             this.cbFlagCold.AutoSize = true;
             this.cbFlagCold.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagCold.Location = new System.Drawing.Point(117, 348);
+            this.cbFlagCold.Location = new System.Drawing.Point(117, 317);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 35;
@@ -1508,7 +1405,7 @@
             // 
             this.cbFlagDamage.AutoSize = true;
             this.cbFlagDamage.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagDamage.Location = new System.Drawing.Point(117, 326);
+            this.cbFlagDamage.Location = new System.Drawing.Point(117, 295);
             this.cbFlagDamage.Name = "cbFlagDamage";
             this.cbFlagDamage.Size = new System.Drawing.Size(68, 17);
             this.cbFlagDamage.TabIndex = 34;
@@ -1534,7 +1431,7 @@
             "Rain",
             "Snow",
             "Quicksand"});
-            this.comboRoomType.Location = new System.Drawing.Point(12, 386);
+            this.comboRoomType.Location = new System.Drawing.Point(12, 355);
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(99, 24);
             this.comboRoomType.TabIndex = 33;
@@ -1545,7 +1442,7 @@
             this.darkLabel15.AutoSize = true;
             this.darkLabel15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel15.Location = new System.Drawing.Point(9, 370);
+            this.darkLabel15.Location = new System.Drawing.Point(9, 339);
             this.darkLabel15.Name = "darkLabel15";
             this.darkLabel15.Size = new System.Drawing.Size(62, 13);
             this.darkLabel15.TabIndex = 32;
@@ -1561,7 +1458,7 @@
             this.comboRoom.ForeColor = System.Drawing.Color.White;
             this.comboRoom.FormattingEnabled = true;
             this.comboRoom.ItemHeight = 18;
-            this.comboRoom.Location = new System.Drawing.Point(12, 299);
+            this.comboRoom.Location = new System.Drawing.Point(12, 268);
             this.comboRoom.Name = "comboRoom";
             this.comboRoom.Size = new System.Drawing.Size(202, 24);
             this.comboRoom.TabIndex = 31;
@@ -1576,7 +1473,7 @@
             this.comboItems.ForeColor = System.Drawing.Color.White;
             this.comboItems.FormattingEnabled = true;
             this.comboItems.ItemHeight = 18;
-            this.comboItems.Location = new System.Drawing.Point(42, 490);
+            this.comboItems.Location = new System.Drawing.Point(42, 471);
             this.comboItems.Name = "comboItems";
             this.comboItems.Size = new System.Drawing.Size(166, 24);
             this.comboItems.TabIndex = 30;
@@ -1585,7 +1482,7 @@
             // butItemsNext
             // 
             this.butItemsNext.Image = global::TombEditor.Properties.Resources.angle_right_16;
-            this.butItemsNext.Location = new System.Drawing.Point(214, 490);
+            this.butItemsNext.Location = new System.Drawing.Point(214, 471);
             this.butItemsNext.Name = "butItemsNext";
             this.butItemsNext.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsNext.Size = new System.Drawing.Size(24, 24);
@@ -1595,7 +1492,7 @@
             // butItemsBack
             // 
             this.butItemsBack.Image = global::TombEditor.Properties.Resources.angle_left_16;
-            this.butItemsBack.Location = new System.Drawing.Point(12, 490);
+            this.butItemsBack.Location = new System.Drawing.Point(12, 471);
             this.butItemsBack.Name = "butItemsBack";
             this.butItemsBack.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsBack.Size = new System.Drawing.Size(24, 24);
@@ -1605,17 +1502,29 @@
             // butAddItem
             // 
             this.butAddItem.Image = global::TombEditor.Properties.Resources.plus_math_16;
-            this.butAddItem.Location = new System.Drawing.Point(250, 490);
+            this.butAddItem.Location = new System.Drawing.Point(250, 471);
             this.butAddItem.Name = "butAddItem";
             this.butAddItem.Padding = new System.Windows.Forms.Padding(5);
             this.butAddItem.Size = new System.Drawing.Size(24, 24);
             this.butAddItem.TabIndex = 27;
             this.butAddItem.Click += new System.EventHandler(this.butAddItem_Click);
             // 
+            // panelItem
+            // 
+            this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelItem.Camera = null;
+            this.panelItem.ItemType = TombEditor.EditorItemType.Moveable;
+            this.panelItem.Location = new System.Drawing.Point(12, 501);
+            this.panelItem.Name = "panelItem";
+            this.panelItem.Presenter = null;
+            this.panelItem.SelectedItem = 0;
+            this.panelItem.Size = new System.Drawing.Size(196, 203);
+            this.panelItem.TabIndex = 26;
+            // 
             // butRoomDown
             // 
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.RoomLower_16;
-            this.butRoomDown.Location = new System.Drawing.Point(250, 390);
+            this.butRoomDown.Location = new System.Drawing.Point(250, 359);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomDown.Size = new System.Drawing.Size(24, 24);
@@ -1625,7 +1534,7 @@
             // butEditRoomName
             // 
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(250, 299);
+            this.butEditRoomName.Location = new System.Drawing.Point(250, 268);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(24, 24);
@@ -1635,7 +1544,7 @@
             // butDeleteRoom
             // 
             this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.trash_16;
-            this.butDeleteRoom.Location = new System.Drawing.Point(250, 330);
+            this.butDeleteRoom.Location = new System.Drawing.Point(250, 299);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 24);
@@ -1675,7 +1584,7 @@
             // butCropRoom
             // 
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(220, 299);
+            this.butCropRoom.Location = new System.Drawing.Point(220, 268);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCropRoom.Size = new System.Drawing.Size(24, 24);
@@ -1695,7 +1604,7 @@
             // butSplitRoom
             // 
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.split_files_16;
-            this.butSplitRoom.Location = new System.Drawing.Point(220, 360);
+            this.butSplitRoom.Location = new System.Drawing.Point(220, 329);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butSplitRoom.Size = new System.Drawing.Size(24, 24);
@@ -1705,7 +1614,7 @@
             // butCopyRoom
             // 
             this.butCopyRoom.Image = global::TombEditor.Properties.Resources.copy_16;
-            this.butCopyRoom.Location = new System.Drawing.Point(220, 330);
+            this.butCopyRoom.Location = new System.Drawing.Point(220, 299);
             this.butCopyRoom.Name = "butCopyRoom";
             this.butCopyRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCopyRoom.Size = new System.Drawing.Size(24, 24);
@@ -1779,6 +1688,15 @@
             this.panelTextureContainer.Size = new System.Drawing.Size(286, 800);
             this.panelTextureContainer.TabIndex = 7;
             // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Location = new System.Drawing.Point(-1, 0);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(259, 799);
+            this.panelTextureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.panelTextureMap.TabIndex = 0;
+            this.panelTextureMap.TabStop = false;
+            // 
             // panel4
             // 
             this.panel4.Controls.Add(this.numLightDirectionY);
@@ -1817,6 +1735,76 @@
             this.panel4.Size = new System.Drawing.Size(1305, 109);
             this.panel4.TabIndex = 28;
             // 
+            // numLightDirectionY
+            // 
+            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionY.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightDirectionY.Location = new System.Drawing.Point(578, 78);
+            this.numLightDirectionY.Name = "numLightDirectionY";
+            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
+            this.numLightDirectionY.TabIndex = 58;
+            this.numLightDirectionY.Value = 0F;
+            // 
+            // numLightDirectionX
+            // 
+            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionX.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightDirectionX.Location = new System.Drawing.Point(578, 24);
+            this.numLightDirectionX.Name = "numLightDirectionX";
+            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
+            this.numLightDirectionX.TabIndex = 57;
+            this.numLightDirectionX.Value = 0F;
+            // 
+            // numLightOut
+            // 
+            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
+            this.numLightOut.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightOut.Location = new System.Drawing.Point(512, 24);
+            this.numLightOut.Name = "numLightOut";
+            this.numLightOut.Size = new System.Drawing.Size(60, 22);
+            this.numLightOut.TabIndex = 56;
+            this.numLightOut.Value = 0F;
+            // 
+            // numLightIn
+            // 
+            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIn.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightIn.Location = new System.Drawing.Point(446, 24);
+            this.numLightIn.Name = "numLightIn";
+            this.numLightIn.Size = new System.Drawing.Size(60, 22);
+            this.numLightIn.TabIndex = 55;
+            this.numLightIn.Value = 0F;
+            // 
+            // numLightCutoff
+            // 
+            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
+            this.numLightCutoff.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightCutoff.Location = new System.Drawing.Point(512, 78);
+            this.numLightCutoff.Name = "numLightCutoff";
+            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
+            this.numLightCutoff.TabIndex = 54;
+            this.numLightCutoff.Value = 0F;
+            // 
+            // numLightLen
+            // 
+            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
+            this.numLightLen.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightLen.Location = new System.Drawing.Point(446, 78);
+            this.numLightLen.Name = "numLightLen";
+            this.numLightLen.Size = new System.Drawing.Size(60, 22);
+            this.numLightLen.TabIndex = 53;
+            this.numLightLen.Value = 0F;
+            // 
+            // numLightIntensity
+            // 
+            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIntensity.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightIntensity.Location = new System.Drawing.Point(380, 78);
+            this.numLightIntensity.Name = "numLightIntensity";
+            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
+            this.numLightIntensity.TabIndex = 52;
+            this.numLightIntensity.Value = 0F;
+            // 
             // butAddTrigger
             // 
             this.butAddTrigger.Image = global::TombEditor.Properties.Resources.plus_math_16;
@@ -1826,6 +1814,15 @@
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
             this.butAddTrigger.TabIndex = 51;
             this.butAddTrigger.Click += new System.EventHandler(this.butAddTrigger_Click);
+            // 
+            // lightPalette
+            // 
+            this.lightPalette.Location = new System.Drawing.Point(644, 3);
+            this.lightPalette.Name = "lightPalette";
+            this.lightPalette.SelectedColor = System.Drawing.Color.Empty;
+            this.lightPalette.Size = new System.Drawing.Size(652, 99);
+            this.lightPalette.TabIndex = 50;
+            this.lightPalette.TabStop = false;
             // 
             // lstTriggers
             // 
@@ -2582,11 +2579,19 @@
             // panel3D
             // 
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Camera = null;
+            this.panel3D.DeltaVector = new SharpDX.Vector3(0F, 0F, 0F);
+            this.panel3D.DeltaX = 0;
+            this.panel3D.DeltaY = 0;
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3D.Drag = false;
+            this.panel3D.LastX = 0;
+            this.panel3D.LastY = 0;
             this.panel3D.LightIndex = 0;
             this.panel3D.Location = new System.Drawing.Point(3, 3);
             this.panel3D.Name = "panel3D";
             this.panel3D.Presenter = null;
+            this.panel3D.RoomIndex = 0;
             this.panel3D.Size = new System.Drawing.Size(1291, 667);
             this.panel3D.TabIndex = 11;
             // 
@@ -2629,106 +2634,6 @@
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // numLightDirectionY
-            // 
-            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
-            this.numLightDirectionY.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightDirectionY.Location = new System.Drawing.Point(578, 78);
-            this.numLightDirectionY.Name = "numLightDirectionY";
-            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionY.TabIndex = 58;
-            this.numLightDirectionY.Value = 0F;
-            // 
-            // numLightDirectionX
-            // 
-            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
-            this.numLightDirectionX.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightDirectionX.Location = new System.Drawing.Point(578, 24);
-            this.numLightDirectionX.Name = "numLightDirectionX";
-            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionX.TabIndex = 57;
-            this.numLightDirectionX.Value = 0F;
-            // 
-            // numLightOut
-            // 
-            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
-            this.numLightOut.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightOut.Location = new System.Drawing.Point(512, 24);
-            this.numLightOut.Name = "numLightOut";
-            this.numLightOut.Size = new System.Drawing.Size(60, 22);
-            this.numLightOut.TabIndex = 56;
-            this.numLightOut.Value = 0F;
-            // 
-            // numLightIn
-            // 
-            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
-            this.numLightIn.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightIn.Location = new System.Drawing.Point(446, 24);
-            this.numLightIn.Name = "numLightIn";
-            this.numLightIn.Size = new System.Drawing.Size(60, 22);
-            this.numLightIn.TabIndex = 55;
-            this.numLightIn.Value = 0F;
-            // 
-            // numLightCutoff
-            // 
-            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
-            this.numLightCutoff.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightCutoff.Location = new System.Drawing.Point(512, 78);
-            this.numLightCutoff.Name = "numLightCutoff";
-            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
-            this.numLightCutoff.TabIndex = 54;
-            this.numLightCutoff.Value = 0F;
-            // 
-            // numLightLen
-            // 
-            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
-            this.numLightLen.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightLen.Location = new System.Drawing.Point(446, 78);
-            this.numLightLen.Name = "numLightLen";
-            this.numLightLen.Size = new System.Drawing.Size(60, 22);
-            this.numLightLen.TabIndex = 53;
-            this.numLightLen.Value = 0F;
-            // 
-            // numLightIntensity
-            // 
-            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
-            this.numLightIntensity.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightIntensity.Location = new System.Drawing.Point(380, 78);
-            this.numLightIntensity.Name = "numLightIntensity";
-            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
-            this.numLightIntensity.TabIndex = 52;
-            this.numLightIntensity.Value = 0F;
-            // 
-            // lightPalette
-            // 
-            this.lightPalette.Location = new System.Drawing.Point(644, 3);
-            this.lightPalette.Name = "lightPalette";
-            this.lightPalette.SelectedColor = System.Drawing.Color.Empty;
-            this.lightPalette.Size = new System.Drawing.Size(652, 99);
-            this.lightPalette.TabIndex = 50;
-            this.lightPalette.TabStop = false;
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Location = new System.Drawing.Point(-1, 0);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(259, 799);
-            this.panelTextureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.panelTextureMap.TabIndex = 0;
-            this.panelTextureMap.TabStop = false;
-            // 
-            // panelItem
-            // 
-            this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelItem.Camera = null;
-            this.panelItem.ItemType = TombEditor.EditorItemType.Moveable;
-            this.panelItem.Location = new System.Drawing.Point(12, 520);
-            this.panelItem.Name = "panelItem";
-            this.panelItem.Presenter = null;
-            this.panelItem.SelectedItem = 0;
-            this.panelItem.Size = new System.Drawing.Size(196, 152);
-            this.panelItem.TabIndex = 26;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2759,8 +2664,10 @@
             this.panelTextureTools.ResumeLayout(false);
             this.panelTextureContainer.ResumeLayout(false);
             this.panelTextureContainer.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
             this.darkToolStrip1.ResumeLayout(false);
@@ -2768,8 +2675,6 @@
             this.multiPage1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2935,19 +2840,9 @@
         private System.Windows.Forms.ToolStripStatusLabel labelRoomStatistics;
         private DarkUI.Controls.DarkComboBox comboFlipMap;
         private DarkUI.Controls.DarkLabel darkLabel19;
-        private DarkUI.Controls.DarkButton butRandomFloorDown;
-        private DarkUI.Controls.DarkButton butRandomFloorUp;
-        private DarkUI.Controls.DarkButton butGridWalls3;
-        private DarkUI.Controls.DarkLabel darkLabel21;
-        private DarkUI.Controls.DarkButton butGridWalls5;
-        private DarkUI.Controls.DarkButton butRandomCeilingDown;
-        private DarkUI.Controls.DarkButton butRandomCeilingUp;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem10;
         private System.Windows.Forms.ToolStripMenuItem randomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem randomCeilingDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem11;
-        private DarkUI.Controls.DarkButton butAverageCeiling;
-        private DarkUI.Controls.DarkButton butAverageFloor;
         private DarkUI.Controls.DarkButton butFindItem;
         private DarkUI.Controls.DarkButton butResetSearch;
         private DarkUI.Controls.DarkLabel darkLabel22;
@@ -2996,5 +2891,8 @@
         private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction5ToolStripMenuItem;
         private Controls.PanelTextureMap panelTextureMap;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem gridWallsIn3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gridWallsIn5ToolStripMenuItem;
     }
 }
