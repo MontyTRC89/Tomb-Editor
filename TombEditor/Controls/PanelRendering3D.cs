@@ -1118,7 +1118,7 @@ namespace TombEditor.Controls
                              trigger.TargetType == TriggerTargetType.Camera) && trigger.Target == instance.Id)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
-                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                                       _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1179,7 +1179,7 @@ namespace TombEditor.Controls
                              trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == instance.Id)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
-                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                                       _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1237,7 +1237,7 @@ namespace TombEditor.Controls
                              trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.Id)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
-                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                                       _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1293,7 +1293,7 @@ namespace TombEditor.Controls
                         if ((trigger.TargetType == TriggerTargetType.Object) && trigger.Target == instance.Id)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
-                                       trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                                       _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1430,7 +1430,7 @@ namespace TombEditor.Controls
                         if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.Id)
                         {
                             debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
-                                            trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                                            _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
@@ -1531,7 +1531,7 @@ namespace TombEditor.Controls
                         if (trigger.TargetType == TriggerTargetType.Object && trigger.Target == modelInfo.Id)
                         {
                             debugMessage += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
-                                            trigger.Room + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                                            _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
                         }
                     }
 
