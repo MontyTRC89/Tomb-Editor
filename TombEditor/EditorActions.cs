@@ -2907,6 +2907,120 @@ namespace TombEditor
             SmartBuildGeometry(room, xMin, xMax, zMin, zMax);
         }
 
+        public static void GridWalls3(Room room, Rectangle Area)
+        {
+            int highest = room.GetHighestCorner();
+            int lowest = room.GetLowestCorner();
+            int delta = (highest - lowest) / 3;
+
+            for (int x = Area.X; x <= Area.Right; x++)
+            {
+                _editor.SelectedRoom.Blocks[x, 0].QAFaces[0] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, 0].QAFaces[1] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, 0].EDFaces[0] = 0;
+                _editor.SelectedRoom.Blocks[x, 0].EDFaces[1] = 0;
+                _editor.SelectedRoom.Blocks[x, 0].RFFaces[0] = 0;
+                _editor.SelectedRoom.Blocks[x, 0].RFFaces[1] = 0;
+                _editor.SelectedRoom.Blocks[x, 0].WSFaces[0] = (short)-delta;
+                _editor.SelectedRoom.Blocks[x, 0].WSFaces[1] = (short)-delta;
+
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].QAFaces[2] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].QAFaces[3] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].EDFaces[2] = 0;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].EDFaces[3] = 0;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].RFFaces[2] = 0;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].RFFaces[3] = 0;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].WSFaces[2] = (short)-delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].WSFaces[3] = (short)-delta;
+            }
+
+            for (int z = Area.Y; z <= Area.Bottom; z++)
+            {
+                _editor.SelectedRoom.Blocks[0, z].QAFaces[1] = (short)delta;
+                _editor.SelectedRoom.Blocks[0, z].QAFaces[2] = (short)delta;
+                _editor.SelectedRoom.Blocks[0, z].EDFaces[1] = 0;
+                _editor.SelectedRoom.Blocks[0, z].EDFaces[2] = 0;
+                _editor.SelectedRoom.Blocks[0, z].RFFaces[1] = 0;
+                _editor.SelectedRoom.Blocks[0, z].RFFaces[2] = 0;
+                _editor.SelectedRoom.Blocks[0, z].WSFaces[1] = (short)-delta;
+                _editor.SelectedRoom.Blocks[0, z].WSFaces[2] = (short)-delta;
+
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].QAFaces[0] = (short)delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].QAFaces[3] = (short)delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].EDFaces[0] = 0;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].EDFaces[3] = 0;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].RFFaces[0] = 0;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].RFFaces[3] = 0;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].WSFaces[0] = (short)-delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].WSFaces[3] = (short)-delta;
+            }
+
+            room.BuildGeometry();
+            room.CalculateLightingForThisRoom();
+            room.UpdateBuffers();
+
+            _editor.DrawPanel3D();
+        }
+
+        public static void GridWalls5(Room room, Rectangle Area)
+        {
+            int highest = room.GetHighestCorner();
+            int lowest = room.GetLowestCorner();
+            int delta = (highest - lowest) / 5;
+
+            for (int x = Area.X; x <= Area.Right; x++)
+            {
+                _editor.SelectedRoom.Blocks[x, 0].QAFaces[0] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[x, 0].QAFaces[1] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[x, 0].EDFaces[0] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, 0].EDFaces[1] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, 0].RFFaces[0] = (short)-delta;
+                _editor.SelectedRoom.Blocks[x, 0].RFFaces[1] = (short)-delta;
+                _editor.SelectedRoom.Blocks[x, 0].WSFaces[0] = (short)(-2 * delta);
+                _editor.SelectedRoom.Blocks[x, 0].WSFaces[1] = (short)(-2 * delta);
+
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].QAFaces[2] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].QAFaces[3] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].EDFaces[2] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].EDFaces[3] = (short)delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].RFFaces[2] = (short)-delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].RFFaces[3] = (short)-delta;
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].WSFaces[2] =
+                    (short)(-2 * delta);
+                _editor.SelectedRoom.Blocks[x, room.NumZSectors - 1].WSFaces[3] =
+                    (short)(-2 * delta);
+            }
+
+            for (int z = Area.Y; z <= Area.Bottom; z++)
+            {
+                _editor.SelectedRoom.Blocks[0, z].QAFaces[1] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[0, z].QAFaces[2] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[0, z].EDFaces[1] = (short)delta;
+                _editor.SelectedRoom.Blocks[0, z].EDFaces[2] = (short)delta;
+                _editor.SelectedRoom.Blocks[0, z].RFFaces[1] = (short)-delta;
+                _editor.SelectedRoom.Blocks[0, z].RFFaces[2] = (short)-delta;
+                _editor.SelectedRoom.Blocks[0, z].WSFaces[1] = (short)(-2 * delta);
+                _editor.SelectedRoom.Blocks[0, z].WSFaces[2] = (short)(-2 * delta);
+
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].QAFaces[0] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].QAFaces[3] = (short)(2 * delta);
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].EDFaces[0] = (short)delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].EDFaces[3] = (short)delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].RFFaces[0] = (short)-delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].RFFaces[3] = (short)-delta;
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].WSFaces[0] =
+                    (short)(-2 * delta);
+                _editor.SelectedRoom.Blocks[room.NumXSectors - 1, z].WSFaces[3] =
+                    (short)(-2 * delta);
+            }
+
+            room.BuildGeometry();
+            room.CalculateLightingForThisRoom();
+            room.UpdateBuffers();
+
+            _editor.DrawPanel3D();
+        }
+
         public static void DeletePortal(int id)
         {
             int otherPortalId = _editor.Level.Portals[id].OtherId;
