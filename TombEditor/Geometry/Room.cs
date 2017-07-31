@@ -3132,7 +3132,7 @@ namespace TombEditor.Geometry
             float ceilingHeight = GetHighestCorner();
             float floorHeight = GetLowestCorner();
             float posX = NumXSectors * (0.5f * 1024.0f);
-            float posY = (floorHeight + ceilingHeight - Position.Y) * (0.5f * 256.0f);
+            float posY = (floorHeight + ceilingHeight) * (0.5f * 256.0f);
             float posZ = NumZSectors * (0.5f * 1024.0f);
             return new Vector3(posX, posY, posZ);
         }
