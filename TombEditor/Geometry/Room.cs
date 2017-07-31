@@ -3135,6 +3135,80 @@ namespace TombEditor.Geometry
             float posY = (floorHeight + ceilingHeight - Position.Y) * (0.5f * 256.0f);
             float posZ = NumZSectors * (0.5f * 1024.0f);
             return new Vector3(posX, posY, posZ);
-        } 
+        }
+
+        public Block GetBlockIfFloor(int x, int z)
+        {
+            Block block = Blocks.TryGet(x, z);
+            if ((block != null) && block.IsAnyWall)
+                return null;
+            return block;
+        }
+
+        ///<param name="x">The X-coordinate. The point at room.Position it at (0, 0)</param>
+        ///<param name="z">The Z-coordinate. The point at room.Position it at (0, 0)</param>
+        public VerticalArea? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> CombineFloor, Func<float?, float?, float?, float?, float> CombineCeiling)
+        {
+            Block blockXnZn = GetBlockIfFloor(x - 1, z - 1);
+            Block blockXnZp = GetBlockIfFloor(x - 1, z);
+            Block blockXpZn = GetBlockIfFloor(x, z - 1);
+            Block blockXpZp = GetBlockIfFloor(x, z);
+            if ((blockXnZn == null) && (blockXnZp == null) && (blockXpZn == null) && (blockXpZp == null))
+                return null;
+
+            return new VerticalArea
+            {
+                FloorY = CombineFloor(
+                    blockXnZn?.QAFaces[Block.FaceXpZp],
+                    blockXnZp?.QAFaces[Block.FaceXpZn],
+                    blockXpZn?.QAFaces[Block.FaceXnZp],
+                    blockXpZp?.QAFaces[Block.FaceXnZn]),
+                CeilingY = Ceiling + CombineCeiling(
+                    blockXnZn?.WSFaces[Block.FaceXpZp],
+                    blockXnZp?.WSFaces[Block.FaceXpZn],
+                    blockXpZn?.WSFaces[Block.FaceXnZp],
+                    blockXpZp?.WSFaces[Block.FaceXnZn])
+            };
+        }
+
+        private static float Average(float? Height0, float? Height1, float? Height2, float? Height3)
+        {
+            int Count = (Height0.HasValue ? 1 : 0) + (Height1.HasValue ? 1 : 0) + (Height2.HasValue ? 1 : 0) + (Height3.HasValue ? 1 : 0);
+            float Sum = (Height0 ?? 0) + (Height1 ?? 0) + (Height2 ?? 0) + (Height3 ?? 0);
+            return Sum / Count;
+        }
+
+        private static float Max(float? Height0, float? Height1, float? Height2, float? Height3)
+        {
+            return Math.Max(Math.Max(Height0 ?? float.NegativeInfinity, Height1 ?? float.NegativeInfinity),
+                Math.Max(Height2 ?? float.NegativeInfinity, Height3 ?? float.NegativeInfinity));
+        }
+
+        private static float Min(float? Height0, float? Height1, float? Height2, float? Height3)
+        {
+            return Math.Min(Math.Min(Height0 ?? float.PositiveInfinity, Height1 ?? float.PositiveInfinity),
+                Math.Min(Height2 ?? float.PositiveInfinity, Height3 ?? float.PositiveInfinity));
+        }
+
+        public VerticalArea? GetHeightAtPointAverage(int x, int z)
+        {
+            return GetHeightAtPoint(x, z, Average, Average);
+        }
+
+        public VerticalArea? GetHeightAtPointMinSpace(int x, int z)
+        {
+            return GetHeightAtPoint(x, z, Max, Min);
+        }
+
+        public VerticalArea? VGetHeightAtPointMaxSpace(int x, int z)
+        {
+            return GetHeightAtPoint(x, z, Min, Max);
+        }
     }
+
+    public struct VerticalArea
+    {
+        public float FloorY;
+        public float CeilingY;
+    };
 }
