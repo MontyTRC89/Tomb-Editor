@@ -2869,8 +2869,6 @@ namespace TombEditor.Controls
                 // Change texture if needed
                 if (_lastBucket == null /*|| _lastBucket.Texture!=bucket.Texture*/)
                 {
-                    // DEBUG
-
                     LevelTexture textureSample = _editor.Level.TextureSamples[face.Texture];
                     _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0 /*textureSample.Page*/]);
                     _roomEffect.Parameters["TextureSampler"]
@@ -2895,12 +2893,6 @@ namespace TombEditor.Controls
 
                 _lastBucket = bucket;
             }
-
-            SharpDX.Direct3D11.BlendStateDescription desc = new SharpDX.Direct3D11.BlendStateDescription();
-            desc.RenderTarget[0].BlendOperation = SharpDX.Direct3D11.BlendOperation.Add;
-            desc.RenderTarget[0].SourceBlend = SharpDX.Direct3D11.BlendOption.SourceAlpha;
-            desc.RenderTarget[0].DestinationBlend = SharpDX.Direct3D11.BlendOption.InverseDestinationAlpha;
-            desc.IndependentBlendEnable = false;
 
             _editor.GraphicsDevice.SetBlendState(_editor.GraphicsDevice.BlendStates.AlphaBlend);
             _editor.GraphicsDevice.SetRasterizerState(_editor.GraphicsDevice.RasterizerStates.CullBack);
@@ -3549,20 +3541,6 @@ namespace TombEditor.Controls
             }
         }
 
-        private float GetObjectHeight(Vector3 position)
-        {
-            int xBlock = (int) Math.Floor(position.X / 1024.0f);
-            int zBlock = (int) Math.Floor(position.Z / 1024.0f);
-
-            // Get the base floor height
-            int floorHeight = _editor.SelectedRoom.GetLowestFloorCorner(xBlock, zBlock);
-
-            // Get the distance between point and floor in units
-            float height = position.Y - (float) floorHeight * 256.0f;
-
-            return height;
-        }
-
         private string GetObjectPositionString(Vector3 position)
         {
             int xBlock = (int) Math.Floor(position.X / 1024.0f);
@@ -3606,14 +3584,6 @@ namespace TombEditor.Controls
                 _objectHeightLineVertexBuffer.Dispose();
             _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_editor.GraphicsDevice,
                 vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
-
-            // Add the text description
-            /*Vector3 meanPosition = new Vector3(position.X, position.Y / 2.0f, position.Z);
-            Matrix modelViewProjection = Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position)) * viewProjection;
-            Vector3 screenPos = Vector3.Project(meanPosition, 0, 0, Width, Height, _editor.GraphicsDevice.Viewport.MinDepth,
-                            _editor.GraphicsDevice.Viewport.MaxDepth, modelViewProjection);
-
-            //Debug.AddString("Height: " + Math.Round(height * 256.0f) + " units (" + height + " clicks)", screenPos);*/
 
             _drawHeightLine = true;
         }
