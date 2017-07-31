@@ -53,39 +53,21 @@ namespace TombEditor
         public void LoadTriggersInUI()
         {
             lstTriggers.Items.Clear();
-
-            if (_editor.BlockSelectionStart.X == -1)
-                return;
-
-            var triggers = new List<int>();
-
-            int xMin = Math.Min(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int xMax = Math.Max(_editor.BlockSelectionStart.X, _editor.BlockSelectionEnd.X);
-            int zMin = Math.Min(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-            int zMax = Math.Max(_editor.BlockSelectionStart.Y, _editor.BlockSelectionEnd.Y);
-
-            if (xMin < 1 || zMin < 1 || xMax > _editor.SelectedRoom.NumXSectors - 1 ||
-                zMax > _editor.SelectedRoom.NumZSectors - 1)
+            
+            if ((_editor.Level == null) || !_editor.BlockSelectionAvailable)
                 return;
 
             // Search for unique triggers inside the selected area
-            for (int x = xMin; x <= xMax; x++)
-            {
-                for (int z = zMin; z <= zMax; z++)
-                {
+            var triggers = new List<int>();
+            for (int x = _editor.BlockSelection.X; x <= _editor.BlockSelection.Right; x++)
+                for (int z = _editor.BlockSelection.Y; z <= _editor.BlockSelection.Bottom; z++)
                     foreach (int trigger in _editor.SelectedRoom.Blocks[x, z].Triggers)
-                    {
                         if (!triggers.Contains(trigger))
                             triggers.Add(trigger);
-                    }
-                }
-            }
 
             // Add triggers to listbox
             foreach (int t in triggers)
-            {
                 lstTriggers.Items.Add(t + " - " + _editor.Level.Triggers[t].ToString());
-            }
         }
 
         public void Update2DGrid()
