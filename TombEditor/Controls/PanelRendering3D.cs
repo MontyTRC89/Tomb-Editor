@@ -39,6 +39,9 @@ namespace TombEditor.Controls
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private const float _rotationSpeed = 0.1f;
+        private const float _keyboardZoomSpeed = 0.1f;
+
         private class RenderBucket
         {
             public Room Room { get; set; }
@@ -137,8 +140,8 @@ namespace TombEditor.Controls
 
             public int Compare(int x, int y)
             {
-                var instanceX = (MoveableInstance) Editor.Instance.Level.Objects[x];
-                var instanceY = (MoveableInstance) Editor.Instance.Level.Objects[y];
+                var instanceX = (MoveableInstance)Editor.Instance.Level.Objects[x];
+                var instanceY = (MoveableInstance)Editor.Instance.Level.Objects[y];
 
                 int result = instanceX.ObjectId.CompareTo(instanceY.ObjectId);
                 if (result != 0)
@@ -158,8 +161,8 @@ namespace TombEditor.Controls
 
             public int Compare(int x, int y)
             {
-                var instanceX = (StaticMeshInstance) Editor.Instance.Level.Objects[x];
-                var instanceY = (StaticMeshInstance) Editor.Instance.Level.Objects[y];
+                var instanceX = (StaticMeshInstance)Editor.Instance.Level.Objects[x];
+                var instanceY = (StaticMeshInstance)Editor.Instance.Level.Objects[y];
 
                 int result = instanceX.ObjectId.CompareTo(instanceY.ObjectId);
                 if (result != 0)
@@ -196,7 +199,7 @@ namespace TombEditor.Controls
         private GeometricPrimitive _cone;
         private GeometricPrimitive _littleCube;
         private GeometricPrimitive _littleSphere;
-
+        
         // Gizmo
         private Gizmo _gizmo;
 
@@ -207,14 +210,12 @@ namespace TombEditor.Controls
 
         // Geometry buckets to draw
         private List<RenderBucket> _opaqueBuckets;
-
         private List<RenderBucket> _solidBuckets;
         private List<RenderBucket> _transparentBuckets;
         private List<RenderBucket> _invisibleBuckets;
 
         // Items to draw
         private List<int> _camerasToDraw;
-
         private List<int> _sinksToDraw;
         private List<int> _flybyToDraw;
         private List<int> _soundSourcesToDraw;
@@ -233,22 +234,55 @@ namespace TombEditor.Controls
         public PanelRendering3D()
         {
             InitializeComponent();
+            ResetCamera();
 
             _editor = Editor.Instance;
+        }
+        
+        private float DefaultCameraDistance
+        {
+            get
+            {
+                Room room = _editor?.SelectedRoom;
+                Vector2 roomDiagonal = new Vector2(room?.NumXSectors ?? 0, room?.NumZSectors ?? 0);
+                return (roomDiagonal.Length() * 0.8f + 2.1f) * 1024.0f;
+            }
+        }
+        private float DefaultCameraAngleX
+        {
+            get { return (float)Math.PI; }
+        }
+        private float DefaultCameraAngleY
+        {
+            get { return 0.6f; }
         }
 
         public void ResetCamera()
         {
-            Room room = _editor.SelectedRoom;
+            Room room = _editor?.SelectedRoom;
 
             // Point the camera to the room's center
-            Vector3 target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f,
-                room.Position.Y * 256.0f + room.Ceiling * 64.0f,
-                room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
+            Vector3 target = new Vector3();
+            if (room != null)
+                target = new Vector3(
+                    room.Position.X * 1024.0f + room.NumXSectors * 512.0f,
+                    room.Position.Y * 256.0f + room.Ceiling * 64.0f,
+                    room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, (float) Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3072, 1000,
-                1000000);
+            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, - MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000);
+        }
+
+        public void MoveCameraToSector(int sectorX, int sectorZ)
+        {
+            if (!(Camera is ArcBallCamera))
+                return;
+
+            ArcBallCamera camera = (ArcBallCamera)(_editor.Camera);
+            Vector3 center = _editor.SelectedRoom.GetLocalCenter();
+            camera.Target = new Vector3(sectorX * 1024.0f, center.Y, sectorZ * 1024.0f);
+            Draw();
+            return;
         }
 
         public void InitializePanel()
@@ -272,9 +306,7 @@ namespace TombEditor.Controls
 
             Presenter = new SwapChainGraphicsPresenter(_editor.GraphicsDevice, pp);
             Viewport = new Viewport(0, 0, Width, Height, 10.0f, 100000.0f);
-
-            // Initialize the Arc-Ball Camera
-            Camera = new ArcBallCamera(Vector3.Zero, (float)Math.PI, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 3000, 1000, 1000000);
+            ResetCamera();
 
             // Maybe I could use this as bounding box, scaling it properly before drawing
             GeometricPrimitive.Cube.New(_editor.GraphicsDevice, 1024);
@@ -327,28 +359,76 @@ namespace TombEditor.Controls
                 Presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 
-        protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            // I intercept arrow keys here otherwise they would processed by the form and 
+            // camera would move only if Panel3D is focused
+            switch (keyData)
+            {
+                case Keys.Up:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(0, -_rotationSpeed);
+                    Draw();
+                    return true;
+
+                case Keys.Down:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(0, _rotationSpeed);
+                    Draw();
+                    return true;
+
+                case Keys.Left:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(_rotationSpeed, 0);
+                    Draw();
+                    return true;
+
+                case Keys.Right:
+                    (_editor.Camera as ArcBallCamera)?.Rotate(-_rotationSpeed, 0);
+                    Draw();
+                    return true;
+
+                case Keys.PageUp:
+                    (_editor.Camera as ArcBallCamera)?.Move(_keyboardZoomSpeed);
+                    Draw();
+                    return true;
+
+                case Keys.PageDown:
+                    (_editor.Camera as ArcBallCamera)?.Move(-_keyboardZoomSpeed);
+                    Draw();
+                    return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
             if (!Drag)
                 Drag = true;
 
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 // Camera movement, just store coordinates
                 LastX = e.X;
                 LastY = e.Y;
             }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            else if (e.Button == MouseButtons.Left)
             {
                 // Do picking on the scene
                 PickingResult newPicking = DoPicking(e.X, e.Y);
                 _editor.PickingResult = newPicking;
 
+                // Move camera to selected sector
+                if (_editor.RelocateCameraActive && (newPicking.ElementType == PickingElementType.Block))
+                {
+                    MoveCameraToSector(newPicking.Element >> 5, newPicking.Element & 31);
+                    return;
+                }
+
+                // Don't process mouse down when in Gizmo mode
                 if (newPicking.Gizmo)
                     return;
-
+                
                 // Try to paste or stamp
                 if (Clipboard.Action != PasteAction.None && Clipboard.Paste())
                     return;
@@ -371,7 +451,7 @@ namespace TombEditor.Controls
                                 return;
                             }
 
-                            if ((Control.ModifierKeys & Keys.Alt) == Keys.Alt)
+                            if (ModifierKeys.HasFlag(Keys.Alt))
                             {
                                 BlockFaces face = (BlockFaces)newPicking.SubElement;
 
@@ -473,7 +553,7 @@ namespace TombEditor.Controls
             }
         }
 
-        protected override void OnMouseMove(System.Windows.Forms.MouseEventArgs e)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
@@ -502,7 +582,7 @@ namespace TombEditor.Controls
                     Camera.Rotate((float) (DeltaX / 500.0f), (float) (-DeltaY / 500.0f));
                 }
             }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            else if (e.Button == MouseButtons.Left)
             {
                 // If gizmo was picked, then don't do picking again
                 if (_editor.PickingResult.Gizmo)
@@ -516,7 +596,7 @@ namespace TombEditor.Controls
                     Room room = _editor.SelectedRoom;
 
                     // First get the ray in 3D space from X, Y mouse coordinates
-                    Ray ray = Ray.GetPickRay((int)e.X, (int)e.Y, _editor.GraphicsDevice.Viewport,
+                    Ray ray = Ray.GetPickRay(e.X, e.Y, _editor.GraphicsDevice.Viewport,
                         Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
 
                     float delta = 0;
@@ -551,7 +631,7 @@ namespace TombEditor.Controls
                         // delta = (float)Math.Floor(delta / 64.0f) * 64.0f;
                     }
 
-                    bool smooth = (Control.ModifierKeys & Keys.Shift) == Keys.Shift;
+                    bool smooth = (ModifierKeys & Keys.Shift) == Keys.Shift;
                     
                     if (_editor.PickingResult.ElementType == PickingElementType.Camera)
                     {
@@ -643,7 +723,7 @@ namespace TombEditor.Controls
             _editor.DrawPanelGrid();
         }
 
-        protected override void OnMouseUp(System.Windows.Forms.MouseEventArgs e)
+        protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
 
@@ -675,7 +755,7 @@ namespace TombEditor.Controls
                     Camera.Rotate(DeltaX / 5000, -DeltaY / 5000);
                 }
             }
-            else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            else if (e.Button == MouseButtons.Left)
             {
                 switch (_editor.Mode)
                 {
@@ -1551,7 +1631,7 @@ namespace TombEditor.Controls
 
         private void DrawSkyBox(Matrix viewProjection)
         {
-            if (_editor.Level.Wad == null)
+            if (_editor?.Level?.Wad == null)
                 return;
             if (!_editor.Level.Wad.Moveables.ContainsKey(459))
                 return;
@@ -1578,7 +1658,7 @@ namespace TombEditor.Controls
             {
                 SkinnedMesh mesh = skinnedModel.Meshes[i];
 
-                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] * Matrix.Translation(new Vector3(Camera.Position.X, Camera.Position.Y - 5120.0f, Camera.Position.Z));
+                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] * Matrix.Translation(viewProjection.TranslationVector - new Vector3(0, -5120, 0));
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
 
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
@@ -2251,6 +2331,8 @@ namespace TombEditor.Controls
         {
             // New iterative version of the function 
 
+            Vector3 cameraPosition = Camera.GetPosition();
+
             Stack<Room> stackRooms = new Stack<Room>();
             Stack<int> stackLimits = new Stack<int>();
 
@@ -2311,7 +2393,7 @@ namespace TombEditor.Controls
                     if (portal.Direction == PortalDirection.Ceiling)
                         normal = -Vector3.UnitY;
 
-                    Vector3 cameraDirection = Camera.Position - Camera.Target;
+                    Vector3 cameraDirection = cameraPosition - Camera.Target;
 
                     Vector3 v1 = Vector3.UnitX;
                     Vector3 v2 = Vector3.UnitZ;
@@ -2330,7 +2412,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void PrepareRenderBuckets()
+        private void PrepareRenderBuckets(Matrix viewProjection)
         {
             _opaqueBuckets = new List<RenderBucket>();
             _transparentBuckets = new List<RenderBucket>();
@@ -2338,7 +2420,8 @@ namespace TombEditor.Controls
             _solidBuckets = new List<RenderBucket>();
 
             BlockFace face;
-            Vector3 viewVector = Camera.Target - Camera.Position;
+            Vector3 cameraPosition = Camera.GetPosition();
+            Vector3 viewVector = Camera.Target - cameraPosition;
 
             // Build buckets
             for (int i = 0; i < _roomsToDraw.Count; i++)
@@ -2480,7 +2563,7 @@ namespace TombEditor.Controls
                                             bucket.Center = new Vector3(center.X, center.Y, center.Z);
 
                                             // calcolo la distanza
-                                            bucket.Distance = (bucket.Center - Camera.Position).Length();
+                                            bucket.Distance = (bucket.Center - cameraPosition).Length();
 
                                             // aggiungo la struttura alla lista
                                             _transparentBuckets.Add(bucket);
@@ -2572,8 +2655,7 @@ namespace TombEditor.Controls
             Task.WaitAll(task1, task2);
 
             // Draw the skybox if present
-            if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) &&
-                _editor != null && _editor.Level != null && _editor.Level.Wad != null && _editor.DrawHorizon)
+            if (_editor.DrawHorizon)
             {
                 DrawSkyBox(viewProjection);
                 _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
@@ -2590,7 +2672,7 @@ namespace TombEditor.Controls
             _roomEffect = _editor.Effects["Room"];
 
             // Set some common parameters of the shader
-            _roomEffect.Parameters["CameraPosition"].SetValue(Camera.Position);
+            _roomEffect.Parameters["CameraPosition"].SetValue(viewProjection.TranslationVector);
             _roomEffect.Parameters["LightingEnabled"].SetValue(false);
             _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
@@ -2642,7 +2724,7 @@ namespace TombEditor.Controls
             CollectObjectsToDraw();
 
             // Now group faces to render based on various things
-            PrepareRenderBuckets();
+            PrepareRenderBuckets(viewProjection);
         }
 
         private void RenderTask2(object viewProjection_)

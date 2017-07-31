@@ -85,6 +85,7 @@ namespace TombEditor
         public bool DrawHorizon { get; set; }
         public float FPS { get; set; }
         public short SoundID { get; set; }
+        public bool RelocateCameraActive { get; set; }
 
         private Panel2DGrid _panelGrid;
         private PanelRendering3D _panel3D;
@@ -211,6 +212,10 @@ namespace TombEditor
             return effect;
         }
 
+        public void MoveCameraToSector(int sectorX, int sectorZ)
+        {
+            _panel3D.MoveCameraToSector(sectorX, sectorZ);
+        }
         public void LoadTriggersInUI()
         {
             _formEditor.LoadTriggersInUI();

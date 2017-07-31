@@ -23,8 +23,7 @@ namespace TombLib.Graphics
         public float MinDistance { get; set; }
         public float MaxDistance { get; set; }
 
-        // Calculated position and specified target
-        public Vector3 Position { get; set; }
+        // Specified target
         public Vector3 Target { get; set; }
 
         // Horizontal field of view angle of the camera in radians.
@@ -51,24 +50,34 @@ namespace TombLib.Graphics
         public void Move(float DistanceChange)
         {
             this.Distance += DistanceChange;
-            this.Distance = MathUtil.Clamp(Distance, MinDistance,
-            MaxDistance);
+            this.Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
         }
 
         public void Rotate(float RotationXChange, float RotationYChange)
         {
             this.RotationX += RotationXChange;
             this.RotationY += -RotationYChange;
-            this.RotationY = MathUtil.Clamp(RotationY, MinRotationY,
-            MaxRotationY);
+            this.RotationY = MathUtil.Clamp(RotationY, MinRotationY, MaxRotationY);
         }
 
         public void Translate(Vector3 PositionChange)
         {
             this.Target += PositionChange;
         }
-
+        
         public override Matrix GetViewProjectionMatrix(float width, float height)
+        {
+            // Calculate up vector
+            Matrix rotation = Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
+            Vector3 up = Vector3.TransformCoordinate(Vector3.UnitY, rotation);
+
+            //new Vector3(0, 150, 0), Vector3.Up); 
+            Matrix View = Matrix.LookAtLH(GetPosition(), Target, up);
+            float aspectRatio = width / height;
+            Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 10.0f, 100000.0f);
+            return View * Projection;
+        }
+        public Vector3 GetPosition()
         {
             // Calculate rotation matrix from rotation values
             Matrix rotation = Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
@@ -78,15 +87,7 @@ namespace TombLib.Graphics
             // vector to find the camera offset from the target
             Vector3 translation = new Vector3(0, 0, Distance);
             translation = Vector3.TransformCoordinate(translation, rotation);
-            Position = Target + translation;
-
-            Vector3 up = Vector3.TransformCoordinate(Vector3.UnitY, rotation);
-
-            //new Vector3(0, 150, 0), Vector3.Up); 
-            Matrix View = Matrix.LookAtLH(Position, Target, up);
-            float aspectRatio = width / height;
-            Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 10.0f, 100000.0f);
-            return View * Projection;
+            return Target + translation;
         }
     }
 }
