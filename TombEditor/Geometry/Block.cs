@@ -8,6 +8,15 @@ namespace TombEditor.Geometry
 {
     public class Block
     {
+        /// <summary> Index of faces on the negative X and negative Z direction </summary>
+        public const int FaceXnZn = 3;
+        /// <summary> Index of faces on the negative X and positive Z direction </summary>
+        public const int FaceXnZp = 0;
+        /// <summary> Index of faces on the positive X and negative Z direction </summary>
+        public const int FaceXpZn = 2;
+        /// <summary> Index of faces on the positive X and positive Z direction </summary>
+        public const int FaceXpZp = 1;
+
         public BlockType Type { get; set; }
         public BlockFlags Flags { get; set; }
         // ReSharper disable once InconsistentNaming
@@ -127,6 +136,16 @@ namespace TombEditor.Geometry
                 b.Climb[i] = Climb[i];
 
             return b;
+        }
+
+        public bool IsFloor
+        {
+            get { return Type == BlockType.Floor; }
+        }
+
+        public bool IsAnyWall
+        {
+            get { return Type != BlockType.Floor; }
         }
     }
 }
