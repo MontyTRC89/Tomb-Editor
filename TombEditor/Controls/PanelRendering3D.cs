@@ -21,7 +21,7 @@ namespace TombEditor.Controls
     {
         public Plane Plane;
         public float Distance;
-        public Vector3 Centre;
+        public Vector3 Center;
         public BlockFaces Type;
         public int X;
         public int Z;
@@ -49,7 +49,7 @@ namespace TombEditor.Controls
             public byte Invisible { get; set; }
             public Plane Plane { get; set; }
             public float Distance { get; set; }
-            public Vector3 Centre { get; set; }
+            public Vector3 Center { get; set; }
             public List<BlockFace> Faces { get; set; }
             public BlockFaces FaceType { get; set; }
             public BlockFace Face { get; set; }
@@ -241,7 +241,7 @@ namespace TombEditor.Controls
         {
             Room room = _editor.SelectedRoom;
 
-            // Point the camera to the room's centre
+            // Point the camera to the room's center
             Vector3 target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f,
                 room.Position.Y * 256.0f + room.Ceiling * 64.0f,
                 room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
@@ -1746,7 +1746,7 @@ namespace TombEditor.Controls
                                    Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
                                    Matrix.Translation(modelInfo.Position);
 
-                    Vector3 centre = mesh.BoundingSphere.Center;
+                    Vector3 center = mesh.BoundingSphere.Center;
 
                     Vector3 min = mesh.BoundingBox.Minimum;
                     Vector3 max = mesh.BoundingBox.Maximum;
@@ -1806,7 +1806,7 @@ namespace TombEditor.Controls
                 Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
                                Matrix.Translation(modelInfo.Position);
 
-                Vector3 centre = mesh.BoundingSphere.Center;
+                Vector3 center = mesh.BoundingSphere.Center;
 
 
                 Vector3 min = mesh.BoundingBox.Minimum;
@@ -2469,18 +2469,18 @@ namespace TombEditor.Controls
                                             // calcolo il piano passante per la faccia
 
                                             // calcolo il centro della faccia
-                                            Vector4 centre = Vector4.Zero;
+                                            Vector4 center = Vector4.Zero;
 
                                             for (int j = 0; j < face.Vertices.Length; j++)
                                             {
-                                                centre += face.Vertices[j].Position;
+                                                center += face.Vertices[j].Position;
                                             }
 
-                                            centre /= face.Vertices.Length;
-                                            bucket.Centre = new Vector3(centre.X, centre.Y, centre.Z);
+                                            center /= face.Vertices.Length;
+                                            bucket.Center = new Vector3(center.X, center.Y, center.Z);
 
                                             // calcolo la distanza
-                                            bucket.Distance = (bucket.Centre - Camera.Position).Length();
+                                            bucket.Distance = (bucket.Center - Camera.Position).Length();
 
                                             // aggiungo la struttura alla lista
                                             _transparentBuckets.Add(bucket);
@@ -2667,7 +2667,7 @@ namespace TombEditor.Controls
 
                 Vector3 pos = _roomsToDraw[i].Position;
                 Matrix wvp = Matrix.Translation(Utils.PositionInWorldCoordinates(pos)) * viewProjection;
-                Vector3 screenPos = Vector3.Project(_roomsToDraw[i].Centre, 0, 0, Width, Height,
+                Vector3 screenPos = Vector3.Project(_roomsToDraw[i].GetLocalCenter(), 0, 0, Width, Height,
                     _editor.GraphicsDevice.Viewport.MinDepth,
                     _editor.GraphicsDevice.Viewport.MaxDepth, wvp);
                 Debug.AddString(message, screenPos);
@@ -2682,13 +2682,13 @@ namespace TombEditor.Controls
             string[] messages = {"North", "South", "East", "West"};
             Vector3[] positions = new Vector3[4];
 
-            Vector3 centre = _editor.SelectedRoom.Centre;
+            Vector3 center = _editor.SelectedRoom.GetLocalCenter();
             Vector3 pos = Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position);
 
-            positions[0] = centre + new Vector3(0, 0, zBlocks);
-            positions[1] = centre + new Vector3(0, 0, -zBlocks);
-            positions[2] = centre + new Vector3(xBlocks, 0, 0);
-            positions[3] = centre + new Vector3(-xBlocks, 0, 0);
+            positions[0] = center + new Vector3(0, 0, zBlocks);
+            positions[1] = center + new Vector3(0, 0, -zBlocks);
+            positions[2] = center + new Vector3(xBlocks, 0, 0);
+            positions[3] = center + new Vector3(-xBlocks, 0, 0);
 
             Matrix wvp = Matrix.Translation(pos) * viewProjection;
 

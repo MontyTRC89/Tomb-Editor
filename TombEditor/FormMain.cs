@@ -606,12 +606,7 @@ namespace TombEditor
             if (room == null)
                 return;
 
-            // aggiorno la telecamera
-            /*panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.NumXSectors * 512.0f, room.Position.Y * 128.0f + room.Ceiling * 64.0f,
-                                                room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);*/
-            panel3D.Camera.Target = new Vector3(room.Position.X * 1024.0f + room.Centre.X,
-                room.Position.Y * 256.0f + room.Centre.Y,
-                room.Position.Z * 1024.0f + room.Centre.Z);
+            panel3D.Camera.Target = room.GetLocalCenter() + room.WorldPos;
             panel3D.Camera.Distance = 3072.0f;
         }
 

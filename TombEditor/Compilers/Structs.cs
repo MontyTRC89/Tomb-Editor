@@ -259,7 +259,7 @@ namespace TombEditor.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_mesh
     {
-        public tr_vertex Centre;
+        public tr_vertex Center;
         public int Radius;
         public short NumVertices;
         public tr_vertex[] Vertices;
@@ -281,7 +281,7 @@ namespace TombEditor.Compilers
         {
             long meshOffset1 = writer.BaseStream.Position;
 
-            writer.WriteBlock(Centre);
+            writer.WriteBlock(Center);
             writer.Write(Radius);
 
             writer.Write(NumVertices);
@@ -319,7 +319,7 @@ namespace TombEditor.Compilers
         {
             var meshOffset1 = writer.BaseStream.Position;
 
-            writer.WriteBlock(Centre);
+            writer.WriteBlock(Center);
             writer.Write(Radius);
 
             writer.Write(NumVertices);

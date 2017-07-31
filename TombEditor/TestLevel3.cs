@@ -30,7 +30,7 @@ namespace TombEngine
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr3_mesh
     {
-        public tr_vertex Centre;
+        public tr_vertex Center;
         public int Radius;
         public short NumVertices;
         public tr_vertex[] Vertices;
@@ -284,7 +284,7 @@ namespace TombEngine
             {
                 long offset1 = reader.BaseStream.Position;
 
-                reader.ReadBlock(out Meshes[l].Centre);
+                reader.ReadBlock(out Meshes[l].Center);
                 reader.ReadBlock(out Meshes[l].Radius);
                 numBytes += 10;
 
