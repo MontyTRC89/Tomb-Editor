@@ -1253,7 +1253,7 @@ namespace TombEditor.Geometry.IO
                         foreach (int trigger in triggersToRemove)
                         {
                             form.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
-                                                    level.Triggers[trigger].Room);
+                                                    level.Rooms.ReferenceIndexOf(level.Triggers[trigger].Room));
                             level.Triggers.Remove(trigger);
                         }
                     }
