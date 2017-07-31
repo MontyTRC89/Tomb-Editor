@@ -372,6 +372,11 @@ namespace TombEditor
                     Math.Min(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Min(BlockSelectionStart.Y, BlockSelectionEnd.Y),
                     Math.Max(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Max(BlockSelectionStart.Y, BlockSelectionEnd.Y));
             }
+            set
+            {
+                BlockSelectionStart = new System.Drawing.Point(value.X, value.Y);
+                BlockSelectionEnd = new System.Drawing.Point(value.Right, value.Bottom);
+            }
         }
 
         public void BlockSelectionReset()
