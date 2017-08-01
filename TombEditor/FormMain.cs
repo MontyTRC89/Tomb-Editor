@@ -605,12 +605,10 @@ namespace TombEditor
 
         public void CenterCamera()
         {
-            Room room = _editor.SelectedRoom;
-            if (room == null)
+            if (_editor.SelectedRoom == null)
                 return;
 
-            panel3D.Camera.Target = room.GetLocalCenter() + room.WorldPos;
-            panel3D.Camera.Distance = 3072.0f;
+            panel3D.ResetCamera();
         }
 
         private void butNoOpacity_Click(object sender, EventArgs e)
