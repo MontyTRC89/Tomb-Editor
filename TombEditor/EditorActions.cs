@@ -753,68 +753,6 @@ namespace TombEditor
             _editor.DrawPanelGrid();
         }
 
-        public static void MoveObject(Room room, ObjectType type, int id, MoveObjectDirections direction, bool smoothMove)
-        {
-            if (type != ObjectType.Light)
-            {
-                switch (direction)
-                {
-                    case MoveObjectDirections.Up:
-                        _editor.Level.Objects[id].Position += new Vector3(0.0f, (smoothMove ? 32.0f : 128.0f), 0.0f);
-                        break;
-
-                    case MoveObjectDirections.Down:
-                        _editor.Level.Objects[id].Position -= new Vector3(0.0f, (smoothMove ? 32.0f : 128.0f), 0.0f);
-                        break;
-
-                    case MoveObjectDirections.West:
-                        _editor.Level.Objects[id].Position -= new Vector3((smoothMove ? 64.0f : 1024.0f), 0.0f, 0.0f);
-                        break;
-
-                    case MoveObjectDirections.East:
-                        _editor.Level.Objects[id].Position += new Vector3((smoothMove ? 64.0f : 1024.0f), 0.0f, 0.0f);
-                        break;
-
-                    case MoveObjectDirections.North:
-                        _editor.Level.Objects[id].Position += new Vector3(0.0f, 0.0f, (smoothMove ? 64.0f : 1024.0f));
-                        break;
-
-                    case MoveObjectDirections.South:
-                        _editor.Level.Objects[id].Position -= new Vector3(0.0f, 0.0f, (smoothMove ? 64.0f : 1024.0f));
-                        break;
-                }
-            }
-            else
-            {
-                switch (direction)
-                {
-                    case MoveObjectDirections.Up:
-                        room.Lights[id].Position += new Vector3(0.0f, (smoothMove ? 32.0f : 128.0f), 0.0f);
-                        break;
-
-                    case MoveObjectDirections.Down:
-                        room.Lights[id].Position -= new Vector3(0.0f, (smoothMove ? 32.0f : 128.0f), 0.0f);
-                        break;
-
-                    case MoveObjectDirections.West:
-                        room.Lights[id].Position -= new Vector3((smoothMove ? 64.0f : 1024.0f), 0.0f, 0.0f);
-                        break;
-
-                    case MoveObjectDirections.East:
-                        room.Lights[id].Position += new Vector3((smoothMove ? 64.0f : 1024.0f), 0.0f, 0.0f);
-                        break;
-
-                    case MoveObjectDirections.North:
-                        room.Lights[id].Position += new Vector3(0.0f, 0.0f, (smoothMove ? 64.0f : 1024.0f));
-                        break;
-
-                    case MoveObjectDirections.South:
-                        room.Lights[id].Position -= new Vector3(0.0f, 0.0f, (smoothMove ? 64.0f : 1024.0f));
-                        break;
-                }
-            }
-        }
-
         public static void MoveObject(Room room, ObjectType type, int id, GizmoAxis axis, float delta, bool smooth)
         {
             switch (axis)
