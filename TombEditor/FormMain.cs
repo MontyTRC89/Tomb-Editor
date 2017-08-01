@@ -429,7 +429,7 @@ namespace TombEditor
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
 
-            UpdateStatistics();
+            UpdateStatusStrip();
         }
 
         public void SelectRoom(Room room)
@@ -499,7 +499,7 @@ namespace TombEditor
 
             _editor.SelectedRoom = _editor.Level.Rooms[0];
             _editor.ResetCamera();
-            // labelStatistics.Text = _editor.UpdateStatistics();
+            // labelStatistics.Text = _editor.UpdateStatusStrip();
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
@@ -823,18 +823,31 @@ namespace TombEditor
             panelTextureMap.Invalidate();
         }
 
-        public void UpdateStatistics()
+        public void UpdateStatusStrip()
         {
-            if (_editor.SelectedRoom == null)
-                return;
-
             var room = _editor.SelectedRoom;
 
-            labelRoomStatistics.Text = "X: " + room.Position.X + " | " +
-                                       "Y: " + room.Position.Y + " | " +
-                                       "Z: " + room.Position.Z + " | " +
-                                       "F: " + (room.Position.Y + room.GetLowestCorner()) + " | " +
-                                       "C: " + (room.Position.Y + room.GetHighestCorner());
+            // Update room labl
+            if (room == null)
+                statusStripSelectedRoom.Text = "Selected room: None";
+            else
+                statusStripSelectedRoom.Text =  "Selected room: " +
+                    "ID = " + _editor.Level.Rooms.ReferenceIndexOf(room) + " | " +
+                    "X = " + room.Position.X + " | " +
+                    "Y = " + room.Position.Y + " | " +
+                    "Z = " + room.Position.Z + " | " +
+                    "Floor = " + (room.Position.Y + room.GetLowestCorner()) + " | " +
+                     "Ceiling = " + (room.Position.Y + room.GetHighestCorner());
+
+            // Update selection
+            if ((room == null) || !_editor.BlockSelectionAvailable)
+                statusStripSelectionArea.Text = "Selected area: None";
+            else
+                statusStripSelectionArea.Text = "Selected area: " +
+                    "X₀ = " + (room.Position.X + _editor.BlockSelection.X) + " | " +
+                    "Z₀ = " + (room.Position.Z + _editor.BlockSelection.Y) + " | " +
+                    "X₁ = " + (room.Position.X + _editor.BlockSelection.Right) + " | " +
+                    "Z₁ = " + (room.Position.Z + _editor.BlockSelection.Bottom);
         }
 
         public void LoadWadInInterface()
@@ -978,8 +991,6 @@ namespace TombEditor
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();
                 }
-
-                //labelStatistics.Text = _editor.UpdateStatistics();
             }
             else if (panel2DGrid.SelectedTrigger != -1)
             {
@@ -1093,6 +1104,7 @@ namespace TombEditor
                         case Keys.Escape:
                             _editor.BlockSelectionReset();
                             _editor.BlockEditingType = 0;
+                            UpdateStatusStrip();
                             return;
 
                         case Keys.T:
@@ -1449,7 +1461,7 @@ namespace TombEditor
             _editor.PickingResult = new PickingResult { ElementType = PickingElementType.None };
             _editor.BlockSelectionReset();
             _editor.BlockEditingType = 0;
-            //if (_editor.Mode != EditorMode.FaceEdit) _editor.SelectedTexture = -1;
+            UpdateStatusStrip();
         }
 
         private void LoadTextureMap(string filename)
@@ -1982,8 +1994,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
-
-            UpdateStatistics();
+            UpdateStatusStrip();
         }
 
         private void butRoomDown_Click(object sender, EventArgs e)
@@ -2009,8 +2020,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
-
-            UpdateStatistics();
+            UpdateStatusStrip();
         }
 
         /*  private void numLightIntensity_ValueChanged(object sender, EventArgs e)

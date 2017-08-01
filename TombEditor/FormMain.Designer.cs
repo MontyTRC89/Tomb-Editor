@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
+            this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -194,12 +194,13 @@
             this.butAddShadow = new DarkUI.Controls.DarkButton();
             this.butAddPointLight = new DarkUI.Controls.DarkButton();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
-            this.labelRoomStatistics = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
+            this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStripSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.openFileDialogTextureMap = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogWAD = new System.Windows.Forms.OpenFileDialog();
-            this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
+            this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
             this.butFaceEdit = new System.Windows.Forms.ToolStripButton();
@@ -246,7 +247,7 @@
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.darkMenuStrip1.SuspendLayout();
+            this.menuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelTextureTools.SuspendLayout();
@@ -254,18 +255,18 @@
             ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
-            this.darkStatusStrip1.SuspendLayout();
-            this.darkToolStrip1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
+            this.toolStrip.SuspendLayout();
             this.multiPage1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // darkMenuStrip1
+            // menuStrip
             // 
-            this.darkMenuStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkMenuStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.menuStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.roomsToolStripMenuItem,
@@ -273,12 +274,12 @@
             this.texturesToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.debugToolStripMenuItem});
-            this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.darkMenuStrip1.Name = "darkMenuStrip1";
-            this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.darkMenuStrip1.Size = new System.Drawing.Size(1875, 24);
-            this.darkMenuStrip1.TabIndex = 0;
-            this.darkMenuStrip1.Text = "darkMenuStrip1";
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(1875, 24);
+            this.menuStrip.TabIndex = 0;
+            this.menuStrip.Text = "darkMenuStrip1";
             // 
             // fileToolStripMenuItem
             // 
@@ -2111,27 +2112,39 @@
             this.darkLabel5.TabIndex = 0;
             this.darkLabel5.Text = "Add light";
             // 
-            // darkStatusStrip1
+            // statusStrip
             // 
-            this.darkStatusStrip1.AutoSize = false;
-            this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.labelRoomStatistics});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 860);
-            this.darkStatusStrip1.Name = "darkStatusStrip1";
-            this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1875, 29);
-            this.darkStatusStrip1.SizingGrip = false;
-            this.darkStatusStrip1.TabIndex = 29;
-            this.darkStatusStrip1.Text = "darkStatusStrip1";
+            this.statusStrip.AutoSize = false;
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusStripSelectedRoom,
+            this.statusStripSelectionArea});
+            this.statusStrip.Location = new System.Drawing.Point(0, 860);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
+            this.statusStrip.Size = new System.Drawing.Size(1875, 29);
+            this.statusStrip.SizingGrip = false;
+            this.statusStrip.TabIndex = 29;
+            this.statusStrip.Text = "statusStrip";
             // 
-            // labelRoomStatistics
+            // statusStripSelectedRoom
             // 
-            this.labelRoomStatistics.AutoSize = false;
-            this.labelRoomStatistics.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.labelRoomStatistics.Name = "labelRoomStatistics";
-            this.labelRoomStatistics.Size = new System.Drawing.Size(300, 16);
+            this.statusStripSelectedRoom.AutoSize = false;
+            this.statusStripSelectedRoom.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.statusStripSelectedRoom.Name = "statusStripSelectedRoom";
+            this.statusStripSelectedRoom.Size = new System.Drawing.Size(450, 16);
+            this.statusStripSelectedRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // statusStripSelectionArea
+            // 
+            this.statusStripSelectionArea.AutoSize = false;
+            this.statusStripSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripSelectionArea.Name = "statusStripSelectionArea";
+            this.statusStripSelectionArea.Size = new System.Drawing.Size(300, 16);
+            this.statusStripSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // colorDialog
             // 
@@ -2150,12 +2163,12 @@
             this.openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
             this.openFileDialogWAD.Title = "Load WAD";
             // 
-            // darkToolStrip1
+            // toolStrip
             // 
-            this.darkToolStrip1.AutoSize = false;
-            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStrip.AutoSize = false;
+            this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.but2D,
             this.but3D,
             this.butFaceEdit,
@@ -2190,12 +2203,12 @@
             this.toolStripSeparator3,
             this.butCompileLevel,
             this.butCompileLevelAndPlay});
-            this.darkToolStrip1.Location = new System.Drawing.Point(283, 24);
-            this.darkToolStrip1.Name = "darkToolStrip1";
-            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(1305, 28);
-            this.darkToolStrip1.TabIndex = 0;
-            this.darkToolStrip1.Text = "darkToolStrip1";
+            this.toolStrip.Location = new System.Drawing.Point(283, 24);
+            this.toolStrip.Name = "toolStrip";
+            this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
+            this.toolStrip.Size = new System.Drawing.Size(1305, 28);
+            this.toolStrip.TabIndex = 0;
+            this.toolStrip.Text = "darkToolStrip1";
             // 
             // but2D
             // 
@@ -2691,20 +2704,20 @@
             this.Controls.Add(this.panel2DGrid);
             this.Controls.Add(this.multiPage1);
             this.Controls.Add(this.panel4);
-            this.Controls.Add(this.darkToolStrip1);
+            this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.darkStatusStrip1);
-            this.Controls.Add(this.darkMenuStrip1);
+            this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
-            this.MainMenuStrip = this.darkMenuStrip1;
+            this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(1220, 790);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tomb Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.darkMenuStrip1.ResumeLayout(false);
-            this.darkMenuStrip1.PerformLayout();
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
@@ -2715,10 +2728,10 @@
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
-            this.darkStatusStrip1.ResumeLayout(false);
-            this.darkStatusStrip1.PerformLayout();
-            this.darkToolStrip1.ResumeLayout(false);
-            this.darkToolStrip1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
+            this.toolStrip.ResumeLayout(false);
+            this.toolStrip.PerformLayout();
             this.multiPage1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
@@ -2729,7 +2742,7 @@
 
         #endregion
 
-        private DarkUI.Controls.DarkMenuStrip darkMenuStrip1;
+        private DarkUI.Controls.DarkMenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem roomsToolStripMenuItem;
@@ -2758,7 +2771,7 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
-        private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
+        private DarkUI.Controls.DarkStatusStrip statusStrip;
         private Controls.MultiPage multiPage1;
         private System.Windows.Forms.TabPage tabPage1;
         private Controls.PanelRendering3D panel3D;
@@ -2852,7 +2865,7 @@
         private System.Windows.Forms.ToolStripButton butTextureFloor;
         private System.Windows.Forms.ToolStripButton butTextureCeiling;
         private System.Windows.Forms.ToolStripButton butTextureWalls;
-        private DarkUI.Controls.DarkToolStrip darkToolStrip1;
+        private DarkUI.Controls.DarkToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton but3D;
         private System.Windows.Forms.ToolStripButton but2D;
         private System.Windows.Forms.ToolStripButton butFaceEdit;
@@ -2884,7 +2897,7 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialogPRJ2;
         private System.Windows.Forms.OpenFileDialog openFileDialogPRJ;
         private DarkUI.Controls.DarkContextMenu darkContextMenu1;
-        private System.Windows.Forms.ToolStripStatusLabel labelRoomStatistics;
+        private System.Windows.Forms.ToolStripStatusLabel statusStripSelectedRoom;
         private DarkUI.Controls.DarkComboBox comboFlipMap;
         private DarkUI.Controls.DarkLabel darkLabel19;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingUpToolStripMenuItem;
@@ -2946,5 +2959,6 @@
         private System.Windows.Forms.ToolStripMenuItem sharpRandomFloorDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingDownToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel statusStripSelectionArea;
     }
 }

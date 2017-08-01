@@ -448,6 +448,7 @@ namespace TombEditor.Controls
                                 _editor.BlockSelectionReset();
                                 _firstSelection = true;
                                 _editor.BlockEditingType = 0;
+                                _editor.UpdateStatusStrip();
                                 return;
                             }
 
@@ -520,6 +521,7 @@ namespace TombEditor.Controls
 
             Draw();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -721,6 +723,7 @@ namespace TombEditor.Controls
             if (Drag)
                 Draw();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -778,7 +781,7 @@ namespace TombEditor.Controls
                                     _editor.BlockSelectionReset();
                                     _firstSelection = true;
                                     _editor.BlockEditingType = 0;
-
+                                    _editor.UpdateStatusStrip();
                                     return;
                                 }
 

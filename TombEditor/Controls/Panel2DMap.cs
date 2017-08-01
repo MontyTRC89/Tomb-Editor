@@ -55,7 +55,7 @@ namespace TombEditor.Controls
             this.UpdateStyles();
             _depthBar.InvalidateParent += Invalidate;
             _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoom(room); Invalidate(); };
-            _depthBar.RoomsMoved += delegate { _editor.UpdateStatistics(); _editor.CenterCamera(); };
+            _depthBar.RoomsMoved += delegate { _editor.UpdateStatusStrip(); _editor.CenterCamera(); };
         }
 
         public void ResetView()
@@ -402,7 +402,7 @@ namespace TombEditor.Controls
 
             // Update state
             Invalidate();
-            _editor.UpdateStatistics();
+            _editor.UpdateStatusStrip();
             _editor.CenterCamera();
         }
 
