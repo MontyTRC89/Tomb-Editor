@@ -949,7 +949,9 @@
             // butFloor
             // 
             this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butFloor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
+            this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+            this.butFloor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butFloor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butFloor.ForeColor = System.Drawing.Color.White;
             this.butFloor.Location = new System.Drawing.Point(226, 0);
@@ -963,7 +965,9 @@
             // butWall
             // 
             this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butWall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
+            this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
+            this.butWall.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butWall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butWall.ForeColor = System.Drawing.Color.White;
             this.butWall.Location = new System.Drawing.Point(256, 90);
@@ -977,7 +981,9 @@
             // butBox
             // 
             this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.butBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butBox.ForeColor = System.Drawing.Color.White;
             this.butBox.Location = new System.Drawing.Point(226, 30);
@@ -991,7 +997,9 @@
             // butMonkey
             // 
             this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butMonkey.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
+            this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.butMonkey.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butMonkey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
             this.butMonkey.Location = new System.Drawing.Point(226, 60);
@@ -1005,7 +1013,9 @@
             // butDeath
             // 
             this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butDeath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(0)))));
+            this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
+            this.butDeath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butDeath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butDeath.ForeColor = System.Drawing.Color.White;
             this.butDeath.Location = new System.Drawing.Point(256, 60);
@@ -1019,7 +1029,9 @@
             // butPortal
             // 
             this.butPortal.BackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butPortal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
+            this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Black;
+            this.butPortal.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butPortal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butPortal.ForeColor = System.Drawing.Color.White;
             this.butPortal.Location = new System.Drawing.Point(226, 90);
@@ -1172,7 +1184,9 @@
             // butCeiling
             // 
             this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butCeiling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
+            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+            this.butCeiling.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
             this.butCeiling.Location = new System.Drawing.Point(256, 0);
@@ -1185,8 +1199,10 @@
             // 
             // butNotWalkableBox
             // 
-            this.butNotWalkableBox.BackColor = System.Drawing.Color.DarkBlue;
-            this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
+            this.butNotWalkableBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
+            this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(75)))));
+            this.butNotWalkableBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butNotWalkableBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
             this.butNotWalkableBox.Location = new System.Drawing.Point(256, 30);
