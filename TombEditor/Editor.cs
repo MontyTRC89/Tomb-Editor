@@ -48,8 +48,6 @@ namespace TombEditor
 
         // istanza dell'editor
         private static Editor _instance;
-        private System.Drawing.Point _blockSelectionStart;
-        private System.Drawing.Point _blockSelectionEnd;
 
         public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
@@ -64,6 +62,8 @@ namespace TombEditor
         public EditorSubAction SubAction { get; set; }
         public EditorItemType ItemType { get; set; }
         public PickingResult PickingResult { get; set; }
+        public System.Drawing.Point BlockSelectionStart { get; set; } = new System.Drawing.Point(-1, -1);
+        public System.Drawing.Point BlockSelectionEnd { get; set; } = new System.Drawing.Point(-1, -1);
         public int BlockEditingType { get; set; }
         public Dictionary<int, string> MoveableNames { get; } = new Dictionary<int, string>();
         public Dictionary<int, string> StaticNames { get; } = new Dictionary<int, string>();
@@ -307,26 +307,9 @@ namespace TombEditor
             _formEditor.LoadTextureMapInEditor(level);
         }
 
-        public string UpdateStatusStrip()
+        public void UpdateStatusStrip()
         {
-            if (SelectedRoom == null || SelectedRoom == null)
-                return "";
-
-            string stats = "Room X: " + SelectedRoom.Position.X.ToString();
-            stats += " Y floor: " + (SelectedRoom.Position.Y + SelectedRoom.GetLowestCorner());
-            stats += " Y ceiling: " + (SelectedRoom.Position.Y + SelectedRoom.GetHighestCorner());
-            stats += " Z: " + SelectedRoom.Position.Z.ToString();
-            stats += "    Size: " + (SelectedRoom.NumXSectors - 2).ToString();
-            stats += "x";
-            stats += (SelectedRoom.NumZSectors - 2).ToString();
-            stats += "    ";
-            stats += "Portals: " + Level.Portals.Count;
-            stats += "    ";
-            stats += "Triggers: " + Level.Triggers.Count;
-
             _formEditor.UpdateStatusStrip();
-
-            return stats;
         }
 
         public static PickingResult PickingResultEmpty;
@@ -367,29 +350,6 @@ namespace TombEditor
             _formEditor.EditLight();
         }
 
-        public System.Drawing.Point BlockSelectionStart
-        {
-            get { return _blockSelectionStart; }
-            set
-            {
-                _blockSelectionStart = value;
-                UpdateStatusStrip();
-                DrawPanel3D();
-                DrawPanelMap2D();
-            }
-        }
-        public System.Drawing.Point BlockSelectionEnd
-        {
-            get { return _blockSelectionEnd; }
-            set
-            {
-                _blockSelectionEnd = value;
-                UpdateStatusStrip();
-                DrawPanel3D();
-                DrawPanelMap2D();
-            }
-        }
-
         // The rectangle is (-1, -1, -1, 1) when nothing is selected.
         // The "Right" and "Bottom" point of the rectangle is inclusive.
         public Rectangle BlockSelection
@@ -397,27 +357,25 @@ namespace TombEditor
             get
             {
                 return new SharpDX.Rectangle(
-                    Math.Min(_blockSelectionStart.X, _blockSelectionEnd.X), Math.Min(_blockSelectionStart.Y, _blockSelectionEnd.Y),
-                    Math.Max(_blockSelectionStart.X, _blockSelectionEnd.X), Math.Max(_blockSelectionStart.Y, _blockSelectionEnd.Y));
+                    Math.Min(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Min(BlockSelectionStart.Y, BlockSelectionEnd.Y),
+                    Math.Max(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Max(BlockSelectionStart.Y, BlockSelectionEnd.Y));
             }
             set
             {
-                _blockSelectionStart = new System.Drawing.Point(value.X, value.Y);
-                _blockSelectionEnd = new System.Drawing.Point(value.Right, value.Bottom);
-                UpdateStatusStrip();
-                DrawPanel3D();
-                DrawPanelMap2D();
+                BlockSelectionStart = new System.Drawing.Point(value.X, value.Y);
+                BlockSelectionEnd = new System.Drawing.Point(value.Right, value.Bottom);
             }
         }
 
         public void BlockSelectionReset()
         {
-            BlockSelection = new Rectangle(-1, -1, -1, -1);
+            BlockSelectionStart = new System.Drawing.Point(-1, -1);
+            BlockSelectionEnd = new System.Drawing.Point(-1, -1);
         }
 
         public bool BlockSelectionAvailable
         {
-           get { return (_blockSelectionStart.X != -1) && (_blockSelectionStart.Y != -1) && (_blockSelectionEnd.X != -1) && (_blockSelectionEnd.Y != -1); }
+           get { return (BlockSelectionStart.X != -1) && (BlockSelectionStart.Y != -1) && (BlockSelectionEnd.X != -1) && (BlockSelectionEnd.Y != -1); }
         }
     }
 }
