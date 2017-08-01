@@ -901,8 +901,10 @@ namespace TombEditor.Compilers
 
                 for (int i = _boxes[next].OverlapIndex; i < _overlaps.Length && !last; i++)
                 {
-                    last = (_overlaps[i] & 0x8000) != 0;
-                    var boxIndex = _overlaps[i] & 0x7ff;
+                    int overlapIndex = _boxes[next].OverlapIndex & 0x3fff;
+                    last = (_overlaps[overlapIndex] & 0x8000) != 0;
+
+                    var boxIndex = _overlaps[overlapIndex] & 0x7ff;
 
                     var add = false;
 
