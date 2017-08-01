@@ -183,6 +183,8 @@ namespace TombEditor
 
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
+
+            _editor.UpdateStatusStrip();
         }
 
         public static void EditFace(Room room, Rectangle area, FaceEditorActions action, FaceSubdivisions sub)
@@ -705,6 +707,7 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
+            _editor.UpdateStatusStrip();
         }
 
         public static void FlipFloorSplit(Room room, Rectangle area)
@@ -715,6 +718,7 @@ namespace TombEditor
                         (byte)(room.Blocks[x, z].SplitFoorType == 0 ? 1 : 0);
 
             SmartBuildGeometry(room, area);
+            _editor.UpdateStatusStrip();
         }
 
         public static void FlipCeilingSplit(Room room, Rectangle area)
@@ -725,6 +729,7 @@ namespace TombEditor
                         (byte)(room.Blocks[x, z].SplitCeilingType == 0 ? 1 : 0);
 
             SmartBuildGeometry(room, area);
+            _editor.UpdateStatusStrip();
         }
 
         public static void AddTrigger(Room room, Rectangle area, IWin32Window parent)
@@ -912,6 +917,7 @@ namespace TombEditor
             }
 
             _editor.Level.DeleteObject(id);
+            _editor.UpdateStatusStrip();
         }
 
         public static void MoveLight(Room room, int id, MoveObjectDirections direction, bool smoothMove)
@@ -950,6 +956,7 @@ namespace TombEditor
             room.BuildGeometry();
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
+            _editor.UpdateStatusStrip();
         }
 
         public static void DeleteLight(Room room, int id)
@@ -959,6 +966,7 @@ namespace TombEditor
             room.BuildGeometry();
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
+            _editor.UpdateStatusStrip();
         }
 
         public static void MoveLightCone(Room room, int id, int x, int y)
@@ -982,6 +990,7 @@ namespace TombEditor
             room.BuildGeometry();
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
+            _editor.UpdateStatusStrip();
         }
 
         public static void MoveFlybyCone(Room room, int id, short x, short y)
@@ -1245,6 +1254,7 @@ namespace TombEditor
                 _editor.Level.Objects.Add(instance.Id, instance);
                 room.Sinks.Add(instance.Id);
             }
+            _editor.UpdateStatusStrip();
         }
 
         public static void PlaceLight(Room room, int x, int z, LightType type)
@@ -1294,6 +1304,7 @@ namespace TombEditor
             room.BuildGeometry();
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
+            _editor.UpdateStatusStrip();
         }
 
         public static void CropRoom(Room room, Rectangle newArea)
@@ -1538,7 +1549,7 @@ namespace TombEditor
             _editor.CenterCamera();
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
-            _editor.UpdateStatistics();
+            _editor.UpdateStatusStrip();
             _editor.UpdateRoomName();
         }
 
@@ -1630,6 +1641,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SetDiagonalCeilingSplit(Room room, Rectangle area)
@@ -1720,6 +1732,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SetDiagonalWallSplit(Room room, Rectangle area)
@@ -1815,6 +1828,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
         
         public static void SetWall(Room room, Rectangle area)
@@ -1849,6 +1863,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             _editor.DrawPanelMap2D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SetFloor(Room room, Rectangle area)
@@ -1884,6 +1899,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             _editor.DrawPanelMap2D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void ToggleBlockFlag(Room room, Rectangle area, BlockFlags flag)
@@ -1894,6 +1910,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         public static void ToggleClimb(Room room, Rectangle area, int direction)
@@ -1904,6 +1921,7 @@ namespace TombEditor
 
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         public static bool AddPortal(Room room, Rectangle area)
@@ -2024,6 +2042,7 @@ namespace TombEditor
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();
                     _editor.DrawPanelMap2D();
+                    _editor.UpdateStatusStrip();
 
                     return true;
                 }
@@ -2145,6 +2164,7 @@ namespace TombEditor
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();
                     _editor.DrawPanelMap2D();
+                    _editor.UpdateStatusStrip();
 
                     return true;
                 }
@@ -2266,6 +2286,7 @@ namespace TombEditor
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();
                     _editor.DrawPanelMap2D();
+                    _editor.UpdateStatusStrip();
 
                     return true;
                 }
@@ -2387,6 +2408,7 @@ namespace TombEditor
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();
                     _editor.DrawPanelMap2D();
+                    _editor.UpdateStatusStrip();
 
                     return true;
                 }
@@ -2627,6 +2649,7 @@ namespace TombEditor
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();
                     _editor.DrawPanelMap2D();
+                    _editor.UpdateStatusStrip();
 
                     return true;
                 }
@@ -2692,6 +2715,7 @@ namespace TombEditor
             
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SmoothRandomFloor(Room room, Rectangle area, float strengthDirection)
@@ -2710,6 +2734,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SmoothRandomCeiling(Room room, Rectangle area, float strengthDirection)
@@ -2728,6 +2753,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SharpRandomFloor(Room room, Rectangle area, float strengthDirection)
@@ -2741,6 +2767,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void SharpRandomCeiling(Room room, Rectangle area, float strengthDirection)
@@ -2754,6 +2781,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void FlattenFloor(Room room, Rectangle area)
@@ -2773,6 +2801,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void FlattenCeiling(Room room, Rectangle area)
@@ -2792,6 +2821,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void GridWalls3(Room room, Rectangle Area)
@@ -2823,6 +2853,7 @@ namespace TombEditor
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void GridWalls5(Room room, Rectangle Area)
@@ -2854,6 +2885,7 @@ namespace TombEditor
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
             _editor.DrawPanel3D();
+            _editor.UpdateStatusStrip();
         }
 
         public static void DeletePortal(Room room, int id)
@@ -2926,6 +2958,7 @@ namespace TombEditor
             other.Room.BuildGeometry();
             other.Room.CalculateLightingForThisRoom();
             other.Room.UpdateBuffers();
+            _editor.UpdateStatusStrip();
         }
     }
 }

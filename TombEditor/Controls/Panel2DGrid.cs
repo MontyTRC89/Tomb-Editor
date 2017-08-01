@@ -171,7 +171,7 @@ namespace TombEditor.Controls
 
                 // Update state
                 _editor.DrawPanel3D();
-                _editor.UpdateStatistics();
+                _editor.UpdateStatusStrip();
                 Invalidate();
             }
             else if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1))
@@ -212,7 +212,7 @@ namespace TombEditor.Controls
 
                 // Update state
                 _editor.DrawPanel3D();
-                _editor.UpdateStatistics();
+                _editor.UpdateStatusStrip();
                 Invalidate();
             }
         }
@@ -242,7 +242,7 @@ namespace TombEditor.Controls
 
                 // Update state
                 _editor.DrawPanel3D();
-                _editor.UpdateStatistics();
+                _editor.UpdateStatusStrip();
                 Invalidate();
             }
         }
@@ -281,7 +281,7 @@ namespace TombEditor.Controls
 
                 // Update state
                 _editor.DrawPanel3D();
-                _editor.UpdateStatistics();
+                _editor.UpdateStatusStrip();
                 Invalidate();
             }
 
