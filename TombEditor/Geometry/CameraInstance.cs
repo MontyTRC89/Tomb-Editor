@@ -45,5 +45,15 @@
                 Fixed = Fixed
             };
         }
+        
+        public override string ToString()
+        {
+            return "Camera " + (Fixed ? "Fixed" : "") +
+                ", ID = " + Id +
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
+        }
     }
 }

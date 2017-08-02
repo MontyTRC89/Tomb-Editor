@@ -152,9 +152,9 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(filler32);
                             }
                                 break;
-                            case ObjectInstanceType.Sound:
+                            case ObjectInstanceType.SoundSource:
                             {
-                                var s = (SoundInstance)o;
+                                var s = (SoundSourceInstance)o;
                                 writer.Write(s.SoundId);
 
                                 writer.Write(filler8);
@@ -385,15 +385,6 @@ namespace TombEditor.Geometry.IO
                         writer.Write(sound.Y);
                         writer.Write(sound.Page);
                         writer.Write((byte)sound.Sound);
-                    }
-
-                    int numPalette = Editor.Instance.Palette.Count;
-                    writer.Write(numPalette);
-                    for (int i = 0; i < numPalette; i++)
-                    {
-                        writer.Write(Editor.Instance.Palette[i].R);
-                        writer.Write(Editor.Instance.Palette[i].G);
-                        writer.Write(Editor.Instance.Palette[i].B);
                     }
 
                     writer.Write(filler32);

@@ -37,5 +37,15 @@ namespace TombEditor.Geometry
                 Color = Color
             };
         }
+        
+        public override string ToString()
+        {
+            return "Static " + ObjectNames.GetStaticName((int)Model.ObjectID) +
+                ", ID = " + Id +
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
+        }
     }
 }

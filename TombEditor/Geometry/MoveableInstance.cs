@@ -35,5 +35,15 @@ namespace TombEditor.Geometry
                 ObjectId = ObjectId
             };
         }
+
+        public override string ToString()
+        {
+            return "Movable " + ObjectNames.GetMovableName((int)Model.ObjectID) +
+                ", ID = " + Id + 
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
+        }
     }
 }

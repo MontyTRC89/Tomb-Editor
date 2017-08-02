@@ -98,7 +98,6 @@ namespace TombEditor
             this.Name = "FormImportPRJ";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Import PRJ";
-            this.Load += new System.EventHandler(this.FormObject_Load);
             this.Shown += new System.EventHandler(this.FormBuildLevel_Shown);
             this.ResumeLayout(false);
 

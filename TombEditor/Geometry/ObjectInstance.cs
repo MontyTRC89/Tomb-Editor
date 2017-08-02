@@ -10,8 +10,12 @@ namespace TombEditor.Geometry
         Sink,
         Portal,
         Trigger,
-        Sound,
-        FlyByCamera
+        SoundSource,
+        FlyByCamera,
+        // TODO Light does not derive from "ObjectInstance".
+        // Are there side effects from this approach?
+        // We should make light derive from ObjectInstance.
+        Light
     }
 
     public abstract class ObjectInstance
@@ -41,6 +45,67 @@ namespace TombEditor.Geometry
         public void Move(int deltaX, int deltaY, int deltaZ)
         {
             Position = Position + new Vector3(deltaX, deltaY, deltaZ);
+        }
+    }
+
+    public struct ObjectPtr
+    {
+        public ObjectInstanceType Type { get; set; }
+        public int Index { get; set; }
+
+        public ObjectPtr(ObjectInstanceType type, int index)
+        {
+            Type = type;
+            Index = index;
+        }
+
+
+        public static bool operator ==(ObjectPtr first, ObjectPtr second)
+        {
+            return (first.Type == second.Type) && (first.Index == second.Index);
+        }
+
+        public static bool operator !=(ObjectPtr first, ObjectPtr second)
+        {
+            return (first.Type != second.Type) || (first.Index != second.Index);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this == (ObjectPtr)obj;
+        }
+
+        public override int GetHashCode()
+        {
+            return (Type.GetHashCode() << 16) ^ Index.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            string result = "Unknown";
+            // HACK for now until we get proper references
+            switch (Type)
+            {
+                case ObjectInstanceType.Camera:
+                case ObjectInstanceType.FlyByCamera:
+                case ObjectInstanceType.Moveable:
+                case ObjectInstanceType.Sink:
+                case ObjectInstanceType.SoundSource:
+                case ObjectInstanceType.StaticMesh:
+                    result = Editor.Instance.Level.Objects[Index].ToString();
+                    break;
+                case ObjectInstanceType.Portal:
+                    result = Editor.Instance.Level.Portals[Index].ToString();
+                    break;
+                case ObjectInstanceType.Trigger:
+                    result = Editor.Instance.Level.Triggers[Index].ToString();
+                    break;
+                case ObjectInstanceType.Light:
+                    if (Editor.Instance.SelectedRoom != null)
+                        result = Editor.Instance.SelectedRoom.Lights[Index].ToString();
+                    break;
+            }
+            return result;
         }
     }
 }

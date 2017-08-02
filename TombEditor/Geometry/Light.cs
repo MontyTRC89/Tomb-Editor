@@ -24,5 +24,13 @@ namespace TombEditor.Geometry
         {
             return (Light)(this.MemberwiseClone());
         }
+
+        public override string ToString()
+        {
+            return "Light " + Type.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
+        }
     }
 }

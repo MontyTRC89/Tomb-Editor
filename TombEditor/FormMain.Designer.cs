@@ -1268,7 +1268,7 @@
             this.panelStaticMeshColor.Name = "panelStaticMeshColor";
             this.panelStaticMeshColor.Size = new System.Drawing.Size(60, 20);
             this.panelStaticMeshColor.TabIndex = 43;
-            this.panelStaticMeshColor.DoubleClick += new System.EventHandler(this.panelStaticMeshColor_DoubleClick);
+            this.panelStaticMeshColor.Click += new System.EventHandler(this.panelStaticMeshColor_Click);
             // 
             // darkLabel14
             // 
@@ -1579,7 +1579,6 @@
             // 
             this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelItem.Camera = null;
-            this.panelItem.ItemType = TombEditor.EditorItemType.Moveable;
             this.panelItem.Location = new System.Drawing.Point(12, 501);
             this.panelItem.Name = "panelItem";
             this.panelItem.Presenter = null;
@@ -1885,7 +1884,6 @@
             // 
             this.lightPalette.Location = new System.Drawing.Point(644, 3);
             this.lightPalette.Name = "lightPalette";
-            this.lightPalette.SelectedColor = System.Drawing.Color.Empty;
             this.lightPalette.Size = new System.Drawing.Size(652, 99);
             this.lightPalette.TabIndex = 50;
             this.lightPalette.TabStop = false;
@@ -2657,19 +2655,9 @@
             // panel3D
             // 
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Camera = null;
-            this.panel3D.DeltaVector = new SharpDX.Vector3(0F, 0F, 0F);
-            this.panel3D.DeltaX = 0;
-            this.panel3D.DeltaY = 0;
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3D.Drag = false;
-            this.panel3D.LastX = 0;
-            this.panel3D.LastY = 0;
-            this.panel3D.LightIndex = 0;
             this.panel3D.Location = new System.Drawing.Point(3, 3);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Presenter = null;
-            this.panel3D.RoomIndex = 0;
             this.panel3D.Size = new System.Drawing.Size(1291, 667);
             this.panel3D.TabIndex = 11;
             // 
