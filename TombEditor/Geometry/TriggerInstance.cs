@@ -22,111 +22,99 @@ namespace TombEditor.Geometry
 
         public override string ToString()
         {
-            string output = "";
-
-            if (TriggerType == TriggerType.Antipad)
-                output = "Antipad";
-            if (TriggerType == TriggerType.Antitrigger)
-                output = "Antitrigger";
-            if (TriggerType == TriggerType.Combat)
-                output = "Combat";
-            if (TriggerType == TriggerType.Condition)
-                output = "Condition";
-            if (TriggerType == TriggerType.Dummy)
-                output = "Dummy";
-            if (TriggerType == TriggerType.Heavy)
-                output = "Heavy";
-            if (TriggerType == TriggerType.HeavyAntritrigger)
-                output = "HeavyAntritrigger";
-            if (TriggerType == TriggerType.HeavySwitch)
-                output = "HeavySwitch";
-            if (TriggerType == TriggerType.Key)
-                output = "Key";
-            if (TriggerType == TriggerType.Monkey)
-                output = "Monkey";
-            if (TriggerType == TriggerType.Pad)
-                output = "Pad";
-            if (TriggerType == TriggerType.Pickup)
-                output = "Pickup";
-            if (TriggerType == TriggerType.Switch)
-                output = "Switch";
-            if (TriggerType == TriggerType.Trigger)
-                output = "Trigger";
+            string output = "Unknown trigger";
+            switch (TriggerType)
+            {
+                case TriggerType.Antipad:
+                    output = "Antipad Trigger";
+                    break;
+                case TriggerType.Antitrigger:
+                    output = "Antitrigger";
+                    break;
+                case TriggerType.Combat:
+                    output = "Combat Trigger";
+                    break;
+                case TriggerType.Condition:
+                    output = "Condition Trigger";
+                    break;
+                case TriggerType.Dummy:
+                    output = "Dummy Trigger";
+                    break;
+                case TriggerType.Heavy:
+                    output = "Heavy Trigger";
+                    break;
+                case TriggerType.HeavyAntritrigger:
+                    output = "HeavyAntritrigger";
+                    break;
+                case TriggerType.HeavySwitch:
+                    output = "HeavySwitch Trigger";
+                    break;
+                case TriggerType.Key:
+                    output = "Key Trigger";
+                    break;
+                case TriggerType.Monkey:
+                    output = "Monkey Trigger";
+                    break;
+                case TriggerType.Pad:
+                    output = "Pad Trigger";
+                    break;
+                case TriggerType.Pickup:
+                    output = "Pickup Trigger";
+                    break;
+                case TriggerType.Switch:
+                    output = "Switch Trigger";
+                    break;
+                case TriggerType.Trigger:
+                    output = "Trigger";
+                    break;
+            }
 
             output += " (" + Id + ") for ";
 
-            if (TargetType == TriggerTargetType.Camera)
+            switch (TargetType)
             {
-                CameraInstance instance = (CameraInstance)Editor.Instance.Level.Objects[Target];
-                output += "Camera (" + instance.Id + ")";
-            }
-
-            if (TargetType == TriggerTargetType.FinishLevel)
-            {
-                output += "FinishLevel (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.FlipEffect)
-            {
-                output += "FlipEffect (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.FlipMap)
-            {
-                output += "FlipMap (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.FlipOff)
-            {
-                output += "FlipOff (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.FlipOn)
-            {
-                output += "FlipOn (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.FlyByCamera)
-            {
-                //FlybyCameraInstance instance = (FlybyCameraInstance)_editor.Level.Objects[Target];
-                output += "FlybyCamera (FLYBY" + /*instance.ID +*/ ")";
-            }
-
-            if (TargetType == TriggerTargetType.Fmv)
-            {
-                output += "FMV (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.Object)
-            {
-                var instance = Editor.Instance.Level.Objects[Target];
-                if (instance.Type == ObjectInstanceType.Moveable)
-                {
-                    var moveable = (MoveableInstance)instance;
-                    output += Editor.Instance.MoveableNames[(int)moveable.Model.ObjectID] + " (" + instance.Id + ")";
-                }
-            }
-
-            if (TargetType == TriggerTargetType.PlayAudio)
-            {
-                output += "CD Track (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.Secret)
-            {
-                output += "Secret (" + Target + ")";
-            }
-
-            if (TargetType == TriggerTargetType.Sink)
-            {
-                var instance = (SinkInstance)Editor.Instance.Level.Objects[Target];
-                output += "Sink (" + instance.Id + ")";
-            }
-
-            if (TargetType == TriggerTargetType.Target)
-            {
-                var instance = Editor.Instance.Level.Objects[Target];
-                output += "Camera Target (" + instance.Id + ")";
+                case TriggerTargetType.Camera:
+                    output += "Camera (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
+                    break;
+                case TriggerTargetType.FinishLevel:
+                    output += "FinishLevel (" + Target + ")";
+                    break;
+                case TriggerTargetType.FlipEffect:
+                    output += "FlipEffect (" + Target + ")";
+                    break;
+                case TriggerTargetType.FlipMap:
+                    output += "FlipMap (" + Target + ")";
+                    break;
+                case TriggerTargetType.FlipOff:
+                    output += "FlipOff (" + Target + ")";
+                    break;
+                case TriggerTargetType.FlipOn:
+                    output += "FlipOn (" + Target + ")";
+                    break;
+                case TriggerTargetType.FlyByCamera:
+                    output += "FlybyCamera (FLYBY" + Editor.Instance.Level.Objects[Target].ToString() + ")";
+                    break;
+                case TriggerTargetType.Fmv:
+                    output += "FMV (" + Target + ")";
+                    break;
+                case TriggerTargetType.Object:
+                    output += "Movable (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
+                    break;
+                case TriggerTargetType.PlayAudio:
+                    output += "CD Track (" + Target + ")";
+                    break;
+                case TriggerTargetType.Secret:
+                    output += "Secret (" + Target + ")";
+                    break;
+                case TriggerTargetType.Sink:
+                    output += "Sink (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
+                    break;
+                case TriggerTargetType.Target:
+                    output += "Camera Target (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
+                    break;
+                default:
+                    output += "Unkown";
+                    break;
             }
 
             return output;

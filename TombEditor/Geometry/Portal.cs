@@ -54,7 +54,7 @@ namespace TombEditor.Geometry
                 text += " (On Floor) ";
             if (Direction == PortalDirection.Ceiling)
                 text += " (On Ceiling) ";
-            text += "to Room #" + Editor.Instance.Level.Rooms.ReferenceIndexOf(AdjoiningRoom).ToString();
+            text += "to Room " + Room.ToString();
             return text;
         }
     }

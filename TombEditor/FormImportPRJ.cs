@@ -12,11 +12,12 @@ namespace TombEditor
     {
         public string FileName { get; set; }
         public Level Level { get; set; }
+        
+        private DeviceManager _deviceManager;
 
-        private Editor _editor = Editor.Instance;
-
-        public FormImportPRJ()
+        public FormImportPRJ(DeviceManager deviceManager)
         {
+            _deviceManager = deviceManager;
             InitializeComponent();
         }
 
@@ -25,15 +26,10 @@ namespace TombEditor
             DialogResult = (Level != null ? DialogResult.OK : DialogResult.Cancel);
             this.Close();
         }
-
-        private void FormObject_Load(object sender, EventArgs e)
-        {
-              
-        }
-
+        
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
-            Level = PrjLoader.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
+            Level = PrjLoader.LoadFromPrj(FileName, this, _deviceManager.Device);
         }
 
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -58,7 +54,7 @@ namespace TombEditor
         private void FormBuildLevel_Shown(object sender, EventArgs e)
         {
             GC.Collect();
-            Level = PrjLoader.LoadFromPrj(FileName, this, _editor.GraphicsDevice);
+            Level = PrjLoader.LoadFromPrj(FileName, this, _deviceManager.Device);
             GC.Collect();
         }
 

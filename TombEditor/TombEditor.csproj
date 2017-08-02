@@ -141,6 +141,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Debug.cs" />
+    <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="FormSplash.cs">
       <SubType>Form</SubType>
@@ -224,6 +225,7 @@
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="Gizmo.cs" />
+    <Compile Include="ObjectNames.cs" />
     <Compile Include="RowAnimatedTexture.cs" />
     <Compile Include="RowSoundSample.cs" />
     <Compile Include="TestLevel3.cs" />
@@ -242,9 +244,7 @@
     <Compile Include="Controls\Panel2DGrid.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelRendering3D.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\PanelRendering3D.cs" />
     <Compile Include="Controls\PanelRendering3D.Designer.cs">
       <DependentUpon>PanelRendering3D.cs</DependentUpon>
     </Compile>

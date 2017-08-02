@@ -210,7 +210,7 @@ namespace TombEditor.Compilers
 
             _soundSourcesTable = new Dictionary<int, int>();
 
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sound).Select(obj => obj.Key))
+            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.SoundSource).Select(obj => obj.Key))
             {
                 _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
             }
@@ -218,7 +218,7 @@ namespace TombEditor.Compilers
             var tempSoundSources = new List<tr_sound_source>();
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var instance in _soundSourcesTable.Keys.Select(src => (SoundInstance) _editor.Level.Objects[src]))
+            foreach (var instance in _soundSourcesTable.Keys.Select(src => (SoundSourceInstance) _editor.Level.Objects[src]))
             {
                 var source = new tr_sound_source
                 {

@@ -59,5 +59,16 @@ namespace TombEditor.Geometry
 
             return instance;
         }
+
+
+        public override string ToString()
+        {
+            return "FlyBy " + (Fixed ? "Fixed" : "") +
+                ", ID = " + Id +
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
+        }
     }
 }

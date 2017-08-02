@@ -21,7 +21,6 @@ namespace TombEditor.Controls
 
         private Editor _editor;
         private bool _firstSelection;
-        private bool _drag;
         private static readonly Pen _gridPen = Pens.Black;
         private static readonly Brush _portalBrush = new SolidBrush(Color.Black);
         private static readonly Brush _floorBrush = new SolidBrush(Editor.ColorFloor);
@@ -100,7 +99,7 @@ namespace TombEditor.Controls
             // Move camera to selected sector
             if (_editor.RelocateCameraActive)
             {
-                _editor.MoveCameraToSector(roomPoint.X, roomPoint.Y);
+                _editor.MoveCameraToSector(new SharpDX.DrawingPoint(roomPoint.X, roomPoint.Y));
                 return;
             }
 
@@ -119,21 +118,13 @@ namespace TombEditor.Controls
                         if (SelectedTrigger != -1)
                         {
                             foundSomething = true;
-
-                            PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Trigger;
-                            result.Element = SelectedTrigger;
-                            _editor.PickingResult = result;
+                            _editor.SelectedObject = new ObjectPtr { Type = ObjectInstanceType.Trigger, Index = SelectedTrigger };
                         }
                     }
                     else
                     {
                         foundSomething = true;
-
-                        PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Portal;
-                        result.Element = SelectedPortal;
-                        _editor.PickingResult = result;
+                        _editor.SelectedObject = new ObjectPtr { Type = ObjectInstanceType.Portal, Index = SelectedPortal };
                     }
                 }
                 else if (SelectedPortal == -1)
@@ -145,21 +136,13 @@ namespace TombEditor.Controls
                         if (SelectedPortal != -1)
                         {
                             foundSomething = true;
-
-                            PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Portal;
-                            result.Element = SelectedPortal;
-                            _editor.PickingResult = result;
+                            _editor.SelectedObject = new ObjectPtr { Type = ObjectInstanceType.Portal, Index = SelectedPortal };
                         }
                     }
                     else
                     {
                         foundSomething = true;
-
-                        PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Trigger;
-                        result.Element = SelectedTrigger;
-                        _editor.PickingResult = result;
+                        _editor.SelectedObject = new ObjectPtr { Type = ObjectInstanceType.Trigger, Index = SelectedTrigger };
                     }
                 }
 
@@ -176,7 +159,6 @@ namespace TombEditor.Controls
             }
             else if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1))
             {
-                _drag = true;
                 _firstSelection = false;
 
                 // If any of the X or Z values is equal to - 1 then it is a first selection
@@ -185,7 +167,7 @@ namespace TombEditor.Controls
                     _editor.BlockSelectionStart = roomPoint;
                     _editor.BlockSelectionEnd = roomPoint;
                     _firstSelection = true;
-                    _editor.BlockEditingType = 0;
+                    _editor.BlockSelectionArrow = EditorArrowType.EntireFace;
                 }
                 else if (_editor.BlockSelection.Contains(roomPoint))
                 {
@@ -197,16 +179,9 @@ namespace TombEditor.Controls
                     _editor.BlockSelectionStart = roomPoint;
                     _editor.BlockSelectionEnd = roomPoint;
                     _firstSelection = true;
-                    _editor.BlockEditingType = 0;
+                    _editor.BlockSelectionArrow = EditorArrowType.EntireFace;
                 }
-
-                PickingResult result = new PickingResult();
-                result.ElementType = PickingElementType.Block;
-                result.SubElementType = 0;
-                result.Element = (roomPoint.X << 5) + (roomPoint.Y & 31);
-                result.SubElementType = 25;
-                _editor.PickingResult = result;
-
+                
                 SelectedTrigger = -1;
                 SelectedPortal = -1;
 
@@ -224,22 +199,14 @@ namespace TombEditor.Controls
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
             
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _drag)
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1))
             {
                 Point roomPoint = fromVisualCoord(e.Location);
-
-                //_editor.BlockSelectionStart = new Point(_editor.StartPickingResult.Element >> 5, _editor.StartPickingResult.Element & 31);
+                
                 _editor.BlockSelectionEnd = roomPoint;
-                _editor.BlockEditingType = 0;
+                _editor.BlockSelectionArrow = EditorArrowType.EntireFace;
                 _firstSelection = true;
-
-                PickingResult result = new PickingResult();
-                result.ElementType = PickingElementType.Block;
-                result.SubElementType = 0;
-                result.Element = (roomPoint.X << 5) + (roomPoint.Y & 31);
-                result.SubElementType = 25;
-                _editor.PickingResult = result;
-
+                
                 // Update state
                 _editor.DrawPanel3D();
                 _editor.UpdateStatusStrip();
@@ -254,10 +221,10 @@ namespace TombEditor.Controls
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
             
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _drag && _firstSelection)
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _firstSelection)
             {
                 _editor.LoadTriggersInUI();
-                _editor.BlockEditingType = 0;
+                _editor.BlockSelectionArrow = EditorArrowType.EntireFace;
             }
             if ((e.Button == MouseButtons.Left) && (SelectedPortal != -1))
             {
@@ -267,6 +234,7 @@ namespace TombEditor.Controls
                 if (p.Area.Contains(roomPoint))
                 {
                     _editor.SelectRoom(p.AdjoiningRoom);
+                    _editor.BlockSelectionReset();
                     _editor.ResetSelection();
                     _editor.ResetCamera();
                 }
@@ -284,8 +252,6 @@ namespace TombEditor.Controls
                 _editor.UpdateStatusStrip();
                 Invalidate();
             }
-
-            _drag = false;
         }
         
         protected override void OnPaint(PaintEventArgs e)

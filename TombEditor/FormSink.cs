@@ -14,10 +14,11 @@ namespace TombEditor
     public partial class FormSink : DarkForm
     {
         public bool IsNew { get; set; }
-        private Editor _editor;
+        private SinkInstance _sink;
 
-        public FormSink()
+        public FormSink(SinkInstance sink)
         {
+            _sink = sink;
             InitializeComponent();
         }
 
@@ -29,18 +30,12 @@ namespace TombEditor
 
         private void FormSink_Load(object sender, EventArgs e)
         {
-            _editor = Editor.Instance;
-
-            SinkInstance sink = (SinkInstance)_editor.Level.Objects[_editor.PickingResult.Element];
-
-            comboStrength.SelectedIndex = sink.Strength;
+            comboStrength.SelectedIndex = _sink.Strength;
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            SinkInstance sink = (SinkInstance)_editor.Level.Objects[_editor.PickingResult.Element];
-            sink.Strength = (short)comboStrength.SelectedIndex;
-            _editor.Level.Objects[_editor.PickingResult.Element] = sink;
+            _sink.Strength = (short)comboStrength.SelectedIndex;
 
             DialogResult = DialogResult.OK;
             this.Close();

@@ -13,43 +13,28 @@ namespace TombEditor
 {
     public partial class FormTrigger : DarkForm
     {
-        public int TriggerID { get; set; }
-        public TriggerInstance Trigger { get; set; }
-
-        private Editor _editor = Editor.Instance;
+        private Level _level;
+        private TriggerInstance _trigger;
         private List<int> _items;
 
-        public FormTrigger()
+        public FormTrigger(Level level, TriggerInstance trigger)
         {
+            _level = level;
+            _trigger = trigger;
             InitializeComponent();
         }
 
         private void FormTrigger_Load(object sender, EventArgs e)
         {
-            if (TriggerID == -1)
-            {
-                comboType.SelectedIndex = 0;
-                comboTargetType.SelectedIndex = 0;
-                cbBit1.Checked = true;
-                cbBit2.Checked = true;
-                cbBit3.Checked = true;
-                cbBit4.Checked = true;
-                cbBit5.Checked = true;
-                cbOneShot.Checked = false;
-                tbTimer.Text = "0";
-            }
-            else
-            {
-                comboType.SelectedIndex = (int)Trigger.TriggerType;
-                comboTargetType.SelectedIndex = (int)Trigger.TargetType;
-                cbBit1.Checked = Trigger.Bits[0];
-                cbBit2.Checked = Trigger.Bits[1];
-                cbBit3.Checked = Trigger.Bits[2];
-                cbBit4.Checked = Trigger.Bits[3];
-                cbBit5.Checked = Trigger.Bits[4];
-                cbOneShot.Checked = Trigger.OneShot;
-                tbTimer.Text = Trigger.Timer.ToString();
-            }
+            comboType.SelectedIndex = (int)_trigger.TriggerType;
+            comboTargetType.SelectedIndex = (int)_trigger.TargetType;
+            cbBit1.Checked = _trigger.Bits[0];
+            cbBit2.Checked = _trigger.Bits[1];
+            cbBit3.Checked = _trigger.Bits[2];
+            cbBit4.Checked = _trigger.Bits[3];
+            cbBit5.Checked = _trigger.Bits[4];
+            cbOneShot.Checked = _trigger.OneShot;
+            tbTimer.Text = _trigger.Timer.ToString();
         }
 
         private void comboTargetType_SelectedIndexChanged(object sender, EventArgs e)
@@ -65,18 +50,17 @@ namespace TombEditor
                     comboParameter.Items.Clear();
                     _items = new List<int>();
 
-                    for (int i = 0; i < _editor.Level.Objects.Count; i++)
+                    for (int i = 0; i < _level.Objects.Count; i++)
                     {
-                        ObjectInstance instance = _editor.Level.Objects.ElementAt(i).Value;
+                        ObjectInstance instance = _level.Objects.ElementAt(i).Value;
 
                         if (instance.Type == ObjectInstanceType.Moveable)
                         {
                             MoveableInstance mov = (MoveableInstance)instance;
 
                             _items.Add(instance.Id);
-                            comboParameter.Items.Add(_editor.MoveableNames[(int)mov.Model.ObjectID] + " ID = " + instance.Id + ", Room = " + instance.Room +
-                                                     ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.Id)
+                            comboParameter.Items.Add(mov.ToString());
+                            if (_trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -93,9 +77,9 @@ namespace TombEditor
                     comboParameter.Items.Clear();
                     _items = new List<int>();
 
-                    for (int i = 0; i < _editor.Level.Objects.Count; i++)
+                    for (int i = 0; i < _level.Objects.Count; i++)
                     {
-                        ObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.Camera)
                         {
@@ -104,7 +88,7 @@ namespace TombEditor
                             _items.Add(instance.Id);
                             comboParameter.Items.Add("Camera ID = " + instance.Id + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.Id)
+                            if (_trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -121,9 +105,9 @@ namespace TombEditor
                     comboParameter.Items.Clear();
                     _items = new List<int>();
 
-                    for (int i = 0; i < _editor.Level.Objects.Count; i++)
+                    for (int i = 0; i < _level.Objects.Count; i++)
                     {
-                        ObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.Sink)
                         {
@@ -132,7 +116,7 @@ namespace TombEditor
                             _items.Add(instance.Id);
                             comboParameter.Items.Add("Sink ID = " + instance.Id + ", Room = " + instance.Room +
                                                      ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.Id)
+                            if (_trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -145,30 +129,21 @@ namespace TombEditor
                 case TriggerTargetType.FlipEffect:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
                 case TriggerTargetType.FlipOn:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
                 case TriggerTargetType.FlipOff:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
@@ -179,9 +154,9 @@ namespace TombEditor
                     comboParameter.Items.Clear();
                     _items = new List<int>();
 
-                    for (int i = 0; i < _editor.Level.Objects.Count; i++)
+                    for (int i = 0; i < _level.Objects.Count; i++)
                     {
-                        ObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.Moveable)
                         {
@@ -191,7 +166,7 @@ namespace TombEditor
                                 _items.Add(instance.Id);
                                 comboParameter.Items.Add("Target ID = " + instance.Id + ", Room = " + instance.Room +
                                                          ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                                if (TriggerID != -1 && Trigger.Target == instance.Id)
+                                if (_trigger.Target == instance.Id)
                                     comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                             }
                         }
@@ -205,40 +180,28 @@ namespace TombEditor
                 case TriggerTargetType.FlipMap:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
                 case TriggerTargetType.FinishLevel:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
                 case TriggerTargetType.Secret:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
                 case TriggerTargetType.PlayAudio:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
 
@@ -249,9 +212,9 @@ namespace TombEditor
                     comboParameter.Items.Clear();
                     _items = new List<int>();
 
-                    for (int i = 0; i < _editor.Level.Objects.Count; i++)
+                    for (int i = 0; i < _level.Objects.Count; i++)
                     {
-                        ObjectInstance instance = _editor.Level.Objects[i];
+                        ObjectInstance instance = _level.Objects[i];
 
                         if (instance.Type == ObjectInstanceType.FlyByCamera)
                         {
@@ -259,7 +222,7 @@ namespace TombEditor
                             _items.Add(instance.Id);
                             comboParameter.Items.Add("Flyby ID = " + instance.Id + ", Room = " + instance.Room +
                                                          ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (TriggerID != -1 && Trigger.Target == instance.Id)
+                            if (_trigger.Target == instance.Id)
                                 comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
                         }
                     }
@@ -272,11 +235,7 @@ namespace TombEditor
                 case TriggerTargetType.Fmv:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-
-                    if (TriggerID == -1)
-                        tbParameter.Text = "0";
-                    else
-                        tbParameter.Text = Trigger.Target.ToString();
+                    tbParameter.Text = _trigger.Target.ToString();
 
                     break;
             }
@@ -284,22 +243,19 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (TriggerID == -1)
-                Trigger = new TriggerInstance(0, _editor.Level.Rooms[0]);
+            _trigger.TriggerType = (TriggerType)comboType.SelectedIndex;
+            _trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedIndex;
+            _trigger.Timer = Int16.Parse(tbTimer.Text);
+            _trigger.Bits[0] = cbBit1.Checked;
+            _trigger.Bits[1] = cbBit2.Checked;
+            _trigger.Bits[2] = cbBit3.Checked;
+            _trigger.Bits[3] = cbBit4.Checked;
+            _trigger.Bits[4] = cbBit5.Checked;
+            _trigger.OneShot = cbOneShot.Checked;
 
-            Trigger.TriggerType = (TriggerType)comboType.SelectedIndex;
-            Trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedIndex;
-            Trigger.Timer = Int16.Parse(tbTimer.Text);
-            Trigger.Bits[0] = cbBit1.Checked;
-            Trigger.Bits[1] = cbBit2.Checked;
-            Trigger.Bits[2] = cbBit3.Checked;
-            Trigger.Bits[3] = cbBit4.Checked;
-            Trigger.Bits[4] = cbBit5.Checked;
-            Trigger.OneShot = cbOneShot.Checked;
-
-            if (Trigger.TargetType == TriggerTargetType.Object || Trigger.TargetType == TriggerTargetType.Camera ||
-                Trigger.TargetType == TriggerTargetType.Target || Trigger.TargetType == TriggerTargetType.FlyByCamera ||
-                Trigger.TargetType == TriggerTargetType.Sink)
+            if (_trigger.TargetType == TriggerTargetType.Object || _trigger.TargetType == TriggerTargetType.Camera ||
+                _trigger.TargetType == TriggerTargetType.Target || _trigger.TargetType == TriggerTargetType.FlyByCamera ||
+                _trigger.TargetType == TriggerTargetType.Sink)
             {
                 if (comboParameter.SelectedIndex == -1)
                 {
@@ -308,11 +264,11 @@ namespace TombEditor
                     return;
                 }
 
-                Trigger.Target = _items[comboParameter.SelectedIndex];
+                _trigger.Target = _items[comboParameter.SelectedIndex];
             }
             else
             {
-                Trigger.Target = Int16.Parse(tbParameter.Text);
+                _trigger.Target = Int16.Parse(tbParameter.Text);
             }
 
             DialogResult = DialogResult.OK;
