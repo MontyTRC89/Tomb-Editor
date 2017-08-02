@@ -133,7 +133,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room
+    public class tr_room
     {
         public tr_room_info Info;
         public uint NumDataWords;
