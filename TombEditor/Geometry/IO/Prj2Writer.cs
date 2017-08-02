@@ -421,8 +421,6 @@ namespace TombEditor.Geometry.IO
                 return false;
             }
 
-            level.FileName = filename;
-
             return true;
         }
     }
