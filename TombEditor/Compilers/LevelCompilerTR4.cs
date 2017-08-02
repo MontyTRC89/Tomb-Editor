@@ -1379,10 +1379,7 @@ namespace TombEditor.Compilers
         private void GetAllReachableRooms()
         {
             foreach (var room in _level.Rooms.Where(r => r != null))
-            {
-                room.Visited = false;
                 room._compiled.ReachableRooms = new List<Room>();
-            }
 
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
@@ -1393,8 +1390,6 @@ namespace TombEditor.Compilers
 
         private void GetAllReachableRoomsUp(Room baseRoom, Room currentRoom)
         {
-            currentRoom.Visited = true;
-
             // Wall portals
             foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
             {
@@ -1421,8 +1416,6 @@ namespace TombEditor.Compilers
 
         private void GetAllReachableRoomsDown(Room baseRoom, Room currentRoom)
         {
-            currentRoom.Visited = true;
-
             // portali laterali
             foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
             {
