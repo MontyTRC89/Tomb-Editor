@@ -414,8 +414,8 @@ namespace TombEditor.Controls
                     // Search for a fit in the sequence for rooms it the current room is connected to on this sector
                     if ((block != null) && (block.FloorPortal != -1))
                     {
-                        Portal portal = level.Portals[block.FloorPortal];
-                        Room roomAbove = portal.AdjoiningRoom;
+                        var portal = level.Portals[block.FloorPortal];
+                        var roomAbove = portal.AdjoiningRoom;
                         foreach (var roomSequence in roomSequences)
                             if (roomSequence.Last().Room == roomAbove)
                             {
@@ -436,22 +436,22 @@ namespace TombEditor.Controls
                 var roomSequenceAbove = roomSequences[i];
                 foreach (var portal in roomSequenceAbove[0].Room.Portals)
                 {
-                    Room connectedRoom = portal.AdjoiningRoom;
+                    var connectedRoom = portal.AdjoiningRoom;
 
                     for (int j = 0; j < i; ++j)
                     {
                         var roomSequenceBelow = roomSequences[j];
-                        if (roomSequences[j].Last().Room == connectedRoom)
-                        {
-                            float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
-                            if (distanceBetweenSequences >= 0.0)
-                            {
-                                roomSequences[j].AddRange(roomSequences[i]);
-                                roomSequences.RemoveAt(i);
-                                --i;
-                                goto NextRoom;
-                            }
-                        }
+                        if (roomSequences[j].Last().Room != connectedRoom)
+                            continue;
+                        
+                        float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
+                        if (!(distanceBetweenSequences >= 0.0))
+                            continue;
+                        
+                        roomSequences[j].AddRange(roomSequences[i]);
+                        roomSequences.RemoveAt(i);
+                        --i;
+                        goto NextRoom;
                     }
                 }
                 NextRoom:

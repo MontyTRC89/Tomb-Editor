@@ -263,7 +263,7 @@ namespace TombEditor.Controls
             {
                 Point roomPoint = fromVisualCoord(e.Location);
                 
-                Portal p = _editor.Level.Portals[SelectedPortal];
+                var p = _editor.Level.Portals[SelectedPortal];
                 if (p.Area.Contains(roomPoint))
                 {
                     _editor.SelectRoom(p.AdjoiningRoom);
@@ -356,7 +356,7 @@ namespace TombEditor.Controls
                 // Draw selection
                 if (SelectedPortal != -1)
                 {
-                    Portal portal = _editor.Level.Portals[SelectedPortal];
+                    var portal = _editor.Level.Portals[SelectedPortal];
                     e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
                     DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
                 }
@@ -401,7 +401,7 @@ namespace TombEditor.Controls
             for (int i = 1; i <= _editor.Level.Portals.Count; i++)
             {
                 int index = (i + SelectedPortal) % _editor.Level.Portals.Count;
-                Portal portal = _editor.Level.Portals.ElementAt(index).Value;
+                var portal = _editor.Level.Portals.ElementAt(index).Value;
                 if ((_editor.SelectedRoom == portal.Room) && portal.Area.Contains(point))
                     return portal.Id;
             }

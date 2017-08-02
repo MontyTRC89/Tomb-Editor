@@ -101,7 +101,7 @@ namespace TombEditor
 
             for (int p = 0; p < portalsToTravel.Count; p++)
             {
-                Portal portal = _editor.Level.Portals[portalsToTravel[p]];
+                var portal = _editor.Level.Portals[portalsToTravel[p]];
 
                 if (roomsProcessed.Contains(portal.AdjoiningRoom))
                     continue;
@@ -1987,8 +1987,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    Portal currentRoomPortal = new Portal(0, room);
-                    Portal otherRoomPortal = new Portal(0, found);
+                    var currentRoomPortal = new Portal(0, room);
+                    var otherRoomPortal = new Portal(0, found);
                     Room otherRoom = found;
 
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
@@ -2109,8 +2109,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    Portal currentRoomPortal = new Portal(0, room);
-                    Portal otherRoomPortal = new Portal(0, found);
+                    var currentRoomPortal = new Portal(0, room);
+                    var otherRoomPortal = new Portal(0, found);
                     Room otherRoom = found;
 
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
@@ -2231,8 +2231,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    Portal currentRoomPortal = new Portal(0, room);
-                    Portal otherRoomPortal = new Portal(0, found);
+                    var currentRoomPortal = new Portal(0, room);
+                    var otherRoomPortal = new Portal(0, found);
                     Room otherRoom = found;
 
                     byte xPortalOther = (byte)(xPortalWorld - otherRoom.Position.X);
@@ -2353,8 +2353,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    Portal currentRoomPortal = new Portal(0, room);
-                    Portal otherRoomPortal = new Portal(0, found);
+                    var currentRoomPortal = new Portal(0, room);
+                    var otherRoomPortal = new Portal(0, found);
                     Room otherRoom = found;
 
                     int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
@@ -2590,8 +2590,8 @@ namespace TombEditor
                         }
                     }
 
-                    Portal currentRoomPortal = new Portal(0, room);
-                    Portal otherRoomPortal = new Portal(0, found);
+                    var currentRoomPortal = new Portal(0, room);
+                    var otherRoomPortal = new Portal(0, found);
 
                     currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
@@ -2890,8 +2890,8 @@ namespace TombEditor
 
         public static void DeletePortal(Room room, int id)
         {
-            Portal current = _editor.Level.Portals[id];
-            Portal other = _editor.Level.Portals[id].Other;
+            var current = _editor.Level.Portals[id];
+            var other = _editor.Level.Portals[id].Other;
 
             for (int x = current.X; x < current.X + current.NumXBlocks; x++)
             {

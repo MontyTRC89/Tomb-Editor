@@ -708,7 +708,7 @@ namespace TombEditor
         {
             if (_editor.PickingResult.ElementType == PickingElementType.Portal)
             {
-                Portal portal = _editor.Level.Portals[_editor.PickingResult.Element];
+                var portal = _editor.Level.Portals[_editor.PickingResult.Element];
 
                 for (int x = portal.X; x < portal.X + portal.NumXBlocks; x++)
                 {
