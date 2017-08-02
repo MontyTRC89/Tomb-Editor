@@ -758,7 +758,7 @@ namespace TombEditor.Geometry.IO
 
                         room.Position = new Vector3(-room.Position.X, lowest, room.Position.Z);
 
-                        sbyte deltaCeilingMain = (sbyte)(lowest + 20);
+                        sbyte deltaCeilingMain = (sbyte)lowest;
 
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
@@ -821,9 +821,7 @@ namespace TombEditor.Geometry.IO
                                         [3] = b._edFaces[2]
                                     }
                                 };
-
-                                room.Ceiling = 20;
-
+                                
                                 room.Blocks[x, z].WSFaces[0] = (sbyte)(b._wsFaces[0]);
                                 room.Blocks[x, z].WSFaces[1] = (sbyte)(b._wsFaces[3]);
                                 room.Blocks[x, z].WSFaces[2] = (sbyte)(b._wsFaces[2]);
@@ -1333,10 +1331,10 @@ namespace TombEditor.Geometry.IO
                                             int h3 = currentRoom.Blocks[x, z].QAFaces[2];
                                             int h4 = currentRoom.Blocks[x, z].QAFaces[3];
 
-                                            int lh1 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[0];
-                                            int lh2 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[1];
-                                            int lh3 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[2];
-                                            int lh4 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[3];
+                                            int lh1 = otherRoom.Blocks[lowX, lowZ].WSFaces[0];
+                                            int lh2 = otherRoom.Blocks[lowX, lowZ].WSFaces[1];
+                                            int lh3 = otherRoom.Blocks[lowX, lowZ].WSFaces[2];
+                                            int lh4 = otherRoom.Blocks[lowX, lowZ].WSFaces[3];
 
                                             bool defined;
 
@@ -1372,10 +1370,10 @@ namespace TombEditor.Geometry.IO
 
                                             currentPortal.Room.Blocks[x, z].CeilingPortal = currentPortal.Id;
 
-                                            int h1 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[0];
-                                            int h2 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[1];
-                                            int h3 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[2];
-                                            int h4 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[3];
+                                            int h1 = currentRoom.Blocks[x, z].WSFaces[0];
+                                            int h2 = currentRoom.Blocks[x, z].WSFaces[1];
+                                            int h3 = currentRoom.Blocks[x, z].WSFaces[2];
+                                            int h4 = currentRoom.Blocks[x, z].WSFaces[3];
 
                                             int lh1 = otherRoom.Blocks[lowX, lowZ].QAFaces[0];
                                             int lh2 = otherRoom.Blocks[lowX, lowZ].QAFaces[1];

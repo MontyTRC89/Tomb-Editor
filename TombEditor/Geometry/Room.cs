@@ -13,7 +13,6 @@ namespace TombEditor.Geometry
 
         public string Name { get; set; }
         public Vector3 Position { get; set; }
-        public short Ceiling { get; set; }
         public byte NumXSectors { get; set; }
         public byte NumZSectors { get; set; }
         public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);
@@ -69,7 +68,6 @@ namespace TombEditor.Geometry
             AmbientLight = System.Drawing.Color.FromArgb(255, 32, 32, 32);
             Moveables = new List<int>();
             StaticMeshes = new List<int>();
-            Ceiling = ceiling;
             Lights = new List<Light>();
             FlyByCameras = new List<int>();
             Cameras = new List<int>();
@@ -93,6 +91,11 @@ namespace TombEditor.Geometry
                     else
                     {
                         block = new Block(BlockType.Floor, BlockFlags.None);
+                    }
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        block.WSFaces[i] = ceiling;
+                        block.RFFaces[i] = ceiling;
                     }
 
                     Blocks[x, z] = block;
@@ -803,10 +806,10 @@ namespace TombEditor.Geometry
 
                         if (Blocks[x, z].SplitCeiling == false && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
                         {
-                            AddRectangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, (Ceiling + ws3) * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, (z) * 1024.0f),
+                            AddRectangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x) * 1024.0f, ws3 * 256.0f, (z) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
                                 face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                 e2, e1, e4, e3);
                         }
@@ -839,12 +842,12 @@ namespace TombEditor.Geometry
                                     split = 0;
                                     addTriangle1 = true;
                                     addTriangle2 = (Blocks[x, z].Type != BlockType.Wall);
-                                    y1 = Ceiling + ws0;
-                                    y2 = Ceiling + ws0;
-                                    y3 = Ceiling + ws0;
-                                    y4 = Ceiling + ws2;
-                                    y5 = Ceiling + ws1;
-                                    y6 = Ceiling + ws3;
+                                    y1 = ws0;
+                                    y2 = ws0;
+                                    y3 = ws0;
+                                    y4 = ws2;
+                                    y5 = ws1;
+                                    y6 = ws3;
                                 }
 
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NE)
@@ -852,12 +855,12 @@ namespace TombEditor.Geometry
                                     split = 1;
                                     addTriangle1 = true;
                                     addTriangle2 = (Blocks[x, z].Type != BlockType.Wall);
-                                    y1 = Ceiling + ws1;
-                                    y2 = Ceiling + ws1;
-                                    y3 = Ceiling + ws1;
-                                    y4 = Ceiling + ws3;
-                                    y5 = Ceiling + ws2;
-                                    y6 = Ceiling + ws0;
+                                    y1 = ws1;
+                                    y2 = ws1;
+                                    y3 = ws1;
+                                    y4 = ws3;
+                                    y5 = ws2;
+                                    y6 = ws0;
                                 }
 
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SE)
@@ -865,12 +868,12 @@ namespace TombEditor.Geometry
                                     split = 0;
                                     addTriangle1 = (Blocks[x, z].Type != BlockType.Wall);
                                     addTriangle2 = true;
-                                    y1 = Ceiling + ws0;
-                                    y2 = Ceiling + ws3;
-                                    y3 = Ceiling + ws1;
-                                    y4 = Ceiling + ws2;
-                                    y5 = Ceiling + ws2;
-                                    y6 = Ceiling + ws2;
+                                    y1 = ws0;
+                                    y2 = ws3;
+                                    y3 = ws1;
+                                    y4 = ws2;
+                                    y5 = ws2;
+                                    y6 = ws2;
                                 }
 
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SW)
@@ -878,12 +881,12 @@ namespace TombEditor.Geometry
                                     split = 1;
                                     addTriangle1 = (Blocks[x, z].Type != BlockType.Wall);
                                     addTriangle2 = true;
-                                    y1 = Ceiling + ws1;
-                                    y2 = Ceiling + ws0;
-                                    y3 = Ceiling + ws2;
-                                    y4 = Ceiling + ws3;
-                                    y5 = Ceiling + ws3;
-                                    y6 = Ceiling + ws3;
+                                    y1 = ws1;
+                                    y2 = ws0;
+                                    y3 = ws2;
+                                    y4 = ws3;
+                                    y5 = ws3;
+                                    y6 = ws3;
                                 }
                             }
                             else
@@ -892,23 +895,23 @@ namespace TombEditor.Geometry
                                 {
                                     addTriangle1 = true;
                                     addTriangle2 = true;
-                                    y1 = Ceiling + ws0;
-                                    y2 = Ceiling + ws3;
-                                    y3 = Ceiling + ws1;
-                                    y4 = Ceiling + ws2;
-                                    y5 = Ceiling + ws1;
-                                    y6 = Ceiling + ws3;
+                                    y1 = ws0;
+                                    y2 = ws3;
+                                    y3 = ws1;
+                                    y4 = ws2;
+                                    y5 = ws1;
+                                    y6 = ws3;
                                 }
                                 else
                                 {
                                     addTriangle1 = true;
                                     addTriangle2 = true;
-                                    y1 = Ceiling + ws1;
-                                    y2 = Ceiling + ws0;
-                                    y3 = Ceiling + ws2;
-                                    y4 = Ceiling + ws3;
-                                    y5 = Ceiling + ws2;
-                                    y6 = Ceiling + ws0;
+                                    y1 = ws1;
+                                    y2 = ws0;
+                                    y3 = ws2;
+                                    y4 = ws3;
+                                    y5 = ws2;
+                                    y6 = ws0;
                                 }
                             }
 
@@ -967,28 +970,28 @@ namespace TombEditor.Geometry
 
                         if (split == 1)
                         {
-                            AddTriangle(x, z, BlockFaces.Ceiling, new Vector3(x * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3(x * 1024.0f, (Ceiling + ws3) * 256.0f, z * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
+                            AddTriangle(x, z, BlockFaces.Ceiling, new Vector3(x * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3(x * 1024.0f, ws3 * 256.0f, z * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
                                 face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e4, e2, 1);
 
                             face = Blocks[x, z].Faces[(int)BlockFaces.CeilingTriangle2];
-                            AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, (Ceiling + ws3) * 256.0f, z * 1024.0f),
+                            AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x) * 1024.0f, ws3 * 256.0f, z * 1024.0f),
                                 face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e3, e2, e4, 1);
                         }
                         else
                         {
-                            AddTriangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, (Ceiling + ws1) * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, (z) * 1024.0f),
+                            AddTriangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
                                 face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e2, e1, e3);
 
                             face = Blocks[x, z].Faces[(int)BlockFaces.CeilingTriangle2];
-                            AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3(x * 1024.0f, (Ceiling + ws3) * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, (Ceiling + ws2) * 256.0f, z * 1024.0f),
-                                new Vector3((x) * 1024.0f, (Ceiling + ws0) * 256.0f, (z + 1) * 1024.0f),
+                            AddTriangle(x, z, BlockFaces.CeilingTriangle2, new Vector3(x * 1024.0f, ws3 * 256.0f, (z) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, z * 1024.0f),
+                                new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
                                 face.TriangleUV2[0], face.TriangleUV2[1], face.TriangleUV2[2], e4, e3, e1);
                         }
                     }
@@ -1118,15 +1121,15 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[x, 1].WSFaces[2] + Ceiling < Blocks[x, z].QAFaces[1])
+                        if (Blocks[x, 1].WSFaces[2] < Blocks[x, z].QAFaces[1])
                         {
-                            qA = Blocks[x, 1].WSFaces[2] + Ceiling;
+                            qA = Blocks[x, 1].WSFaces[2];
                             Blocks[x, z].QAFaces[1] = (short)qA;
                         }
 
-                        if (Blocks[x, 1].WSFaces[3] + Ceiling < Blocks[x, z].QAFaces[0])
+                        if (Blocks[x, 1].WSFaces[3] < Blocks[x, z].QAFaces[0])
                         {
-                            qB = Blocks[x, 1].WSFaces[3] + Ceiling;
+                            qB = Blocks[x, 1].WSFaces[3];
                             Blocks[x, z].QAFaces[0] = (short)qB;
                         }
                     }
@@ -1238,15 +1241,15 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[x, NumZSectors - 2].WSFaces[0] + Ceiling < Blocks[x, z].QAFaces[3])
+                        if (Blocks[x, NumZSectors - 2].WSFaces[0] < Blocks[x, z].QAFaces[3])
                         {
-                            qA = Blocks[x, NumZSectors - 2].WSFaces[0] + Ceiling;
+                            qA = Blocks[x, NumZSectors - 2].WSFaces[0];
                             Blocks[x, z].QAFaces[3] = (short)qA;
                         }
 
-                        if (Blocks[x, NumZSectors - 2].WSFaces[1] + Ceiling < Blocks[x, z].QAFaces[2])
+                        if (Blocks[x, NumZSectors - 2].WSFaces[1] < Blocks[x, z].QAFaces[2])
                         {
-                            qB = Blocks[x, NumZSectors - 2].WSFaces[1] + Ceiling;
+                            qB = Blocks[x, NumZSectors - 2].WSFaces[1];
                             Blocks[x, z].QAFaces[2] = (short)qB;
                         }
                     }
@@ -1359,15 +1362,15 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[1, z].WSFaces[3] + Ceiling < Blocks[x, z].QAFaces[2])
+                        if (Blocks[1, z].WSFaces[3] < Blocks[x, z].QAFaces[2])
                         {
-                            qA = Blocks[1, z].WSFaces[3] + Ceiling;
+                            qA = Blocks[1, z].WSFaces[3];
                             Blocks[x, z].QAFaces[2] = (short)qA;
                         }
 
-                        if (Blocks[1, z].WSFaces[0] + Ceiling < Blocks[x, z].QAFaces[1])
+                        if (Blocks[1, z].WSFaces[0] < Blocks[x, z].QAFaces[1])
                         {
-                            qB = Blocks[1, z].WSFaces[0] + Ceiling;
+                            qB = Blocks[1, z].WSFaces[0];
                             Blocks[x, z].QAFaces[1] = (short)qB;
                         }
                     }
@@ -1678,15 +1681,15 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
                     {
-                        if (Blocks[NumXSectors - 2, z].WSFaces[1] + Ceiling < Blocks[x, z].QAFaces[0])
+                        if (Blocks[NumXSectors - 2, z].WSFaces[1] < Blocks[x, z].QAFaces[0])
                         {
-                            qA = Blocks[NumXSectors - 2, z].WSFaces[1] + Ceiling;
+                            qA = Blocks[NumXSectors - 2, z].WSFaces[1];
                             Blocks[x, z].QAFaces[0] = (short)qA;
                         }
 
-                        if (Blocks[NumXSectors - 2, z].WSFaces[2] + Ceiling < Blocks[x, z].QAFaces[3])
+                        if (Blocks[NumXSectors - 2, z].WSFaces[2] < Blocks[x, z].QAFaces[3])
                         {
-                            qB = Blocks[NumXSectors - 2, z].WSFaces[2] + Ceiling;
+                            qB = Blocks[NumXSectors - 2, z].WSFaces[2];
                             Blocks[x, z].QAFaces[3] = (short)qB;
                         }
                     }
@@ -1832,21 +1835,21 @@ namespace TombEditor.Geometry
 
                     // WS
                     if (wA < yA && wB < yB)
-                        AddRectangle(x, z, wsFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                               new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                               new Vector3(xB * 1024.0f, (Ceiling + wB) * 256.0f, zB * 1024.0f),
-                                                               new Vector3(xA * 1024.0f, (Ceiling + wA) * 256.0f, zA * 1024.0f),
+                        AddRectangle(x, z, wsFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                               new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                               new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                                                               new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
                                                                face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                                e1, e2, e3, e4);
                     else if (wA < yA && wB == yB)
-                        AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                              new Vector3(xA * 1024.0f, (Ceiling + wA) * 256.0f, zA * 1024.0f),
+                        AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                              new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
                                                               face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
                     else if (wA == yA && wB < yB)
-                        AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, (Ceiling + wB) * 256.0f, zB * 1024.0f),
+                        AddTriangle(x, z, wsFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                              new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
                                                               face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
 
                     // RF
@@ -1858,21 +1861,21 @@ namespace TombEditor.Geometry
                         face = Blocks[x, z].Faces[(int)rfFace];
 
                         if (rA < yA && rB < yB)
-                            AddRectangle(x, z, rfFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                                   new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                                   new Vector3(xB * 1024.0f, (Ceiling + rB) * 256.0f, zB * 1024.0f),
-                                                                   new Vector3(xA * 1024.0f, (Ceiling + rA) * 256.0f, zA * 1024.0f),
+                            AddRectangle(x, z, rfFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                                   new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                                   new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
+                                                                   new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
                                                                    face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                                    e1, e2, e3, e4);
                         else if (rA < yA && rB == yB)
-                            AddTriangle(x, z, rfFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                                  new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                                  new Vector3(xA * 1024.0f, (Ceiling + rA) * 256.0f, zA * 1024.0f),
+                            AddTriangle(x, z, rfFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                                  new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
                                                                   face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
                         else if (rA == yA && rB < yB)
-                            AddTriangle(x, z, rfFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                                  new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
-                                                                  new Vector3(xB * 1024.0f, (Ceiling + rB) * 256.0f, zB * 1024.0f),
+                            AddTriangle(x, z, rfFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                                                  new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
                                                                   face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
                     }
                 }
@@ -1889,23 +1892,23 @@ namespace TombEditor.Geometry
             int yD = qA < fA ? fA : qA;
             int yC = qB < fB ? fB : qB;
             // middle
-            if (Ceiling + yA != yD && Ceiling + yB != yC)
-                AddRectangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                       new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+            if (yA != yD && yB != yC)
+                AddRectangle(x, z, middleFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                       new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                                        new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                                                        new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                                                        face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
                                                        e1, e2, e3, e4);
 
-            else if (Ceiling + yA != yD && Ceiling + yB == yC)
-                AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                      new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+            else if (yA != yD && yB == yC)
+                AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                      new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                                       new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                                                       face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
 
-            else if (Ceiling + yA == yD && Ceiling + yB != yC)
-                AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, (Ceiling + yA) * 256.0f, zA * 1024.0f),
-                                                   new Vector3(xB * 1024.0f, (Ceiling + yB) * 256.0f, zB * 1024.0f),
+            else if (yA == yD && yB != yC)
+                AddTriangle(x, z, middleFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                                   new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                                             face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
         }
@@ -2462,7 +2465,7 @@ namespace TombEditor.Geometry
             int currentZ = (z / 1024) - (z > zLight ? 1 : 0);
 
             int floorMin = GetLowestFloorCorner(currentX, currentZ);
-            int ceilingMax = Ceiling + GetHighestCeilingCorner(currentX, currentZ);
+            int ceilingMax = GetHighestCeilingCorner(currentX, currentZ);
 
             return floorMin <= y / 256 && ceilingMax >= y / 256;
         }
@@ -2536,7 +2539,7 @@ namespace TombEditor.Geometry
                         Block currentBlock = Blocks[currentXblock - 1, currentZblock];
 
                         if (((currentBlock.QAFaces[0] + currentBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            (Ceiling + (currentBlock.WSFaces[0] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
+                            ((currentBlock.WSFaces[0] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2554,10 +2557,10 @@ namespace TombEditor.Geometry
                         var nextBlock = Blocks[currentXblock, currentZblock];
 
                         if (((currentBlock.QAFaces[2] + currentBlock.QAFaces[1]) / 2 > currentYclick) ||
-                            (Ceiling + (currentBlock.WSFaces[2] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
+                            ((currentBlock.WSFaces[2] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall ||
                             ((nextBlock.QAFaces[0] + nextBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            (Ceiling + (nextBlock.WSFaces[0] + nextBlock.WSFaces[3]) / 2 < currentYclick) ||
+                            ((nextBlock.WSFaces[0] + nextBlock.WSFaces[3]) / 2 < currentYclick) ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2643,7 +2646,7 @@ namespace TombEditor.Geometry
                         var currentBlock = Blocks[currentXblock, currentZblock - 1];
 
                         if (((currentBlock.QAFaces[2] + currentBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            (Ceiling + (currentBlock.WSFaces[2] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
+                            ((currentBlock.WSFaces[2] + currentBlock.WSFaces[3]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2661,10 +2664,10 @@ namespace TombEditor.Geometry
                         var nextBlock = Blocks[currentXblock, currentZblock];
 
                         if (((currentBlock.QAFaces[0] + currentBlock.QAFaces[1]) / 2 > currentYclick) ||
-                            (Ceiling + (currentBlock.WSFaces[0] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
+                            ((currentBlock.WSFaces[0] + currentBlock.WSFaces[1]) / 2 < currentYclick) ||
                             currentBlock.Type == BlockType.Wall ||
                             ((nextBlock.QAFaces[2] + nextBlock.QAFaces[3]) / 2 > currentYclick) ||
-                            (Ceiling + (nextBlock.WSFaces[2] + nextBlock.WSFaces[3]) / 2 < currentYclick) ||
+                            ((nextBlock.WSFaces[2] + nextBlock.WSFaces[3]) / 2 < currentYclick) ||
                             nextBlock.Type == BlockType.Wall)
                         {
                             return false;
@@ -2973,7 +2976,7 @@ namespace TombEditor.Geometry
                 }
             }
 
-            return (Ceiling + max);
+            return max;
         }
 
         public int GetLowestCorner()
@@ -3023,7 +3026,7 @@ namespace TombEditor.Geometry
                 }
             }
 
-            return (Ceiling + max);
+            return max;
         }
 
         public int GetLowestCorner(int x1, int z1, int x2, int z2)
@@ -3179,7 +3182,7 @@ namespace TombEditor.Geometry
                     blockXnZp?.QAFaces[Block.FaceXpZn],
                     blockXpZn?.QAFaces[Block.FaceXnZp],
                     blockXpZp?.QAFaces[Block.FaceXnZn]),
-                CeilingY = Ceiling + CombineCeiling(
+                CeilingY = CombineCeiling(
                     blockXnZn?.WSFaces[Block.FaceXpZp],
                     blockXnZp?.WSFaces[Block.FaceXpZn],
                     blockXpZn?.WSFaces[Block.FaceXnZp],
