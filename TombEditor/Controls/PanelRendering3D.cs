@@ -267,10 +267,7 @@ namespace TombEditor.Controls
             // Point the camera to the room's center
             Vector3 target = new Vector3();
             if (room != null)
-                target = new Vector3(
-                    room.Position.X * 1024.0f + room.NumXSectors * 512.0f,
-                    room.Position.Y * 256.0f + room.Ceiling * 64.0f,
-                    room.Position.Z * 1024.0f + room.NumZSectors * 512.0f);
+                target = room.WorldPos + room.GetLocalCenter();
 
             // Initialize a new camera
             Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, - MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000);
