@@ -1636,9 +1636,8 @@ namespace TombEditor
             }
 
             // Check if room has portals
-            for (int i = 0; i < _editor.Level.Portals.Count; i++)
+            foreach (var p in _editor.Level.Portals.Values)
             {
-                var p = _editor.Level.Portals[i];
                 if (p.Room != _editor.SelectedRoom && p.AdjoiningRoom != _editor.SelectedRoom)
                     continue;
 
@@ -1979,10 +1978,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            for (int p = 0; p < _editor.Level.Portals.Count; p++)
+            foreach (var portal in _editor.Level.Portals.Values)
             {
-                var portal = _editor.Level.Portals.ElementAt(p).Value;
-
                 if (portal.Room != _editor.SelectedRoom)
                     continue;
 
@@ -2005,10 +2002,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            for (int p = 0; p < _editor.Level.Portals.Count; p++)
+            foreach (var portal in _editor.Level.Portals.Values)
             {
-                var portal = _editor.Level.Portals.ElementAt(p).Value;
-
                 if (portal.Room != _editor.SelectedRoom)
                     continue;
 
@@ -2556,9 +2551,8 @@ namespace TombEditor
             if (comboFlipMap.SelectedIndex == 0 && room.Flipped)
             {
                 // Check if room has portals
-                for (int i = 0; i < _editor.Level.Portals.Count; i++)
+                foreach (var p in _editor.Level.Portals.Values)
                 {
-                    var p = _editor.Level.Portals[i];
                     if ((p.Room != _editor.SelectedRoom && p.AdjoiningRoom != _editor.SelectedRoom) ||
                         p.MemberOfFlippedRoom)
                         continue;
@@ -2616,13 +2610,10 @@ namespace TombEditor
             }
 
             // Duplicate portals
-            int numPortals = _editor.Level.Portals.Count;
-            var duplicatedPortals = new Dictionary<int, int>();
+            var duplicatedPortals = new Dictionary<Portal, Portal>();
 
-            for (int i = 0; i < numPortals; i++)
+            foreach (var p in _editor.Level.Portals.Values)
             {
-                var p = _editor.Level.Portals.ElementAt(i).Value;
-
                 if (p.Room != _editor.SelectedRoom)
                     continue;
 
@@ -2632,10 +2623,10 @@ namespace TombEditor
                 newPortal.Flipped = true;
 
                 p.Flipped = true;
-                _editor.Level.Portals[p.Id] = p;
+                System.Diagnostics.Debug.Assert(ReferenceEquals(p, _editor.Level.Portals[p.Id]));
 
-                duplicatedPortals.Add(p.Id, portalId);
-                _editor.Level.Portals.Add(portalId, newPortal);
+                duplicatedPortals.Add(p, newPortal);
+                _editor.Level.Portals.Add(newPortal.Id, newPortal);
             }
 
             byte numXSectors = (byte)(room.NumXSectors);
@@ -2652,13 +2643,13 @@ namespace TombEditor
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
                     newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != null
-                        ? _editor.Level.Portals[duplicatedPortals[room.Blocks[x, z].FloorPortal.Id]]
+                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal]
                         : null);
                     newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != null
-                        ? _editor.Level.Portals[duplicatedPortals[room.Blocks[x, z].CeilingPortal.Id]]
+                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal]
                         : null);
                     newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != null
-                        ? _editor.Level.Portals[duplicatedPortals[room.Blocks[x, z].WallPortal.Id]]
+                        ? duplicatedPortals[room.Blocks[x, z].WallPortal]
                         : null);
                 }
             }

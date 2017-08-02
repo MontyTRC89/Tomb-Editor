@@ -74,7 +74,7 @@ namespace TombEditor
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
 
-            List<int> portalsToTravel = new List<int>();
+            var portalsToTravel = new List<Portal>();
 
             for (int x = 0; x < room.NumXSectors; x++)
             {
@@ -84,14 +84,14 @@ namespace TombEditor
                     var ceilingPortal = room.Blocks[x, z].CeilingPortal;
                     var floorPortal = room.Blocks[x, z].FloorPortal;
 
-                    if (wallPortal != null && !portalsToTravel.Contains(wallPortal.Id))
-                        portalsToTravel.Add(wallPortal.Id);
+                    if (wallPortal != null && !portalsToTravel.Contains(wallPortal))
+                        portalsToTravel.Add(wallPortal);
 
-                    if (ceilingPortal != null && !portalsToTravel.Contains(ceilingPortal.Id))
-                        portalsToTravel.Add(ceilingPortal.Id);
+                    if (ceilingPortal != null && !portalsToTravel.Contains(ceilingPortal))
+                        portalsToTravel.Add(ceilingPortal);
 
-                    if (floorPortal != null && !portalsToTravel.Contains(floorPortal.Id))
-                        portalsToTravel.Add(floorPortal.Id);
+                    if (floorPortal != null && !portalsToTravel.Contains(floorPortal))
+                        portalsToTravel.Add(floorPortal);
                 }
             }
 
@@ -99,10 +99,8 @@ namespace TombEditor
             // {
             List<Room> roomsProcessed = new List<Room>();
 
-            for (int p = 0; p < portalsToTravel.Count; p++)
+            foreach (var portal in portalsToTravel)
             {
-                var portal = _editor.Level.Portals[portalsToTravel[p]];
-
                 if (roomsProcessed.Contains(portal.AdjoiningRoom))
                     continue;
                 roomsProcessed.Add(portal.AdjoiningRoom);

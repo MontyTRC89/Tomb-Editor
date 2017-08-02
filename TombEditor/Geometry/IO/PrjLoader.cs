@@ -1260,15 +1260,15 @@ namespace TombEditor.Geometry.IO
 
                     // Fix portals
                     form.ReportProgress(76, "Building portals");
-                    foreach (var currentPortal in level.Portals.Values.ToList())
+                    foreach (var currentPortal in level.Portals.Values)
                     {
                         currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
                                                  currentPortal.X);
                     }
 
-                    foreach (var currentPortal in level.Portals.Values.ToList())
+                    foreach (var currentPortal in level.Portals.Values)
                     {
-                        foreach (var otherPortal in level.Portals.Values.ToList())
+                        foreach (var otherPortal in level.Portals.Values)
                         {
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
@@ -1471,8 +1471,8 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            level.Portals[currentPortal.Id] = currentPortal;
-                            level.Portals[otherPortal.Id] = otherPortal;
+                            System.Diagnostics.Debug.Assert(ReferenceEquals(level.Portals[currentPortal.Id], currentPortal));
+                            System.Diagnostics.Debug.Assert(ReferenceEquals(level.Portals[otherPortal.Id], otherPortal));
 
                             break;
                         }

@@ -78,7 +78,7 @@ namespace TombEditor.Geometry.IO
                     foreach (var p in level.Portals.Values)
                     {
                         writer.Write(p.Id);
-                        writer.Write((int) level.Portals.First(kv => ReferenceEquals(kv.Value, p.Other)).Key);
+                        writer.Write((int) p.Other.Id);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.Room));
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.AdjoiningRoom));
                         writer.Write((byte)p.Direction);
