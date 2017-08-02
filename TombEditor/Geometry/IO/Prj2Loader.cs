@@ -303,7 +303,6 @@ namespace TombEditor.Geometry.IO
                         var room = level.GetOrCreateRoom(i);
                         room.Name = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(100)).Trim();
                         room.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        room.Ceiling = reader.ReadInt16();
                         room.NumXSectors = reader.ReadByte();
                         room.NumZSectors = reader.ReadByte();
                         room.Blocks = new Block[room.NumXSectors, room.NumZSectors];

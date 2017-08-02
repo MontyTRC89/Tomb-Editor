@@ -230,7 +230,6 @@ namespace TombEditor.Geometry.IO
                         writer.Write(r.Position.X);
                         writer.Write(r.Position.Y);
                         writer.Write(r.Position.Z);
-                        writer.Write(r.Ceiling);
                         writer.Write(r.NumXSectors);
                         writer.Write(r.NumZSectors);
 

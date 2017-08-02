@@ -1766,7 +1766,7 @@ namespace TombEditor
             byte numZSectors = (byte)(area.Height + 3);
 
             var newRoom = new Room(_editor.Level);
-            newRoom.Init(0, 0, 0, numXSectors, numZSectors, room.Ceiling);
+            newRoom.Init(0, 0, 0, numXSectors, numZSectors, 20);
 
             for (int x = 1; x < numXSectors - 1; x++)
                 for (int z = 1; z < numZSectors - 1; z++)
@@ -1826,7 +1826,7 @@ namespace TombEditor
             byte numZSectors = (byte)(area.Height + 3);
 
             var newRoom = new Room(_editor.Level);
-            newRoom.Init(0, 0, 0, numXSectors, numZSectors, room.Ceiling);
+            newRoom.Init(0, 0, 0, numXSectors, numZSectors, 20);
 
             for (int x = 1; x < numXSectors - 1; x++)
                 for (int z = 1; z < numZSectors - 1; z++)
@@ -2182,7 +2182,7 @@ namespace TombEditor
             var pos = room.Position;
 
             var newRoom = new Room(_editor.Level);
-            newRoom.Init((int)pos.X, (int)pos.Y, (int)pos.Z, numXSectors, numZSectors, room.Ceiling);
+            newRoom.Init((int)pos.X, (int)pos.Y, (int)pos.Z, numXSectors, numZSectors, 20);
 
             for (int x = 0; x < numXSectors; x++)
             {
