@@ -520,30 +520,26 @@ namespace TombEditor.Geometry.IO
                                         Cutoff = lightCut,
                                         Len = lightLen,
                                         DirectionX = 360.0f - lightX,
-                                        DirectionY = lightY + 90.0f
+                                        DirectionY = lightY + 90.0f,
+                                        Active = lightOn == 0x01,
+                                        In = lightIn / 1024.0f,
+                                        Out = lightOut / 1024.0f,
+                                        Intensity = lightIntensity / 8192.0f,
+                                        Position = new Vector3(
+                                            objPosX * 1024.0f + 512.0f,
+                                            -objLongY, 
+                                            objPosZ * 1024.0f + 512.0f)
                                     };
                                     if (light.DirectionY >= 360)
                                         light.DirectionY = light.DirectionY - 360.0f;
-                                    light.Active = (lightOn == 0x01);
-                                    light.In = lightIn;
-                                    light.Out = lightOut;
-                                    light.Intensity = lightIntensity / 8192.0f;
-
-                                    light.X = (byte)(objPosX);
-                                    light.Z = (byte)(objPosZ);
-                                    light.Y = (short)objLongY;
 
                                     switch (objectType)
                                     {
                                         case 0x4000:
                                             light.Type = LightType.Light;
-                                            light.In /= 1024.0f;
-                                            light.Out /= 1024.0f;
                                             break;
                                         case 0x6000:
                                             light.Type = LightType.Shadow;
-                                            light.In /= 1024.0f;
-                                            light.Out /= 1024.0f;
                                             break;
                                         case 0x4200:
                                             light.Type = LightType.Sun;
@@ -555,12 +551,8 @@ namespace TombEditor.Geometry.IO
                                             break;
                                         case 0x4100:
                                             light.Type = LightType.Spot;
-                                            light.Len /= 1024.0f;
-                                            light.Cutoff /= 1024.0f;
                                             break;
                                         case 0x4020:
-                                            light.In /= 1024.0f;
-                                            light.Out /= 1024.0f;
                                             light.Type = LightType.FogBulb;
                                             break;
                                     }
@@ -882,15 +874,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
                         }
-
-                        // Fix lights
-                        foreach (var light in room.Lights)
-                        {
-                            light.Position = new Vector3((room.NumXSectors - 1) * 1024.0f - light.Position.X + 512.0f,
-                                light.Position.Y,
-                                light.Position.Z + 512.0f);
-                        }
-
+                        
                         System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateRoom(i), room));
 
                         progress += (i / (float)numRooms * 0.28f);
@@ -1497,13 +1481,10 @@ namespace TombEditor.Geometry.IO
                         for (int j = 0; j < room.Lights.Count; j++)
                         {
                             var light = room.Lights[j];
-
-                            light.X = (byte)(room.NumXSectors - light.X - 1);
-
-                            light.Position = new Vector3(light.X * 1024 + 512,
-                                -light.Y - room.Position.Y * 256,
-                                light.Z * 1024 + 512);
-                            room.Lights[j] = light;
+                            light.Position = new Vector3(
+                                room.NumXSectors * 1024.0f - light.Position.X,
+                                light.Position.Y - room.Position.Y * 256,
+                                light.Position.Z);
                         }
 
                         for (int z = 0; z < room.NumZSectors; z++)

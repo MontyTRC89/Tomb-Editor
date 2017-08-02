@@ -41,9 +41,6 @@ namespace TombEditor
                     case ObjectInstanceType.Light:
                         {
                             var light = _originalRoom.Lights[_objectPtr.Value.Id].Clone();
-                            light.X = x;
-                            light.Y = y;
-                            light.Z = z;
                             light.Position = position;
 
                             room.Lights.Add(light);
