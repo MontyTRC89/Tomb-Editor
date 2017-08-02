@@ -6,6 +6,7 @@ using NLog;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using Color = System.Drawing.Color;
+using TombLib.IO;
 
 namespace TombEditor.Geometry.IO
 {
@@ -19,7 +20,7 @@ namespace TombEditor.Geometry.IO
 
             try
             {
-                using (var reader = Level.CreatePrjReader(filename))
+                using (var reader = CreatePrjReader(filename))
                 {
                     if (reader == null)
                         return null;
@@ -582,5 +583,38 @@ namespace TombEditor.Geometry.IO
 
             return level;
         }
+        
+        private static BinaryReaderEx CreatePrjReader(string filename)
+        {
+            var reader = new BinaryReaderEx(File.OpenRead(filename));
+
+            // Check file version
+            var buffer = reader.ReadBytes(4);
+            if (buffer[0] == 0x50 && buffer[1] == 0x52 && buffer[2] == 0x4A && buffer[3] == 0x32)
+            {
+                // PRJ2 senza compressione
+                return reader;
+            }
+            else if (buffer[0] == 0x5A && buffer[1] == 0x52 && buffer[2] == 0x4A && buffer[3] == 0x32)
+            {
+                // PRJ2 compresso
+                int uncompressedSize = reader.ReadInt32();
+                int compressedSize = reader.ReadInt32();
+                var projectData = reader.ReadBytes(compressedSize);
+                projectData = Utils.DecompressData(projectData);
+
+                var ms = new MemoryStream(projectData);
+                ms.Seek(0, SeekOrigin.Begin);
+
+                reader = new BinaryReaderEx(ms);
+                reader.ReadInt32();
+                return reader;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
 }
