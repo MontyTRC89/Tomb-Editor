@@ -395,11 +395,7 @@ namespace TombEditor
         {
             if (_editor.Level.Rooms[comboRoom.SelectedIndex] == null)
             {
-                _editor.Level.Rooms[comboRoom.SelectedIndex] = new Room(_editor.Level)
-                {
-                    Name = "Room " + comboRoom.SelectedIndex
-                };
-                _editor.Level.Rooms[comboRoom.SelectedIndex].Init(0, 0, 0, 20, 20, 12);
+                _editor.Level.Rooms[comboRoom.SelectedIndex] = new Room(_editor.Level, 20, 20, "room " + comboRoom.SelectedIndex);
                 comboRoom.Items[comboRoom.SelectedIndex] =
                     comboRoom.SelectedIndex + ": Room " + comboRoom.SelectedIndex;
                 _editor.Level.Rooms[comboRoom.SelectedIndex].BuildGeometry();
@@ -1765,14 +1761,11 @@ namespace TombEditor
             byte numXSectors = (byte)(area.Width + 3);
             byte numZSectors = (byte)(area.Height + 3);
 
-            var newRoom = new Room(_editor.Level);
-            newRoom.Init(0, 0, 0, numXSectors, numZSectors, 20);
+            var newRoom = new Room(_editor.Level, numXSectors, numZSectors, "Room " + found);
 
             for (int x = 1; x < numXSectors - 1; x++)
                 for (int z = 1; z < numZSectors - 1; z++)
                     newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
-
-            newRoom.Name = "Room " + found;
 
             // Build the geometry of the new room
             newRoom.BuildGeometry();
@@ -1825,8 +1818,7 @@ namespace TombEditor
             byte numXSectors = (byte)(area.Width + 3);
             byte numZSectors = (byte)(area.Height + 3);
 
-            var newRoom = new Room(_editor.Level);
-            newRoom.Init(0, 0, 0, numXSectors, numZSectors, 20);
+            var newRoom = new Room(_editor.Level, numXSectors, numZSectors, "Room " + found);
 
             for (int x = 1; x < numXSectors - 1; x++)
                 for (int z = 1; z < numZSectors - 1; z++)
@@ -1834,8 +1826,6 @@ namespace TombEditor
                     newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
                     room.Blocks[x + area.X - 1, z + area.Y - 1].Type = BlockType.Wall;
                 }
-
-            newRoom.Name = "Room " + found;
 
             // Build the geometry of the new room
             room.BuildGeometry();
@@ -2181,8 +2171,8 @@ namespace TombEditor
 
             var pos = room.Position;
 
-            var newRoom = new Room(_editor.Level);
-            newRoom.Init((int)pos.X, (int)pos.Y, (int)pos.Z, numXSectors, numZSectors, 20);
+            string name = "(Flipped of " + _editor.SelectedRoom.ToString() + ") Room " + found;
+            var newRoom = new Room(_editor.Level, numXSectors, numZSectors, name);
 
             for (int x = 0; x < numXSectors; x++)
             {
@@ -2190,14 +2180,11 @@ namespace TombEditor
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
                     newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal]
-                        : -1);
+                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : -1);
                     newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal]
-                        : -1);
+                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : -1);
                     newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].WallPortal]
-                        : -1);
+                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : -1);
                 }
             }
 
@@ -2205,8 +2192,6 @@ namespace TombEditor
             {
                 newRoom.Lights.Add(room.Lights[i].Clone());
             }
-
-            newRoom.Name = "(Flipped of " + _editor.SelectedRoom.ToString() + ") Room " + found;
 
             _editor.SelectedRoom.Flipped = true;
             _editor.SelectedRoom.AlternateGroup = (short)(comboFlipMap.SelectedIndex - 1);
@@ -2459,15 +2444,8 @@ namespace TombEditor
             }
 
             var room = _editor.SelectedRoom;
-            var newRoom = new Room(_editor.Level)
-            {
-                Name = "Room " + found
-            };
-            newRoom.Init(
-                (int)room.Position.X,
-                (int)(room.Position.Y + room.GetHighestCorner()),
-                (int)room.Position.Z,
-                20, 20, 12);
+            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room " + found);
+            newRoom.Position = room.Position;
 
 
             // Build the geometry of the new room
@@ -2504,15 +2482,8 @@ namespace TombEditor
             }
 
             var room = _editor.SelectedRoom;
-            var newRoom = new Room(_editor.Level)
-            {
-                Name = "Room " + found
-            };
-            newRoom.Init((int)room.Position.X,
-                (int)(room.Position.Y - 12),
-                (int)room.Position.Z,
-                20, 20, 12);
-
+            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room " + found);
+            newRoom.Position = room.Position;
 
             // Build the geometry of the new room
             newRoom.BuildGeometry();

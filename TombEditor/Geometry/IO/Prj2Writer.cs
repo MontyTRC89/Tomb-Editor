@@ -222,11 +222,8 @@ namespace TombEditor.Geometry.IO
                         {
                             writer.Write(true);
                         }
-
-                        if (r.Name == null)
-                            r.Name = "Room " + i.ToString();
-
-                        writer.Write(System.Text.Encoding.UTF8.GetBytes(r.Name.PadRight(100, ' ')));
+                        
+                        writer.Write(r.Name);
                         writer.Write(r.Position.X);
                         writer.Write(r.Position.Y);
                         writer.Write(r.Position.Z);

@@ -9,14 +9,16 @@ namespace TombEditor.Geometry
 {
     public class Room
     {
+        public const short DefaultHeight = 12;
+
         public tr_room _compiled;
 
         public string Name { get; set; }
         public Vector3 Position { get; set; }
-        public byte NumXSectors { get; set; }
-        public byte NumZSectors { get; set; }
         public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);
-        public Block[,] Blocks { get; set; }
+        public Block[,] Blocks { get; private set; }
+        public EditorVertex[,,] VerticesGrid { get; private set; }
+        public byte[,] NumVerticesInGrid { get; private set; }
         public Buffer<EditorVertex> VertexBuffer { get; private set; }
         public List<int> Moveables { get; private set; } = new List<int>();
         public List<int> StaticMeshes { get; private set; } = new List<int>();
@@ -50,41 +52,29 @@ namespace TombEditor.Geometry
         private List<EditorVertex> Vertices { get; set; }
         private Level Level { get; }
 
-        public Room(Level level)
+
+
+        public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Level = level;
-
-            InitializeVerticesGrid();
+            Name = name;
+            Resize(numXSectors, numZSectors, ceiling);
         }
 
-        public void Init(int posx, int posy, int posz, byte numXSectors, byte numZSectors, short ceiling)
+        public void Resize(int numXSectors, int numZSectors, short ceiling = DefaultHeight)
         {
             System.Diagnostics.Debug.Assert(numXSectors > 0);
             System.Diagnostics.Debug.Assert(numZSectors > 0);
-            
-            Position = new Vector3(posx, posy, posz);
-            NumXSectors = numXSectors;
-            NumZSectors = numZSectors;
-            AmbientLight = System.Drawing.Color.FromArgb(255, 32, 32, 32);
-            Moveables = new List<int>();
-            StaticMeshes = new List<int>();
-            Lights = new List<Light>();
-            FlyByCameras = new List<int>();
-            Cameras = new List<int>();
-            Sinks = new List<int>();
-            SoundSources = new List<int>();
-            Portals = new List<int>();
-            AlternateRoom = null;
-            BaseRoom = null;
 
+            // Update data structures
+            VerticesGrid = new EditorVertex[numXSectors, numZSectors, 16];
+            NumVerticesInGrid = new byte[numXSectors, numZSectors];
             Blocks = new Block[numXSectors, numZSectors];
-
-            for (int x = 0; x < NumXSectors; x++)
-            {
-                for (int z = 0; z < NumZSectors; z++)
+            for (int x = 0; x < numXSectors; x++)
+                for (int z = 0; z < numZSectors; z++)
                 {
                     Block block;
-                    if (x == 0 || z == 0 || x == NumXSectors - 1 || z == NumZSectors - 1)
+                    if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
                     {
                         block = new Block(BlockType.BorderWall, BlockFlags.None);
                     }
@@ -100,18 +90,12 @@ namespace TombEditor.Geometry
 
                     Blocks[x, z] = block;
                 }
-            }
-
-            InitializeVerticesGrid();
-
+            
+            // Update state
             BuildGeometry();
             CalculateLightingForThisRoom();
             UpdateBuffers();
         }
-
-        public EditorVertex[,,] VerticesGrid { get; private set; }
-
-        public byte[,] NumVerticesInGrid { get; private set; }
 
         public Vector2 SectorPos
         {
@@ -122,12 +106,6 @@ namespace TombEditor.Geometry
         public Block GetBlock(DrawingPoint pos)
         {
             return Blocks[pos.X, pos.Y];
-        }
-
-        public void InitializeVerticesGrid()
-        {
-            VerticesGrid = new EditorVertex[NumXSectors, NumZSectors, 16];
-            NumVerticesInGrid = new byte[NumXSectors, NumZSectors];
         }
 
         public void CalculateLightingForThisRoom()
@@ -291,7 +269,6 @@ namespace TombEditor.Geometry
         public void BuildGeometry(int xMin, int xMax, int zMin, int zMax)
         {
             Vertices = new List<EditorVertex>();
-            OptimizedVertices = new List<EditorVertex>();
 
             var e1 = new Vector2(0.0f, 0.0f);
             var e2 = new Vector2(1.0f, 0.0f);
@@ -3223,6 +3200,17 @@ namespace TombEditor.Geometry
         {
             return GetHeightAtPoint(x, z, Min, Max);
         }
+
+        public byte NumXSectors
+        {
+            get { return (byte)(Blocks.GetLength(0)); }
+        }
+
+        public byte NumZSectors
+        {
+            get { return (byte)(Blocks.GetLength(1)); }
+        }
+
 
         public override string ToString()
         {
