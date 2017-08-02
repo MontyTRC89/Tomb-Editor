@@ -468,14 +468,14 @@ namespace TombEditor.Compilers
         private void ConvertSectors(Room room, ref tr_room newRoom)
         {
             newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
-            newRoom.AuxSectors = new tr_sector_aux[room.NumXSectors, room.NumZSectors];
+            newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
 
             for (var z = 0; z < room.NumZSectors; z++)
             {
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     var sector = new tr_room_sector();
-                    var aux = new tr_sector_aux();
+                    var aux = new TrSectorAux();
 
                     sector.BoxIndex = 0x7ff6;
                     sector.FloorDataIndex = 0;
@@ -551,32 +551,27 @@ namespace TombEditor.Compilers
                          !room.Blocks[x, z].IsFloorSolid))
                     {
                         aux.Portal = true;
-                        aux.FloorPortal = room.Blocks[x, z].FloorPortal.Id;
+                        aux.FloorPortal = room.Blocks[x, z].FloorPortal;
                     }
                     else
                     {
-                        aux.FloorPortal = -1;
+                        aux.FloorPortal = null;
                     }
 
                     aux.IsFloorSolid = room.Blocks[x, z].IsFloorSolid;
 
-                    aux.MeanFloorHeight = (sbyte) (-room.Position.Y - room.GetMeanFloorHeight(x, z));
-
                     if ((room.Blocks[x, z].CeilingPortal != null &&
                          room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1))
                     {
-                        aux.CeilingPortal = room.Blocks[x, z].CeilingPortal.Id;
                     }
                     else
                     {
-                        aux.CeilingPortal = -1;
                     }
 
                     if (room.Blocks[x, z].WallPortal != null && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
-                        aux.WallPortal =
-                            _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].WallPortal.AdjoiningRoom);
+                        aux.WallPortal = room.Blocks[x, z].WallPortal.AdjoiningRoom;
                     else
-                        aux.WallPortal = -1;
+                        aux.WallPortal = null;
 
                     aux.LowestFloor = (sbyte) (-room.Position.Y - room.GetLowestFloorCorner(x, z));
                     var q0 = room.Blocks[x, z].QAFaces[0];

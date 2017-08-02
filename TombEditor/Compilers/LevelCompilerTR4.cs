@@ -1463,7 +1463,7 @@ namespace TombEditor.Compilers
             {
                 var aux2 = room._compiled.AuxSectors[x2, zc];
 
-                if (aux2.WallPortal != -1)
+                if (aux2.WallPortal != null)
                 {
                     xMin = x2;
                     break;
@@ -1481,7 +1481,7 @@ namespace TombEditor.Compilers
             {
                 var aux2 = room._compiled.AuxSectors[x2, zc];
 
-                if (aux2.WallPortal != -1)
+                if (aux2.WallPortal != null)
                 {
                     xMax = x2;
                     break;
@@ -1502,7 +1502,7 @@ namespace TombEditor.Compilers
                 {
                     var aux2 = room._compiled.AuxSectors[x2, z2];
 
-                    if (aux2.WallPortal != -1)
+                    if (aux2.WallPortal != null)
                     {
                         tmpZ = z2;
                         break;
@@ -1529,7 +1529,7 @@ namespace TombEditor.Compilers
                 {
                     var aux2 = room._compiled.AuxSectors[x2, z2];
 
-                    if (aux2.WallPortal != -1)
+                    if (aux2.WallPortal != null)
                     {
                         tmpZ = z2;
                         break;

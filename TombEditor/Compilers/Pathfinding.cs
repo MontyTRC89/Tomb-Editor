@@ -22,7 +22,7 @@ namespace TombEditor.Compilers
                 {
                     for (int z = 0; z < fixRoom.NumZSectors; z++)
                     {
-                        if (fixRoom._compiled.AuxSectors[x, z].FloorPortal != -1)
+                        if (fixRoom._compiled.AuxSectors[x, z].FloorPortal != null)
                         {
                             fixRoom._compiled.AuxSectors[x, z].Monkey = FindMonkeyFloor(fixRoom, x, z);
                         }
@@ -161,14 +161,14 @@ namespace TombEditor.Compilers
                             continue;
                         }
 
-                        if (aux.FloorPortal == -1) continue;
+                        if (aux.FloorPortal == null) continue;
 
-                        var xMin = room._compiled.Info.X / 1024 + _level.Portals[aux.FloorPortal].X;
-                        var xMax = room._compiled.Info.X / 1024 + _level.Portals[aux.FloorPortal].X +
-                                   _level.Portals[aux.FloorPortal].NumXBlocks;
-                        var zMin = room._compiled.Info.Z / 1024 + _level.Portals[aux.FloorPortal].Z;
-                        var zMax = room._compiled.Info.Z / 1024 + _level.Portals[aux.FloorPortal].Z +
-                                   _level.Portals[aux.FloorPortal].NumZBlocks;
+                        var xMin = room._compiled.Info.X / 1024 + aux.FloorPortal.X;
+                        var xMax = room._compiled.Info.X / 1024 + aux.FloorPortal.X +
+                                   aux.FloorPortal.NumXBlocks;
+                        var zMin = room._compiled.Info.Z / 1024 + aux.FloorPortal.Z;
+                        var zMax = room._compiled.Info.Z / 1024 + aux.FloorPortal.Z +
+                                   aux.FloorPortal.NumZBlocks;
 
                         // Find the lowest room and floor
                         Room room2;
