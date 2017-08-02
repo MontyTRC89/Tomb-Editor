@@ -361,7 +361,7 @@ namespace TombEditor.Geometry.IO
                                     CeilingOpacity = (PortalOpacity)reader.ReadByte(),
                                     WallOpacity = (PortalOpacity)reader.ReadByte(),
                                     FloorPortal = level.Portals[reader.ReadInt32()],
-                                    CeilingPortal = reader.ReadInt32(),
+                                    CeilingPortal = level.Portals[reader.ReadInt32()],
                                     WallPortal = reader.ReadInt32(),
                                     IsFloorSolid = reader.ReadBoolean(),
                                     IsCeilingSolid = reader.ReadBoolean(),

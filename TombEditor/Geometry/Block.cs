@@ -44,7 +44,7 @@ namespace TombEditor.Geometry
         public PortalOpacity WallOpacity { get; set; }
         public Portal FloorPortal { get; set; } = null;
         public int WallPortal { get; set; } = -1;
-        public int CeilingPortal { get; set; } = -1;
+        public Portal CeilingPortal { get; set; } = null;
         public short FloorSlopeX { get; set; }
         public short FloorSlopeZ { get; set; }
         public short CeilingSlopeX { get; set; }

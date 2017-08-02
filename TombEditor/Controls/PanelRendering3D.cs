@@ -3601,7 +3601,7 @@ namespace TombEditor.Controls
 
                 if ((index == 27 || index == 28) && !noCollision)
                 {
-                    if (room.Blocks[x, z].CeilingPortal != -1)
+                    if (room.Blocks[x, z].CeilingPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 

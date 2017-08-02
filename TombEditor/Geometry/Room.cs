@@ -791,8 +791,8 @@ namespace TombEditor.Geometry
                             CalculateCeilingSlope(x, z, ws0, ws1, ws2, ws3);
                         }
 
-                        if ((Blocks[x, z].Type != BlockType.Floor || Blocks[x, z].CeilingPortal != -1) &&
-                            (Blocks[x, z].CeilingPortal < 0 || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
+                        if ((Blocks[x, z].Type != BlockType.Floor || Blocks[x, z].CeilingPortal != null) &&
+                            (Blocks[x, z].CeilingPortal == null || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
                             !Blocks[x, z].IsCeilingSolid && Blocks[x, z].Type != BlockType.Wall)
                             continue;
 
@@ -949,8 +949,8 @@ namespace TombEditor.Geometry
                     }
                     else
                     {
-                        if ((Blocks[x, z].Type != BlockType.Floor || Blocks[x, z].CeilingPortal != -1) &&
-                            (Blocks[x, z].CeilingPortal == -1 || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
+                        if ((Blocks[x, z].Type != BlockType.Floor || Blocks[x, z].CeilingPortal != null) &&
+                            (Blocks[x, z].CeilingPortal == null || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
                             !Blocks[x, z].IsCeilingSolid)
                             continue;
 
@@ -2018,8 +2018,8 @@ namespace TombEditor.Geometry
                 return Level.Portals[Blocks[x, z].WallPortal];
             if (Blocks[x, z].FloorPortal != null && type == PortalDirection.Floor)
                 return Blocks[x, z].FloorPortal;
-            if (Blocks[x, z].CeilingPortal != -1 && type == PortalDirection.Ceiling)
-                return Level.Portals[Blocks[x, z].CeilingPortal];
+            if (Blocks[x, z].CeilingPortal != null && type == PortalDirection.Ceiling)
+                return Blocks[x, z].CeilingPortal;
 
             return null;
         }

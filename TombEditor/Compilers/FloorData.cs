@@ -27,10 +27,10 @@ namespace TombEditor.Compilers
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        if (room.Blocks[x, z].CeilingPortal != -1 &&
+                        if (room.Blocks[x, z].CeilingPortal != null &&
                             room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1)
                         {
-                            portals.Add(_level.Portals[room.Blocks[x, z].CeilingPortal]);
+                            portals.Add(room.Blocks[x, z].CeilingPortal);
                         }
                     }
                 }
@@ -127,13 +127,13 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is a ceiling portal
-                        if (block.CeilingPortal >= 0)
+                        if (block.CeilingPortal != null)
                         {
                             // I must setup portal only if current sector is not solid and opacity if different from 1
                             if ((!block.IsCeilingSolid && block.CeilingOpacity != PortalOpacity.Opacity1) ||
                                 (block.IsCeilingSolid && block.NoCollisionCeiling))
                             {
-                                var portal = _editor.Level.Portals[block.CeilingPortal];
+                                var portal = block.CeilingPortal;
                                 sector.RoomAbove = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
                             }
                             else
@@ -686,7 +686,7 @@ namespace TombEditor.Compilers
                                 {
                                     lastFloorDataFunction = (ushort) tempCodes.Count;
 
-                                    if (block.CeilingPortal >= 0 && block.NoCollisionCeiling)
+                                    if (block.CeilingPortal != null && block.NoCollisionCeiling)
                                     {
                                         function = block.CeilingDiagonalSplit == DiagonalSplit.NE ? 0x10 : 0x0f;
                                     }
@@ -727,7 +727,7 @@ namespace TombEditor.Compilers
                                 {
                                     lastFloorDataFunction = (ushort) tempCodes.Count;
 
-                                    if (block.CeilingPortal >= 0 && block.NoCollisionCeiling)
+                                    if (block.CeilingPortal != null && block.NoCollisionCeiling)
                                     {
                                         function = block.CeilingDiagonalSplit == DiagonalSplit.NW ? 0x11 : 0x12;
                                     }
@@ -809,7 +809,7 @@ namespace TombEditor.Compilers
 
                                     if (split == 0)
                                     {
-                                        if (block.CeilingPortal >= 0 && block.NoCollisionCeiling)
+                                        if (block.CeilingPortal != null && block.NoCollisionCeiling)
                                         {
                                             if (w0 == w1 && w1 == w2 && w2 == w0)
                                             {
@@ -914,7 +914,7 @@ namespace TombEditor.Compilers
                                     }
                                     else
                                     {
-                                        if (block.CeilingPortal >= 0 && block.NoCollisionCeiling)
+                                        if (block.CeilingPortal != null && block.NoCollisionCeiling)
                                         {
                                             if (w3 == w0 && w0 == w1 && w1 == w3)
                                             {

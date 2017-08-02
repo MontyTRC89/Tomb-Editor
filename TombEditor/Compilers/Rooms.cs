@@ -244,9 +244,9 @@ namespace TombEditor.Compilers
                             !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal.Id))
                             tempIdPortals.Add(room.Blocks[x, z].FloorPortal.Id);
 
-                        if (room.Blocks[x, z].CeilingPortal >= 0 &&
-                            !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal))
-                            tempIdPortals.Add(room.Blocks[x, z].CeilingPortal);
+                        if (room.Blocks[x, z].CeilingPortal != null &&
+                            !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal.Id))
+                            tempIdPortals.Add(room.Blocks[x, z].CeilingPortal.Id);
                     }
                 }
 
@@ -486,10 +486,9 @@ namespace TombEditor.Compilers
                     else
                         sector.RoomBelow = 0xff;
 
-                    if (room.Blocks[x, z].CeilingPortal >= 0)
+                    if (room.Blocks[x, z].CeilingPortal != null)
                         sector.RoomAbove =
-                            (byte) _level.Rooms.ReferenceIndexOf(_editor.Level.Portals[room.Blocks[x, z].CeilingPortal]
-                                .AdjoiningRoom);
+                            (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].CeilingPortal.AdjoiningRoom);
                     else
                         sector.RoomAbove = 0xff;
 
@@ -563,10 +562,10 @@ namespace TombEditor.Compilers
 
                     aux.MeanFloorHeight = (sbyte) (-room.Position.Y - room.GetMeanFloorHeight(x, z));
 
-                    if ((room.Blocks[x, z].CeilingPortal != -1 &&
+                    if ((room.Blocks[x, z].CeilingPortal != null &&
                          room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1))
                     {
-                        aux.CeilingPortal = room.Blocks[x, z].CeilingPortal;
+                        aux.CeilingPortal = room.Blocks[x, z].CeilingPortal.Id;
                     }
                     else
                     {

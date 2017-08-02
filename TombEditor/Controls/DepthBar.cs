@@ -329,9 +329,9 @@ namespace TombEditor.Controls
                                     belowPen = _portalPen;
                             }
                             Pen abovePen = _roomBoundsPen;
-                            if ((room.Block != null) && (room.Block.CeilingPortal != -1))
+                            if ((room.Block != null) && (room.Block.CeilingPortal != null))
                             {
-                                Room portalRoom = level.Portals[room.Block.CeilingPortal].AdjoiningRoom;
+                                Room portalRoom = room.Block.CeilingPortal.AdjoiningRoom;
                                 if (((i + 1) < roomSequence.Count) && (roomSequence[i + 1].Room == portalRoom))
                                     abovePen = _portalPen;
                             }
