@@ -12,8 +12,13 @@
         public bool Fixed { get; set; }
 
         public CameraInstance(int id, Room room)
-            : base(ObjectInstanceType.Camera, id, room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.Camera; }
+        }
 
         public override ObjectInstance Clone()
         {
@@ -34,7 +39,6 @@
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Type = Type,
                 Sequence = Sequence,
                 Timer = Timer,
                 Roll = Roll,

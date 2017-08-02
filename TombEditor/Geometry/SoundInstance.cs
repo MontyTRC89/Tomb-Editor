@@ -2,13 +2,17 @@
 {
     public class SoundSourceInstance : ObjectInstance
     {
-        public short SoundId { get; set; }
-
-        public short Flags { get; set; }
+        public short SoundId { get; set; } = 0;
+        public short Flags { get; set; } = 0;
 
         public SoundSourceInstance(int id, Room room)
-            : base(ObjectInstanceType.SoundSource, id, room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.SoundSource; }
+        }
 
         public override ObjectInstance Clone()
         {
@@ -29,7 +33,6 @@
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Type = Type,
                 SoundId = SoundId,
                 Flags = Flags
             };

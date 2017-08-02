@@ -8,6 +8,8 @@ namespace TombEditor
 {
     static class Program
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static void InitLogging()
         {
             var config = new LoggingConfiguration();
@@ -34,6 +36,8 @@ namespace TombEditor
         {
             InitLogging();
             
+            logger.Info($"Tomb Editor {Application.ProductVersion} is starting");
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());

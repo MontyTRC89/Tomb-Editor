@@ -56,6 +56,8 @@ namespace TombEditor.Controls
             _depthBar.InvalidateParent += Invalidate;
             _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoom(room); Invalidate(); };
             _depthBar.RoomsMoved += delegate { _editor.UpdateStatusStrip(); _editor.CenterCamera(); };
+
+            ResetView();
         }
 
         public void ResetView()
@@ -163,6 +165,9 @@ namespace TombEditor.Controls
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the curser. 
             Invalidate(new Rectangle((int)area.X, (int)area.Y, (int)area.Width, (int)area.Height));
 
+            if (_editor.RelocateCameraActive)
+                return;
+
             if ((e.Button == MouseButtons.Left) && (_roomsToMove != null))
                 UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
             else if ((e.Button == MouseButtons.Right) && (_viewMoveMouseWorldCoord != null))
@@ -181,14 +186,11 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Left && (_roomsToMove != null))
             {
-                HashSet<Room> roomsToMove = _roomsToMove;
                 _roomsToMove = null;
-                UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, roomsToMove);
                 _roomMouseClicked = null;
             }
             else if ((e.Button == MouseButtons.Right) && (_viewMoveMouseWorldCoord != null))
             {
-                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
                 _viewMoveMouseWorldCoord = null;
             }
             _currentlyEditedDepthProbeIndex = null;

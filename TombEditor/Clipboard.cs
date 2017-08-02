@@ -16,7 +16,7 @@ namespace TombEditor
 
         private static int CopyObject(int Index, Level level, Room room, Vector3 position, int x, int y, int z)
         {
-            ObjectInstance result = level.Objects[_objectPtr.Value.Index].Clone();
+            ObjectInstance result = level.Objects[_objectPtr.Value.Id].Clone();
             result.X = (byte)x;
             result.Y = (short)y;
             result.Z = (byte)z;
@@ -40,7 +40,7 @@ namespace TombEditor
                 {
                     case ObjectInstanceType.Light:
                         {
-                            var light = _originalRoom.Lights[_objectPtr.Value.Index].Clone();
+                            var light = _originalRoom.Lights[_objectPtr.Value.Id].Clone();
                             light.X = x;
                             light.Y = y;
                             light.Z = z;
@@ -55,27 +55,27 @@ namespace TombEditor
                         break;
 
                     case ObjectInstanceType.Camera:
-                        room.Cameras.Add(CopyObject(_objectPtr.Value.Index, level, room, position, x, y, z));
+                        room.Cameras.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
                     case ObjectInstanceType.FlyByCamera:
-                        room.FlyByCameras.Add(CopyObject(_objectPtr.Value.Index, level, room, position, x, y, z));
+                        room.FlyByCameras.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
                     case ObjectInstanceType.Sink:
-                        room.Sinks.Add(CopyObject(_objectPtr.Value.Index, level, room, position, x, y, z));
+                        room.Sinks.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
                     case ObjectInstanceType.SoundSource:
-                        room.SoundSources.Add(CopyObject(_objectPtr.Value.Index, level, room, position, x, y, z));
+                        room.SoundSources.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
                     case ObjectInstanceType.Moveable:
-                        room.Moveables.Add(CopyObject(_objectPtr.Value.Index, level, room, position, x, y, z));
+                        room.Moveables.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
                     case ObjectInstanceType.StaticMesh:
-                        room.StaticMeshes.Add(CopyObject(_objectPtr.Value.Index, level, room, position, x, y, z));
+                        room.StaticMeshes.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
                 }
 
