@@ -30,7 +30,6 @@ namespace TombEditor.Geometry
         public List<int> Portals { get; private set; } = new List<int>();
         public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
-        public List<EditorVertex> OptimizedVertices { get; set; }
         public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = 0;
         public short WaterLevel { get; set; }
