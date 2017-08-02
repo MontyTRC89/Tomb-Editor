@@ -870,9 +870,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
-
-            _editor.Level.MustSave = true;
-
+            
             this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - Untitled";
         }
 
@@ -1324,9 +1322,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
-
-            _editor.Level.MustSave = false;
-
+            
             this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + openFileDialogPRJ2.FileName;
         }
 
@@ -1535,9 +1531,7 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.DrawPanelGrid();
             panel2DMap.Invalidate();
-
-            _editor.Level.MustSave = true;
-
+            
             this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + openFileDialogPRJ.FileName;
         }
 
@@ -1569,7 +1563,6 @@ namespace TombEditor
                 DarkUI.Forms.DarkMessageBox.ShowInformation("Project file was saved correctly", "Informations");
                 this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " +
                             saveFileDialogPRJ2.FileName;
-                _editor.Level.MustSave = false;
             }
         }
 
@@ -2340,7 +2333,7 @@ namespace TombEditor
 
             string fileName = "";
 
-            if (_editor.Level.MustSave)
+            if (string.IsNullOrEmpty(_editor.Level.FileName))
             {
                 if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                     return;
@@ -2352,7 +2345,8 @@ namespace TombEditor
             }
 
             bool result = Prj2Writer.SaveToPrj2(fileName, _editor.Level);
-
+            _editor.Level.FileName = fileName;
+            
             if (!result)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");

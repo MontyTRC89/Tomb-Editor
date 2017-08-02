@@ -37,8 +37,7 @@ namespace TombEditor.Geometry
         public Wad Wad { get; private set; }
         public string TextureFile { get; set; }
         public string WadFile { get; set; }
-        public bool MustSave { get; set; } // Used for Save and Save as logic
-        public string FileName { get; set; }
+        public string FileName { get; set; } // Can be null if the level has not been loaded from / saved to disk yet.  
 
         public static Level CreateSimpleLevel()
         {
