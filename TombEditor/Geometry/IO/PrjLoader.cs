@@ -56,6 +56,12 @@ namespace TombEditor.Geometry.IO
             public byte _height;
         }
 
+        private struct PrjPortalThingIndex
+        {
+            public short _thisThingIndex;
+            public short _otherThingIndex;
+        };
+
         public static Level LoadFromPrj(string filename, FormImportPRJ form, GraphicsDevice device)
         {
             GC.Collect();
@@ -100,6 +106,8 @@ namespace TombEditor.Geometry.IO
 
                     form.ReportProgress(2, "Number of rooms: " + numRooms);
                     double progress = 2;
+
+                    var portalThingIndices = new Dictionary<Portal, PrjPortalThingIndex>();
 
                     for (int i = 0; i < numRooms; i++)
                     {
@@ -183,8 +191,11 @@ namespace TombEditor.Geometry.IO
                             p.MemberOfFlippedRoom = !ReferenceEquals(p.Room, room);
                             p.Room = room;
 
-                            p.PrjThingIndex = portalThings[j];
-                            p.PrjOtherThingIndex = portalSlot;
+                            portalThingIndices.Add(p, new PrjPortalThingIndex
+                                {
+                                    _thisThingIndex = portalThings[j],
+                                    _otherThingIndex = portalSlot
+                                });
 
                             level.Portals.Add(p.Id, p);
                         }
@@ -1273,12 +1284,9 @@ namespace TombEditor.Geometry.IO
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
 
-                            if (currentPortal.PrjOtherThingIndex != otherPortal.PrjThingIndex)
+                            if (portalThingIndices[currentPortal]._otherThingIndex != portalThingIndices[ otherPortal]._thisThingIndex)
                                 continue;
-
-                            currentPortal.PrjAdjusted = true;
-                            otherPortal.PrjAdjusted = true;
-
+                            
                             var currentRoom = currentPortal.Room;
                             var otherRoom = otherPortal.Room;
 
