@@ -322,9 +322,7 @@ namespace TombEditor.Geometry.IO
                             writer.Write(l.Cutoff);
                             writer.Write(l.DirectionX);
                             writer.Write(l.DirectionY);
-
-                            byte b = (byte)l.Face;
-                            writer.Write(b);
+                            writer.Write(l.Active);
 
                             writer.Write(filler8);
                             writer.Write(filler8);
