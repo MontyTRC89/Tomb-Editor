@@ -80,7 +80,7 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is a wall with a ceiling portal on it or near it
-                        if (block.WallPortal == -1 && isWallWithCeilingPortal != null &&
+                        if (block.WallPortal == null && isWallWithCeilingPortal != null &&
                             ((block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None) ||
                              room.Blocks[x, z].Type == BlockType.BorderWall))
                         {
@@ -100,7 +100,7 @@ namespace TombEditor.Compilers
 
                         // If sector is a border wall without portals or a normal wall
                         if ((block.Type == BlockType.Wall && block.FloorDiagonalSplit == DiagonalSplit.None) ||
-                            (block.Type == BlockType.BorderWall && block.WallPortal == -1))
+                            (block.Type == BlockType.BorderWall && block.WallPortal == null))
                         {
                             sector.FloorDataIndex = 0;
                             sector.Floor = -127;
@@ -143,9 +143,9 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is a wall portal
-                        if (block.WallPortal >= 0)
+                        if (block.WallPortal != null)
                         {
-                            var portal = _editor.Level.Portals[block.WallPortal];
+                            var portal = block.WallPortal;
 
                             // Only if the portal is not a Toggle Opacity 1
                             if (block.WallOpacity != PortalOpacity.Opacity1)

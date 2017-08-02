@@ -1291,7 +1291,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     for (int z = currentPortal.Z; z < currentPortal.Z + currentPortal.NumZBlocks; z++)
                                     {
-                                        currentRoom.Blocks[x, z].WallPortal = currentPortal.Id;
+                                        currentRoom.Blocks[x, z].WallPortal = currentPortal;
                                     }
                                 }
 
@@ -1299,7 +1299,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     for (int z = otherPortal.Z; z < otherPortal.Z + otherPortal.NumZBlocks; z++)
                                     {
-                                        otherPortal.Room.Blocks[x, z].WallPortal = otherPortal.Id;
+                                        otherPortal.Room.Blocks[x, z].WallPortal = otherPortal;
                                     }
                                 }
                             }

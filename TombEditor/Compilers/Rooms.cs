@@ -237,8 +237,8 @@ namespace TombEditor.Compilers
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        if (room.Blocks[x, z].WallPortal >= 0 && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
-                            tempIdPortals.Add(room.Blocks[x, z].WallPortal);
+                        if (room.Blocks[x, z].WallPortal != null && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal.Id))
+                            tempIdPortals.Add(room.Blocks[x, z].WallPortal.Id);
 
                         if (room.Blocks[x, z].FloorPortal != null &&
                             !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal.Id))
@@ -572,10 +572,9 @@ namespace TombEditor.Compilers
                         aux.CeilingPortal = -1;
                     }
 
-                    if (room.Blocks[x, z].WallPortal != -1 && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
+                    if (room.Blocks[x, z].WallPortal != null && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
                         aux.WallPortal =
-                            _level.Rooms.ReferenceIndexOf(_editor.Level.Portals[room.Blocks[x, z].WallPortal]
-                                .AdjoiningRoom);
+                            _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].WallPortal.AdjoiningRoom);
                     else
                         aux.WallPortal = -1;
 

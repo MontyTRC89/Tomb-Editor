@@ -2657,9 +2657,9 @@ namespace TombEditor
                     newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != null
                         ? _editor.Level.Portals[duplicatedPortals[room.Blocks[x, z].CeilingPortal.Id]]
                         : null);
-                    newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].WallPortal]
-                        : -1);
+                    newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != null
+                        ? _editor.Level.Portals[duplicatedPortals[room.Blocks[x, z].WallPortal.Id]]
+                        : null);
                 }
             }
 

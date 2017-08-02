@@ -381,11 +381,11 @@ namespace TombEditor.Controls
                         bool wallAbove = aboveBlock.Type != BlockType.Floor;
                         bool wallLeft = leftBlock.Type != BlockType.Floor;
                         if (wallAbove != wallThis)
-                            e.Graphics.DrawLine((aboveBlock.WallPortal != -1) || (thisBlock.WallPortal != -1) ? _roomPortalPen : _roomBorderPen,
+                            e.Graphics.DrawLine((aboveBlock.WallPortal != null) || (thisBlock.WallPortal != null) ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + 1 + room.SectorPos.X, z + room.SectorPos.Y)));
                         if (wallLeft != wallThis)
-                            e.Graphics.DrawLine((leftBlock.WallPortal != -1) || (thisBlock.WallPortal != -1) ? _roomPortalPen : _roomBorderPen,
+                            e.Graphics.DrawLine((leftBlock.WallPortal != null) || (thisBlock.WallPortal != null) ? _roomPortalPen : _roomBorderPen,
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + room.SectorPos.Y)),
                                 ToVisualCoord(new Vector2(x + room.SectorPos.X, z + 1 + room.SectorPos.Y)));
                     }

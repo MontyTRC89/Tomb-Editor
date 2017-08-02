@@ -820,10 +820,10 @@ namespace TombEditor.Compilers
                 }
 
                 // If current X, Z is not a block wall then exit the loop
-                if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == -1) return false;
+                if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == null) return false;
 
                 // Get the wall portal
-                var portal = _editor.Level.Portals[editorRoom.Blocks[xInRoom, zInRoom].WallPortal];
+                var portal = editorRoom.Blocks[xInRoom, zInRoom].WallPortal;
                 room = portal.AdjoiningRoom;
                 destRoom = room;
 

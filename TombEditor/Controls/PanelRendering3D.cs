@@ -3589,7 +3589,7 @@ namespace TombEditor.Controls
                 // Portals
                 if (index < 25)
                 {
-                    if (room.Blocks[x, z].WallPortal != -1)
+                    if (room.Blocks[x, z].WallPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 

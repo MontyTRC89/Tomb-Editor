@@ -80,12 +80,12 @@ namespace TombEditor
             {
                 for (int z = 0; z < room.NumZSectors; z++)
                 {
-                    int wallPortal = room.Blocks[x, z].WallPortal;
+                    var wallPortal = room.Blocks[x, z].WallPortal;
                     var ceilingPortal = room.Blocks[x, z].CeilingPortal;
                     var floorPortal = room.Blocks[x, z].FloorPortal;
 
-                    if (wallPortal != -1 && !portalsToTravel.Contains(wallPortal))
-                        portalsToTravel.Add(wallPortal);
+                    if (wallPortal != null && !portalsToTravel.Contains(wallPortal.Id))
+                        portalsToTravel.Add(wallPortal.Id);
 
                     if (ceilingPortal != null && !portalsToTravel.Contains(ceilingPortal.Id))
                         portalsToTravel.Add(ceilingPortal.Id);
@@ -1321,7 +1321,7 @@ namespace TombEditor
                 for (int z = 0; z < room.NumZSectors; z++)
                 {
                     if (room.Blocks[x, z].FloorPortal != null || room.Blocks[x, z].CeilingPortal != null ||
-                        room.Blocks[x, z].WallPortal != -1)
+                        room.Blocks[x, z].WallPortal != null)
                     {
                         DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a room with portals. Please delete all portals before doing this.",
                                                                 "Error");
@@ -1936,7 +1936,7 @@ namespace TombEditor
                 // Check for portal overlaps
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[area.X, z].WallPortal != -1)
+                    if (room.Blocks[area.X, z].WallPortal != null)
                     {
                         return false;
                     }
@@ -1969,7 +1969,7 @@ namespace TombEditor
                                 break;
                             }
 
-                            if (otherRoom.Blocks[otherRoom.NumXSectors - 1, facingZ].WallPortal != -1)
+                            if (otherRoom.Blocks[otherRoom.NumXSectors - 1, facingZ].WallPortal != null)
                             {
                                 found = null;
                                 break;
@@ -2024,8 +2024,8 @@ namespace TombEditor
                     // Set the portal ID in sectors
                     for (int z = area.Y; z <= area.Bottom; z++)
                     {
-                        room.Blocks[0, z].WallPortal = currentRoomPortal.Id;
-                        found.Blocks[otherRoom.NumXSectors - 1, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal.Id;
+                        room.Blocks[0, z].WallPortal = currentRoomPortal;
+                        found.Blocks[otherRoom.NumXSectors - 1, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2058,7 +2058,7 @@ namespace TombEditor
                 // Check for portal overlaps
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[area.X, z].WallPortal != -1)
+                    if (room.Blocks[area.X, z].WallPortal != null)
                     {
                         return false;
                     }
@@ -2091,7 +2091,7 @@ namespace TombEditor
                                 break;
                             }
 
-                            if (otherRoom.Blocks[0, facingZ].WallPortal != -1)
+                            if (otherRoom.Blocks[0, facingZ].WallPortal != null)
                             {
                                 found = null;
                                 break;
@@ -2146,8 +2146,8 @@ namespace TombEditor
                     // Set the portal ID in sectors
                     for (int z = area.Y; z <= area.Bottom; z++)
                     {
-                        room.Blocks[numXblocks - 1, z].WallPortal = currentRoomPortal.Id;
-                        found.Blocks[0, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal.Id;
+                        room.Blocks[numXblocks - 1, z].WallPortal = currentRoomPortal;
+                        found.Blocks[0, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2180,7 +2180,7 @@ namespace TombEditor
                 // Check for portal overlaps
                 for (int x = area.X; x <= area.Right; x++)
                 {
-                    if (room.Blocks[x, area.Y].WallPortal != -1)
+                    if (room.Blocks[x, area.Y].WallPortal != null)
                     {
                         return false;
                     }
@@ -2213,7 +2213,7 @@ namespace TombEditor
                                 break;
                             }
 
-                            if (otherRoom.Blocks[facingX, 0].WallPortal != -1)
+                            if (otherRoom.Blocks[facingX, 0].WallPortal != null)
                             {
                                 found = null;
                                 break;
@@ -2268,8 +2268,8 @@ namespace TombEditor
                     // Set portal ID in sectors
                     for (int x = area.X; x <= area.Right; x++)
                     {
-                        room.Blocks[x, numZblocks - 1].WallPortal = currentRoomPortal.Id;
-                        found.Blocks[x + xPortalOther - area.X, 0].WallPortal = otherRoomPortal.Id;
+                        room.Blocks[x, numZblocks - 1].WallPortal = currentRoomPortal;
+                        found.Blocks[x + xPortalOther - area.X, 0].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2302,7 +2302,7 @@ namespace TombEditor
                 // Check for portal overlaps
                 for (int x = area.X; x <= area.Right; x++)
                 {
-                    if (room.Blocks[x, area.Y].WallPortal != -1)
+                    if (room.Blocks[x, area.Y].WallPortal != null)
                     {
                         return false;
                     }
@@ -2335,7 +2335,7 @@ namespace TombEditor
                                 break;
                             }
 
-                            if (otherRoom.Blocks[facingX, 0].WallPortal != -1)
+                            if (otherRoom.Blocks[facingX, 0].WallPortal != null)
                             {
                                 found = null;
                                 break;
@@ -2390,8 +2390,8 @@ namespace TombEditor
                     // Set portal ID in sectors
                     for (int x = area.X; x <= area.Right; x++)
                     {
-                        room.Blocks[x, 0].WallPortal = currentRoomPortal.Id;
-                        found.Blocks[x + xPortalOther - area.X, otherRoom.NumZSectors - 1].WallPortal = otherRoomPortal.Id;
+                        room.Blocks[x, 0].WallPortal = currentRoomPortal;
+                        found.Blocks[x + xPortalOther - area.X, otherRoom.NumZSectors - 1].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2912,7 +2912,7 @@ namespace TombEditor
                     if (current.Direction == PortalDirection.North || current.Direction == PortalDirection.South ||
                         current.Direction == PortalDirection.West || current.Direction == PortalDirection.East)
                     {
-                        room.Blocks[x, z].WallPortal = -1;
+                        room.Blocks[x, z].WallPortal = null;
                         room.Blocks[x, z].WallOpacity = PortalOpacity.None;
                     }
                 }
@@ -2937,7 +2937,7 @@ namespace TombEditor
                     if (other.Direction == PortalDirection.North || other.Direction == PortalDirection.South ||
                         other.Direction == PortalDirection.West || other.Direction == PortalDirection.East)
                     {
-                        other.Room.Blocks[x, z].WallPortal = -1;
+                        other.Room.Blocks[x, z].WallPortal = null;
                         other.Room.Blocks[x, z].WallOpacity = PortalOpacity.None;
                     }
                 }

@@ -337,7 +337,7 @@ namespace TombEditor.Geometry
                         !(Blocks[x, z + 1].Type == BlockType.Wall &&
                          (Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NE)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != -1 &&
+                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != null &&
                             Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
                             !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE))
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, true);
@@ -352,7 +352,7 @@ namespace TombEditor.Geometry
                          (Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall ||
-                            (Blocks[x, z].WallPortal != -1 &&
+                            (Blocks[x, z].WallPortal != null &&
                             Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
                             !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE))
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, true);
@@ -365,7 +365,7 @@ namespace TombEditor.Geometry
                         !(Blocks[x + 1, z].Type == BlockType.Wall &&
                         (Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.SE)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != -1 &&
+                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != null &&
                              Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
                             !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE))
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, true);
@@ -378,7 +378,7 @@ namespace TombEditor.Geometry
                         !(Blocks[x - 1, z].Type == BlockType.Wall &&
                         (Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.SW)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != -1 &&
+                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != null &&
                              Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
                             !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW))
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, true);
@@ -414,7 +414,7 @@ namespace TombEditor.Geometry
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != -1)
+                        if (Blocks[x, z].WallPortal != null)
                         {
                             var portal = FindPortal(x, z, PortalDirection.South);
                             var adjoiningRoom = portal.AdjoiningRoom;
@@ -436,7 +436,7 @@ namespace TombEditor.Geometry
                         }
 
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == -1) || (Blocks[x, z].WallPortal >= 0 && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, false);
@@ -449,7 +449,7 @@ namespace TombEditor.Geometry
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != -1)
+                        if (Blocks[x, z].WallPortal != null)
                         {
                             var portal = FindPortal(x, z, PortalDirection.North);
                             var adjoiningRoom = portal.AdjoiningRoom;
@@ -470,7 +470,7 @@ namespace TombEditor.Geometry
                             }
                         }
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == -1) || (Blocks[x, z].WallPortal >= 0 && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, false);
@@ -483,7 +483,7 @@ namespace TombEditor.Geometry
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != -1)
+                        if (Blocks[x, z].WallPortal != null)
                         {
                             var portal = FindPortal(x, z, PortalDirection.West);
                             var adjoiningRoom = portal.AdjoiningRoom;
@@ -504,7 +504,7 @@ namespace TombEditor.Geometry
                             }
                         }
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == -1) || (Blocks[x, z].WallPortal >= 0 && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, false);
@@ -517,7 +517,7 @@ namespace TombEditor.Geometry
                     {
                         bool addMiddle = false;
 
-                        if (Blocks[x, z].WallPortal != -1)
+                        if (Blocks[x, z].WallPortal != null)
                         {
                             var portal = FindPortal(x, z, PortalDirection.East);
                             var adjoiningRoom = portal.AdjoiningRoom;
@@ -538,7 +538,7 @@ namespace TombEditor.Geometry
                             }
                         }
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == -1) || (Blocks[x, z].WallPortal >= 0 && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, false);
@@ -1079,7 +1079,7 @@ namespace TombEditor.Geometry
                     rfFace = BlockFaces.NorthRF;
                     wsFace = BlockFaces.NorthWS;
 
-                    if (Blocks[x, z].WallPortal != -1)
+                    if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.South);
                         var adjoiningRoom = portal.AdjoiningRoom;
@@ -1200,7 +1200,7 @@ namespace TombEditor.Geometry
                     rfFace = BlockFaces.SouthRF;
                     wsFace = BlockFaces.SouthWS;
 
-                    if (Blocks[x, z].WallPortal != -1)
+                    if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.North);
                         var adjoiningRoom = portal.AdjoiningRoom;
@@ -1320,7 +1320,7 @@ namespace TombEditor.Geometry
                     rfFace = BlockFaces.EastRF;
                     wsFace = BlockFaces.EastWS;
 
-                    if (Blocks[x, z].WallPortal != -1)
+                    if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.West);
                         var adjoiningRoom = portal.AdjoiningRoom;
@@ -1639,7 +1639,7 @@ namespace TombEditor.Geometry
                     rfFace = BlockFaces.WestRF;
                     wsFace = BlockFaces.WestWS;
 
-                    if (Blocks[x, z].WallPortal != -1)
+                    if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.East);
                         var adjoiningRoom = portal.AdjoiningRoom;
@@ -2014,8 +2014,8 @@ namespace TombEditor.Geometry
 
         private Portal FindPortal(int x, int z, PortalDirection type)
         {
-            if (Blocks[x, z].WallPortal != -1)
-                return Level.Portals[Blocks[x, z].WallPortal];
+            if (Blocks[x, z].WallPortal != null)
+                return Blocks[x, z].WallPortal;
             if (Blocks[x, z].FloorPortal != null && type == PortalDirection.Floor)
                 return Blocks[x, z].FloorPortal;
             if (Blocks[x, z].CeilingPortal != null && type == PortalDirection.Ceiling)
