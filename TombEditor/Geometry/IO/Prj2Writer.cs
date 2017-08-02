@@ -223,15 +223,11 @@ namespace TombEditor.Geometry.IO
                         {
                             writer.Write(true);
                         }
-
-                        if (r.Name == null)
-                            r.Name = "Room " + i.ToString();
-
-                        writer.Write(System.Text.Encoding.UTF8.GetBytes(r.Name.PadRight(100, ' ')));
+                        
+                        writer.Write(r.Name);
                         writer.Write(r.Position.X);
                         writer.Write(r.Position.Y);
                         writer.Write(r.Position.Z);
-                        writer.Write(r.Ceiling);
                         writer.Write(r.NumXSectors);
                         writer.Write(r.NumZSectors);
 
@@ -323,9 +319,7 @@ namespace TombEditor.Geometry.IO
                             writer.Write(l.Cutoff);
                             writer.Write(l.DirectionX);
                             writer.Write(l.DirectionY);
-
-                            byte b = (byte)l.Face;
-                            writer.Write(b);
+                            writer.Write(l.Active);
 
                             writer.Write(filler8);
                             writer.Write(filler8);
@@ -421,8 +415,6 @@ namespace TombEditor.Geometry.IO
                 logger.Error(ex);
                 return false;
             }
-
-            level.FileName = filename;
 
             return true;
         }

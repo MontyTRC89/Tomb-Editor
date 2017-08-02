@@ -37,8 +37,7 @@ namespace TombEditor.Geometry
         public Wad Wad { get; private set; }
         public string TextureFile { get; set; }
         public string WadFile { get; set; }
-        public bool MustSave { get; set; } // Used for Save and Save as logic
-        public string FileName { get; set; }
+        public string FileName { get; set; } // Can be null if the level has not been loaded from / saved to disk yet.  
 
         public static Level CreateSimpleLevel()
         {
@@ -46,10 +45,7 @@ namespace TombEditor.Geometry
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-            {
-                result.Rooms[0] = new Room(result) { Name = "Room 0" };
-                result.Rooms[0].Init(0, 0, 0, 20, 20, 12);
-            }
+                result.Rooms[0] = new Room(result, 20, 20, "Room 0");
             return result;
         }
 
@@ -268,38 +264,6 @@ namespace TombEditor.Geometry
             return i;
         }
 
-        public static BinaryReaderEx CreatePrjReader(string filename)
-        {
-            var reader = new BinaryReaderEx(File.OpenRead(filename));
-
-            // Check file version
-            var buffer = reader.ReadBytes(4);
-            if (buffer[0] == 0x50 && buffer[1] == 0x52 && buffer[2] == 0x4A && buffer[3] == 0x32)
-            {
-                // PRJ2 senza compressione
-                return reader;
-            }
-            else if (buffer[0] == 0x5A && buffer[1] == 0x52 && buffer[2] == 0x4A && buffer[3] == 0x32)
-            {
-                // PRJ2 compresso
-                int uncompressedSize = reader.ReadInt32();
-                int compressedSize = reader.ReadInt32();
-                var projectData = reader.ReadBytes(compressedSize);
-                projectData = Utils.DecompressData(projectData);
-
-                var ms = new MemoryStream(projectData);
-                ms.Seek(0, SeekOrigin.Begin);
-
-                reader = new BinaryReaderEx(ms);
-                reader.ReadInt32();
-                return reader;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         public void DeleteTrigger(int instance)
         {
             var triggersToDelete = new List<int>();
@@ -335,12 +299,12 @@ namespace TombEditor.Geometry
             }
         }
 
-        public Room GetOrCreateRoom(int index)
+        public Room GetOrCreateDummyRoom(int index)
         {
             if (index < 0 || index >= Rooms.Length)
                 return null;
 
-            return Rooms[index] ?? (Rooms[index] = new Room(this));
+            return Rooms[index] ?? (Rooms[index] = new Room(this, 1, 1));
         }
     }
 }

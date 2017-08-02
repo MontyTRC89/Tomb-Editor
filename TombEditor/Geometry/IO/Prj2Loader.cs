@@ -6,6 +6,7 @@ using NLog;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using Color = System.Drawing.Color;
+using TombLib.IO;
 
 namespace TombEditor.Geometry.IO
 {
@@ -19,7 +20,7 @@ namespace TombEditor.Geometry.IO
 
             try
             {
-                using (var reader = Level.CreatePrjReader(filename))
+                using (var reader = CreatePrjReader(filename))
                 {
                     if (reader == null)
                         return null;
@@ -130,8 +131,8 @@ namespace TombEditor.Geometry.IO
                         {
                             Id = reader.ReadInt32(),
                             Other = level.Portals[reader.ReadInt32()],
-                            Room = level.GetOrCreateRoom(reader.ReadInt16()),
-                            AdjoiningRoom = level.GetOrCreateRoom(reader.ReadInt16()),
+                            Room = level.GetOrCreateDummyRoom(reader.ReadInt16()),
+                            AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16()),
                             Direction = (PortalDirection)reader.ReadByte(),
                             X = reader.ReadByte(),
                             Z = reader.ReadByte(),
@@ -186,7 +187,7 @@ namespace TombEditor.Geometry.IO
                         }
 
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        o.Room = level.GetOrCreateRoom(reader.ReadInt16());
+                        o.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         o.Ocb = reader.ReadInt16();
                         o.Rotation = reader.ReadInt16();
                         o.Invisible = reader.ReadBoolean();
@@ -272,7 +273,7 @@ namespace TombEditor.Geometry.IO
                                 [3] = reader.ReadBoolean(),
                                 [4] = reader.ReadBoolean()
                             },
-                            Room = level.GetOrCreateRoom(reader.ReadInt16())
+                            Room = level.GetOrCreateDummyRoom(reader.ReadInt16())
                         };
 
 
@@ -299,13 +300,10 @@ namespace TombEditor.Geometry.IO
                             continue;
                         }
 
-                        var room = level.GetOrCreateRoom(i);
-                        room.Name = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(100)).Trim();
+                        var room = level.GetOrCreateDummyRoom(i);
+                        room.Name = reader.ReadString();
                         room.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        room.Ceiling = reader.ReadInt16();
-                        room.NumXSectors = reader.ReadByte();
-                        room.NumZSectors = reader.ReadByte();
-                        room.Blocks = new Block[room.NumXSectors, room.NumZSectors];
+                        room.Resize(room.NumXSectors, room.NumZSectors);
 
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
@@ -423,7 +421,7 @@ namespace TombEditor.Geometry.IO
                                 Cutoff = reader.ReadSingle(),
                                 DirectionX = reader.ReadSingle(),
                                 DirectionY = reader.ReadSingle(),
-                                Face = (BlockFaces)reader.ReadByte()
+                                Active = reader.ReadBoolean()
                             };
 
 
@@ -436,7 +434,7 @@ namespace TombEditor.Geometry.IO
                         room.AmbientLight =
                             Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
                         room.Flipped = reader.ReadBoolean();
-                        room.AlternateRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                        room.AlternateRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         room.AlternateGroup = reader.ReadInt16();
                         room.WaterLevel = reader.ReadInt16();
                         room.MistLevel = reader.ReadInt16();
@@ -452,7 +450,7 @@ namespace TombEditor.Geometry.IO
                         room.FlagWater = reader.ReadBoolean();
                         room.FlagQuickSand = reader.ReadBoolean();
                         room.Flipped = reader.ReadBoolean();
-                        room.BaseRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                        room.BaseRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         room.ExcludeFromPathFinding = reader.ReadBoolean();
 
                         reader.ReadInt32();
@@ -567,7 +565,6 @@ namespace TombEditor.Geometry.IO
             // Now build the real geometry and update DirectX buffers
             foreach (var room in level.Rooms.Where(room => room != null))
             {
-                room.InitializeVerticesGrid();
                 room.BuildGeometry();
                 room.CalculateLightingForThisRoom();
                 room.UpdateBuffers();
@@ -582,5 +579,38 @@ namespace TombEditor.Geometry.IO
 
             return level;
         }
+        
+        private static BinaryReaderEx CreatePrjReader(string filename)
+        {
+            var reader = new BinaryReaderEx(File.OpenRead(filename));
+
+            // Check file version
+            var buffer = reader.ReadBytes(4);
+            if (buffer[0] == 0x50 && buffer[1] == 0x52 && buffer[2] == 0x4A && buffer[3] == 0x32)
+            {
+                // PRJ2 senza compressione
+                return reader;
+            }
+            else if (buffer[0] == 0x5A && buffer[1] == 0x52 && buffer[2] == 0x4A && buffer[3] == 0x32)
+            {
+                // PRJ2 compresso
+                int uncompressedSize = reader.ReadInt32();
+                int compressedSize = reader.ReadInt32();
+                var projectData = reader.ReadBytes(compressedSize);
+                projectData = Utils.DecompressData(projectData);
+
+                var ms = new MemoryStream(projectData);
+                ms.Seek(0, SeekOrigin.Begin);
+
+                reader = new BinaryReaderEx(ms);
+                reader.ReadInt32();
+                return reader;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
 }

@@ -496,14 +496,12 @@ namespace TombEditor.Compilers
                         room.Blocks[x, z].Type == BlockType.BorderWall || room.Blocks[x, z].Type == BlockType.Wall)
                     {
                         sector.Floor = (sbyte) (-room.Position.Y - room.GetHighestFloorCorner(x, z));
-                        sector.Ceiling =
-                            (sbyte) (-room.Position.Y - room.Ceiling - room.GetLowestCeilingCorner(x, z));
+                        sector.Ceiling = (sbyte) (-room.Position.Y - room.GetLowestCeilingCorner(x, z));
                     }
                     else
                     {
                         sector.Floor = (sbyte) (-room.Position.Y - room.GetHighestFloorCorner(x, z));
-                        sector.Ceiling =
-                            (sbyte) (-room.Position.Y - room.Ceiling - room.GetLowestCeilingCorner(x, z));
+                        sector.Ceiling = (sbyte) (-room.Position.Y - room.GetLowestCeilingCorner(x, z));
                     }
 
                     //Setup some aux data for box generation
@@ -664,9 +662,7 @@ namespace TombEditor.Compilers
                             yMin = y1;
                         if (y2 > yMax)
                             yMax = y2;
-
-                        yMax += room.Ceiling;
-
+                        
                         newPortal.Vertices[0] = new tr_vertex
                         {
                             X = (short) (xMin * 1024.0f),
@@ -740,9 +736,7 @@ namespace TombEditor.Compilers
                             yMin = y1;
                         if (y2 > yMax)
                             yMax = y2;
-
-                        yMax += room.Ceiling;
-
+                        
                         newPortal.Vertices[1] = new tr_vertex
                         {
                             X = (short) (xMin * 1024),
@@ -816,9 +810,7 @@ namespace TombEditor.Compilers
                             yMin = y1;
                         if (y2 > yMax)
                             yMax = y2;
-
-                        yMax += room.Ceiling;
-
+                        
                         newPortal.Vertices[0] = new tr_vertex
                         {
                             X = (short) (xMin * 1024.0f),
@@ -892,9 +884,7 @@ namespace TombEditor.Compilers
                             yMin = y1;
                         if (y2 > yMax)
                             yMax = y2;
-
-                        yMax += room.Ceiling;
-
+                        
                         newPortal.Vertices[1] = new tr_vertex
                         {
                             X = (short) (xMin * 1024.0f - 1.0f),
@@ -1210,15 +1200,9 @@ namespace TombEditor.Compilers
 
         private void MatchPortalShades()
         {
-            //  return; 
-
-            foreach (var portal in _level.Portals.Values)
-            {
-                portal.LightAveraged = false;
-            }
-
             foreach (var currentPortal in _level.Portals.Values)
             {
+                // Get current portal and its paired portal
                 // Get its paired portal
                 var otherPortal = currentPortal.Other;
 
@@ -1432,9 +1416,6 @@ namespace TombEditor.Compilers
                         }
                     }
                 }
-
-                currentPortal.LightAveraged = true;
-                otherPortal.LightAveraged = true;
             }
         }
 

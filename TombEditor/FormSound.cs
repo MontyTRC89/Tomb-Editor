@@ -10,21 +10,26 @@ using TombEditor.Geometry;
 using System.IO;
 using System.Media;
 using TombLib.Wad;
+using NLog;
 
 namespace TombEditor
 {
     public partial class FormSound : Form
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private Dictionary<short, string> _sounds;
         private SoundSourceInstance _soundSource;
+        private TR4Wad wad;
 
-        public FormSound(SoundSourceInstance soundSource)
+        public FormSound(SoundSourceInstance soundSource /*, TR4Wad wad*/)
         {
             _soundSource = soundSource;
 
             InitializeComponent();
 
             // Load sound.txt
+            //wad.Sounds[0].
             using (StreamReader reader = new StreamReader(File.OpenRead("Sounds\\Sounds.txt")))
             {
                 List<RowSoundSample> rows = new List<RowSoundSample>();
@@ -97,10 +102,15 @@ namespace TombEditor
 
             if (row.File != "")
             {
-                if (!File.Exists("Sounds\\Samples\\" + row.File + ".wav"))
-                    return;
-                SoundPlayer player = new SoundPlayer("Sounds\\Samples\\" + row.File + ".wav");
-                player.Play();
+                try
+                {
+                    SoundPlayer player = new SoundPlayer("Sounds\\Samples\\" + row.File + ".wav");
+                    player.Play();
+                }
+                catch (Exception exc)
+                {
+                    logger.Log(LogLevel.Warn, "Unable to play sample \"" + row.File + "\"", exc);
+                }
             }
         }
 

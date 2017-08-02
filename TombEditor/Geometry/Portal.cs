@@ -8,12 +8,8 @@ namespace TombEditor.Geometry
         public PortalDirection Direction { get; set; }
         public Portal Other { get; set; }
         public Room AdjoiningRoom { get; set; }
-        public short PrjThingIndex { get; set; }
-        public short PrjOtherThingIndex { get; set; }
-        public bool PrjAdjusted { get; set; }
         public bool MemberOfFlippedRoom { get; set; }
         public bool Flipped { get; set; }
-        public bool LightAveraged { get; set; }
 
         public Portal(int id, Room room)
             : base(id, room)

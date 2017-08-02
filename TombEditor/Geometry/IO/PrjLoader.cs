@@ -56,6 +56,12 @@ namespace TombEditor.Geometry.IO
             public byte _height;
         }
 
+        private struct PrjPortalThingIndex
+        {
+            public short _thisThingIndex;
+            public short _otherThingIndex;
+        };
+
         public static Level LoadFromPrj(string filename, FormImportPRJ form, GraphicsDevice device)
         {
             GC.Collect();
@@ -101,6 +107,8 @@ namespace TombEditor.Geometry.IO
                     form.ReportProgress(2, "Number of rooms: " + numRooms);
                     double progress = 2;
 
+                    var portalThingIndices = new Dictionary<Portal, PrjPortalThingIndex>();
+
                     for (int i = 0; i < numRooms; i++)
                     {
                         // Room is defined?
@@ -131,9 +139,9 @@ namespace TombEditor.Geometry.IO
 
                         reader.ReadInt16();
 
-                        var room = level.GetOrCreateRoom(i);
-                        room.Init(posXBlocks, (int)(yPos / 256.0f), posZBlocks, (byte)numXBlocks, (byte)numZBlocks,
-                            0);
+                        var room = new Room(level, numXBlocks, numZBlocks, roomName);
+                        room.Position = new Vector3(posXBlocks, yPos / 256.0f, posZBlocks);
+                        level.Rooms[i] = room;
 
                         short numPortals = reader.ReadInt16();
                         var portalThings = new short[numPortals];
@@ -153,7 +161,7 @@ namespace TombEditor.Geometry.IO
                             short portalXBlocks = reader.ReadInt16();
                             short portalZBlocks = reader.ReadInt16();
                             reader.ReadInt16();
-                            var portalRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                            var portalRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short portalSlot = reader.ReadInt16();
 
                             var portalBuffer = reader.ReadBytes(26);
@@ -183,8 +191,11 @@ namespace TombEditor.Geometry.IO
                             p.MemberOfFlippedRoom = !ReferenceEquals(p.Room, room);
                             p.Room = room;
 
-                            p.PrjThingIndex = portalThings[j];
-                            p.PrjOtherThingIndex = portalSlot;
+                            portalThingIndices.Add(p, new PrjPortalThingIndex
+                                {
+                                    _thisThingIndex = portalThings[j],
+                                    _otherThingIndex = portalSlot
+                                });
 
                             level.Portals.Add(p.Id, p);
                         }
@@ -207,7 +218,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -339,7 +350,7 @@ namespace TombEditor.Geometry.IO
                             }
                             else
                             {
-                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.GetOrCreateRoom(i))
+                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.GetOrCreateDummyRoom(i))
                                 {
                                     X = (byte)objPosX,
                                     Z = (byte)objPosZ,
@@ -467,7 +478,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -509,30 +520,26 @@ namespace TombEditor.Geometry.IO
                                         Cutoff = lightCut,
                                         Len = lightLen,
                                         DirectionX = 360.0f - lightX,
-                                        DirectionY = lightY + 90.0f
+                                        DirectionY = lightY + 90.0f,
+                                        Active = lightOn == 0x01,
+                                        In = lightIn / 1024.0f,
+                                        Out = lightOut / 1024.0f,
+                                        Intensity = lightIntensity / 8192.0f,
+                                        Position = new Vector3(
+                                            objPosX * 1024.0f + 512.0f,
+                                            -objLongY, 
+                                            objPosZ * 1024.0f + 512.0f)
                                     };
                                     if (light.DirectionY >= 360)
                                         light.DirectionY = light.DirectionY - 360.0f;
-                                    light.Active = (lightOn == 0x01);
-                                    light.In = lightIn;
-                                    light.Out = lightOut;
-                                    light.Intensity = lightIntensity / 8192.0f;
-
-                                    light.X = (byte)(objPosX);
-                                    light.Z = (byte)(objPosZ);
-                                    light.Y = (short)objLongY;
 
                                     switch (objectType)
                                     {
                                         case 0x4000:
                                             light.Type = LightType.Light;
-                                            light.In /= 1024.0f;
-                                            light.Out /= 1024.0f;
                                             break;
                                         case 0x6000:
                                             light.Type = LightType.Shadow;
-                                            light.In /= 1024.0f;
-                                            light.Out /= 1024.0f;
                                             break;
                                         case 0x4200:
                                             light.Type = LightType.Sun;
@@ -544,12 +551,8 @@ namespace TombEditor.Geometry.IO
                                             break;
                                         case 0x4100:
                                             light.Type = LightType.Spot;
-                                            light.Len /= 1024.0f;
-                                            light.Cutoff /= 1024.0f;
                                             break;
                                         case 0x4020:
-                                            light.In /= 1024.0f;
-                                            light.Out /= 1024.0f;
                                             light.Type = LightType.FogBulb;
                                             break;
                                     }
@@ -755,7 +758,7 @@ namespace TombEditor.Geometry.IO
 
                         room.Position = new Vector3(-room.Position.X, lowest, room.Position.Z);
 
-                        sbyte deltaCeilingMain = (sbyte)(lowest + 20);
+                        sbyte deltaCeilingMain = (sbyte)lowest;
 
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
@@ -818,9 +821,7 @@ namespace TombEditor.Geometry.IO
                                         [3] = b._edFaces[2]
                                     }
                                 };
-
-                                room.Ceiling = 20;
-
+                                
                                 room.Blocks[x, z].WSFaces[0] = (sbyte)(b._wsFaces[0]);
                                 room.Blocks[x, z].WSFaces[1] = (sbyte)(b._wsFaces[3]);
                                 room.Blocks[x, z].WSFaces[2] = (sbyte)(b._wsFaces[2]);
@@ -871,16 +872,8 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
                         }
-
-                        // Fix lights
-                        foreach (var light in room.Lights)
-                        {
-                            light.Position = new Vector3((room.NumXSectors - 1) * 1024.0f - light.Position.X + 512.0f,
-                                light.Position.Y,
-                                light.Position.Z + 512.0f);
-                        }
-
-                        System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateRoom(i), room));
+                        
+                        System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateDummyRoom(i), room));
 
                         progress += (i / (float)numRooms * 0.28f);
 
@@ -1273,12 +1266,9 @@ namespace TombEditor.Geometry.IO
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
 
-                            if (currentPortal.PrjOtherThingIndex != otherPortal.PrjThingIndex)
+                            if (portalThingIndices[currentPortal]._otherThingIndex != portalThingIndices[ otherPortal]._thisThingIndex)
                                 continue;
-
-                            currentPortal.PrjAdjusted = true;
-                            otherPortal.PrjAdjusted = true;
-
+                            
                             var currentRoom = currentPortal.Room;
                             var otherRoom = otherPortal.Room;
 
@@ -1341,10 +1331,10 @@ namespace TombEditor.Geometry.IO
                                             int h3 = currentRoom.Blocks[x, z].QAFaces[2];
                                             int h4 = currentRoom.Blocks[x, z].QAFaces[3];
 
-                                            int lh1 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[0];
-                                            int lh2 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[1];
-                                            int lh3 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[2];
-                                            int lh4 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[3];
+                                            int lh1 = otherRoom.Blocks[lowX, lowZ].WSFaces[0];
+                                            int lh2 = otherRoom.Blocks[lowX, lowZ].WSFaces[1];
+                                            int lh3 = otherRoom.Blocks[lowX, lowZ].WSFaces[2];
+                                            int lh4 = otherRoom.Blocks[lowX, lowZ].WSFaces[3];
 
                                             bool defined;
 
@@ -1380,10 +1370,10 @@ namespace TombEditor.Geometry.IO
 
                                             currentPortal.Room.Blocks[x, z].CeilingPortal = currentPortal;
 
-                                            int h1 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[0];
-                                            int h2 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[1];
-                                            int h3 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[2];
-                                            int h4 = currentRoom.Ceiling + currentRoom.Blocks[x, z].WSFaces[3];
+                                            int h1 = currentRoom.Blocks[x, z].WSFaces[0];
+                                            int h2 = currentRoom.Blocks[x, z].WSFaces[1];
+                                            int h3 = currentRoom.Blocks[x, z].WSFaces[2];
+                                            int h4 = currentRoom.Blocks[x, z].WSFaces[3];
 
                                             int lh1 = otherRoom.Blocks[lowX, lowZ].QAFaces[0];
                                             int lh2 = otherRoom.Blocks[lowX, lowZ].QAFaces[1];
@@ -1489,13 +1479,10 @@ namespace TombEditor.Geometry.IO
                         for (int j = 0; j < room.Lights.Count; j++)
                         {
                             var light = room.Lights[j];
-
-                            light.X = (byte)(room.NumXSectors - light.X - 1);
-
-                            light.Position = new Vector3(light.X * 1024 + 512,
-                                -light.Y - room.Position.Y * 256,
-                                light.Z * 1024 + 512);
-                            room.Lights[j] = light;
+                            light.Position = new Vector3(
+                                room.NumXSectors * 1024.0f - light.Position.X,
+                                light.Position.Y - room.Position.Y * 256,
+                                light.Position.Z);
                         }
 
                         for (int z = 0; z < room.NumZSectors; z++)

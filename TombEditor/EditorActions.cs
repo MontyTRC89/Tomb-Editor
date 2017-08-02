@@ -760,7 +760,7 @@ namespace TombEditor
                             return;
 
                         var lowest = room.GetLowestFloorCorner((int)x, (int)z);
-                        var highest = room.GetHighestCeilingCorner((int)x, (int)z) + room.Ceiling;
+                        var highest = room.GetHighestCeilingCorner((int)x, (int)z);
 
                         // Don't go outside room boundaries
                         if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
@@ -1533,8 +1533,8 @@ namespace TombEditor
             int worldX = newX * 1024;
             int worldZ = newZ * 1024;
 
-            var newRoom = new Room(_editor.Level);
-            newRoom.Init(newX, (int)room.Position.Y, newZ, numXSectors, numZSectors, room.Ceiling);
+            var newRoom = new Room(_editor.Level, numXSectors, numZSectors, "Unnamed");
+            newRoom.Position = new Vector3(newX, room.Position.Y, newZ);
 
             // First collect all items to remove
             List<int> objectsToRemove = new List<int>();
@@ -2672,10 +2672,10 @@ namespace TombEditor
                         for (int z = lowZmin; z <= lowZmax; z++)
                         {
                             // Now I do the same checks already done before, but this time for ceiling
-                            int h1 = otherRoom.Ceiling + otherRoom.Blocks[x, z].WSFaces[0];
-                            int h2 = otherRoom.Ceiling + otherRoom.Blocks[x, z].WSFaces[1];
-                            int h3 = otherRoom.Ceiling + otherRoom.Blocks[x, z].WSFaces[2];
-                            int h4 = otherRoom.Ceiling + otherRoom.Blocks[x, z].WSFaces[3];
+                            int h1 = otherRoom.Blocks[x, z].WSFaces[0];
+                            int h2 = otherRoom.Blocks[x, z].WSFaces[1];
+                            int h3 = otherRoom.Blocks[x, z].WSFaces[2];
+                            int h4 = otherRoom.Blocks[x, z].WSFaces[3];
 
                             // Check if the sector already has a ceiling portal
                             if ((otherRoom.Blocks[x, z].Type != BlockType.Floor && otherRoom.Blocks[x, z].Type != BlockType.Wall) ||
@@ -2725,10 +2725,10 @@ namespace TombEditor
                             int h3 = room.Blocks[x, z].QAFaces[2];
                             int h4 = room.Blocks[x, z].QAFaces[3];
 
-                            int lh1 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[0];
-                            int lh2 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[1];
-                            int lh3 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[2];
-                            int lh4 = otherRoom.Ceiling + otherRoom.Blocks[lowX, lowZ].WSFaces[3];
+                            int lh1 = otherRoom.Blocks[lowX, lowZ].WSFaces[0];
+                            int lh2 = otherRoom.Blocks[lowX, lowZ].WSFaces[1];
+                            int lh3 = otherRoom.Blocks[lowX, lowZ].WSFaces[2];
+                            int lh4 = otherRoom.Blocks[lowX, lowZ].WSFaces[3];
 
                             bool defined = false;
 
@@ -2970,7 +2970,7 @@ namespace TombEditor
                                 VerticalArea verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
                                 block.EDFaces[i] = (short)Math.Round(verticalArea.FloorY);
                                 block.QAFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f);
-                                block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f - room.Ceiling);
+                                block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f);
                                 block.RFFaces[i] = (short)Math.Round(verticalArea.CeilingY);
                             }
                     }
@@ -3002,8 +3002,8 @@ namespace TombEditor
                                 VerticalArea verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
                                 block.EDFaces[i] = (short)Math.Round((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f);
                                 block.QAFaces[i] = (short)Math.Round((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f);
-                                block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f - room.Ceiling);
-                                block.RFFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f - room.Ceiling);
+                                block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f);
+                                block.RFFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 4.0f) / 5.0f);
                             }
                     }
                 }

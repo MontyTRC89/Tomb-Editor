@@ -285,5 +285,20 @@ namespace TombEditor
 
             return null;
         }
+
+        public static string ReadString(this BinaryReader stream)
+        {
+            int stringLength = stream.ReadInt32();
+            byte[] stringData = stream.ReadBytes(stringLength);
+            string result = Encoding.UTF8.GetString(stringData);
+            return result;
+        }
+
+        public static void Write(this BinaryWriter stream, string str)
+        {
+            byte[] stringData = Encoding.UTF8.GetBytes(str);
+            stream.Write(stringData.GetLength(0));
+            stream.Write(stringData);
+        }
     }
 }

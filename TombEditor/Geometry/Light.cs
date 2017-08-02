@@ -15,11 +15,7 @@ namespace TombEditor.Geometry
         public float DirectionY { get; set; }
         public float Len { get; set; }
         public float Cutoff { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
-        public BlockFaces Face { get; set; }
-
+        
         public Light Clone()
         {
             return (Light)(this.MemberwiseClone());
