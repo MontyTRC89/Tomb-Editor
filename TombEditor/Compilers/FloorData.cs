@@ -20,6 +20,7 @@ namespace TombEditor.Compilers
                 var room = _level.Rooms[i];
                 if (room == null)
                     continue;
+                var tempRoom = _tempRooms[room];
 
                 // Get all portals
                 var portals = new List<Portal>();
@@ -39,7 +40,7 @@ namespace TombEditor.Compilers
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        var sector = GetSector(room, x, z);
+                        var sector = GetSector(tempRoom, x, z);
                         var block = room.Blocks[x, z];
 
                         var baseFloorData = (ushort)tempFloorData.Count;
@@ -93,7 +94,7 @@ namespace TombEditor.Compilers
                             // Update current sector
                             sector.FloorDataIndex = baseFloorData;
 
-                            SaveSector(room, x, z, sector);
+                            SaveSector(tempRoom, x, z, sector);
 
                             continue;
                         }
@@ -106,7 +107,7 @@ namespace TombEditor.Compilers
                             sector.Floor = -127;
                             sector.Ceiling = -127;
 
-                            SaveSector(room, x, z, sector);
+                            SaveSector(tempRoom, x, z, sector);
                             continue;
                         }
 
@@ -158,13 +159,13 @@ namespace TombEditor.Compilers
 
                                 // Update current sector
                                 sector.FloorDataIndex = baseFloorData;
-                                SaveSector(room, x, z, sector);
+                                SaveSector(tempRoom, x, z, sector);
                             }
                             else
                             {
                                 sector.Floor = -127;
                                 sector.Ceiling = -127;
-                                SaveSector(room, x, z, sector);
+                                SaveSector(tempRoom, x, z, sector);
                             }
 
                             continue;
@@ -229,9 +230,9 @@ namespace TombEditor.Compilers
 
                             // First, we fix the sector height
                             if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte)(room._compiled.Info.YBottom / 256.0f - 0x0f);
+                                sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - 0x0f);
                             else
-                                sector.Floor = (sbyte)(room._compiled.Info.YBottom / 256.0f -
+                                sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f -
                                                         room.GetHighestFloorCorner(x, z));
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE ||
@@ -392,7 +393,7 @@ namespace TombEditor.Compilers
                                 {
                                     // First, we fix the sector height
                                     sector.Floor =
-                                        (sbyte)(room._compiled.Info.YBottom / 256.0f -
+                                        (sbyte)(tempRoom.Info.YBottom / 256.0f -
                                                  room.GetHighestFloorCorner(x, z));
 
                                     // Then we have to find the axis of the triangulation
@@ -675,10 +676,10 @@ namespace TombEditor.Compilers
 
                                 // First, we fix the sector height
                                 if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte)(room._compiled.Info.YBottom / 256.0f - 0x0f);
+                                    sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - 0x0f);
                                 else
                                     sector.Floor =
-                                        (sbyte)(room._compiled.Info.YBottom / 256.0f -
+                                        (sbyte)(tempRoom.Info.YBottom / 256.0f -
                                                  room.GetHighestFloorCorner(x, z));
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE ||
@@ -1244,7 +1245,7 @@ namespace TombEditor.Compilers
                         }
 
                         // Update the sector
-                        SaveSector(room, x, z, sector);
+                        SaveSector(tempRoom, x, z, sector);
                     }
                 }
             }

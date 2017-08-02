@@ -10,9 +10,7 @@ namespace TombEditor.Geometry
     public class Room
     {
         public const short DefaultHeight = 12;
-
-        public tr_room _compiled;
-
+        
         public string Name { get; set; }
         public Vector3 Position { get; set; }
         public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);

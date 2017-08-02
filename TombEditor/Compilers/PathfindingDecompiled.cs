@@ -68,6 +68,7 @@ namespace TombEditor.Compilers
                     // Room must be defined and also must be base room or the flipped version
                     if (room != null && (flipped == 0 && room.BaseRoom == null || flipped == 1 && room.BaseRoom != null))
                     {
+                        tr_room tempRoom = _tempRooms[room];
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
@@ -81,7 +82,7 @@ namespace TombEditor.Compilers
                                         z != 0 &&
                                         x != room.NumXSectors - 1 &&
                                         z != room.NumZSectors - 1 &&
-                                        Dec_CreateNewBox(ref box, x, z, ref room))
+                                        Dec_CreateNewBox(ref box, x, z, room))
                                     {
                                         // ...then try to add it to the box array
                                         boxIndex = Dec_AddBox(ref box);
@@ -93,11 +94,11 @@ namespace TombEditor.Compilers
                                     }
 
                                     // Assign the box index to the sector
-                                    room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)room._compiled.TextureSounds[x, z]);
+                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)tempRoom.TextureSounds[x, z]);
                                 }
                                 else
                                 {
-                                    room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)room._compiled.TextureSounds[x, z]);
+                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)tempRoom.TextureSounds[x, z]);
                                 }
                             }
                         }
@@ -254,7 +255,7 @@ namespace TombEditor.Compilers
             return boxIndex;
         }
 
-        private bool Dec_CreateNewBox(ref dec_tr_box_aux box, int x, int z, ref Room theRoom)
+        private bool Dec_CreateNewBox(ref dec_tr_box_aux box, int x, int z, Room theRoom)
         {
             bool monkey = false;
 

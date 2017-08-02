@@ -285,7 +285,7 @@ namespace TombEditor.Compilers
 
                 ConvertLights(room, ref newRoom);
 
-                room._compiled = newRoom;
+                _tempRooms.Add(room, newRoom);
             }
 
             ReportProgress(25, "    Number of rooms: " + _level.Rooms.Count(r => r != null));
@@ -406,9 +406,9 @@ namespace TombEditor.Compilers
             {
                 var newLight = new tr4_room_light
                 {
-                    X = (int) (newRoom.Info.X + light.Position.X),
-                    Y = (int) (-light.Position.Y + newRoom.Info.YBottom),
-                    Z = (int) (newRoom.Info.Z + light.Position.Z),
+                    X = (int)Math.Round(newRoom.Info.X + light.Position.X),
+                    Y = (int)Math.Round(-light.Position.Y + newRoom.Info.YBottom),
+                    Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
                     Color = new tr_color
                     {
                         Red = light.Color.R,
