@@ -89,7 +89,7 @@ namespace TombEditor.Geometry.IO
                         writer.Write(filler8);
                         writer.Write(p.MemberOfFlippedRoom);
                         writer.Write(p.Flipped);
-                        writer.Write(p.OtherIdFlipped);
+                        writer.Write(filler32);
                         writer.Write(filler32);
                         writer.Write(filler32);
                         writer.Write(filler32);

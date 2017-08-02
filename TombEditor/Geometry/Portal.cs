@@ -9,7 +9,6 @@ namespace TombEditor.Geometry
         public byte NumXBlocks { get; set; }
         public byte NumZBlocks { get; set; }
         public Portal Other { get; set; }
-        public int OtherIdFlipped { get; set; } = -1;
         public Room AdjoiningRoom { get; set; }
         public short PrjThingIndex { get; set; }
         public short PrjOtherThingIndex { get; set; }

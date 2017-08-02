@@ -2638,12 +2638,6 @@ namespace TombEditor
                 _editor.Level.Portals.Add(portalId, newPortal);
             }
 
-            for (int i = 0; i < duplicatedPortals.Count; i++)
-            {
-                var p = _editor.Level.Portals[duplicatedPortals.ElementAt(i).Key];
-                p.Other.OtherIdFlipped = duplicatedPortals.ElementAt(i).Value;
-            }
-
             byte numXSectors = (byte)(room.NumXSectors);
             byte numZSectors = (byte)(room.NumZSectors);
 

@@ -142,7 +142,7 @@ namespace TombEditor.Geometry.IO
                         reader.ReadByte();
                         portal.MemberOfFlippedRoom = reader.ReadBoolean();
                         portal.Flipped = reader.ReadBoolean();
-                        portal.OtherIdFlipped = reader.ReadInt32();
+                        reader.ReadInt32();
 
                         reader.ReadInt32();
                         reader.ReadInt32();
