@@ -1229,7 +1229,7 @@ namespace TombEditor.Compilers
             {
                 // Get current portal and its paired portal
                 var currentPortal = _level.Portals.ElementAt(i).Value;
-                var otherPortal = _level.Portals[currentPortal.OtherId];
+                var otherPortal = currentPortal.Other;
 
                 // If the light was already averaged, then continue loop
                 //if (currentPortal.LightAveraged) continue;

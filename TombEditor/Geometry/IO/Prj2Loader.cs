@@ -129,7 +129,7 @@ namespace TombEditor.Geometry.IO
                         var portal = new Portal(0, null)
                         {
                             Id = reader.ReadInt32(),
-                            OtherId = reader.ReadInt32(),
+                            Other = level.Portals[reader.ReadInt32()],
                             Room = level.GetOrCreateRoom(reader.ReadInt16()),
                             AdjoiningRoom = level.GetOrCreateRoom(reader.ReadInt16()),
                             Direction = (PortalDirection)reader.ReadByte(),

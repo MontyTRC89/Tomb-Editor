@@ -1423,15 +1423,15 @@ namespace TombEditor.Geometry.IO
 
                             if ((!currentRoom.Flipped && !otherRoom.Flipped))
                             {
-                                currentPortal.OtherId = otherPortal.Id;
-                                otherPortal.OtherId = currentPortal.Id;
+                                currentPortal.Other = otherPortal;
+                                otherPortal.Other = currentPortal;
                                 currentPortal.AdjoiningRoom = otherPortal.Room;
                                 otherPortal.AdjoiningRoom = currentPortal.Room;
                             }
                             else if ((currentRoom.Flipped && otherRoom.Flipped))
                             {
-                                currentPortal.OtherId = otherPortal.Id;
-                                otherPortal.OtherId = currentPortal.Id;
+                                currentPortal.Other = otherPortal;
+                                otherPortal.Other = currentPortal;
                                 currentPortal.AdjoiningRoom =
                                     otherRoom.BaseRoom ?? otherPortal.Room;
                                 otherPortal.AdjoiningRoom =
@@ -1443,7 +1443,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     if (otherRoom.AlternateRoom != null)
                                     {
-                                        currentPortal.OtherId = otherPortal.Id;
+                                        currentPortal.Other = otherPortal;
                                         currentPortal.AdjoiningRoom = otherPortal.Room;
                                     }
                                     else
@@ -1451,14 +1451,14 @@ namespace TombEditor.Geometry.IO
                                         currentPortal.AdjoiningRoom = otherRoom.BaseRoom;
                                     }
 
-                                    otherPortal.OtherId = currentPortal.Id;
+                                    otherPortal.Other = currentPortal;
                                     otherPortal.AdjoiningRoom = currentPortal.Room;
                                 }
                                 if (currentRoom.Flipped && !otherRoom.Flipped)
                                 {
                                     if (currentRoom.AlternateRoom != null)
                                     {
-                                        otherPortal.OtherId = currentPortal.Id;
+                                        otherPortal.Other = currentPortal;
                                         otherPortal.AdjoiningRoom = currentPortal.Room;
                                     }
                                     else
@@ -1466,7 +1466,7 @@ namespace TombEditor.Geometry.IO
                                         otherPortal.AdjoiningRoom = currentRoom.BaseRoom;
                                     }
 
-                                    currentPortal.OtherId = otherPortal.Id;
+                                    currentPortal.Other = otherPortal;
                                     currentPortal.AdjoiningRoom = otherPortal.Room;
                                 }
                             }

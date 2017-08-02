@@ -8,7 +8,7 @@ namespace TombEditor.Geometry
         public PortalDirection Direction { get; set; }
         public byte NumXBlocks { get; set; }
         public byte NumZBlocks { get; set; }
-        public int OtherId { get; set; }
+        public Portal Other { get; set; }
         public int OtherIdFlipped { get; set; } = -1;
         public Room AdjoiningRoom { get; set; }
         public short PrjThingIndex { get; set; }
@@ -32,15 +32,12 @@ namespace TombEditor.Geometry
                 Z = Z,
                 NumXBlocks = NumXBlocks,
                 NumZBlocks = NumZBlocks,
-                OtherId = OtherId,
+                Other = Other,
                 AdjoiningRoom = AdjoiningRoom
             };
         }
 
-        public Rectangle Area
-        {
-            get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
-        }
+        public Rectangle Area => new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1);
 
         public override ObjectInstance Clone()
         {

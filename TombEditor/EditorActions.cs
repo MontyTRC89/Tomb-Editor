@@ -2018,8 +2018,8 @@ namespace TombEditor
                     _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
                     found.Portals.Add(otherRoomPortal);
 
-                    currentRoomPortal.OtherId = otherRoomPortal.Id;
-                    otherRoomPortal.OtherId = currentRoomPortal.Id;
+                    currentRoomPortal.Other = otherRoomPortal;
+                    otherRoomPortal.Other = currentRoomPortal;
 
                     // Set the portal ID in sectors
                     for (int z = area.Y; z <= area.Bottom; z++)
@@ -2140,8 +2140,8 @@ namespace TombEditor
                     _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
                     found.Portals.Add(otherRoomPortal);
 
-                    currentRoomPortal.OtherId = otherRoomPortal.Id;
-                    otherRoomPortal.OtherId = currentRoomPortal.Id;
+                    currentRoomPortal.Other = otherRoomPortal;
+                    otherRoomPortal.Other = currentRoomPortal;
 
                     // Set the portal ID in sectors
                     for (int z = area.Y; z <= area.Bottom; z++)
@@ -2262,8 +2262,8 @@ namespace TombEditor
                     _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
                     found.Portals.Add(otherRoomPortal);
 
-                    currentRoomPortal.OtherId = otherRoomPortal.Id;
-                    otherRoomPortal.OtherId = currentRoomPortal.Id;
+                    currentRoomPortal.Other = otherRoomPortal;
+                    otherRoomPortal.Other = currentRoomPortal;
 
                     // Set portal ID in sectors
                     for (int x = area.X; x <= area.Right; x++)
@@ -2384,8 +2384,8 @@ namespace TombEditor
                     _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
                     found.Portals.Add(otherRoomPortal);
 
-                    currentRoomPortal.OtherId = otherRoomPortal.Id;
-                    otherRoomPortal.OtherId = currentRoomPortal.Id;
+                    currentRoomPortal.Other = otherRoomPortal;
+                    otherRoomPortal.Other = currentRoomPortal;
 
                     // Set portal ID in sectors
                     for (int x = area.X; x <= area.Right; x++)
@@ -2622,8 +2622,8 @@ namespace TombEditor
                     _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
                     found.Portals.Add(otherRoomPortal);
 
-                    currentRoomPortal.OtherId = otherRoomPortal.Id;
-                    otherRoomPortal.OtherId = currentRoomPortal.Id;
+                    currentRoomPortal.Other = otherRoomPortal;
+                    otherRoomPortal.Other = currentRoomPortal;
 
                     // Set floor portal ID
                     for (int x = area.X; x <= area.Right; x++)
@@ -2890,10 +2890,8 @@ namespace TombEditor
 
         public static void DeletePortal(Room room, int id)
         {
-            int otherPortalId = _editor.Level.Portals[id].OtherId;
-
             Portal current = _editor.Level.Portals[id];
-            Portal other = _editor.Level.Portals[otherPortalId];
+            Portal other = _editor.Level.Portals[id].Other;
 
             for (int x = current.X; x < current.X + current.NumXBlocks; x++)
             {
@@ -2946,10 +2944,10 @@ namespace TombEditor
             }
 
             _editor.Level.Portals[id].Room.Portals.Remove(current);
-            _editor.Level.Portals[otherPortalId].Room.Portals.Remove(other);
+            other.Room.Portals.Remove(other);
 
             _editor.Level.Portals.Remove(id);
-            _editor.Level.Portals.Remove(otherPortalId);
+            _editor.Level.Portals.Remove(other.Id);
 
             room.BuildGeometry();
             room.CalculateLightingForThisRoom();

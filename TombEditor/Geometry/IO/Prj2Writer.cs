@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using NLog;
 using TombLib.IO;
 
@@ -77,7 +78,7 @@ namespace TombEditor.Geometry.IO
                     foreach (var p in level.Portals.Values)
                     {
                         writer.Write(p.Id);
-                        writer.Write(p.OtherId);
+                        writer.Write((int) level.Portals.First(kv => ReferenceEquals(kv.Value, p.Other)).Key);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.Room));
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.AdjoiningRoom));
                         writer.Write((byte)p.Direction);
