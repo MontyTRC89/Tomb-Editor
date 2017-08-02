@@ -45,10 +45,7 @@ namespace TombEditor.Geometry
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-            {
-                result.Rooms[0] = new Room(result) { Name = "Room 0" };
-                result.Rooms[0].Init(0, 0, 0, 20, 20, 12);
-            }
+                result.Rooms[0] = new Room(result, 20, 20, "Room 0");
             return result;
         }
 
@@ -302,12 +299,12 @@ namespace TombEditor.Geometry
             }
         }
 
-        public Room GetOrCreateRoom(int index)
+        public Room GetOrCreateDummyRoom(int index)
         {
             if (index < 0 || index >= Rooms.Length)
                 return null;
 
-            return Rooms[index] ?? (Rooms[index] = new Room(this));
+            return Rooms[index] ?? (Rooms[index] = new Room(this, 1, 1));
         }
     }
 }

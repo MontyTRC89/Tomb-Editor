@@ -1536,8 +1536,8 @@ namespace TombEditor
             int worldX = newX * 1024;
             int worldZ = newZ * 1024;
 
-            var newRoom = new Room(_editor.Level);
-            newRoom.Init(newX, (int)room.Position.Y, newZ, numXSectors, numZSectors, 20);
+            var newRoom = new Room(_editor.Level, numXSectors, numZSectors, "Unnamed");
+            newRoom.Position = new Vector3(newX, room.Position.Y, newZ);
 
             // First collect all items to remove
             List<int> objectsToRemove = new List<int>();

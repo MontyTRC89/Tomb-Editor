@@ -139,9 +139,9 @@ namespace TombEditor.Geometry.IO
 
                         reader.ReadInt16();
 
-                        var room = level.GetOrCreateRoom(i);
-                        room.Init(posXBlocks, (int)(yPos / 256.0f), posZBlocks, (byte)numXBlocks, (byte)numZBlocks,
-                            0);
+                        var room = new Room(level, numXBlocks, numZBlocks, roomName);
+                        room.Position = new Vector3(posXBlocks, yPos / 256.0f, posZBlocks);
+                        level.Rooms[i] = room;
 
                         short numPortals = reader.ReadInt16();
                         var portalThings = new short[numPortals];
@@ -161,7 +161,7 @@ namespace TombEditor.Geometry.IO
                             short portalXBlocks = reader.ReadInt16();
                             short portalZBlocks = reader.ReadInt16();
                             reader.ReadInt16();
-                            var portalRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                            var portalRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short portalSlot = reader.ReadInt16();
 
                             var portalBuffer = reader.ReadBytes(26);
@@ -218,7 +218,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -350,7 +350,7 @@ namespace TombEditor.Geometry.IO
                             }
                             else
                             {
-                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.GetOrCreateRoom(i))
+                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.GetOrCreateDummyRoom(i))
                                 {
                                     X = (byte)objPosX,
                                     Z = (byte)objPosZ,
@@ -478,7 +478,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateRoom(reader.ReadInt16());
+                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -873,7 +873,7 @@ namespace TombEditor.Geometry.IO
                             }
                         }
                         
-                        System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateRoom(i), room));
+                        System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateDummyRoom(i), room));
 
                         progress += (i / (float)numRooms * 0.28f);
 
