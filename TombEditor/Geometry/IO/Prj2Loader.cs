@@ -185,7 +185,6 @@ namespace TombEditor.Geometry.IO
                                 return null;
                         }
 
-                        o.Type = objectType;
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         o.Room = level.GetOrCreateRoom(reader.ReadInt16());
                         o.Ocb = reader.ReadInt16();

@@ -2,6 +2,7 @@
 using SharpDX.Toolkit.Graphics;
 using TombEditor.Geometry;
 using System.Windows.Forms;
+using System;
 
 namespace TombEditor
 {
@@ -25,11 +26,11 @@ namespace TombEditor
     public class Gizmo
     {
         private GizmoAxis _axis;
-        private Vector3 _position;
-        private bool _drawGizmo;
 
         private readonly Editor _editor;
         private readonly RasterizerState _rasterizerWireframe;
+        private readonly DepthStencilState _depthStencilState;
+        private readonly DepthStencilState _depthStencilStateDefault;
 
         // Geometry of the gizmo
         private readonly DeviceManager _deviceManager;
@@ -58,8 +59,8 @@ namespace TombEditor
             var vZ = new EditorVertex {Position = new Vector4(0.0f, 0.0f, -1024.0f, 1.0f)};
             var vertices = new[] {v0, vX, v0, vY, v0, vZ};
 
-            _linesBuffer =
-                Buffer.Vertex.New(_device, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New
+                (_device, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _sphere = GeometricPrimitive.Sphere.New(_device, 128.0f, 16);
 
@@ -77,8 +78,16 @@ namespace TombEditor
                 IsScissorEnabled = false,
                 SlopeScaledDepthBias = 0
             };
-
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
+
+            // Initialize the depth stencil state
+            SharpDX.Direct3D11.DepthStencilStateDescription depthStencilState = SharpDX.Direct3D11.DepthStencilStateDescription.Default();
+            depthStencilState.IsDepthEnabled = false;
+            depthStencilState.DepthComparison = SharpDX.Direct3D11.Comparison.Never;
+            depthStencilState.DepthWriteMask = SharpDX.Direct3D11.DepthWriteMask.Zero;
+            _depthStencilState = DepthStencilState.New(_device, depthStencilState);
+
+            _depthStencilStateDefault = DepthStencilState.New(_device, SharpDX.Direct3D11.DepthStencilStateDescription.Default());
         }
 
         public void SetGizmoAxis(GizmoAxis axis)
@@ -88,7 +97,7 @@ namespace TombEditor
 
         public void MouseMoved(Matrix viewProjection, int x, int y, Keys modifierKeys)
         {
-            if ((_editor.SelectedObject.HasValue) || (_axis == GizmoAxis.None))
+            if ((!DrawGizmo) || (_axis == GizmoAxis.None))
                 return;
 
             // For picking, I'll check first sphere/cubes bounding boxes and then eventually
@@ -98,55 +107,54 @@ namespace TombEditor
             Ray ray = Ray.GetPickRay(x, y, _device.Viewport,
                 Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
 
-            Vector3 delta = new Vector3();
+            Vector3 newPos = Position;
             switch (_axis)
             {
                 case GizmoAxis.X:
                     {
-                        Plane plane = new Plane(_position, Vector3.UnitY);
+                        Plane plane = new Plane(newPos, Vector3.UnitY);
                         Vector3 intersection;
                         ray.Intersects(ref plane, out intersection);
-                        delta = new Vector3(intersection.X - (_position.X + 1024.0f), 0, 0);
+                        newPos.X = intersection.X - 1024.0f;
                     }
                     break;
                 case GizmoAxis.Y:
                     {
-                        Plane plane = new Plane(_position, Vector3.UnitX);
+                        Plane plane = new Plane(newPos, Vector3.UnitX);
                         Vector3 intersection;
                         ray.Intersects(ref plane, out intersection);
-                        delta = new Vector3(0, intersection.Y - (_position.Y + 1024.0f), 0);
+                        newPos.Y = intersection.Y - 1024.0f;
                     }
                     break;
                 case GizmoAxis.Z:
                     {
-                        Plane plane = new Plane(_position, Vector3.UnitY);
+                        Plane plane = new Plane(newPos, Vector3.UnitY);
                         Vector3 intersection;
                         ray.Intersects(ref plane, out intersection);
-                        delta = new Vector3(0, 0, intersection.Z - (_position.Z - 1024.0f));
+                        newPos.Z = intersection.Z + 1024.0f;
                     }
                     break;
             }
 
-            EditorActions.MoveObject(_editor.SelectedRoom, _editor.SelectedObject.Value, delta, modifierKeys);
-            return;
+            EditorActions.MoveObject(_editor.SelectedRoom, _editor.SelectedObject.Value, newPos, modifierKeys);
         }
 
         public PickingResultGizmo DoPicking(Ray ray)
         {
-            if (!_drawGizmo)
+            if (!DrawGizmo)
                 return null;
 
             float distance;
 
-            BoundingSphere sphereX = new BoundingSphere(_position + Vector3.UnitX * 1024.0f, 64.0f);
+            BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * 1024.0f, 64.0f);
             if (ray.Intersects(ref sphereX, out distance))
                 return new PickingResultGizmo(distance, GizmoAxis.X);
 
-            BoundingSphere sphereY = new BoundingSphere(_position + Vector3.UnitY * 1024.0f, 64.0f);
+            BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * 1024.0f, 64.0f);
             if (ray.Intersects(ref sphereY, out distance))
                 return new PickingResultGizmo(distance, GizmoAxis.Y);
 
-            BoundingSphere sphereZ = new BoundingSphere(_position - Vector3.UnitZ * 1024.0f, 64.0f);
+            BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * 1024.0f, 64.0f);
             if (ray.Intersects(ref sphereZ, out distance))
                 return new PickingResultGizmo(distance, GizmoAxis.Z);
 
@@ -155,19 +163,17 @@ namespace TombEditor
 
         public void Draw(Matrix viewProjection)
         {
-            if (_drawGizmo)
+            if (!DrawGizmo)
                 return;
 
-            int TODO;
-            _device.Clear(ClearOptions.DepthBuffer, Color4.White, 1.0f, 0);
-
+            _device.SetDepthStencilState(_depthStencilState);
             _device.SetRasterizerState(_rasterizerWireframe);
             _device.SetVertexBuffer(_linesBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesBuffer));
 
             var solidEffect = _deviceManager.Effects["Solid"];
 
-            var model = Matrix.Translation(_position) *
+            var model = Matrix.Translation(Position) *
                         Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             var modelViewProjection = model * viewProjection;
 
@@ -198,7 +204,7 @@ namespace TombEditor
             _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
             // X axis sphere
-            model = Matrix.Translation(_position + Vector3.UnitX * 1024.0f) *
+            model = Matrix.Translation(Position + Vector3.UnitX * 1024.0f) *
                     Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_red);
@@ -207,7 +213,7 @@ namespace TombEditor
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
             // Y axis sphere
-            model = Matrix.Translation(_position + Vector3.UnitY * 1024.0f) *
+            model = Matrix.Translation(Position + Vector3.UnitY * 1024.0f) *
                     Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_green);
@@ -216,13 +222,58 @@ namespace TombEditor
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
             // Z axis sphere
-            model = Matrix.Translation(_position - Vector3.UnitZ * 1024.0f) *
+            model = Matrix.Translation(Position - Vector3.UnitZ * 1024.0f) *
                     Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_blue);
             solidEffect.CurrentTechnique.Passes[0].Apply();
 
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+
+            _device.SetDepthStencilState(_depthStencilStateDefault);
+        }
+
+        private bool DrawGizmo
+        {
+            get
+            {
+                if (_editor.SelectedObject.HasValue)
+                    switch (_editor.SelectedObject.Value.Type)
+                    {
+                        case ObjectInstanceType.Camera:
+                        case ObjectInstanceType.FlyByCamera:
+                        case ObjectInstanceType.Moveable:
+                        case ObjectInstanceType.Sink:
+                        case ObjectInstanceType.SoundSource:
+                        case ObjectInstanceType.StaticMesh:
+                        case ObjectInstanceType.Light:
+                            return true;
+                    }
+                return false;
+            }
+        }
+
+        private Vector3 Position
+        {
+            get
+            {
+                if (_editor.SelectedObject.HasValue)
+                    switch (_editor.SelectedObject.Value.Type)
+                    {
+                        case ObjectInstanceType.Camera:
+                        case ObjectInstanceType.FlyByCamera:
+                        case ObjectInstanceType.Moveable:
+                        case ObjectInstanceType.Sink:
+                        case ObjectInstanceType.SoundSource:
+                        case ObjectInstanceType.StaticMesh:
+                            return _editor.Level.Objects[_editor.SelectedObject.Value.Id].Position;
+                        case ObjectInstanceType.Light:
+                            if (Editor.Instance.SelectedRoom != null)
+                                return _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id].Position;
+                            break;
+                    }
+                throw new NotSupportedException();
+            }
         }
     }
 }

@@ -70,10 +70,10 @@ namespace TombEditor.Controls
         private void SetParameters()
         {
             _editor = Editor.Instance;
-            if (_editor.LightIndex == -1)
+            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
-            Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
+            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
 
             switch (LightParameter)
             {
@@ -193,14 +193,14 @@ namespace TombEditor.Controls
         {
             _editor = Editor.Instance;
 
-            if (_editor.LightIndex == -1)
+            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
             // Hack for setting up light parameter ranges
             SetParameters();
 
             // Get the current light
-            Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
+            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
 
             float newValue = _value;
 
@@ -235,14 +235,14 @@ namespace TombEditor.Controls
         {
             _editor = Editor.Instance;
 
-            if (_editor.LightIndex == -1)
+            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
             // Hack for setting up light parameter ranges
             SetParameters();
 
             // Get the current light
-            Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
+            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
 
             float newValue = _value;
 
@@ -285,45 +285,44 @@ namespace TombEditor.Controls
         {
             _editor = Editor.Instance;
 
-            if (_editor.LightIndex != -1)
+            if (_editor.SelectedObject.HasValue && (_editor.SelectedObject.Value.Type == ObjectInstanceType.Light))
             {
-                Light light = _editor.SelectedRoom.Lights[_editor.LightIndex];
+                Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
 
                 switch (LightParameter)
                 {
                     case LightParameter.Intensity:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].Intensity = _value;
+                        light.Intensity = _value;
                         break;
 
                     case LightParameter.In:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].In = _value;
+                        light.In = _value;
                         break;
 
                     case LightParameter.Out:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].Out = _value;
+                        light.Out = _value;
                         break;
 
                     case LightParameter.Len:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].Len = _value;
+                        light.Len = _value;
                         break;
 
                     case LightParameter.CutOff:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].Cutoff = _value;
+                        light.Cutoff = _value;
                         break;
 
                     case LightParameter.DirectionX:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].DirectionX = _value;
+                        light.DirectionX = _value;
                         break;
 
                     case LightParameter.DirectionY:
-                        _editor.SelectedRoom.Lights[_editor.LightIndex].DirectionY = _value;
+                        light.DirectionY = _value;
                         break;
                 }
 
                 //_editor.SelectedRoom.BuildGeometry();
                 _editor.SelectedRoom.CalculateLightingForThisRoom();
                 _editor.SelectedRoom.UpdateBuffers();
-
                 _editor.DrawPanel3D();
             }
         }

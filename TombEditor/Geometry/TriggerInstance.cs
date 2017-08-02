@@ -6,10 +6,8 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
-    public class TriggerInstance : ObjectInstance
+    public class TriggerInstance : SectorBasedObjectInstance
     {
-        public byte NumXBlocks { get; set; }
-        public byte NumZBlocks { get; set; }
         public TriggerType TriggerType { get; set; }
         public TriggerTargetType TargetType { get; set; }
         public int Target { get; set; }
@@ -17,8 +15,13 @@ namespace TombEditor.Geometry
         public bool OneShot { get; set; }
 
         public TriggerInstance(int id, Room room)
-            : base(ObjectInstanceType.Trigger, id, room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.Trigger; }
+        }
 
         public override string ToString()
         {
@@ -119,12 +122,7 @@ namespace TombEditor.Geometry
 
             return output;
         }
-
-        public Rectangle Area
-        {
-            get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
-        }
-
+        
         public override ObjectInstance Clone()
         {
             return new TriggerInstance(0, Room)
@@ -143,8 +141,7 @@ namespace TombEditor.Geometry
                     [2] = Bits[2],
                     [3] = Bits[3],
                     [4] = Bits[4]
-                },
-                Type = Type
+                }
             };
         }
     }

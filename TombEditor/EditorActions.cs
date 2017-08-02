@@ -14,18 +14,6 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
-        public enum FaceSubdivisions
-        {
-            Q,
-            A,
-            W,
-            S,
-            E,
-            D,
-            R,
-            F
-        }
-        
         private static Editor _editor = Editor.Instance;
 
         public static void SmartBuildGeometry(Room room, Rectangle area)
@@ -151,63 +139,72 @@ namespace TombEditor
             _editor.UpdateStatusStrip();
         }
 
-        public static void EditFace(Room room, Rectangle area, EditorArrowType action, FaceSubdivisions sub)
+        public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int face, short increment, bool smooth)
         {
-            int face = 0;
-            short increment = 0;
-
-            switch (sub)
+            if (smooth)
             {
-                case FaceSubdivisions.Q:
-                    face = 0;
-                    increment = 1;
-                    break;
+                // Choose between QA, WS, ED and RF array
+                Func<int, int, short[]> getFaces;
+                switch (face)
+                {
+                    case 0:
+                        getFaces = (x, z) => room.Blocks[x, z].QAFaces;
+                        break;
+                    case 1:
+                        getFaces = (x, z) => room.Blocks[x, z].WSFaces;
+                        break;
+                    case 2:
+                        getFaces = (x, z) => room.Blocks[x, z].EDFaces;
+                        break;
+                    case 3:
+                        getFaces = (x, z) => room.Blocks[x, z].RFFaces;
+                        break;
+                    default:
+                        throw new NotSupportedException();
+                }
 
-                case FaceSubdivisions.A:
-                    face = 0;
-                    increment = -1;
-                    break;
+                // Get coordinates
+                int xMin = area.X;
+                int xMax = area.Right;
+                int zMin = area.Y;
+                int zMax = area.Bottom;
+                int xMinSpecial = Math.Max(0, xMin - 1);
+                int zMinSpecial = Math.Max(0, zMin - 1);
+                int xMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, xMax + 1);
+                int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, zMax + 1);
 
-                case FaceSubdivisions.W:
-                    face = 1;
-                    increment = 1;
-                    break;
+                // Build smooth edges
+                getFaces(xMinSpecial, zMaxSpecial)[2] += increment;
+                getFaces(xMaxSpecial, zMaxSpecial)[3] += increment;
+                getFaces(xMaxSpecial, zMinSpecial)[0] += increment;
+                getFaces(xMinSpecial, zMinSpecial)[1] += increment;
 
-                case FaceSubdivisions.S:
-                    face = 1;
-                    increment = -1;
-                    break;
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    getFaces(x, zMinSpecial)[0] += increment;
+                    getFaces(x, zMinSpecial)[1] += increment;
 
-                case FaceSubdivisions.E:
-                    face = 2;
-                    increment = 1;
-                    break;
+                    getFaces(x, zMaxSpecial)[3] += increment;
+                    getFaces(x, zMaxSpecial)[2] += increment;
+                }
 
-                case FaceSubdivisions.D:
-                    face = 2;
-                    increment = -1;
-                    break;
+                for (int z = zMin; z <= zMax; z++)
+                {
+                    getFaces(xMinSpecial, z)[1] += increment;
+                    getFaces(xMinSpecial, z)[2] += increment;
 
-                case FaceSubdivisions.R:
-                    face = 3;
-                    increment = 1;
-                    break;
-
-                case FaceSubdivisions.F:
-                    face = 3;
-                    increment = -1;
-                    break;
-
-                default:
-                    return;
+                    getFaces(xMaxSpecial, z)[0] += increment;
+                    getFaces(xMaxSpecial, z)[3] += increment;
+                }
             }
+
 
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     Block block = room.Blocks[x, z];
 
-                    switch (action)
+                    switch (arrow)
                     {
                         case EditorArrowType.EntireFace:
                             if (face == 0)
@@ -671,6 +668,7 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
+            _editor.DrawPanel3D();
             _editor.UpdateStatusStrip();
         }
 
@@ -729,12 +727,12 @@ namespace TombEditor
             return new Vector3(512.0f, 128.0f, 512.0f);
         }
 
-        public static void MoveObject(Room room, ObjectPtr objectPtr, Vector3 delta, Keys modifierKeys)
+        public static void MoveObject(Room room, ObjectPtr objectPtr, Vector3 pos, Keys modifierKeys)
         {
-            MoveObject(room, objectPtr, delta, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
+            MoveObject(room, objectPtr, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
         }
 
-        public static void MoveObject(Room room, ObjectPtr objectPtr, Vector3 delta, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
+        public static void MoveObject(Room room, ObjectPtr objectPtr, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
             switch (objectPtr.Type)
             {
@@ -744,28 +742,17 @@ namespace TombEditor
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
                 case ObjectInstanceType.FlyByCamera:
-                    // Get old position
-                    Vector3 newPosition;
-                    if (objectPtr.Type == ObjectInstanceType.Light)
-                        newPosition = new Vector3(room.Lights[objectPtr.Index].Position.X,
-                                                  room.Lights[objectPtr.Index].Position.Y,
-                                                  room.Lights[objectPtr.Index].Position.Z);
-                    else
-                        newPosition = new Vector3(_editor.Level.Objects[objectPtr.Index].Position.X,
-                                                  _editor.Level.Objects[objectPtr.Index].Position.Y,
-                                                  _editor.Level.Objects[objectPtr.Index].Position.Z);
-                    newPosition += delta;
-
+                case ObjectInstanceType.Light:
                     // Limit movement precision
                     for (int i = 0; i < 3; ++i)
                         if (precision[i] != 0)
-                            newPosition[i] = ((float)Math.Round(newPosition[i] / precision[i])) * precision[i];
+                            pos[i] = ((float)Math.Round(pos[i] / precision[i])) * precision[i];
 
                     // Limit movement area ...
                     if (!canGoOutsideRoom)
                     {
-                        float x = (float)Math.Floor(newPosition.X / 1024.0f);
-                        float z = (float)Math.Floor(newPosition.Z / 1024.0f);
+                        float x = (float)Math.Floor(pos.X / 1024.0f);
+                        float z = (float)Math.Floor(pos.Z / 1024.0f);
 
                         if ((x < 0.0f) || (x > (room.NumXSectors - 1)) ||
                             (z < 0.0f) || (z > (room.NumZSectors - 1)))
@@ -778,17 +765,17 @@ namespace TombEditor
                         var highest = room.GetHighestCeilingCorner((int)x, (int)z) + room.Ceiling;
 
                         // Don't go outside room boundaries
-                        if ((newPosition.X < 1024.0f) || (newPosition.X > (room.NumXSectors - 1) * 1024.0f) ||
-                            (newPosition.Z < 1024.0f) || (newPosition.Z > (room.NumZSectors - 1) * 1024.0f) ||
-                            (newPosition.Y < lowest * 256.0f) || (newPosition.Y > highest * 256.0f))
+                        if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
+                            (pos.Z < 1024.0f) || (pos.Z > (room.NumZSectors - 1) * 1024.0f) ||
+                            (pos.Y < lowest * 256.0f) || (pos.Y > highest * 256.0f))
                             return;
                     }
 
                     // Update position
                     if (objectPtr.Type == ObjectInstanceType.Light)
-                        room.Lights[objectPtr.Index].Position = newPosition;
+                        room.Lights[objectPtr.Id].Position = pos;
                     else
-                        _editor.Level.Objects[objectPtr.Index].Position = newPosition;
+                        _editor.Level.Objects[objectPtr.Id].Position = pos;
 
                     // Update state
                     if (objectPtr.Type == ObjectInstanceType.Light)
@@ -811,13 +798,13 @@ namespace TombEditor
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
                 case ObjectInstanceType.FlyByCamera:
-                    _editor.Level.Objects[objectPtr.Index].Rotation += (short)(sign * (smoothMove ? 5 : 45));
+                    _editor.Level.Objects[objectPtr.Id].Rotation += (short)(sign * (smoothMove ? 5 : 45));
 
-                    if (_editor.Level.Objects[objectPtr.Index].Rotation == 360)
-                        _editor.Level.Objects[objectPtr.Index].Rotation = 0;
+                    if (_editor.Level.Objects[objectPtr.Id].Rotation == 360)
+                        _editor.Level.Objects[objectPtr.Id].Rotation = 0;
 
-                    if (_editor.Level.Objects[objectPtr.Index].Rotation < 0)
-                        _editor.Level.Objects[objectPtr.Index].Rotation += 360;
+                    if (_editor.Level.Objects[objectPtr.Id].Rotation < 0)
+                        _editor.Level.Objects[objectPtr.Id].Rotation += 360;
                     break;
             }
         }
@@ -827,23 +814,23 @@ namespace TombEditor
             switch (objectPtr.Type)
             {
                 case ObjectInstanceType.Moveable:
-                    using (FormMoveable formMoveable = new FormMoveable((MoveableInstance)(_editor.Level.Objects[objectPtr.Index])))
+                    using (FormMoveable formMoveable = new FormMoveable((MoveableInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formMoveable.ShowDialog(owner);
                     break;
                 case ObjectInstanceType.FlyByCamera:
-                    using (FormFlybyCamera formFlyby = new FormFlybyCamera((FlybyCameraInstance)(_editor.Level.Objects[objectPtr.Index])))
+                    using (FormFlybyCamera formFlyby = new FormFlybyCamera((FlybyCameraInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formFlyby.ShowDialog(owner);
                     break;
                 case ObjectInstanceType.Sink:
-                    using (FormSink formSink = new FormSink((SinkInstance)(_editor.Level.Objects[objectPtr.Index])))
+                    using (FormSink formSink = new FormSink((SinkInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formSink.ShowDialog(owner);
                     break;
                 case ObjectInstanceType.SoundSource:
-                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Index])))
+                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formSound.ShowDialog(owner);
                     break;
                 case ObjectInstanceType.Trigger:
-                    using (FormTrigger formSound = new FormTrigger(_editor.Level, (TriggerInstance)(_editor.Level.Triggers[objectPtr.Index])))
+                    using (FormTrigger formSound = new FormTrigger(_editor.Level, (TriggerInstance)(_editor.Level.Triggers[objectPtr.Id])))
                         formSound.ShowDialog(owner);
                     break;
             }
@@ -863,18 +850,17 @@ namespace TombEditor
 
             DeleteObject(room, objectPtr);
         }
+
         public static void DeleteObject(Room room, ObjectPtr objectPtr)
         {
-            _editor.Level.Objects.Remove(objectPtr.Index);
-
             switch (objectPtr.Type)
             {
                 case ObjectInstanceType.Portal:
                     if (room.Flipped)
                         return;
-                    int otherPortalId = _editor.Level.Portals[objectPtr.Index].OtherId;
+                    int otherPortalId = _editor.Level.Portals[objectPtr.Id].OtherId;
 
-                    Portal current = _editor.Level.Portals[objectPtr.Index];
+                    Portal current = _editor.Level.Portals[objectPtr.Id];
                     Portal other = _editor.Level.Portals[otherPortalId];
 
                     for (int x = current.X; x < current.X + current.NumXBlocks; x++)
@@ -927,12 +913,13 @@ namespace TombEditor
                         }
                     }
 
-                    _editor.Level.Portals[objectPtr.Index].Room.Portals.Remove(objectPtr.Index);
+                    _editor.Level.Portals[objectPtr.Id].Room.Portals.Remove(objectPtr.Id);
                     _editor.Level.Portals[otherPortalId].Room.Portals.Remove(otherPortalId);
 
-                    _editor.Level.Portals.Remove(objectPtr.Index);
+                    _editor.Level.Portals.Remove(objectPtr.Id);
                     _editor.Level.Portals.Remove(otherPortalId);
 
+                    // Update state
                     room.BuildGeometry();
                     room.CalculateLightingForThisRoom();
                     room.UpdateBuffers();
@@ -940,20 +927,28 @@ namespace TombEditor
                     other.Room.BuildGeometry();
                     other.Room.CalculateLightingForThisRoom();
                     other.Room.UpdateBuffers();
-                    _editor.DrawPanelGrid();
+
                     if (_editor.SelectedObject == objectPtr)
                         _editor.SelectedObject = null;
+                    _editor.DrawPanelGrid();
                     break;
 
                 case ObjectInstanceType.Trigger:
-                    int TODO_____HOW_TO_DELETE_A_TRIGGER;
+                    _editor.Level.DeleteTrigger(objectPtr.Id);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
+
+                    // Update state
+                    if (_editor.SelectedObject == objectPtr)
+                        _editor.SelectedObject = null;
                     _editor.DrawPanelGrid();
                     _editor.LoadTriggersInUI();
                     room.UpdateBuffers();
                     break;
 
                 case ObjectInstanceType.Light:
-                    room.Lights.RemoveAt(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Lights.RemoveAt(objectPtr.Id);
 
                     room.BuildGeometry();
                     room.CalculateLightingForThisRoom();
@@ -961,33 +956,33 @@ namespace TombEditor
                     break;
 
                 case ObjectInstanceType.Moveable:
-                    room.Moveables.Remove(objectPtr.Index);
-                    _editor.Level.DeleteObject(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
                     break;
 
                 case ObjectInstanceType.StaticMesh:
-                    room.StaticMeshes.Remove(objectPtr.Index);
-                    _editor.Level.DeleteObject(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
                     break;
 
                 case ObjectInstanceType.SoundSource:
-                    room.SoundSources.Remove(objectPtr.Index);
-                    _editor.Level.DeleteObject(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
                     break;
 
                 case ObjectInstanceType.Sink:
-                    room.Sinks.Remove(objectPtr.Index);
-                    _editor.Level.DeleteObject(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
                     break;
 
                 case ObjectInstanceType.Camera:
-                    room.Cameras.Remove(objectPtr.Index);
-                    _editor.Level.DeleteObject(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
                     break;
 
                 case ObjectInstanceType.FlyByCamera:
-                    room.FlyByCameras.Remove(objectPtr.Index);
-                    _editor.Level.DeleteObject(objectPtr.Index);
+                    _editor.Level.Objects.Remove(objectPtr.Id);
+                    room.Moveables.Remove(objectPtr.Id);
                     break;
             }
 
@@ -1008,7 +1003,7 @@ namespace TombEditor
             {
                 case ObjectInstanceType.Light:
                     {
-                        Light light = room.Lights[objectPtr.Index];
+                        Light light = room.Lights[objectPtr.Id];
 
                         light.DirectionX += delta.X;
                         light.DirectionY += delta.Y;
@@ -1032,7 +1027,7 @@ namespace TombEditor
 
                 case ObjectInstanceType.FlyByCamera:
                     {
-                        FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[objectPtr.Index];
+                        FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[objectPtr.Id];
 
                         flyby.DirectionX += (short)Math.Round(delta.X);
                         flyby.DirectionY += (short)Math.Round(delta.Y);
@@ -1412,7 +1407,7 @@ namespace TombEditor
                     }
                     break;
                 case ObjectInstanceType.Moveable:
-                    if (!_editor.ActionPlaceItem_IsStatic)
+                    if (!_editor.ActionPlaceItem_Item.IsStatic)
                     {
                         MoveableInstance instance = new MoveableInstance(_editor.Level.GetNewObjectId(), room);
 
@@ -1420,15 +1415,14 @@ namespace TombEditor
                         int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                         instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Model = _editor.Level.Wad.Moveables[(uint)(_editor.ActionPlaceItem_ItemID)];
-                        instance.Invisible = false;
+                        instance.Model = _editor.Level.Wad.Moveables[(uint)(_editor.ActionPlaceItem_Item.Id)];
 
                         _editor.Level.Objects.Add(instance.Id, instance);
                         room.Moveables.Add(instance.Id);
                     }
                     break;
                 case ObjectInstanceType.StaticMesh:
-                    if (_editor.ActionPlaceItem_IsStatic)
+                    if (_editor.ActionPlaceItem_Item.IsStatic)
                     {
                         StaticMeshInstance instance = new StaticMeshInstance(_editor.Level.GetNewObjectId(), room);
 
@@ -1436,8 +1430,7 @@ namespace TombEditor
                         int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                         instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Model = _editor.Level.Wad.StaticMeshes[(uint)(_editor.ActionPlaceItem_ItemID)];
-                        instance.Invisible = false;
+                        instance.Model = _editor.Level.Wad.StaticMeshes[(uint)(_editor.ActionPlaceItem_Item.Id)];
                         instance.Color = System.Drawing.Color.FromArgb(255, 128, 128, 128);
 
                         _editor.Level.Objects.Add(instance.Id, instance);
@@ -1452,7 +1445,6 @@ namespace TombEditor
                         int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                         instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Invisible = false;
 
                         _editor.Action = EditorAction.None;
                         _editor.Level.Objects.Add(instance.Id, instance);
@@ -1467,7 +1459,6 @@ namespace TombEditor
                         int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                         instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Invisible = false;
 
                         _editor.Action = EditorAction.None;
                         _editor.Level.Objects.Add(instance.Id, instance);
@@ -1482,8 +1473,6 @@ namespace TombEditor
                         int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                         instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Invisible = false;
-                        instance.SoundId = (short)_editor.ActionPlaceSound_SoundID;
 
                         _editor.Action = EditorAction.None;
                         _editor.Level.Objects.Add(instance.Id, instance);
@@ -1498,7 +1487,6 @@ namespace TombEditor
                         int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
                         instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Invisible = false;
 
                         _editor.Action = EditorAction.None;
                         _editor.Level.Objects.Add(instance.Id, instance);
@@ -1745,7 +1733,7 @@ namespace TombEditor
             if (_editor.SelectedRoom == room)
             {
                 _editor.SelectedRoom = newRoom;
-                _editor.BlockSelection = new Rectangle(1, 1, numXSectors - 2, numZSectors - 2);
+                _editor.SelectedSector = new Rectangle(1, 1, numXSectors - 2, numZSectors - 2);
             }
 
             // Update state
@@ -2859,73 +2847,6 @@ namespace TombEditor
             }
 
             return false;
-        }
-
-        public static void SpecialRaiseFloorOrCeiling(Room room, Rectangle area, int face, short increment)
-        {
-            int xMin = area.X;
-            int xMax = area.Right;
-            int zMin = area.Y;
-            int zMax = area.Bottom;
-            int xMinSpecial = Math.Max(0, xMin - 1);
-            int zMinSpecial = Math.Max(0, zMin - 1);
-            int xMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, xMax + 1);
-            int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, zMax + 1);
-            
-            if (face == 0)
-            {
-                room.Blocks[xMinSpecial, zMaxSpecial].QAFaces[2] += increment;
-                room.Blocks[xMaxSpecial, zMaxSpecial].QAFaces[3] += increment;
-                room.Blocks[xMaxSpecial, zMinSpecial].QAFaces[0] += increment;
-                room.Blocks[xMinSpecial, zMinSpecial].QAFaces[1] += increment;
-
-                for (int x = xMin; x <= xMax; x++)
-                {
-                    room.Blocks[x, zMinSpecial].QAFaces[0] += increment;
-                    room.Blocks[x, zMinSpecial].QAFaces[1] += increment;
-
-                    room.Blocks[x, zMaxSpecial].QAFaces[3] += increment;
-                    room.Blocks[x, zMaxSpecial].QAFaces[2] += increment;
-                }
-
-                for (int z = zMin; z <= zMax; z++)
-                {
-                    room.Blocks[xMinSpecial, z].QAFaces[1] += increment;
-                    room.Blocks[xMinSpecial, z].QAFaces[2] += increment;
-
-                    room.Blocks[xMaxSpecial, z].QAFaces[0] += increment;
-                    room.Blocks[xMaxSpecial, z].QAFaces[3] += increment;
-                }
-            }
-            else if (face == 1)
-            {
-                room.Blocks[xMinSpecial, zMaxSpecial].WSFaces[2] += increment;
-                room.Blocks[xMaxSpecial, zMaxSpecial].WSFaces[3] += increment;
-                room.Blocks[xMaxSpecial, zMinSpecial].WSFaces[0] += increment;
-                room.Blocks[xMinSpecial, zMinSpecial].WSFaces[1] += increment;
-
-                for (int x = xMin; x <= xMax; x++)
-                {
-                    room.Blocks[x, zMinSpecial].WSFaces[0] += increment;
-                    room.Blocks[x, zMinSpecial].WSFaces[1] += increment;
-
-                    room.Blocks[x, zMaxSpecial].WSFaces[3] += increment;
-                    room.Blocks[x, zMaxSpecial].WSFaces[2] += increment;
-                }
-
-                for (int z = zMin; z <= zMax; z++)
-                {
-                    room.Blocks[xMinSpecial, z].WSFaces[1] += increment;
-                    room.Blocks[xMinSpecial, z].WSFaces[2] += increment;
-
-                    room.Blocks[xMaxSpecial, z].WSFaces[0] += increment;
-                    room.Blocks[xMaxSpecial, z].WSFaces[3] += increment;
-                }
-            }
-            
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
         }
 
         public static void SmoothRandomFloor(Room room, Rectangle area, float strengthDirection)

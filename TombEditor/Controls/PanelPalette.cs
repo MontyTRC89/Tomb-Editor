@@ -34,39 +34,41 @@ namespace TombEditor.Controls
         public PanelPalette()
         {
             InitializeComponent();
-
-            if (!base.DesignMode)
-                using (FileStream stream = File.OpenRead("Editor\\Palette.bin"))
-                    using (BinaryReader readerPalette = new BinaryReader(stream))
-                        while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
-                        _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }
-
-
+        
         public PanelPalette(IContainer container)
         {
             container.Add(this);
             InitializeComponent();
             _editor = Editor.Instance;
+            
+            if (!base.DesignMode)
+                using (FileStream stream = File.OpenRead("Editor\\Palette.bin"))
+                    using (BinaryReader readerPalette = new BinaryReader(stream))
+                        while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
+                            _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }
 
         private Color getColorFromPalette(Point point)
         {
             if (_palette == null)
                 return Color.Magenta;
-            int index = _selectedColorCoord.Y * _paletteWidth + _selectedColorCoord.X;
+            int index = point.Y * _paletteWidth + point.X;
             if ((index < 0) || (index >= _palette.Count))
                 return Color.Magenta;
             return _palette[index];
         }
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseClick(e);
+            base.OnMouseDown(e);
 
-            _selectedColorCoord = new Point((int)(e.X / _paletteCellWidth), (int)(e.Y / _paletteCellHeight));
-            SelectedColorChanged(this, EventArgs.Empty);
-            Invalidate();
+            if (e.Button == MouseButtons.Left)
+            {
+                _selectedColorCoord = new Point((int)(e.X / _paletteCellWidth), (int)(e.Y / _paletteCellHeight));
+                SelectedColorChanged?.Invoke(this, EventArgs.Empty);
+                Invalidate();
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)

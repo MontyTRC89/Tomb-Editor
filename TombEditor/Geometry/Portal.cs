@@ -3,11 +3,9 @@ using System;
 
 namespace TombEditor.Geometry
 {
-    public class Portal : ObjectInstance
+    public class Portal : SectorBasedObjectInstance
     {
         public PortalDirection Direction { get; set; }
-        public byte NumXBlocks { get; set; }
-        public byte NumZBlocks { get; set; }
         public int OtherId { get; set; }
         public int OtherIdFlipped { get; set; } = -1;
         public Room AdjoiningRoom { get; set; }
@@ -19,8 +17,12 @@ namespace TombEditor.Geometry
         public bool LightAveraged { get; set; }
 
         public Portal(int id, Room room)
-            : base(ObjectInstanceType.Portal, id, room)
+            : base(id, room)
+        {}
+
+        public override ObjectInstanceType Type
         {
+            get { return ObjectInstanceType.Portal; }
         }
 
         public Portal ClonePortal()
@@ -35,11 +37,6 @@ namespace TombEditor.Geometry
                 OtherId = OtherId,
                 AdjoiningRoom = AdjoiningRoom
             };
-        }
-
-        public Rectangle Area
-        {
-            get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
         }
 
         public override ObjectInstance Clone()

@@ -3223,7 +3223,7 @@ namespace TombEditor.Geometry
 
         public override string ToString()
         {
-            return Name;
+            return Level.Rooms.ReferenceIndexOf(this).ToString();
         }
     }
 

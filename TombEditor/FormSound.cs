@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TombEditor.Geometry;
 using System.IO;
 using System.Media;
+using TombLib.Wad;
 
 namespace TombEditor
 {

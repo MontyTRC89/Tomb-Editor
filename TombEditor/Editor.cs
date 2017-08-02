@@ -49,16 +49,14 @@ namespace TombEditor
         // istanza dell'editor
         public Level Level { get; set; }
         public EditorAction Action { get; set; } = EditorAction.None;
-        public int ActionPlaceSound_SoundID { get; set; }
         public LightType ActionPlaceLight_LightType { get; set; }
-        public int ActionPlaceItem_ItemID { get; set; }
-        public bool ActionPlaceItem_IsStatic { get; set; }
+        public ItemType ActionPlaceItem_Item { get; set; }
         public EditorMode Mode { get; set; } = EditorMode.Geometry;
         public Room SelectedRoom { get; set; }
         public ObjectPtr? SelectedObject { get; set; } = null;
-        public System.Drawing.Point BlockSelectionStart { get; set; } = new System.Drawing.Point(-1, -1);
-        public System.Drawing.Point BlockSelectionEnd { get; set; } = new System.Drawing.Point(-1, -1);
-        public EditorArrowType BlockSelectionArrow { get; set; } = EditorArrowType.EntireFace;
+        public SharpDX.DrawingPoint SelectedSectorStart { get; set; } = new SharpDX.DrawingPoint(-1, -1);
+        public SharpDX.DrawingPoint SelectedSectorEnd { get; set; } = new SharpDX.DrawingPoint(-1, -1);
+        public EditorArrowType SelectedSectorArrow { get; set; } = EditorArrowType.EntireFace;
         public bool RelocateCameraActive { get; set; }
         public bool InvisiblePolygon { get; set; }
         public bool DoubleSided { get; set; }
@@ -66,7 +64,7 @@ namespace TombEditor
         public int SelectedTextureIndex { get; set; } = -1;
         public Vector2[] SeletedTextureUV { get; } = new Vector2[4];
         public TextureTileType SeletedTextureTriangle { get; set; }
-        public Configuration Configuration { get; set; } = TombEditor.Configuration.LoadFrom(Configuration.GetDefaultPath());
+        public Configuration Configuration { get; set; } = Configuration.LoadFrom(Configuration.GetDefaultPath());
 
         private Panel2DGrid _panelGrid;
         private PanelRendering3D _panel3D;
@@ -74,6 +72,9 @@ namespace TombEditor
 
         // To be removed
         private DeviceManager _deviceManager;
+
+        public Editor()
+        {}
 
         public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor, DeviceManager deviceManager)
         {
@@ -156,12 +157,17 @@ namespace TombEditor
         
         public void ResetSelection()
         {
-            _formEditor.ResetSelection();
+            SelectedObject = null;
+            SelectedSectorReset();
+            SelectedSectorArrow = EditorArrowType.EntireFace;
+            DrawPanel3D();
+            DrawPanelGrid();
+            UpdateStatusStrip();
         }
 
         public void SelectRoom(Room room)
         {
-            BlockSelectionReset();
+            SelectedSectorReset();
             LoadTriggersInUI();
     
             _formEditor.SelectRoom(room);
@@ -189,44 +195,45 @@ namespace TombEditor
             _formEditor.EditLight();
         }
 
+        public void ShowObject(ObjectInstance objectInstance)
+        {
+            if (SelectedRoom != objectInstance.Room)
+            {
+                SelectedRoom = objectInstance.Room;
+                CenterCamera();
+                DrawPanelGrid();
+                DrawPanelMap2D();
+            }
+            SelectedObject = objectInstance.ObjectPtr;
+            DrawPanel3D();
+        }
+
         // The rectangle is (-1, -1, -1, 1) when nothing is selected.
         // The "Right" and "Bottom" point of the rectangle is inclusive.
-        public Rectangle BlockSelection
+        public SharpDX.Rectangle SelectedSector
         {
             get
             {
                 return new SharpDX.Rectangle(
-                    Math.Min(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Min(BlockSelectionStart.Y, BlockSelectionEnd.Y),
-                    Math.Max(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Max(BlockSelectionStart.Y, BlockSelectionEnd.Y));
+                    Math.Min(SelectedSectorStart.X, SelectedSectorEnd.X), Math.Min(SelectedSectorStart.Y, SelectedSectorEnd.Y),
+                    Math.Max(SelectedSectorStart.X, SelectedSectorEnd.X), Math.Max(SelectedSectorStart.Y, SelectedSectorEnd.Y));
             }
             set
             {
-                BlockSelectionStart = new System.Drawing.Point(value.X, value.Y);
-                BlockSelectionEnd = new System.Drawing.Point(value.Right, value.Bottom);
+                SelectedSectorStart = new SharpDX.DrawingPoint(value.X, value.Y);
+                SelectedSectorEnd = new SharpDX.DrawingPoint(value.Right, value.Bottom);
             }
         }
 
-        public void BlockSelectionReset()
+        public void SelectedSectorReset()
         {
-            BlockSelectionStart = new System.Drawing.Point(-1, -1);
-            BlockSelectionEnd = new System.Drawing.Point(-1, -1);
+            SelectedSectorStart = new SharpDX.DrawingPoint(-1, -1);
+            SelectedSectorEnd = new SharpDX.DrawingPoint(-1, -1);
         }
 
-        public bool BlockSelectionAvailable
+        public bool SelectedSectorAvailable
         {
-           get { return (BlockSelectionStart.X != -1) && (BlockSelectionStart.Y != -1) && (BlockSelectionEnd.X != -1) && (BlockSelectionEnd.Y != -1); }
-        }
-
-        public int LightIndex
-        {
-            get
-            {
-                if (SelectedObject == null)
-                    return -1;
-                if (SelectedObject.Value.Type != ObjectInstanceType.Light)
-                    return -1;
-                return SelectedObject.Value.Index;
-            }
+           get { return (SelectedSectorStart.X != -1) && (SelectedSectorStart.Y != -1) && (SelectedSectorEnd.X != -1) && (SelectedSectorEnd.Y != -1); }
         }
     }
 }

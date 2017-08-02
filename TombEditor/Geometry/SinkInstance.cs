@@ -5,8 +5,13 @@
         public short Strength { get; set; }
 
         public SinkInstance(int id, Room room)
-            : base(ObjectInstanceType.Sink, id, room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.Sink; }
+        }
 
         public override ObjectInstance Clone()
         {
@@ -27,7 +32,6 @@
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Type = Type,
                 Strength = Strength
             };
         }

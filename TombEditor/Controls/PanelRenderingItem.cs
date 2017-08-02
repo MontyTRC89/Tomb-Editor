@@ -6,15 +6,17 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TombEditor.Geometry;
 using TombLib.Graphics;
 
 namespace TombEditor.Controls
 {
     class PanelRenderingItem : Panel
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SwapChainGraphicsPresenter Presenter { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
-        public bool SelectedItemIsStatic { get; set; }
 
         private Editor _editor;
         private VertexInputLayout _layout;
@@ -22,14 +24,13 @@ namespace TombEditor.Controls
         private GraphicsDevice _device;
         private int _lastX;
         private int _lastY;
-        private int _selectedItem;
-        
+        private ItemType? _selectedItem;
+
         public void InitializePanel(DeviceManager deviceManager)
         {
             _editor = Editor.Instance;
             _deviceManager = deviceManager;
             _device = deviceManager.Device;
-            SelectedItem = -1;
 
             // inizializzo il Presenter se necessario
             if (Presenter == null)
@@ -65,20 +66,56 @@ namespace TombEditor.Controls
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if (SelectedItem == -1)
+            if (!_selectedItem.HasValue)
             {
                 _device.Present();
                 return;
             }
 
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-            if (SelectedItemIsStatic)
+            if (_selectedItem.Value.IsStatic)
+            {
+                StaticModel model;
+
+                model = _editor.Level.Wad.StaticMeshes[(uint)_selectedItem.Value.Id];
+
+                Effect mioEffect = _deviceManager.Effects["StaticModel"];
+                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
+                mioEffect.Parameters["TextureEnabled"].SetValue(true);
+                mioEffect.Parameters["SelectionEnabled"].SetValue(false);
+                mioEffect.Parameters["LightEnabled"].SetValue(false);
+
+                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                _device.SetVertexInputLayout(_layout);
+
+                _device.SetVertexBuffer(0, model.VertexBuffer);
+                _device.SetIndexBuffer(model.IndexBuffer, true);
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    StaticMesh mesh = model.Meshes[i];
+
+                    if (_layout == null)
+                    {
+                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
+                    }
+
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(Matrix.Identity);
+                    mioEffect.Techniques[0].Passes[0].Apply();
+
+                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+                }
+            }
+            else
             {
                 SkinnedModel model;
                 SkinnedModel skin;
 
-                model = _editor.Level.Wad.Moveables[(uint)SelectedItem];
-                skin = _editor.Level.Wad.Moveables[(uint)SelectedItem];
+                model = _editor.Level.Wad.Moveables[(uint)SelectedItem.Value.Id];
+                skin = model;
 
                 model.BuildHierarchy();
 
@@ -112,47 +149,12 @@ namespace TombEditor.Controls
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                 }
             }
-            else
-            {
-                StaticModel model;
-
-                model = _editor.Level.Wad.StaticMeshes[(uint)SelectedItem];
-
-                Effect mioEffect = _deviceManager.Effects["StaticModel"];
-                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
-                mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
-                mioEffect.Parameters["TextureEnabled"].SetValue(true);
-                mioEffect.Parameters["SelectionEnabled"].SetValue(false);
-                mioEffect.Parameters["LightEnabled"].SetValue(false);
-
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
-                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
-                _device.SetVertexInputLayout(_layout);
-
-                _device.SetVertexBuffer(0, model.VertexBuffer);
-                _device.SetIndexBuffer(model.IndexBuffer, true);
-
-                for (int i = 0; i < model.Meshes.Count; i++)
-                {
-                    StaticMesh mesh = model.Meshes[i];
-
-                    if (_layout == null)
-                    {
-                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
-                    }
-
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(Matrix.Identity);
-                    mioEffect.Techniques[0].Passes[0].Apply();
-
-                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
-                }
-            }
 
             _device.Present();
         }
 
-        public int SelectedItem
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ItemType? SelectedItem
         {
             get
             {
@@ -161,19 +163,19 @@ namespace TombEditor.Controls
             set
             {
                 _selectedItem = value;
-                if (_selectedItem == -1 || _editor == null || _editor.Level == null || _editor.Level.Wad == null)
+                if ((_selectedItem == null) || (_editor?.Level?.Wad == null))
                     return;
 
-                if (_editor.Level.Wad.Moveables.Count > _selectedItem)
+                if (value.Value.IsStatic)
                 {
-                    SkinnedModel model = _editor.Level.Wad.Moveables.ElementAt(_selectedItem).Value;
+                    SkinnedModel model = _editor.Level.Wad.Moveables.ElementAt(value.Value.Id).Value;
                     if (model.Animations.Count != 0)
                         model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
                 }
-                else
-                    Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
 
-                Draw();
+                Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
+
+                Invalidate();
             }
         }
 
