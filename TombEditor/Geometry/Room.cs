@@ -19,7 +19,6 @@ namespace TombEditor.Geometry
         public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);
         public Block[,] Blocks { get; set; }
         public Buffer<EditorVertex> VertexBuffer { get; private set; }
-        private List<EditorVertex> Vertices { get; set; }
         public List<int> Moveables { get; private set; } = new List<int>();
         public List<int> StaticMeshes { get; private set; } = new List<int>();
         public List<Light> Lights { get; private set; } = new List<Light>();
@@ -30,7 +29,6 @@ namespace TombEditor.Geometry
         public List<int> Portals { get; private set; } = new List<int>();
         public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
-        public bool Visited { get; set; }
         public List<EditorVertex> OptimizedVertices { get; set; }
         public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = 0;
@@ -47,9 +45,11 @@ namespace TombEditor.Geometry
         public bool FlagQuickSand { get; set; }
         public bool FlagOutside { get; set; }
         public bool FlagHorizon { get; set; }
-        public Reverberation Reverberation { get; set; }
-        private Level Level { get; }
         public bool ExcludeFromPathFinding { get; set; }
+        public Reverberation Reverberation { get; set; }
+
+        private List<EditorVertex> Vertices { get; set; }
+        private Level Level { get; }
 
         public Room(Level level)
         {

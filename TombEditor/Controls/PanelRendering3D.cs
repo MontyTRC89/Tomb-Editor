@@ -1602,6 +1602,7 @@ namespace TombEditor.Controls
 
             Stack<Room> stackRooms = new Stack<Room>();
             Stack<int> stackLimits = new Stack<int>();
+            HashSet<Room> visitedRooms = new HashSet<Room>();
 
             stackRooms.Push(room);
             stackLimits.Push(0);
@@ -1614,7 +1615,8 @@ namespace TombEditor.Controls
                 if (theLimit > _editor.Configuration.DrawRoomsMaxDepth)
                     continue;
 
-                theRoom.Visited = true;
+                visitedRooms.Add(theRoom);
+
                 if (theRoom.Flipped && theRoom.AlternateRoom != null)
                     _roomsToDraw.Add(theRoom.AlternateRoom);
                 else
@@ -1648,7 +1650,7 @@ namespace TombEditor.Controls
                     if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1)
                         continue;
 
-                    if (portal.Room == theRoom && !portal.AdjoiningRoom.Visited &&
+                    if (portal.Room == theRoom && !visitedRooms.Contains(portal.AdjoiningRoom) &&
                         !stackRooms.Contains(portal.AdjoiningRoom))
                     {
                         stackRooms.Push(portal.AdjoiningRoom);
@@ -1879,15 +1881,7 @@ namespace TombEditor.Controls
 
             // First collect rooms to draw
             _roomsToDraw = new List<Room>();
-
-            // Reset visited flag for collecting rooms
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
-            {
-                if (_editor.Level.Rooms[i] == null)
-                    continue;
-                _editor.Level.Rooms[i].Visited = false;
-            }
-
+            
             // Collect rooms to draw
             if (DrawPortals)
                 CollectRoomsToDraw(_editor.SelectedRoom);
