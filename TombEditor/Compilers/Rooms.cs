@@ -1218,13 +1218,6 @@ namespace TombEditor.Compilers
 
         private void MatchPortalShades()
         {
-            //  return; 
-
-            for (var i = 0; i < _level.Portals.Count; i++)
-            {
-                _level.Portals[i].LightAveraged = false;
-            }
-
             for (var i = 0; i < _level.Portals.Count; i++)
             {
                 // Get current portal and its paired portal
@@ -1441,9 +1434,6 @@ namespace TombEditor.Compilers
                         }
                     }
                 }
-
-                _level.Portals[currentPortal.Id].LightAveraged = true;
-                _level.Portals[otherPortal.Id].LightAveraged = true;
             }
         }
 
