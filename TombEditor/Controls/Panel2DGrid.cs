@@ -310,7 +310,7 @@ namespace TombEditor.Controls
                         // Draw floor tile
                         if (block.Triggers.Count != 0)
                             e.Graphics.FillRectangle(_triggerBrush, rectangle);
-                        else if ((block.FloorPortal != -1 && !block.IsFloorSolid) || block.CeilingPortal != -1 || block.WallPortal != -1)
+                        else if ((block.FloorPortal != null && !block.IsFloorSolid) || block.CeilingPortal != -1 || block.WallPortal != -1)
                             e.Graphics.FillRectangle(_portalBrush, rectangle);
                         else if (block.Type == BlockType.BorderWall)
                             e.Graphics.FillRectangle(_borderWallBrush, rectangle);

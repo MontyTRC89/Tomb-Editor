@@ -1334,7 +1334,7 @@ namespace TombEditor.Geometry.IO
                                             int maxHeight = otherRoom.GetHighestCorner(otherXmin, otherZmin, otherXmax,
                                                 otherZmax);
 
-                                            currentPortal.Room.Blocks[x, z].FloorPortal = currentPortal.Id;
+                                            currentPortal.Room.Blocks[x, z].FloorPortal = currentPortal;
 
                                             int h1 = currentRoom.Blocks[x, z].QAFaces[0];
                                             int h2 = currentRoom.Blocks[x, z].QAFaces[1];

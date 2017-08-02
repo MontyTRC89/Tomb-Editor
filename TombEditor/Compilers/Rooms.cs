@@ -78,14 +78,14 @@ namespace TombEditor.Compilers
                     {
                         for (var z = 0; z < room.NumZSectors; z++)
                         {
-                            if (room.Blocks[x, z].FloorPortal == -1)
+                            if (room.Blocks[x, z].FloorPortal == null)
                                 continue;
 
-                            if (!_level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.FlagWater)
+                            if (!room.Blocks[x, z].FloorPortal.AdjoiningRoom.FlagWater)
                                 continue;
 
-                            if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
-                                waterPortals.Add(room.Blocks[x, z].FloorPortal);
+                            if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal.Id))
+                                waterPortals.Add(room.Blocks[x, z].FloorPortal.Id);
                         }
                     }
 
@@ -240,9 +240,9 @@ namespace TombEditor.Compilers
                         if (room.Blocks[x, z].WallPortal >= 0 && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
                             tempIdPortals.Add(room.Blocks[x, z].WallPortal);
 
-                        if (room.Blocks[x, z].FloorPortal >= 0 &&
-                            !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal))
-                            tempIdPortals.Add(room.Blocks[x, z].FloorPortal);
+                        if (room.Blocks[x, z].FloorPortal != null &&
+                            !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal.Id))
+                            tempIdPortals.Add(room.Blocks[x, z].FloorPortal.Id);
 
                         if (room.Blocks[x, z].CeilingPortal >= 0 &&
                             !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal))
@@ -480,10 +480,9 @@ namespace TombEditor.Compilers
                     sector.BoxIndex = 0x7ff6;
                     sector.FloorDataIndex = 0;
 
-                    if (room.Blocks[x, z].FloorPortal >= 0)
+                    if (room.Blocks[x, z].FloorPortal != null)
                         sector.RoomBelow =
-                            (byte) _level.Rooms.ReferenceIndexOf(_editor.Level.Portals[room.Blocks[x, z].FloorPortal]
-                                .AdjoiningRoom);
+                            (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].FloorPortal.AdjoiningRoom);
                     else
                         sector.RoomBelow = 0xff;
 
@@ -529,13 +528,13 @@ namespace TombEditor.Compilers
                         aux.Wall = true;
 
                     // I must setup portal only if current sector is not solid and opacity if different from 1
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                     {
                         if ((!room.Blocks[x, z].IsFloorSolid &&
                              room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1) ||
                             (room.Blocks[x, z].IsFloorSolid && room.Blocks[x, z].NoCollisionFloor))
                         {
-                            var portal = _editor.Level.Portals[room.Blocks[x, z].FloorPortal];
+                            var portal = room.Blocks[x, z].FloorPortal;
                             sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
                         }
                         else
@@ -548,12 +547,12 @@ namespace TombEditor.Compilers
                         sector.RoomBelow = 255;
                     }
 
-                    if ((room.Blocks[x, z].FloorPortal != -1 &&
+                    if ((room.Blocks[x, z].FloorPortal != null &&
                          room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1 &&
                          !room.Blocks[x, z].IsFloorSolid))
                     {
                         aux.Portal = true;
-                        aux.FloorPortal = room.Blocks[x, z].FloorPortal;
+                        aux.FloorPortal = room.Blocks[x, z].FloorPortal.Id;
                     }
                     else
                     {

@@ -262,7 +262,7 @@ namespace TombEditor.Geometry.IO
                                 writer.Write((byte)b.FloorOpacity);
                                 writer.Write((byte)b.CeilingOpacity);
                                 writer.Write((byte)b.WallOpacity);
-                                writer.Write(b.FloorPortal);
+                                writer.Write((int) level.Portals.First(kv => ReferenceEquals(kv.Value, b.FloorPortal)).Key);
                                 writer.Write(b.CeilingPortal);
                                 writer.Write(b.WallPortal);
                                 writer.Write(b.IsFloorSolid);

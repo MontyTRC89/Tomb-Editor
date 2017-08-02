@@ -576,8 +576,8 @@ namespace TombEditor.Geometry
                             CalculateFloorSlope(x, z, qa0, qa1, qa2, qa3);
                         }
 
-                        if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == -1) || /*Blocks[x, z].CeilingPortal != -1 ||*/
-                            (Blocks[x, z].FloorPortal != -1 && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
+                        if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == null) || /*Blocks[x, z].CeilingPortal != -1 ||*/
+                            (Blocks[x, z].FloorPortal != null && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
                             Blocks[x, z].IsFloorSolid || Blocks[x, z].Type == BlockType.Wall)
                         {
                             if (Blocks[x, z].SplitFloor == false && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
@@ -731,8 +731,8 @@ namespace TombEditor.Geometry
                     }
                     else
                     {
-                        if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == -1) || /*Blocks[x, z].Type == BlockType.CeilingPortal ||*/
-                            (Blocks[x, z].FloorPortal >= 0 && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
+                        if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == null) || /*Blocks[x, z].Type == BlockType.CeilingPortal ||*/
+                            (Blocks[x, z].FloorPortal != null && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
                             Blocks[x, z].IsFloorSolid)
                         {
                             int split = GetBestFloorSplit(x, z, qa0, qa1, qa2, qa3);
@@ -2016,8 +2016,8 @@ namespace TombEditor.Geometry
         {
             if (Blocks[x, z].WallPortal != -1)
                 return Level.Portals[Blocks[x, z].WallPortal];
-            if (Blocks[x, z].FloorPortal != -1 && type == PortalDirection.Floor)
-                return Level.Portals[Blocks[x, z].FloorPortal];
+            if (Blocks[x, z].FloorPortal != null && type == PortalDirection.Floor)
+                return Blocks[x, z].FloorPortal;
             if (Blocks[x, z].CeilingPortal != -1 && type == PortalDirection.Ceiling)
                 return Level.Portals[Blocks[x, z].CeilingPortal];
 

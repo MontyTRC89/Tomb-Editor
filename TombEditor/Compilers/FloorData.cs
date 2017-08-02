@@ -111,13 +111,13 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is a floor portal
-                        if (block.FloorPortal >= 0)
+                        if (block.FloorPortal != null)
                         {
                             // I must setup portal only if current sector is not solid and opacity if different from 1
                             if ((!block.IsFloorSolid && block.FloorOpacity != PortalOpacity.Opacity1) ||
                                 (block.IsFloorSolid && block.NoCollisionFloor))
                             {
-                                var portal = _editor.Level.Portals[block.FloorPortal];
+                                var portal = block.FloorPortal;
                                 sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
                             }
                             else
@@ -239,7 +239,7 @@ namespace TombEditor.Compilers
                             {
                                 lastFloorDataFunction = (ushort) tempCodes.Count;
 
-                                if (block.FloorPortal >= 0 && block.NoCollisionFloor)
+                                if (block.FloorPortal != null && block.NoCollisionFloor)
                                 {
                                     function = block.FloorDiagonalSplit == DiagonalSplit.NE ? 0x0c : 0x0b;
                                 }
@@ -309,7 +309,7 @@ namespace TombEditor.Compilers
                             {
                                 lastFloorDataFunction = (ushort) tempCodes.Count;
 
-                                if (block.FloorPortal >= 0 && block.NoCollisionFloor)
+                                if (block.FloorPortal != null && block.NoCollisionFloor)
                                 {
                                     function = block.FloorDiagonalSplit == DiagonalSplit.NW ? 0x0d : 0x0e;
                                 }
@@ -415,7 +415,7 @@ namespace TombEditor.Compilers
 
                                     if (split == 0)
                                     {
-                                        if (block.FloorPortal >= 0 && block.NoCollisionFloor)
+                                        if (block.FloorPortal != null && block.NoCollisionFloor)
                                         {
                                             if (q0 == q1 && q1 == q2 && q2 == q0)
                                             {
@@ -539,7 +539,7 @@ namespace TombEditor.Compilers
                                     }
                                     else
                                     {
-                                        if (block.FloorPortal >= 0 && block.NoCollisionFloor)
+                                        if (block.FloorPortal != null && block.NoCollisionFloor)
                                         {
                                             if (q3 == q0 && q0 == q1 && q1 == q3)
                                             {

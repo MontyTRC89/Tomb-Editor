@@ -82,7 +82,7 @@ namespace TombEditor
                 {
                     int wallPortal = room.Blocks[x, z].WallPortal;
                     int ceilingPortal = room.Blocks[x, z].CeilingPortal;
-                    int floorPortal = room.Blocks[x, z].FloorPortal;
+                    var floorPortal = room.Blocks[x, z].FloorPortal;
 
                     if (wallPortal != -1 && !portalsToTravel.Contains(wallPortal))
                         portalsToTravel.Add(wallPortal);
@@ -90,8 +90,8 @@ namespace TombEditor
                     if (ceilingPortal != -1 && !portalsToTravel.Contains(ceilingPortal))
                         portalsToTravel.Add(ceilingPortal);
 
-                    if (floorPortal != -1 && !portalsToTravel.Contains(floorPortal))
-                        portalsToTravel.Add(floorPortal);
+                    if (floorPortal != null && !portalsToTravel.Contains(floorPortal.Id))
+                        portalsToTravel.Add(floorPortal.Id);
                 }
             }
 
@@ -266,7 +266,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SW)
                                     room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -296,7 +296,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[2] += increment;
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -319,7 +319,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.NE)
                                     room.Blocks[x, z].QAFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -340,7 +340,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[0] += increment;
                                 room.Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -364,7 +364,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SE)
                                     room.Blocks[x, z].QAFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -382,7 +382,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[1] += increment;
                                 room.Blocks[x, z].EDFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -403,7 +403,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SW)
                                     room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -421,7 +421,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[0] += increment;
                                 room.Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -442,7 +442,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SW)
                                     room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -460,7 +460,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[0] += increment;
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -484,7 +484,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[0] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -504,7 +504,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[0] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -527,7 +527,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -547,7 +547,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -570,7 +570,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -590,7 +590,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[2] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -613,7 +613,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 1)
@@ -633,7 +633,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != -1 && !block.IsFloorSolid)
+                                if (block.FloorPortal != null && !block.IsFloorSolid)
                                     continue;
                             }
                             else if (face == 3)
@@ -1320,7 +1320,7 @@ namespace TombEditor
             {
                 for (int z = 0; z < room.NumZSectors; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != -1 || room.Blocks[x, z].CeilingPortal != -1 ||
+                    if (room.Blocks[x, z].FloorPortal != null || room.Blocks[x, z].CeilingPortal != -1 ||
                         room.Blocks[x, z].WallPortal != -1)
                     {
                         DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a room with portals. Please delete all portals before doing this.",
@@ -1558,14 +1558,14 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                     {
-                        Room otherRoom = _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom;
+                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
 
                         int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
                         int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                        _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
+                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
                     }
 
                     if (room.Blocks[x, z].CeilingPortal != -1)
@@ -1649,14 +1649,14 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                     {
-                        Room otherRoom = _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom;
+                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
 
                         int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
                         int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                        _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
+                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
                     }
 
                     if (room.Blocks[x, z].CeilingPortal != -1)
@@ -1740,14 +1740,14 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                     {
-                        Room otherRoom = _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom;
+                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
 
                         int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
                         int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                        _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
+                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
                     }
 
                     if (room.Blocks[x, z].CeilingPortal != -1)
@@ -1838,14 +1838,14 @@ namespace TombEditor
                 {
                     room.Blocks[x, z].Type = BlockType.Wall;
 
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                     {
-                        Room otherRoom = _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom;
+                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
 
                         int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
                         int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                        _editor.Level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
+                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
                     }
 
                     if (room.Blocks[x, z].CeilingPortal != -1)
@@ -2435,7 +2435,7 @@ namespace TombEditor
                         int h4 = room.Blocks[x, z].QAFaces[3];
 
                         // Check if the sector already has a portal
-                        if (room.Blocks[x, z].Type != BlockType.Floor || room.Blocks[x, z].FloorPortal != -1)
+                        if (room.Blocks[x, z].Type != BlockType.Floor || room.Blocks[x, z].FloorPortal != null)
                         {
                             return false;
                         }
@@ -2628,7 +2628,7 @@ namespace TombEditor
                     // Set floor portal ID
                     for (int x = area.X; x <= area.Right; x++)
                         for (int z = area.Y; z <= area.Bottom; z++)
-                            room.Blocks[x, z].FloorPortal = currentRoomPortal.Id;
+                            room.Blocks[x, z].FloorPortal = currentRoomPortal;
 
                     // Set ceiling portal ID
                     for (int x = otherRoomPortal.X; x <= otherRoomPortal.X + otherRoomPortal.NumXBlocks - 1; x++)
@@ -2899,7 +2899,7 @@ namespace TombEditor
                 {
                     if (current.Direction == PortalDirection.Floor)
                     {
-                        room.Blocks[x, z].FloorPortal = -1;
+                        room.Blocks[x, z].FloorPortal = null;
                         room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
                     }
 
@@ -2930,7 +2930,7 @@ namespace TombEditor
 
                     if (other.Direction == PortalDirection.Floor)
                     {
-                        other.Room.Blocks[x, z].FloorPortal = -1;
+                        other.Room.Blocks[x, z].FloorPortal = null;
                         other.Room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
                     }
 

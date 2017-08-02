@@ -2651,9 +2651,9 @@ namespace TombEditor
                 for (int z = 0; z < numZSectors; z++)
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
-                    newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal]
-                        : -1);
+                    newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != null
+                        ? _editor.Level.Portals[duplicatedPortals[room.Blocks[x, z].FloorPortal.Id]]
+                        : null);
                     newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != -1
                         ? duplicatedPortals[room.Blocks[x, z].CeilingPortal]
                         : -1);

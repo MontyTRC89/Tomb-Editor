@@ -322,9 +322,9 @@ namespace TombEditor.Controls
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;
-                            if ((room.Block != null) && (room.Block.FloorPortal != -1))
+                            if ((room.Block != null) && (room.Block.FloorPortal != null))
                             {
-                                Room portalRoom = level.Portals[room.Block.FloorPortal].AdjoiningRoom;
+                                Room portalRoom = room.Block.FloorPortal.AdjoiningRoom;
                                 if (((i - 1) >= 0) && (roomSequence[i - 1].Room == portalRoom))
                                     belowPen = _portalPen;
                             }
@@ -412,9 +412,9 @@ namespace TombEditor.Controls
                         };
 
                     // Search for a fit in the sequence for rooms it the current room is connected to on this sector
-                    if ((block != null) && (block.FloorPortal != -1))
+                    if ((block != null) && (block.FloorPortal != null))
                     {
-                        var portal = level.Portals[block.FloorPortal];
+                        var portal = block.FloorPortal;
                         var roomAbove = portal.AdjoiningRoom;
                         foreach (var roomSequence in roomSequences)
                             if (roomSequence.Last().Room == roomAbove)
