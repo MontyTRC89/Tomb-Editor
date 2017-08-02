@@ -27,7 +27,7 @@ namespace TombEditor.Geometry
         public List<int> Sinks { get; private set; } = new List<int>();
         public List<int> Cameras { get; private set; } = new List<int>();
         public List<int> FlyByCameras { get; private set; } = new List<int>();
-        public List<int> Portals { get; private set; } = new List<int>();
+        public List<Portal> Portals { get; private set; } = new List<Portal>();
         public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
         public bool Visited { get; set; }
@@ -75,7 +75,7 @@ namespace TombEditor.Geometry
             Cameras = new List<int>();
             Sinks = new List<int>();
             SoundSources = new List<int>();
-            Portals = new List<int>();
+            Portals = new List<Portal>();
             AlternateRoom = null;
             BaseRoom = null;
 

@@ -52,9 +52,9 @@ namespace TombEditor.Geometry
         private void GetConnectedRoomsRecursively(ISet<Room> result, Room startingRoom)
         {
             result.Add(startingRoom);
-            foreach (int portalIndex in startingRoom.Portals)
+            foreach (var portal in startingRoom.Portals)
             {
-                var room = Portals[portalIndex].AdjoiningRoom;
+                var room = portal.AdjoiningRoom;
                 if (!result.Contains(room))
                 {
                     GetConnectedRoomsRecursively(result, room);

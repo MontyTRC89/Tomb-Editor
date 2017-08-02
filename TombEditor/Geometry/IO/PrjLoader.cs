@@ -2598,9 +2598,9 @@ namespace TombEditor.Geometry.IO
                 return null;
             }
 
-            foreach (var portal in level.Portals)
+            foreach (var portal in level.Portals.Values)
             {
-                portal.Value.Room.Portals.Add(portal.Key);
+                portal.Room.Portals.Add(portal);
             }
 
             form.ReportProgress(95, "Building rooms");

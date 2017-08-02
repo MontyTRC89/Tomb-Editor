@@ -2377,10 +2377,8 @@ namespace TombEditor.Controls
                     _roomsToDraw.Add(theRoom);
                 }
 
-                for (int p = 0; p < theRoom.Portals.Count; p++)
+                foreach (var portal in theRoom.Portals)
                 {
-                    Portal portal = _editor.Level.Portals[theRoom.Portals[p]];
-
                     Vector3 normal = Vector3.Zero;
 
                     if (portal.Direction == PortalDirection.North)

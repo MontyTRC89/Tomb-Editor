@@ -582,9 +582,9 @@ namespace TombEditor.Geometry.IO
                 room.UpdateBuffers();
             }
 
-            foreach (var portal in level.Portals)
+            foreach (var portal in level.Portals.Values)
             {
-                portal.Value.Room.Portals.Add(portal.Key);
+                portal.Room.Portals.Add(portal);
             }
 
             level.FileName = filename;

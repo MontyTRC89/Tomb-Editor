@@ -434,9 +434,8 @@ namespace TombEditor.Controls
             for (int i = 1; i < roomSequences.Count; ++i) // triangular iteration
             {
                 var roomSequenceAbove = roomSequences[i];
-                foreach (int portalIndex in roomSequenceAbove[0].Room.Portals)
+                foreach (var portal in roomSequenceAbove[0].Room.Portals)
                 {
-                    Portal portal = level.Portals[portalIndex];
                     Room connectedRoom = portal.AdjoiningRoom;
 
                     for (int j = 0; j < i; ++j)
