@@ -3,232 +3,83 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
-    public enum ClipboardElementType
-    {
-        None,
-        Moveable,
-        StaticMesh,
-        Light,
-        Sink,
-        SoundSource,
-        Camera,
-        FlybyCamera
-    }
-
-    public enum PasteAction
-    {
-        None,
-        Paste,
-        Stamp
-    }
-
     public class Clipboard
     {
-        public static ClipboardElementType ElementType { get; set; }
-        public static int ElementID { get; set; }
-        public static Room OriginalRoom { get; set; }
-        public static PasteAction Action { get; set; }
-
-        private static Editor _editor;
-
-        public static void Copy()
+        private static ObjectPtr? _objectPtr;
+        private static Room _originalRoom;
+        
+        public static void Copy(Room originalRoom, ObjectPtr objectPtr)
         {
-            _editor = Editor.Instance;
-
-            OriginalRoom = _editor.SelectedRoom;
-
-            if (_editor.PickingResult.ElementType == PickingElementType.Moveable)
-            {
-                ElementType = ClipboardElementType.Moveable;
-                ElementID = _editor.PickingResult.Element;
-            }
-            else if (_editor.PickingResult.ElementType == PickingElementType.StaticMesh)
-            {
-                ElementType = ClipboardElementType.StaticMesh;
-                ElementID = _editor.PickingResult.Element;
-            }
-            else if (_editor.PickingResult.ElementType == PickingElementType.Camera)
-            {
-                ElementType = ClipboardElementType.Camera;
-                ElementID = _editor.PickingResult.Element;
-            }
-            else if (_editor.PickingResult.ElementType == PickingElementType.FlyByCamera)
-            {
-                ElementType = ClipboardElementType.FlybyCamera;
-                ElementID = _editor.PickingResult.Element;
-            }
-            else if (_editor.PickingResult.ElementType == PickingElementType.Sink)
-            {
-                ElementType = ClipboardElementType.Sink;
-                ElementID = _editor.PickingResult.Element;
-            }
-            else if (_editor.PickingResult.ElementType == PickingElementType.SoundSource)
-            {
-                ElementType = ClipboardElementType.SoundSource;
-                ElementID = _editor.PickingResult.Element;
-            }
-            else if (_editor.PickingResult.ElementType == PickingElementType.Light)
-            {
-                ElementType = ClipboardElementType.Light;
-                ElementID = _editor.PickingResult.Element;
-            }
+            _objectPtr = objectPtr;
+            _originalRoom = originalRoom;
         }
 
-        public static bool Paste()
+        private static int CopyObject(int Index, Level level, Room room, Vector3 position, int x, int y, int z)
         {
-            _editor = Editor.Instance;
+            ObjectInstance result = level.Objects[_objectPtr.Value.Id].Clone();
+            result.X = (byte)x;
+            result.Y = (short)y;
+            result.Z = (byte)z;
+            result.Position = position;
+            result.Id = level.GetNewObjectId();
+            result.Room = room;
+            level.Objects.Add(result.Id, result);
+            return result.Id;
+        }
 
-            var room = _editor.SelectedRoom;
-
-            bool hasPastedSomething = false;
-
-            if (_editor.PickingResult.ElementType == PickingElementType.Block)
-            {
-                int x = _editor.PickingResult.Element >> 5;
-                int z = _editor.PickingResult.Element & 31;
-
-                Block block = room.Blocks[x, z];
-                int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                Vector3 position = new Vector3(x * 1024 + 512, y * 256, z * 1024 + 512);
-
-                ObjectInstance instance;
-
-                switch (ElementType)
+        public static bool Paste(Level level, Room room, DrawingPoint pos)
+        {
+            Block block = room.GetBlock(pos);
+            int x = pos.X;
+            int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
+            int z = pos.Y;
+            Vector3 position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
+            
+            if (_objectPtr.HasValue)
+                switch (_objectPtr.Value.Type)
                 {
-                    case ClipboardElementType.Light:
-                        Light light = OriginalRoom.Lights[ElementID].Clone();
+                    case ObjectInstanceType.Light:
+                        {
+                            var light = _originalRoom.Lights[_objectPtr.Value.Id].Clone();
+                            light.X = x;
+                            light.Y = y;
+                            light.Z = z;
+                            light.Position = position;
 
-                        light.X = x;
-                        light.Y = y;
-                        light.Z = z;
-                        light.Position = position;
+                            room.Lights.Add(light);
 
-                        room.Lights.Add(light);
-
-                        room.BuildGeometry();
-                        room.CalculateLightingForThisRoom();
-                        room.UpdateBuffers();
-
-                        hasPastedSomething = true;
-
+                            room.BuildGeometry();
+                            room.CalculateLightingForThisRoom();
+                            room.UpdateBuffers();
+                        }
                         break;
 
-                    case ClipboardElementType.Camera:
-                        instance = _editor.Level.Objects[ElementID].Clone();
-
-                        instance.X = (byte)x;
-                        instance.Y = (short)y;
-                        instance.Z = (byte)z;
-                        instance.Position = position;
-                        instance.Id = _editor.Level.GetNewObjectId();
-                        instance.Room = room;
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.Cameras.Add(instance.Id);
-
-                        hasPastedSomething = true;
-
+                    case ObjectInstanceType.Camera:
+                        room.Cameras.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
-                    case ClipboardElementType.FlybyCamera:
-                        instance = _editor.Level.Objects[ElementID].Clone();
-
-                        instance.X = (byte)x;
-                        instance.Y = (short)y;
-                        instance.Z = (byte)z;
-                        instance.Position = position;
-                        instance.Id = _editor.Level.GetNewObjectId();
-                        instance.Room = room;
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.FlyByCameras.Add(instance.Id);
-
-                        hasPastedSomething = true;
-
+                    case ObjectInstanceType.FlyByCamera:
+                        room.FlyByCameras.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
-                    case ClipboardElementType.Sink:
-                        instance = _editor.Level.Objects[ElementID].Clone();
-
-                        instance.X = (byte)x;
-                        instance.Y = (short)y;
-                        instance.Z = (byte)z;
-                        instance.Position = position;
-                        instance.Id = _editor.Level.GetNewObjectId();
-                        instance.Room = room;
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.Sinks.Add(instance.Id);
-
-                        hasPastedSomething = true;
-
+                    case ObjectInstanceType.Sink:
+                        room.Sinks.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
-                    case ClipboardElementType.SoundSource:
-                        instance = _editor.Level.Objects[ElementID].Clone();
-
-                        instance.X = (byte)x;
-                        instance.Y = (short)y;
-                        instance.Z = (byte)z;
-                        instance.Position = position;
-                        instance.Id = _editor.Level.GetNewObjectId();
-                        instance.Room = room;
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.SoundSources.Add(instance.Id);
-
-                        hasPastedSomething = true;
-
+                    case ObjectInstanceType.SoundSource:
+                        room.SoundSources.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
-                    case ClipboardElementType.Moveable:
-                        instance = _editor.Level.Objects[ElementID].Clone();
-
-                        instance.X = (byte)x;
-                        instance.Y = (short)y;
-                        instance.Z = (byte)z;
-                        instance.Position = position;
-                        instance.Id = _editor.Level.GetNewObjectId();
-                        instance.Room = room;
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.Moveables.Add(instance.Id);
-
-                        hasPastedSomething = true;
-
+                    case ObjectInstanceType.Moveable:
+                        room.Moveables.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
-                    case ClipboardElementType.StaticMesh:
-                        instance = _editor.Level.Objects[ElementID].Clone();
-
-                        instance.X = (byte)x;
-                        instance.Y = (short)y;
-                        instance.Z = (byte)z;
-                        instance.Position = position;
-                        instance.Id = _editor.Level.GetNewObjectId();
-                        instance.Room = room;
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.StaticMeshes.Add(instance.Id);
-
-                        hasPastedSomething = true;
-
+                    case ObjectInstanceType.StaticMesh:
+                        room.StaticMeshes.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
-
                 }
-            }
 
-            if (Action == PasteAction.Paste)
-            {
-                Action = PasteAction.None;
-                ElementType = ClipboardElementType.None;
-                OriginalRoom = null;
-                ElementID = -1;
-                _editor.ResetPanel3DCursor();
-            }
-
-            return hasPastedSomething;
+            return _objectPtr.HasValue;
         }
     }
 }

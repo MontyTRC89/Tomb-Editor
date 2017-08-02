@@ -258,5 +258,32 @@ namespace TombEditor
                 return null;
             return array[index0, index1, index2];
         }
+
+        public static T FindFirstAfterWithWrapAround<T>(this IEnumerable<T> list, Func<T, bool> IsPrevious, Func<T, bool> Matches) where T : class
+        {
+            bool ignoreMatches = true;
+
+            // Search for matching objects after the previous one
+            foreach (T obj in list)
+            {
+                if (ignoreMatches)
+                {
+                    if (IsPrevious(obj))
+                        ignoreMatches = false;
+                    continue;
+                }
+
+                // Does it match
+                if (Matches(obj))
+                    return obj;
+            }
+
+            // Search for any matching objects
+            foreach (T obj in list)
+                if (Matches(obj))
+                    return obj;
+
+            return null;
+        }
     }
 }

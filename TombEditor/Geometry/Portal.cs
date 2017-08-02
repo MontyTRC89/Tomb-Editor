@@ -3,11 +3,9 @@ using System;
 
 namespace TombEditor.Geometry
 {
-    public class Portal : ObjectInstance
+    public class Portal : SectorBasedObjectInstance
     {
         public PortalDirection Direction { get; set; }
-        public byte NumXBlocks { get; set; }
-        public byte NumZBlocks { get; set; }
         public Portal Other { get; set; }
         public Room AdjoiningRoom { get; set; }
         public short PrjThingIndex { get; set; }
@@ -18,8 +16,12 @@ namespace TombEditor.Geometry
         public bool LightAveraged { get; set; }
 
         public Portal(int id, Room room)
-            : base(ObjectInstanceType.Portal, id, room)
+            : base(id, room)
+        {}
+
+        public override ObjectInstanceType Type
         {
+            get { return ObjectInstanceType.Portal; }
         }
 
         public Portal ClonePortal()
@@ -36,8 +38,6 @@ namespace TombEditor.Geometry
             };
         }
 
-        public Rectangle Area => new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1);
-
         public override ObjectInstance Clone()
         {
             throw new NotImplementedException();
@@ -50,7 +50,7 @@ namespace TombEditor.Geometry
                 text += " (On Floor) ";
             if (Direction == PortalDirection.Ceiling)
                 text += " (On Ceiling) ";
-            text += "to Room #" + Editor.Instance.Level.Rooms.ReferenceIndexOf(AdjoiningRoom).ToString();
+            text += "to Room " + Room.ToString();
             return text;
         }
     }

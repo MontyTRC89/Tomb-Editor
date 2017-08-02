@@ -3,42 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace TombEditor.Geometry
 {
-    public enum PickingElementType : int
-    {
-        None = 0,
-        Block = 1,
-        Moveable = 2,
-        StaticMesh = 3,
-        Light = 4,
-        Camera = 5,
-        SoundSource = 6,
-        FogBulb = 7,
-        CollisionBlock = 8,
-        Path = 9,
-        Sink = 10,
-        Portal = 11,
-        Trigger = 12,
-        FlyByCamera = 13
-    }
-
-    public struct PickingResult
-    {
-        public PickingElementType ElementType { get; set; }
-        public int SubElementType { get; set; }
-        public int Element { get; set; }
-        public int SubElement { get; set; }
-        public bool Gizmo { get; set; }
-        public GizmoAxis GizmoAxis { get; set; }
-    }
-
-    public enum GizmoAxis : byte
-    {
-        None,
-        X,
-        Y,
-        Z
-    }
-
     public enum BlockType : byte
     {
         Floor, Wall, BorderWall

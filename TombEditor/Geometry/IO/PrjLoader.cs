@@ -557,7 +557,7 @@ namespace TombEditor.Geometry.IO
                                     room.Lights.Add(light);
                                     break;
                                 case 0x4c00:
-                                    var sound = new SoundInstance(objectsThings2[j], objRoom)
+                                    var sound = new SoundSourceInstance(objectsThings2[j], objRoom)
                                     {
                                         SoundId = objSlot,
                                         X = (byte)(objPosX),

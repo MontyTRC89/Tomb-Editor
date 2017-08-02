@@ -19,8 +19,13 @@ namespace TombEditor.Geometry
         public short DirectionY { get; set; }
 
         public FlybyCameraInstance(int id, Room room)
-            : base(ObjectInstanceType.FlyByCamera, id, room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.FlyByCamera; }
+        }
 
         public override ObjectInstance Clone()
         {
@@ -41,7 +46,6 @@ namespace TombEditor.Geometry
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Type = Type,
                 Sequence = Sequence,
                 Timer = Timer,
                 Roll = Roll,
@@ -58,6 +62,17 @@ namespace TombEditor.Geometry
             instance.DirectionY = DirectionY;
 
             return instance;
+        }
+
+
+        public override string ToString()
+        {
+            return "FlyBy " + (Fixed ? "Fixed" : "") +
+                ", ID = " + Id +
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
         }
     }
 }

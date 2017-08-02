@@ -14,14 +14,8 @@ namespace TombEditor.Controls
 {
     public class Panel2DGrid : Panel
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SelectedTrigger { get; set; } = -1;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Portal SelectedPortal { get; set; } = null;
-
+        private bool _doSectorSelection = false;
         private Editor _editor;
-        private bool _firstSelection;
-        private bool _drag;
         private static readonly Pen _gridPen = Pens.Black;
         private static readonly Brush _portalBrush = new SolidBrush(Color.Black);
         private static readonly Brush _floorBrush = new SolidBrush(Editor.ColorFloor);
@@ -81,139 +75,89 @@ namespace TombEditor.Controls
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
         }
 
-        private Point fromVisualCoord(PointF point)
+        private SharpDX.DrawingPoint fromVisualCoord(PointF point)
         {
             RectangleF roomArea = getVisualRoomArea();
-            return new Point(
+            return new SharpDX.DrawingPoint(
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
         }
-
+        
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
-            Point roomPoint = fromVisualCoord(e.Location);
 
             // Move camera to selected sector
             if (_editor.RelocateCameraActive)
             {
-                _editor.MoveCameraToSector(roomPoint.X, roomPoint.Y);
+                _editor.MoveCameraToSector(fromVisualCoord(e.Location));
                 return;
             }
+            SharpDX.DrawingPoint sectorPos = fromVisualCoord(e.Location);
 
-            // Manage the drag & drop camera
-            if (e.Button == MouseButtons.Right)
+            // Find existing sector based object (eg portal or trigger)
+            SectorBasedObjectInstance selectedSectorObject = null;
+            if (_editor.SelectedObject.HasValue)
+                if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Portal)
+                    selectedSectorObject = _editor.Level.Portals[_editor.SelectedObject.Value.Id];
+                else if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Trigger)
+                    selectedSectorObject = _editor.Level.Triggers[_editor.SelectedObject.Value.Id];
+
+            // Choose action
+            if (e.Button == MouseButtons.Left)
             {
-                bool foundSomething = false;
-
-                if (SelectedTrigger == -1)
+                if ((selectedSectorObject is Portal) && selectedSectorObject.Area.Contains(sectorPos))
                 {
-                    // Start the cycle from the first portal
-                    SelectedPortal = GetNextPortal(roomPoint);
-                    if (SelectedPortal == null)
-                    {
-                        SelectedTrigger = GetNextTrigger(roomPoint);
-                        if (SelectedTrigger != -1)
-                        {
-                            foundSomething = true;
+                    _editor.SelectRoom(((Portal)selectedSectorObject).AdjoiningRoom);
+                    _editor.ResetSelection();
+                    _editor.ResetCamera();
 
-                            PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Trigger;
-                            result.Element = SelectedTrigger;
-                            _editor.PickingResult = result;
-                        }
-                    }
-                    else
-                    {
-                        foundSomething = true;
-
-                        PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Portal;
-                        result.Element = SelectedPortal.Id;
-                        _editor.PickingResult = result;
-                    }
+                    _editor.DrawPanel3D();
+                    _editor.DrawPanelGrid();
+                    _editor.UpdateStatusStrip();
                 }
-                else if (SelectedPortal == null)
-                {
-                    SelectedTrigger = GetNextTrigger(roomPoint);
-                    if (SelectedTrigger == -1)
-                    {
-                        SelectedPortal = GetNextPortal(roomPoint);
-                        if (SelectedPortal != null)
-                        {
-                            foundSomething = true;
-
-                            PickingResult result = new PickingResult();
-                            result.ElementType = PickingElementType.Portal;
-                            result.Element = SelectedPortal.Id;
-                            _editor.PickingResult = result;
-                        }
-                    }
-                    else
-                    {
-                        foundSomething = true;
-
-                        PickingResult result = new PickingResult();
-                        result.ElementType = PickingElementType.Trigger;
-                        result.Element = SelectedTrigger;
-                        _editor.PickingResult = result;
-                    }
-                }
-
-                if (!foundSomething)
-                {
-                    SelectedPortal = null;
-                    SelectedTrigger = -1;
-                }
-
-                // Update state
-                _editor.DrawPanel3D();
-                _editor.UpdateStatusStrip();
-                Invalidate();
-            }
-            else if ((e.Button == MouseButtons.Left) && (SelectedPortal == null))
-            {
-                _drag = true;
-                _firstSelection = false;
-
-                // If any of the X or Z values is equal to - 1 then it is a first selection
-                if (_editor.BlockSelectionStart.X == -1 || _editor.BlockSelectionStart.Y == -1)
-                {
-                    _editor.BlockSelectionStart = roomPoint;
-                    _editor.BlockSelectionEnd = roomPoint;
-                    _firstSelection = true;
-                    _editor.BlockEditingType = 0;
-                }
-                else if (_editor.BlockSelection.Contains(roomPoint))
-                {
-                    // This is not a first selection because the clicking happend on an already selected range
-                    _firstSelection = false;
+                else if ((selectedSectorObject is TriggerInstance) && selectedSectorObject.Area.Contains(sectorPos))
+                { // Open trigger options
+                    EditorActions.EditObject(_editor.SelectedRoom, selectedSectorObject.ObjectPtr, this.Parent);
                 }
                 else
-                {
-                    _editor.BlockSelectionStart = roomPoint;
-                    _editor.BlockSelectionEnd = roomPoint;
-                    _firstSelection = true;
-                    _editor.BlockEditingType = 0;
+                { // Do block selection
+                    _editor.SelectedSectorStart = sectorPos;
+                    _editor.SelectedSectorEnd = _editor.SelectedSectorStart;
+                    _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
+
+                    if (selectedSectorObject != null) // Unselect previous object
+                        _editor.SelectedObject = null;
+                    _doSectorSelection = true;
+
+                    // Update state
+                    _editor.DrawPanel3D();
+                    _editor.DrawPanelGrid();
+                    _editor.UpdateStatusStrip();
                 }
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                // Find next object
+                var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
+                var triggersInRoom = _editor.Level.Triggers.Values
+                    .Where((obj) => (obj.Room == _editor.SelectedRoom))
+                    .Cast<SectorBasedObjectInstance>();
+                var relevantTriggersAndPortals = portalsInRoom.Concat(triggersInRoom)
+                    .Where((obj) => obj.Area.Contains(sectorPos));
 
-                PickingResult result = new PickingResult();
-                result.ElementType = PickingElementType.Block;
-                result.SubElementType = 0;
-                result.Element = (roomPoint.X << 5) + (roomPoint.Y & 31);
-                result.SubElementType = 25;
-                _editor.PickingResult = result;
-
-                SelectedTrigger = -1;
-                SelectedPortal = null;
+                SectorBasedObjectInstance nextPortalOrTrigger = relevantTriggersAndPortals.
+                    FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
+                if (nextPortalOrTrigger != null)
+                    _editor.SelectedObject = nextPortalOrTrigger.ObjectPtr;
 
                 // Update state
                 _editor.DrawPanel3D();
+                _editor.DrawPanelGrid();
                 _editor.UpdateStatusStrip();
-                Invalidate();
             }
         }
 
@@ -221,25 +165,14 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
             
-            if ((_editor == null) || (_editor.SelectedRoom == null))
+            if ((_editor?.SelectedRoom == null) || _editor.RelocateCameraActive)
                 return;
             
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal == null) && _drag)
+            if ((e.Button == MouseButtons.Left) && _doSectorSelection)
             {
-                Point roomPoint = fromVisualCoord(e.Location);
-
-                //_editor.BlockSelectionStart = new Point(_editor.StartPickingResult.Element >> 5, _editor.StartPickingResult.Element & 31);
-                _editor.BlockSelectionEnd = roomPoint;
-                _editor.BlockEditingType = 0;
-                _firstSelection = true;
-
-                PickingResult result = new PickingResult();
-                result.ElementType = PickingElementType.Block;
-                result.SubElementType = 0;
-                result.Element = (roomPoint.X << 5) + (roomPoint.Y & 31);
-                result.SubElementType = 25;
-                _editor.PickingResult = result;
-
+                _editor.SelectedSectorEnd = fromVisualCoord(e.Location);
+                _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
+                
                 // Update state
                 _editor.DrawPanel3D();
                 _editor.UpdateStatusStrip();
@@ -251,43 +184,9 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
 
-            if ((_editor == null) || (_editor.SelectedRoom == null))
-                return;
-            
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal == null) && _drag && _firstSelection)
-            {
-                _editor.LoadTriggersInUI();
-                _editor.BlockEditingType = 0;
-            }
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal != null))
-            {
-                Point roomPoint = fromVisualCoord(e.Location);
-                
-                var p = SelectedPortal;
-                if (p.Area.Contains(roomPoint))
-                {
-                    _editor.SelectRoom(p.AdjoiningRoom);
-                    _editor.ResetSelection();
-                    _editor.ResetCamera();
-                }
-                else
-                {
-                    SelectedPortal = null;
-                    Invalidate();
-                }
-
-                SelectedPortal = null;
-                SelectedTrigger = -1;
-
-                // Update state
-                _editor.DrawPanel3D();
-                _editor.UpdateStatusStrip();
-                Invalidate();
-            }
-
-            _drag = false;
+            _doSectorSelection = false;
         }
-        
+
         protected override void OnPaint(PaintEventArgs e)
         {
             try
@@ -354,21 +253,22 @@ namespace TombEditor.Controls
                     e.Graphics.DrawLine(_gridPen, 0, y, 320, y);
 
                 // Draw selection
-                if (SelectedPortal != null)
+                ObjectPtr? selectedObject = _editor.SelectedObject;
+                if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Portal))
                 {
-                    var portal = SelectedPortal;
+                    Portal portal = _editor.Level.Portals[selectedObject.Value.Id];
                     e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
                     DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
                 }
-                else if (SelectedTrigger != -1)
+                if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Trigger))
                 {
-                    TriggerInstance trigger = _editor.Level.Triggers[SelectedTrigger];
+                    TriggerInstance trigger = _editor.Level.Triggers[selectedObject.Value.Id];
                     e.Graphics.DrawRectangle(_selectedTriggerPen, toVisualCoord(trigger.Area));
                     DrawMessage(e, trigger.ToString(), toVisualCoord(new Point(trigger.X + trigger.NumXBlocks / 2, trigger.Z + trigger.NumZBlocks)));
                 }
-                else if (_editor.BlockSelectionAvailable)
+                else if (_editor.SelectedSectorAvailable)
                 {
-                    e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.BlockSelection));
+                    e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.SelectedSector));
                 }
             }
             catch (Exception exc)
@@ -394,24 +294,6 @@ namespace TombEditor.Controls
             e.Graphics.DrawRectangle(_messagePen, textRectangle);
             textRectangle.Inflate(-_textMargin, -_textMargin);
             e.Graphics.DrawString(text, _font, _messagePen.Brush, textRectangle, StringFormat.GenericDefault);
-        }
-
-        private Portal GetNextPortal(Point point)
-        {
-            return _editor.Level.Portals.Values
-                .FirstOrDefault(portal => (_editor.SelectedRoom == portal.Room) && portal.Area.Contains(point));
-        }
-
-        private int GetNextTrigger(Point point)
-        {
-            for (int i = 1; i <= _editor.Level.Triggers.Count; i++)
-            {
-                int index = (i + SelectedTrigger) % _editor.Level.Triggers.Count;
-                TriggerInstance trigger = _editor.Level.Triggers.ElementAt(index).Value;
-                if ((_editor.SelectedRoom == trigger.Room) && trigger.Area.Contains(point))
-                    return trigger.Id;
-            }
-            return -1;
         }
     }
 }

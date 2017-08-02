@@ -147,14 +147,14 @@ namespace TombEditor.Controls
             if (Math.Abs(_deltaX) < 8 && Math.Abs(_deltaY) < 8)
             {
                 // click singolo, tile da 64x64 o confermo la texture corrente
-                if (_editor.SelectedTexture != -1)
+                if (_editor.SelectedTextureIndex != -1)
                 {
-                    sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
+                    sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
 
                     if (_lastX >= sample.X && _lastX <= sample.X + sample.Width && LastY >= sample.Y + sample.Page * 256 &&
                         LastY <= sample.Y + sample.Page * 256 + sample.Height)
                     {
-                        sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
+                        sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
                     }
                     else
                     {
@@ -163,8 +163,8 @@ namespace TombEditor.Controls
                         _w = 64;
                         _h = 64;
 
-                        _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
-                        sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
+                        _editor.SelectedTextureIndex = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
+                        sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
                     }
                 }
                 else
@@ -174,8 +174,8 @@ namespace TombEditor.Controls
                     _w = 64;
                     _h = 64;
 
-                    _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
-                    sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
+                    _editor.SelectedTextureIndex = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
+                    sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
                 }
 
                 /*    _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
@@ -193,8 +193,8 @@ namespace TombEditor.Controls
                     _w = maxWidth;
 
                 // trascinamento prolungato, tile di forma variabile
-                _editor.SelectedTexture = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
-                sample = _editor.Level.TextureSamples[_editor.SelectedTexture];
+                _editor.SelectedTextureIndex = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
+                sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
             }
 
             // trovo il triangolo
@@ -222,7 +222,7 @@ namespace TombEditor.Controls
                 _triangle = TextureTileType.TriangleSW;
             }
 
-            _editor.TextureTriangle = _triangle;
+            _editor.SeletedTextureTriangle = _triangle;
 
             _drag = false;
 
@@ -246,9 +246,9 @@ namespace TombEditor.Controls
             }
             else
             {
-                if (_editor.SelectedTexture != -1)
+                if (_editor.SelectedTextureIndex != -1)
                 {
-                    LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture];
+                    LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
 
                     g.DrawRectangle(Pens.White, new Rectangle(texture.X, texture.Y + 256 * texture.Page, texture.Width, texture.Height));
 

@@ -6,34 +6,31 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TombEditor.Geometry;
 using TombLib.Graphics;
 
 namespace TombEditor.Controls
 {
     class PanelRenderingItem : Panel
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SwapChainGraphicsPresenter Presenter { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; }
-        public Viewport Viewport { get; set; }
-        public EditorItemType ItemType { get; set; }
 
         private Editor _editor;
-        private bool _drag;
-        private float _lastX;
-        private float LastY;
-        private float _deltaX;
-        private float _deltaY;
-        private int _animation;
-        private int _frame;
         private VertexInputLayout _layout;
-        private int _selectedItem;
-        
-        public void InitializePanel()
+        private DeviceManager _deviceManager;
+        private GraphicsDevice _device;
+        private int _lastX;
+        private int _lastY;
+        private ItemType? _selectedItem;
+
+        public void InitializePanel(DeviceManager deviceManager)
         {
             _editor = Editor.Instance;
-            SelectedItem = -1;
-            _animation = -1;
-            _frame = -1;
+            _deviceManager = deviceManager;
+            _device = deviceManager.Device;
 
             // inizializzo il Presenter se necessario
             if (Presenter == null)
@@ -50,10 +47,8 @@ namespace TombEditor.Controls
                 pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
                 pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
 
-                Presenter = new SwapChainGraphicsPresenter(_editor.GraphicsDevice, pp);
-
-                Viewport = new Viewport(0, 0, Width, Height, 10.0f, 100000.0f);
-
+                Presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
+                
                 // inizializzo la telecamera
                 Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000);
             }
@@ -64,67 +59,27 @@ namespace TombEditor.Controls
             if (DesignMode)
                 return;
 
-            _editor.GraphicsDevice.Presenter = Presenter;
-            _editor.GraphicsDevice.SetViewports(new ViewportF(0, 0, Width, Height));
-            _editor.GraphicsDevice.SetRenderTargets(_editor.GraphicsDevice.Presenter.DepthStencilBuffer, _editor.GraphicsDevice.Presenter.BackBuffer);
+            _device.Presenter = Presenter;
+            _device.SetViewports(new ViewportF(0, 0, Width, Height));
+            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
 
-            _editor.GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
-            _editor.GraphicsDevice.SetDepthStencilState(_editor.GraphicsDevice.DepthStencilStates.Default);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
+            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
-            if (SelectedItem == -1)
+            if (!_selectedItem.HasValue)
             {
-                _editor.GraphicsDevice.Present();
+                _device.Present();
                 return;
             }
 
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-            if (ItemType == EditorItemType.Moveable)
-            {
-                SkinnedModel model;
-                SkinnedModel skin;
-
-                model = _editor.Level.Wad.Moveables[(uint)SelectedItem];
-                skin = _editor.Level.Wad.Moveables[(uint)SelectedItem];
-
-                model.BuildHierarchy();
-
-                Effect mioEffect = _editor.Effects["Model"];
-                mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
-                mioEffect.Parameters["TextureEnabled"].SetValue(true);
-                mioEffect.Parameters["SelectionEnabled"].SetValue(false);
-
-                _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
-                _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
-
-                _editor.GraphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
-
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
-                mioEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
-
-                for (int i = 0; i < model.Meshes.Count; i++)
-                {
-                    SkinnedMesh mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
-                        continue;
-
-                    Matrix modelMatrix;
-                    if (_animation > -1)
-                        modelMatrix = model.AnimationTransforms[i];
-                    else
-                        modelMatrix = model.Bones[i].GlobalTransform;
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
-
-                    mioEffect.Techniques[0].Passes[0].Apply();
-                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
-                }
-            }
-            else
+            if (_selectedItem.Value.IsStatic)
             {
                 StaticModel model;
 
-                model = _editor.Level.Wad.StaticMeshes[(uint)SelectedItem];
+                model = _editor.Level.Wad.StaticMeshes[(uint)_selectedItem.Value.Id];
 
-                Effect mioEffect = _editor.Effects["StaticModel"];
+                Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
                 mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
                 mioEffect.Parameters["TextureEnabled"].SetValue(true);
@@ -132,12 +87,12 @@ namespace TombEditor.Controls
                 mioEffect.Parameters["LightEnabled"].SetValue(false);
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
-                mioEffect.Parameters["TextureSampler"].SetResource(_editor.GraphicsDevice.SamplerStates.Default);
+                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
-                _editor.GraphicsDevice.SetVertexInputLayout(_layout);
+                _device.SetVertexInputLayout(_layout);
 
-                _editor.GraphicsDevice.SetVertexBuffer(0, model.VertexBuffer);
-                _editor.GraphicsDevice.SetIndexBuffer(model.IndexBuffer, true);
+                _device.SetVertexBuffer(0, model.VertexBuffer);
+                _device.SetIndexBuffer(model.IndexBuffer, true);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
@@ -151,14 +106,55 @@ namespace TombEditor.Controls
                     mioEffect.Parameters["ModelViewProjection"].SetValue(Matrix.Identity);
                     mioEffect.Techniques[0].Passes[0].Apply();
 
-                    _editor.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
+                }
+            }
+            else
+            {
+                SkinnedModel model;
+                SkinnedModel skin;
+
+                model = _editor.Level.Wad.Moveables[(uint)SelectedItem.Value.Id];
+                skin = model;
+
+                model.BuildHierarchy();
+
+                Effect mioEffect = _deviceManager.Effects["Model"];
+                mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
+                mioEffect.Parameters["TextureEnabled"].SetValue(true);
+                mioEffect.Parameters["SelectionEnabled"].SetValue(false);
+
+                _device.SetVertexBuffer(0, model.VertexBuffer);
+                _device.SetIndexBuffer(model.IndexBuffer, true);
+
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+
+                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+                mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    SkinnedMesh mesh = skin.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    Matrix modelMatrix;
+                    if (model.AnimationTransforms != null)
+                        modelMatrix = model.AnimationTransforms[i];
+                    else
+                        modelMatrix = model.Bones[i].GlobalTransform;
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
+
+                    mioEffect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                 }
             }
 
-            _editor.GraphicsDevice.Present();
+            _device.Present();
         }
 
-        public int SelectedItem
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public ItemType? SelectedItem
         {
             get
             {
@@ -167,33 +163,19 @@ namespace TombEditor.Controls
             set
             {
                 _selectedItem = value;
-                if (_selectedItem == -1 || _editor == null || _editor.Level == null || _editor.Level.Wad == null)
+                if ((_selectedItem == null) || (_editor?.Level?.Wad == null))
                     return;
 
-                if (_editor.Level.Wad.Moveables.Count > _selectedItem)
+                if (value.Value.IsStatic)
                 {
-                    SkinnedModel model = _editor.Level.Wad.Moveables.ElementAt(_selectedItem).Value;
-                    if (model.Animations.Count == 0)
-                    {
-                        _animation = -1;
-                        _frame = -1;
-                    }
-                    else
-                    {
-                        _animation = 0;
-                        _frame = 0;
-                        model.BuildAnimationPose(model.Animations[_animation].KeyFrames[_frame]);
-                    }
-                }
-                else
-                {
-                    _animation = -1;
-                    _frame = -1;
-
-                    Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
+                    SkinnedModel model = _editor.Level.Wad.Moveables.ElementAt(value.Value.Id).Value;
+                    if (model.Animations.Count != 0)
+                        model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
                 }
 
-                Draw();
+                Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
+
+                Invalidate();
             }
         }
 
@@ -212,72 +194,31 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-
-            _drag = true;
-            if (e.Button == MouseButtons.Right)
-            {
-                _lastX = e.X;
-                LastY = e.Y;
-            }
-
-            Draw();
+            
+            _lastX = e.X;
+            _lastY = e.Y;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
-            if (_drag && e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
-                _deltaX = e.X - _lastX;
-                _deltaY = e.Y - LastY;
+                float deltaX = (e.X - _lastX) / Width;
+                float deltaY = (e.Y - _lastY) / Height;
 
                 _lastX = e.X;
-                LastY = e.Y;
+                _lastY = e.Y;
 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                {
-                    Camera.Move(-_deltaY / 1.0f);
-                }
+                    Camera.Move(deltaY * -200);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                {
-                    Camera.Translate(new Vector3(_deltaX, -_deltaY, 0));
-                }
+                    Camera.Translate(new Vector3(deltaX * 200, deltaY * -200, 0));
                 else
-                {
-                    Camera.Rotate(_deltaX / 50, -_deltaY / 50);
-                }
+                    Camera.Rotate(deltaX *4, -deltaY * 4);
+                Draw();
             }
-
-            Draw();
-        }
-
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
-
-            if (_drag && e.Button == MouseButtons.Right)
-            {
-                _deltaX = e.X - _lastX;
-                _deltaY = e.Y - LastY;
-
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                {
-                    Camera.Move(-_deltaY / 10.0f);
-                }
-                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                {
-                    Camera.Translate(new Vector3(_deltaX, -_deltaY, 0));
-                }
-                else
-                {
-                    Camera.Rotate(_deltaX / 500, -_deltaY / 500);
-                }
-
-                _drag = false;
-            }
-
-            Draw();
         }
     }
 }

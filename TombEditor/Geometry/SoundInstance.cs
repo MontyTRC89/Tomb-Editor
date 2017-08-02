@@ -1,18 +1,22 @@
 ﻿namespace TombEditor.Geometry
 {
-    public class SoundInstance : ObjectInstance
+    public class SoundSourceInstance : ObjectInstance
     {
-        public short SoundId { get; set; }
+        public short SoundId { get; set; } = 0;
+        public short Flags { get; set; } = 0;
 
-        public short Flags { get; set; }
-
-        public SoundInstance(int id, Room room)
-            : base(ObjectInstanceType.Sound, id, room)
+        public SoundSourceInstance(int id, Room room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.SoundSource; }
+        }
 
         public override ObjectInstance Clone()
         {
-            return new SoundInstance(0, Room)
+            return new SoundSourceInstance(0, Room)
             {
                 X = X,
                 Y = Y,
@@ -29,10 +33,19 @@
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Type = Type,
                 SoundId = SoundId,
                 Flags = Flags
             };
+        }
+
+        public override string ToString()
+        {
+            return "Sound " + SoundId +
+                ", ID = " + Id +
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
         }
     }
 }

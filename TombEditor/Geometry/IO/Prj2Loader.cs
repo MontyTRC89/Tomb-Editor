@@ -175,8 +175,8 @@ namespace TombEditor.Geometry.IO
                             case ObjectInstanceType.Sink:
                                 o = new SinkInstance(objectId, null);
                                 break;
-                            case ObjectInstanceType.Sound:
-                                o = new SoundInstance(objectId, null);
+                            case ObjectInstanceType.SoundSource:
+                                o = new SoundSourceInstance(objectId, null);
                                 break;
                             case ObjectInstanceType.FlyByCamera:
                                 o = new FlybyCameraInstance(objectId, null);
@@ -185,7 +185,6 @@ namespace TombEditor.Geometry.IO
                                 return null;
                         }
 
-                        o.Type = objectType;
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         o.Room = level.GetOrCreateRoom(reader.ReadInt16());
                         o.Ocb = reader.ReadInt16();
@@ -224,9 +223,9 @@ namespace TombEditor.Geometry.IO
                             reader.ReadBytes(6);
                         }
 
-                        if (o.Type == ObjectInstanceType.Sound)
+                        if (o.Type == ObjectInstanceType.SoundSource)
                         {
-                            ((SoundInstance)o).SoundId = reader.ReadInt16();
+                            ((SoundSourceInstance)o).SoundId = reader.ReadInt16();
                             reader.ReadBytes(6);
                         }
 
@@ -491,15 +490,7 @@ namespace TombEditor.Geometry.IO
 
                         level.TextureSounds.Add(txtSound);
                     }
-
-                    int numPaletteColors = reader.ReadInt32();
-                    Editor.Instance.Palette.Clear();
-                    for (int i = 0; i < numPaletteColors; i++)
-                    {
-                        Editor.Instance.Palette.Add(Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
-                            reader.ReadByte()));
-                    }
-
+                    
                     reader.ReadInt32();
                     reader.ReadInt32();
                     reader.ReadInt32();
@@ -564,7 +555,7 @@ namespace TombEditor.Geometry.IO
                     case ObjectInstanceType.Sink:
                         obj.Room.Sinks.Add(objectId);
                         break;
-                    case ObjectInstanceType.Sound:
+                    case ObjectInstanceType.SoundSource:
                         obj.Room.SoundSources.Add(objectId);
                         break;
                     case ObjectInstanceType.FlyByCamera:

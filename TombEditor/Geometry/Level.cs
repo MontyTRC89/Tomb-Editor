@@ -40,6 +40,19 @@ namespace TombEditor.Geometry
         public bool MustSave { get; set; } // Used for Save and Save as logic
         public string FileName { get; set; }
 
+        public static Level CreateSimpleLevel()
+        {
+            logger.Info("Creating new empty level");
+
+            Level result = new Level();
+            if (result.Rooms[0] == null)
+            {
+                result.Rooms[0] = new Room(result) { Name = "Room 0" };
+                result.Rooms[0].Init(0, 0, 0, 20, 20, 12);
+            }
+            return result;
+        }
+
         public HashSet<Room> GetConnectedRooms(Room startingRoom)
         {
             var result = new HashSet<Room>();
@@ -287,7 +300,7 @@ namespace TombEditor.Geometry
             }
         }
 
-        public void DeleteObject(int instance)
+        public void DeleteTrigger(int instance)
         {
             var triggersToDelete = new List<int>();
 

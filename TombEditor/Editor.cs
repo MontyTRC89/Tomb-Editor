@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using System.Windows.Forms;
-using System.IO;
 using TombLib.Graphics;
 using TombEditor.Geometry;
 using TombEditor.Controls;
-using SharpDX.Direct3D;
-using System.Runtime.InteropServices;
 
 namespace TombEditor
 {
     public enum EditorMode
     {
-        None, Geometry, Map2D, FaceEdit, Lighting
+        Geometry, Map2D, FaceEdit, Lighting
     }
 
     public enum EditorAction
     {
-        None, PlaceItem, PlaceLight, PlaceCamera, PlaceFlyByCamera, PlaceSound, PlaceSink, PlaceNoCollision
+        None, PlaceItem, PlaceLight, PlaceCamera, PlaceFlyByCamera, PlaceSound, PlaceSink, PlaceNoCollision, Paste, Stamp
     }
 
-    public enum EditorSubAction
+    public enum EditorArrowType
     {
-        None, GeometryBeginSelection, GeometrySelecting, GeometrySelected
-    }
-
-    public enum EditorItemType
-    {
-        Moveable, StaticMesh
+        EntireFace,
+        EdgeN,
+        EdgeE,
+        EdgeS,
+        EdgeW,
+        CornerNW,
+        CornerNE,
+        CornerSE,
+        CornerSW,
+        DiagonalFloorCorner,
+        DiagonalCeilingCorner
     }
 
     public class Editor
@@ -47,187 +47,53 @@ namespace TombEditor
         public static readonly System.Drawing.Color ColorNotWalkable = System.Drawing.Color.FromArgb(0, 0, 150);
 
         // istanza dell'editor
-        private static Editor _instance;
-
-        public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
-        public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public Level Level { get; set; }
-        public LightType LightType { get; set; }
-        public Control RenderControl { get; set; }
-        public GraphicsDevice GraphicsDevice { get; set; }
-        public SpriteFont Font { get; set; }
-        public SpriteBatch DebugSprites { get; set; }
-        public EditorAction Action { get; set; }
-        public EditorMode Mode { get; set; }
-        public EditorSubAction SubAction { get; set; }
-        public EditorItemType ItemType { get; set; }
-        public PickingResult PickingResult { get; set; }
-        public System.Drawing.Point BlockSelectionStart { get; set; } = new System.Drawing.Point(-1, -1);
-        public System.Drawing.Point BlockSelectionEnd { get; set; } = new System.Drawing.Point(-1, -1);
-        public int BlockEditingType { get; set; }
-        public Dictionary<int, string> MoveableNames { get; } = new Dictionary<int, string>();
-        public Dictionary<int, string> StaticNames { get; } = new Dictionary<int, string>();
-        public int SelectedItem { get; set; } = -1;
+        public EditorAction Action { get; set; } = EditorAction.None;
+        public LightType ActionPlaceLight_LightType { get; set; }
+        public ItemType ActionPlaceItem_Item { get; set; }
+        public EditorMode Mode { get; set; } = EditorMode.Geometry;
         public Room SelectedRoom { get; set; }
-        public bool IsFlipMap { get; set; }
-        public int FlipMap { get; set; } = -1;
-        public bool DrawPortals { get; set; }
-        public int SelectedTexture { get; set; } = -1;
-        public Vector2[] UV { get; } = new Vector2[4];
-        public TextureTileType TextureTriangle { get; set; }
-        public int LightIndex { get; set; } = -1;
-        public List<System.Drawing.Color> Palette { get; } = new List<System.Drawing.Color>();
-        public bool NoCollision { get; set; }
+        public ObjectPtr? SelectedObject { get; set; } = null;
+        public SharpDX.DrawingPoint SelectedSectorStart { get; set; } = new SharpDX.DrawingPoint(-1, -1);
+        public SharpDX.DrawingPoint SelectedSectorEnd { get; set; } = new SharpDX.DrawingPoint(-1, -1);
+        public EditorArrowType SelectedSectorArrow { get; set; } = EditorArrowType.EntireFace;
+        public bool RelocateCameraActive { get; set; }
         public bool InvisiblePolygon { get; set; }
         public bool DoubleSided { get; set; }
         public bool Transparent { get; set; }
-        public bool DrawRoomNames { get; set; }
-        public bool DrawHorizon { get; set; }
-        public float FPS { get; set; }
-        public short SoundID { get; set; }
-        public bool RelocateCameraActive { get; set; }
+        public int SelectedTextureIndex { get; set; } = -1;
+        public Vector2[] SeletedTextureUV { get; } = new Vector2[4];
+        public TextureTileType SeletedTextureTriangle { get; set; }
+        public Configuration Configuration { get; set; } = Configuration.LoadFrom(Configuration.GetDefaultPath());
 
         private Panel2DGrid _panelGrid;
         private PanelRendering3D _panel3D;
         private FormMain _formEditor;
 
-        // le griglie XYZ e la griglia free
-        private Buffer<VertexPositionColor>[] _grids = new Buffer<VertexPositionColor>[4];
-        private VertexInputLayout _gridLayout;
+        // To be removed
+        private DeviceManager _deviceManager;
 
-        private Editor()
+        public Editor()
+        {}
+
+        public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor, DeviceManager deviceManager)
         {
-            _instance = this;
-
-            for (int i = 0; i < 100; i++)
-                StaticNames.Add(i, "Static Mesh #" + i);
-
-        }
-
-        public void Initialize(PanelRendering3D renderControl, Panel2DGrid grid, FormMain formEditor)
-        {
-            // Load configuration
-            Configuration.LoadConfiguration();
-
-#if DEBUG
-
-#else
-            // Hide the console in release mode
-            var handle = GetConsoleWindow();
-            ShowWindow(handle, SW_HIDE);
-#endif
-            using (BinaryReader readerPalette = new BinaryReader(File.OpenRead("Editor\\Palette.bin")))
-                while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
-                    Palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
-
             _panel3D = renderControl;
             _panelGrid = grid;
             _formEditor = formEditor;
-
-            GraphicsDevice = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None,
-                                                FeatureLevel.Level_10_0);
-
-            PresentationParameters pp = new PresentationParameters();
-            pp.BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
-            pp.BackBufferWidth = _panel3D.Width;
-            pp.BackBufferHeight = _panel3D.Height;
-            pp.DepthStencilFormat = DepthFormat.Depth24Stencil8;
-            pp.DeviceWindowHandle = _panel3D;
-            pp.IsFullScreen = false;
-            pp.MultiSampleCount = MSAALevel.None;
-            pp.PresentationInterval = PresentInterval.Immediate;
-            pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
-            pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
-            
-            SwapChainGraphicsPresenter presenter = new SwapChainGraphicsPresenter(GraphicsDevice, pp);
-            GraphicsDevice.Presenter = presenter;
-           
-            // compilo gli effetti
-            IEnumerable<string> effectFiles = Directory.EnumerateFiles(EditorPath + "\\Editor", "*.fx");
-            foreach (string fileName in effectFiles)
-            {
-                string effectName = Path.GetFileNameWithoutExtension(fileName);
-                Effects.Add(effectName, LoadEffect(fileName));
-            }
-
-            // aggiungo il BasicEffect
-            BasicEffect bEffect = new BasicEffect(GraphicsDevice);
-            Effects.Add("Toolkit.BasicEffect", bEffect);
-
-            // carico le texture dell'editor
-            IEnumerable<string> textureFiles = Directory.EnumerateFiles(EditorPath + "\\Editor", "*.png");
-            foreach (string fileName in textureFiles)
-            {
-                string textureName = Path.GetFileNameWithoutExtension(fileName);
-                Textures.Add(textureName, TombLib.Graphics.TextureLoad.LoadToTexture(GraphicsDevice, fileName));
-            }
-
-            // carico il Editor
-            SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
-            Font = SpriteFont.New(GraphicsDevice, fontData);
-
-            DebugSprites = new SpriteBatch(GraphicsDevice);
-
-            // carico gli id degli oggetti
-            using (StreamReader reader = new StreamReader("Editor\\Objects.txt"))
-                while (reader.EndOfStream == false)
-                {
-                    string line = reader.ReadLine();
-                    string[] tokens = line.Split(';');
-                    MoveableNames.Add(Int32.Parse(tokens[0]), tokens[1]);
-                }
-            
-            Debug.Initialize();
+            _deviceManager = deviceManager;
         }
-
-        public void ChangeLightColorFromPalette()
+        
+        public void MoveCameraToSector(DrawingPoint pos)
         {
-            _formEditor.ChangeLightColorFromPalette();
-        }
-
-        public void ResetPanel3DCursor()
-        {
-            _formEditor.ResetPanel3DCursor();
-        }
-
-        private Effect LoadEffect(string fileName)
-        {
-            EffectCompilerResult result = EffectCompiler.CompileFromFile(fileName);
-
-            if (result.HasErrors)
-            {
-                string errors = "";
-                foreach (var err in result.Logger.Messages)
-                    errors += err + Environment.NewLine;
-
-                // Hide all forms because we otherwise crash when trying to render the form for showing the message box.
-                foreach (Form form in Application.OpenForms)
-                    form.Hide();
-
-                MessageBox.Show("Could not compile effect '" + fileName + "'" + Environment.NewLine + errors, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
-
-            Effect effect = new SharpDX.Toolkit.Graphics.Effect(GraphicsDevice, result.EffectData);
-            return effect;
-        }
-
-        public void MoveCameraToSector(int sectorX, int sectorZ)
-        {
-            _panel3D.MoveCameraToSector(sectorX, sectorZ);
+            _panel3D.MoveCameraToSector(pos);
         }
         public void LoadTriggersInUI()
         {
             _formEditor.LoadTriggersInUI();
         }
 
-        public static string EditorPath
-        {
-            get
-            {
-                return System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-            }
-        }
+        private static Editor _instance;
 
         public static Editor Instance
         {
@@ -236,37 +102,8 @@ namespace TombEditor
                 if (_instance != null)
                     return _instance;
                 else
-                    return new Editor();
+                    return _instance = new Editor();
             }
-        }
-
-        public void PrepareXGrid(int rows, int columns, float pass)
-        {
-            List<VertexPositionColor> vertices = new List<VertexPositionColor>();
-
-            for (int x = -rows / 2; x < rows / 2; x++)
-            {
-                VertexPositionColor vertex = new VertexPositionColor(new Vector3(x * pass, 0, -columns / 2 * pass), Color.White);
-                vertices.Add(vertex);
-                vertex = new VertexPositionColor(new Vector3(x * pass, 0, columns / 2 * pass), Color.White);
-                vertices.Add(vertex);
-            }
-
-            for (int z = -columns / 2; z < columns / 2; z++)
-            {
-                VertexPositionColor vertex = new VertexPositionColor(new Vector3(-rows / 2 * pass, 0, z * pass), Color.White);
-                vertices.Add(vertex);
-                vertex = new VertexPositionColor(new Vector3(rows / 2 * pass, 0, z * pass), Color.White);
-                vertices.Add(vertex);
-            }
-
-            // creo il vertex buffer
-            if (_grids[0] == null)
-                _grids[0] = Buffer<VertexPositionColor>.New<VertexPositionColor>(GraphicsDevice, vertices.ToArray(), BufferFlags.VertexBuffer);
-
-            // creo il vertex input layout
-            if (_gridLayout == null)
-                _gridLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, _grids[0]);
         }
 
         public void LoadStaticMeshColorInUI()
@@ -293,6 +130,12 @@ namespace TombEditor
         {
             _panel3D.ResetCamera();
         }
+        
+        // To be removed
+        public SharpDX.Toolkit.Graphics.GraphicsDevice GetDevice()
+        {
+            return _deviceManager.Device;
+        }
 
         public Camera Camera
         {
@@ -311,18 +154,20 @@ namespace TombEditor
         {
             _formEditor.UpdateStatusStrip();
         }
-
-        public static PickingResult PickingResultEmpty;
-
+        
         public void ResetSelection()
         {
-            _formEditor.ResetSelection();
+            SelectedObject = null;
+            SelectedSectorReset();
+            SelectedSectorArrow = EditorArrowType.EntireFace;
+            DrawPanel3D();
+            DrawPanelGrid();
+            UpdateStatusStrip();
         }
 
         public void SelectRoom(Room room)
         {
-            LightIndex = -1;
-            BlockSelectionReset();
+            SelectedSectorReset();
             LoadTriggersInUI();
     
             _formEditor.SelectRoom(room);
@@ -350,32 +195,45 @@ namespace TombEditor
             _formEditor.EditLight();
         }
 
+        public void ShowObject(ObjectInstance objectInstance)
+        {
+            if (SelectedRoom != objectInstance.Room)
+            {
+                SelectedRoom = objectInstance.Room;
+                CenterCamera();
+                DrawPanelGrid();
+                DrawPanelMap2D();
+            }
+            SelectedObject = objectInstance.ObjectPtr;
+            DrawPanel3D();
+        }
+
         // The rectangle is (-1, -1, -1, 1) when nothing is selected.
         // The "Right" and "Bottom" point of the rectangle is inclusive.
-        public Rectangle BlockSelection
+        public SharpDX.Rectangle SelectedSector
         {
             get
             {
                 return new SharpDX.Rectangle(
-                    Math.Min(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Min(BlockSelectionStart.Y, BlockSelectionEnd.Y),
-                    Math.Max(BlockSelectionStart.X, BlockSelectionEnd.X), Math.Max(BlockSelectionStart.Y, BlockSelectionEnd.Y));
+                    Math.Min(SelectedSectorStart.X, SelectedSectorEnd.X), Math.Min(SelectedSectorStart.Y, SelectedSectorEnd.Y),
+                    Math.Max(SelectedSectorStart.X, SelectedSectorEnd.X), Math.Max(SelectedSectorStart.Y, SelectedSectorEnd.Y));
             }
             set
             {
-                BlockSelectionStart = new System.Drawing.Point(value.X, value.Y);
-                BlockSelectionEnd = new System.Drawing.Point(value.Right, value.Bottom);
+                SelectedSectorStart = new SharpDX.DrawingPoint(value.X, value.Y);
+                SelectedSectorEnd = new SharpDX.DrawingPoint(value.Right, value.Bottom);
             }
         }
 
-        public void BlockSelectionReset()
+        public void SelectedSectorReset()
         {
-            BlockSelectionStart = new System.Drawing.Point(-1, -1);
-            BlockSelectionEnd = new System.Drawing.Point(-1, -1);
+            SelectedSectorStart = new SharpDX.DrawingPoint(-1, -1);
+            SelectedSectorEnd = new SharpDX.DrawingPoint(-1, -1);
         }
 
-        public bool BlockSelectionAvailable
+        public bool SelectedSectorAvailable
         {
-           get { return (BlockSelectionStart.X != -1) && (BlockSelectionStart.Y != -1) && (BlockSelectionEnd.X != -1) && (BlockSelectionEnd.Y != -1); }
+           get { return (SelectedSectorStart.X != -1) && (SelectedSectorStart.Y != -1) && (SelectedSectorEnd.X != -1) && (SelectedSectorEnd.Y != -1); }
         }
     }
 }

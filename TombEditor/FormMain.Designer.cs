@@ -120,7 +120,6 @@
             this.butNotWalkableBox = new System.Windows.Forms.Button();
             this.cbNoPathfinding = new DarkUI.Controls.DarkCheckBox();
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
-            this.butResetSearch = new DarkUI.Controls.DarkButton();
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
@@ -247,6 +246,7 @@
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.butResetSearch = new DarkUI.Controls.DarkButton();
             this.menuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -949,9 +949,9 @@
             // butFloor
             // 
             this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butFloor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
             this.butFloor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+            this.butFloor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
             this.butFloor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butFloor.ForeColor = System.Drawing.Color.White;
             this.butFloor.Location = new System.Drawing.Point(226, 0);
@@ -965,9 +965,9 @@
             // butWall
             // 
             this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
             this.butWall.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
+            this.butWall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
             this.butWall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butWall.ForeColor = System.Drawing.Color.White;
             this.butWall.Location = new System.Drawing.Point(256, 90);
@@ -981,9 +981,9 @@
             // butBox
             // 
             this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.butBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.butBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.butBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butBox.ForeColor = System.Drawing.Color.White;
             this.butBox.Location = new System.Drawing.Point(226, 30);
@@ -997,9 +997,9 @@
             // butMonkey
             // 
             this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butMonkey.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
             this.butMonkey.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.butMonkey.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.butMonkey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
             this.butMonkey.Location = new System.Drawing.Point(226, 60);
@@ -1013,9 +1013,9 @@
             // butDeath
             // 
             this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
             this.butDeath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
+            this.butDeath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(0)))));
             this.butDeath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butDeath.ForeColor = System.Drawing.Color.White;
             this.butDeath.Location = new System.Drawing.Point(256, 60);
@@ -1029,9 +1029,9 @@
             // butPortal
             // 
             this.butPortal.BackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Black;
             this.butPortal.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Black;
+            this.butPortal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
             this.butPortal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butPortal.ForeColor = System.Drawing.Color.White;
             this.butPortal.Location = new System.Drawing.Point(226, 90);
@@ -1184,9 +1184,9 @@
             // butCeiling
             // 
             this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butCeiling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
             this.butCeiling.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
+            this.butCeiling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
             this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
             this.butCeiling.Location = new System.Drawing.Point(256, 0);
@@ -1200,9 +1200,9 @@
             // butNotWalkableBox
             // 
             this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
-            this.butNotWalkableBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
-            this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(75)))));
             this.butNotWalkableBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(75)))));
+            this.butNotWalkableBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
             this.butNotWalkableBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
             this.butNotWalkableBox.Location = new System.Drawing.Point(256, 30);
@@ -1235,19 +1235,6 @@
             this.cbHorizon.Text = "Draw sky & horizon";
             this.cbHorizon.CheckedChanged += new System.EventHandler(this.cbHorizon_CheckedChanged);
             // 
-            // butResetSearch
-            // 
-            this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
-            this.butResetSearch.Location = new System.Drawing.Point(214, 681);
-            this.butResetSearch.Name = "butResetSearch";
-            this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
-            this.butResetSearch.Size = new System.Drawing.Size(60, 23);
-            this.butResetSearch.TabIndex = 61;
-            this.butResetSearch.Text = "Reset";
-            this.butResetSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butResetSearch.Click += new System.EventHandler(this.butResetSearch_Click);
-            // 
             // butFindItem
             // 
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1268,7 +1255,7 @@
             this.panelStaticMeshColor.Name = "panelStaticMeshColor";
             this.panelStaticMeshColor.Size = new System.Drawing.Size(60, 20);
             this.panelStaticMeshColor.TabIndex = 43;
-            this.panelStaticMeshColor.DoubleClick += new System.EventHandler(this.panelStaticMeshColor_DoubleClick);
+            this.panelStaticMeshColor.Click += new System.EventHandler(this.panelStaticMeshColor_Click);
             // 
             // darkLabel14
             // 
@@ -1578,12 +1565,8 @@
             // panelItem
             // 
             this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelItem.Camera = null;
-            this.panelItem.ItemType = TombEditor.EditorItemType.Moveable;
             this.panelItem.Location = new System.Drawing.Point(12, 501);
             this.panelItem.Name = "panelItem";
-            this.panelItem.Presenter = null;
-            this.panelItem.SelectedItem = 0;
             this.panelItem.Size = new System.Drawing.Size(196, 203);
             this.panelItem.TabIndex = 26;
             // 
@@ -1804,6 +1787,7 @@
             // numLightDirectionY
             // 
             this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionY.Enabled = false;
             this.numLightDirectionY.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightDirectionY.Location = new System.Drawing.Point(578, 78);
             this.numLightDirectionY.Name = "numLightDirectionY";
@@ -1814,6 +1798,7 @@
             // numLightDirectionX
             // 
             this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionX.Enabled = false;
             this.numLightDirectionX.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightDirectionX.Location = new System.Drawing.Point(578, 24);
             this.numLightDirectionX.Name = "numLightDirectionX";
@@ -1824,6 +1809,7 @@
             // numLightOut
             // 
             this.numLightOut.BackColor = System.Drawing.Color.DimGray;
+            this.numLightOut.Enabled = false;
             this.numLightOut.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightOut.Location = new System.Drawing.Point(512, 24);
             this.numLightOut.Name = "numLightOut";
@@ -1834,6 +1820,7 @@
             // numLightIn
             // 
             this.numLightIn.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIn.Enabled = false;
             this.numLightIn.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightIn.Location = new System.Drawing.Point(446, 24);
             this.numLightIn.Name = "numLightIn";
@@ -1844,6 +1831,7 @@
             // numLightCutoff
             // 
             this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
+            this.numLightCutoff.Enabled = false;
             this.numLightCutoff.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightCutoff.Location = new System.Drawing.Point(512, 78);
             this.numLightCutoff.Name = "numLightCutoff";
@@ -1854,6 +1842,7 @@
             // numLightLen
             // 
             this.numLightLen.BackColor = System.Drawing.Color.DimGray;
+            this.numLightLen.Enabled = false;
             this.numLightLen.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightLen.Location = new System.Drawing.Point(446, 78);
             this.numLightLen.Name = "numLightLen";
@@ -1864,6 +1853,7 @@
             // numLightIntensity
             // 
             this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIntensity.Enabled = false;
             this.numLightIntensity.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
             this.numLightIntensity.Location = new System.Drawing.Point(380, 78);
             this.numLightIntensity.Name = "numLightIntensity";
@@ -1885,7 +1875,6 @@
             // 
             this.lightPalette.Location = new System.Drawing.Point(644, 3);
             this.lightPalette.Name = "lightPalette";
-            this.lightPalette.SelectedColor = System.Drawing.Color.Empty;
             this.lightPalette.Size = new System.Drawing.Size(652, 99);
             this.lightPalette.TabIndex = 50;
             this.lightPalette.TabStop = false;
@@ -2022,6 +2011,7 @@
             // panelLightColor
             // 
             this.panelLightColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelLightColor.Enabled = false;
             this.panelLightColor.Location = new System.Drawing.Point(380, 24);
             this.panelLightColor.Name = "panelLightColor";
             this.panelLightColor.Size = new System.Drawing.Size(60, 20);
@@ -2657,19 +2647,9 @@
             // panel3D
             // 
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Camera = null;
-            this.panel3D.DeltaVector = new SharpDX.Vector3(0F, 0F, 0F);
-            this.panel3D.DeltaX = 0;
-            this.panel3D.DeltaY = 0;
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3D.Drag = false;
-            this.panel3D.LastX = 0;
-            this.panel3D.LastY = 0;
-            this.panel3D.LightIndex = 0;
             this.panel3D.Location = new System.Drawing.Point(3, 3);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Presenter = null;
-            this.panel3D.RoomIndex = 0;
             this.panel3D.Size = new System.Drawing.Size(1291, 667);
             this.panel3D.TabIndex = 11;
             // 
@@ -2711,6 +2691,19 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // butResetSearch
+            // 
+            this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
+            this.butResetSearch.Location = new System.Drawing.Point(214, 681);
+            this.butResetSearch.Name = "butResetSearch";
+            this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
+            this.butResetSearch.Size = new System.Drawing.Size(60, 23);
+            this.butResetSearch.TabIndex = 61;
+            this.butResetSearch.Text = "Reset";
+            this.butResetSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butResetSearch.Click += new System.EventHandler(this.butResetSearch_Click);
             // 
             // FormMain
             // 
@@ -2920,7 +2913,6 @@
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem11;
         private DarkUI.Controls.DarkButton butFindItem;
-        private DarkUI.Controls.DarkButton butResetSearch;
         private DarkUI.Controls.DarkLabel darkLabel22;
         private DarkUI.Controls.DarkButton butEditTrigger;
         private DarkUI.Controls.DarkButton butDeleteTrigger;
@@ -2976,5 +2968,6 @@
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel statusStripSelectionArea;
+        private DarkUI.Controls.DarkButton butResetSearch;
     }
 }

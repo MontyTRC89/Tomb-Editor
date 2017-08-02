@@ -11,49 +11,54 @@ namespace TombEditor
 {
     public class Configuration
     {
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
+        public int DrawRoomsMaxDepth = 6;
+
+        public static string GetDefaultPath()
+        {
+            return Path.GetDirectoryName(Application.ExecutablePath) + "\\TombEditor.ini";
+        }
+
+        public static Configuration LoadFrom(string path)
+        {
+            Configuration result = new Configuration();
+            result.DrawRoomsMaxDepth = Int32.Parse(Read(path, "NumRoomsToDraw", "Configuration", "6"));
+            return result;
+        }
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
+        private static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
 
-        private static string _path = Path.GetDirectoryName(Application.ExecutablePath) + "\\TombEditor.ini";
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        private static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
 
-        public static int DrawRoomsMaxDepth = 6;
-
-        public static string Read(string Key, string Section, string Default)
+        private static string Read(string path, string Key, string Section, string Default)
         {
             var RetVal = new StringBuilder(255);
 
-            GetPrivateProfileString(Section, Key, "", RetVal, 255, _path);
+            GetPrivateProfileString(Section, Key, "", RetVal, 255, path);
             string result = RetVal.ToString();
 
             return (result != "" ? result : Default);
         }
 
-        public static void Write(string Key, string Value, string Section)
+        private static void Write(string path, string Key, string Value, string Section)
         {
-            WritePrivateProfileString(Section, Key, Value, _path);
+            WritePrivateProfileString(Section, Key, Value, path);
         }
 
-        public static void DeleteKey(string Key, string Section)
+        private static void DeleteKey(string path, string Key, string Section)
         {
-            Write(Key, null, Section);
+            Write(path, Key, null, Section);
         }
 
-        public static void DeleteSection(string Section)
+        private static void DeleteSection(string path, string Section)
         {
-            Write(null, null, Section);
+            Write(path, null, null, Section);
         }
 
-        public static bool KeyExists(string Key, string Section)
+        private static bool KeyExists(string path, string Key, string Section)
         {
-            return Read(Key, Section, "").Length > 0;
-        }
-
-        public static void LoadConfiguration()
-        {
-            DrawRoomsMaxDepth = Int32.Parse(Read("NumRoomsToDraw", "Configuration", "6"));
+            return Read(path, Key, Section, "").Length > 0;
         }
     }
 }

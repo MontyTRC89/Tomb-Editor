@@ -116,6 +116,11 @@ namespace TombEditor.Geometry
             set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
+        public Block GetBlock(DrawingPoint pos)
+        {
+            return Blocks[pos.X, pos.Y];
+        }
+
         public void InitializeVerticesGrid()
         {
             VerticesGrid = new EditorVertex[NumXSectors, NumZSectors, 16];
@@ -2927,16 +2932,17 @@ namespace TombEditor.Geometry
             if (Vertices.Count == 0)
                 return;
 
+            // HACK
             if (VertexBuffer == null)
             {
-                VertexBuffer = Buffer.New(Editor.Instance.GraphicsDevice, Vertices.ToArray(), BufferFlags.VertexBuffer);
+                VertexBuffer = Buffer.New(Editor.Instance.GetDevice(), Vertices.ToArray(), BufferFlags.VertexBuffer);
             }
             else
             {
                 if (VertexBuffer.ElementCount < Vertices.Count)
                 {
                     VertexBuffer.Dispose();
-                    VertexBuffer = Buffer.New(Editor.Instance.GraphicsDevice, Vertices.ToArray(), BufferFlags.VertexBuffer);
+                    VertexBuffer = Buffer.New(Editor.Instance.GetDevice(), Vertices.ToArray(), BufferFlags.VertexBuffer);
                 }
 
                 VertexBuffer.SetData<EditorVertex>(Vertices.ToArray());
@@ -3213,6 +3219,11 @@ namespace TombEditor.Geometry
         public VerticalArea? VGetHeightAtPointMaxSpace(int x, int z)
         {
             return GetHeightAtPoint(x, z, Min, Max);
+        }
+
+        public override string ToString()
+        {
+            return Level.Rooms.ReferenceIndexOf(this).ToString();
         }
     }
 

@@ -2,14 +2,23 @@
 
 namespace TombEditor.Geometry
 {
-    public class MoveableInstance : ObjectInstance
+    public class MoveableInstance : ItemInstance
     {
         public SkinnedModel Model { get; set; }
-        public int ObjectId { get; set; }
 
         public MoveableInstance(int id, Room room)
-            : base(ObjectInstanceType.Moveable, id, room)
+            : base(id, room)
         { }
+
+        public override ObjectInstanceType Type
+        {
+            get { return ObjectInstanceType.Moveable; }
+        }
+
+        public override ItemType ItemType
+        {
+            get { return new ItemType(false, ObjectId); }
+        }
 
         public override ObjectInstance Clone()
         {
@@ -30,10 +39,19 @@ namespace TombEditor.Geometry
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Type = Type,
                 Model = Model,
                 ObjectId = ObjectId
             };
+        }
+
+        public override string ToString()
+        {
+            return "Movable " + ObjectNames.GetMovableName((int)Model.ObjectID) +
+                ", ID = " + Id + 
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
         }
     }
 }

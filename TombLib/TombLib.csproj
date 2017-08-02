@@ -81,6 +81,7 @@
     <Compile Include="Graphics\StaticModel.cs" />
     <Compile Include="Graphics\StaticVertex.cs" />
     <Compile Include="Graphics\Submesh.cs" />
+    <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="IO\BinaryReaderEx.cs" />
     <Compile Include="IO\BinaryWriterEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
