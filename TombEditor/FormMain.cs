@@ -970,7 +970,7 @@ namespace TombEditor
                 return;
             }
 
-            if (panel2DGrid.SelectedPortal != -1)
+            if (panel2DGrid.SelectedPortal != null)
             {
                 if (_editor.SelectedRoom.Flipped)
                 {
@@ -986,7 +986,7 @@ namespace TombEditor
                         DarkUI.Forms.DarkDialogButton.YesNo) == DialogResult.Yes)
                 {
                     EditorActions.DeletePortal(_editor.SelectedRoom, panel2DGrid.SelectedPortal);
-                    panel2DGrid.SelectedPortal = -1;
+                    panel2DGrid.SelectedPortal = null;
 
                     _editor.DrawPanel3D();
                     _editor.DrawPanelGrid();

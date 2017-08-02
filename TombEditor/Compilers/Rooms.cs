@@ -70,7 +70,7 @@ namespace TombEditor.Compilers
 
                 // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of 
                 // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
-                var waterPortals = new List<int>();
+                var waterPortals = new List<Portal>();
 
                 if (!room.FlagWater)
                 {
@@ -84,14 +84,14 @@ namespace TombEditor.Compilers
                             if (!room.Blocks[x, z].FloorPortal.AdjoiningRoom.FlagWater)
                                 continue;
 
-                            if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal.Id))
-                                waterPortals.Add(room.Blocks[x, z].FloorPortal.Id);
+                            if(!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
+                                waterPortals.Add(room.Blocks[x, z].FloorPortal);
                         }
                     }
 
-                    if (waterPortals.Count != 0)
+                    if (waterPortals.Count > 0)
                     {
-                        var waterRoom = _level.Portals[waterPortals[0]].AdjoiningRoom;
+                        var waterRoom = waterPortals[0].AdjoiningRoom;
 
                         if (!room.FlagReflection && waterRoom.WaterLevel == 1)
                             newRoom.WaterScheme = 0x06;
@@ -187,7 +187,7 @@ namespace TombEditor.Compilers
                     }
                     else
                     {
-                        foreach (var portal in waterPortals.Select(portalId => _level.Portals[portalId]))
+                        foreach (var portal in waterPortals)
                         {
                             if (v.X > portal.X * 1024 && v.X < (portal.X + portal.NumXBlocks) * 1024 &&
                                 v.Z > portal.Z * 1024 && v.Z < (portal.Z + portal.NumZBlocks) * 1024 &&
@@ -1212,15 +1212,14 @@ namespace TombEditor.Compilers
         {
             //  return; 
 
-            for (var i = 0; i < _level.Portals.Count; i++)
+            foreach (var portal in _level.Portals.Values)
             {
-                _level.Portals[i].LightAveraged = false;
+                portal.LightAveraged = false;
             }
 
-            for (var i = 0; i < _level.Portals.Count; i++)
+            foreach (var currentPortal in _level.Portals.Values)
             {
-                // Get current portal and its paired portal
-                var currentPortal = _level.Portals.ElementAt(i).Value;
+                // Get its paired portal
                 var otherPortal = currentPortal.Other;
 
                 // If the light was already averaged, then continue loop
@@ -1434,8 +1433,8 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                _level.Portals[currentPortal.Id].LightAveraged = true;
-                _level.Portals[otherPortal.Id].LightAveraged = true;
+                currentPortal.LightAveraged = true;
+                otherPortal.LightAveraged = true;
             }
         }
 

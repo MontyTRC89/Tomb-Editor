@@ -17,7 +17,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectedTrigger { get; set; } = -1;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SelectedPortal { get; set; } = -1;
+        public Portal SelectedPortal { get; set; } = null;
 
         private Editor _editor;
         private bool _firstSelection;
@@ -113,7 +113,7 @@ namespace TombEditor.Controls
                 {
                     // Start the cycle from the first portal
                     SelectedPortal = GetNextPortal(roomPoint);
-                    if (SelectedPortal == -1)
+                    if (SelectedPortal == null)
                     {
                         SelectedTrigger = GetNextTrigger(roomPoint);
                         if (SelectedTrigger != -1)
@@ -132,23 +132,23 @@ namespace TombEditor.Controls
 
                         PickingResult result = new PickingResult();
                         result.ElementType = PickingElementType.Portal;
-                        result.Element = SelectedPortal;
+                        result.Element = SelectedPortal.Id;
                         _editor.PickingResult = result;
                     }
                 }
-                else if (SelectedPortal == -1)
+                else if (SelectedPortal == null)
                 {
                     SelectedTrigger = GetNextTrigger(roomPoint);
                     if (SelectedTrigger == -1)
                     {
                         SelectedPortal = GetNextPortal(roomPoint);
-                        if (SelectedPortal != -1)
+                        if (SelectedPortal != null)
                         {
                             foundSomething = true;
 
                             PickingResult result = new PickingResult();
                             result.ElementType = PickingElementType.Portal;
-                            result.Element = SelectedPortal;
+                            result.Element = SelectedPortal.Id;
                             _editor.PickingResult = result;
                         }
                     }
@@ -165,7 +165,7 @@ namespace TombEditor.Controls
 
                 if (!foundSomething)
                 {
-                    SelectedPortal = -1;
+                    SelectedPortal = null;
                     SelectedTrigger = -1;
                 }
 
@@ -174,7 +174,7 @@ namespace TombEditor.Controls
                 _editor.UpdateStatusStrip();
                 Invalidate();
             }
-            else if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1))
+            else if ((e.Button == MouseButtons.Left) && (SelectedPortal == null))
             {
                 _drag = true;
                 _firstSelection = false;
@@ -208,7 +208,7 @@ namespace TombEditor.Controls
                 _editor.PickingResult = result;
 
                 SelectedTrigger = -1;
-                SelectedPortal = -1;
+                SelectedPortal = null;
 
                 // Update state
                 _editor.DrawPanel3D();
@@ -224,7 +224,7 @@ namespace TombEditor.Controls
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
             
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _drag)
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal == null) && _drag)
             {
                 Point roomPoint = fromVisualCoord(e.Location);
 
@@ -254,16 +254,16 @@ namespace TombEditor.Controls
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
             
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal == -1) && _drag && _firstSelection)
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal == null) && _drag && _firstSelection)
             {
                 _editor.LoadTriggersInUI();
                 _editor.BlockEditingType = 0;
             }
-            if ((e.Button == MouseButtons.Left) && (SelectedPortal != -1))
+            if ((e.Button == MouseButtons.Left) && (SelectedPortal != null))
             {
                 Point roomPoint = fromVisualCoord(e.Location);
                 
-                var p = _editor.Level.Portals[SelectedPortal];
+                var p = SelectedPortal;
                 if (p.Area.Contains(roomPoint))
                 {
                     _editor.SelectRoom(p.AdjoiningRoom);
@@ -272,11 +272,11 @@ namespace TombEditor.Controls
                 }
                 else
                 {
-                    SelectedPortal = -1;
+                    SelectedPortal = null;
                     Invalidate();
                 }
 
-                SelectedPortal = -1;
+                SelectedPortal = null;
                 SelectedTrigger = -1;
 
                 // Update state
@@ -354,9 +354,9 @@ namespace TombEditor.Controls
                     e.Graphics.DrawLine(_gridPen, 0, y, 320, y);
 
                 // Draw selection
-                if (SelectedPortal != -1)
+                if (SelectedPortal != null)
                 {
-                    var portal = _editor.Level.Portals[SelectedPortal];
+                    var portal = SelectedPortal;
                     e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
                     DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
                 }
@@ -396,16 +396,10 @@ namespace TombEditor.Controls
             e.Graphics.DrawString(text, _font, _messagePen.Brush, textRectangle, StringFormat.GenericDefault);
         }
 
-        private int GetNextPortal(Point point)
+        private Portal GetNextPortal(Point point)
         {
-            for (int i = 1; i <= _editor.Level.Portals.Count; i++)
-            {
-                int index = (i + SelectedPortal) % _editor.Level.Portals.Count;
-                var portal = _editor.Level.Portals.ElementAt(index).Value;
-                if ((_editor.SelectedRoom == portal.Room) && portal.Area.Contains(point))
-                    return portal.Id;
-            }
-            return -1;
+            return _editor.Level.Portals.Values
+                .FirstOrDefault(portal => (_editor.SelectedRoom == portal.Room) && portal.Area.Contains(point));
         }
 
         private int GetNextTrigger(Point point)

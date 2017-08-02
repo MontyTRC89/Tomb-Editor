@@ -2867,7 +2867,7 @@ namespace TombEditor
                         VerticalArea?[] verticalAreas = new VerticalArea?[4];
                         for (int i = 0; i < 4; ++i)
                             verticalAreas[i] = room.GetHeightAtPointMinSpace(x + Block.FaceX[i], z + Block.FaceZ[i]);
-                        if (verticalAreas.Any((verticalArea) => verticalArea.HasValue)) // We can only do it if there is information available
+                        if (verticalAreas.Any(verticalArea => verticalArea.HasValue)) // We can only do it if there is information available
                             for (int i = 0; i < 4; ++i)
                             {
                                 // Use the closest available vertical area information and divide it equally
@@ -2888,10 +2888,9 @@ namespace TombEditor
             _editor.UpdateStatusStrip();
         }
 
-        public static void DeletePortal(Room room, int id)
+        public static void DeletePortal(Room room, Portal current)
         {
-            var current = _editor.Level.Portals[id];
-            var other = _editor.Level.Portals[id].Other;
+            var other = current.Other;
 
             for (int x = current.X; x < current.X + current.NumXBlocks; x++)
             {
@@ -2943,10 +2942,10 @@ namespace TombEditor
                 }
             }
 
-            _editor.Level.Portals[id].Room.Portals.Remove(current);
+            current.Room.Portals.Remove(current);
             other.Room.Portals.Remove(other);
 
-            _editor.Level.Portals.Remove(id);
+            _editor.Level.Portals.Remove(current.Id);
             _editor.Level.Portals.Remove(other.Id);
 
             room.BuildGeometry();
