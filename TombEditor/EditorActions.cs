@@ -857,7 +857,7 @@ namespace TombEditor
                     if (room.Flipped)
                         return;
 
-                    Portal current = _editor.Level.Portals[objectPtr.Id];
+                    Portal current = _editor.Level.Portals.First(p => p.Id == objectPtr.Id);
                     var other = current.Other;
 
                     for (int x = current.X; x < current.X + current.NumXBlocks; x++)
@@ -909,12 +909,6 @@ namespace TombEditor
                             }
                         }
                     }
-
-                    current.Room.Portals.Remove(current);
-                    other.Room.Portals.Remove(other);
-
-                    _editor.Level.Portals.Remove(current.Id);
-                    _editor.Level.Portals.Remove(other.Id);
 
                     // Update state
                     room.BuildGeometry();
@@ -2175,14 +2169,12 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(0, room);
-                    var otherRoomPortal = new Portal(0, found);
-                    Room otherRoom = found;
+                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
+                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
 
-                    int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
-                    int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
+                    int xPortalOther = (int)(xPortalWorld - found.Position.X);
+                    int zPortalOther = (int)(zPortalWorld - found.Position.Z);
 
-                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = 1;
                     currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
                     currentRoomPortal.Direction = PortalDirection.West;
@@ -2191,20 +2183,13 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
-                    room.Portals.Add(currentRoomPortal);
-
-                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = 1;
                     otherRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
                     otherRoomPortal.Direction = PortalDirection.East;
-                    otherRoomPortal.X = (byte)(otherRoom.NumXSectors - 1);
+                    otherRoomPortal.X = (byte)(found.NumXSectors - 1);
                     otherRoomPortal.Z = (byte)zPortalOther;
                     otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
-
-                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal);
+                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
 
                     currentRoomPortal.Other = otherRoomPortal;
                     otherRoomPortal.Other = currentRoomPortal;
@@ -2213,7 +2198,7 @@ namespace TombEditor
                     for (int z = area.Y; z <= area.Bottom; z++)
                     {
                         room.Blocks[0, z].WallPortal = currentRoomPortal;
-                        found.Blocks[otherRoom.NumXSectors - 1, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal;
+                        found.Blocks[found.NumXSectors - 1, z + (int)(room.Position.Z - found.Position.Z)].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2297,14 +2282,12 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(0, room);
-                    var otherRoomPortal = new Portal(0, found);
-                    Room otherRoom = found;
+                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
+                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
 
-                    int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
-                    int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
+                    int xPortalOther = (int)(xPortalWorld - found.Position.X);
+                    int zPortalOther = (int)(zPortalWorld - found.Position.Z);
 
-                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = 1;
                     currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
                     currentRoomPortal.Direction = PortalDirection.East;
@@ -2313,20 +2296,13 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
-                    room.Portals.Add(currentRoomPortal);
-
-                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = 1;
                     otherRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
                     otherRoomPortal.Direction = PortalDirection.West;
                     otherRoomPortal.X = 0;
                     otherRoomPortal.Z = (byte)zPortalOther;
                     otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
-
-                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal);
+                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
 
                     currentRoomPortal.Other = otherRoomPortal;
                     otherRoomPortal.Other = currentRoomPortal;
@@ -2335,7 +2311,7 @@ namespace TombEditor
                     for (int z = area.Y; z <= area.Bottom; z++)
                     {
                         room.Blocks[numXblocks - 1, z].WallPortal = currentRoomPortal;
-                        found.Blocks[0, z + (int)(room.Position.Z - otherRoom.Position.Z)].WallPortal = otherRoomPortal;
+                        found.Blocks[0, z + (int)(room.Position.Z - found.Position.Z)].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2419,14 +2395,12 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(0, room);
-                    var otherRoomPortal = new Portal(0, found);
-                    Room otherRoom = found;
+                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
+                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
 
-                    byte xPortalOther = (byte)(xPortalWorld - otherRoom.Position.X);
-                    byte zPortalOther = (byte)(zPortalWorld - otherRoom.Position.Z);
+                    byte xPortalOther = (byte)(xPortalWorld - found.Position.X);
+                    byte zPortalOther = (byte)(zPortalWorld - found.Position.Z);
 
-                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
                     currentRoomPortal.NumZBlocks = 1;
                     currentRoomPortal.Direction = PortalDirection.North;
@@ -2435,20 +2409,13 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
-                    room.Portals.Add(currentRoomPortal);
-
-                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
                     otherRoomPortal.NumZBlocks = 1;
                     otherRoomPortal.Direction = PortalDirection.South;
                     otherRoomPortal.X = xPortalOther;
                     otherRoomPortal.Z = 0;
                     otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
-
-                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal);
+                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
 
                     currentRoomPortal.Other = otherRoomPortal;
                     otherRoomPortal.Other = currentRoomPortal;
@@ -2541,14 +2508,12 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(0, room);
-                    var otherRoomPortal = new Portal(0, found);
-                    Room otherRoom = found;
+                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
+                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
 
-                    int xPortalOther = (int)(xPortalWorld - otherRoom.Position.X);
-                    int zPortalOther = (int)(zPortalWorld - otherRoom.Position.Z);
+                    int xPortalOther = (int)(xPortalWorld - found.Position.X);
+                    int zPortalOther = (int)(zPortalWorld - found.Position.Z);
 
-                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
                     currentRoomPortal.NumZBlocks = 1;
                     currentRoomPortal.Direction = PortalDirection.South;
@@ -2557,20 +2522,13 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
-                    room.Portals.Add(currentRoomPortal);
-
-                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
                     otherRoomPortal.NumZBlocks = 1;
                     otherRoomPortal.Direction = PortalDirection.North;
                     otherRoomPortal.X = (byte)xPortalOther;
-                    otherRoomPortal.Z = (byte)(otherRoom.NumZSectors - 1);
+                    otherRoomPortal.Z = (byte)(found.NumZSectors - 1);
                     otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
-
-                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal);
+                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
 
                     currentRoomPortal.Other = otherRoomPortal;
                     otherRoomPortal.Other = currentRoomPortal;
@@ -2579,7 +2537,7 @@ namespace TombEditor
                     for (int x = area.X; x <= area.Right; x++)
                     {
                         room.Blocks[x, 0].WallPortal = currentRoomPortal;
-                        found.Blocks[x + xPortalOther - area.X, otherRoom.NumZSectors - 1].WallPortal = otherRoomPortal;
+                        found.Blocks[x + xPortalOther - area.X, found.NumZSectors - 1].WallPortal = otherRoomPortal;
                     }
 
                     // Build geometry for current room
@@ -2778,10 +2736,9 @@ namespace TombEditor
                         }
                     }
 
-                    var currentRoomPortal = new Portal(0, room);
-                    var otherRoomPortal = new Portal(0, found);
+                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
+                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
 
-                    currentRoomPortal.Id = _editor.Level.GetNewPortalId();
                     currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
                     currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
                     currentRoomPortal.Direction = PortalDirection.Floor;
@@ -2790,15 +2747,11 @@ namespace TombEditor
                     currentRoomPortal.AdjoiningRoom = found;
                     currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
 
-                    _editor.Level.Portals.Add(currentRoomPortal.Id, currentRoomPortal);
-                    room.Portals.Add(currentRoomPortal);
-
                     int lowXmin = area.X + (int)(room.Position.X - otherRoom.Position.X);
                     int lowXmax = area.Right + (int)(room.Position.X - otherRoom.Position.X);
                     int lowZmin = area.Y + (int)(room.Position.Z - otherRoom.Position.Z);
                     int lowZmax = area.Bottom + (int)(room.Position.Z - otherRoom.Position.Z);
 
-                    otherRoomPortal.Id = _editor.Level.GetNewPortalId();
                     otherRoomPortal.NumXBlocks = (byte)(lowXmax - lowXmin + 1);
                     otherRoomPortal.NumZBlocks = (byte)(lowZmax - lowZmin + 1);
                     otherRoomPortal.Direction = PortalDirection.Ceiling;
@@ -2806,9 +2759,6 @@ namespace TombEditor
                     otherRoomPortal.Z = (byte)lowZmin;
                     otherRoomPortal.AdjoiningRoom = room;
                     otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
-
-                    _editor.Level.Portals.Add(otherRoomPortal.Id, otherRoomPortal);
-                    found.Portals.Add(otherRoomPortal);
 
                     currentRoomPortal.Other = otherRoomPortal;
                     otherRoomPortal.Other = currentRoomPortal;

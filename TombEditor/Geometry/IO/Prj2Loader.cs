@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,14 +11,25 @@ using TombLib.IO;
 
 namespace TombEditor.Geometry.IO
 {
-    public class Prj2Loader
+    public static class Prj2Loader
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        private delegate Portal PortalGetter(int id);
+        
         public static Level LoadFromPrj2(string filename, GraphicsDevice device, FormMain form)
         {
             var level = new Level();
 
+            var portals = new Dictionary<int, Portal>();
+            PortalGetter getOrCreatePortal = id =>
+            {
+                if (!portals.ContainsKey(id))
+                    return portals[id] = new Portal(id, null);
+
+                return portals[id];
+            };
+            
             try
             {
                 using (var reader = CreatePrjReader(filename))
@@ -127,18 +139,15 @@ namespace TombEditor.Geometry.IO
                     int numPortals = reader.ReadInt32();
                     for (int i = 0; i < numPortals; i++)
                     {
-                        var portal = new Portal(0, null)
-                        {
-                            Id = reader.ReadInt32(),
-                            Other = level.Portals[reader.ReadInt32()],
-                            Room = level.GetOrCreateDummyRoom(reader.ReadInt16()),
-                            AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16()),
-                            Direction = (PortalDirection)reader.ReadByte(),
-                            X = reader.ReadByte(),
-                            Z = reader.ReadByte(),
-                            NumXBlocks = reader.ReadByte(),
-                            NumZBlocks = reader.ReadByte()
-                        };
+                        var portal = getOrCreatePortal(reader.ReadInt32());
+                        portal.Other = getOrCreatePortal(reader.ReadInt32());
+                        portal.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        portal.AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        portal.Direction = (PortalDirection) reader.ReadByte();
+                        portal.X = reader.ReadByte();
+                        portal.Z = reader.ReadByte();
+                        portal.NumXBlocks = reader.ReadByte();
+                        portal.NumZBlocks = reader.ReadByte();
 
                         reader.ReadByte();
                         portal.MemberOfFlippedRoom = reader.ReadBoolean();
@@ -149,8 +158,6 @@ namespace TombEditor.Geometry.IO
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();
-
-                        level.Portals.Add(portal.Id, portal);
                     }
 
                     // Read objects
@@ -357,9 +364,9 @@ namespace TombEditor.Geometry.IO
                                     FloorOpacity = (PortalOpacity)reader.ReadByte(),
                                     CeilingOpacity = (PortalOpacity)reader.ReadByte(),
                                     WallOpacity = (PortalOpacity)reader.ReadByte(),
-                                    FloorPortal = level.Portals[reader.ReadInt32()],
-                                    CeilingPortal = level.Portals[reader.ReadInt32()],
-                                    WallPortal = level.Portals[reader.ReadInt32()],
+                                    FloorPortal = getOrCreatePortal(reader.ReadInt32()),
+                                    CeilingPortal = getOrCreatePortal(reader.ReadInt32()),
+                                    WallPortal = getOrCreatePortal(reader.ReadInt32()),
                                     IsFloorSolid = reader.ReadBoolean(),
                                     IsCeilingSolid = reader.ReadBoolean(),
                                     NoCollisionFloor = reader.ReadBoolean(),
@@ -568,11 +575,6 @@ namespace TombEditor.Geometry.IO
                 room.BuildGeometry();
                 room.CalculateLightingForThisRoom();
                 room.UpdateBuffers();
-            }
-
-            foreach (var portal in level.Portals.Values)
-            {
-                portal.Room.Portals.Add(portal);
             }
 
             level.FileName = filename;

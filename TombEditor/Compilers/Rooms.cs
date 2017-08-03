@@ -231,22 +231,22 @@ namespace TombEditor.Compilers
                 ConvertGeometry(room, ref newRoom, indicesDictionary);
 
                 // Build portals
-                var tempIdPortals = new List<int>();
+                var tempIdPortals = new List<Portal>();
 
                 for (var z = 0; z < room.NumZSectors; z++)
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        if (room.Blocks[x, z].WallPortal != null && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal.Id))
-                            tempIdPortals.Add(room.Blocks[x, z].WallPortal.Id);
+                        if (room.Blocks[x, z].WallPortal != null && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
+                            tempIdPortals.Add(room.Blocks[x, z].WallPortal);
 
                         if (room.Blocks[x, z].FloorPortal != null &&
-                            !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal.Id))
-                            tempIdPortals.Add(room.Blocks[x, z].FloorPortal.Id);
+                            !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal))
+                            tempIdPortals.Add(room.Blocks[x, z].FloorPortal);
 
                         if (room.Blocks[x, z].CeilingPortal != null &&
-                            !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal.Id))
-                            tempIdPortals.Add(room.Blocks[x, z].CeilingPortal.Id);
+                            !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal))
+                            tempIdPortals.Add(room.Blocks[x, z].CeilingPortal);
                     }
                 }
 
@@ -598,11 +598,11 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(IEnumerable<int> tempIdPortals, Room room, ref tr_room newRoom)
+        private void ConvertPortals(IEnumerable<Portal> tempIdPortals, Room room, ref tr_room newRoom)
         {
             var result = new List<tr_room_portal>();
 
-            foreach (var portal in tempIdPortals.Select(portalId => _editor.Level.Portals[portalId]))
+            foreach (var portal in tempIdPortals)
             {
                 int xMin;
                 int xMax;
@@ -1200,7 +1200,7 @@ namespace TombEditor.Compilers
 
         private void MatchPortalShades()
         {
-            foreach (var currentPortal in _level.Portals.Values)
+            foreach (var currentPortal in _level.Portals)
             {
                 // Get current portal and its paired portal
                 // Get its paired portal

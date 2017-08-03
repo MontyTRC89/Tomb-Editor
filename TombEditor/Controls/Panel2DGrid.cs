@@ -102,7 +102,7 @@ namespace TombEditor.Controls
             SectorBasedObjectInstance selectedSectorObject = null;
             if (_editor.SelectedObject.HasValue)
                 if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Portal)
-                    selectedSectorObject = _editor.Level.Portals[_editor.SelectedObject.Value.Id];
+                    selectedSectorObject = _editor.Level.Portals.First(portal => portal.Id == _editor.SelectedObject.Value.Id);
                 else if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Trigger)
                     selectedSectorObject = _editor.Level.Triggers[_editor.SelectedObject.Value.Id];
 
@@ -256,7 +256,7 @@ namespace TombEditor.Controls
                 ObjectPtr? selectedObject = _editor.SelectedObject;
                 if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Portal))
                 {
-                    Portal portal = _editor.Level.Portals[selectedObject.Value.Id];
+                    Portal portal = _editor.Level.Portals.First(p => p.Id == selectedObject.Value.Id);
                     e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
                     DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
                 }

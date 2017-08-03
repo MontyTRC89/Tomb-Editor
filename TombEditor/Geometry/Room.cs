@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using TombEditor.Compilers;
@@ -27,7 +28,11 @@ namespace TombEditor.Geometry
         public List<int> Sinks { get; private set; } = new List<int>();
         public List<int> Cameras { get; private set; } = new List<int>();
         public List<int> FlyByCameras { get; private set; } = new List<int>();
-        public List<Portal> Portals { get; private set; } = new List<Portal>();
+        public IEnumerable<Portal> Portals => Enumerable
+            .Range(0, Blocks.GetLength(0))
+            .SelectMany(x => Enumerable.Range(0, Blocks.GetLength(1))
+                .SelectMany(y => new []{Blocks[x,y].CeilingPortal, Blocks[x,y].FloorPortal, Blocks[x,y].WallPortal})
+        ).Where(p => p != null);
         public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
         public List<EditorVertex> OptimizedVertices { get; set; }

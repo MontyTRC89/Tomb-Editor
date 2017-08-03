@@ -686,7 +686,7 @@ namespace TombEditor
                 return;
             }
 
-            Portal portal = _editor.Level.Portals[_editor.SelectedObject.Value.Id];
+            Portal portal = _editor.Level.Portals.First(p => p.Id == _editor.SelectedObject.Value.Id);
 
             for (int x = portal.X; x < portal.X + portal.NumXBlocks; x++)
                 for (int z = portal.Z; z < portal.Z + portal.NumZBlocks; z++)
@@ -1215,9 +1215,8 @@ namespace TombEditor
             }
 
             // Check if room has portals
-            for (int i = 0; i < _editor.Level.Portals.Count; i++)
+            foreach (var p in _editor.Level.Portals)
             {
-                var p = _editor.Level.Portals[i];
                 if (p.Room != _editor.SelectedRoom && p.AdjoiningRoom != _editor.SelectedRoom)
                     continue;
 
@@ -1570,10 +1569,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            for (int p = 0; p < _editor.Level.Portals.Count; p++)
+            foreach (var portal in _editor.Level.Portals)
             {
-                var portal = _editor.Level.Portals.ElementAt(p).Value;
-
                 if (portal.Room != _editor.SelectedRoom)
                     continue;
 
@@ -1596,10 +1593,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            for (int p = 0; p < _editor.Level.Portals.Count; p++)
+            foreach (var portal in _editor.Level.Portals)
             {
-                var portal = _editor.Level.Portals.ElementAt(p).Value;
-
                 if (portal.Room != _editor.SelectedRoom)
                     continue;
 
@@ -2078,7 +2073,7 @@ namespace TombEditor
             if (comboFlipMap.SelectedIndex == 0 && room.Flipped)
             {
                 // Check if room has portals
-                foreach (var p in _editor.Level.Portals.Values)
+                foreach (var p in _editor.Level.Portals)
                 {
                     if ((p.Room != _editor.SelectedRoom && p.AdjoiningRoom != _editor.SelectedRoom) ||
                         p.MemberOfFlippedRoom)
@@ -2139,27 +2134,22 @@ namespace TombEditor
             // Duplicate portals
             var duplicatedPortals = new Dictionary<Portal, Portal>();
 
-            foreach (var p in _editor.Level.Portals.Values)
+            foreach (var p in _editor.Level.Portals)
             {
                 if (p.Room != _editor.SelectedRoom)
                     continue;
 
-                int portalId = _editor.Level.GetNewPortalId();
                 var newPortal = p.ClonePortal();
-                newPortal.Id = portalId;
+                newPortal.Id = _editor.Level.GetNewPortalId();
                 newPortal.Flipped = true;
 
                 p.Flipped = true;
-                System.Diagnostics.Debug.Assert(ReferenceEquals(p, _editor.Level.Portals[p.Id]));
 
                 duplicatedPortals.Add(p, newPortal);
-                _editor.Level.Portals.Add(newPortal.Id, newPortal);
             }
 
             int numXSectors = room.NumXSectors;
             int numZSectors = room.NumZSectors;
-
-            var pos = room.Position;
 
             string name = "(Flipped of " + _editor.SelectedRoom.ToString() + ") Room " + found;
             var newRoom = new Room(_editor.Level, numXSectors, numZSectors, name);

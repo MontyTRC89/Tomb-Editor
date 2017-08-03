@@ -70,6 +70,8 @@ namespace TombEditor.Geometry.IO
 
             try
             {
+                var portals = new Dictionary<int, Portal>();
+                
                 // Open file
                 using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
                 {
@@ -190,6 +192,7 @@ namespace TombEditor.Geometry.IO
 
                             p.MemberOfFlippedRoom = !ReferenceEquals(p.Room, room);
                             p.Room = room;
+                            portals.Add(p.Id, p);
 
                             portalThingIndices.Add(p, new PrjPortalThingIndex
                                 {
@@ -197,7 +200,6 @@ namespace TombEditor.Geometry.IO
                                     _otherThingIndex = portalSlot
                                 });
 
-                            level.Portals.Add(p.Id, p);
                         }
 
                         short numObjects = reader.ReadInt16();
@@ -819,20 +821,23 @@ namespace TombEditor.Geometry.IO
                                         [1] = b._edFaces[0],
                                         [2] = b._edFaces[1],
                                         [3] = b._edFaces[2]
-                                    }
+                                    },
+                                    WSFaces =
+                                    {
+                                        [0] = (sbyte) (b._wsFaces[0]),
+                                        [1] = (sbyte) (b._wsFaces[3]),
+                                        [2] = (sbyte) (b._wsFaces[2]),
+                                        [3] = (sbyte) (b._wsFaces[1])
+                                    },
+                                    RFFaces =
+                                    {
+                                        [0] = (sbyte) (b._rfFaces[0]),
+                                        [1] = (sbyte) (b._rfFaces[3]),
+                                        [2] = (sbyte) (b._rfFaces[2]),
+                                        [3] = (sbyte) (b._rfFaces[1])
+                                    },
+                                    SplitFoorType = (byte) b._flags3
                                 };
-                                
-                                room.Blocks[x, z].WSFaces[0] = (sbyte)(b._wsFaces[0]);
-                                room.Blocks[x, z].WSFaces[1] = (sbyte)(b._wsFaces[3]);
-                                room.Blocks[x, z].WSFaces[2] = (sbyte)(b._wsFaces[2]);
-                                room.Blocks[x, z].WSFaces[3] = (sbyte)(b._wsFaces[1]);
-
-                                room.Blocks[x, z].RFFaces[0] = (sbyte)(b._rfFaces[0]);
-                                room.Blocks[x, z].RFFaces[1] = (sbyte)(b._rfFaces[3]);
-                                room.Blocks[x, z].RFFaces[2] = (sbyte)(b._rfFaces[2]);
-                                room.Blocks[x, z].RFFaces[3] = (sbyte)(b._rfFaces[1]);
-
-                                room.Blocks[x, z].SplitFoorType = (byte)b._flags3;
 
                                 if ((b._blockFlags1 & 0x4000) != 0)
                                     room.Blocks[x, z].Flags |= BlockFlags.Monkey;
@@ -995,7 +1000,7 @@ namespace TombEditor.Geometry.IO
 
                         // Ask for WAD file
                         wadName = form.OpenWAD(wadName);
-                        if (String.IsNullOrEmpty(wadName))
+                        if (string.IsNullOrEmpty(wadName))
                         {
                             return null;
                         }
@@ -1253,15 +1258,15 @@ namespace TombEditor.Geometry.IO
 
                     // Fix portals
                     form.ReportProgress(76, "Building portals");
-                    foreach (var currentPortal in level.Portals.Values)
+                    foreach (var currentPortal in portals.Values)
                     {
                         currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
                                                  currentPortal.X);
                     }
 
-                    foreach (var currentPortal in level.Portals.Values)
+                    foreach (var currentPortal in portals.Values)
                     {
-                        foreach (var otherPortal in level.Portals.Values)
+                        foreach (var otherPortal in portals.Values)
                         {
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
@@ -1461,9 +1466,6 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            System.Diagnostics.Debug.Assert(ReferenceEquals(level.Portals[currentPortal.Id], currentPortal));
-                            System.Diagnostics.Debug.Assert(ReferenceEquals(level.Portals[otherPortal.Id], otherPortal));
-
                             break;
                         }
                     }
@@ -1476,9 +1478,8 @@ namespace TombEditor.Geometry.IO
                         if (room == null)
                             continue;
 
-                        for (int j = 0; j < room.Lights.Count; j++)
+                        foreach (var light in room.Lights)
                         {
-                            var light = room.Lights[j];
                             light.Position = new Vector3(
                                 room.NumXSectors * 1024.0f - light.Position.X,
                                 light.Position.Y - room.Position.Y * 256,
@@ -2583,11 +2584,6 @@ namespace TombEditor.Geometry.IO
                 DarkUI.Forms.DarkMessageBox.ShowError(
                     "There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
                 return null;
-            }
-
-            foreach (var portal in level.Portals.Values)
-            {
-                portal.Room.Portals.Add(portal);
             }
 
             form.ReportProgress(95, "Building rooms");

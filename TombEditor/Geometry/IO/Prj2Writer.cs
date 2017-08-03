@@ -73,9 +73,9 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Write portals
-                    int numPortals = level.Portals.Count;
+                    int numPortals = level.Portals.Count();
                     writer.Write(numPortals);
-                    foreach (var p in level.Portals.Values)
+                    foreach (var p in level.Portals)
                     {
                         writer.Write(p.Id);
                         writer.Write((int) p.Other.Id);

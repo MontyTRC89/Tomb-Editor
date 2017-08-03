@@ -52,7 +52,8 @@ namespace TombEditor.Geometry
                     result = Editor.Instance.Level.Objects[Id].ToString();
                     break;
                 case ObjectInstanceType.Portal:
-                    result = Editor.Instance.Level.Portals[Id].ToString();
+                    var self = Id;
+                    result = Editor.Instance.Level.Portals.First(p => p.Id == self).ToString();
                     break;
                 case ObjectInstanceType.Trigger:
                     result = Editor.Instance.Level.Triggers[Id].ToString();
