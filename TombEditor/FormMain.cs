@@ -95,6 +95,12 @@ namespace TombEditor
             panelItem.Draw();
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _editor.Configuration.SaveTry();
+        }
+
         public void DrawPanelMap2D()
         {
             panel2DGrid.Invalidate();

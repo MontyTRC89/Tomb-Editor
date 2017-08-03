@@ -1,64 +1,81 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NLog;
+using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace TombEditor
 {
+    // Just add properties to this class to add now configuration options.
+    // They will be loaded and saved automatically.
     public class Configuration
     {
-        public int DrawRoomsMaxDepth = 6;
+        public int DrawRoomsMaxDepth { get; set; } = 6;
 
+
+        
         public static string GetDefaultPath()
         {
-            return Path.GetDirectoryName(Application.ExecutablePath) + "\\TombEditor.ini";
+            return Path.GetDirectoryName(Application.ExecutablePath) + "/TombEditorConfiguration.xml";
         }
 
-        public static Configuration LoadFrom(string path)
+        public void Save(Stream stream)
         {
-            Configuration result = new Configuration();
-            result.DrawRoomsMaxDepth = Int32.Parse(Read(path, "NumRoomsToDraw", "Configuration", "6"));
-            return result;
+            new XmlSerializer(typeof(Configuration)).Serialize(stream, this);
         }
 
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        private static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
-
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        private static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
-
-        private static string Read(string path, string Key, string Section, string Default)
+        public void Save(string path)
         {
-            var RetVal = new StringBuilder(255);
-
-            GetPrivateProfileString(Section, Key, "", RetVal, 255, path);
-            string result = RetVal.ToString();
-
-            return (result != "" ? result : Default);
+            using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                Save(stream);
         }
 
-        private static void Write(string path, string Key, string Value, string Section)
+        public void Save()
         {
-            WritePrivateProfileString(Section, Key, Value, path);
+            Save(GetDefaultPath());
         }
 
-        private static void DeleteKey(string path, string Key, string Section)
+        public void SaveTry()
         {
-            Write(path, Key, null, Section);
+            try
+            {
+                Save();
+            }
+            catch (Exception exc)
+            {
+                LogManager.GetCurrentClassLogger().Log(LogLevel.Info, exc,
+                    "Unable to save configuration to \"" + GetDefaultPath() + "\"");
+            }
         }
 
-        private static void DeleteSection(string path, string Section)
+        public static Configuration Load(Stream stream)
         {
-            Write(path, null, null, Section);
+            return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(stream));
         }
 
-        private static bool KeyExists(string path, string Key, string Section)
+        public static Configuration Load(string path)
         {
-            return Read(path, Key, Section, "").Length > 0;
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                return Load(stream);
+        }
+
+        public static Configuration Load()
+        {
+            return Load(GetDefaultPath());
+        }
+        
+        public static Configuration LoadOrUseDefault()
+        {
+            try
+            {
+                return Load();
+            }
+            catch (Exception exc)
+            {
+                LogManager.GetCurrentClassLogger().Log(LogLevel.Info, exc, 
+                    "Unable to load configuration from \"" + GetDefaultPath() + "\"");
+                return new Configuration();
+            }
         }
     }
 }
