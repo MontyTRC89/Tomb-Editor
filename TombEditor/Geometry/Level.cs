@@ -306,5 +306,19 @@ namespace TombEditor.Geometry
 
             return Rooms[index] ?? (Rooms[index] = new Room(this, 1, 1));
         }
+
+        public int GetFreeRoomIndex()
+        {
+            // Search the first free room
+            for (int i = 0; i < Rooms.Length; i++)
+                if (Rooms[i] == null)
+                    return i;
+            throw new Exception("A maximum number of " + Level.MaxNumberOfRooms + " rooms has been reached. Unable to add room.");
+        }
+
+        public void AssignRoomToFree(Room room)
+        {
+            Rooms[GetFreeRoomIndex()] = room;
+        }
     }
 }

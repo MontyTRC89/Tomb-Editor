@@ -1738,24 +1738,7 @@ namespace TombEditor
             SharpDX.Rectangle area = _editor.SelectedSector;
 
             // Search the first free room
-            short found = -1;
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
-            {
-                if (_editor.Level.Rooms[i] != null)
-                    continue;
-
-                found = (short)i;
-                break;
-            }
-
-            if (found == -1)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
+            int found = _editor.Level.GetFreeRoomIndex();
             var room = _editor.SelectedRoom;
 
             if (room.Flipped)
@@ -1795,24 +1778,7 @@ namespace TombEditor
             SharpDX.Rectangle area = _editor.SelectedSector;
 
             // Search the first free room
-            short found = -1;
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
-            {
-                if (_editor.Level.Rooms[i] != null)
-                    continue;
-
-                found = (short)i;
-                break;
-            }
-
-            if (found == -1)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
+            int found = _editor.Level.GetFreeRoomIndex();
             var room = _editor.SelectedRoom;
 
             if (room.Flipped)
@@ -2125,23 +2091,7 @@ namespace TombEditor
                 return;
 
             // Search the first free room
-            short found = -1;
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
-            {
-                if (_editor.Level.Rooms[i] == null)
-                {
-                    found = (short)i;
-                    break;
-                }
-            }
-
-            if (found == -1)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
+            int found = _editor.Level.GetFreeRoomIndex();
 
             // Duplicate portals
             int numPortals = _editor.Level.Portals.Count;
@@ -2430,77 +2380,12 @@ namespace TombEditor
 
         private void newRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Search the first free room
-            short found = -1;
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
-            {
-                if (_editor.Level.Rooms[i] != null)
-                    continue;
-
-                found = (short)i;
-                break;
-            }
-
-            if (found == -1)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
-            var room = _editor.SelectedRoom;
-            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room " + found);
-            newRoom.Position = room.Position;
-
-
-            // Build the geometry of the new room
-            newRoom.BuildGeometry();
-            newRoom.CalculateLightingForThisRoom();
-            newRoom.UpdateBuffers();
-
-            _editor.Level.Rooms[found] = newRoom;
-
-            // Update the UI
-            comboRoom.Items[found] = found + ": " + newRoom.Name;
-            comboRoom.SelectedIndex = found;
+            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, (room) => room.GetHighestCorner(), 12);
         }
 
         private void newRoomDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Search the first free room
-            short found = -1;
-            for (int i = 0; i < _editor.Level.Rooms.Length; i++)
-            {
-                if (_editor.Level.Rooms[i] != null)
-                    continue;
-
-                found = (short)i;
-                break;
-            }
-
-            if (found == -1)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "You have reached the maximum number of " + Level.MaxNumberOfRooms + " rooms",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
-            var room = _editor.SelectedRoom;
-            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room " + found);
-            newRoom.Position = room.Position;
-
-            // Build the geometry of the new room
-            newRoom.BuildGeometry();
-            newRoom.CalculateLightingForThisRoom();
-            newRoom.UpdateBuffers();
-
-            _editor.Level.Rooms[found] = newRoom;
-
-            // Update the UI
-            comboRoom.Items[found] = found + ": " + newRoom.Name;
-            comboRoom.SelectedIndex = found;
+            EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, (room) => room.GetLowestCorner() - 12, 12);
         }
         
         private void butNoCollision_Click(object sender, EventArgs e)
