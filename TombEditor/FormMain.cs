@@ -951,65 +951,65 @@ namespace TombEditor
 
                 case Keys.Q:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 0, 1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 0, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.A:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 0, -1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 0, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.W:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 1, 1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 1, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.S:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 1, -1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 1, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.E:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 2, 1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 2, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.D:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 2, -1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 2, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.R: // Rotate object
                     if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
                         EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject.Value, 1, e.Shift);
                     else if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 3, 1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 3, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.F:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 3, -1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, _editor.SelectedSectorArrow, 3, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.Y: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
                     _pressedZorY = true;
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalFloorCorner, 0, 1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalFloorCorner, 0, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalFloorCorner, 0, -1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalFloorCorner, 0, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.U:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalCeilingCorner, 1, 1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalCeilingCorner, 1, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.J:
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectorAvailable)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalCeilingCorner, 1, -1, e.Control);
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSector, EditorArrowType.DiagonalCeilingCorner, 1, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
             }
 
