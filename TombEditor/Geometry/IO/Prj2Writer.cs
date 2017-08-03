@@ -430,7 +430,7 @@ namespace TombEditor.Geometry.IO
                 get
                 {
                     if (obj == null)
-                        return 0;
+                        return -1;
                     if (!_idList.ContainsKey(obj))
                         _idList.Add(obj, _idList.Count);
                     return _idList[obj];
