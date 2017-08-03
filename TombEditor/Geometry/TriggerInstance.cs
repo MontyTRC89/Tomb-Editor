@@ -18,10 +18,7 @@ namespace TombEditor.Geometry
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Trigger; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.Trigger;
 
         public override string ToString()
         {
@@ -123,9 +120,9 @@ namespace TombEditor.Geometry
             return output;
         }
         
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
-            return new TriggerInstance(0, Room)
+            return new TriggerInstance(newId, Room)
             {
                 X = X,
                 Y = Y,

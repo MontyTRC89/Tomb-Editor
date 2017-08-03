@@ -11,19 +11,13 @@ namespace TombEditor.Geometry
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.StaticMesh; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.StaticMesh;
 
-        public override ItemType ItemType
-        {
-            get { return new ItemType(true, ObjectId); }
-        }
+        public override ItemType ItemType => new ItemType(true, ObjectId);
 
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
-            return new StaticMeshInstance(0, Room)
+            return new StaticMeshInstance(newId, Room)
             {
                 X = X,
                 Y = Y,

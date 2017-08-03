@@ -700,7 +700,6 @@ namespace TombEditor
                 if (formTrigger.ShowDialog(parent) != DialogResult.OK)
                     return;
                 trigger.Room = room;
-                trigger.Id = _editor.Level.GetNewTriggerId();
                 trigger.X = (byte)area.X;
                 trigger.Z = (byte)area.Y;
                 trigger.NumXBlocks = (byte)(area.Width + 1);

@@ -8,14 +8,11 @@
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Sink; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.Sink;
 
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
-            return new SinkInstance(0, Room)
+            return new SinkInstance(newId, Room)
             {
                 X = X,
                 Y = Y,

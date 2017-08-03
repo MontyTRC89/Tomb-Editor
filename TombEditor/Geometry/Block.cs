@@ -142,14 +142,18 @@ namespace TombEditor.Geometry
             return b;
         }
 
-        public bool IsFloor
-        {
-            get { return Type == BlockType.Floor; }
-        }
+        public bool IsFloor => Type == BlockType.Floor;
 
-        public bool IsAnyWall
+        public bool IsAnyWall => Type != BlockType.Floor;
+
+        public IEnumerable<Portal> Portals
         {
-            get { return Type != BlockType.Floor; }
+            get
+            {
+                if (WallPortal != null) yield return WallPortal;
+                if (CeilingPortal != null) yield return CeilingPortal;
+                if (FloorPortal != null) yield return FloorPortal;
+            }
         }
     }
 }

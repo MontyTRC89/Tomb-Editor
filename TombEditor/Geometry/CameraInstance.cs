@@ -15,14 +15,11 @@
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Camera; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.Camera;
 
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
-            return new CameraInstance(0, Room)
+            return new CameraInstance(newId, Room)
             {
                 X = X,
                 Y = Y,

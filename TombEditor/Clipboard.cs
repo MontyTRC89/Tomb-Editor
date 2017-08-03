@@ -16,12 +16,11 @@ namespace TombEditor
 
         private static int CopyObject(int Index, Level level, Room room, Vector3 position, int x, int y, int z)
         {
-            ObjectInstance result = level.Objects[_objectPtr.Value.Id].Clone();
+            ObjectInstance result = level.Objects[_objectPtr.Value.Id].Clone(level.GetNewObjectId());
             result.X = (byte)x;
             result.Y = (short)y;
             result.Z = (byte)z;
             result.Position = position;
-            result.Id = level.GetNewObjectId();
             result.Room = room;
             level.Objects.Add(result.Id, result);
             return result.Id;

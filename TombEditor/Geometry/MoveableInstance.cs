@@ -10,19 +10,13 @@ namespace TombEditor.Geometry
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Moveable; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.Moveable;
 
-        public override ItemType ItemType
-        {
-            get { return new ItemType(false, ObjectId); }
-        }
+        public override ItemType ItemType => new ItemType(false, ObjectId);
 
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
-            return new MoveableInstance(0, Room)
+            return new MoveableInstance(newId, Room)
             {
                 X = X,
                 Y = Y,

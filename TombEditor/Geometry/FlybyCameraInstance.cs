@@ -22,14 +22,11 @@ namespace TombEditor.Geometry
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.FlyByCamera; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.FlyByCamera;
 
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
-            var instance = new FlybyCameraInstance(0, Room)
+            var instance = new FlybyCameraInstance(newId, Room)
             {
                 X = X,
                 Y = Y,

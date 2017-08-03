@@ -15,14 +15,11 @@ namespace TombEditor.Geometry
             : base(id, room)
         {}
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Portal; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.Portal;
 
-        public Portal ClonePortal()
+        public Portal ClonePortal(int newId)
         {
-            return new Portal(0, Room)
+            return new Portal(newId, Room)
             {
                 Direction = Direction,
                 X = X,
@@ -34,7 +31,7 @@ namespace TombEditor.Geometry
             };
         }
 
-        public override ObjectInstance Clone()
+        public override ObjectInstance Clone(int newId)
         {
             throw new NotImplementedException();
         }

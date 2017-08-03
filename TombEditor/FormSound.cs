@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using TombEditor.Geometry;
 using System.IO;
 using System.Media;
-using TombLib.Wad;
 using NLog;
 
 namespace TombEditor
@@ -20,7 +19,6 @@ namespace TombEditor
 
         private Dictionary<short, string> _sounds;
         private SoundSourceInstance _soundSource;
-        private TR4Wad wad;
 
         public FormSound(SoundSourceInstance soundSource /*, TR4Wad wad*/)
         {
@@ -109,7 +107,7 @@ namespace TombEditor
                 }
                 catch (Exception exc)
                 {
-                    logger.Log(LogLevel.Warn, "Unable to play sample \"" + row.File + "\"", exc);
+                    logger.Warn(exc, "Unable to play sample \"" + row.File + "\"");
                 }
             }
         }

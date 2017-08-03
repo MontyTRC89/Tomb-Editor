@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using SharpDX;
 using System.Drawing;
@@ -18,8 +17,8 @@ namespace TombEditor
         private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 
         [DllImport("shlwapi.dll", SetLastError = true)]
-        private static extern int PathRelativePathTo(StringBuilder pszPath, string pszFrom, int dwAttrFrom, 
-                                                     string pszTo, int dwAttrTo);
+        private static extern int PathRelativePathTo(StringBuilder pszPath, string pszFrom, int dwAttrFrom,
+            string pszTo, int dwAttrTo);
 
         [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
         static extern bool PathIsRelative([In] string lpszPath);
@@ -55,23 +54,25 @@ namespace TombEditor
                     int numYtiles = bitmap.Height / 64;
 
                     for (int yy = 0; yy < numYtiles; yy++)
-                        for (int xx = 0; xx < numXtiles; xx++)
+                    for (int xx = 0; xx < numXtiles; xx++)
+                    {
+                        if (xx >= 4)
                         {
-                            if (xx >= 4)
-                            {
-                                System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
-                                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(64 * (xx - 4), 64 * yy * 2 + 64, 64, 64);
+                            System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
+                            System.Drawing.RectangleF dest =
+                                new System.Drawing.RectangleF(64 * (xx - 4), 64 * yy * 2 + 64, 64, 64);
 
-                                g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
-                            }
-                            else
-                            {
-                                System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
-                                System.Drawing.RectangleF dest = new System.Drawing.RectangleF(64 * xx, 64 * yy * 2, 64, 64);
-
-                                g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
-                            }
+                            g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
                         }
+                        else
+                        {
+                            System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
+                            System.Drawing.RectangleF
+                                dest = new System.Drawing.RectangleF(64 * xx, 64 * yy * 2, 64, 64);
+
+                            g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
+                        }
+                    }
                 }
             }
             catch (Exception)
@@ -84,12 +85,12 @@ namespace TombEditor
 
         public static int GetWorldX(Room room, int x)
         {
-            return (int)(x + room.Position.X);
+            return (int) (x + room.Position.X);
         }
 
         public static int GetWorldZ(Room room, int z)
         {
-            return (int)(z + room.Position.Z);
+            return (int) (z + room.Position.Z);
         }
 
         public static Bitmap GetTextureTileFromMap(int xc, int yc, int page)
@@ -100,7 +101,8 @@ namespace TombEditor
             {
                 for (int y = 0; y < 64; y++)
                 {
-                    System.Drawing.Color color = Editor.Instance.Level._textureMap.GetPixel(xc + x, page * 256 + yc + y);
+                    System.Drawing.Color color =
+                        Editor.Instance.Level._textureMap.GetPixel(xc + x, page * 256 + yc + y);
                     bmp.SetPixel(x, y, color);
                 }
             }
@@ -173,7 +175,7 @@ namespace TombEditor
         {
             return This.Contains(point.X, point.Y);
         }
-        
+
         public static void DrawRectangle(this Graphics g, Pen pen, System.Drawing.RectangleF rectangle)
         {
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
@@ -198,7 +200,7 @@ namespace TombEditor
         {
             return new PointF(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
         }
-        
+
         public static bool ContainedBetween(this Point point, Point point0, Point point1)
         {
             return
@@ -224,12 +226,19 @@ namespace TombEditor
 
             if (needle == null)
                 return -1;
-            
+
             for (int i = 0; i < list.Count; ++i)
                 if (ReferenceEquals(list[i], needle))
                     return i;
 
             return -1;
+        }
+
+        public static IEnumerable<T> Unwrap<T>(this T[,] array)
+        {
+            for (int x = 0; x < array.GetLength(0); ++x)
+            for (int y = 0; y < array.GetLength(1); ++y)
+                yield return array[x, y];
         }
 
         public static T TryGet<T>(this T[] array, int index0) where T : class
@@ -238,7 +247,7 @@ namespace TombEditor
                 return null;
             return array[index0];
         }
-        
+
         public static T TryGet<T>(this T[,] array, int index0, int index1) where T : class
         {
             if ((index0 < 0) || (index0 >= array.GetLength(0)))
@@ -259,7 +268,8 @@ namespace TombEditor
             return array[index0, index1, index2];
         }
 
-        public static T FindFirstAfterWithWrapAround<T>(this IEnumerable<T> list, Func<T, bool> IsPrevious, Func<T, bool> Matches) where T : class
+        public static T FindFirstAfterWithWrapAround<T>(this IEnumerable<T> list, Func<T, bool> IsPrevious,
+            Func<T, bool> Matches) where T : class
         {
             bool ignoreMatches = true;
 

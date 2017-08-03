@@ -260,9 +260,8 @@ namespace TombEditor.Geometry.IO
                     int numTriggers = reader.ReadInt32();
                     for (int i = 0; i < numTriggers; i++)
                     {
-                        var o = new TriggerInstance(0, null)
+                        var o = new TriggerInstance(reader.ReadInt32(), null)
                         {
-                            Id = reader.ReadInt32(),
                             X = reader.ReadByte(),
                             Z = reader.ReadByte(),
                             NumXBlocks = reader.ReadByte(),
