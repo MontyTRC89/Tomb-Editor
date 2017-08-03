@@ -64,7 +64,7 @@ namespace TombEditor
         public int SelectedTextureIndex { get; set; } = -1;
         public Vector2[] SeletedTextureUV { get; } = new Vector2[4];
         public TextureTileType SeletedTextureTriangle { get; set; }
-        public Configuration Configuration { get; set; } = Configuration.LoadFrom(Configuration.GetDefaultPath());
+        public Configuration Configuration { get; set; } = Configuration.LoadOrUseDefault();
 
         private Panel2DGrid _panelGrid;
         private PanelRendering3D _panel3D;
