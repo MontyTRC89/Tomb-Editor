@@ -100,8 +100,8 @@ namespace TombEditor.Geometry
 
         public Vector2 SectorPos
         {
-            get { return new Vector2(Position.X, Position.Z); }
-            set { Position = new Vector3(value.X, Position.Y, value.Y); }
+            get => new Vector2(Position.X, Position.Z);
+            set => Position = new Vector3(value.X, Position.Y, value.Y);
         }
 
         public Block GetBlock(DrawingPoint pos)
@@ -979,7 +979,6 @@ namespace TombEditor.Geometry
             // After building the geometry subset, I have to rebuild the editor vertices array for the vertex buffer
             Vertices = new List<EditorVertex>();
             var tempCentre = Vector4.Zero;
-            int totalVertices = 0;
 
             for (int x = 0; x < NumXSectors; x++)
             {
@@ -1739,55 +1738,52 @@ namespace TombEditor.Geometry
                 }
 
                 // Poligoni QA e ED
-                if (floor)
+                face = Blocks[x, z].Faces[(int)qaFace];
+
+                // QA
+                if (qA > yA && qB > yB)
+                    AddRectangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
+                        e1, e2, e3, e4);
+                else if (qA == yA && qB > yB)
+                    AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
+                else if (qA > yA && qB == yB)
+                    AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                        face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
+
+                // ED
+                if (subdivide)
                 {
-                    face = Blocks[x, z].Faces[(int)qaFace];
+                    yA = fA;
+                    yB = fB;
 
-                    // QA
-                    if (qA > yA && qB > yB)
-                        AddRectangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                                                               new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                                                               new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                                               new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                                               face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
-                                                               e1, e2, e3, e4);
-                    else if (qA == yA && qB > yB)
-                        AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                                              face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
-                    else if (qA > yA && qB == yB)
-                        AddTriangle(x, z, qaFace, new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                                                              new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                                              new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                                              face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
+                    face = Blocks[x, z].Faces[(int)edFace];
 
-                    // ED
-                    if (subdivide)
-                    {
-                        yA = fA;
-                        yB = fB;
-
-                        face = Blocks[x, z].Faces[(int)edFace];
-
-                        if (eA > yA && eB > yB)
-                            AddRectangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
-                                                                   new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
-                                                                   new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                                                   new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                                                   face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
-                                                                   e1, e2, e3, e4);
-                        else if (eA > yA && eB == yB)
-                            AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
-                                                                  new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                                                  new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                                                  face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
-                        else if (eA == yA && eB > yB)
-                            AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                                                                  new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
-                                                                  new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                                                                  face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
-                    }
+                    if (eA > yA && eB > yB)
+                        AddRectangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            face.RectangleUV[0], face.RectangleUV[1], face.RectangleUV[2], face.RectangleUV[3],
+                            e1, e2, e3, e4);
+                    else if (eA > yA && eB == yB)
+                        AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e4, 1);
+                    else if (eA == yA && eB > yB)
+                        AddTriangle(x, z, edFace, new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            face.TriangleUV[0], face.TriangleUV[1], face.TriangleUV[2], e1, e2, e3);
                 }
             }
 
@@ -3064,19 +3060,6 @@ namespace TombEditor.Geometry
             return min;
         }
 
-        public int GetMeanFloorHeight(int x, int z)
-        {
-            int sum = 0;
-
-            for (int i = 0; i < 4; i++)
-                sum += Blocks[x, z].QAFaces[i];
-
-            sum *= 256;
-            sum /= 4;
-
-            return sum;
-        }
-
         public int GetLowestCeilingCorner(int x, int z)
         {
             int min = int.MaxValue;
@@ -3109,10 +3092,7 @@ namespace TombEditor.Geometry
             return max;
         }
 
-        public Vector3 WorldPos
-        {
-            get { return new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f); }
-        }
+        public Vector3 WorldPos => new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f);
 
         public Vector3 GetLocalCenter()
         {
@@ -3124,7 +3104,7 @@ namespace TombEditor.Geometry
             return new Vector3(posX, posY, posZ);
         }
 
-        public Block GetBlockIfFloor(int x, int z)
+        private Block GetBlockIfFloor(int x, int z)
         {
             Block block = Blocks.TryGet(x, z);
             if ((block != null) && block.IsAnyWall)
@@ -3132,19 +3112,9 @@ namespace TombEditor.Geometry
             return block;
         }
 
-        public Rectangle Area
-        {
-            get
-            {
-                int sectorX = (int)Math.Round(Position.X);
-                int sectorZ = (int)Math.Round(Position.Z);
-                return new Rectangle(sectorX, sectorZ, sectorX + NumXSectors - 1, sectorZ + NumZSectors - 1);
-            }
-        }
-
         ///<param name="x">The X-coordinate. The point at room.Position it at (0, 0)</param>
         ///<param name="z">The Z-coordinate. The point at room.Position it at (0, 0)</param>
-        public VerticalArea? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> CombineFloor, Func<float?, float?, float?, float?, float> CombineCeiling)
+        public VerticalArea? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
         {
             Block blockXnZn = GetBlockIfFloor(x - 1, z - 1);
             Block blockXnZp = GetBlockIfFloor(x - 1, z);
@@ -3155,12 +3125,12 @@ namespace TombEditor.Geometry
 
             return new VerticalArea
             {
-                FloorY = CombineFloor(
+                FloorY = combineFloor(
                     blockXnZn?.QAFaces[Block.FaceXpZp],
                     blockXnZp?.QAFaces[Block.FaceXpZn],
                     blockXpZn?.QAFaces[Block.FaceXnZp],
                     blockXpZp?.QAFaces[Block.FaceXnZn]),
-                CeilingY = CombineCeiling(
+                CeilingY = combineCeiling(
                     blockXnZn?.WSFaces[Block.FaceXpZp],
                     blockXnZp?.WSFaces[Block.FaceXpZn],
                     blockXpZn?.WSFaces[Block.FaceXnZp],

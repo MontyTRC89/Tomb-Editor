@@ -1,5 +1,4 @@
-﻿using System;
-using SharpDX;
+﻿using SharpDX;
 
 namespace TombEditor.Geometry
 {
@@ -20,28 +19,8 @@ namespace TombEditor.Geometry
         Light
     }
 
-    public abstract class ObjectInstance : IEquatable<ObjectInstance>
+    public abstract class ObjectInstance
     {
-        public bool Equals(ObjectInstance other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Id == other.Id;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            var other = obj as ObjectInstance;
-            return other != null && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return Id;
-        }
-
         public int Id { get; }
         public Room Room { get; set; }
         public Vector3 Position { get; set; }
@@ -64,10 +43,7 @@ namespace TombEditor.Geometry
 
         public abstract ObjectInstanceType Type { get; }
 
-        public ObjectPtr ObjectPtr
-        {
-            get { return new ObjectPtr(Type, Id); }
-        }
+        public ObjectPtr ObjectPtr => new ObjectPtr(Type, Id);
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {

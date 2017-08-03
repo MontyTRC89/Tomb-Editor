@@ -54,25 +54,25 @@ namespace TombEditor
                     int numYtiles = bitmap.Height / 64;
 
                     for (int yy = 0; yy < numYtiles; yy++)
-                    for (int xx = 0; xx < numXtiles; xx++)
-                    {
-                        if (xx >= 4)
+                        for (int xx = 0; xx < numXtiles; xx++)
                         {
-                            System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
-                            System.Drawing.RectangleF dest =
-                                new System.Drawing.RectangleF(64 * (xx - 4), 64 * yy * 2 + 64, 64, 64);
+                            if (xx >= 4)
+                            {
+                                System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
+                                System.Drawing.RectangleF dest =
+                                    new System.Drawing.RectangleF(64 * (xx - 4), 64 * yy * 2 + 64, 64, 64);
 
-                            g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
-                        }
-                        else
-                        {
-                            System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
-                            System.Drawing.RectangleF
-                                dest = new System.Drawing.RectangleF(64 * xx, 64 * yy * 2, 64, 64);
+                                g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
+                            }
+                            else
+                            {
+                                System.Drawing.RectangleF src = new System.Drawing.RectangleF(64 * xx, 64 * yy, 64, 64);
+                                System.Drawing.RectangleF
+                                    dest = new System.Drawing.RectangleF(64 * xx, 64 * yy * 2, 64, 64);
 
-                            g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
+                                g.DrawImage(bitmap, dest, src, GraphicsUnit.Pixel);
+                            }
                         }
-                    }
                 }
             }
             catch (Exception)
@@ -85,12 +85,12 @@ namespace TombEditor
 
         public static int GetWorldX(Room room, int x)
         {
-            return (int) (x + room.Position.X);
+            return (int)(x + room.Position.X);
         }
 
         public static int GetWorldZ(Room room, int z)
         {
-            return (int) (z + room.Position.Z);
+            return (int)(z + room.Position.Z);
         }
 
         public static Bitmap GetTextureTileFromMap(int xc, int yc, int page)
@@ -145,13 +145,13 @@ namespace TombEditor
             byte[] outData;
 
             using (MemoryStream outMemoryStream = new MemoryStream())
-            using (ZOutputStream outZStream = new ZOutputStream(outMemoryStream))
-            using (Stream inMemoryStream = new MemoryStream(inData))
-            {
-                CopyStream(inMemoryStream, outZStream);
-                outZStream.finish();
-                outData = outMemoryStream.ToArray();
-            }
+                using (ZOutputStream outZStream = new ZOutputStream(outMemoryStream))
+                    using (Stream inMemoryStream = new MemoryStream(inData))
+                    {
+                        CopyStream(inMemoryStream, outZStream);
+                        outZStream.finish();
+                        outData = outMemoryStream.ToArray();
+                    }
 
             return outData;
         }
@@ -237,8 +237,8 @@ namespace TombEditor
         public static IEnumerable<T> Unwrap<T>(this T[,] array)
         {
             for (int x = 0; x < array.GetLength(0); ++x)
-            for (int y = 0; y < array.GetLength(1); ++y)
-                yield return array[x, y];
+                for (int y = 0; y < array.GetLength(1); ++y)
+                    yield return array[x, y];
         }
 
         public static T TryGet<T>(this T[] array, int index0) where T : class
