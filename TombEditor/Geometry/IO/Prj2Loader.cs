@@ -24,6 +24,9 @@ namespace TombEditor.Geometry.IO
             var portals = new Dictionary<int, Portal>();
             PortalGetter getOrCreatePortal = id =>
             {
+                if (id == -1)
+                    return null;
+
                 if (!portals.ContainsKey(id))
                     return portals[id] = new Portal(null);
 
@@ -612,6 +615,5 @@ namespace TombEditor.Geometry.IO
                 return null;
             }
         }
-
     }
 }

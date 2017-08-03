@@ -26,7 +26,7 @@ namespace TombEditor.Geometry
             new Dictionary<int, Texture2D>(); //DirectX textures... For now just one texture atlas 2048x2048 pixel
 
         public Bitmap _textureMap; //The texture map on the CPU
-        public IEnumerable<Portal> Portals => Rooms.SelectMany(room => room.Portals);
+        public IEnumerable<Portal> Portals => Rooms.Where(room => room != null).SelectMany(room => room.Portals);
         public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
 
         public Dictionary<int, ObjectInstance> Objects { get; } =
