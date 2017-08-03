@@ -107,6 +107,7 @@
     <Compile Include="Compilers\LevelCompiler.cs" />
     <Compile Include="Compilers\LevelCompilerTR4.cs" />
     <Compile Include="Compilers\Pathfinding.cs" />
+    <Compile Include="Compilers\PathfindingDecompiled.cs" />
     <Compile Include="Compilers\Rooms.cs" />
     <Compile Include="Compilers\Structs.cs" />
     <Compile Include="Compilers\Textures.cs" />
