@@ -5,21 +5,25 @@ namespace TombEditor.Geometry
 {
     public class Portal : SectorBasedObjectInstance
     {
+        [Obsolete]
+        public new int Id { get { return base.Id; } }
         public PortalDirection Direction { get; set; }
         public Portal Other { get; set; }
         public Room AdjoiningRoom { get; set; }
         public bool MemberOfFlippedRoom { get; set; }
         public bool Flipped { get; set; }
 
-        public Portal(int id, Room room)
-            : base(id, room)
+        private static int _nextPortalId = 0;
+        
+        public Portal(Room room)
+            : base(_nextPortalId++, room)
         {}
 
         public override ObjectInstanceType Type => ObjectInstanceType.Portal;
 
-        public Portal ClonePortal(int newId)
+        public override ObjectInstance Clone()
         {
-            return new Portal(newId, Room)
+            return new Portal(Room)
             {
                 Direction = Direction,
                 X = X,
@@ -29,11 +33,6 @@ namespace TombEditor.Geometry
                 Other = Other,
                 AdjoiningRoom = AdjoiningRoom
             };
-        }
-
-        public override ObjectInstance Clone(int newId)
-        {
-            throw new NotImplementedException();
         }
 
         public override string ToString()

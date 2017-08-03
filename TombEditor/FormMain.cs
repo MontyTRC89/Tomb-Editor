@@ -2139,7 +2139,7 @@ namespace TombEditor
                 if (p.Room != _editor.SelectedRoom)
                     continue;
 
-                var newPortal = p.ClonePortal(_editor.Level.GetNewPortalId());
+                var newPortal = (Portal)p.Clone();
                 newPortal.Flipped = true;
 
                 p.Flipped = true;

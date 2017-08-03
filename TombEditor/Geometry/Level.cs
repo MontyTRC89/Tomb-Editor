@@ -240,13 +240,6 @@ namespace TombEditor.Geometry
             }
         }
 
-        private int _nextPortalId = 0;
-        
-        public int GetNewPortalId()
-        {
-            return _nextPortalId++;
-        }
-
         public int GetNewTriggerId()
         {
             int i = 0;

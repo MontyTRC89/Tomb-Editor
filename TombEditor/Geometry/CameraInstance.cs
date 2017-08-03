@@ -17,9 +17,9 @@
 
         public override ObjectInstanceType Type => ObjectInstanceType.Camera;
 
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            return new CameraInstance(newId, Room)
+            return new CameraInstance(Editor.Instance.Level.GetNewObjectId(), Room)
             {
                 X = X,
                 Y = Y,

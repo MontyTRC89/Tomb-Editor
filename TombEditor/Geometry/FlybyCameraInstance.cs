@@ -24,9 +24,9 @@ namespace TombEditor.Geometry
 
         public override ObjectInstanceType Type => ObjectInstanceType.FlyByCamera;
 
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            var instance = new FlybyCameraInstance(newId, Room)
+            var instance = new FlybyCameraInstance(Editor.Instance.Level.GetNewObjectId(), Room)
             {
                 X = X,
                 Y = Y,

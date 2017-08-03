@@ -11,9 +11,9 @@
 
         public override ObjectInstanceType Type => ObjectInstanceType.SoundSource;
 
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            return new SoundSourceInstance(newId, Room)
+            return new SoundSourceInstance(Editor.Instance.Level.GetNewObjectId(), Room)
             {
                 X = X,
                 Y = Y,

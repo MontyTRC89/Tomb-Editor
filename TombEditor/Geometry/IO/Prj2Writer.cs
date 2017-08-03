@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using NLog;
 using TombLib.IO;
 
@@ -15,6 +16,8 @@ namespace TombEditor.Geometry.IO
             const byte filler8 = 0;
             const short filler16 = 0;
             const int filler32 = 0;
+
+            var PortalSaveIDs = new IdResolver<Portal>();
 
             try
             {
@@ -77,8 +80,8 @@ namespace TombEditor.Geometry.IO
                     writer.Write(numPortals);
                     foreach (var p in level.Portals)
                     {
-                        writer.Write(p.Id);
-                        writer.Write((int) p.Other.Id);
+                        writer.Write(PortalSaveIDs[p]);
+                        writer.Write(PortalSaveIDs[p.Other]);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.Room));
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.AdjoiningRoom));
                         writer.Write((byte)p.Direction);
@@ -258,9 +261,9 @@ namespace TombEditor.Geometry.IO
                                 writer.Write((byte)b.FloorOpacity);
                                 writer.Write((byte)b.CeilingOpacity);
                                 writer.Write((byte)b.WallOpacity);
-                                writer.Write((int) b.FloorPortal.Id);
-                                writer.Write((int) b.CeilingPortal.Id);
-                                writer.Write((int) b.WallPortal.Id);
+                                writer.Write(PortalSaveIDs[b.FloorPortal]);
+                                writer.Write(PortalSaveIDs[b.CeilingPortal]);
+                                writer.Write(PortalSaveIDs[b.WallPortal]);
                                 writer.Write(b.IsFloorSolid);
                                 writer.Write(b.IsCeilingSolid);
                                 writer.Write(b.NoCollisionFloor);
@@ -418,5 +421,19 @@ namespace TombEditor.Geometry.IO
 
             return true;
         }
+
+        private class IdResolver<T>
+        {
+            private readonly Dictionary<T, int> _idList = new Dictionary<T, int>();
+            public int this[T obj]
+            {
+                get
+                {
+                    if (!_idList.ContainsKey(obj))
+                        _idList.Add(obj, _idList.Count);
+                    return _idList[obj];
+                }
+            }
+        };
     }
 }

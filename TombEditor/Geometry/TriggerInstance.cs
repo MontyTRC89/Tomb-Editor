@@ -120,9 +120,9 @@ namespace TombEditor.Geometry
             return output;
         }
         
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            return new TriggerInstance(newId, Room)
+            return new TriggerInstance(Editor.Instance.Level.GetNewTriggerId(), Room)
             {
                 X = X,
                 Y = Y,

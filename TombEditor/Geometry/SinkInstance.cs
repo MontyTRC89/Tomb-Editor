@@ -10,9 +10,9 @@
 
         public override ObjectInstanceType Type => ObjectInstanceType.Sink;
 
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            return new SinkInstance(newId, Room)
+            return new SinkInstance(Editor.Instance.Level.GetNewObjectId(), Room)
             {
                 X = X,
                 Y = Y,

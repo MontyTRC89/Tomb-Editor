@@ -25,7 +25,7 @@ namespace TombEditor.Geometry.IO
             PortalGetter getOrCreatePortal = id =>
             {
                 if (!portals.ContainsKey(id))
-                    return portals[id] = new Portal(id, null);
+                    return portals[id] = new Portal(null);
 
                 return portals[id];
             };

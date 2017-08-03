@@ -14,9 +14,9 @@ namespace TombEditor.Geometry
 
         public override ItemType ItemType => new ItemType(false, ObjectId);
 
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            return new MoveableInstance(newId, Room)
+            return new MoveableInstance(Editor.Instance.Level.GetNewObjectId(), Room)
             {
                 X = X,
                 Y = Y,

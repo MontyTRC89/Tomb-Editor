@@ -16,7 +16,7 @@ namespace TombEditor
 
         private static int CopyObject(int Index, Level level, Room room, Vector3 position, int x, int y, int z)
         {
-            ObjectInstance result = level.Objects[_objectPtr.Value.Id].Clone(level.GetNewObjectId());
+            ObjectInstance result = level.Objects[_objectPtr.Value.Id].Clone();
             result.X = (byte)x;
             result.Y = (short)y;
             result.Z = (byte)z;

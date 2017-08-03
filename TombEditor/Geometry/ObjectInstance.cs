@@ -39,7 +39,7 @@ namespace TombEditor.Geometry
             Room = room;
         }
 
-        public abstract ObjectInstance Clone(int newId);
+        public abstract ObjectInstance Clone();
 
         public abstract ObjectInstanceType Type { get; }
 

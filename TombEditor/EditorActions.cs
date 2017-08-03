@@ -2168,8 +2168,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
-                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
+                    var currentRoomPortal = new Portal(room);
+                    var otherRoomPortal = new Portal(found);
 
                     int xPortalOther = (int)(xPortalWorld - found.Position.X);
                     int zPortalOther = (int)(zPortalWorld - found.Position.Z);
@@ -2281,8 +2281,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
-                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
+                    var currentRoomPortal = new Portal(room);
+                    var otherRoomPortal = new Portal(found);
 
                     int xPortalOther = (int)(xPortalWorld - found.Position.X);
                     int zPortalOther = (int)(zPortalWorld - found.Position.Z);
@@ -2394,8 +2394,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
-                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
+                    var currentRoomPortal = new Portal(room);
+                    var otherRoomPortal = new Portal(found);
 
                     byte xPortalOther = (byte)(xPortalWorld - found.Position.X);
                     byte zPortalOther = (byte)(zPortalWorld - found.Position.Z);
@@ -2507,8 +2507,8 @@ namespace TombEditor
 
                 if (found != null)
                 {
-                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
-                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
+                    var currentRoomPortal = new Portal(room);
+                    var otherRoomPortal = new Portal(found);
 
                     int xPortalOther = (int)(xPortalWorld - found.Position.X);
                     int zPortalOther = (int)(zPortalWorld - found.Position.Z);
@@ -2735,8 +2735,8 @@ namespace TombEditor
                         }
                     }
 
-                    var currentRoomPortal = new Portal(_editor.Level.GetNewPortalId(), room);
-                    var otherRoomPortal = new Portal(_editor.Level.GetNewPortalId(), found);
+                    var currentRoomPortal = new Portal(room);
+                    var otherRoomPortal = new Portal(found);
 
                     currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
                     currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);

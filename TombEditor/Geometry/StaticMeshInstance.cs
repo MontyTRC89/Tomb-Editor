@@ -15,9 +15,9 @@ namespace TombEditor.Geometry
 
         public override ItemType ItemType => new ItemType(true, ObjectId);
 
-        public override ObjectInstance Clone(int newId)
+        public override ObjectInstance Clone()
         {
-            return new StaticMeshInstance(newId, Room)
+            return new StaticMeshInstance(Editor.Instance.Level.GetNewObjectId(), Room)
             {
                 X = X,
                 Y = Y,

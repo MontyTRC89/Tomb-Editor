@@ -70,7 +70,7 @@ namespace TombEditor.Geometry.IO
 
             try
             {
-                var portals = new Dictionary<int, Portal>();
+                var portals = new List<Portal>();
                 
                 // Open file
                 using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
@@ -168,7 +168,7 @@ namespace TombEditor.Geometry.IO
 
                             var portalBuffer = reader.ReadBytes(26);
 
-                            var p = new Portal(level.GetNewPortalId(), portalRoom)
+                            var p = new Portal(portalRoom)
                             {
                                 X = (byte)portalX,
                                 Z = (byte)portalZ,
@@ -192,7 +192,7 @@ namespace TombEditor.Geometry.IO
 
                             p.MemberOfFlippedRoom = !ReferenceEquals(p.Room, room);
                             p.Room = room;
-                            portals.Add(p.Id, p);
+                            portals.Add(p);
 
                             portalThingIndices.Add(p, new PrjPortalThingIndex
                                 {
@@ -1258,15 +1258,15 @@ namespace TombEditor.Geometry.IO
 
                     // Fix portals
                     form.ReportProgress(76, "Building portals");
-                    foreach (var currentPortal in portals.Values)
+                    foreach (var currentPortal in portals)
                     {
                         currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
                                                  currentPortal.X);
                     }
 
-                    foreach (var currentPortal in portals.Values)
+                    foreach (var currentPortal in portals)
                     {
-                        foreach (var otherPortal in portals.Values)
+                        foreach (var otherPortal in portals)
                         {
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
