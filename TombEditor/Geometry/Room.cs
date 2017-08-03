@@ -1017,7 +1017,6 @@ namespace TombEditor.Geometry
                     for (int i = 0; i < NumVerticesInGrid[x, z]; i++)
                     {
                         tempCentre += VerticesGrid[x, z, i].Position;
-                        totalVertices++;
                     }
                 }
             }
