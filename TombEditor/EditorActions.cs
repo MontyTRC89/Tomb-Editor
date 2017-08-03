@@ -3018,5 +3018,29 @@ namespace TombEditor
             _editor.DrawPanel3D();
             _editor.UpdateStatusStrip();
         }
+
+        public static void CreateRoomAboveOrBelow(Room room, Func<Room, float> GetYOffset, short newRoomHeight)
+        {
+            // Create room
+            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room next to " + room.Name, newRoomHeight);
+            newRoom.Position = room.Position + new Vector3(0, GetYOffset(newRoom), 0);
+            _editor.Level.AssignRoomToFree(newRoom);
+
+            // Build the geometry of the new room
+            newRoom.BuildGeometry();
+            newRoom.CalculateLightingForThisRoom();
+            newRoom.UpdateBuffers();
+            
+            // Update the UI
+            if (_editor.SelectedRoom == room)
+            {
+                _editor.SelectedRoom = newRoom;
+                _editor.DrawPanel3D();
+                _editor.DrawPanelMap2D();
+                _editor.DrawPanelGrid();
+                _editor.UpdateRoomName();
+                _editor.UpdateStatusStrip();
+            }
+        }
     }
 }
