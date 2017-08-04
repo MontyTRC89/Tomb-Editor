@@ -117,7 +117,12 @@ namespace TombEditor.Geometry.IO
                             continue;
 
                         // Read room's name
-                        string roomName = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(80));
+                        byte[] roomNameBytes = reader.ReadBytes(80);
+                        int roomNameLength = 0;
+                        for (; roomNameLength < 80; ++roomNameLength)
+                            if (roomNameBytes[roomNameLength] == 0)
+                                break;
+                        string roomName = System.Text.Encoding.ASCII.GetString(roomNameBytes, 0, roomNameLength);
 
                         logger.Warn("Room #" + i);
                         logger.Info("    Name: " + roomName);
