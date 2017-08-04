@@ -274,7 +274,7 @@ namespace TombEditor.Geometry.IO
                                         },
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectId = objSlot,
+                                        ObjectId = unchecked((uint)objSlot),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),
                                         Y = (short)objLongY,
@@ -318,7 +318,7 @@ namespace TombEditor.Geometry.IO
                                         },
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectId = objSlot - (ngle ? 520 : 465),
+                                        ObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),
                                         Y = (short)objLongY

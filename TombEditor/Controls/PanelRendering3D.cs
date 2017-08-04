@@ -236,12 +236,56 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
-            InitializeComponent();
-            ResetCamera();
+            CenterCamera();
 
             _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
         }
-        
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            // Update drawing
+            if ((obj is IEditorObjectChangedEvent) ||
+                (obj is IEditorRoomChangedEvent) ||
+                (obj is Editor.ConfigurationChangedEvent) ||
+                (obj is Editor.SelectedObjectChangedEvent) ||
+                (obj is Editor.SelectedSectorsChangedEvent) ||
+                (obj is Editor.SelectedRoomChangedEvent) ||
+                (obj is Editor.ModeChangedEvent))
+            {
+                if (_editor.Mode != EditorMode.Map2D)
+                    Invalidate();
+            }
+
+            // Update curser
+            if (obj is Editor.ActionChangedEvent)
+            {
+                EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
+                Cursor = currentAction.RelocateCameraActive ? Cursors.Cross : Cursors.Arrow;
+            }
+
+            // Center camera
+            if (obj is Editor.CenterCameraEvent)
+                CenterCamera();
+
+            // Move camera to sector
+            if (obj is Editor.MoveCameraToSectorEvent)
+            {
+                var e = (Editor.MoveCameraToSectorEvent)obj;
+
+                Vector3 center = _editor.SelectedRoom.GetLocalCenter();
+                Camera.Target = new Vector3(e.Sector.X * 1024.0f, center.Y, e.Sector.Y * 1024.0f) + _editor.SelectedRoom.WorldPos;
+                Invalidate();
+            }
+        }
+
         private float DefaultCameraDistance
         {
             get
@@ -260,7 +304,7 @@ namespace TombEditor.Controls
             get { return 0.6f; }
         }
 
-        public void ResetCamera()
+        public void CenterCamera()
         {
             Room room = _editor?.SelectedRoom;
 
@@ -271,20 +315,9 @@ namespace TombEditor.Controls
 
             // Initialize a new camera
             Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, - MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000);
+            Invalidate();
         }
-
-        public void MoveCameraToSector(DrawingPoint Sector)
-        {
-            if (!(Camera is ArcBallCamera))
-                return;
-
-            ArcBallCamera camera = (ArcBallCamera)(_editor.Camera);
-            Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-            camera.Target = new Vector3(Sector.X * 1024.0f, center.Y, Sector.Y * 1024.0f) + _editor.SelectedRoom.WorldPos;
-            Draw();
-            return;
-        }
-
+        
         public void InitializePanel(DeviceManager deviceManager)
         {
             _deviceManager = deviceManager;
@@ -307,7 +340,7 @@ namespace TombEditor.Controls
             };
 
             _presenter = new SwapChainGraphicsPresenter(_device, pp);
-            ResetCamera();
+            CenterCamera();
 
             // Maybe I could use this as bounding box, scaling it properly before drawing
             GeometricPrimitive.Cube.New(_device, 1024);
@@ -342,11 +375,13 @@ namespace TombEditor.Controls
                 };
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-
             _gizmo = new Gizmo(deviceManager);
 
             logger.Info("Graphic Device ready");
         }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {}
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -367,33 +402,33 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Up:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(0, -_rotationSpeed);
-                    Draw();
+                    Camera.Rotate(0, -_rotationSpeed);
+                    Invalidate();
                     return true;
 
                 case Keys.Down:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(0, _rotationSpeed);
-                    Draw();
+                    Camera.Rotate(0, _rotationSpeed);
+                    Invalidate();
                     return true;
 
                 case Keys.Left:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(_rotationSpeed, 0);
-                    Draw();
+                    Camera.Rotate(_rotationSpeed, 0);
+                    Invalidate();
                     return true;
 
                 case Keys.Right:
-                    (_editor.Camera as ArcBallCamera)?.Rotate(-_rotationSpeed, 0);
-                    Draw();
+                    Camera.Rotate(-_rotationSpeed, 0);
+                    Invalidate();
                     return true;
 
                 case Keys.PageUp:
-                    (_editor.Camera as ArcBallCamera)?.Move(_keyboardZoomSpeed);
-                    Draw();
+                    Camera.Move(_keyboardZoomSpeed);
+                    Invalidate();
                     return true;
 
                 case Keys.PageDown:
-                    (_editor.Camera as ArcBallCamera)?.Move(-_keyboardZoomSpeed);
-                    Draw();
+                    Camera.Move(-_keyboardZoomSpeed);
+                    Invalidate();
                     return true;
             }
 
@@ -414,95 +449,80 @@ namespace TombEditor.Controls
                 PickingResult newPicking = DoPicking(e.X, e.Y);
 
                 // Move camera to selected sector
-                if ((newPicking is PickingResultBlock) && _editor.RelocateCameraActive)
+                if ((newPicking is PickingResultBlock) && (_editor.Action.RelocateCameraActive))
                 {
-                    MoveCameraToSector(((PickingResultBlock)newPicking).Pos);
+                    _editor.MoveCameraToSector(((PickingResultBlock)newPicking).Pos);
                     return;
                 }
                 else if (newPicking is PickingResultObject)
                 {
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectPtr;
-                    _editor.LoadStaticMeshColorInUI();
-                    if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Light)
-                        _editor.EditLight();
-                    Draw();
                 }
 
                 // Set gizmo axis (or none if another object was picked)
                 _gizmo.SetGizmoAxis((newPicking as PickingResultGizmo)?.Axis ?? GizmoAxis.None);
 
                 // Process editor actions
-                switch (_editor.Action)
+                switch (_editor.Action.Action)
                 {
-                    case EditorAction.PlaceLight:
+                    case EditorActionType.PlaceLight:
                         if (newPicking is PickingResultBlock)
                         {
-                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.Light);
+                            EditorActions.PlaceLight(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, _editor.Action.LightType);
                             _editor.Action = EditorAction.None;
                         }
                         break;
-                    case EditorAction.PlaceItem:
+                    case EditorActionType.PlaceItem:
                         if (newPicking is PickingResultBlock)
                         {
-                            if (_editor.ActionPlaceItem_Item.IsStatic)
-                                EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.StaticMesh);
-                            else
-                                EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.Moveable);
+                            EditorActions.PlaceItem(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, _editor.Action.ItemType);
                             _editor.Action = EditorAction.None;
                         }
                         break;
-                    case EditorAction.PlaceSink:
+                    case EditorActionType.PlaceSink:
                         if (newPicking is PickingResultBlock)
                         {
-                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.Sink);
+                            EditorActions.PlaceSink(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
                             _editor.Action = EditorAction.None;
                         }
                         break;
-                    case EditorAction.PlaceCamera:
+                    case EditorActionType.PlaceCamera:
                         if (newPicking is PickingResultBlock)
                         {
-                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.Camera);
+                            EditorActions.PlaceCamera(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
                             _editor.Action = EditorAction.None;
                         }
                         break;
-                    case EditorAction.PlaceSound:
+                    case EditorActionType.PlaceSoundSource:
                         if (newPicking is PickingResultBlock)
                         {
-                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.SoundSource);
+                            EditorActions.PlaceSoundSource(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
                             _editor.Action = EditorAction.None;
                         }
                         break;
-                    case EditorAction.PlaceFlyByCamera:
+                    case EditorActionType.PlaceFlyByCamera:
                         if (newPicking is PickingResultBlock)
                         {
-                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ObjectInstanceType.FlyByCamera);
+                            EditorActions.PlaceFlyByCamera(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
                             _editor.Action = EditorAction.None;
                         }
                         break;
-                    case EditorAction.PlaceNoCollision:
+                    case EditorActionType.PlaceNoCollision:
                         if (newPicking is PickingResultBlock)
                             EditorActions.PlaceNoCollision(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ((PickingResultBlock)newPicking).Face);
                         break;
-                    case EditorAction.Paste:
+                    case EditorActionType.Paste:
                         if (newPicking is PickingResultBlock)
                         {
                             Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
                             _editor.Action = EditorAction.None;
-                            Draw();
-                            _editor.UpdateStatusStrip();
-                            _editor.DrawPanelGrid();
                         }
                         break;
-                    case EditorAction.Stamp:
+                    case EditorActionType.Stamp:
                         if (newPicking is PickingResultBlock)
-                        {
                             Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
-                            Draw();
-                            _editor.UpdateStatusStrip();
-                            _editor.DrawPanelGrid();
-                        }
                         break;
-                    case EditorAction.None:
+                    case EditorActionType.None:
                         switch (_editor.Mode)
                         {
                             case EditorMode.Geometry:
@@ -527,49 +547,42 @@ namespace TombEditor.Controls
                                     }
 
                                     // Handle face selection
-                                    if (_editor.SelectedSectorAvailable && _editor.SelectedSector.Contains(pos))
+                                    if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos))
                                     {
                                         // Rotate the arrows
                                         if (Control.ModifierKeys.HasFlag(Keys.Control))
                                         {
-                                            if (_editor.SelectedSectorArrow == EditorArrowType.CornerSW)
-                                                _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
-                                            else if (_editor.SelectedSectorArrow == EditorArrowType.CornerSE)
-                                                _editor.SelectedSectorArrow = EditorArrowType.CornerSW;
-                                            else if (_editor.SelectedSectorArrow == EditorArrowType.CornerNE)
-                                                _editor.SelectedSectorArrow = EditorArrowType.CornerSE;
-                                            else if (_editor.SelectedSectorArrow == EditorArrowType.CornerNW)
-                                                _editor.SelectedSectorArrow = EditorArrowType.CornerNE;
+                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSW)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerSE)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSW);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNE)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerSE);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.CornerNW)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNE);
                                             else
-                                                _editor.SelectedSectorArrow = EditorArrowType.CornerNW;
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.CornerNW);
                                         }
                                         else
                                         {
-                                            if (_editor.SelectedSectorArrow == EditorArrowType.EdgeW)
-                                                _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
-                                            else if (_editor.SelectedSectorArrow == EditorArrowType.EdgeS)
-                                                _editor.SelectedSectorArrow = EditorArrowType.EdgeW;
-                                            else if (_editor.SelectedSectorArrow == EditorArrowType.EdgeE)
-                                                _editor.SelectedSectorArrow = EditorArrowType.EdgeS;
-                                            else if (_editor.SelectedSectorArrow == EditorArrowType.EdgeN)
-                                                _editor.SelectedSectorArrow = EditorArrowType.EdgeE;
+                                            if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeW)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EntireFace);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeS)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeW);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeE)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeS);
+                                            else if (_editor.SelectedSectors.Arrow == EditorArrowType.EdgeN)
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeE);
                                             else
-                                                _editor.SelectedSectorArrow = EditorArrowType.EdgeN;
+                                                _editor.SelectedSectors = _editor.SelectedSectors.ChangeArrows(EditorArrowType.EdgeN);
 
                                         }
-                                        Draw();
                                     }
                                     else
                                     {
                                         // Select rectangle
-                                        _editor.SelectedSectorStart = pos;
-                                        _editor.SelectedSectorEnd = _editor.SelectedSectorStart;
-                                        _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
+                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                                         _doSectorSelection = true;
-
-                                        Draw();
-                                        _editor.DrawPanelGrid();
-                                        _editor.UpdateStatusStrip();
                                     }
                                 }
                                 break;
@@ -626,12 +639,13 @@ namespace TombEditor.Controls
                 else
                     Camera.Rotate((float)(deltaX / 500.0f), (float)(-deltaY / 500.0f));
 
-                Draw();
+                Invalidate();
             }
             else if (e.Button == MouseButtons.Left)
             {
                 // Process gizmo
-                _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys);
+                if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys))
+                    return;
                 
                 // Calculate block selection
                 if (_doSectorSelection)
@@ -639,25 +653,24 @@ namespace TombEditor.Controls
                     PickingResult newPicking = DoPicking(e.X, e.Y);
                     if (newPicking is PickingResultBlock)
                     {
-                        _editor.SelectedSectorEnd = new SharpDX.DrawingPoint(
-                            ((PickingResultBlock)newPicking).Pos.X,
-                            ((PickingResultBlock)newPicking).Pos.Y);
-
-                        Draw();
-                        _editor.UpdateStatusStrip();
-                        _editor.DrawPanelGrid();
+                        _editor.SelectedSectors = new SectorSelection
+                            {
+                                Start = _editor.SelectedSectors.Start,
+                                End = new SharpDX.DrawingPoint(
+                                    ((PickingResultBlock)newPicking).Pos.X,
+                                    ((PickingResultBlock)newPicking).Pos.Y)
+                            };
                     }
                     return;
                 }
 
                 // Texture editing
-                if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action == EditorAction.None))
+                if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
                 {
                     PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
 
                     if (newPicking != null)
-                        if (_editor.Action == EditorAction.None)
-                            EditorActions.PlaceTexture(_editor.SelectedRoom, newPicking.Pos, newPicking.Face);
+                        EditorActions.PlaceTexture(_editor.SelectedRoom, newPicking.Pos, newPicking.Face);
                 }
             }
         }
@@ -1381,7 +1394,7 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = ObjectNames.GetMovableName((int)model.ObjectID) + " (" + modelInfo.Id + ")";
+                    string debugMessage = model.ToString();
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(room, modelInfo.Position);
@@ -1479,7 +1492,7 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = ObjectNames.GetStaticName((int)model.ObjectID) + " (" + modelInfo.Id + ")";
+                    string debugMessage = model.ToString();
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(room, modelInfo.Position);
@@ -1835,7 +1848,9 @@ namespace TombEditor.Controls
                 item.Indices.ToArray(), BufferFlags.IndexBuffer);
         }
 
-        public void Draw()
+        // Do NOT call this method to redraw the scene!
+        // Call Invalidate() instead to schedule a redraw in the message loop.
+        private void Draw()
         {
             if (DesignMode)
                 return;
@@ -1849,8 +1864,7 @@ namespace TombEditor.Controls
             _drawFlybyPath = false;
 
             // Don't draw anything if device is not ready
-            if (_device == null || _device.Presenter == null ||
-                _editor.SelectedRoom == null)
+            if (_device == null || _editor.SelectedRoom == null)
                 return;
 
             // reset the backbuffer
@@ -2240,10 +2254,10 @@ namespace TombEditor.Controls
                 }
 
                 // Calculate the bounds of the current selection
-                int xMin = Math.Min(_editor.SelectedSectorStart.X, _editor.SelectedSectorEnd.X);
-                int xMax = Math.Max(_editor.SelectedSectorStart.X, _editor.SelectedSectorEnd.X);
-                int zMin = Math.Min(_editor.SelectedSectorStart.Y, _editor.SelectedSectorEnd.Y);
-                int zMax = Math.Max(_editor.SelectedSectorStart.Y, _editor.SelectedSectorEnd.Y);
+                int xMin = Math.Min(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
+                int xMax = Math.Max(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
+                int zMin = Math.Min(_editor.SelectedSectors.Start.Y, _editor.SelectedSectors.End.Y);
+                int zMax = Math.Max(_editor.SelectedSectors.Start.Y, _editor.SelectedSectors.End.Y);
 
                 bool noCollision = false;
 
@@ -2259,7 +2273,7 @@ namespace TombEditor.Controls
                     // applico la texture della freccia al pavimento e al soffitto
                     if (index == 25 || index == 26)
                     {
-                        switch (_editor.SelectedSectorArrow)
+                        switch (_editor.SelectedSectors.Arrow)
                         {
                             case EditorArrowType.EntireFace:
                             default:
@@ -2311,7 +2325,7 @@ namespace TombEditor.Controls
                     }
                     else if (index == 27 || index == 28)
                     {
-                        switch (_editor.SelectedSectorArrow)
+                        switch (_editor.SelectedSectors.Arrow)
                         {
                             case EditorArrowType.EntireFace:
                             default:
@@ -2380,7 +2394,7 @@ namespace TombEditor.Controls
                             rf = (int)BlockFaces.SouthRF;
                             middle = (int)BlockFaces.SouthMiddle;
 
-                            switch (_editor.SelectedSectorArrow)
+                            switch (_editor.SelectedSectors.Arrow)
                             {
                                 default:
                                 case EditorArrowType.EntireFace:
@@ -2478,7 +2492,7 @@ namespace TombEditor.Controls
                             rf = (int)BlockFaces.WestRF;
                             middle = (int)BlockFaces.WestMiddle;
 
-                            switch (_editor.SelectedSectorArrow)
+                            switch (_editor.SelectedSectors.Arrow)
                             {
                                 default:
                                 case EditorArrowType.EntireFace:
@@ -2577,7 +2591,7 @@ namespace TombEditor.Controls
                             rf = (int)BlockFaces.NorthRF;
                             middle = (int)BlockFaces.NorthMiddle;
 
-                            switch (_editor.SelectedSectorArrow)
+                            switch (_editor.SelectedSectors.Arrow)
                             {
                                 default:
                                 case EditorArrowType.EntireFace:
@@ -2676,7 +2690,7 @@ namespace TombEditor.Controls
                             rf = (int)BlockFaces.EastRF;
                             middle = (int)BlockFaces.EastMiddle;
 
-                            switch (_editor.SelectedSectorArrow)
+                            switch (_editor.SelectedSectors.Arrow)
                             {
                                 default:
                                 case EditorArrowType.EntireFace:

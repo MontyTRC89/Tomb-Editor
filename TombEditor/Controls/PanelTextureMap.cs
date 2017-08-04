@@ -29,28 +29,53 @@ namespace TombEditor.Controls
 
         public PanelTextureMap()
         {
-            InitializeComponent();
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
         }
 
-        public PanelTextureMap(IContainer container)
+        protected override void Dispose(bool disposing)
         {
-            container.Add(this);
-            InitializeComponent();
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is Editor.SelectedTexturesChangedEvent)
+            {
+                // TODO Update the selected texture on the texture map
+                Invalidate();
+            }
+
+            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
+                if (Image != _editor.Level._textureMap)
+                {
+                    if (_editor.Level._textureMap == null)
+                    {
+                        Image = null;
+                        Height = 0;
+                    }
+                    else
+                    {
+                        Image = _editor.Level._textureMap;
+                        Height = 0;
+                        Invalidate();
+                    }
+                    Invalidate();
+                }
         }
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            if (_editor == null && Editor.Instance == null)
-                return;
-            else
-                _editor = Editor.Instance;
-
             MouseEventArgs args = (MouseEventArgs)e;
 
             /*   int texture = _editor.Level.AddTexture((short)args.X, (short)args.Y, (short)64, (short)64);
                _editor.SelectedTexture = texture;
                Invalidate();*/
-            _editor.InvisiblePolygon = false;
+            var selectedTexture = _editor.SelectedTexture;
+            selectedTexture.Invisible = false;
+            _editor.SelectedTexture = selectedTexture;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -61,7 +86,9 @@ namespace TombEditor.Controls
             _lastX = e.X;
             LastY = e.Y;
 
-            _editor.InvisiblePolygon = false;
+            var selectedTexture = _editor.SelectedTexture;
+            selectedTexture.Invisible = false;
+            _editor.SelectedTexture = selectedTexture;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -70,7 +97,9 @@ namespace TombEditor.Controls
 
             if (_drag)
             {
-                _editor.InvisiblePolygon = false;
+                var selectedTexture = _editor.SelectedTexture;
+                selectedTexture.Invisible = false;
+                _editor.SelectedTexture = selectedTexture;
 
                 _deltaX = e.X - _lastX;
                 _deltaY = e.Y - LastY;
@@ -112,9 +141,7 @@ namespace TombEditor.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-
-            _editor.InvisiblePolygon = false;
-
+            
             _deltaX = e.X - _lastX;
             _deltaY = e.Y - LastY;
 
@@ -144,17 +171,19 @@ namespace TombEditor.Controls
             // verifico di non aver attraversato una pagina
             short page = (short)(Math.Floor(LastY / 256.0f));
 
+            TextureSelection selectedTexture = _editor.SelectedTexture;
+            selectedTexture.Invisible = false;
             if (Math.Abs(_deltaX) < 8 && Math.Abs(_deltaY) < 8)
             {
                 // click singolo, tile da 64x64 o confermo la texture corrente
-                if (_editor.SelectedTextureIndex != -1)
+                if (selectedTexture.Index != -1)
                 {
-                    sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                    sample = _editor.Level.TextureSamples[selectedTexture.Index];
 
                     if (_lastX >= sample.X && _lastX <= sample.X + sample.Width && LastY >= sample.Y + sample.Page * 256 &&
                         LastY <= sample.Y + sample.Page * 256 + sample.Height)
                     {
-                        sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                        sample = _editor.Level.TextureSamples[selectedTexture.Index];
                     }
                     else
                     {
@@ -163,8 +192,8 @@ namespace TombEditor.Controls
                         _w = 64;
                         _h = 64;
 
-                        _editor.SelectedTextureIndex = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
-                        sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                        selectedTexture.Index = _editor.Level.AddTexture(_x, _y, _w, _h, selectedTexture.DoubleSided, selectedTexture.Transparent);
+                        sample = _editor.Level.TextureSamples[selectedTexture.Index];
                     }
                 }
                 else
@@ -174,8 +203,8 @@ namespace TombEditor.Controls
                     _w = 64;
                     _h = 64;
 
-                    _editor.SelectedTextureIndex = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
-                    sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                    selectedTexture.Index = _editor.Level.AddTexture(_x, _y, _w, _h, selectedTexture.DoubleSided, selectedTexture.Transparent);
+                    sample = _editor.Level.TextureSamples[selectedTexture.Index];
                 }
 
                 /*    _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
@@ -193,8 +222,8 @@ namespace TombEditor.Controls
                     _w = maxWidth;
 
                 // trascinamento prolungato, tile di forma variabile
-                _editor.SelectedTextureIndex = _editor.Level.AddTexture(_x, _y, _w, _h, _editor.DoubleSided, _editor.Transparent);
-                sample = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                selectedTexture.Index = _editor.Level.AddTexture(_x, _y, _w, _h, selectedTexture.DoubleSided, selectedTexture.Transparent);
+                sample = _editor.Level.TextureSamples[selectedTexture.Index];
             }
 
             // trovo il triangolo
@@ -222,7 +251,8 @@ namespace TombEditor.Controls
                 _triangle = TextureTileType.TriangleSW;
             }
 
-            _editor.SeletedTextureTriangle = _triangle;
+            selectedTexture.Triangle = _triangle;
+            _editor.SelectedTexture = selectedTexture;
 
             _drag = false;
 
@@ -232,12 +262,9 @@ namespace TombEditor.Controls
         protected override void OnPaint(PaintEventArgs pe)
         {
             base.OnPaint(pe);
-
-            if (_editor == null && Editor.Instance == null)
+            if (_editor == null)
                 return;
-            else
-                _editor = Editor.Instance;
-
+            
             Graphics g = pe.Graphics;
 
             if (_drag)
@@ -246,9 +273,9 @@ namespace TombEditor.Controls
             }
             else
             {
-                if (_editor.SelectedTextureIndex != -1)
+                if (_editor.SelectedTexture.Index != -1)
                 {
-                    LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                    LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture.Index];
 
                     g.DrawRectangle(Pens.White, new Rectangle(texture.X, texture.Y + 256 * texture.Page, texture.Width, texture.Height));
 

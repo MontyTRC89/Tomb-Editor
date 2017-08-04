@@ -5,7 +5,7 @@ namespace TombEditor.Geometry
 {
     public abstract class ItemInstance : ObjectInstance
     {
-        public int ObjectId { get; set; }
+        public uint ObjectId { get; set; }
 
         protected ItemInstance(int id, Room room)
             : base(id, room)
@@ -17,9 +17,9 @@ namespace TombEditor.Geometry
     public struct ItemType
     {
         public bool IsStatic { get; set; }
-        public int Id { get; set; }
+        public uint Id { get; set; }
 
-        public ItemType(bool isStatic, int id)
+        public ItemType(bool isStatic, uint id)
         {
             IsStatic = isStatic;
             Id = id;
@@ -47,7 +47,7 @@ namespace TombEditor.Geometry
 
         public override int GetHashCode()
         {
-            return Id ^ (IsStatic ? unchecked((int)0xdcbc635b) : 0);
+            return unchecked((int)Id) ^ (IsStatic ? unchecked((int)0xdcbc635b) : 0);
         }
 
     };

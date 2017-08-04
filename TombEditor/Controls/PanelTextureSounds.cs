@@ -25,17 +25,8 @@ namespace TombEditor.Controls
 
 
         public PanelTextureSounds()
-        {
-            InitializeComponent();
-        }
-
-        public PanelTextureSounds(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-
+        {}
+       
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
