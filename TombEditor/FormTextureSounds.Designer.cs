@@ -33,7 +33,7 @@ namespace TombEditor
         {
             this.components = new System.ComponentModel.Container();
             this.panelTextureContainer = new System.Windows.Forms.Panel();
-            this.picTextureMap = new TombEditor.Controls.PanelTextureSounds(this.components);
+            this.picTextureMap = new TombEditor.Controls.PanelTextureSounds();
             this.butAssignSound = new DarkUI.Controls.DarkButton();
             this.comboSounds = new DarkUI.Controls.DarkComboBox(this.components);
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();

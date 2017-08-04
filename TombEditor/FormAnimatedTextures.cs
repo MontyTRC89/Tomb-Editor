@@ -83,7 +83,7 @@ namespace TombEditor
 
                 for (int i = 0; i < aSet.Textures.Count; i++)
                 {
-                    Bitmap bmp = Utils.GetTextureTileFromMap(aSet.Textures[i].X, aSet.Textures[i].Y, aSet.Textures[i].Page);
+                    Bitmap bmp = Utils.GetTextureTileFromMap(_editor.Level, aSet.Textures[i].X, aSet.Textures[i].Y, aSet.Textures[i].Page);
                     imgList.Images.Add(bmp);
                     RowAnimatedTexture row = new TombEditor.RowAnimatedTexture(aSet.Textures[i].X, aSet.Textures[i].Y,
                                                                                aSet.Textures[i].Page, i);
@@ -132,7 +132,7 @@ namespace TombEditor
                     return;
             }
 
-            Bitmap newTexture = Utils.GetTextureTileFromMap(picTextureMap.SelectedX, picTextureMap.SelectedY,
+            Bitmap newTexture = Utils.GetTextureTileFromMap(_editor.Level, picTextureMap.SelectedX, picTextureMap.SelectedY,
                                                             picTextureMap.Page);
             imgList.Images.Add(newTexture);
 

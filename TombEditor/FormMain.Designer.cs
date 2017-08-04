@@ -2,25 +2,12 @@
 {
     partial class FormMain : DarkUI.Forms.DarkForm
     {
+        #region Windows Form Designer generated code
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        #region Windows Form Designer generated code
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -120,6 +107,7 @@
             this.butNotWalkableBox = new System.Windows.Forms.Button();
             this.cbNoPathfinding = new DarkUI.Controls.DarkCheckBox();
             this.cbHorizon = new DarkUI.Controls.DarkCheckBox();
+            this.butResetSearch = new DarkUI.Controls.DarkButton();
             this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelStaticMeshColor = new System.Windows.Forms.Panel();
             this.darkLabel14 = new DarkUI.Controls.DarkLabel();
@@ -161,7 +149,7 @@
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
             this.panelTextureContainer = new System.Windows.Forms.Panel();
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap(this.components);
+            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panel4 = new System.Windows.Forms.Panel();
             this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
             this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
@@ -171,7 +159,7 @@
             this.numLightLen = new TombEditor.Controls.LightParameterController();
             this.numLightIntensity = new TombEditor.Controls.LightParameterController();
             this.butAddTrigger = new DarkUI.Controls.DarkButton();
-            this.lightPalette = new TombEditor.Controls.PanelPalette(this.components);
+            this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.lstTriggers = new DarkUI.Controls.DarkListBox(this.components);
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
             this.butEditTrigger = new DarkUI.Controls.DarkButton();
@@ -246,7 +234,6 @@
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.butResetSearch = new DarkUI.Controls.DarkButton();
             this.menuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -1235,6 +1222,19 @@
             this.cbHorizon.Text = "Draw sky & horizon";
             this.cbHorizon.CheckedChanged += new System.EventHandler(this.cbHorizon_CheckedChanged);
             // 
+            // butResetSearch
+            // 
+            this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
+            this.butResetSearch.Location = new System.Drawing.Point(214, 681);
+            this.butResetSearch.Name = "butResetSearch";
+            this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
+            this.butResetSearch.Size = new System.Drawing.Size(60, 23);
+            this.butResetSearch.TabIndex = 61;
+            this.butResetSearch.Text = "Reset";
+            this.butResetSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butResetSearch.Click += new System.EventHandler(this.butResetSearch_Click);
+            // 
             // butFindItem
             // 
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1354,6 +1354,7 @@
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(66, 24);
             this.comboReverberation.TabIndex = 42;
+            this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
             // darkLabel18
             // 
@@ -1890,6 +1891,7 @@
             this.lstTriggers.Name = "lstTriggers";
             this.lstTriggers.Size = new System.Drawing.Size(219, 76);
             this.lstTriggers.TabIndex = 49;
+            this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
             // 
             // darkLabel22
             // 
@@ -2229,6 +2231,8 @@
             // 
             // but3D
             // 
+            this.but3D.Checked = true;
+            this.but3D.CheckState = System.Windows.Forms.CheckState.Checked;
             this.but3D.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.but3D.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.but3D.Image = global::TombEditor.Properties.Resources._3DView_16;
@@ -2691,19 +2695,6 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // butResetSearch
-            // 
-            this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
-            this.butResetSearch.Location = new System.Drawing.Point(214, 681);
-            this.butResetSearch.Name = "butResetSearch";
-            this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
-            this.butResetSearch.Size = new System.Drawing.Size(60, 23);
-            this.butResetSearch.TabIndex = 61;
-            this.butResetSearch.Text = "Reset";
-            this.butResetSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butResetSearch.Click += new System.EventHandler(this.butResetSearch_Click);
             // 
             // FormMain
             // 

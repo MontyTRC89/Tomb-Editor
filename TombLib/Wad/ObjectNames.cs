@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TombEditor
+namespace TombLib.Wad
 {
     public static class ObjectNames
     {
-        private static Dictionary<int, string> _moveableNames = new Dictionary<int, string>();
-        private static Dictionary<int, string> _staticNames = new Dictionary<int, string>();
+        private static Dictionary<uint, string> _moveableNames = new Dictionary<uint, string>();
+        private static Dictionary<uint, string> _staticNames = new Dictionary<uint, string>();
 
         static ObjectNames()
         {
-            for (int i = 0; i < 100; i++)
+            for (uint i = 0; i < 100; i++)
                 _staticNames.Add(i, "Static Mesh #" + i);
             
             using (StreamReader reader = new StreamReader("Editor\\Objects.txt"))
@@ -22,15 +19,15 @@ namespace TombEditor
                 {
                     string line = reader.ReadLine();
                     string[] tokens = line.Split(';');
-                    _moveableNames.Add(Int32.Parse(tokens[0]), tokens[1]);
+                    _moveableNames.Add(uint.Parse(tokens[0]), tokens[1]);
                 }
         }
 
-        public static string GetMovableName(int MovableID)
+        public static string GetMovableName(uint MovableID)
         {
             return _moveableNames[MovableID];
         }
-        public static string GetStaticName(int StaticID)
+        public static string GetStaticName(uint StaticID)
         {
             return _staticNames[StaticID];
         }

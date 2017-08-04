@@ -19,9 +19,7 @@ namespace TombEditor.Controls
             get { return getColorFromPalette(_selectedColorCoord); }
         }
         public event EventHandler SelectedColorChanged;
-
-
-        private Editor _editor;
+        
         private Point _selectedColorCoord = new Point(-1, -1);
         private static Pen _selectionPen = Pens.White;
         private static Pen _gridPen = Pens.Black;
@@ -33,22 +31,15 @@ namespace TombEditor.Controls
 
         public PanelPalette()
         {
-            InitializeComponent();
+            if (DesignMode || (LicenseManager.UsageMode == LicenseUsageMode.Designtime))
+                return;
+
+            using (FileStream stream = File.OpenRead("Editor\\Palette.bin"))
+                using (BinaryReader readerPalette = new BinaryReader(stream))
+                    while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
+                        _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
         }
         
-        public PanelPalette(IContainer container)
-        {
-            container.Add(this);
-            InitializeComponent();
-            _editor = Editor.Instance;
-            
-            if (!base.DesignMode)
-                using (FileStream stream = File.OpenRead("Editor\\Palette.bin"))
-                    using (BinaryReader readerPalette = new BinaryReader(stream))
-                        while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
-                            _palette.Add(System.Drawing.Color.FromArgb(255, readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
-        }
-
         private Color getColorFromPalette(Point point)
         {
             if (_palette == null)
@@ -84,8 +75,9 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_gridPen, x * 10, y * 10, 10, 10);
                 }
 
-            e.Graphics.DrawRectangle(_selectionPen, _selectedColorCoord.X * _paletteCellWidth, 
-                _selectedColorCoord.Y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
+            if ((_selectedColorCoord.X >= 0) && (_selectedColorCoord.Y >= 0))
+                e.Graphics.DrawRectangle(_selectionPen, _selectedColorCoord.X * _paletteCellWidth, 
+                    _selectedColorCoord.Y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
         }
     }
 }

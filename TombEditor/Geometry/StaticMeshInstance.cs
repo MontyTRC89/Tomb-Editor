@@ -1,4 +1,5 @@
 ﻿using TombLib.Graphics;
+using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
@@ -48,7 +49,7 @@ namespace TombEditor.Geometry
 
         public override string ToString()
         {
-            return "Static " + ObjectNames.GetStaticName((int)Model.ObjectID) +
+            return "Static (" + Model.ObjectID + ") " + ObjectNames.GetStaticName(Model.ObjectID) +
                 ", ID = " + Id +
                 ", Room = " + Room.ToString() +
                 ", X = " + Position.X +

@@ -263,42 +263,7 @@ namespace TombEditor.Geometry
                 ++i;
             return i;
         }
-
-        public void DeleteTrigger(int instance)
-        {
-            var triggersToDelete = new List<int>();
-
-            // First I build a list of triggers to delete
-            foreach (var trigger in Triggers.Values)
-            {
-                if ((trigger.TargetType == TriggerTargetType.Camera ||
-                     trigger.TargetType == TriggerTargetType.FlyByCamera ||
-                     trigger.TargetType == TriggerTargetType.Object || trigger.TargetType == TriggerTargetType.Sink) &&
-                    trigger.Target == instance)
-                {
-                    triggersToDelete.Add(trigger.Id);
-                }
-            }
-
-            // Then I clean sectors and delete triggers
-            foreach (int t in triggersToDelete)
-            {
-                var trigger = Triggers[t];
-
-                // Clean sectors
-                for (int z = trigger.Z; z < trigger.Z + trigger.NumZBlocks; z++)
-                {
-                    for (int x = trigger.X; x < trigger.X + trigger.NumXBlocks; x++)
-                    {
-                        trigger.Room.Blocks[x, z].Triggers.Remove(trigger.Id);
-                    }
-                }
-
-                // Delete trigger
-                Triggers.Remove(t);
-            }
-        }
-
+        
         public Room GetOrCreateDummyRoom(int index)
         {
             if (index < 0 || index >= Rooms.Length)
@@ -319,6 +284,67 @@ namespace TombEditor.Geometry
         public void AssignRoomToFree(Room room)
         {
             Rooms[GetFreeRoomIndex()] = room;
+        }
+
+        public void DeleteRoom(Room room)
+        {
+            int roomIndex = Rooms.ReferenceIndexOf(room);
+            if (roomIndex == -1)
+                throw new ArgumentException("The room does not belong to the level from which should be removed.");
+
+            // Collect all triggers and objects
+                var objectsToRemove = new List<int>();
+            var triggersToRemove = new List<int>();
+
+            for (int i = 0; i < Objects.Count; i++)
+            {
+                var obj = Objects.ElementAt(i).Value;
+                if (!ReferenceEquals(obj.Room, room))
+                    continue;
+
+                // We must remove that object. First try to find a trigger.
+                for (int j = 0; j < Triggers.Count; j++)
+                {
+                    var trigger = Triggers.ElementAt(j).Value;
+
+                    if (trigger.TargetType == TriggerTargetType.Camera && obj.Type == ObjectInstanceType.Camera &&
+                        trigger.Target == obj.Id)
+                    {
+                        triggersToRemove.Add(trigger.Id);
+                    }
+
+                    if (trigger.TargetType == TriggerTargetType.FlyByCamera &&
+                        obj.Type == ObjectInstanceType.FlyByCamera &&
+                        trigger.Target == ((FlybyCameraInstance)obj).Sequence)
+                    {
+                        triggersToRemove.Add(trigger.Id);
+                    }
+
+                    if (trigger.TargetType == TriggerTargetType.Sink && obj.Type == ObjectInstanceType.Sink &&
+                        trigger.Target == obj.Id)
+                    {
+                        triggersToRemove.Add(trigger.Id);
+                    }
+
+                    if (trigger.TargetType == TriggerTargetType.Object && obj.Type == ObjectInstanceType.Moveable &&
+                        trigger.Target == obj.Id)
+                    {
+                        triggersToRemove.Add(trigger.Id);
+                    }
+                }
+
+                // Remove the object
+                objectsToRemove.Add(obj.Id);
+            }
+
+            // Remove objects and triggers
+            foreach (int o in objectsToRemove)
+                Objects.Remove(o);
+            foreach (int t in triggersToRemove)
+                Triggers.Remove(t);
+
+            // Remove all references to this room
+            Rooms[roomIndex] = null;
         }
     }
 }

@@ -24,11 +24,42 @@ namespace TombEditor.Controls
         private GraphicsDevice _device;
         private int _lastX;
         private int _lastY;
-        private ItemType? _selectedItem;
+
+        public PanelRenderingItem()
+        {
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is Editor.ChosenItemChangedEvent)
+            {
+                Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
+                if ((e.Current != null) && (_editor?.Level?.Wad != null))
+                {
+                    if (e.Current.Value.IsStatic)
+                    {
+                        SkinnedModel model = _editor.Level.Wad.Moveables[e.Current.Value.Id];
+                        if (model.Animations.Count != 0)
+                            model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
+                    }
+
+                    Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
+                }
+                Invalidate();
+            }
+        }
 
         public void InitializePanel(DeviceManager deviceManager)
         {
-            _editor = Editor.Instance;
             _deviceManager = deviceManager;
             _device = deviceManager.Device;
 
@@ -49,12 +80,13 @@ namespace TombEditor.Controls
 
                 Presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
                 
-                // inizializzo la telecamera
                 Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000);
             }
         }
 
-        public void Draw()
+        // Do NOT call this method to redraw the scene!
+        // Call Invalidate() instead to schedule a redraw in the message loop.
+        private void Draw()
         {
             if (DesignMode)
                 return;
@@ -65,19 +97,20 @@ namespace TombEditor.Controls
 
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-
-            if (!_selectedItem.HasValue)
+            
+            if ((_editor.ChosenItem == null) || (_editor?.Level?.Wad == null))
             {
                 _device.Present();
                 return;
             }
+            ItemType chosenItem = _editor.ChosenItem.Value;
 
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-            if (_selectedItem.Value.IsStatic)
+            if (chosenItem.IsStatic)
             {
                 StaticModel model;
 
-                model = _editor.Level.Wad.StaticMeshes[(uint)_selectedItem.Value.Id];
+                model = _editor.Level.Wad.StaticMeshes[(uint)(chosenItem.Id)];
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
@@ -114,7 +147,7 @@ namespace TombEditor.Controls
                 SkinnedModel model;
                 SkinnedModel skin;
 
-                model = _editor.Level.Wad.Moveables[(uint)SelectedItem.Value.Id];
+                model = _editor.Level.Wad.Moveables[(uint)chosenItem.Id];
                 skin = model;
 
                 model.BuildHierarchy();
@@ -152,32 +185,9 @@ namespace TombEditor.Controls
 
             _device.Present();
         }
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ItemType? SelectedItem
-        {
-            get
-            {
-                return _selectedItem;
-            }
-            set
-            {
-                _selectedItem = value;
-                if ((_selectedItem == null) || (_editor?.Level?.Wad == null))
-                    return;
-
-                if (value.Value.IsStatic)
-                {
-                    SkinnedModel model = _editor.Level.Wad.Moveables.ElementAt(value.Value.Id).Value;
-                    if (model.Animations.Count != 0)
-                        model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
-                }
-
-                Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
-
-                Invalidate();
-            }
-        }
+        
+        protected override void OnPaintBackground(PaintEventArgs e)
+        { }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -217,7 +227,7 @@ namespace TombEditor.Controls
                     Camera.Translate(new Vector3(deltaX * 200, deltaY * -200, 0));
                 else
                     Camera.Rotate(deltaX *4, -deltaY * 4);
-                Draw();
+                Invalidate();
             }
         }
     }

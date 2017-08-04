@@ -1,4 +1,5 @@
 ﻿using TombLib.Graphics;
+using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
@@ -46,7 +47,7 @@ namespace TombEditor.Geometry
 
         public override string ToString()
         {
-            return "Movable " + ObjectNames.GetMovableName((int)Model.ObjectID) +
+            return "Movable (" + Model.ObjectID + ") " + ObjectNames.GetMovableName(Model.ObjectID) +
                 ", ID = " + Id + 
                 ", Room = " + Room.ToString() +
                 ", X = " + Position.X +

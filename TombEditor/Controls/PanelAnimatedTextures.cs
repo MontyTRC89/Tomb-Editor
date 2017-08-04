@@ -21,15 +21,7 @@ namespace TombEditor.Controls
         public bool IsTextureSelected { get; set; }
 
         public PanelAnimatedTextures()
-        {
-            InitializeComponent();
-        }
-
-        public PanelAnimatedTextures(IContainer container)
-        {
-            container.Add(this);
-            InitializeComponent();
-        }
+        { }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {

@@ -113,30 +113,21 @@
     <Compile Include="Compilers\Textures.cs" />
     <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\LightParameterController.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\LightParameterController.Designer.cs">
+    <Compile Include="Controls\LightParameterController.designer.cs">
       <DependentUpon>LightParameterController.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelPalette.Designer.cs">
-      <DependentUpon>PanelPalette.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PanelTextureSounds.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelTextureSounds.Designer.cs">
-      <DependentUpon>PanelTextureSounds.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PanelAnimatedTextures.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelAnimatedTextures.Designer.cs">
-      <DependentUpon>PanelAnimatedTextures.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
@@ -144,6 +135,7 @@
     <Compile Include="Debug.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
+    <Compile Include="EditorState.cs" />
     <Compile Include="FormSplash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,12 +221,10 @@
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="Gizmo.cs" />
-    <Compile Include="ObjectNames.cs" />
     <Compile Include="RowAnimatedTexture.cs" />
     <Compile Include="RowSoundSample.cs" />
     <Compile Include="TestLevel3.cs" />
     <Compile Include="TestLevel.cs" />
-    <Compile Include="UndoRedoSystem.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Controls\CheckBoxButton.cs">
       <SubType>Component</SubType>
@@ -249,14 +239,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\PanelRendering3D.cs" />
-    <Compile Include="Controls\PanelRendering3D.Designer.cs">
-      <DependentUpon>PanelRendering3D.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PanelTextureMap.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelTextureMap.Designer.cs">
-      <DependentUpon>PanelTextureMap.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor.cs" />
     <Compile Include="Effects.cs" />
@@ -287,12 +271,6 @@
     <Compile Include="Geometry\EditorVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\LightParameterController.resx">
-      <DependentUpon>LightParameterController.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PanelRendering3D.resx">
-      <DependentUpon>PanelRendering3D.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>

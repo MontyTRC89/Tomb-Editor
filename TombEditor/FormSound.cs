@@ -109,7 +109,7 @@ namespace TombEditor
                 }
                 catch (Exception exc)
                 {
-                    logger.Log(LogLevel.Warn, "Unable to play sample \"" + row.File + "\"", exc);
+                    logger.Warn(exc, "Unable to play sample \"" + row.File + "\"");
                 }
             }
         }

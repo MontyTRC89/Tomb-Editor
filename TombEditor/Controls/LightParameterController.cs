@@ -23,12 +23,14 @@ namespace TombEditor.Controls
             }
             set
             {
+                if (_value == value)
+                    return;
                 _value = value;
                 SetParameters();
                 UpdateLightValue();
             }
         }
-
+        
         private Color _backgroundColor = Color.FromArgb(255, 60, 63, 65);
         private Color _borderColor = Color.FromArgb(255, 171, 173, 179);
 
@@ -48,14 +50,26 @@ namespace TombEditor.Controls
 
         public LightParameterController()
         {
+            InitializeComponent();
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
+
             _backgroundBrush = new SolidBrush(_backgroundColor);
             _borderPen = new Pen(_borderColor);
-
-            InitializeComponent();
-
-            this.BackColor = _backgroundColor;
         }
-        
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+            if (disposing && (components != null))
+                components.Dispose();
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {}
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -69,7 +83,6 @@ namespace TombEditor.Controls
 
         private void SetParameters()
         {
-            _editor = Editor.Instance;
             if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
@@ -191,8 +204,6 @@ namespace TombEditor.Controls
 
         private void butDown_MouseDown(object sender, MouseEventArgs e)
         {
-            _editor = Editor.Instance;
-
             if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
@@ -233,8 +244,6 @@ namespace TombEditor.Controls
 
         private void butUp_MouseDown(object sender, MouseEventArgs e)
         {
-            _editor = Editor.Instance;
-
             if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
@@ -283,8 +292,6 @@ namespace TombEditor.Controls
 
         private void ChangeLightParameter()
         {
-            _editor = Editor.Instance;
-
             if (_editor.SelectedObject.HasValue && (_editor.SelectedObject.Value.Type == ObjectInstanceType.Light))
             {
                 Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
@@ -319,11 +326,10 @@ namespace TombEditor.Controls
                         light.DirectionY = _value;
                         break;
                 }
-
-                //_editor.SelectedRoom.BuildGeometry();
+                
                 _editor.SelectedRoom.CalculateLightingForThisRoom();
                 _editor.SelectedRoom.UpdateBuffers();
-                _editor.DrawPanel3D();
+                _editor.ObjectChange(light);
             }
         }
     }

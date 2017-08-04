@@ -12,6 +12,9 @@ namespace TombEditor
 {
     public class DeviceManager
     {
+        // to be removed
+        public static DeviceManager DefaultDeviceManager;
+
         public GraphicsDevice Device { get; set; }
         public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
@@ -46,6 +49,8 @@ namespace TombEditor
             // Load default font
             SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
             Font = SpriteFont.New(Device, fontData);
+
+            DefaultDeviceManager = this;
         }
 
         private Effect LoadEffect(string fileName)
