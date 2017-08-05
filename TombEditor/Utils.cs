@@ -93,7 +93,7 @@ namespace TombEditor
             return (int)(z + room.Position.Z);
         }
 
-        public static Bitmap GetTextureTileFromMap(int xc, int yc, int page)
+        public static Bitmap GetTextureTileFromMap(Level level, int xc, int yc, int page)
         {
             Bitmap bmp = new Bitmap(64, 64);
 
@@ -101,8 +101,7 @@ namespace TombEditor
             {
                 for (int y = 0; y < 64; y++)
                 {
-                    System.Drawing.Color color =
-                        Editor.Instance.Level._textureMap.GetPixel(xc + x, page * 256 + yc + y);
+                    System.Drawing.Color color = level._textureMap.GetPixel(xc + x, page * 256 + yc + y);
                     bmp.SetPixel(x, y, color);
                 }
             }

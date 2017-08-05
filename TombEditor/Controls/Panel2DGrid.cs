@@ -44,9 +44,47 @@ namespace TombEditor.Controls
         public Panel2DGrid()
         {
             _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+            base.Dispose(disposing);
+        }
+        
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            // Update drawing
+            if ((obj is Editor.SelectedRoomChangedEvent) ||
+                (obj is Editor.SelectedSectorsChangedEvent) ||
+                (obj is Editor.RoomSectorPropertiesChangedEvent) ||
+                ((obj is Editor.SelectedObjectChangedEvent) && IsObjectChangeRelevant((Editor.SelectedObjectChangedEvent)obj)))
+            {
+                Invalidate();
+            }
+
+            // Update curser
+            if (obj is Editor.ActionChangedEvent)
+            {
+                EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
+                Cursor = currentAction.RelocateCameraActive ? Cursors.Cross : Cursors.Arrow;
+            }
+        }
+
+        private static bool IsObjectChangeRelevant(Editor.SelectedObjectChangedEvent e)
+        {
+            bool PreviousIsRelevant = (e.Previous.HasValue &&
+                ((e.Previous.Value.Type == ObjectInstanceType.Trigger) ||
+                (e.Previous.Value.Type == ObjectInstanceType.Portal)));
+            bool CurrentIsRelevant = (e.Current.HasValue &&
+                ((e.Current.Value.Type == ObjectInstanceType.Trigger) ||
+                (e.Current.Value.Type == ObjectInstanceType.Portal)));
+            return PreviousIsRelevant || CurrentIsRelevant;
         }
 
         private RectangleF getVisualRoomArea()
@@ -91,7 +129,7 @@ namespace TombEditor.Controls
                 return;
 
             // Move camera to selected sector
-            if (_editor.RelocateCameraActive)
+            if (_editor.Action.RelocateCameraActive)
             {
                 _editor.MoveCameraToSector(fromVisualCoord(e.Location));
                 return;
@@ -111,13 +149,8 @@ namespace TombEditor.Controls
             {
                 if ((selectedSectorObject is Portal) && selectedSectorObject.Area.Contains(sectorPos))
                 {
-                    _editor.SelectRoom(((Portal)selectedSectorObject).AdjoiningRoom);
-                    _editor.ResetSelection();
-                    _editor.ResetCamera();
-
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.UpdateStatusStrip();
+                    _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
+                    _editor.SelectedObject = selectedSectorObject.ObjectPtr;
                 }
                 else if ((selectedSectorObject is TriggerInstance) && selectedSectorObject.Area.Contains(sectorPos))
                 { // Open trigger options
@@ -125,18 +158,11 @@ namespace TombEditor.Controls
                 }
                 else
                 { // Do block selection
-                    _editor.SelectedSectorStart = sectorPos;
-                    _editor.SelectedSectorEnd = _editor.SelectedSectorStart;
-                    _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
+                    _editor.SelectedSectors = new SectorSelection { Start = sectorPos, End = sectorPos };
 
                     if (selectedSectorObject != null) // Unselect previous object
                         _editor.SelectedObject = null;
                     _doSectorSelection = true;
-
-                    // Update state
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.UpdateStatusStrip();
                 }
             }
             else if (e.Button == MouseButtons.Right)
@@ -153,11 +179,6 @@ namespace TombEditor.Controls
                     FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
                 if (nextPortalOrTrigger != null)
                     _editor.SelectedObject = nextPortalOrTrigger.ObjectPtr;
-
-                // Update state
-                _editor.DrawPanel3D();
-                _editor.DrawPanelGrid();
-                _editor.UpdateStatusStrip();
             }
         }
 
@@ -165,19 +186,11 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
             
-            if ((_editor?.SelectedRoom == null) || _editor.RelocateCameraActive)
+            if ((_editor?.SelectedRoom == null) || _editor.Action.RelocateCameraActive)
                 return;
-            
+
             if ((e.Button == MouseButtons.Left) && _doSectorSelection)
-            {
-                _editor.SelectedSectorEnd = fromVisualCoord(e.Location);
-                _editor.SelectedSectorArrow = EditorArrowType.EntireFace;
-                
-                // Update state
-                _editor.DrawPanel3D();
-                _editor.UpdateStatusStrip();
-                Invalidate();
-            }
+                _editor.SelectedSectors = new SectorSelection { Start = _editor.SelectedSectors.Start, End = fromVisualCoord(e.Location) };
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -266,9 +279,9 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_selectedTriggerPen, toVisualCoord(trigger.Area));
                     DrawMessage(e, trigger.ToString(), toVisualCoord(new Point(trigger.X + trigger.NumXBlocks / 2, trigger.Z + trigger.NumZBlocks)));
                 }
-                else if (_editor.SelectedSectorAvailable)
+                else if (_editor.SelectedSectors.Valid)
                 {
-                    e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.SelectedSector));
+                    e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.SelectedSectors.Area));
                 }
             }
             catch (Exception exc)

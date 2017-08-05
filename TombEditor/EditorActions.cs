@@ -134,7 +134,7 @@ namespace TombEditor
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
 
-            _editor.UpdateStatusStrip();
+            _editor.RoomGeometryChange(room);
         }
 
         public static void EditSectorGeometry(Room room, Rectangle area, EditorArrowType arrow, int face, short increment, bool smooth)
@@ -666,8 +666,6 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void FlipFloorSplit(Room room, Rectangle area)
@@ -678,7 +676,6 @@ namespace TombEditor
                         (byte)(room.Blocks[x, z].SplitFoorType == 0 ? 1 : 0);
 
             SmartBuildGeometry(room, area);
-            _editor.UpdateStatusStrip();
         }
 
         public static void FlipCeilingSplit(Room room, Rectangle area)
@@ -689,7 +686,6 @@ namespace TombEditor
                         (byte)(room.Blocks[x, z].SplitCeilingType == 0 ? 1 : 0);
 
             SmartBuildGeometry(room, area);
-            _editor.UpdateStatusStrip();
         }
 
         public static void AddTrigger(Room room, Rectangle area, IWin32Window parent)
@@ -710,9 +706,7 @@ namespace TombEditor
                     for (int z = area.Y; z <= area.Bottom; z++)
                         room.Blocks[x, z].Triggers.Add(trigger.Id);
             }
-            _editor.LoadTriggersInUI();
-            _editor.UpdateRoomName();
-            _editor.DrawPanelGrid();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -780,7 +774,8 @@ namespace TombEditor
                         _editor.SelectedRoom.CalculateLightingForThisRoom();
                         _editor.SelectedRoom.UpdateBuffers();
                     }
-                    _editor.DrawPanel3D();
+                    _editor.ObjectChange(objectPtr.Type == ObjectInstanceType.Light ? 
+                        (object)(room.Lights[objectPtr.Id]) : _editor.Level.Objects[objectPtr.Id]);
                     break;
             }
         }
@@ -813,29 +808,35 @@ namespace TombEditor
                 case ObjectInstanceType.Moveable:
                     using (FormMoveable formMoveable = new FormMoveable((MoveableInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formMoveable.ShowDialog(owner);
+                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
                 case ObjectInstanceType.FlyByCamera:
                     using (FormFlybyCamera formFlyby = new FormFlybyCamera((FlybyCameraInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formFlyby.ShowDialog(owner);
+                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
                 case ObjectInstanceType.Sink:
                     using (FormSink formSink = new FormSink((SinkInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formSink.ShowDialog(owner);
+                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
                 case ObjectInstanceType.SoundSource:
                     using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id])))
                         formSound.ShowDialog(owner);
+                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
                 case ObjectInstanceType.Trigger:
                     using (FormTrigger formSound = new FormTrigger(_editor.Level, (TriggerInstance)(_editor.Level.Triggers[objectPtr.Id])))
                         formSound.ShowDialog(owner);
+                    _editor.ObjectChange(_editor.Level.Triggers[objectPtr.Id]);
+                    _editor.RoomSectorPropertiesChange(room);
                     break;
             }
         }
 
         public static void DeleteObjectWithWarning(Room room, ObjectPtr objectPtr, IWin32Window owner)
         {
-            if (room.Flipped)
+            if ((room.Flipped) && (objectPtr.Type == ObjectInstanceType.Portal))
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You can't delete portals of a flipped room", "Error");
                 return;
@@ -910,79 +911,70 @@ namespace TombEditor
                     }
 
                     // Update state
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-
-                    other.Room.BuildGeometry();
-                    other.Room.CalculateLightingForThisRoom();
-                    other.Room.UpdateBuffers();
+                    room.UpdateCompletely();
+                    other.Room.UpdateCompletely();
 
                     if (_editor.SelectedObject == objectPtr)
                         _editor.SelectedObject = null;
-                    _editor.DrawPanelGrid();
+                    _editor.RoomSectorPropertiesChange(room);
                     break;
 
                 case ObjectInstanceType.Trigger:
-                    _editor.Level.DeleteTrigger(objectPtr.Id);
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
+                    var trigger = _editor.Level.Triggers[objectPtr.Id];
+                    for (int x = trigger.X; x < trigger.X + trigger.NumXBlocks; x++)
+                        for (int z = trigger.Z; z < trigger.Z + trigger.NumZBlocks; z++)
+                            room.Blocks[x, z].Triggers.Remove(objectPtr.Id);
+                    room.UpdateCompletely();
 
-                    // Update state
                     if (_editor.SelectedObject == objectPtr)
                         _editor.SelectedObject = null;
-                    _editor.DrawPanelGrid();
-                    _editor.LoadTriggersInUI();
-                    room.UpdateBuffers();
+                    _editor.RoomSectorPropertiesChange(room);
                     break;
 
                 case ObjectInstanceType.Light:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Lights.RemoveAt(objectPtr.Id);
-
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
+                    room.UpdateCompletely();
+                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.Moveable:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
+                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.StaticMesh:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
+                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.SoundSource:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
+                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.Sink:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
+                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.Camera:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
+                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.FlyByCamera:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
+                    _editor.ObjectChange(null);
                     break;
             }
 
             // Avoid having the removed object still selected
-            if (_editor.SelectedObject == objectPtr)
-                _editor.SelectedObject = null;
-
-            // Update state ...
-            _editor.UpdateStatusStrip();
-            _editor.DrawPanel3D();
             if (_editor.SelectedObject == objectPtr)
                 _editor.SelectedObject = null;
         }
@@ -1007,11 +999,9 @@ namespace TombEditor
                         if (light.DirectionY >= 360)
                             light.DirectionY -= 360;
                         
-                        room.BuildGeometry();
                         room.CalculateLightingForThisRoom();
                         room.UpdateBuffers();
-                        _editor.UpdateStatusStrip();
-                        _editor.DrawPanel3D();
+                        _editor.ObjectChange(light);
                     }
                     break;
 
@@ -1031,7 +1021,7 @@ namespace TombEditor
                         if (flyby.DirectionY >= 360)
                             flyby.DirectionY -= 360;
 
-                        _editor.DrawPanel3D();
+                        _editor.ObjectChange(flyby);
                     }
                     break;
             }
@@ -1046,15 +1036,14 @@ namespace TombEditor
             face.Flipped = false;
 
             room.BuildGeometry(pos.X, pos.X, pos.Y, pos.Y);
-            room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
-            _editor.DrawPanel3D();
+            _editor.RoomTextureChange(room);
         }
 
         public static void RotateTexture(Room room, DrawingPoint pos, BlockFaces faceType)
         {
             BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
-            if (_editor.InvisiblePolygon || face.Invisible)
+            if (_editor.SelectedTexture.Invisible || face.Invisible)
                 return;
 
             if (face.Shape == BlockFaceShape.Triangle)
@@ -1091,16 +1080,15 @@ namespace TombEditor
             }
 
             room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
-            _editor.DrawPanel3D();
+            _editor.RoomTextureChange(room);
         }
 
         public static void FlipTexture(Room room, DrawingPoint pos, BlockFaces faceType)
         {
             BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
 
-            if (_editor.InvisiblePolygon || face.Invisible || face.Texture == -1)
+            if (_editor.SelectedTexture.Invisible || face.Invisible || face.Texture == -1)
                 return;
 
             if (face.Shape == BlockFaceShape.Triangle)
@@ -1115,7 +1103,7 @@ namespace TombEditor
                 UV[2] = new Vector2((texture.X + texture.Width) / 256.0f, (texture.Y + texture.Height) / 256.0f);
                 UV[3] = new Vector2(texture.X / 256.0f, (texture.Y + texture.Height) / 256.0f);
 
-                if (_editor.SeletedTextureTriangle == TextureTileType.TriangleNW)
+                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNW)
                 {
                     face.TriangleUV[0] = UV[1];
                     face.TriangleUV[1] = UV[0];
@@ -1128,7 +1116,7 @@ namespace TombEditor
                     }
                 }
 
-                if (_editor.SeletedTextureTriangle == TextureTileType.TriangleNE)
+                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNE)
                 {
                     face.TriangleUV[0] = UV[0];
                     face.TriangleUV[1] = UV[3];
@@ -1142,7 +1130,7 @@ namespace TombEditor
                     }
                 }
 
-                if (_editor.SeletedTextureTriangle == TextureTileType.TriangleSE)
+                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSE)
                 {
                     face.TriangleUV[0] = UV[3];
                     face.TriangleUV[1] = UV[2];
@@ -1156,7 +1144,7 @@ namespace TombEditor
                     }
                 }
 
-                if (_editor.SeletedTextureTriangle == TextureTileType.TriangleSW)
+                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSW)
                 {
                     face.TriangleUV[0] = UV[2];
                     face.TriangleUV[1] = UV[1];
@@ -1201,9 +1189,8 @@ namespace TombEditor
             face.Flipped = !face.Flipped;
 
             room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
-            _editor.DrawPanel3D();
+            _editor.RoomTextureChange(room);
         }
 
         public static void PlaceNoCollision(Room room, DrawingPoint pos, BlockFaces faceType)
@@ -1214,20 +1201,18 @@ namespace TombEditor
             if (faceType == BlockFaces.Ceiling || faceType == BlockFaces.CeilingTriangle2)
                 room.GetBlock(pos).NoCollisionCeiling = !room.GetBlock(pos).NoCollisionCeiling;
 
-            room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
-            _editor.DrawPanel3D();
+            room.UpdateCompletely();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
-        public static void ApplyTexture(Room room, DrawingPoint pos, BlockFaces faceType)
+        private static void ApplyTextureNoUpdated(Room room, DrawingPoint pos, BlockFaces faceType)
         {
-            if (_editor == null || (_editor.SelectedTextureIndex == -1 && !_editor.InvisiblePolygon))
+            if (_editor == null || (_editor.SelectedTexture.Index == -1 && !_editor.SelectedTexture.Invisible))
                 return;
 
             BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
 
-            if (_editor.InvisiblePolygon)
+            if (_editor.SelectedTexture.Invisible)
             {
                 room.GetBlock(pos).Faces[(int)faceType].Invisible = true;
                 room.GetBlock(pos).Faces[(int)faceType].Transparent = false;
@@ -1244,20 +1229,20 @@ namespace TombEditor
                     room.GetBlock(pos).Faces[(int)faceType].Invisible = false;
 
                 // set trasparency of this face
-                if (_editor.Transparent)
+                if (_editor.SelectedTexture.Transparent)
                     room.GetBlock(pos).Faces[(int)faceType].Transparent = true;
                 else
                     room.GetBlock(pos).Faces[(int)faceType].Transparent = false;
 
                 // set double sided flag of this face
-                if (_editor.DoubleSided)
+                if (_editor.SelectedTexture.DoubleSided)
                     room.GetBlock(pos).Faces[(int)faceType].DoubleSided = true;
                 else
                     room.GetBlock(pos).Faces[(int)faceType].DoubleSided = false;
 
                 Vector2[] UV = new Vector2[4];
 
-                LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTextureIndex];
+                LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture.Index];
 
                 int yBlock = (int)(texture.Page / 8);
                 int xBlock = (int)(texture.Page % 8);
@@ -1281,7 +1266,7 @@ namespace TombEditor
 
                 if (face.Shape == BlockFaceShape.Triangle)
                 {
-                    if (_editor.SeletedTextureTriangle == TextureTileType.TriangleNW)
+                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNW)
                     {
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[0];
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[1];
@@ -1295,7 +1280,7 @@ namespace TombEditor
                         }
                     }
 
-                    if (_editor.SeletedTextureTriangle == TextureTileType.TriangleNE)
+                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNE)
                     {
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[1];
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[2];
@@ -1309,7 +1294,7 @@ namespace TombEditor
                         }
                     }
 
-                    if (_editor.SeletedTextureTriangle == TextureTileType.TriangleSE)
+                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSE)
                     {
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[2];
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[3];
@@ -1323,7 +1308,7 @@ namespace TombEditor
                         }
                     }
 
-                    if (_editor.SeletedTextureTriangle == TextureTileType.TriangleSW)
+                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSW)
                     {
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[3];
                         room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[0];
@@ -1340,154 +1325,204 @@ namespace TombEditor
 
                 if (face.Shape == BlockFaceShape.Triangle)
                 {
-                    room.GetBlock(pos).Faces[(int)faceType].TextureTriangle = _editor.SeletedTextureTriangle;
+                    room.GetBlock(pos).Faces[(int)faceType].TextureTriangle = _editor.SelectedTexture.Triangle;
                 }
 
-                room.GetBlock(pos).Faces[(int)faceType].Texture = (short)_editor.SelectedTextureIndex;
+                room.GetBlock(pos).Faces[(int)faceType].Texture = (short)_editor.SelectedTexture.Index;
                 room.GetBlock(pos).Faces[(int)faceType].Rotation = 0;
             }
         }
 
-        public static void PlaceObject(Room room, DrawingPoint pos, ObjectInstanceType type)
+        public static void ApplyTexture(Room room, DrawingPoint pos, BlockFaces faceType)
         {
-            switch (type)
+            ApplyTextureNoUpdated(room, pos, faceType);
+            _editor.RoomTextureChange(room);
+        }
+
+        public static void TexturizeAllFloor(Room room)
+        {
+            for (int x = 0; x < room.NumXSectors - 1; x++)
+                for (int z = 0; z < room.NumZSectors - 1; z++)
+                {
+                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.Floor);
+                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.FloorTriangle2);
+                }
+
+            room.UpdateCompletely();
+            _editor.RoomTextureChange(room);
+        }
+
+        public static void TexturizeAllCeiling(Room room)
+        {
+            for (int x = 0; x < room.NumXSectors - 1; x++)
+                for (int z = 0; z < room.NumZSectors - 1; z++)
+                {
+                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.Ceiling);
+                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.CeilingTriangle2);
+                }
+
+            room.UpdateCompletely();
+            _editor.RoomTextureChange(room);
+        }
+
+        public static void TexturizeAllWalls(Room room)
+        {
+            for (int x = 0; x < room.NumXSectors; x++)
+                for (int z = 0; z < room.NumZSectors; z++)
+                    for (int k = 10; k <= 13; k++)
+                        if (room.Blocks[x, z].Faces[k].Defined)
+                            ApplyTextureNoUpdated(room, new DrawingPoint(x, z), (BlockFaces)k);
+
+            room.UpdateCompletely();
+            _editor.RoomTextureChange(room);
+        }
+
+        public static void PlaceLight(Room room, DrawingPoint pos, LightType lightType)
+        {
+            Light instance = new Light();
+
+            Block block = room.GetBlock(pos);
+            int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
+
+            instance.Position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
+            instance.Color = System.Drawing.Color.White;
+            instance.Active = true;
+            instance.Intensity = 0.5f;
+            instance.In = 1.0f;
+            instance.Out = 5.0f;
+            instance.Type = lightType;
+
+            switch (lightType)
             {
-                case ObjectInstanceType.Light:
-                    {
-                        Light instance = new Light();
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
-                        instance.Color = System.Drawing.Color.White;
-                        instance.Active = true;
-                        instance.Intensity = 0.5f;
-                        instance.In = 1.0f;
-                        instance.Out = 5.0f;
-                        instance.Type = _editor.ActionPlaceLight_LightType;
-
-                        switch (_editor.ActionPlaceLight_LightType)
-                        {
-                            case LightType.Shadow:
-                                instance.Intensity *= -1;
-                                break;
-                            case LightType.Spot:
-                                instance.Len = 2.0f;
-                                instance.Cutoff = 3.0f;
-                                instance.DirectionX = 0.0f;
-                                instance.DirectionY = 0.0f;
-                                instance.In = 20.0f;
-                                instance.Out = 25.0f;
-                                break;
-                            case LightType.Sun:
-                                instance.DirectionX = 0.0f;
-                                instance.DirectionY = 0.0f;
-                                break;
-                            case LightType.Effect:
-                                instance.In = 0.0f;
-                                instance.Out = 1024.0f;
-                                break;
-                        }
-                        room.Lights.Add(instance);
-
-                        room.BuildGeometry();
-                        room.CalculateLightingForThisRoom();
-                        room.UpdateBuffers();
-                    }
+                case LightType.Shadow:
+                    instance.Intensity *= -1;
                     break;
-                case ObjectInstanceType.Moveable:
-                    if (!_editor.ActionPlaceItem_Item.IsStatic)
-                    {
-                        MoveableInstance instance = new MoveableInstance(_editor.Level.GetNewObjectId(), room);
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Model = _editor.Level.Wad.Moveables[(uint)(_editor.ActionPlaceItem_Item.Id)];
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.Moveables.Add(instance.Id);
-                    }
+                case LightType.Spot:
+                    instance.Len = 2.0f;
+                    instance.Cutoff = 3.0f;
+                    instance.DirectionX = 0.0f;
+                    instance.DirectionY = 0.0f;
+                    instance.In = 20.0f;
+                    instance.Out = 25.0f;
                     break;
-                case ObjectInstanceType.StaticMesh:
-                    if (_editor.ActionPlaceItem_Item.IsStatic)
-                    {
-                        StaticMeshInstance instance = new StaticMeshInstance(_editor.Level.GetNewObjectId(), room);
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-                        instance.Model = _editor.Level.Wad.StaticMeshes[(uint)(_editor.ActionPlaceItem_Item.Id)];
-                        instance.Color = System.Drawing.Color.FromArgb(255, 128, 128, 128);
-
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.StaticMeshes.Add(instance.Id);
-                    }
+                case LightType.Sun:
+                    instance.DirectionX = 0.0f;
+                    instance.DirectionY = 0.0f;
                     break;
-                case ObjectInstanceType.Camera:
-                  {   
-                        CameraInstance instance = new CameraInstance(_editor.Level.GetNewObjectId(), room);
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-
-                        _editor.Action = EditorAction.None;
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.Cameras.Add(instance.Id);
-                    }
-                    break;
-                case ObjectInstanceType.FlyByCamera:
-                    {
-                        FlybyCameraInstance instance = new FlybyCameraInstance(_editor.Level.GetNewObjectId(), room);
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-
-                        _editor.Action = EditorAction.None;
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.FlyByCameras.Add(instance.Id);
-                    }
-                    break;
-                case ObjectInstanceType.SoundSource:
-                    {
-                        SoundSourceInstance instance = new SoundSourceInstance(_editor.Level.GetNewObjectId(), room);
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-
-                        _editor.Action = EditorAction.None;
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.SoundSources.Add(instance.Id);
-                    }
-                    break;
-                case ObjectInstanceType.Sink:
-                    {
-                        SinkInstance instance = new SinkInstance(_editor.Level.GetNewObjectId(), room);
-
-                        Block block = room.GetBlock(pos);
-                        int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-
-                        instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-
-                        _editor.Action = EditorAction.None;
-                        _editor.Level.Objects.Add(instance.Id, instance);
-                        room.Sinks.Add(instance.Id);
-                    }
+                case LightType.Effect:
+                    instance.In = 0.0f;
+                    instance.Out = 1024.0f;
                     break;
             }
-            _editor.UpdateStatusStrip();
-            _editor.DrawPanel3D();
+            room.Lights.Add(instance);
+            
+            room.CalculateLightingForThisRoom();
+            room.UpdateBuffers();
+            _editor.ObjectChange(instance);
         }
         
+        private static void AddObject(Room room, DrawingPoint pos, ObjectInstance instance)
+        {
+            Block block = room.GetBlock(pos);
+            int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
+
+            instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
+
+            _editor.Level.Objects.Add(instance.Id, instance);
+            switch (instance.Type)
+            {
+                case ObjectInstanceType.Camera:
+                    room.Cameras.Add(instance.Id);
+                    break;
+                case ObjectInstanceType.FlyByCamera:
+                    room.FlyByCameras.Add(instance.Id);
+                    break;
+                case ObjectInstanceType.Light:
+                    throw new NotSupportedException();
+                case ObjectInstanceType.Moveable:
+                    room.Moveables.Add(instance.Id);
+                    break;
+                case ObjectInstanceType.Sink:
+                    room.Sinks.Add(instance.Id);
+                    break;
+                case ObjectInstanceType.SoundSource:
+                    room.SoundSources.Add(instance.Id);
+                    break;
+                case ObjectInstanceType.StaticMesh:
+                    room.StaticMeshes.Add(instance.Id);
+                    break;
+            }
+            _editor.ObjectChange(instance);
+
+
+        }
+
+        public static void PlaceItem(Room room, DrawingPoint pos, ItemType itemType)
+        {
+            if (itemType.IsStatic)
+                AddObject(room, pos, new StaticMeshInstance(_editor.Level.GetNewObjectId(), room)
+                    { Model = _editor.Level.Wad.StaticMeshes[(uint)(itemType.Id)] });
+            else
+                AddObject(room, pos, new MoveableInstance(_editor.Level.GetNewObjectId(), room)
+                    { Model = _editor.Level.Wad.Moveables[(uint)(itemType.Id)] });
+        }
+
+        public static void PlaceCamera(Room room, DrawingPoint pos)
+        {
+            AddObject(room, pos, new CameraInstance(_editor.Level.GetNewObjectId(), room));
+        }
+
+        public static void PlaceFlyByCamera(Room room, DrawingPoint pos)
+        {
+            AddObject(room, pos, new FlybyCameraInstance(_editor.Level.GetNewObjectId(), room));
+        }
+
+        public static void PlaceSoundSource(Room room, DrawingPoint pos)
+        {
+            AddObject(room, pos, new SoundSourceInstance(_editor.Level.GetNewObjectId(), room));
+        }
+
+        public static void PlaceSink(Room room, DrawingPoint pos)
+        {
+            AddObject(room, pos, new SinkInstance(_editor.Level.GetNewObjectId(), room));
+        }
+
+        public static void DeleteRoom(Room room)
+        {
+            // Check if is the last room
+            int roomCount = _editor.Level.Rooms.Count(r => r != null);
+            if (roomCount <= 1)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must have at least one room in your level", "Error");
+                return;
+            }
+
+            // Check if room has portals
+            int portalCount = room.Portals.Select((portal) => _editor.Level.Portals[portal]).Count();
+            if (portalCount != 0)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
+                return;
+            }
+
+            // Ask for confirmation
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                    "Do you really want to delete this room? All objects inside room will be deleted and " +
+                    "triggers pointing to them will be removed.",
+                    "Delete room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            // Do it finally
+            _editor.Level.DeleteRoom(room);
+
+            // Update selection
+            if (_editor.SelectedRoom == room)
+                _editor.SelectRoomAndCenterCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+            _editor.RoomListChange();
+        }
+
         public static void CropRoom(Room room, Rectangle newArea)
         {
             if (room.Flipped)
@@ -1713,25 +1748,14 @@ namespace TombEditor
                 }
             }
 
-            // Build the geometry of the new room
-            newRoom.BuildGeometry();
-            newRoom.CalculateLightingForThisRoom();
-            newRoom.UpdateBuffers();
-
-
+            newRoom.UpdateCompletely();
+            
             // Fix selection if necessary
             if (_editor.SelectedRoom == room)
             {
-                _editor.SelectedRoom = newRoom;
-                _editor.SelectedSector = new Rectangle(1, 1, numXSectors - 2, numZSectors - 2);
+                _editor.SelectRoomAndCenterCamera(newRoom);
+                _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
             }
-
-            // Update state
-            _editor.CenterCamera();
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
-            _editor.UpdateRoomName();
         }
 
         public static void SetDiagonalFloorSplit(Room room, Rectangle area)
@@ -1820,9 +1844,6 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
         }
 
         public static void SetDiagonalCeilingSplit(Room room, Rectangle area)
@@ -1911,9 +1932,6 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
         }
 
         public static void SetDiagonalWallSplit(Room room, Rectangle area)
@@ -2007,9 +2025,6 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
         }
         
         public static void SetWall(Room room, Rectangle area)
@@ -2041,10 +2056,7 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.DrawPanelMap2D();
-            _editor.UpdateStatusStrip();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void SetFloor(Room room, Rectangle area)
@@ -2060,9 +2072,7 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.DrawPanelMap2D();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void SetCeiling(Room room, Rectangle area)
@@ -2077,10 +2087,7 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.DrawPanelMap2D();
-            _editor.UpdateStatusStrip();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void ToggleBlockFlag(Room room, Rectangle area, BlockFlags flag)
@@ -2088,10 +2095,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                     room.Blocks[x, z].Flags ^= flag;
-
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static void ToggleClimb(Room room, Rectangle area, int direction)
@@ -2099,10 +2103,7 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                     room.Blocks[x, z].Climb[direction] = !room.Blocks[x, z].Climb[direction];
-
-            _editor.DrawPanel3D();
-            _editor.DrawPanelGrid();
-            _editor.UpdateStatusStrip();
+            _editor.RoomSectorPropertiesChange(room);
         }
 
         public static bool AddPortal(Room room, Rectangle area)
@@ -2210,12 +2211,7 @@ namespace TombEditor
                     found.CalculateLightingForThisRoom();
                     found.UpdateBuffers();
 
-                    // Update state
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.DrawPanelMap2D();
-                    _editor.UpdateStatusStrip();
-
+                    _editor.ObjectChange(currentRoomPortal);
                     return true;
                 }
                 else
@@ -2322,13 +2318,8 @@ namespace TombEditor
                     found.BuildGeometry();
                     found.CalculateLightingForThisRoom();
                     found.UpdateBuffers();
-
-                    // Update state
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.DrawPanelMap2D();
-                    _editor.UpdateStatusStrip();
-
+                    
+                    _editor.ObjectChange(currentRoomPortal);
                     return true;
                 }
                 else
@@ -2436,12 +2427,7 @@ namespace TombEditor
                     found.CalculateLightingForThisRoom();
                     found.UpdateBuffers();
 
-                    // Update state
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.DrawPanelMap2D();
-                    _editor.UpdateStatusStrip();
-
+                    _editor.ObjectChange(currentRoomPortal);
                     return true;
                 }
                 else
@@ -2549,12 +2535,7 @@ namespace TombEditor
                     found.CalculateLightingForThisRoom();
                     found.UpdateBuffers();
 
-                    // Update state
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.DrawPanelMap2D();
-                    _editor.UpdateStatusStrip();
-
+                    _editor.ObjectChange(currentRoomPortal);
                     return true;
                 }
                 else
@@ -2782,17 +2763,200 @@ namespace TombEditor
                     found.CalculateLightingForThisRoom();
                     found.UpdateBuffers();
 
-                    // Update state
-                    _editor.DrawPanel3D();
-                    _editor.DrawPanelGrid();
-                    _editor.DrawPanelMap2D();
-                    _editor.UpdateStatusStrip();
-
+                    _editor.ObjectChange(currentRoomPortal);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public static void SetPortalOpacity(Room room, Portal portal, PortalOpacity opacity)
+        {
+            for (int x = portal.X; x < portal.X + portal.NumXBlocks; x++)
+                for (int z = portal.Z; z < portal.Z + portal.NumZBlocks; z++)
+                {
+                    switch (portal.Direction)
+                    {
+                        case PortalDirection.North:
+                            room.Blocks[x, z].WallOpacity = opacity;
+                            break;
+
+                        case PortalDirection.South:
+                            room.Blocks[x, z].WallOpacity = opacity;
+                            break;
+
+                        case PortalDirection.East:
+                            room.Blocks[x, z].WallOpacity = opacity;
+                            break;
+
+                        case PortalDirection.West:
+                            room.Blocks[x, z].WallOpacity = opacity;
+                            break;
+
+                        case PortalDirection.Floor:
+                            if (!room.Blocks[x, z].IsFloorSolid)
+                                room.Blocks[x, z].FloorOpacity = opacity;
+                            else
+                                room.Blocks[x, z].FloorOpacity =
+                                    PortalOpacity.None;
+
+                            break;
+
+                        case PortalDirection.Ceiling:
+                            if (!room.Blocks[x, z].IsCeilingSolid)
+                                room.Blocks[x, z].CeilingOpacity = opacity;
+                            else
+                                room.Blocks[x, z].CeilingOpacity =
+                                    PortalOpacity.None;
+
+                            break;
+                    }
+                }
+            room.UpdateCompletely();
+            _editor.ObjectChange(portal);
+        }
+
+        public static void CopyRoom(Room room, Rectangle area)
+        {
+            int found = _editor.Level.GetFreeRoomIndex();
+            var newRoom = new Room(_editor.Level, area.Width + 3, area.Height + 3, "Room " + found);
+
+            for (int x = 1; x < area.Width - 1; x++)
+                for (int z = 1; z < area.Height - 1; z++)
+                    newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
+            
+            newRoom.UpdateCompletely();
+
+            _editor.Level.Rooms[found] = newRoom;
+            _editor.RoomListChange();
+        }
+
+        public static void SplitRoom(Room room, Rectangle area)
+        {
+            if (room.Flipped)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You can't split a flipped room", "Error");
+                return;
+            }
+
+            int found = _editor.Level.GetFreeRoomIndex();
+            var newRoom = new Room(_editor.Level, area.Width + 3, area.Height + 3, "Room " + found);
+
+            for (int x = 1; x < area.Width + 2; x++)
+                for (int z = 1; z < area.Height + 2; z++)
+                {
+                    newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
+                    room.Blocks[x + area.X - 1, z + area.Y - 1].Type = BlockType.Wall;
+                }
+
+            // Build the geometry of the new room
+            room.UpdateCompletely();
+            newRoom.UpdateCompletely();
+
+            // Update the UI
+            _editor.Level.Rooms[found] = newRoom;
+            _editor.RoomListChange();
+        }
+
+        public static void AlternateRoomEnable(Room room, short AlternateGroup)
+        {
+            // Search the first free room
+            int freeRoomIndex = _editor.Level.GetFreeRoomIndex();
+
+            // Duplicate portals
+            int numPortals = _editor.Level.Portals.Count;
+            var duplicatedPortals = new Dictionary<int, int>();
+
+            for (int i = 0; i < numPortals; i++)
+            {
+                var p = _editor.Level.Portals.ElementAt(i).Value;
+
+                if (p.Room != room)
+                    continue;
+
+                int portalId = _editor.Level.GetNewPortalId();
+                var newPortal = p.ClonePortal();
+                newPortal.Id = portalId;
+                newPortal.Flipped = true;
+
+                p.Flipped = true;
+                _editor.Level.Portals[p.Id] = p;
+
+                duplicatedPortals.Add(p.Id, portalId);
+                _editor.Level.Portals.Add(portalId, newPortal);
+            }
+
+            for (int i = 0; i < duplicatedPortals.Count; i++)
+            {
+                var p = _editor.Level.Portals[duplicatedPortals.ElementAt(i).Key];
+                _editor.Level.Portals[p.OtherId].OtherIdFlipped = duplicatedPortals.ElementAt(i).Value;
+            }
+            
+
+            string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
+            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
+
+            for (int x = 0; x < room.NumXSectors; x++)
+                for (int z = 0; z < room.NumZSectors; z++)
+                {
+                    newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
+                    newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1
+                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : -1);
+                    newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != -1
+                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : -1);
+                    newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != -1
+                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : -1);
+                }
+
+            for (int i = 0; i < room.Lights.Count; i++)
+                newRoom.Lights.Add(room.Lights[i].Clone());
+
+            // Build the geometry of the new room
+            newRoom.UpdateCompletely();
+
+            _editor.Level.Rooms[freeRoomIndex] = newRoom;
+            _editor.RoomListChange();
+
+            room.Flipped = true;
+            room.AlternateGroup = AlternateGroup;
+            room.AlternateRoom = newRoom;
+            _editor.RoomPropertiesChange(room);
+
+            newRoom.Flipped = true;
+            newRoom.AlternateGroup = AlternateGroup;
+            newRoom.BaseRoom = room;
+            _editor.RoomPropertiesChange(newRoom);
+        }
+
+        public static void AlternateRoomDisable(Room room)
+        {
+            // Check if room has portals
+            for (int i = 0; i < _editor.Level.Portals.Count; i++)
+            {
+                var p = _editor.Level.Portals[i];
+                if ((p.Room != room && p.AdjoiningRoom != room) || p.MemberOfFlippedRoom)
+                    continue;
+
+                DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
+                return;
+            }
+
+            // Ask for confirmation
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete the flip room?",
+                "Delete flipped room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            _editor.Level.DeleteRoom(room.AlternateRoom);
+            _editor.RoomListChange();
+
+            room.Flipped = false;
+            room.AlternateRoom = null;
+            room.AlternateGroup = -1;
+            _editor.RoomPropertiesChange(room);
+
         }
 
         public static void SmoothRandomFloor(Room room, Rectangle area, float strengthDirection)
@@ -2810,8 +2974,6 @@ namespace TombEditor
                             (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void SmoothRandomCeiling(Room room, Rectangle area, float strengthDirection)
@@ -2829,8 +2991,6 @@ namespace TombEditor
                             (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void SharpRandomFloor(Room room, Rectangle area, float strengthDirection)
@@ -2843,8 +3003,6 @@ namespace TombEditor
                             (short)Math.Round(rng.NextFloat(0, 1) * strengthDirection);
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void SharpRandomCeiling(Room room, Rectangle area, float strengthDirection)
@@ -2857,8 +3015,6 @@ namespace TombEditor
                             (short)Math.Round(rng.NextFloat(0, 1) * strengthDirection);
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void FlattenFloor(Room room, Rectangle area)
@@ -2877,8 +3033,6 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void FlattenCeiling(Room room, Rectangle area)
@@ -2897,8 +3051,6 @@ namespace TombEditor
                 }
 
             SmartBuildGeometry(room, area);
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
         }
 
         public static void GridWalls3(Room room, Rectangle Area)
@@ -2925,12 +3077,7 @@ namespace TombEditor
                     }
                 }
 
-            // Update the state ...
-            room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
+            SmartBuildGeometry(room, Area);
         }
 
         public static void GridWalls5(Room room, Rectangle Area)
@@ -2957,12 +3104,23 @@ namespace TombEditor
                     }
                 }
 
-            // Update the state ...
-            room.BuildGeometry();
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
-            _editor.DrawPanel3D();
-            _editor.UpdateStatusStrip();
+            SmartBuildGeometry(room, Area);
+        }
+
+        public static void CreateRoomAboveOrBelow(Room room, Func<Room, float> GetYOffset, short newRoomHeight)
+        {
+            // Create room
+            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room next to " + room.Name, newRoomHeight);
+            newRoom.Position = room.Position + new Vector3(0, GetYOffset(newRoom), 0);
+            _editor.Level.AssignRoomToFree(newRoom);
+            _editor.RoomListChange();
+
+            // Build the geometry of the new room
+            newRoom.UpdateCompletely();
+            
+            // Update the UI
+            if (_editor.SelectedRoom == room)
+                _editor.SelectedRoom = newRoom; //Don't center
         }
     }
 }

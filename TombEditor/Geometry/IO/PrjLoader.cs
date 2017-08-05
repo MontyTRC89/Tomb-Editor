@@ -119,7 +119,12 @@ namespace TombEditor.Geometry.IO
                             continue;
 
                         // Read room's name
-                        string roomName = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(80));
+                        byte[] roomNameBytes = reader.ReadBytes(80);
+                        int roomNameLength = 0;
+                        for (; roomNameLength < 80; ++roomNameLength)
+                            if (roomNameBytes[roomNameLength] == 0)
+                                break;
+                        string roomName = System.Text.Encoding.ASCII.GetString(roomNameBytes, 0, roomNameLength);
 
                         logger.Warn("Room #" + i);
                         logger.Info("    Name: " + roomName);
@@ -271,7 +276,7 @@ namespace TombEditor.Geometry.IO
                                         },
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectId = objSlot,
+                                        ObjectId = unchecked((uint)objSlot),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),
                                         Y = (short)objLongY,
@@ -315,7 +320,7 @@ namespace TombEditor.Geometry.IO
                                         },
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectId = objSlot - (ngle ? 520 : 465),
+                                        ObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),
                                         Y = (short)objLongY

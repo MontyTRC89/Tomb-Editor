@@ -210,7 +210,7 @@ namespace TombEditor.Geometry.IO
 
                         if (o.Type == ObjectInstanceType.StaticMesh)
                         {
-                            ((StaticMeshInstance)o).ObjectId = reader.ReadInt32();
+                            ((StaticMeshInstance)o).ObjectId = reader.ReadUInt32();
                             ((StaticMeshInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
                                 reader.ReadByte());
                             reader.ReadBytes(1);
@@ -218,7 +218,7 @@ namespace TombEditor.Geometry.IO
 
                         if (o.Type == ObjectInstanceType.Moveable)
                         {
-                            ((MoveableInstance)o).ObjectId = reader.ReadInt32();
+                            ((MoveableInstance)o).ObjectId = reader.ReadUInt32();
                             reader.ReadBytes(4);
                         }
 

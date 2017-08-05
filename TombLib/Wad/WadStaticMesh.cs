@@ -19,5 +19,10 @@ namespace TombLib.Wad
         public WadVertex CollisionBox2;
 
         public BoundingBox BoundingBox;
+
+        public override string ToString()
+        {
+            return "(" + ObjectID + ") " + ObjectNames.GetStaticName(ObjectID);
+        }
     }
 }

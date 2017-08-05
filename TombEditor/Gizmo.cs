@@ -94,11 +94,12 @@ namespace TombEditor
         {
             _axis = axis;
         }
-
-        public void MouseMoved(Matrix viewProjection, int x, int y, Keys modifierKeys)
+        
+        /// <returns>true, if an iteraction with the gizmo is happening</returns>
+        public bool MouseMoved(Matrix viewProjection, int x, int y, Keys modifierKeys)
         {
             if ((!DrawGizmo) || (_axis == GizmoAxis.None))
-                return;
+                return false;
 
             // For picking, I'll check first sphere/cubes bounding boxes and then eventually
             Room room = _editor.SelectedRoom;
@@ -137,6 +138,7 @@ namespace TombEditor
             }
 
             EditorActions.MoveObject(_editor.SelectedRoom, _editor.SelectedObject.Value, newPos, modifierKeys);
+            return true;
         }
 
         public PickingResultGizmo DoPicking(Ray ray)

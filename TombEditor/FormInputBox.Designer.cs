@@ -94,7 +94,6 @@ namespace TombEditor
             this.Name = "FormInputBox";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sink";
-            this.Load += new System.EventHandler(this.FormSink_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

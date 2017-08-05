@@ -14,5 +14,10 @@ namespace TombLib.Wad
         public List<WadAnimation> Animations = new List<WadAnimation>();
         public Vector3 Offset;
         public BoundingBox BoundingBox;
+
+        public override string ToString()
+        {
+            return "(" + ObjectID + ") " + ObjectNames.GetMovableName(ObjectID);
+        }
     }
 }

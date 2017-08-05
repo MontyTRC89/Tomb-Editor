@@ -146,7 +146,7 @@ namespace TombEditor.Compilers
                 var lowest = -room.GetLowestCorner() * 256 + newRoom.Info.YBottom;
 
                 // Prepare optimized vertices
-                room.OptimizedVertices = new List<EditorVertex>();
+                var optimizedVertices = new List<EditorVertex>();
                 var indicesDictionary = new Dictionary<int, int>();
 
                 for (var x = 0; x < room.NumXSectors; x++)
@@ -157,27 +157,27 @@ namespace TombEditor.Compilers
 
                         for (var n = 0; n < room.NumVerticesInGrid[x, z]; n++)
                         {
-                            indicesDictionary.Add(base1 + n, room.OptimizedVertices.Count);
-                            room.OptimizedVertices.Add(room.VerticesGrid[x, z, n]);
+                            indicesDictionary.Add(base1 + n, optimizedVertices.Count);
+                            optimizedVertices.Add(room.VerticesGrid[x, z, n]);
                         }
                     }
                 }
 
-                newRoom.Vertices = new tr_room_vertex[room.OptimizedVertices.Count];
-                for (var j = 0; j < room.OptimizedVertices.Count; j++)
+                newRoom.Vertices = new tr_room_vertex[optimizedVertices.Count];
+                for (var j = 0; j < optimizedVertices.Count; j++)
                 {
                     var rv = new tr_room_vertex();
 
                     var v = new tr_vertex
                     {
-                        X = (short) room.OptimizedVertices[j].Position.X,
-                        Y = (short) (-room.OptimizedVertices[j].Position.Y + newRoom.Info.YBottom),
-                        Z = (short) room.OptimizedVertices[j].Position.Z
+                        X = (short)optimizedVertices[j].Position.X,
+                        Y = (short) (-optimizedVertices[j].Position.Y + newRoom.Info.YBottom),
+                        Z = (short) optimizedVertices[j].Position.Z
                     };
 
                     rv.Vertex = v;
                     rv.Lighting1 = 0;
-                    rv.Lighting2 = (short) Pack24BitColorTo16Bit(room.OptimizedVertices[j].FaceColor);
+                    rv.Lighting2 = (short) Pack24BitColorTo16Bit(optimizedVertices[j].FaceColor);
                     rv.Attributes = 0;
 
                     // Water special effects

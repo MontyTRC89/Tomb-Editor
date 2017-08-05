@@ -31,9 +31,8 @@ namespace TombEditor.Geometry
         public IEnumerable<Portal> Portals => Blocks.Unwrap().Where(p => p != null).SelectMany(p => p.Portals).Distinct();
         public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
-        public List<EditorVertex> OptimizedVertices { get; set; }
         public Room AlternateRoom { get; set; }
-        public short AlternateGroup { get; set; } = 0;
+        public short AlternateGroup { get; set; } = -1;
         public short WaterLevel { get; set; }
         public short MistLevel { get; set; }
         public short ReflectionLevel { get; set; }
@@ -1020,6 +1019,13 @@ namespace TombEditor.Geometry
                     }
                 }
             }
+        }
+
+        public void UpdateCompletely()
+        {
+            BuildGeometry();
+            CalculateLightingForThisRoom();
+            UpdateBuffers();
         }
 
         private void AddVerticalFaces(int x, int z, FaceDirection direction, bool floor, bool ceiling, bool middle)
@@ -2911,14 +2917,14 @@ namespace TombEditor.Geometry
             // HACK
             if (VertexBuffer == null)
             {
-                VertexBuffer = Buffer.New(Editor.Instance.GetDevice(), Vertices.ToArray(), BufferFlags.VertexBuffer);
+                VertexBuffer = Buffer.New(DeviceManager.DefaultDeviceManager.Device, Vertices.ToArray(), BufferFlags.VertexBuffer);
             }
             else
             {
                 if (VertexBuffer.ElementCount < Vertices.Count)
                 {
                     VertexBuffer.Dispose();
-                    VertexBuffer = Buffer.New(Editor.Instance.GetDevice(), Vertices.ToArray(), BufferFlags.VertexBuffer);
+                    VertexBuffer = Buffer.New(DeviceManager.DefaultDeviceManager.Device, Vertices.ToArray(), BufferFlags.VertexBuffer);
                 }
 
                 VertexBuffer.SetData<EditorVertex>(Vertices.ToArray());
@@ -3180,11 +3186,10 @@ namespace TombEditor.Geometry
         {
             get { return (byte)(Blocks.GetLength(1)); }
         }
-
-
+        
         public override string ToString()
         {
-            return Level.Rooms.ReferenceIndexOf(this).ToString();
+            return Name;
         }
     }
 

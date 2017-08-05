@@ -89,6 +89,7 @@
     <Compile Include="Utils\Collision.cs" />
     <Compile Include="Utils\MathUtilsEx.cs" />
     <Compile Include="Wad\ModelType.cs" />
+    <Compile Include="Wad\ObjectNames.cs" />
     <Compile Include="Wad\TR4Wad.cs" />
     <Compile Include="Wad\WadShape.cs" />
     <Compile Include="Wad\WadTexturePage.cs" />
