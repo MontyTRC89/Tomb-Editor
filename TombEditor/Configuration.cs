@@ -10,9 +10,9 @@ namespace TombEditor
     // They will be loaded and saved automatically.
     public class Configuration
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+
         public int DrawRoomsMaxDepth { get; set; } = 6;
-
-
         
         public static string GetDefaultPath()
         {
@@ -43,8 +43,7 @@ namespace TombEditor
             }
             catch (Exception exc)
             {
-                LogManager.GetCurrentClassLogger().Log(LogLevel.Info, exc,
-                    "Unable to save configuration to \"" + GetDefaultPath() + "\"");
+                logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
             }
         }
 
@@ -72,8 +71,7 @@ namespace TombEditor
             }
             catch (Exception exc)
             {
-                LogManager.GetCurrentClassLogger().Log(LogLevel.Info, exc, 
-                    "Unable to load configuration from \"" + GetDefaultPath() + "\"");
+                logger.Info(exc, "Unable to load configuration from \"" + GetDefaultPath() + "\"");
                 return new Configuration();
             }
         }
