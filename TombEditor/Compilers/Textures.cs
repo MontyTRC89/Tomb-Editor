@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using NLog;
 using TombEditor.Geometry;
 using TombLib.IO;
 
@@ -8,6 +9,8 @@ namespace TombEditor.Compilers
 {
     public sealed partial class LevelCompilerTr4
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+
         private byte[] _textures16;
 
         private void PrepareTextures()
@@ -154,7 +157,7 @@ namespace TombEditor.Compilers
             }
             catch (Exception exc)
             {
-                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "An exception occured while loading font and sky.");
+                logger.Error(exc, "An exception occured while loading font and sky.");
                 return false;
             }
 
