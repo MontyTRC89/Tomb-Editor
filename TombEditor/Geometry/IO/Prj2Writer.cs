@@ -106,7 +106,6 @@ namespace TombEditor.Geometry.IO
                         writer.Write(o.Position.Y);
                         writer.Write(o.Position.Z);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(o.Ocb);
                         writer.Write(o.Rotation);
                         writer.Write(o.Invisible);
                         writer.Write(o.ClearBody);
@@ -126,6 +125,7 @@ namespace TombEditor.Geometry.IO
                             case ObjectInstanceType.Moveable:
                                 var m = (MoveableInstance)o;
                                 writer.Write(m.WadObjectId);
+                                writer.Write(m.Ocb);
 
                                 writer.Write(filler32);
                                 break;
