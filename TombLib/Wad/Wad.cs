@@ -31,10 +31,7 @@ namespace TombLib.Wad
         public Dictionary<uint, Texture2D> Textures { get; } = new Dictionary<uint, Texture2D>();
         public Dictionary<uint, SkinnedModel> Moveables { get; } = new Dictionary<uint, SkinnedModel>();
         public Dictionary<uint, StaticModel> StaticMeshes { get; } = new Dictionary<uint, StaticModel>();
-
-        // sound samples
-        public List<string> Samples { get; set; }
-
+        
         public static Wad LoadWad(string filename)
         {
             TR4Wad original = new TR4Wad();
