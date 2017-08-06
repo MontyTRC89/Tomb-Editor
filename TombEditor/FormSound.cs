@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TombEditor.Geometry;
 using System.IO;
 using System.Media;
+using TombLib.Wad;
 using NLog;
 
 namespace TombEditor
@@ -19,13 +20,15 @@ namespace TombEditor
 
         private Dictionary<short, string> _sounds;
         private SoundSourceInstance _soundSource;
+        private Wad _wad;
 
-        public FormSound(SoundSourceInstance soundSource /*, TR4Wad wad*/)
+        public FormSound(SoundSourceInstance soundSource, Wad wad)
         {
             _soundSource = soundSource;
+            _wad = wad;
 
             InitializeComponent();
-
+            
             // Load sound.txt
             //wad.Sounds[0].
             using (StreamReader reader = new StreamReader(File.OpenRead("Sounds\\Sounds.txt")))

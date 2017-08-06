@@ -1,26 +1,28 @@
-﻿using TombLib.Wad;
+﻿using System;
 
 namespace TombEditor.Geometry
 {
-    public class MoveableInstance : ItemInstance
+    public class StaticInstance : ItemInstance
     {
-        public MoveableInstance(int id, Room room)
+        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
+
+        public StaticInstance(int id, Room room)
             : base(id, room)
         { }
 
         public override ObjectInstanceType Type
         {
-            get { return ObjectInstanceType.Moveable; }
+            get { return ObjectInstanceType.Static; }
         }
 
         public override ItemType ItemType
         {
-            get { return new ItemType(false, WadObjectId); }
+            get { return new ItemType(true, WadObjectId); }
         }
 
         public override ObjectInstance Clone()
         {
-            return new MoveableInstance(0, Room)
+            return new StaticInstance(0, Room)
             {
                 X = X,
                 Y = Y,
@@ -37,7 +39,8 @@ namespace TombEditor.Geometry
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                WadObjectId = WadObjectId
+                WadObjectId = WadObjectId,
+                Color = Color
             };
         }
     }

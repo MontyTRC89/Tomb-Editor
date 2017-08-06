@@ -48,7 +48,7 @@ namespace TombEditor.Geometry
                 case ObjectInstanceType.Moveable:
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.SoundSource:
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                     result = Editor.Instance.Level.Objects[Id].ToString();
                     break;
                 case ObjectInstanceType.Portal:

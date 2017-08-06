@@ -1149,7 +1149,7 @@ namespace TombEditor.Compilers
                                         if (_editor.Level.Objects[trigger.Target].Type == ObjectInstanceType.Moveable)
                                         {
                                             var instance = (MoveableInstance) _editor.Level.Objects[trigger.Target];
-                                            if (instance.Model.ObjectID >= 398 && instance.Model.ObjectID <= 406)
+                                            if (instance.WadObjectId >= 398 && instance.WadObjectId <= 406)
                                             {
                                                 item = _aiObjectsTable[trigger.Target];
                                             }

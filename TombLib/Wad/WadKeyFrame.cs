@@ -7,9 +7,9 @@ namespace TombLib.Wad
 {
     public class WadKeyFrame
     {
-        public WadVertex BoundingBox1;
-        public WadVertex BoundingBox2;
-        public WadVertex Offset;
+        public WadVector BoundingBox1;
+        public WadVector BoundingBox2;
+        public WadVector Offset;
         public WadKeyFrameRotation[] Angles;
     }
 }

@@ -1810,7 +1810,7 @@ namespace TombEditor.Compilers
 
             foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Moveable))
             {
-                uint objectId = ((MoveableInstance) obj.Value).Model.ObjectID;
+                uint objectId = ((MoveableInstance)obj.Value).WadObjectId;
 
                 if (objectId >= 398 && objectId <= 406)
                 {
@@ -1832,7 +1832,7 @@ namespace TombEditor.Compilers
                     X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
-                    ObjectID = (short) instance.Model.ObjectID,
+                    ObjectID = (short) instance.WadObjectId,
                     Room = (short) _level.Rooms.ReferenceIndexOf(instance.Room),
                     Angle = (short)(instance.Rotation / 45 * 8192),
                     Intensity1 = -1,
@@ -1871,7 +1871,7 @@ namespace TombEditor.Compilers
                     X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
-                    ObjectID = (ushort) instance.Model.ObjectID,
+                    ObjectID = (ushort) instance.WadObjectId,
                     Room = (ushort) _level.Rooms.ReferenceIndexOf(instance.Room)
                 };
 

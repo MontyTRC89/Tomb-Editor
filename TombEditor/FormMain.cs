@@ -234,7 +234,7 @@ namespace TombEditor
                 {
                     foreach (var movable in _editor.Level.Wad.WadMoveables.Values)
                         comboItems.Items.Add(movable);
-                    foreach (var staticMesh in _editor.Level.Wad.WasStaticMeshes.Values)
+                    foreach (var staticMesh in _editor.Level.Wad.WadStatics.Values)
                         comboItems.Items.Add(staticMesh);
                     comboItems.SelectedIndex = 0;
                 }
@@ -247,7 +247,7 @@ namespace TombEditor
                 if (!e.Current.HasValue)
                     comboItems.SelectedIndex = -1;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.Items.Add(_editor.Level.Wad.WasStaticMeshes[e.Current.Value.Id]);
+                    comboItems.Items.Add(_editor.Level.Wad.WadStatics[e.Current.Value.Id]);
                 else
                     comboItems.Items.Add(_editor.Level.Wad.WadMoveables[e.Current.Value.Id]);
             }
@@ -256,10 +256,10 @@ namespace TombEditor
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 ObjectPtr? selectedObject = ((Editor.SelectedObjectChangedEvent)obj).Current;
-                if (!selectedObject.HasValue || (selectedObject.Value.Type != ObjectInstanceType.StaticMesh))
+                if (!selectedObject.HasValue || (selectedObject.Value.Type != ObjectInstanceType.Static))
                     panelStaticMeshColor.BackColor = System.Drawing.Color.Black;
                 else
-                    panelStaticMeshColor.BackColor = ((StaticMeshInstance)_editor.Level.Objects[selectedObject.Value.Id]).Color;
+                    panelStaticMeshColor.BackColor = ((StaticInstance)_editor.Level.Objects[selectedObject.Value.Id]).Color;
             }
 
             // Update application title
@@ -276,99 +276,79 @@ namespace TombEditor
             {
                 var selectedObject = _editor.SelectedObject;
                 
+                bool IsLight = false;
+                bool HasInOutRange = false;
+                bool HasLenCutoffRange = false;
+                bool HasDirection = false;
+                bool CanCastShadows = false;
+                bool CanIlluminateStaticAndDynamicGeometry = false;
                 if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Light))
                 {
+                    IsLight = true;
                     var light = _editor.SelectedRoom.Lights[selectedObject.Value.Id];
                     switch (light.Type)
                     {
                         case LightType.Light:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
+                            HasInOutRange = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
                             break;
 
                         case LightType.Shadow:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
-                            break;
-
-                        case LightType.FogBulb:
-                            panelLightColor.Enabled = false;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
-                            break;
-
-                        case LightType.Spot:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = true;
-                            numLightCutoff.Enabled = true;
-                            numLightDirectionX.Enabled = true;
-                            numLightDirectionY.Enabled = true;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
-                            break;
-
-                        case LightType.Sun:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = true;
-                            numLightDirectionY.Enabled = true;
-                            numLightIn.Enabled = false;
-                            numLightOut.Enabled = false;
+                            HasInOutRange = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
                             break;
 
                         case LightType.Effect:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = false;
-                            numLightOut.Enabled = false;
+                        case LightType.FogBulb:
+                            HasInOutRange = true;
+                            break;
+
+                        case LightType.Spot:
+                            HasInOutRange = true;
+                            HasLenCutoffRange = true;
+                            HasDirection = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
+                            break;
+
+                        case LightType.Sun:
+                            HasDirection = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
                             break;
                     }
-
+                    
                     panelLightColor.BackColor = light.Color;
+                    numLightIntensity.Value = light.Intensity;
+                    cbLightEnabled.Checked = light.Enabled;
+                    cbLightCastsShadows.Checked = light.CastsShadows;
+                    cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
+                    cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
                     numLightIn.Value = light.In;
                     numLightOut.Value = light.Out;
-                    numLightIntensity.Value = light.Intensity;
                     numLightLen.Value = light.Len;
                     numLightCutoff.Value = light.Cutoff;
                     numLightDirectionX.Value = light.DirectionX;
                     numLightDirectionY.Value = light.DirectionY;
                 }
                 else
-                {
                     panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-                    panelLightColor.Enabled = false;
-                    numLightIntensity.Enabled = false;
-                    numLightLen.Enabled = false;
-                    numLightCutoff.Enabled = false;
-                    numLightDirectionX.Enabled = false;
-                    numLightDirectionY.Enabled = false;
-                    numLightIn.Enabled = false;
-                    numLightOut.Enabled = false;
-                }
+
+                // Set enabled state
+                panelLightColor.Enabled = IsLight;
+                numLightIntensity.Enabled = IsLight;
+                cbLightEnabled.Enabled = IsLight;
+                cbLightCastsShadows.Enabled = CanCastShadows;
+                cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
+                cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
+                numLightIn.Enabled = HasInOutRange;
+                numLightOut.Enabled = HasInOutRange;
+                numLightLen.Enabled = HasLenCutoffRange;
+                numLightCutoff.Enabled = HasLenCutoffRange;
+                numLightDirectionX.Enabled = HasDirection;
+                numLightDirectionY.Enabled = HasDirection;
             }
         }
 
@@ -696,23 +676,59 @@ namespace TombEditor
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
-        
-        private void panelLightColor_Click(object sender, EventArgs e)
+
+        private void UpdateLight<T>(Func<Light, T> getLightValue, Action<Light, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
         {
             if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
             Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
-            colorDialog.Color = light.Color;
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
+            T? newValue = getGuiValue(getLightValue(light));
+            if ((!newValue.HasValue) || newValue.Value.Equals(getLightValue(light)))
                 return;
-            
-            _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id].Color = colorDialog.Color;
+
+            setLightValue(light, newValue.Value);
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
             _editor.ObjectChange(light);
         }
+
+        private void panelLightColor_Click(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.Color, (light, value) => light.Color = value,
+                (value) =>
+                {
+                    colorDialog.Color = value;
+                    if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                        return null;
+                    return colorDialog.Color;
+                });
+        }
+
+        private void cbLightEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.Enabled, (light, value) => light.Enabled = value,
+                (value) => cbLightEnabled.Checked);
+        }
         
+        private void cbLightCastsShadows_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.CastsShadows, (light, value) => light.CastsShadows = value,
+                (value) => cbLightCastsShadows.Checked);
+        }
+
+        private void cbLightIsStaticallyUsed_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.IsStaticallyUsed, (light, value) => light.IsStaticallyUsed = value,
+                (value) => cbLightIsStaticallyUsed.Checked);
+        }
+
+        private void cbLightIsDynamicallyUsed_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.IsDynamicallyUsed, (light, value) => light.IsDynamicallyUsed = value,
+                (value) => cbLightIsDynamicallyUsed.Checked);
+        }
+
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
@@ -960,7 +976,7 @@ namespace TombEditor
                 }
                 catch (Exception exc)
                 {
-                    NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "There was an error while converting TGA in PNG format.");
+                    logger.Error(exc, "There was an error while converting TGA in PNG format.");
                     DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. " + exc.Message, "Error");
                     return;
                 }
@@ -992,8 +1008,8 @@ namespace TombEditor
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
                 _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
-            else if (comboItems.SelectedItem is WadStaticMesh)
-                _editor.ChosenItem = new ItemType(true, ((WadStaticMesh)(comboItems.SelectedItem)).ObjectID);
+            else if (comboItems.SelectedItem is WadStatic)
+                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
         }
         
         private ItemType? GetCurrentItemWithMessage()
@@ -1412,9 +1428,9 @@ namespace TombEditor
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.StaticMesh))
+            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Static))
                 return;
-            var instance = (StaticMeshInstance)_editor.Level.Objects[_editor.SelectedObject.Value.Id];
+            var instance = (StaticInstance)_editor.Level.Objects[_editor.SelectedObject.Value.Id];
 
             colorDialog.Color = instance.Color;
             if (colorDialog.ShowDialog(this) != DialogResult.OK)

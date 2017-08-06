@@ -45,13 +45,6 @@ namespace TombEditor.Controls
                 Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
                 if ((e.Current != null) && (_editor?.Level?.Wad != null))
                 {
-                    if (e.Current.Value.IsStatic)
-                    {
-                        SkinnedModel model = _editor.Level.Wad.Moveables[e.Current.Value.Id];
-                        if (model.Animations.Count != 0)
-                            model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
-                    }
-
                     Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
                 }
                 Invalidate();
@@ -108,9 +101,7 @@ namespace TombEditor.Controls
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (chosenItem.IsStatic)
             {
-                StaticModel model;
-
-                model = _editor.Level.Wad.StaticMeshes[(uint)(chosenItem.Id)];
+                StaticModel model = _editor.Level.Wad.DirectXStatics[chosenItem.Id];
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
@@ -119,7 +110,7 @@ namespace TombEditor.Controls
                 mioEffect.Parameters["SelectionEnabled"].SetValue(false);
                 mioEffect.Parameters["LightEnabled"].SetValue(false);
 
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 _device.SetVertexInputLayout(_layout);
@@ -144,14 +135,9 @@ namespace TombEditor.Controls
             }
             else
             {
-                SkinnedModel model;
-                SkinnedModel skin;
-
-                model = _editor.Level.Wad.Moveables[(uint)chosenItem.Id];
-                skin = model;
-
-                model.BuildHierarchy();
-
+                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.Id];
+                SkinnedModel skin = model;
+                
                 Effect mioEffect = _deviceManager.Effects["Model"];
                 mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
                 mioEffect.Parameters["TextureEnabled"].SetValue(true);
@@ -162,7 +148,7 @@ namespace TombEditor.Controls
 
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
 
-                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+                mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
@@ -215,18 +201,19 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Right)
             {
-                float deltaX = (e.X - _lastX) / Width;
-                float deltaY = (e.Y - _lastY) / Height;
+                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                float deltaX = (e.X - _lastX) / (float)Height;
+                float deltaY = (e.Y - _lastY) / (float)Height;
 
                 _lastX = e.X;
                 _lastY = e.Y;
 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(deltaY * -200);
+                    Camera.Move(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMoveMouse);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(deltaX * 200, deltaY * -200, 0));
+                    Camera.Translate(new Vector3(deltaX, -deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedTranslateMouse);
                 else
-                    Camera.Rotate(deltaX *4, -deltaY * 4);
+                    Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedRotateMouse, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedRotateMouse);
                 Invalidate();
             }
         }

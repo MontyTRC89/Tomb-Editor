@@ -247,7 +247,7 @@ namespace TombEditor
                         case ObjectInstanceType.Moveable:
                         case ObjectInstanceType.Sink:
                         case ObjectInstanceType.SoundSource:
-                        case ObjectInstanceType.StaticMesh:
+                        case ObjectInstanceType.Static:
                         case ObjectInstanceType.Light:
                             return true;
                     }
@@ -267,7 +267,7 @@ namespace TombEditor
                         case ObjectInstanceType.Moveable:
                         case ObjectInstanceType.Sink:
                         case ObjectInstanceType.SoundSource:
-                        case ObjectInstanceType.StaticMesh:
+                        case ObjectInstanceType.Static:
                             return _editor.Level.Objects[_editor.SelectedObject.Value.Id].Position;
                         case ObjectInstanceType.Light:
                             if (Editor.Instance.SelectedRoom != null)

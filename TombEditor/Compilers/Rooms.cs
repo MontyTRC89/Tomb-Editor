@@ -255,20 +255,20 @@ namespace TombEditor.Compilers
                 ConvertSectors(room, ref newRoom);
 
                 var tempStaticMeshes = room.StaticMeshes
-                    .Select(staticMesh => (StaticMeshInstance) _editor.Level.Objects[staticMesh])
+                    .Select(staticMesh => (StaticInstance) _editor.Level.Objects[staticMesh])
                     .Select(instance => new tr_room_staticmesh
                     {
-                        X = (uint) (newRoom.Info.X + instance.Position.X),
-                        Y = (uint) (newRoom.Info.YBottom - instance.Position.Y),
-                        Z = (uint) (newRoom.Info.Z + instance.Position.Z),
-                        Rotation = (ushort) (instance.Rotation / 45 * 8192),
-                        ObjectID = (ushort) instance.Model.ObjectID,
+                        X = (uint)(newRoom.Info.X + instance.Position.X),
+                        Y = (uint)(newRoom.Info.YBottom - instance.Position.Y),
+                        Z = (uint)(newRoom.Info.Z + instance.Position.Z),
+                        Rotation = (ushort)(instance.Rotation / 45 * 8192),
+                        ObjectID = (ushort)instance.WadObjectId,
                         Intensity1 = Pack24BitColorTo16Bit(instance.Color),
                         Intensity2 = 0
                     })
                     .ToList();
 
-                newRoom.NumStaticMeshes = (ushort) tempStaticMeshes.Count;
+                newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.Count;
                 newRoom.StaticMeshes = tempStaticMeshes.ToArray();
 
                 ConvertLights(room, ref newRoom);
@@ -390,7 +390,7 @@ namespace TombEditor.Compilers
         private static void ConvertLights(Room room, ref tr_room newRoom)
         {
             var result = new List<tr4_room_light>();
-            foreach (var light in room.Lights.Where(l => l.Type != LightType.Effect))
+            foreach (var light in room.Lights.Where(l => l.IsDynamicallyUsed))
             {
                 var newLight = new tr4_room_light
                 {

@@ -21,9 +21,7 @@ namespace TombEditor.Controls
     public partial class PanelRendering3D : Panel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private const float _rotationSpeed = 0.1f;
-        private const float _keyboardZoomSpeed = 0.1f;
+        
 
         private class RenderBucket
         {
@@ -126,7 +124,7 @@ namespace TombEditor.Controls
                 var instanceX = (MoveableInstance)Editor.Instance.Level.Objects[x];
                 var instanceY = (MoveableInstance)Editor.Instance.Level.Objects[y];
 
-                int result = instanceX.ObjectId.CompareTo(instanceY.ObjectId);
+                int result = instanceX.WadObjectId.CompareTo(instanceY.WadObjectId);
                 if (result != 0)
                     return result;
                 return _rooms.ReferenceIndexOf(instanceX.Room).CompareTo(_rooms.ReferenceIndexOf(instanceY.Room));
@@ -144,10 +142,10 @@ namespace TombEditor.Controls
 
             public int Compare(int x, int y)
             {
-                var instanceX = (StaticMeshInstance)Editor.Instance.Level.Objects[x];
-                var instanceY = (StaticMeshInstance)Editor.Instance.Level.Objects[y];
+                var instanceX = (StaticInstance)Editor.Instance.Level.Objects[x];
+                var instanceY = (StaticInstance)Editor.Instance.Level.Objects[y];
 
-                int result = instanceX.ObjectId.CompareTo(instanceY.ObjectId);
+                int result = instanceX.WadObjectId.CompareTo(instanceY.WadObjectId);
                 if (result != 0)
                     return result;
                 return _rooms.ReferenceIndexOf(instanceX.Room).CompareTo(_rooms.ReferenceIndexOf(instanceY.Room));
@@ -402,37 +400,44 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Up:
-                    Camera.Rotate(0, -_rotationSpeed);
+                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
                     Invalidate();
                     return true;
 
                 case Keys.Down:
-                    Camera.Rotate(0, _rotationSpeed);
+                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
                     Invalidate();
                     return true;
 
                 case Keys.Left:
-                    Camera.Rotate(_rotationSpeed, 0);
+                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
                     Invalidate();
                     return true;
 
                 case Keys.Right:
-                    Camera.Rotate(-_rotationSpeed, 0);
+                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
                     Invalidate();
                     return true;
 
                 case Keys.PageUp:
-                    Camera.Move(_keyboardZoomSpeed);
+                    Camera.Move(-_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
                     Invalidate();
                     return true;
 
                 case Keys.PageDown:
-                    Camera.Move(-_keyboardZoomSpeed);
+                    Camera.Move(_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
                     Invalidate();
                     return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            // Make this control able to receive scroll and key board events...
+            base.OnMouseEnter(e);
+            Focus();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -632,12 +637,18 @@ namespace TombEditor.Controls
             // Right click is for camera motion
             if (e.Button == MouseButtons.Right)
             {
+                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                float relativeDeltaX = deltaX / (float)Height;
+                float relativeDeltaY = deltaY / (float)Height; 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(-deltaY * 50);
+                    Camera.Move(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMoveMouse);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(deltaX, -deltaY, 0));
+                    Camera.Translate(new Vector3(relativeDeltaX, -relativeDeltaY, 0) * 
+                        _editor.Configuration.Rendering3D_NavigationSpeedTranslateMouse);
                 else
-                    Camera.Rotate((float)(deltaX / 500.0f), (float)(-deltaY / 500.0f));
+                    Camera.Rotate(
+                        relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse,
+                        -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse);
 
                 Invalidate();
             }
@@ -789,7 +800,7 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.Moveables.Count; i++)
             {
                 MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[room.Moveables[i]];
-                SkinnedModel model = modelInfo.Model;
+                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
                 model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
 
                 for (int j = 0; j < model.Meshes.Count; j++)
@@ -805,8 +816,8 @@ namespace TombEditor.Controls
             // Check for static meshes
             for (int i = 0; i < room.StaticMeshes.Count; i++)
             {
-                StaticMeshInstance modelInfo = (StaticMeshInstance)_editor.Level.Objects[room.StaticMeshes[i]];
-                StaticModel model = modelInfo.Model;
+                StaticInstance modelInfo = (StaticInstance)_editor.Level.Objects[room.StaticMeshes[i]];
+                StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
 
                 StaticMesh mesh = model.Meshes[0];
                 Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
@@ -1335,7 +1346,7 @@ namespace TombEditor.Controls
 
             MoveableInstance _lastObject = null;
 
-            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
             for (int k = 0; k < MoveablesToDraw.Count; k++)
@@ -1344,9 +1355,9 @@ namespace TombEditor.Controls
 
                 Debug.NumMoveables++;
 
-                SkinnedModel model = modelInfo.Model;
+                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
 
-                if (k == 0 || model.ObjectID != _lastObject.ObjectId)
+                if (k == 0 || modelInfo.WadObjectId != _lastObject.WadObjectId)
                 {
                     _device.SetVertexBuffer(0, model.VertexBuffer);
                     _device.SetIndexBuffer(model.IndexBuffer, true);
@@ -1432,15 +1443,15 @@ namespace TombEditor.Controls
             staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
             staticMeshEffect.Parameters["LightEnabled"].SetValue(true);
 
-            staticMeshEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+            staticMeshEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
-            StaticMeshInstance _lastObject = null;
+            StaticInstance _lastObject = null;
 
             for (int k = 0; k < StaticMeshesToDraw.Count; k++)
             {
-                StaticMeshInstance modelInfo = (StaticMeshInstance) _editor.Level.Objects[StaticMeshesToDraw[k]];
-                StaticModel model = modelInfo.Model;
+                StaticInstance modelInfo = (StaticInstance) _editor.Level.Objects[StaticMeshesToDraw[k]];
+                StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
 
                 if (k == 0)
                 {
@@ -1448,7 +1459,7 @@ namespace TombEditor.Controls
                         VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
                 }
 
-                if (k == 0 || model.ObjectID != _lastObject.ObjectId)
+                if (k == 0 || modelInfo.WadObjectId != _lastObject.WadObjectId)
                 {
                     _device.SetVertexBuffer(0, model.VertexBuffer);
                     _device.SetIndexBuffer(model.IndexBuffer, true);
@@ -1456,7 +1467,7 @@ namespace TombEditor.Controls
 
                 Debug.NumStaticMeshes++;
 
-                bool SelectionEnabled = _editor.SelectedObject == new ObjectPtr(ObjectInstanceType.StaticMesh, modelInfo.Id);
+                bool SelectionEnabled = _editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Static, modelInfo.Id);
                 staticMeshEffect.Parameters["SelectionEnabled"].SetValue(SelectionEnabled);
                 staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(modelInfo.Color));
 
@@ -1485,7 +1496,7 @@ namespace TombEditor.Controls
                     Debug.NumTriangles += mesh.NumIndices / 3;
                 }
 
-                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.StaticMesh, modelInfo.Id))
+                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Static, modelInfo.Id))
                 {
                     Matrix modelViewProjection = worldDebug * viewProjection;
                     Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width,
@@ -1521,7 +1532,7 @@ namespace TombEditor.Controls
         {
             if (_editor?.Level?.Wad == null)
                 return;
-            if (!_editor.Level.Wad.Moveables.ContainsKey(459))
+            if (!_editor.Level.Wad.WadMoveables.ContainsKey(459))
                 return;
 
             _device.SetBlendState(_device.BlendStates.Opaque);
@@ -1531,10 +1542,10 @@ namespace TombEditor.Controls
             skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
             skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
 
-            SkinnedModel skinnedModel = _editor.Level.Wad.Moveables[459];
+            SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[459];
             skinnedModel.BuildAnimationPose(skinnedModel.Animations[0].KeyFrames[0]);
 
-            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.Textures[0]);
+            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
@@ -1622,7 +1633,7 @@ namespace TombEditor.Controls
                 var theRoom = stackRooms.Pop();
                 int theLimit = stackLimits.Pop();
 
-                if (theLimit > _editor.Configuration.DrawRoomsMaxDepth)
+                if (theLimit > _editor.Configuration.Rendering3D_DrawRoomsMaxDepth)
                     continue;
 
                 visitedRooms.Add(theRoom);

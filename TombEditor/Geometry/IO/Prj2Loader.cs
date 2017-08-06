@@ -177,8 +177,8 @@ namespace TombEditor.Geometry.IO
                             case ObjectInstanceType.Moveable:
                                 o = new MoveableInstance(objectId, null);
                                 break;
-                            case ObjectInstanceType.StaticMesh:
-                                o = new StaticMeshInstance(objectId, null);
+                            case ObjectInstanceType.Static:
+                                o = new StaticInstance(objectId, null);
                                 break;
                             case ObjectInstanceType.Camera:
                                 o = new CameraInstance(objectId, null);
@@ -208,17 +208,17 @@ namespace TombEditor.Geometry.IO
                         o.Bits[3] = reader.ReadBoolean();
                         o.Bits[4] = reader.ReadBoolean();
 
-                        if (o.Type == ObjectInstanceType.StaticMesh)
+                        if (o.Type == ObjectInstanceType.Static)
                         {
-                            ((StaticMeshInstance)o).ObjectId = reader.ReadUInt32();
-                            ((StaticMeshInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
+                            ((StaticInstance)o).WadObjectId = reader.ReadUInt32();
+                            ((StaticInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
                                 reader.ReadByte());
                             reader.ReadBytes(1);
                         }
 
                         if (o.Type == ObjectInstanceType.Moveable)
                         {
-                            ((MoveableInstance)o).ObjectId = reader.ReadUInt32();
+                            ((MoveableInstance)o).WadObjectId = reader.ReadUInt32();
                             reader.ReadBytes(4);
                         }
 
@@ -417,11 +417,9 @@ namespace TombEditor.Geometry.IO
                         int numLights = reader.ReadInt32();
                         for (int j = 0; j < numLights; j++)
                         {
-                            var l = new Light
+                            var l = new Light((LightType)reader.ReadByte(), 
+                                new Vector3(reader.ReadSingle(), reader.ReadSingle(),  reader.ReadSingle()))
                             {
-                                Type = (LightType)reader.ReadByte(),
-                                Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(),
-                                    reader.ReadSingle()),
                                 Intensity = reader.ReadSingle(),
                                 Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte()),
                                 In = reader.ReadSingle(),
@@ -430,7 +428,10 @@ namespace TombEditor.Geometry.IO
                                 Cutoff = reader.ReadSingle(),
                                 DirectionX = reader.ReadSingle(),
                                 DirectionY = reader.ReadSingle(),
-                                Active = reader.ReadBoolean()
+                                Enabled = reader.ReadBoolean(),
+                                CastsShadows = reader.ReadBoolean(),
+                                IsDynamicallyUsed = reader.ReadBoolean(),
+                                IsStaticallyUsed = reader.ReadBoolean()
                             };
 
 
@@ -550,11 +551,9 @@ namespace TombEditor.Geometry.IO
                 {
                     case ObjectInstanceType.Moveable:
                         obj.Room.Moveables.Add(objectId);
-                        ((MoveableInstance)obj).Model = level.Wad.Moveables[(uint)((MoveableInstance)obj).ObjectId];
                         break;
-                    case ObjectInstanceType.StaticMesh:
+                    case ObjectInstanceType.Static:
                         obj.Room.StaticMeshes.Add(objectId);
-                        ((StaticMeshInstance)obj).Model = level.Wad.StaticMeshes[(uint)((StaticMeshInstance)obj).ObjectId];
                         break;
                     case ObjectInstanceType.Camera:
                         obj.Room.Cameras.Add(objectId);

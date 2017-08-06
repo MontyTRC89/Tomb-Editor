@@ -728,7 +728,7 @@ namespace TombEditor
             switch (objectPtr.Type)
             {
                 case ObjectInstanceType.Moveable:
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                 case ObjectInstanceType.SoundSource:
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
@@ -785,7 +785,7 @@ namespace TombEditor
             switch (objectPtr.Type)
             {
                 case ObjectInstanceType.Moveable:
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                 case ObjectInstanceType.SoundSource:
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
@@ -821,7 +821,7 @@ namespace TombEditor
                     _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
                 case ObjectInstanceType.SoundSource:
-                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id])))
+                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id]), _editor.Level.Wad))
                         formSound.ShowDialog(owner);
                     _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
@@ -934,49 +934,43 @@ namespace TombEditor
                 case ObjectInstanceType.Light:
                     room.Lights.RemoveAt(objectPtr.Id);
                     room.UpdateCompletely();
-                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.Moveable:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
-                    _editor.ObjectChange(null);
                     break;
 
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
-                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.SoundSource:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
-                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.Sink:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
-                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.Camera:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
-                    _editor.ObjectChange(null);
                     break;
 
                 case ObjectInstanceType.FlyByCamera:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
-                    _editor.ObjectChange(null);
                     break;
             }
 
             // Avoid having the removed object still selected
             if (_editor.SelectedObject == objectPtr)
                 _editor.SelectedObject = null;
+            _editor.ObjectChange(null);
         }
         
         public static void RotateCone(Room room, ObjectPtr objectPtr, Vector2 delta)
@@ -1379,41 +1373,11 @@ namespace TombEditor
 
         public static void PlaceLight(Room room, DrawingPoint pos, LightType lightType)
         {
-            Light instance = new Light();
-
             Block block = room.GetBlock(pos);
             int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
+            Vector3 Position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
 
-            instance.Position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
-            instance.Color = System.Drawing.Color.White;
-            instance.Active = true;
-            instance.Intensity = 0.5f;
-            instance.In = 1.0f;
-            instance.Out = 5.0f;
-            instance.Type = lightType;
-
-            switch (lightType)
-            {
-                case LightType.Shadow:
-                    instance.Intensity *= -1;
-                    break;
-                case LightType.Spot:
-                    instance.Len = 2.0f;
-                    instance.Cutoff = 3.0f;
-                    instance.DirectionX = 0.0f;
-                    instance.DirectionY = 0.0f;
-                    instance.In = 20.0f;
-                    instance.Out = 25.0f;
-                    break;
-                case LightType.Sun:
-                    instance.DirectionX = 0.0f;
-                    instance.DirectionY = 0.0f;
-                    break;
-                case LightType.Effect:
-                    instance.In = 0.0f;
-                    instance.Out = 1024.0f;
-                    break;
-            }
+            Light instance = new Light(lightType, Position);
             room.Lights.Add(instance);
             
             room.CalculateLightingForThisRoom();
@@ -1448,7 +1412,7 @@ namespace TombEditor
                 case ObjectInstanceType.SoundSource:
                     room.SoundSources.Add(instance.Id);
                     break;
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                     room.StaticMeshes.Add(instance.Id);
                     break;
             }
@@ -1459,12 +1423,7 @@ namespace TombEditor
 
         public static void PlaceItem(Room room, DrawingPoint pos, ItemType itemType)
         {
-            if (itemType.IsStatic)
-                AddObject(room, pos, new StaticMeshInstance(_editor.Level.GetNewObjectId(), room)
-                    { Model = _editor.Level.Wad.StaticMeshes[(uint)(itemType.Id)] });
-            else
-                AddObject(room, pos, new MoveableInstance(_editor.Level.GetNewObjectId(), room)
-                    { Model = _editor.Level.Wad.Moveables[(uint)(itemType.Id)] });
+            AddObject(room, pos, ItemInstance.FromItemType(_editor.Level.GetNewObjectId(), room, itemType));
         }
 
         public static void PlaceCamera(Room room, DrawingPoint pos)

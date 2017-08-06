@@ -276,7 +276,7 @@ namespace TombEditor.Geometry.IO
                                         },
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectId = unchecked((uint)objSlot),
+                                        WadObjectId = unchecked((uint)objSlot),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),
                                         Y = (short)objLongY,
@@ -308,7 +308,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    var instance = new StaticMeshInstance(objectsThings[j], objRoom)
+                                    var instance = new StaticInstance(objectsThings[j], objRoom)
                                     {
                                         Bits =
                                         {
@@ -320,7 +320,7 @@ namespace TombEditor.Geometry.IO
                                         },
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
-                                        ObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
+                                        WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),
                                         Y = (short)objLongY
@@ -521,49 +521,49 @@ namespace TombEditor.Geometry.IO
                                     byte lightB = reader.ReadByte();
                                     byte lightOn = reader.ReadByte();
 
-                                    var light = new Light
+                                    LightType lightType;
+                                    switch (objectType)
+                                    {
+                                        case 0x4000:
+                                            lightType = LightType.Light;
+                                            break;
+                                        case 0x6000:
+                                            lightType = LightType.Shadow;
+                                            break;
+                                        case 0x4200:
+                                            lightType = LightType.Sun;
+                                            break;
+                                        case 0x5000:
+                                            lightIn = 1013.76f;
+                                            lightOut = 1024.0f;
+                                            lightType = LightType.Effect;
+                                            break;
+                                        case 0x4100:
+                                            lightType = LightType.Spot;
+                                            break;
+                                        case 0x4020:
+                                            lightType = LightType.FogBulb;
+                                            break;
+                                        default:
+                                            throw new NotSupportedException("Unknown light type found inside *.prj file.");
+                                    }
+
+                                    var light = new Light(lightType,
+                                        new Vector3(objPosX * 1024.0f + 512.0f, -objLongY, objPosZ * 1024.0f + 512.0f))
                                     {
                                         Color = Color.FromArgb(255, lightR, lightG, lightB),
                                         Cutoff = lightCut,
                                         Len = lightLen,
                                         DirectionX = 360.0f - lightX,
                                         DirectionY = lightY + 90.0f,
-                                        Active = lightOn == 0x01,
+                                        Enabled = lightOn == 0x01,
                                         In = lightIn / 1024.0f,
                                         Out = lightOut / 1024.0f,
                                         Intensity = lightIntensity / 8192.0f,
-                                        Position = new Vector3(
-                                            objPosX * 1024.0f + 512.0f,
-                                            -objLongY, 
-                                            objPosZ * 1024.0f + 512.0f)
                                     };
                                     if (light.DirectionY >= 360)
                                         light.DirectionY = light.DirectionY - 360.0f;
-
-                                    switch (objectType)
-                                    {
-                                        case 0x4000:
-                                            light.Type = LightType.Light;
-                                            break;
-                                        case 0x6000:
-                                            light.Type = LightType.Shadow;
-                                            break;
-                                        case 0x4200:
-                                            light.Type = LightType.Sun;
-                                            break;
-                                        case 0x5000:
-                                            light.In = 512.0f;
-                                            light.Out = 1536.0f;
-                                            light.Type = LightType.Effect;
-                                            break;
-                                        case 0x4100:
-                                            light.Type = LightType.Spot;
-                                            break;
-                                        case 0x4020:
-                                            light.Type = LightType.FogBulb;
-                                            break;
-                                    }
-
+                                    
                                     room.Lights.Add(light);
                                     break;
                                 case 0x4c00:
@@ -1175,12 +1175,12 @@ namespace TombEditor.Geometry.IO
                         {
                             case ObjectInstanceType.Moveable:
                                 var moveable = (MoveableInstance)instance;
-                                moveable.Model = level.Wad.Moveables[(uint)moveable.ObjectId];
+                                moveable.WadObjectId = moveable.WadObjectId;
                                 level.Objects[instance.Id] = moveable;
                                 break;
-                            case ObjectInstanceType.StaticMesh:
-                                var staticMesh = (StaticMeshInstance)instance;
-                                staticMesh.Model = level.Wad.StaticMeshes[(uint)staticMesh.ObjectId];
+                            case ObjectInstanceType.Static:
+                                var staticMesh = (StaticInstance)instance;
+                                staticMesh.WadObjectId = staticMesh.WadObjectId;
                                 level.Objects[instance.Id] = staticMesh;
                                 break;
                             default:
@@ -1236,7 +1236,7 @@ namespace TombEditor.Geometry.IO
 
                         if (instance.TargetType == TriggerTargetType.Object &&
                             level.Objects[instance.Target].Type == ObjectInstanceType.Moveable &&
-                            ((MoveableInstance)level.Objects[instance.Target]).ObjectId == 422)
+                            ((MoveableInstance)level.Objects[instance.Target]).WadObjectId == 422)
                         {
                             instance.TargetType = TriggerTargetType.Target;
                         }

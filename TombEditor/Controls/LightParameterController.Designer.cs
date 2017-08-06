@@ -13,6 +13,7 @@
             // 
             // butUp
             // 
+            this.butUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butUp.Image = global::TombEditor.Properties.Resources.controller_up;
             this.butUp.Location = new System.Drawing.Point(44, 0);
             this.butUp.Name = "butUp";
@@ -25,6 +26,7 @@
             // 
             // butDown
             // 
+            this.butDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDown.Image = global::TombEditor.Properties.Resources.controller_down;
             this.butDown.Location = new System.Drawing.Point(44, 11);
             this.butDown.Name = "butDown";
@@ -36,15 +38,18 @@
             // 
             // labelContent
             // 
-            this.labelContent.AutoSize = true;
+            this.labelContent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelContent.BackColor = System.Drawing.Color.Transparent;
             this.labelContent.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelContent.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelContent.Location = new System.Drawing.Point(3, 5);
+            this.labelContent.Location = new System.Drawing.Point(0, 0);
             this.labelContent.Name = "labelContent";
-            this.labelContent.Size = new System.Drawing.Size(28, 13);
+            this.labelContent.Size = new System.Drawing.Size(44, 22);
             this.labelContent.TabIndex = 49;
             this.labelContent.Text = "0,00";
+            this.labelContent.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // LightParameterController
             // 
@@ -57,7 +62,6 @@
             this.Name = "LightParameterController";
             this.Size = new System.Drawing.Size(60, 22);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
         

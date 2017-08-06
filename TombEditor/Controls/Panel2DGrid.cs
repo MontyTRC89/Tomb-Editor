@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using System.ComponentModel;
+using NLog;
 using TombLib.Graphics;
 using TombEditor.Geometry;
 using Rectangle = System.Drawing.Rectangle;
@@ -14,6 +15,8 @@ namespace TombEditor.Controls
 {
     public class Panel2DGrid : Panel
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+        
         private bool _doSectorSelection = false;
         private Editor _editor;
         private static readonly Pen _gridPen = Pens.Black;
@@ -286,7 +289,7 @@ namespace TombEditor.Controls
             }
             catch (Exception exc)
             {
-                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "An exception occured while drawing the 2D grid.");
+                logger.Error(exc, "An exception occured while drawing the 2D grid.");
             }
         }
 

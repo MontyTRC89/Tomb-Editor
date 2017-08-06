@@ -122,9 +122,9 @@ namespace TombEditor.Geometry.IO
 
                         switch (o.Type)
                         {
-                            case ObjectInstanceType.StaticMesh:
-                                var sm = (StaticMeshInstance)o;
-                                writer.Write(sm.Model.ObjectID);
+                            case ObjectInstanceType.Static:
+                                var sm = (StaticInstance)o;
+                                writer.Write(sm.WadObjectId);
                                 writer.Write(sm.Color.R);
                                 writer.Write(sm.Color.G);
                                 writer.Write(sm.Color.B);
@@ -133,7 +133,7 @@ namespace TombEditor.Geometry.IO
                                 break;
                             case ObjectInstanceType.Moveable:
                                 var m = (MoveableInstance)o;
-                                writer.Write(m.Model?.ObjectID ?? 0);
+                                writer.Write(m.WadObjectId);
 
                                 writer.Write(filler32);
                                 break;
@@ -322,7 +322,10 @@ namespace TombEditor.Geometry.IO
                             writer.Write(l.Cutoff);
                             writer.Write(l.DirectionX);
                             writer.Write(l.DirectionY);
-                            writer.Write(l.Active);
+                            writer.Write(l.Enabled);
+                            writer.Write(l.CastsShadows);
+                            writer.Write(l.IsDynamicallyUsed);
+                            writer.Write(l.IsStaticallyUsed);
 
                             writer.Write(filler8);
                             writer.Write(filler8);

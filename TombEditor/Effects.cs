@@ -8,12 +8,14 @@ using SharpDX.Toolkit.Graphics;
 using System.Reflection;
 using System.IO;
 using System.Windows.Forms;
+using NLog;
 
 namespace TombEditor
 {
     class Effects
     {
         private static Assembly _editorAssembly;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
         private static string _path;
         public static GraphicsDevice GraphicsDevice { get; set; }
         public static SharpDX.Toolkit.Graphics.Effect Picking { get; set; }
@@ -32,7 +34,7 @@ namespace TombEditor
             }
             catch (Exception exc)
             {
-                NLog.LogManager.GetCurrentClassLogger().Log(NLog.LogLevel.Error, exc, "Could not load effect file.");
+                logger.Error(exc, "Could not load effect file.");
                 MessageBox.Show("Could not load effect file. " + Environment.NewLine + exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
