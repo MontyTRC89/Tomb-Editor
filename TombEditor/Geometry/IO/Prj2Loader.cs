@@ -408,11 +408,9 @@ namespace TombEditor.Geometry.IO
                         int numLights = reader.ReadInt32();
                         for (int j = 0; j < numLights; j++)
                         {
-                            var l = new Light
+                            var l = new Light((LightType)reader.ReadByte(), 
+                                new Vector3(reader.ReadSingle(), reader.ReadSingle(),  reader.ReadSingle()))
                             {
-                                Type = (LightType)reader.ReadByte(),
-                                Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(),
-                                    reader.ReadSingle()),
                                 Intensity = reader.ReadSingle(),
                                 Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte()),
                                 In = reader.ReadSingle(),
@@ -421,7 +419,10 @@ namespace TombEditor.Geometry.IO
                                 Cutoff = reader.ReadSingle(),
                                 DirectionX = reader.ReadSingle(),
                                 DirectionY = reader.ReadSingle(),
-                                Enabled = reader.ReadBoolean()
+                                Enabled = reader.ReadBoolean(),
+                                CastsShadows = reader.ReadBoolean(),
+                                IsDynamicallyUsed = reader.ReadBoolean(),
+                                IsStaticallyUsed = reader.ReadBoolean()
                             };
 
 

@@ -519,7 +519,35 @@ namespace TombEditor.Geometry.IO
                                     byte lightB = reader.ReadByte();
                                     byte lightOn = reader.ReadByte();
 
-                                    var light = new Light
+                                    LightType lightType;
+                                    switch (objectType)
+                                    {
+                                        case 0x4000:
+                                            lightType = LightType.Light;
+                                            break;
+                                        case 0x6000:
+                                            lightType = LightType.Shadow;
+                                            break;
+                                        case 0x4200:
+                                            lightType = LightType.Sun;
+                                            break;
+                                        case 0x5000:
+                                            lightIn = 1013.76f;
+                                            lightOut = 1024.0f;
+                                            lightType = LightType.Effect;
+                                            break;
+                                        case 0x4100:
+                                            lightType = LightType.Spot;
+                                            break;
+                                        case 0x4020:
+                                            lightType = LightType.FogBulb;
+                                            break;
+                                        default:
+                                            throw new NotSupportedException("Unknown light type found inside *.prj file.");
+                                    }
+
+                                    var light = new Light(lightType,
+                                        new Vector3(objPosX * 1024.0f + 512.0f, -objLongY, objPosZ * 1024.0f + 512.0f))
                                     {
                                         Color = Color.FromArgb(255, lightR, lightG, lightB),
                                         Cutoff = lightCut,
@@ -530,38 +558,10 @@ namespace TombEditor.Geometry.IO
                                         In = lightIn / 1024.0f,
                                         Out = lightOut / 1024.0f,
                                         Intensity = lightIntensity / 8192.0f,
-                                        Position = new Vector3(
-                                            objPosX * 1024.0f + 512.0f,
-                                            -objLongY, 
-                                            objPosZ * 1024.0f + 512.0f)
                                     };
                                     if (light.DirectionY >= 360)
                                         light.DirectionY = light.DirectionY - 360.0f;
-
-                                    switch (objectType)
-                                    {
-                                        case 0x4000:
-                                            light.Type = LightType.Light;
-                                            break;
-                                        case 0x6000:
-                                            light.Type = LightType.Shadow;
-                                            break;
-                                        case 0x4200:
-                                            light.Type = LightType.Sun;
-                                            break;
-                                        case 0x5000:
-                                            light.In = 512.0f;
-                                            light.Out = 1536.0f;
-                                            light.Type = LightType.Effect;
-                                            break;
-                                        case 0x4100:
-                                            light.Type = LightType.Spot;
-                                            break;
-                                        case 0x4020:
-                                            light.Type = LightType.FogBulb;
-                                            break;
-                                    }
-
+                                    
                                     room.Lights.Add(light);
                                     break;
                                 case 0x4c00:

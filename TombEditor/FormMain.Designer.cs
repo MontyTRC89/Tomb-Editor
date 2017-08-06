@@ -151,6 +151,10 @@
             this.panelTextureContainer = new System.Windows.Forms.Panel();
             this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lightPalette = new TombEditor.Controls.PanelPalette();
+            this.cbLightIsDynamicallyUsed = new DarkUI.Controls.DarkCheckBox();
+            this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
+            this.cbLightCastsShadows = new DarkUI.Controls.DarkCheckBox();
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
             this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
             this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
@@ -170,6 +174,9 @@
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel23 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel24 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
@@ -182,7 +189,6 @@
             this.butAddShadow = new DarkUI.Controls.DarkButton();
             this.butAddPointLight = new DarkUI.Controls.DarkButton();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
@@ -1752,6 +1758,9 @@
             // panel4
             // 
             this.panel4.Controls.Add(this.lightPalette);
+            this.panel4.Controls.Add(this.cbLightIsDynamicallyUsed);
+            this.panel4.Controls.Add(this.cbLightIsStaticallyUsed);
+            this.panel4.Controls.Add(this.cbLightCastsShadows);
             this.panel4.Controls.Add(this.cbLightEnabled);
             this.panel4.Controls.Add(this.numLightDirectionY);
             this.panel4.Controls.Add(this.numLightDirectionX);
@@ -1771,6 +1780,9 @@
             this.panel4.Controls.Add(this.darkLabel13);
             this.panel4.Controls.Add(this.darkLabel11);
             this.panel4.Controls.Add(this.darkLabel9);
+            this.panel4.Controls.Add(this.darkLabel23);
+            this.panel4.Controls.Add(this.darkLabel24);
+            this.panel4.Controls.Add(this.darkLabel21);
             this.panel4.Controls.Add(this.darkLabel2);
             this.panel4.Controls.Add(this.darkLabel10);
             this.panel4.Controls.Add(this.darkLabel8);
@@ -1789,6 +1801,47 @@
             this.panel4.Size = new System.Drawing.Size(1305, 109);
             this.panel4.TabIndex = 28;
             // 
+            // lightPalette
+            // 
+            this.lightPalette.Location = new System.Drawing.Point(661, 4);
+            this.lightPalette.Name = "lightPalette";
+            this.lightPalette.Size = new System.Drawing.Size(643, 99);
+            this.lightPalette.TabIndex = 50;
+            this.lightPalette.TabStop = false;
+            // 
+            // cbLightIsDynamicallyUsed
+            // 
+            this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightIsDynamicallyUsed.Enabled = false;
+            this.cbLightIsDynamicallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(640, 80);
+            this.cbLightIsDynamicallyUsed.Name = "cbLightIsDynamicallyUsed";
+            this.cbLightIsDynamicallyUsed.Size = new System.Drawing.Size(15, 22);
+            this.cbLightIsDynamicallyUsed.TabIndex = 60;
+            this.cbLightIsDynamicallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsDynamicallyUsed_CheckedChanged);
+            // 
+            // cbLightIsStaticallyUsed
+            // 
+            this.cbLightIsStaticallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightIsStaticallyUsed.Enabled = false;
+            this.cbLightIsStaticallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(640, 55);
+            this.cbLightIsStaticallyUsed.Name = "cbLightIsStaticallyUsed";
+            this.cbLightIsStaticallyUsed.Size = new System.Drawing.Size(15, 22);
+            this.cbLightIsStaticallyUsed.TabIndex = 60;
+            this.cbLightIsStaticallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsStaticallyUsed_CheckedChanged);
+            // 
+            // cbLightCastsShadows
+            // 
+            this.cbLightCastsShadows.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightCastsShadows.Enabled = false;
+            this.cbLightCastsShadows.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbLightCastsShadows.Location = new System.Drawing.Point(640, 30);
+            this.cbLightCastsShadows.Name = "cbLightCastsShadows";
+            this.cbLightCastsShadows.Size = new System.Drawing.Size(15, 22);
+            this.cbLightCastsShadows.TabIndex = 60;
+            this.cbLightCastsShadows.CheckedChanged += new System.EventHandler(this.cbLightCastsShadows_CheckedChanged);
+            // 
             // cbLightEnabled
             // 
             this.cbLightEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1805,7 +1858,7 @@
             this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
             this.numLightDirectionY.Enabled = false;
             this.numLightDirectionY.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightDirectionY.Location = new System.Drawing.Point(527, 80);
+            this.numLightDirectionY.Location = new System.Drawing.Point(525, 80);
             this.numLightDirectionY.Name = "numLightDirectionY";
             this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
             this.numLightDirectionY.TabIndex = 58;
@@ -1816,7 +1869,7 @@
             this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
             this.numLightDirectionX.Enabled = false;
             this.numLightDirectionX.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightDirectionX.Location = new System.Drawing.Point(527, 55);
+            this.numLightDirectionX.Location = new System.Drawing.Point(525, 55);
             this.numLightDirectionX.Name = "numLightDirectionX";
             this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
             this.numLightDirectionX.TabIndex = 57;
@@ -1849,7 +1902,7 @@
             this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
             this.numLightCutoff.Enabled = false;
             this.numLightCutoff.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightCutoff.Location = new System.Drawing.Point(527, 30);
+            this.numLightCutoff.Location = new System.Drawing.Point(525, 30);
             this.numLightCutoff.Name = "numLightCutoff";
             this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
             this.numLightCutoff.TabIndex = 54;
@@ -1860,7 +1913,7 @@
             this.numLightLen.BackColor = System.Drawing.Color.DimGray;
             this.numLightLen.Enabled = false;
             this.numLightLen.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
-            this.numLightLen.Location = new System.Drawing.Point(527, 5);
+            this.numLightLen.Location = new System.Drawing.Point(525, 5);
             this.numLightLen.Name = "numLightLen";
             this.numLightLen.Size = new System.Drawing.Size(60, 22);
             this.numLightLen.TabIndex = 53;
@@ -1954,7 +2007,7 @@
             // 
             this.darkLabel12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel12.Location = new System.Drawing.Point(476, 80);
+            this.darkLabel12.Location = new System.Drawing.Point(474, 80);
             this.darkLabel12.Name = "darkLabel12";
             this.darkLabel12.Size = new System.Drawing.Size(51, 22);
             this.darkLabel12.TabIndex = 40;
@@ -1965,7 +2018,7 @@
             // 
             this.darkLabel13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(476, 55);
+            this.darkLabel13.Location = new System.Drawing.Point(474, 55);
             this.darkLabel13.Name = "darkLabel13";
             this.darkLabel13.Size = new System.Drawing.Size(51, 22);
             this.darkLabel13.TabIndex = 38;
@@ -1987,12 +2040,45 @@
             // 
             this.darkLabel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel9.Location = new System.Drawing.Point(476, 30);
+            this.darkLabel9.Location = new System.Drawing.Point(474, 30);
             this.darkLabel9.Name = "darkLabel9";
             this.darkLabel9.Size = new System.Drawing.Size(51, 22);
             this.darkLabel9.TabIndex = 34;
             this.darkLabel9.Text = "Cutoff";
             this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // darkLabel23
+            // 
+            this.darkLabel23.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel23.Location = new System.Drawing.Point(585, 80);
+            this.darkLabel23.Name = "darkLabel23";
+            this.darkLabel23.Size = new System.Drawing.Size(55, 22);
+            this.darkLabel23.TabIndex = 32;
+            this.darkLabel23.Text = "Dynami...";
+            this.darkLabel23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // darkLabel24
+            // 
+            this.darkLabel24.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel24.Location = new System.Drawing.Point(582, 56);
+            this.darkLabel24.Name = "darkLabel24";
+            this.darkLabel24.Size = new System.Drawing.Size(58, 22);
+            this.darkLabel24.TabIndex = 32;
+            this.darkLabel24.Text = "Statically";
+            this.darkLabel24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // darkLabel21
+            // 
+            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel21.Location = new System.Drawing.Point(585, 30);
+            this.darkLabel21.Name = "darkLabel21";
+            this.darkLabel21.Size = new System.Drawing.Size(55, 22);
+            this.darkLabel21.TabIndex = 32;
+            this.darkLabel21.Text = "Shadows";
+            this.darkLabel21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel2
             // 
@@ -2009,7 +2095,7 @@
             // 
             this.darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(476, 5);
+            this.darkLabel10.Location = new System.Drawing.Point(474, 5);
             this.darkLabel10.Name = "darkLabel10";
             this.darkLabel10.Size = new System.Drawing.Size(51, 22);
             this.darkLabel10.TabIndex = 32;
@@ -2137,14 +2223,6 @@
             this.darkLabel5.Size = new System.Drawing.Size(55, 13);
             this.darkLabel5.TabIndex = 0;
             this.darkLabel5.Text = "Add light";
-            // 
-            // lightPalette
-            // 
-            this.lightPalette.Location = new System.Drawing.Point(655, 3);
-            this.lightPalette.Name = "lightPalette";
-            this.lightPalette.Size = new System.Drawing.Size(646, 99);
-            this.lightPalette.TabIndex = 50;
-            this.lightPalette.TabStop = false;
             // 
             // statusStrip
             // 
@@ -2988,5 +3066,11 @@
         private DarkUI.Controls.DarkButton butResetSearch;
         private DarkUI.Controls.DarkCheckBox cbLightEnabled;
         private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkCheckBox cbLightIsDynamicallyUsed;
+        private DarkUI.Controls.DarkCheckBox cbLightIsStaticallyUsed;
+        private DarkUI.Controls.DarkCheckBox cbLightCastsShadows;
+        private DarkUI.Controls.DarkLabel darkLabel23;
+        private DarkUI.Controls.DarkLabel darkLabel24;
+        private DarkUI.Controls.DarkLabel darkLabel21;
     }
 }

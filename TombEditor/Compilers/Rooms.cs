@@ -390,7 +390,7 @@ namespace TombEditor.Compilers
         private static void ConvertLights(Room room, ref tr_room newRoom)
         {
             var result = new List<tr4_room_light>();
-            foreach (var light in room.Lights.Where(l => l.Type != LightType.Effect))
+            foreach (var light in room.Lights.Where(l => l.IsDynamicallyUsed))
             {
                 var newLight = new tr4_room_light
                 {

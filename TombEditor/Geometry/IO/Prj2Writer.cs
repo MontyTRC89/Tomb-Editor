@@ -319,6 +319,9 @@ namespace TombEditor.Geometry.IO
                             writer.Write(l.DirectionX);
                             writer.Write(l.DirectionY);
                             writer.Write(l.Enabled);
+                            writer.Write(l.CastsShadows);
+                            writer.Write(l.IsDynamicallyUsed);
+                            writer.Write(l.IsStaticallyUsed);
 
                             writer.Write(filler8);
                             writer.Write(filler8);
