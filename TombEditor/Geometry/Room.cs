@@ -99,8 +99,8 @@ namespace TombEditor.Geometry
 
         public Vector2 SectorPos
         {
-            get => new Vector2(Position.X, Position.Z);
-            set => Position = new Vector3(value.X, Position.Y, value.Y);
+            get { return new Vector2(Position.X, Position.Z); }
+            set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
         public Block GetBlock(DrawingPoint pos)
