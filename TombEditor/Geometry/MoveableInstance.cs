@@ -4,6 +4,8 @@ namespace TombEditor.Geometry
 {
     public class MoveableInstance : ItemInstance
     {
+        public short Ocb { get; set; } = 0;
+
         public MoveableInstance(int id, Room room)
             : base(id, room)
         { }
