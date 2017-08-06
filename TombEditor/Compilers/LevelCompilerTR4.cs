@@ -1830,7 +1830,7 @@ namespace TombEditor.Compilers
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
                     ObjectID = (short) instance.WadObjectId,
                     Room = (short) _level.Rooms.ReferenceIndexOf(instance.Room),
-                    Angle = (short)(instance.Rotation / 45 * 8192),
+                    Angle = (short)(instance.Rotation * 8192 / 45),
                     Intensity1 = -1,
                     Intensity2 = instance.Ocb
                 };
@@ -1858,8 +1858,8 @@ namespace TombEditor.Compilers
                     Room = (ushort) _level.Rooms.ReferenceIndexOf(instance.Room)
                 };
 
-                short angle = instance.Rotation;
-                item.Angle = (short)(angle / 45 * 8192);
+                double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));
+                item.Angle = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle)));
                 item.OCB = (ushort)instance.Ocb;
                 item.Flags |= (ushort)(instance.CodeBits << 1);
 
