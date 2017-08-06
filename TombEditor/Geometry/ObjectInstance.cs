@@ -24,8 +24,6 @@ namespace TombEditor.Geometry
         public Room Room { get; set; }
         public Vector3 Position { get; set; }
         public short Rotation { get; set; } = 0;
-        public bool Invisible { get; set; } = false;
-        public bool ClearBody { get; set; } = false;
         public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
         public byte X { get; set; }
         public byte Z { get; set; }

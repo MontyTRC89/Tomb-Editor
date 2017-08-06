@@ -302,8 +302,6 @@ namespace TombEditor.Geometry.IO
                                     var instance = new StaticInstance(objectsThings[j], objRoom)
                                     {
                                         CodeBits = (byte)((objOcb >> 1) & 0x1f),
-                                        Invisible = (objOcb & 0x0001) != 0,
-                                        ClearBody = (objOcb & 0x0080) != 0,
                                         WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                         X = (byte)(objPosX),
                                         Z = (byte)(objPosZ),

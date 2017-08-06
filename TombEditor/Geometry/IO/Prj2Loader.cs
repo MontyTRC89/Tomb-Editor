@@ -189,8 +189,6 @@ namespace TombEditor.Geometry.IO
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         o.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         o.Rotation = reader.ReadInt16();
-                        o.Invisible = reader.ReadBoolean();
-                        o.ClearBody = reader.ReadBoolean();
                         o.CodeBits = (byte)(reader.ReadByte() & 0x1f);
 
                         if (o.Type == ObjectInstanceType.Static)
@@ -205,6 +203,8 @@ namespace TombEditor.Geometry.IO
                         {
                             ((MoveableInstance)o).WadObjectId = reader.ReadUInt32();
                             ((MoveableInstance)o).Ocb = reader.ReadInt16();
+                            ((MoveableInstance)o).Invisible = reader.ReadBoolean();
+                            ((MoveableInstance)o).ClearBody = reader.ReadBoolean();
                             reader.ReadBytes(4);
                         }
 
