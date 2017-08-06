@@ -189,7 +189,6 @@ namespace TombEditor.Geometry.IO
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         o.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         o.Rotation = reader.ReadInt16();
-                        o.CodeBits = (byte)(reader.ReadByte() & 0x1f);
 
                         if (o.Type == ObjectInstanceType.Static)
                         {
@@ -205,6 +204,7 @@ namespace TombEditor.Geometry.IO
                             ((MoveableInstance)o).Ocb = reader.ReadInt16();
                             ((MoveableInstance)o).Invisible = reader.ReadBoolean();
                             ((MoveableInstance)o).ClearBody = reader.ReadBoolean();
+                            ((MoveableInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
                             reader.ReadBytes(4);
                         }
 
@@ -223,6 +223,7 @@ namespace TombEditor.Geometry.IO
                         if (o.Type == ObjectInstanceType.SoundSource)
                         {
                             ((SoundSourceInstance)o).SoundId = reader.ReadInt16();
+                            ((SoundSourceInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
                             reader.ReadBytes(6);
                         }
 
