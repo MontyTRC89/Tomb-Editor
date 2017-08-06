@@ -13,6 +13,7 @@ namespace TombEditor.Geometry
         public int Target { get; set; }
         public short Timer { get; set; }
         public bool OneShot { get; set; }
+        public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
 
         public TriggerInstance(int id, Room room)
             : base(id, room)

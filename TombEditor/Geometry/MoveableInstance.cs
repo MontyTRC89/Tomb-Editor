@@ -7,6 +7,7 @@ namespace TombEditor.Geometry
         public short Ocb { get; set; } = 0;
         public bool Invisible { get; set; } = false;
         public bool ClearBody { get; set; } = false;
+        public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
 
         public MoveableInstance(int id, Room room)
             : base(id, room)
