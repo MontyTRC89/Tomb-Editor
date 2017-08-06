@@ -24,14 +24,7 @@
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
-                Bits =
-                {
-                    [0] = Bits[0],
-                    [1] = Bits[1],
-                    [2] = Bits[2],
-                    [3] = Bits[3],
-                    [4] = Bits[4]
-                },
+                CodeBits = CodeBits,
                 Strength = Strength
             };
         }

@@ -192,11 +192,7 @@ namespace TombEditor.Geometry.IO
                         o.Rotation = reader.ReadInt16();
                         o.Invisible = reader.ReadBoolean();
                         o.ClearBody = reader.ReadBoolean();
-                        o.Bits[0] = reader.ReadBoolean();
-                        o.Bits[1] = reader.ReadBoolean();
-                        o.Bits[2] = reader.ReadBoolean();
-                        o.Bits[3] = reader.ReadBoolean();
-                        o.Bits[4] = reader.ReadBoolean();
+                        o.CodeBits = (byte)(reader.ReadByte() & 0x1f);
 
                         if (o.Type == ObjectInstanceType.Static)
                         {
@@ -265,14 +261,7 @@ namespace TombEditor.Geometry.IO
                             Target = reader.ReadInt32(),
                             Timer = reader.ReadInt16(),
                             OneShot = reader.ReadBoolean(),
-                            Bits =
-                            {
-                                [0] = reader.ReadBoolean(),
-                                [1] = reader.ReadBoolean(),
-                                [2] = reader.ReadBoolean(),
-                                [3] = reader.ReadBoolean(),
-                                [4] = reader.ReadBoolean()
-                            },
+                            CodeBits = (byte)(reader.ReadByte() & 0x1f),
                             Room = level.GetOrCreateDummyRoom(reader.ReadInt16())
                         };
 

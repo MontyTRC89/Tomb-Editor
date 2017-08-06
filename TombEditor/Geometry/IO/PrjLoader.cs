@@ -264,14 +264,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     var instance = new MoveableInstance(objectsThings[j], objRoom)
                                     {
-                                        Bits =
-                                        {
-                                            [0] = (objOcb & 0x0002) != 0,
-                                            [1] = (objOcb & 0x0004) != 0,
-                                            [2] = (objOcb & 0x0008) != 0,
-                                            [3] = (objOcb & 0x0010) != 0,
-                                            [4] = (objOcb & 0x0020) != 0
-                                        },
+                                        CodeBits = (byte)((objOcb >> 1) & 0x1f),
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
                                         WadObjectId = unchecked((uint)objSlot),
@@ -308,14 +301,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     var instance = new StaticInstance(objectsThings[j], objRoom)
                                     {
-                                        Bits =
-                                        {
-                                            [0] = (objOcb & 0x0002) != 0,
-                                            [1] = (objOcb & 0x0004) != 0,
-                                            [2] = (objOcb & 0x0008) != 0,
-                                            [3] = (objOcb & 0x0010) != 0,
-                                            [4] = (objOcb & 0x0020) != 0
-                                        },
+                                        CodeBits = (byte)((objOcb >> 1) & 0x1f),
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
                                         WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
@@ -408,11 +394,7 @@ namespace TombEditor.Geometry.IO
                                         break;
                                 }
 
-                                trigger.Bits[4] = (triggerFlags & 0x0002) == 0;
-                                trigger.Bits[3] = (triggerFlags & 0x0004) == 0;
-                                trigger.Bits[2] = (triggerFlags & 0x0008) == 0;
-                                trigger.Bits[1] = (triggerFlags & 0x0010) == 0;
-                                trigger.Bits[0] = (triggerFlags & 0x0020) == 0;
+                                trigger.CodeBits = (byte)((~triggerFlags >> 1) & 0x1f);
                                 trigger.OneShot = (triggerFlags & 0x0001) != 0;
 
                                 trigger.Timer = triggerTimere;
@@ -624,22 +606,7 @@ namespace TombEditor.Geometry.IO
                                     if (camera.DirectionY >= 360)
                                         camera.DirectionY = (short)(camera.DirectionY - 360);
 
-                                    camera.Flags[0] = ((objOcb & 0x01) != 0);
-                                    camera.Flags[1] = ((objOcb & 0x02) != 0);
-                                    camera.Flags[2] = ((objOcb & 0x04) != 0);
-                                    camera.Flags[3] = ((objOcb & 0x08) != 0);
-                                    camera.Flags[4] = ((objOcb & 0x10) != 0);
-                                    camera.Flags[5] = ((objOcb & 0x20) != 0);
-                                    camera.Flags[6] = ((objOcb & 0x40) != 0);
-                                    camera.Flags[7] = ((objOcb & 0x80) != 0);
-                                    camera.Flags[8] = ((objOcb & 0x0100) != 0);
-                                    camera.Flags[9] = ((objOcb & 0x0200) != 0);
-                                    camera.Flags[10] = ((objOcb & 0x0400) != 0);
-                                    camera.Flags[11] = ((objOcb & 0x0800) != 0);
-                                    camera.Flags[12] = ((objOcb & 0x1000) != 0);
-                                    camera.Flags[13] = ((objOcb & 0x2000) != 0);
-                                    camera.Flags[14] = ((objOcb & 0x4000) != 0);
-                                    camera.Flags[15] = ((objOcb & 0x8000) != 0);
+                                    camera.Flags = unchecked((ushort)objOcb);
 
                                     level.Objects.Add(camera.Id, camera);
                                     room.FlyByCameras.Add(camera.Id);

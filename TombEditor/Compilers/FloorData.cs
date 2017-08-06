@@ -1127,11 +1127,7 @@ namespace TombEditor.Compilers
                                 ushort triggerSetup = 0;
                                 triggerSetup |= (ushort) (trigger.Timer & 0xff);
                                 triggerSetup |= (ushort) (trigger.OneShot ? 0x100 : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[0] ? (0x01 << 13) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[1] ? (0x01 << 12) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[2] ? (0x01 << 11) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[3] ? (0x01 << 10) : 0);
-                                triggerSetup |= (ushort) (trigger.Bits[4] ? (0x01 << 9) : 0);
+                                triggerSetup |= (ushort) ((trigger.CodeBits & 0x1f) << 9);
 
                                 tempCodes.Add(trigger1);
                                 tempCodes.Add(triggerSetup);
