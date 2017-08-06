@@ -1498,7 +1498,7 @@ namespace TombEditor
             }
 
             // Check if room has portals
-            int portalCount = room.Portals.Select((portal) => _editor.Level.Portals[portal]).Count();
+            int portalCount = room.Portals.Count();
             if (portalCount != 0)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
@@ -2865,35 +2865,21 @@ namespace TombEditor
             int freeRoomIndex = _editor.Level.GetFreeRoomIndex();
 
             // Duplicate portals
-            int numPortals = _editor.Level.Portals.Count;
-            var duplicatedPortals = new Dictionary<int, int>();
+            var duplicatedPortals = new Dictionary<Portal, Portal>();
 
-            for (int i = 0; i < numPortals; i++)
+            foreach (var p in _editor.Level.Portals)
             {
-                var p = _editor.Level.Portals.ElementAt(i).Value;
-
-                if (p.Room != room)
+                if (p.Room != _editor.SelectedRoom)
                     continue;
 
-                int portalId = _editor.Level.GetNewPortalId();
-                var newPortal = p.ClonePortal();
-                newPortal.Id = portalId;
+                var newPortal = (Portal)p.Clone();
                 newPortal.Flipped = true;
 
                 p.Flipped = true;
-                _editor.Level.Portals[p.Id] = p;
 
-                duplicatedPortals.Add(p.Id, portalId);
-                _editor.Level.Portals.Add(portalId, newPortal);
-            }
-
-            for (int i = 0; i < duplicatedPortals.Count; i++)
-            {
-                var p = _editor.Level.Portals[duplicatedPortals.ElementAt(i).Key];
-                _editor.Level.Portals[p.OtherId].OtherIdFlipped = duplicatedPortals.ElementAt(i).Value;
+                duplicatedPortals.Add(p, newPortal);
             }
             
-
             string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
             var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
 
@@ -2901,12 +2887,12 @@ namespace TombEditor
                 for (int z = 0; z < room.NumZSectors; z++)
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
-                    newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : -1);
-                    newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : -1);
-                    newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != -1
-                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : -1);
+                    newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != null
+                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : null);
+                    newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != null
+                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : null);
+                    newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != null
+                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : null);
                 }
 
             for (int i = 0; i < room.Lights.Count; i++)
@@ -2932,10 +2918,9 @@ namespace TombEditor
         public static void AlternateRoomDisable(Room room)
         {
             // Check if room has portals
-            for (int i = 0; i < _editor.Level.Portals.Count; i++)
+            foreach (var p in _editor.Level.Portals)
             {
-                var p = _editor.Level.Portals[i];
-                if ((p.Room != room && p.AdjoiningRoom != room) || p.MemberOfFlippedRoom)
+                if ((p.Room != _editor.SelectedRoom && p.AdjoiningRoom != _editor.SelectedRoom) || p.MemberOfFlippedRoom)
                     continue;
 
                 DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");

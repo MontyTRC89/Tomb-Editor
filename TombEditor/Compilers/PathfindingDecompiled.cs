@@ -224,7 +224,7 @@ namespace TombEditor.Compilers
             // If block is a wall or is a vertical toggle opacity 1
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
-                block.Type == BlockType.BorderWall) && block.WallPortal == -1) ||
+                block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
                 block.WallOpacity == PortalOpacity.Opacity1)
             {
                 dec_q0 = -1;
@@ -236,15 +236,15 @@ namespace TombEditor.Compilers
             }
 
             // If it's not a wall portal or is vertical toggle opacity 1
-            if (block.WallPortal == -1 || block.WallOpacity == PortalOpacity.Opacity1)
+            if (block.WallPortal == null || block.WallOpacity == PortalOpacity.Opacity1)
             {
                 currentZ = z;
             }
             else
             {
-                if (block.WallPortal == -1) return 0x7fff;
+                if (block.WallPortal == null) return 0x7fff;
 
-                Portal portal = _level.Portals[block.WallPortal];
+                Portal portal = block.WallPortal;
                 adjoiningRoom = _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
 
                 dec_roomIndex = adjoiningRoom;
@@ -263,9 +263,9 @@ namespace TombEditor.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
             }
 
-            while (block.FloorPortal != -1)
+            while (block.FloorPortal != null)
             {
-                Portal portal = _level.Portals[block.FloorPortal];
+                Portal portal = block.FloorPortal;
 
                 adjoiningRoom = _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
 
@@ -332,9 +332,9 @@ namespace TombEditor.Compilers
 
             int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
 
-            if (dec_water && room.FlagWater && (/*room.Ceiling*/ - meanFloorCornerHeight) <= 1 && block.CeilingPortal != -1)
+            if (dec_water && room.FlagWater && (/*room.Ceiling*/ - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
             {
-                Portal portal = _level.Portals[block.CeilingPortal];
+                Portal portal = block.CeilingPortal;
                 if (portal.AdjoiningRoom.FlagWater)
                 {
                     dec_water = false;
