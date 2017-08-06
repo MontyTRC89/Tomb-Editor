@@ -793,13 +793,9 @@ namespace TombEditor
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
                 case ObjectInstanceType.FlyByCamera:
-                    _editor.Level.Objects[objectPtr.Id].Rotation += (short)(sign * (smoothMove ? 5 : 45));
-
-                    if (_editor.Level.Objects[objectPtr.Id].Rotation == 360)
-                        _editor.Level.Objects[objectPtr.Id].Rotation = 0;
-
-                    if (_editor.Level.Objects[objectPtr.Id].Rotation < 0)
-                        _editor.Level.Objects[objectPtr.Id].Rotation += 360;
+                    var itemObject = _editor.Level.Objects[objectPtr.Id] as ItemInstance;
+                    if (itemObject != null)
+                        itemObject.Rotation += sign * (smoothMove ? 5.0f : 45.0f);
                     break;
             }
         }

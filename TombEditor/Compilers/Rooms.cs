@@ -253,7 +253,7 @@ namespace TombEditor.Compilers
                 ConvertPortals(tempIdPortals, room, ref newRoom);
 
                 ConvertSectors(room, ref newRoom);
-
+                
                 var tempStaticMeshes = room.StaticMeshes
                     .Select(staticMesh => (StaticInstance) _editor.Level.Objects[staticMesh])
                     .Select(instance => new tr_room_staticmesh
@@ -261,7 +261,8 @@ namespace TombEditor.Compilers
                         X = (uint)(newRoom.Info.X + instance.Position.X),
                         Y = (uint)(newRoom.Info.YBottom - instance.Position.Y),
                         Z = (uint)(newRoom.Info.Z + instance.Position.Z),
-                        Rotation = (ushort)(instance.Rotation / 45 * 8192),
+                        Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue, 
+                            Math.Round(instance.Rotation * (65536.0 / 360.0))))),
                         ObjectID = (ushort)instance.WadObjectId,
                         Intensity1 = Pack24BitColorTo16Bit(instance.Color),
                         Intensity2 = 0

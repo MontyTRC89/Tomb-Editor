@@ -23,7 +23,6 @@ namespace TombEditor.Geometry
         public int Id { get; set; }
         public Room Room { get; set; }
         public Vector3 Position { get; set; }
-        public short Rotation { get; set; } = 0;
         public byte X { get; set; }
         public byte Z { get; set; }
         public short Y { get; set; }
