@@ -526,7 +526,7 @@ namespace TombEditor.Geometry.IO
                                         Len = lightLen,
                                         DirectionX = 360.0f - lightX,
                                         DirectionY = lightY + 90.0f,
-                                        Active = lightOn == 0x01,
+                                        Enabled = lightOn == 0x01,
                                         In = lightIn / 1024.0f,
                                         Out = lightOut / 1024.0f,
                                         Intensity = lightIntensity / 8192.0f,

@@ -318,7 +318,7 @@ namespace TombEditor.Geometry.IO
                             writer.Write(l.Cutoff);
                             writer.Write(l.DirectionX);
                             writer.Write(l.DirectionY);
-                            writer.Write(l.Active);
+                            writer.Write(l.Enabled);
 
                             writer.Write(filler8);
                             writer.Write(filler8);

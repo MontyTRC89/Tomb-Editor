@@ -1396,7 +1396,7 @@ namespace TombEditor
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
             instance.Color = System.Drawing.Color.White;
-            instance.Active = true;
+            instance.Enabled = true;
             instance.Intensity = 0.5f;
             instance.In = 1.0f;
             instance.Out = 5.0f;

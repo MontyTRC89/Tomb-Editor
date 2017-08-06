@@ -2692,6 +2692,9 @@ namespace TombEditor.Geometry
 
                 foreach (var light in lights)
                 {
+                    if (!light.Enabled)
+                        continue;
+
                     switch (light.Type)
                     {
                         case LightType.Light:

@@ -9,7 +9,7 @@ namespace TombEditor.Geometry
         public float Intensity { get; set; }
         public float In { get; set; }
         public float Out { get; set; }
-        public bool Active { get; set; }
+        public bool Enabled { get; set; }
         public LightType Type { get; set; }
         public float DirectionX { get; set; }
         public float DirectionY { get; set; }

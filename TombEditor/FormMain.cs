@@ -276,99 +276,56 @@ namespace TombEditor
             {
                 var selectedObject = _editor.SelectedObject;
                 
+                bool IsLight = false;
+                bool HasInOutRange = false;
+                bool HasLenCutoffRange = false;
+                bool HasDirection = false;
                 if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Light))
                 {
+                    IsLight = true;
                     var light = _editor.SelectedRoom.Lights[selectedObject.Value.Id];
                     switch (light.Type)
                     {
                         case LightType.Light:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
-                            break;
-
                         case LightType.Shadow:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
-                            break;
-
                         case LightType.FogBulb:
-                            panelLightColor.Enabled = false;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
+                            HasInOutRange = true;
                             break;
 
                         case LightType.Spot:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = true;
-                            numLightCutoff.Enabled = true;
-                            numLightDirectionX.Enabled = true;
-                            numLightDirectionY.Enabled = true;
-                            numLightIn.Enabled = true;
-                            numLightOut.Enabled = true;
+                            HasInOutRange = true;
+                            HasLenCutoffRange = true;
+                            HasDirection = true;
                             break;
 
                         case LightType.Sun:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = true;
-                            numLightDirectionY.Enabled = true;
-                            numLightIn.Enabled = false;
-                            numLightOut.Enabled = false;
-                            break;
-
-                        case LightType.Effect:
-                            panelLightColor.Enabled = true;
-                            numLightIntensity.Enabled = true;
-                            numLightLen.Enabled = false;
-                            numLightCutoff.Enabled = false;
-                            numLightDirectionX.Enabled = false;
-                            numLightDirectionY.Enabled = false;
-                            numLightIn.Enabled = false;
-                            numLightOut.Enabled = false;
+                            HasDirection = true;
                             break;
                     }
-
+                    
                     panelLightColor.BackColor = light.Color;
+                    numLightIntensity.Value = light.Intensity;
+                    cbLightEnabled.Checked = light.Enabled;
                     numLightIn.Value = light.In;
                     numLightOut.Value = light.Out;
-                    numLightIntensity.Value = light.Intensity;
                     numLightLen.Value = light.Len;
                     numLightCutoff.Value = light.Cutoff;
                     numLightDirectionX.Value = light.DirectionX;
                     numLightDirectionY.Value = light.DirectionY;
                 }
                 else
-                {
                     panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-                    panelLightColor.Enabled = false;
-                    numLightIntensity.Enabled = false;
-                    numLightLen.Enabled = false;
-                    numLightCutoff.Enabled = false;
-                    numLightDirectionX.Enabled = false;
-                    numLightDirectionY.Enabled = false;
-                    numLightIn.Enabled = false;
-                    numLightOut.Enabled = false;
-                }
+
+                // Set enabled state
+                panelLightColor.Enabled = IsLight;
+                numLightIntensity.Enabled = IsLight;
+                cbLightEnabled.Enabled = IsLight;
+                numLightIn.Enabled = HasInOutRange;
+                numLightOut.Enabled = HasInOutRange;
+                numLightLen.Enabled = HasLenCutoffRange;
+                numLightCutoff.Enabled = HasLenCutoffRange;
+                numLightDirectionX.Enabled = HasDirection;
+                numLightDirectionY.Enabled = HasDirection;
             }
         }
 
@@ -712,7 +669,22 @@ namespace TombEditor
             _editor.SelectedRoom.UpdateBuffers();
             _editor.ObjectChange(light);
         }
-        
+
+        private void cbLightEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
+                return;
+
+            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
+            if (light.Enabled != cbLightEnabled.Checked)
+            {
+                light.Enabled = cbLightEnabled.Checked;
+                _editor.SelectedRoom.CalculateLightingForThisRoom();
+                _editor.SelectedRoom.UpdateBuffers();
+                _editor.ObjectChange(light);
+            }
+        }
+
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
