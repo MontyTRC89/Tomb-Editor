@@ -15,21 +15,15 @@ namespace TombLib.Graphics
     {
         public Vector3 Offset;
         public Bone Root { get; set; }
-        public List<Animation> Animations { get; set; }
-        public List<Bone> Bones { get; set; }
-        public List<Matrix> Transforms { get; set; }
-        public List<Matrix> InverseTransforms { get; set; }
-        public List<Matrix> AnimationTransforms { get; set; }
-        
+        public List<Animation> Animations { get; set; } = new List<Animation>();
+        public List<Bone> Bones { get; set; } = new List<Bone>();
+        public List<Matrix> Transforms { get; set; } = new List<Matrix>();
+        public List<Matrix> InverseTransforms { get; set; } = new List<Matrix>();
+        public List<Matrix> AnimationTransforms { get; set; } = new List<Matrix>();
+
         public SkinnedModel(GraphicsDevice device, uint objectId)
             : base(device, objectId, ModelType.Skinned)
-        {
-            Animations = new List<Animation>();
-            Bones = new List<Bone>();
-            Transforms = new List<Matrix>();
-            AnimationTransforms = new List<Matrix>();
-            InverseTransforms = new List<Matrix>();
-        }
+        {}
 
         public void ApplyTransforms()
         { }
