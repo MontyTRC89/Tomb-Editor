@@ -20,18 +20,7 @@ namespace TombEditor.Geometry
 
         public override ObjectInstance Clone()
         {
-            return new MoveableInstance(0, Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                CodeBits = CodeBits,
-                WadObjectId = WadObjectId
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
     }
 }

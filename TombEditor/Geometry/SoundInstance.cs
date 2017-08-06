@@ -16,19 +16,7 @@
 
         public override ObjectInstance Clone()
         {
-            return new SoundSourceInstance(0, Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                CodeBits = CodeBits,
-                SoundId = SoundId,
-                Flags = Flags
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
 
         public override string ToString()

@@ -29,30 +29,9 @@ namespace TombEditor.Geometry
 
         public override ObjectInstance Clone()
         {
-            return new FlybyCameraInstance(0, Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                CodeBits = CodeBits,
-                Sequence = Sequence,
-                Timer = Timer,
-                Roll = Roll,
-                Number = Number,
-                Speed = Speed,
-                Fov = Fov,
-                Flags = Flags,
-                Fixed = Fixed,
-                DirectionX = DirectionX,
-                DirectionY = DirectionY
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
-
-
+        
         public override string ToString()
         {
             return "FlyBy " + (Fixed ? "Fixed" : "") +
