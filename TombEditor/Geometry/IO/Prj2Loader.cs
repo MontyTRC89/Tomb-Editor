@@ -421,7 +421,7 @@ namespace TombEditor.Geometry.IO
                                 Cutoff = reader.ReadSingle(),
                                 DirectionX = reader.ReadSingle(),
                                 DirectionY = reader.ReadSingle(),
-                                Active = reader.ReadBoolean()
+                                Enabled = reader.ReadBoolean()
                             };
 
 
