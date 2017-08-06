@@ -795,7 +795,10 @@ namespace TombEditor
                 case ObjectInstanceType.FlyByCamera:
                     var itemObject = _editor.Level.Objects[objectPtr.Id] as ItemInstance;
                     if (itemObject != null)
+                    {
                         itemObject.Rotation += sign * (smoothMove ? 5.0f : 45.0f);
+                        _editor.ObjectChange(itemObject);
+                    }
                     break;
             }
         }
