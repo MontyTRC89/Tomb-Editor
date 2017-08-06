@@ -271,9 +271,6 @@
     <Compile Include="Geometry\EditorVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\LightParameterController.resx">
-      <DependentUpon>LightParameterController.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>
@@ -605,7 +602,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del $(TargetDir)TombEditorConfiguration.xml</PostBuildEvent>
+    <PostBuildEvent>del $(TargetDir)TombEditorConfiguration.xml 2&gt;NUL</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
