@@ -110,11 +110,7 @@ namespace TombEditor.Geometry.IO
                         writer.Write(o.Rotation);
                         writer.Write(o.Invisible);
                         writer.Write(o.ClearBody);
-                        writer.Write(o.Bits[0]);
-                        writer.Write(o.Bits[1]);
-                        writer.Write(o.Bits[2]);
-                        writer.Write(o.Bits[3]);
-                        writer.Write(o.Bits[4]);
+                        writer.Write(o.CodeBits);
 
                         switch (o.Type)
                         {
@@ -190,11 +186,7 @@ namespace TombEditor.Geometry.IO
                         writer.Write(o.Target);
                         writer.Write(o.Timer);
                         writer.Write(o.OneShot);
-                        writer.Write(o.Bits[0]);
-                        writer.Write(o.Bits[1]);
-                        writer.Write(o.Bits[2]);
-                        writer.Write(o.Bits[3]);
-                        writer.Write(o.Bits[4]);
+                        writer.Write(o.CodeBits);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(o.Room));
 
                         writer.Write(filler16);

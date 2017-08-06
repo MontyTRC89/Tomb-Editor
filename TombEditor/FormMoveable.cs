@@ -30,11 +30,11 @@ namespace TombEditor
 
         private void FormObject_Load(object sender, EventArgs e)
         {
-            cbBit1.Checked = _movable.Bits[0];
-            cbBit2.Checked = _movable.Bits[1];
-            cbBit3.Checked = _movable.Bits[2];
-            cbBit4.Checked = _movable.Bits[3];
-            cbBit5.Checked = _movable.Bits[4];
+            cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
+            cbBit2.Checked = (_movable.CodeBits & (1 << 1)) != 0;
+            cbBit3.Checked = (_movable.CodeBits & (1 << 2)) != 0;
+            cbBit4.Checked = (_movable.CodeBits & (1 << 3)) != 0;
+            cbBit5.Checked = (_movable.CodeBits & (1 << 4)) != 0;
 
             cbInvisible.Checked = _movable.Invisible;
             cbClearBody.Checked = _movable.ClearBody;
@@ -50,11 +50,13 @@ namespace TombEditor
                 return;
             }
 
-            _movable.Bits[0] = cbBit1.Checked;
-            _movable.Bits[1] = cbBit2.Checked;
-            _movable.Bits[2] = cbBit3.Checked;
-            _movable.Bits[3] = cbBit4.Checked;
-            _movable.Bits[4] = cbBit5.Checked;
+            byte CodeBits = 0;
+            CodeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
+            CodeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
+            CodeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
+            CodeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
+            CodeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            _movable.CodeBits = CodeBits;
 
             _movable.Invisible = cbInvisible.Checked;
             _movable.ClearBody = cbClearBody.Checked;

@@ -13,7 +13,7 @@ namespace TombEditor.Geometry
         public short Number { get; set; }
         public short Speed { get; set; }
         public short Fov { get; set; } = 45;
-        public bool[] Flags { get; set; } = new bool[16];
+        public ushort Flags { get; set; }
         public bool Fixed { get; set; }
         public short DirectionX { get; set; }
         public short DirectionY { get; set; }
@@ -29,7 +29,7 @@ namespace TombEditor.Geometry
 
         public override ObjectInstance Clone()
         {
-            var instance = new FlybyCameraInstance(0, Room)
+            return new FlybyCameraInstance(0, Room)
             {
                 X = X,
                 Y = Y,
@@ -38,30 +38,18 @@ namespace TombEditor.Geometry
                 Rotation = Rotation,
                 Invisible = Invisible,
                 ClearBody = ClearBody,
-                Bits =
-                {
-                    [0] = Bits[0],
-                    [1] = Bits[1],
-                    [2] = Bits[2],
-                    [3] = Bits[3],
-                    [4] = Bits[4]
-                },
+                CodeBits = CodeBits,
                 Sequence = Sequence,
                 Timer = Timer,
                 Roll = Roll,
                 Number = Number,
                 Speed = Speed,
-                Fov = Fov
+                Fov = Fov,
+                Flags = Flags,
+                Fixed = Fixed,
+                DirectionX = DirectionX,
+                DirectionY = DirectionY
             };
-
-
-            for (int i = 0; i < 16; i++)
-                instance.Flags[i] = Flags[i];
-            instance.Fixed = Fixed;
-            instance.DirectionX = DirectionX;
-            instance.DirectionY = DirectionY;
-
-            return instance;
         }
 
 
