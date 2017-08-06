@@ -22,25 +22,7 @@
 
         public override ObjectInstance Clone()
         {
-            return new CameraInstance(0, Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                CodeBits = CodeBits,
-                Sequence = Sequence,
-                Timer = Timer,
-                Roll = Roll,
-                Number = Number,
-                Speed = Speed,
-                Fov = Fov,
-                Flags = Flags,
-                Fixed = Fixed
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
         
         public override string ToString()

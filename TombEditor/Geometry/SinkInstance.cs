@@ -15,18 +15,7 @@
 
         public override ObjectInstance Clone()
         {
-            return new SinkInstance(0, Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                CodeBits = CodeBits,
-                Strength = Strength
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
     }
 }

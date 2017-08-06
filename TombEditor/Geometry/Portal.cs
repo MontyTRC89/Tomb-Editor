@@ -23,21 +23,12 @@ namespace TombEditor.Geometry
 
         public Portal ClonePortal()
         {
-            return new Portal(0, Room)
-            {
-                Direction = Direction,
-                X = X,
-                Z = Z,
-                NumXBlocks = NumXBlocks,
-                NumZBlocks = NumZBlocks,
-                OtherId = OtherId,
-                AdjoiningRoom = AdjoiningRoom
-            };
+            return (Portal)MemberwiseClone();
         }
 
         public override ObjectInstance Clone()
         {
-            throw new NotImplementedException();
+            return (ObjectInstance)MemberwiseClone();
         }
 
         public override string ToString()
