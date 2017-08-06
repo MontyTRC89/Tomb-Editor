@@ -41,11 +41,9 @@ namespace TombLib.Wad
 
         public void Dispose()
         {
-            if (Textures.Count != 0)
-            {
-                Textures[0].Dispose();
-                Textures.Remove(0);
-            }
+            foreach (var texture in Textures.Values)
+                texture.Dispose();
+            Textures.Clear();
         }
 
         /*
@@ -435,11 +433,9 @@ namespace TombLib.Wad
                 }
 
                 // Free old texture...
-                if (Textures.ContainsKey(0))
-                {
-                    Textures[0].Dispose();
-                    Textures.Remove(0);
-                }
+                foreach (var texture in Textures.Values)
+                    texture.Dispose();
+                Textures.Clear();
 
                 // Create DirectX texture
                 Textures.Add(0, TextureLoad.LoadToTexture(GraphicsDevice, tempBitmap));
