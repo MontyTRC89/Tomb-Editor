@@ -731,7 +731,7 @@ namespace TombEditor
             switch (objectPtr.Type)
             {
                 case ObjectInstanceType.Moveable:
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                 case ObjectInstanceType.SoundSource:
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
@@ -788,7 +788,7 @@ namespace TombEditor
             switch (objectPtr.Type)
             {
                 case ObjectInstanceType.Moveable:
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                 case ObjectInstanceType.SoundSource:
                 case ObjectInstanceType.Sink:
                 case ObjectInstanceType.Camera:
@@ -824,7 +824,7 @@ namespace TombEditor
                     _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
                 case ObjectInstanceType.SoundSource:
-                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id])))
+                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id]), _editor.Level.Wad))
                         formSound.ShowDialog(owner);
                     _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
                     break;
@@ -951,7 +951,7 @@ namespace TombEditor
                     room.Moveables.Remove(objectPtr.Id);
                     break;
 
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                     _editor.Level.Objects.Remove(objectPtr.Id);
                     room.Moveables.Remove(objectPtr.Id);
                     break;
@@ -1422,7 +1422,7 @@ namespace TombEditor
                 case ObjectInstanceType.SoundSource:
                     room.SoundSources.Add(instance.Id);
                     break;
-                case ObjectInstanceType.StaticMesh:
+                case ObjectInstanceType.Static:
                     room.StaticMeshes.Add(instance.Id);
                     break;
             }
@@ -1433,12 +1433,7 @@ namespace TombEditor
 
         public static void PlaceItem(Room room, DrawingPoint pos, ItemType itemType)
         {
-            if (itemType.IsStatic)
-                AddObject(room, pos, new StaticMeshInstance(_editor.Level.GetNewObjectId(), room)
-                    { Model = _editor.Level.Wad.StaticMeshes[(uint)(itemType.Id)] });
-            else
-                AddObject(room, pos, new MoveableInstance(_editor.Level.GetNewObjectId(), room)
-                    { Model = _editor.Level.Wad.Moveables[(uint)(itemType.Id)] });
+            AddObject(room, pos, ItemInstance.FromItemType(_editor.Level.GetNewObjectId(), room, itemType));
         }
 
         public static void PlaceCamera(Room room, DrawingPoint pos)

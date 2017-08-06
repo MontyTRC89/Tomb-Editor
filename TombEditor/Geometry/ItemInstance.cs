@@ -1,17 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
     public abstract class ItemInstance : ObjectInstance
     {
-        public uint ObjectId { get; set; }
+        // Don't use a reference here because the loaded Wad might not
+        // contain each required object. Additionally the loaded Wads
+        // can change. It would be unnecesary difficult to update all this references.
+        public uint WadObjectId { get; set; }
 
         protected ItemInstance(int id, Room room)
             : base(id, room)
         {}
 
         public abstract ItemType ItemType { get; }
+        
+        public override string ToString()
+        {
+            return ItemType.ToString() +
+                ", ID = " + Id +
+                ", Room = " + Room.ToString() +
+                ", X = " + Position.X +
+                ", Y = " + Position.Y +
+                ", Z = " + Position.Z;
+        }
+
+        public static ItemInstance FromItemType(int id, Room room, ItemType item)
+        {
+            if (item.IsStatic)
+                return new StaticInstance(id, room) { WadObjectId = item.Id };
+            else
+                return new MoveableInstance(id, room) { WadObjectId = item.Id };
+        }
     }
 
     public struct ItemType
@@ -27,7 +49,7 @@ namespace TombEditor.Geometry
 
         public ObjectInstanceType ObjectInstanceType
         {
-            get { return IsStatic ? ObjectInstanceType.StaticMesh : ObjectInstanceType.Moveable; }
+            get { return IsStatic ? ObjectInstanceType.Static : ObjectInstanceType.Moveable; }
         }
 
         public static bool operator ==(ItemType first, ItemType second)
@@ -50,6 +72,13 @@ namespace TombEditor.Geometry
             return unchecked((int)Id) ^ (IsStatic ? unchecked((int)0xdcbc635b) : 0);
         }
 
+        public override string ToString()
+        {
+            if (IsStatic)
+                return "Static (" + Id + ") " + ObjectNames.GetStaticName(Id);
+            else
+                return "Moveable (" + Id + ") " + ObjectNames.GetMoveableName(Id);
+        }
     };
 
 }

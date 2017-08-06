@@ -7,16 +7,14 @@ using SharpDX;
 
 namespace TombLib.Wad
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class WadStaticMesh
+    public class WadStatic : WadObject
     {
-        public uint ObjectID;
         public WadMesh Mesh;
         public short Flags;
-        public WadVertex VisibilityBox1;
-        public WadVertex VisibilityBox2;
-        public WadVertex CollisionBox1;
-        public WadVertex CollisionBox2;
+        public WadVector VisibilityBox1;
+        public WadVector VisibilityBox2;
+        public WadVector CollisionBox1;
+        public WadVector CollisionBox2;
 
         public BoundingBox BoundingBox;
 

@@ -1,30 +1,28 @@
-﻿using TombLib.Graphics;
-using TombLib.Wad;
+﻿using System;
 
 namespace TombEditor.Geometry
 {
-    public class StaticMeshInstance : ItemInstance
+    public class StaticInstance : ItemInstance
     {
-        public StaticModel Model { get; set; }
         public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
 
-        public StaticMeshInstance(int id, Room room)
+        public StaticInstance(int id, Room room)
             : base(id, room)
         { }
 
         public override ObjectInstanceType Type
         {
-            get { return ObjectInstanceType.StaticMesh; }
+            get { return ObjectInstanceType.Static; }
         }
 
         public override ItemType ItemType
         {
-            get { return new ItemType(true, ObjectId); }
+            get { return new ItemType(true, WadObjectId); }
         }
 
         public override ObjectInstance Clone()
         {
-            return new StaticMeshInstance(0, Room)
+            return new StaticInstance(0, Room)
             {
                 X = X,
                 Y = Y,
@@ -41,20 +39,9 @@ namespace TombEditor.Geometry
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Model = Model,
-                ObjectId = ObjectId,
+                WadObjectId = WadObjectId,
                 Color = Color
             };
-        }
-
-        public override string ToString()
-        {
-            return "Static (" + Model.ObjectID + ") " + ObjectNames.GetStaticName(Model.ObjectID) +
-                ", ID = " + Id +
-                ", Room = " + Room.ToString() +
-                ", X = " + Position.X +
-                ", Y = " + Position.Y +
-                ", Z = " + Position.Z;
         }
     }
 }

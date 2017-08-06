@@ -5,7 +5,7 @@ namespace TombEditor.Geometry
     public enum ObjectInstanceType : byte
     {
         Moveable,
-        StaticMesh,
+        Static,
         Camera,
         Sink,
         Portal,

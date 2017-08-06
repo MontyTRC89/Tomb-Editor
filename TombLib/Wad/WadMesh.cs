@@ -16,9 +16,9 @@ namespace TombLib.Wad
         public ushort Radius;
         public ushort Unknown;
         public ushort NumVertices;
-        public WadVertex[] Vertices;
+        public WadVector[] Vertices;
         public short NumNormals;
-        public WadVertex[] Normals;
+        public WadVector[] Normals;
         public short[] Shades;
         public ushort NumPolygons;
         public WadPolygon[] Polygons;

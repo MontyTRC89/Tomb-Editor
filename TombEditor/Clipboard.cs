@@ -71,7 +71,7 @@ namespace TombEditor
                         room.Moveables.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
 
-                    case ObjectInstanceType.StaticMesh:
+                    case ObjectInstanceType.Static:
                         room.StaticMeshes.Add(CopyObject(_objectPtr.Value.Id, level, room, position, x, y, z));
                         break;
                 }

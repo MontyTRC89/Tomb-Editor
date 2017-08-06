@@ -161,7 +161,7 @@ namespace TombEditor
                         if (instance.Type == ObjectInstanceType.Moveable)
                         {
                             MoveableInstance mov = (MoveableInstance)instance;
-                            if (mov.ObjectId == 422 || 1 == 1)
+                            if (mov.WadObjectId == 422)
                             {
                                 _items.Add(instance.Id);
                                 comboParameter.Items.Add("Target ID = " + instance.Id + ", Room = " + instance.Room +

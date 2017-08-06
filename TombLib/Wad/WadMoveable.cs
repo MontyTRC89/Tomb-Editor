@@ -6,9 +6,8 @@ using SharpDX;
 
 namespace TombLib.Wad
 {
-    public class WadMoveable
+    public class WadMoveable : WadObject
     {
-        public uint ObjectID;
         public List<WadMesh> Meshes = new List<WadMesh>();
         public List<WadLink> Links = new List<WadLink>();
         public List<WadAnimation> Animations = new List<WadAnimation>();
@@ -17,7 +16,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            return "(" + ObjectID + ") " + ObjectNames.GetMovableName(ObjectID);
+            return "(" + ObjectID + ") " + ObjectNames.GetMoveableName(ObjectID);
         }
     }
 }
