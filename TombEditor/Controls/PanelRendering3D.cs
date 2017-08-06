@@ -21,9 +21,7 @@ namespace TombEditor.Controls
     public partial class PanelRendering3D : Panel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private const float _rotationSpeed = 0.1f;
-        private const float _keyboardZoomSpeed = 0.1f;
+        
 
         private class RenderBucket
         {
@@ -402,37 +400,44 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Up:
-                    Camera.Rotate(0, -_rotationSpeed);
+                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
                     Invalidate();
                     return true;
 
                 case Keys.Down:
-                    Camera.Rotate(0, _rotationSpeed);
+                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
                     Invalidate();
                     return true;
 
                 case Keys.Left:
-                    Camera.Rotate(_rotationSpeed, 0);
+                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
                     Invalidate();
                     return true;
 
                 case Keys.Right:
-                    Camera.Rotate(-_rotationSpeed, 0);
+                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
                     Invalidate();
                     return true;
 
                 case Keys.PageUp:
-                    Camera.Move(_keyboardZoomSpeed);
+                    Camera.Move(-_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
                     Invalidate();
                     return true;
 
                 case Keys.PageDown:
-                    Camera.Move(-_keyboardZoomSpeed);
+                    Camera.Move(_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
                     Invalidate();
                     return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            // Make this control able to receive scroll and key board events...
+            base.OnMouseEnter(e);
+            Focus();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -632,12 +637,18 @@ namespace TombEditor.Controls
             // Right click is for camera motion
             if (e.Button == MouseButtons.Right)
             {
+                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                float relativeDeltaX = deltaX / (float)Height;
+                float relativeDeltaY = deltaY / (float)Height; 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(-deltaY * 50);
+                    Camera.Move(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMoveMouse);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(deltaX, -deltaY, 0));
+                    Camera.Translate(new Vector3(relativeDeltaX, -relativeDeltaY, 0) * 
+                        _editor.Configuration.Rendering3D_NavigationSpeedTranslateMouse);
                 else
-                    Camera.Rotate((float)(deltaX / 500.0f), (float)(-deltaY / 500.0f));
+                    Camera.Rotate(
+                        relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse,
+                        -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse);
 
                 Invalidate();
             }
@@ -1622,7 +1633,7 @@ namespace TombEditor.Controls
                 var theRoom = stackRooms.Pop();
                 int theLimit = stackLimits.Pop();
 
-                if (theLimit > _editor.Configuration.DrawRoomsMaxDepth)
+                if (theLimit > _editor.Configuration.Rendering3D_DrawRoomsMaxDepth)
                     continue;
 
                 visitedRooms.Add(theRoom);
