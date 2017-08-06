@@ -234,7 +234,7 @@ namespace TombEditor
                 {
                     foreach (var movable in _editor.Level.Wad.WadMoveables.Values)
                         comboItems.Items.Add(movable);
-                    foreach (var staticMesh in _editor.Level.Wad.WasStaticMeshes.Values)
+                    foreach (var staticMesh in _editor.Level.Wad.WadStatics.Values)
                         comboItems.Items.Add(staticMesh);
                     comboItems.SelectedIndex = 0;
                 }
@@ -247,7 +247,7 @@ namespace TombEditor
                 if (!e.Current.HasValue)
                     comboItems.SelectedIndex = -1;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.Items.Add(_editor.Level.Wad.WasStaticMeshes[e.Current.Value.Id]);
+                    comboItems.Items.Add(_editor.Level.Wad.WadStatics[e.Current.Value.Id]);
                 else
                     comboItems.Items.Add(_editor.Level.Wad.WadMoveables[e.Current.Value.Id]);
             }
@@ -256,10 +256,10 @@ namespace TombEditor
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 ObjectPtr? selectedObject = ((Editor.SelectedObjectChangedEvent)obj).Current;
-                if (!selectedObject.HasValue || (selectedObject.Value.Type != ObjectInstanceType.StaticMesh))
+                if (!selectedObject.HasValue || (selectedObject.Value.Type != ObjectInstanceType.Static))
                     panelStaticMeshColor.BackColor = System.Drawing.Color.Black;
                 else
-                    panelStaticMeshColor.BackColor = ((StaticMeshInstance)_editor.Level.Objects[selectedObject.Value.Id]).Color;
+                    panelStaticMeshColor.BackColor = ((StaticInstance)_editor.Level.Objects[selectedObject.Value.Id]).Color;
             }
 
             // Update application title
@@ -1008,8 +1008,8 @@ namespace TombEditor
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
                 _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
-            else if (comboItems.SelectedItem is WadStaticMesh)
-                _editor.ChosenItem = new ItemType(true, ((WadStaticMesh)(comboItems.SelectedItem)).ObjectID);
+            else if (comboItems.SelectedItem is WadStatic)
+                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
         }
         
         private ItemType? GetCurrentItemWithMessage()
@@ -1432,9 +1432,9 @@ namespace TombEditor
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.StaticMesh))
+            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Static))
                 return;
-            var instance = (StaticMeshInstance)_editor.Level.Objects[_editor.SelectedObject.Value.Id];
+            var instance = (StaticInstance)_editor.Level.Objects[_editor.SelectedObject.Value.Id];
 
             colorDialog.Color = instance.Color;
             if (colorDialog.ShowDialog(this) != DialogResult.OK)

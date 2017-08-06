@@ -23,13 +23,19 @@ namespace TombLib.Wad
                 }
         }
 
-        public static string GetMovableName(uint MovableID)
+        public static string GetMoveableName(uint MovableID)
         {
-            return _moveableNames[MovableID];
+            if (_moveableNames.ContainsKey(MovableID))
+                return _moveableNames[MovableID];
+            else
+                return "Unkown";
         }
         public static string GetStaticName(uint StaticID)
         {
-            return _staticNames[StaticID];
+            if (_staticNames.ContainsKey(StaticID))
+                return _staticNames[StaticID];
+            else
+                return "Unkown";
         }
     }
 }

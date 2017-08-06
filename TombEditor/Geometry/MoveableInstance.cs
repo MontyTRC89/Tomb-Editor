@@ -1,12 +1,9 @@
-﻿using TombLib.Graphics;
-using TombLib.Wad;
+﻿using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
     public class MoveableInstance : ItemInstance
     {
-        public SkinnedModel Model { get; set; }
-
         public MoveableInstance(int id, Room room)
             : base(id, room)
         { }
@@ -18,7 +15,7 @@ namespace TombEditor.Geometry
 
         public override ItemType ItemType
         {
-            get { return new ItemType(false, ObjectId); }
+            get { return new ItemType(false, WadObjectId); }
         }
 
         public override ObjectInstance Clone()
@@ -40,19 +37,8 @@ namespace TombEditor.Geometry
                     [3] = Bits[3],
                     [4] = Bits[4]
                 },
-                Model = Model,
-                ObjectId = ObjectId
+                WadObjectId = WadObjectId
             };
-        }
-
-        public override string ToString()
-        {
-            return "Movable (" + Model.ObjectID + ") " + ObjectNames.GetMovableName(Model.ObjectID) +
-                ", ID = " + Id + 
-                ", Room = " + Room.ToString() +
-                ", X = " + Position.X +
-                ", Y = " + Position.Y +
-                ", Z = " + Position.Z;
         }
     }
 }

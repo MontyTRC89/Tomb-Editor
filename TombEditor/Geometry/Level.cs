@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
-using System.IO;
 using SharpDX.Toolkit.Graphics;
 using TombLib.Wad;
-using TombLib.IO;
 using System.Diagnostics;
 using NLog;
 
@@ -214,29 +212,14 @@ namespace TombEditor.Geometry
 
         public void LoadWad(string filename, GraphicsDevice device)
         {
-            // Load the WAD
-            Wad = Wad.LoadWad(filename);
-            WadFile = filename;
-
-            Wad.GraphicsDevice = device;
-            Wad.PrepareDataForDirectX();
-
-            // Prepare vertex buffers and index buffers
-            foreach (var moveable in Wad.Moveables.Values)
+            using (var wad = Wad)
             {
-                // Build the mesh tree
-                moveable.BuildHierarchy();
+                var NewWad = Wad.LoadWad(filename);
+                WadFile = filename;
 
-                // If moveable has animations, then build the animation pose of first frame of animation 0
-                if (moveable.Animations.Count > 0 && moveable.Animations[0].KeyFrames.Count > 0)
-                    moveable.BuildAnimationPose(moveable.Animations[0].KeyFrames[0]);
-
-                moveable.BuildBuffers();
-            }
-
-            foreach (var staticMesh in Wad.StaticMeshes.Values)
-            {
-                staticMesh.BuildBuffers();
+                NewWad.GraphicsDevice = device;
+                NewWad.PrepareDataForDirectX();
+                Wad = NewWad;
             }
         }
 

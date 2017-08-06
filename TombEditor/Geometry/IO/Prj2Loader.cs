@@ -167,8 +167,8 @@ namespace TombEditor.Geometry.IO
                             case ObjectInstanceType.Moveable:
                                 o = new MoveableInstance(objectId, null);
                                 break;
-                            case ObjectInstanceType.StaticMesh:
-                                o = new StaticMeshInstance(objectId, null);
+                            case ObjectInstanceType.Static:
+                                o = new StaticInstance(objectId, null);
                                 break;
                             case ObjectInstanceType.Camera:
                                 o = new CameraInstance(objectId, null);
@@ -198,17 +198,17 @@ namespace TombEditor.Geometry.IO
                         o.Bits[3] = reader.ReadBoolean();
                         o.Bits[4] = reader.ReadBoolean();
 
-                        if (o.Type == ObjectInstanceType.StaticMesh)
+                        if (o.Type == ObjectInstanceType.Static)
                         {
-                            ((StaticMeshInstance)o).ObjectId = reader.ReadUInt32();
-                            ((StaticMeshInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
+                            ((StaticInstance)o).WadObjectId = reader.ReadUInt32();
+                            ((StaticInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
                                 reader.ReadByte());
                             reader.ReadBytes(1);
                         }
 
                         if (o.Type == ObjectInstanceType.Moveable)
                         {
-                            ((MoveableInstance)o).ObjectId = reader.ReadUInt32();
+                            ((MoveableInstance)o).WadObjectId = reader.ReadUInt32();
                             reader.ReadBytes(4);
                         }
 
@@ -542,11 +542,9 @@ namespace TombEditor.Geometry.IO
                 {
                     case ObjectInstanceType.Moveable:
                         obj.Room.Moveables.Add(objectId);
-                        ((MoveableInstance)obj).Model = level.Wad.Moveables[(uint)((MoveableInstance)obj).ObjectId];
                         break;
-                    case ObjectInstanceType.StaticMesh:
+                    case ObjectInstanceType.Static:
                         obj.Room.StaticMeshes.Add(objectId);
-                        ((StaticMeshInstance)obj).Model = level.Wad.StaticMeshes[(uint)((StaticMeshInstance)obj).ObjectId];
                         break;
                     case ObjectInstanceType.Camera:
                         obj.Room.Cameras.Add(objectId);

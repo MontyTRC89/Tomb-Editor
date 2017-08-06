@@ -553,8 +553,8 @@ namespace TombLib.Wad
                         WadKeyFrame frame = new WadKeyFrame();
                         int startOfFrame = frames;
 
-                        frame.BoundingBox1 = new WadVertex();
-                        frame.BoundingBox2 = new WadVertex();
+                        frame.BoundingBox1 = new WadVector();
+                        frame.BoundingBox2 = new WadVector();
 
                         frame.BoundingBox1.X = KeyFrames[frames];
                         frame.BoundingBox2.X = KeyFrames[frames + 1];
@@ -567,7 +567,7 @@ namespace TombLib.Wad
 
                         frames += 6;
 
-                        frame.Offset = new WadVertex();
+                        frame.Offset = new WadVector();
                         frame.Offset.X = KeyFrames[frames];
                         frame.Offset.Y = KeyFrames[frames + 1];
                         frame.Offset.Z = KeyFrames[frames + 2];
@@ -666,13 +666,13 @@ namespace TombLib.Wad
 
             for (int i = 0; i < StaticMeshes.Count; i++)
             {
-                WadStaticMesh staticMesh = new WadStaticMesh();
+                WadStatic staticMesh = new WadStatic();
                 wad_static_mesh oldStaticMesh = StaticMeshes[i];
 
                 staticMesh.ObjectID = oldStaticMesh.ObjectId;
                 staticMesh.Mesh = GetNewMesh(Meshes[(int)RealPointers[(int)oldStaticMesh.PointersIndex]]);
                 staticMesh.Flags = (short)oldStaticMesh.Flags;
-                staticMesh.VisibilityBox1 = new WadVertex();
+                staticMesh.VisibilityBox1 = new WadVector();
                 staticMesh.VisibilityBox1.X = (short)oldStaticMesh.VisibilityX1;
                 staticMesh.VisibilityBox1.Y = (short)oldStaticMesh.VisibilityY1;
                 staticMesh.VisibilityBox1.Z = (short)oldStaticMesh.VisibilityZ1;
@@ -689,7 +689,7 @@ namespace TombLib.Wad
                 staticMesh.BoundingBox = new BoundingBox(new Vector3(oldStaticMesh.VisibilityX1, oldStaticMesh.VisibilityY1, oldStaticMesh.VisibilityZ1),
                                                          new Vector3(oldStaticMesh.VisibilityX2, oldStaticMesh.VisibilityY2, oldStaticMesh.VisibilityZ2));
 
-                wad.WasStaticMeshes.Add(oldStaticMesh.ObjectId, staticMesh);
+                wad.WadStatics.Add(oldStaticMesh.ObjectId, staticMesh);
             }
 
             return wad;
@@ -707,10 +707,10 @@ namespace TombLib.Wad
             mesh.Unknown = oldMesh.Unknown;
 
             mesh.NumVertices = (ushort)oldMesh.Vertices.Count;
-            mesh.Vertices = new WadVertex[oldMesh.Vertices.Count];
+            mesh.Vertices = new WadVector[oldMesh.Vertices.Count];
             for (int i = 0; i < oldMesh.Vertices.Count; i++)
             {
-                WadVertex vertex = new WadVertex();
+                WadVector vertex = new WadVector();
 
                 vertex.X = oldMesh.Vertices[i].X;
                 vertex.Y = oldMesh.Vertices[i].Y;
@@ -727,10 +727,10 @@ namespace TombLib.Wad
 
             if (mesh.NumNormals > 0)
             {
-                mesh.Normals = new WadVertex[oldMesh.Vertices.Count];
+                mesh.Normals = new WadVector[oldMesh.Vertices.Count];
                 for (int i = 0; i < oldMesh.Normals.Count; i++)
                 {
-                    WadVertex vertex = new WadVertex();
+                    WadVector vertex = new WadVector();
 
                     vertex.X = oldMesh.Vertices[i].X;
                     vertex.Y = oldMesh.Vertices[i].Y;

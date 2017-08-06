@@ -8,6 +8,7 @@ using SharpDX.Toolkit;
 using SharpDX;
 using TombLib.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
+using TombLib.Wad;
 
 namespace TombLib.Graphics
 {
@@ -21,9 +22,230 @@ namespace TombLib.Graphics
         public List<Matrix> InverseTransforms { get; set; } = new List<Matrix>();
         public List<Matrix> AnimationTransforms { get; set; } = new List<Matrix>();
 
-        public SkinnedModel(GraphicsDevice device, uint objectId)
-            : base(device, objectId, ModelType.Skinned)
+        public SkinnedModel(GraphicsDevice device)
+            : base(device, ModelType.Skinned)
         {}
+
+        public static SkinnedModel FromWad(GraphicsDevice device, WadMoveable mov,
+            Dictionary<uint, WadTexturePage> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
+        {
+            SkinnedModel model = new SkinnedModel(device);
+            model.Offset = mov.Offset;
+
+            // Initialize the mesh
+            for (int m = 0; m < mov.Meshes.Count; m++)
+            {
+                WadMesh msh = mov.Meshes[m];
+                SkinnedMesh mesh = new SkinnedMesh(device, mov.ToString() + "_mesh_" + m.ToString());
+
+                mesh.BoundingBox = msh.BoundingBox;
+
+                for (int j = 0; j < texturePages.Count; j++)
+                {
+                    Submesh submesh = new Submesh();
+                    submesh.Material = new TombLib.Graphics.Material();
+                    submesh.Material.Type = MaterialType.Flat;
+                    submesh.Material.Name = "material_" + j.ToString();
+                    submesh.Material.DiffuseMap = (uint)j;
+                    mesh.SubMeshes.Add(submesh);
+                }
+
+                for (int j = 0; j < msh.Polygons.Length; j++)
+                {
+                    WadPolygon poly = msh.Polygons[j];
+                    int textureId = poly.Texture & 0xfff;
+                    if (textureId > 2047)
+                        textureId = -(textureId - 4096);
+                    short submeshIndex = textureSamples[(uint)textureId].Page;
+
+                    List<Vector2> uv = CalculateUVCoordinates(poly, textureSamples);
+
+                    if (poly.Shape == Shape.Triangle)
+                    {
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, m);
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, m);
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, m);
+                    }
+                    else
+                    {
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, m);
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, m);
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, m);
+
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, m);
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, m);
+                        AddSkinnedVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, m);
+                    }
+                }
+
+                for (int j = 0; j < mesh.SubMeshes.Count; j++)
+                {
+                    Submesh current = mesh.SubMeshes[j];
+                    current.StartIndex = (ushort)mesh.Indices.Count;
+                    for (int k = 0; k < current.Indices.Count; k++)
+                        mesh.Indices.Add(current.Indices[k]);
+                    current.NumIndices = (ushort)current.Indices.Count;
+                }
+
+                mesh.BoundingSphere = new BoundingSphere(new Vector3(msh.SphereX, msh.SphereY, msh.SphereZ), msh.Radius);
+
+                model.Meshes.Add(mesh);
+            }
+
+            // Initialize bones
+            Bone root = new Bone();
+            root.Name = "root_bone";
+            root.Parent = null;
+            root.Transform = Matrix.Identity;
+            root.Index = 0;
+            model.Bones.Add(root);
+            model.Root = root;
+            model.Transforms.Add(Matrix.Translation(Vector3.Zero));
+            model.InverseTransforms.Add(Matrix.Translation(Vector3.Zero));
+            model.AnimationTransforms.Add(Matrix.Translation(Vector3.Zero));
+
+            for (int j = 0; j < mov.Meshes.Count - 1; j++)
+            {
+                Bone bone = new Bone();
+                bone.Name = "bone_" + (j + 1).ToString();
+                bone.Parent = null;
+                bone.Transform = Matrix.Translation(Vector3.Zero);
+                bone.Index = (short)(j + 1);
+                model.Transforms.Add(Matrix.Translation(Vector3.Zero));
+                model.InverseTransforms.Add(Matrix.Translation(Vector3.Zero));
+                model.AnimationTransforms.Add(Matrix.Translation(Vector3.Zero));
+                model.Bones.Add(bone);
+            }
+
+            Bone currentBone = root;
+            Bone stackBone = root;
+            Stack<Bone> stack = new Stack<Bone>();
+
+            for (int m = 0; m < (mov.Meshes.Count - 1); m++)
+            {
+                int j = m + 1;
+                WadLink link = mov.Links[m];
+
+                switch (link.Opcode)
+                {
+                    case WadLinkOpcode.NotUseStack:
+                        model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
+                        model.Bones[j].Parent = currentBone;
+                        currentBone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
+
+                        break;
+                    case WadLinkOpcode.Push:
+                        try
+                        {
+                            currentBone = stack.Pop();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+
+                        model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
+                        model.Bones[j].Parent = currentBone;
+                        currentBone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
+
+                        break;
+                    case WadLinkOpcode.Pop:
+                        model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
+                        try
+                        {
+                            stack.Push(currentBone);
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                        model.Bones[j].Parent = currentBone;
+                        currentBone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
+
+                        break;
+                    case WadLinkOpcode.Read:
+                        Bone bone;
+                        try
+                        {
+                            bone = stack.Pop();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                        model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
+                        model.Bones[j].Parent = bone;
+                        bone.Children.Add(model.Bones[j]);
+                        currentBone = model.Bones[j];
+                        stack.Push(bone);
+
+                        break;
+                }
+            }
+
+            // Prepare animations
+            for (int j = 0; j < mov.Animations.Count; j++)
+            {
+                Animation animation = new Animation();
+                WadAnimation wadAnim = mov.Animations[j];
+
+                animation.KeyFrames = new List<KeyFrame>();
+
+                for (int f = 0; f < wadAnim.KeyFrames.Count; f++)
+                {
+                    KeyFrame frame = new KeyFrame();
+                    WadKeyFrame wadFrame = wadAnim.KeyFrames[f];
+
+                    for (int k = 0; k < mov.Meshes.Count; k++)
+                    {
+                        frame.Rotations.Add(Matrix.Identity);
+                        frame.Translations.Add(Matrix.Identity);
+                    }
+
+                    frame.Translations[0] = Matrix.Translation(new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z));
+
+                    for (int k = 1; k < frame.Translations.Count; k++)
+                        frame.Translations[k] = Matrix.Translation(Vector3.Zero);
+
+                    for (int n = 0; n < frame.Rotations.Count; n++)
+                    {
+                        WadKeyFrameRotation rot = wadFrame.Angles[n];
+                        switch (rot.Axis)
+                        {
+                            case WadKeyFrameRotationAxis.ThreeAxes:
+                                frame.Rotations[n] = Matrix.RotationYawPitchRoll((float)rot.Y, (float)-rot.X, (float)-rot.Z);
+                                break;
+
+                            case WadKeyFrameRotationAxis.AxisX:
+                                frame.Rotations[n] = Matrix.RotationX((float)-rot.X);
+                                break;
+
+                            case WadKeyFrameRotationAxis.AxisY:
+                                frame.Rotations[n] = Matrix.RotationY((float)rot.Y);
+                                break;
+
+                            case WadKeyFrameRotationAxis.AxisZ:
+                                frame.Rotations[n] = Matrix.RotationZ((float)-rot.Z);
+                                break;
+                        }
+                    }
+
+                    animation.KeyFrames.Add(frame);
+                }
+
+                model.Animations.Add(animation);
+            }
+
+            // Prepare data by loading the first animation and uploading data to the GPU
+            model.BuildHierarchy();
+            if (model.Animations.Count > 0 && model.Animations[0].KeyFrames.Count > 0)
+                model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
+            model.BuildBuffers();
+            return model;
+        }
 
         public void ApplyTransforms()
         { }
@@ -131,8 +353,8 @@ namespace TombLib.Graphics
             if (Vertices.Count == 0)
                 return;
 
-            _vb = Buffer.Vertex.New<SkinnedVertex>(GraphicsDevice, Vertices.ToArray<SkinnedVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
-            _ib = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexBuffer = Buffer.Vertex.New<SkinnedVertex>(GraphicsDevice, Vertices.ToArray<SkinnedVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
     }
 }
