@@ -5,6 +5,8 @@ namespace TombEditor.Geometry
     public class MoveableInstance : ItemInstance
     {
         public short Ocb { get; set; } = 0;
+        public bool Invisible { get; set; } = false;
+        public bool ClearBody { get; set; } = false;
 
         public MoveableInstance(int id, Room room)
             : base(id, room)
