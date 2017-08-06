@@ -215,18 +215,19 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Right)
             {
-                float deltaX = (e.X - _lastX) / Width;
-                float deltaY = (e.Y - _lastY) / Height;
+                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                float deltaX = (e.X - _lastX) / (float)Height;
+                float deltaY = (e.Y - _lastY) / (float)Height;
 
                 _lastX = e.X;
                 _lastY = e.Y;
 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(deltaY * -200);
+                    Camera.Move(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMoveMouse);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(deltaX * 200, deltaY * -200, 0));
+                    Camera.Translate(new Vector3(deltaX, -deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedTranslateMouse);
                 else
-                    Camera.Rotate(deltaX *4, -deltaY * 4);
+                    Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedRotateMouse, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedRotateMouse);
                 Invalidate();
             }
         }
