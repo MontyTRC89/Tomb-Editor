@@ -280,6 +280,8 @@ namespace TombEditor
                 bool HasInOutRange = false;
                 bool HasLenCutoffRange = false;
                 bool HasDirection = false;
+                bool CanCastShadows = false;
+                bool CanIlluminateStaticAndDynamicGeometry = false;
                 if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Light))
                 {
                     IsLight = true;
@@ -287,7 +289,18 @@ namespace TombEditor
                     switch (light.Type)
                     {
                         case LightType.Light:
+                            HasInOutRange = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
+                            break;
+
                         case LightType.Shadow:
+                            HasInOutRange = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
+                            break;
+
+                        case LightType.Effect:
                         case LightType.FogBulb:
                             HasInOutRange = true;
                             break;
@@ -296,16 +309,23 @@ namespace TombEditor
                             HasInOutRange = true;
                             HasLenCutoffRange = true;
                             HasDirection = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
                             break;
 
                         case LightType.Sun:
                             HasDirection = true;
+                            CanCastShadows = true;
+                            CanIlluminateStaticAndDynamicGeometry = true;
                             break;
                     }
                     
                     panelLightColor.BackColor = light.Color;
                     numLightIntensity.Value = light.Intensity;
                     cbLightEnabled.Checked = light.Enabled;
+                    cbLightCastsShadows.Checked = light.CastsShadows;
+                    cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
+                    cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
                     numLightIn.Value = light.In;
                     numLightOut.Value = light.Out;
                     numLightLen.Value = light.Len;
@@ -320,6 +340,9 @@ namespace TombEditor
                 panelLightColor.Enabled = IsLight;
                 numLightIntensity.Enabled = IsLight;
                 cbLightEnabled.Enabled = IsLight;
+                cbLightCastsShadows.Enabled = CanCastShadows;
+                cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
+                cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
                 numLightIn.Enabled = HasInOutRange;
                 numLightOut.Enabled = HasInOutRange;
                 numLightLen.Enabled = HasLenCutoffRange;
@@ -653,36 +676,57 @@ namespace TombEditor
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
-        
-        private void panelLightColor_Click(object sender, EventArgs e)
+
+        private void UpdateLight<T>(Func<Light, T> getLightValue, Action<Light, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
         {
             if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
                 return;
 
             Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
-            colorDialog.Color = light.Color;
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
+            T? newValue = getGuiValue(getLightValue(light));
+            if ((!newValue.HasValue) || newValue.Value.Equals(getLightValue(light)))
                 return;
-            
-            _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id].Color = colorDialog.Color;
+
+            setLightValue(light, newValue.Value);
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
             _editor.ObjectChange(light);
         }
 
+        private void panelLightColor_Click(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.Color, (light, value) => light.Color = value,
+                (value) =>
+                {
+                    colorDialog.Color = value;
+                    if (colorDialog.ShowDialog(this) != DialogResult.OK)
+                        return null;
+                    return colorDialog.Color;
+                });
+        }
+
         private void cbLightEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
-                return;
+            UpdateLight((light) => light.Enabled, (light, value) => light.Enabled = value,
+                (value) => cbLightEnabled.Checked);
+        }
+        
+        private void cbLightCastsShadows_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.CastsShadows, (light, value) => light.CastsShadows = value,
+                (value) => cbLightCastsShadows.Checked);
+        }
 
-            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
-            if (light.Enabled != cbLightEnabled.Checked)
-            {
-                light.Enabled = cbLightEnabled.Checked;
-                _editor.SelectedRoom.CalculateLightingForThisRoom();
-                _editor.SelectedRoom.UpdateBuffers();
-                _editor.ObjectChange(light);
-            }
+        private void cbLightIsStaticallyUsed_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.IsStaticallyUsed, (light, value) => light.IsStaticallyUsed = value,
+                (value) => cbLightIsStaticallyUsed.Checked);
+        }
+
+        private void cbLightIsDynamicallyUsed_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateLight((light) => light.IsDynamicallyUsed, (light, value) => light.IsDynamicallyUsed = value,
+                (value) => cbLightIsDynamicallyUsed.Checked);
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)

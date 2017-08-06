@@ -2692,7 +2692,7 @@ namespace TombEditor.Geometry
 
                 foreach (var light in lights)
                 {
-                    if (!light.Enabled)
+                    if ((!light.Enabled) || (!light.IsStaticallyUsed))
                         continue;
 
                     switch (light.Type)
@@ -2719,7 +2719,8 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    continue;
+                                    if (light.CastsShadows)
+                                        continue;
                                 }
 
                                 // Calculate the attenuation
@@ -2765,7 +2766,8 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    continue;
+                                    if (light.CastsShadows)
+                                        continue;
                                 }
 
                                 // Calculate the light direction
@@ -2831,7 +2833,8 @@ namespace TombEditor.Geometry
                                     !RayTraceX((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z) ||
                                     !RayTraceZ((int)p.X, (int)p.Y, (int)p.Z, (int)light.Position.X, (int)light.Position.Y, (int)light.Position.Z))
                                 {
-                                    continue;
+                                    if (light.CastsShadows)
+                                        continue;
                                 }
 
                                 // Calculate light diffuse value
