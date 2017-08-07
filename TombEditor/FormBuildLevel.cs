@@ -36,9 +36,7 @@ namespace TombEditor
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             string baseName = System.IO.Path.GetFileNameWithoutExtension(_editor.Level.WadFile);
-
-            GC.Collect();
-
+            
             LevelCompilerTr4 comp = new LevelCompilerTr4(_editor.Level, "Game\\Data\\" + baseName + ".tr4", bw);
             comp.CompileLevel();
         }
@@ -56,8 +54,6 @@ namespace TombEditor
 
         private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            GC.Collect();
-
             pbStato.Value = 100;
 
             if (AutoCloseWhenDone)

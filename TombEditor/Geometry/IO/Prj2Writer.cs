@@ -31,16 +31,9 @@ namespace TombEditor.Geometry.IO
                     string textureFileName = Utils.GetRelativePath(filename, level.TextureFile);
                     string wadFileName = Utils.GetRelativePath(filename, level.WadFile);
 
-                    // Write texture map
-                    var textureFile = System.Text.Encoding.UTF8.GetBytes(textureFileName);
-                    int numBytes = textureFile.Length;
-                    writer.Write(numBytes);
-                    writer.Write(textureFile);
-
-                    var wadFile = System.Text.Encoding.UTF8.GetBytes(wadFileName);
-                    numBytes = wadFile.Length;
-                    writer.Write(numBytes);
-                    writer.Write(wadFile);
+                    // Write paths to dependent resources
+                    writer.WriteStringUTF8(textureFileName ?? string.Empty);
+                    writer.WriteStringUTF8(wadFileName ?? string.Empty);
 
                     writer.Write(filler32);
                     writer.Write(filler32);
@@ -210,7 +203,7 @@ namespace TombEditor.Geometry.IO
                             writer.Write(true);
                         }
                         
-                        writer.Write(r.Name);
+                        writer.WriteStringUTF8(r.Name);
                         writer.Write(r.Position.X);
                         writer.Write(r.Position.Y);
                         writer.Write(r.Position.Z);

@@ -92,5 +92,12 @@ namespace TombLib.IO
                 Marshal.FreeHGlobal(unmanaged);
             }
         }
+
+        public void WriteStringUTF8(string str)
+        {
+            byte[] stringData = Encoding.UTF8.GetBytes(str);
+            Write(stringData.GetLength(0));
+            Write(stringData);
+        }
     }
 }

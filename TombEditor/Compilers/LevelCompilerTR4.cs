@@ -107,9 +107,9 @@ namespace TombEditor.Compilers
 
         private byte[] _bufferSamples;
 
-        public LevelCompilerTr4(Level level, string dest, BackgroundWorker bw = null) : base(level, dest, bw)
-        {
-        }
+        public LevelCompilerTr4(Level level, string dest, BackgroundWorker bw = null) 
+            : base(level, dest, bw)
+        {}
 
         private void CompileLevelTask1()
         {
@@ -130,22 +130,23 @@ namespace TombEditor.Compilers
             {
                 foreach (var sound in _editor.Level.Wad.OriginalWad.Sounds)
                 {
-                    if (!File.Exists(@"Sounds\Samples\" + sound))
+                    string path = @"Sounds\Samples\" + sound;
+                    try
                     {
-                        const int sampleUncompressedSize = 0;
-                        writer.Write(sampleUncompressedSize);
-                        writer.Write(sampleUncompressedSize);
-                    }
-                    else
-                    {
-                        using (var readerSound = new BinaryReaderEx(File.OpenRead(@"Sounds\Samples\" + sound)))
+                        using (var readerSound = new BinaryReaderEx(File.OpenRead(path)))
                         {
-                            int sampleUncompressedSize = (int) readerSound.BaseStream.Length;
+                            int sampleUncompressedSize = (int)readerSound.BaseStream.Length;
                             var sample = readerSound.ReadBytes(sampleUncompressedSize);
                             writer.Write(sampleUncompressedSize);
                             writer.Write(sampleUncompressedSize);
                             writer.WriteBlockArray(sample);
                         }
+                    }
+                    catch (Exception exc)
+                    {
+                        logger.Warn(exc, "Unable to open \"" + path + "\".");
+                        writer.Write(0);
+                        writer.Write(0);
                     }
                 }
 
@@ -162,13 +163,16 @@ namespace TombEditor.Compilers
 
         public void CompileLevel()
         {
-            // Force garbage collector to compact memory
-            GC.Collect();
-
             var watch = new Stopwatch();
             watch.Start();
 
             ReportProgress(0, "Tomb Raider IV Level Compiler by MontyTRC");
+
+            if (_level.Wad == null)
+                throw new NotSupportedException("A wad must be loaded to compile to *.tr4.");
+
+            if (_level.TextureMap == null)
+                throw new NotSupportedException("A texture must be loaded to compile to *.tr4.");
 
             // Prepare textures in four threads
             var task1 = Task.Factory.StartNew(PrepareRoomTextures);

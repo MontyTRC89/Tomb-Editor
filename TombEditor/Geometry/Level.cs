@@ -20,10 +20,10 @@ namespace TombEditor.Geometry
         public Dictionary<int, LevelTexture> TextureSamples { get; } =
             new Dictionary<int, LevelTexture>(); //Texture tiles
 
-        public Dictionary<int, Texture2D> Textures { get; } =
-            new Dictionary<int, Texture2D>(); //DirectX textures... For now just one texture atlas 2048x2048 pixel
+        public Dictionary<int, Texture2D> DirectXTextures { get; } =
+            new Dictionary<int, Texture2D>(); //For now just one texture atlas 2048x2048 pixel
 
-        public Bitmap _textureMap; //The texture map on the CPU
+        public Bitmap TextureMap { get; private set; } //The texture map on the CPU
         public Dictionary<int, Portal> Portals { get; } = new Dictionary<int, Portal>();
         public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
 
@@ -33,8 +33,8 @@ namespace TombEditor.Geometry
         public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
         public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
         public Wad Wad { get; private set; }
-        public string TextureFile { get; set; }
-        public string WadFile { get; set; }
+        public string TextureFile { get; private set; }
+        public string WadFile { get; private set; }
         public string FileName { get; set; } // Can be null if the level has not been loaded from / saved to disk yet.  
 
         public static Level CreateSimpleLevel()
@@ -129,77 +129,100 @@ namespace TombEditor.Geometry
 
         public void Dispose()
         {
-            // First clean the old data
-            foreach (var texture in Textures.Values)
-                texture.Dispose(); // Dispose DirectX texture and release GPU memory
-
-            _textureMap?.Dispose();
-
-            Wad?.Dispose();
-
-            GC.Collect();
+            UnloadTexture();
+            UnloadWad();
         }
 
-        public void LoadTextureMap(string filename, GraphicsDevice device)
+        public void UnloadTexture()
         {
-            logger.Info("Loading texture map");
+            TextureMap?.Dispose();
+            TextureMap = null;
+            TextureFile = null;
+            DirectXTextures.Clear();
+        }
+
+        public void UnloadWad()
+        {
+            Wad?.Dispose();
+            Wad = null;
+            WadFile = null;
+        }
+
+        public void LoadTexture(string filename, GraphicsDevice device)
+        {
+            if (string.IsNullOrEmpty(filename))
+            {
+                logger.Info("Reseting texture");
+                UnloadTexture();
+                return;
+            }
+
+            logger.Info("Loading texture");
 
             var watch = new Stopwatch();
             watch.Start();
 
-            //Free old texture map...
-            _textureMap?.Dispose();
-
-            // Load texture map as a bitmap
-            _textureMap = TombLib.Graphics.TextureLoad.LoadToBitmap(filename);
-            Utils.ConvertTextureTo256Width(ref _textureMap);
-
-            // Calculate the number of pages
-            int numPages = (int)Math.Floor(_textureMap.Height / 256.0f);
-            if (_textureMap.Height % 256 != 0)
-                numPages++;
-
-            logger.Debug("Building 2048x2048 texture atlas for DirectX");
-
-            if (device != null)
+            using (var oldTexture = TextureMap) //Free old texture map afterwards...
             {
-                // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
-                // textures.
-                using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                var newTextureMap = TombLib.Graphics.TextureLoad.LoadToBitmap(filename);
+                try
                 {
-                    using (var g = Graphics.FromImage(tempBitmap))
+                    Utils.ConvertTextureTo256Width(ref newTextureMap);
+
+                    // Calculate the number of pages
+                    int numPages = (int)Math.Floor(newTextureMap.Height / 256.0f);
+                    if (newTextureMap.Height % 256 != 0)
+                        numPages++;
+
+                    logger.Debug("Building 2048x2048 texture atlas for DirectX");
+
+                    if (device != null)
                     {
-                        int currentXblock = 0;
-                        int currentYblock = 0;
-                        for (int i = 0; i < numPages; i++)
+                        // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
+                        // textures.
+                        using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                         {
-                            var src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
-                            var dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256,
-                                256);
+                            using (var g = Graphics.FromImage(tempBitmap))
+                            {
+                                int currentXblock = 0;
+                                int currentYblock = 0;
+                                for (int i = 0; i < numPages; i++)
+                                {
+                                    var src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
+                                    var dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256,
+                                        256);
 
-                            g.DrawImage(_textureMap, dest, src, GraphicsUnit.Pixel);
+                                    g.DrawImage(newTextureMap, dest, src, GraphicsUnit.Pixel);
 
-                            currentXblock++;
-                            if (currentXblock != 8)
-                                continue;
+                                    currentXblock++;
+                                    if (currentXblock != 8)
+                                        continue;
 
-                            currentXblock = 0;
-                            currentYblock++;
+                                    currentXblock = 0;
+                                    currentYblock++;
+                                }
+                            }
+
+                            // Clean up DirectX texture
+                            if (DirectXTextures.ContainsKey(0))
+                            {
+                                logger.Debug("Cleaning memory used by a previous texture map");
+
+                                DirectXTextures[0].Dispose();
+                                DirectXTextures.Remove(0);
+                            }
+
+                            // Create DirectX texture
+                            DirectXTextures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(device, tempBitmap));
                         }
                     }
-
-                    // Clean up DirectX texture
-                    if (Textures.ContainsKey(0))
-                    {
-                        logger.Debug("Cleaning memory used by a previous texture map");
-
-                        Textures[0].Dispose();
-                        Textures.Remove(0);
-                    }
-
-                    // Create DirectX texture
-                    Textures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(device, tempBitmap));
                 }
+                catch (Exception)
+                {
+                    newTextureMap?.Dispose();
+                    throw;
+                }
+                TextureMap = newTextureMap;
             }
 
             TextureFile = filename;
@@ -212,15 +235,29 @@ namespace TombEditor.Geometry
 
         public void LoadWad(string filename, GraphicsDevice device)
         {
+            if (string.IsNullOrEmpty(filename))
+            {
+                logger.Info("Reseting wad");
+                UnloadWad();
+                return;
+            }
+
             using (var wad = Wad)
             {
-                var NewWad = Wad.LoadWad(filename);
-                WadFile = filename;
-
-                NewWad.GraphicsDevice = device;
-                NewWad.PrepareDataForDirectX();
-                Wad = NewWad;
+                var newWad = Wad.LoadWad(filename);
+                try
+                {
+                    newWad.GraphicsDevice = device;
+                    newWad.PrepareDataForDirectX();
+                }
+                catch (Exception)
+                {
+                    newWad?.Dispose();
+                    throw;
+                }
+                Wad = newWad;
             }
+            WadFile = filename;
         }
 
         public int GetNewPortalId()

@@ -206,6 +206,8 @@
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
+    <Compile Include="Geometry\IO\IProgressReporter.cs" />
+    <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />
     <Compile Include="Geometry\IO\Prj2Writer.cs" />
     <Compile Include="Geometry\IO\PrjLoader.cs" />

@@ -67,7 +67,7 @@ namespace TombEditor
                         break;
 
                     case ObjectInstanceType.Static:
-                        room.StaticMeshes.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
+                        room.Statics.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
                         break;
                 }
 
