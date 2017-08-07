@@ -160,7 +160,7 @@ namespace TombEditor.Geometry.IO
                         int objectId = reader.ReadInt32();
                         var objectType = (ObjectInstanceType)reader.ReadByte();
 
-                        ObjectInstance o;
+                        PositionBasedObjectInstance o;
 
                         switch (objectType)
                         {

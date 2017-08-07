@@ -27,8 +27,8 @@ namespace TombEditor.Geometry
         public Dictionary<int, Portal> Portals { get; } = new Dictionary<int, Portal>();
         public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
 
-        public Dictionary<int, ObjectInstance> Objects { get; } =
-            new Dictionary<int, ObjectInstance>(); //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
+        public Dictionary<int, PositionBasedObjectInstance> Objects { get; } =
+            new Dictionary<int, PositionBasedObjectInstance>(); //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
 
         public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
         public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();

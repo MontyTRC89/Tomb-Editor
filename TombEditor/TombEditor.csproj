@@ -216,7 +216,6 @@
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cube.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Plane.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Sphere.cs" />
-    <Compile Include="Geometry\SectorBasedObjectInstance.cs" />
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />

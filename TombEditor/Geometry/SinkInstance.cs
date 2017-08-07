@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Geometry
 {
-    public class SinkInstance : ObjectInstance
+    public class SinkInstance : PositionBasedObjectInstance
     {
         public short Strength { get; set; }
 
