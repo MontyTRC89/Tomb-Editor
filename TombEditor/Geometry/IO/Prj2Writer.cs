@@ -151,6 +151,8 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(fbc.RotationX);
                                 writer.Write(fbc.RotationY);
                                 break;
+                            default:
+                                throw new NotSupportedException("Unknown object type " + o.Type + " encountered that can't be safed.");
                         }
 
                         writer.Write(filler32);
