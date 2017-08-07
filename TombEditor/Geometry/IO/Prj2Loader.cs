@@ -207,14 +207,11 @@ namespace TombEditor.Geometry.IO
                     int numRooms = reader.ReadInt32();
                     for (int i = 0; i < numRooms; i++)
                     {
-                        string roomMagicWord = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(4));
-
                         bool defined = reader.ReadBoolean();
                         if (!defined)
                         {
                             if (level.Rooms[i] != null)
                                 logger.Warn($"Room {i} is used, but is marked as undefined");
-                            level.Rooms[i] = null;
                             continue;
                         }
 

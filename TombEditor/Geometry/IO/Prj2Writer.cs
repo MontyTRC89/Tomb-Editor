@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using NLog;
 using TombLib.IO;
 
@@ -183,25 +184,23 @@ namespace TombEditor.Geometry.IO
                         writer.Write(filler32);
                     }
 
+                    // Figure out how many rooms are needed
+                    int numRooms = level.Rooms.Count();
+                    while (numRooms > 0)
+                    {
+                        if (level.Rooms[numRooms - 1] != null)
+                            break;
+                        --numRooms;
+                    }
+
                     // Write rooms
-                    const int numRooms = 255;
                     writer.Write(numRooms);
                     for (int i = 0; i < numRooms; i++)
                     {
-                        var roomMagicWord = System.Text.Encoding.ASCII.GetBytes("ROOM");
-                        writer.Write(roomMagicWord);
-
                         var r = level.Rooms[i];
-
+                        writer.Write(r != null);
                         if (r == null)
-                        {
-                            writer.Write(false);
                             continue;
-                        }
-                        else
-                        {
-                            writer.Write(true);
-                        }
                         
                         writer.WriteStringUTF8(r.Name);
                         writer.Write(r.Position.X);
