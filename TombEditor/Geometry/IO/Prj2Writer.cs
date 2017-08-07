@@ -116,8 +116,6 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(sm.Color.G);
                                 writer.Write(sm.Color.B);
                                 writer.Write(sm.Rotation);
-
-                                writer.Write(filler8);
                                 break;
                             case ObjectInstanceType.Moveable:
                                 var m = (MoveableInstance)o;
@@ -127,34 +125,31 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(m.ClearBody);
                                 writer.Write(m.CodeBits);
                                 writer.Write(m.Rotation);
-
-                                writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.Camera:
                                 var c = (CameraInstance)o;
                                 writer.Write(c.Fixed);
-
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.Sink:
                                 var s = (SinkInstance)o;
                                 writer.Write(s.Strength);
-
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.SoundSource:
                                 var ss = (SoundSourceInstance)o;
                                 writer.Write(ss.SoundId);
                                 writer.Write(ss.CodeBits);
-
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler32);
+                                break;
+                            case ObjectInstanceType.FlyByCamera:
+                                var fbc = (FlybyCameraInstance)o;
+                                writer.Write(fbc.Sequence);
+                                writer.Write(fbc.Number);
+                                writer.Write(fbc.Timer);
+                                writer.Write(fbc.Flags);
+                                writer.Write(fbc.Speed);
+                                writer.Write(fbc.Fov);
+                                writer.Write(fbc.Roll);
+                                writer.Write(fbc.RotationX);
+                                writer.Write(fbc.RotationY);
                                 break;
                         }
 

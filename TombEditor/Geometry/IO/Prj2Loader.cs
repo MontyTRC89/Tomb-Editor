@@ -159,80 +159,62 @@ namespace TombEditor.Geometry.IO
                     {
                         int objectId = reader.ReadInt32();
                         var objectType = (ObjectInstanceType)reader.ReadByte();
-
+                        var Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                        var Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        
                         PositionBasedObjectInstance o;
-
                         switch (objectType)
                         {
                             case ObjectInstanceType.Moveable:
-                                o = new MoveableInstance(objectId, null);
+                                var m = new MoveableInstance(objectId, Room);
+                                m.WadObjectId = reader.ReadUInt32();
+                                m.Ocb = reader.ReadInt16();
+                                m.Invisible = reader.ReadBoolean();
+                                m.ClearBody = reader.ReadBoolean();
+                                m.CodeBits = (byte)(reader.ReadByte() & 0x1f);
+                                m.Rotation = reader.ReadSingle();
+                                o = m;
                                 break;
                             case ObjectInstanceType.Static:
-                                o = new StaticInstance(objectId, null);
+                                var s = new StaticInstance(objectId, Room);
+                                s.WadObjectId = reader.ReadUInt32();
+                                s.Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                                s.Rotation = reader.ReadSingle();
+                                o = s;
                                 break;
                             case ObjectInstanceType.Camera:
-                                o = new CameraInstance(objectId, null);
+                                var c = new CameraInstance(objectId, Room);
+                                c.Fixed = reader.ReadBoolean();
+                                o = c;
                                 break;
                             case ObjectInstanceType.Sink:
-                                o = new SinkInstance(objectId, null);
+                                var si = new SinkInstance(objectId, Room);
+                                si.Strength = reader.ReadInt16();
+                                o = si;
                                 break;
                             case ObjectInstanceType.SoundSource:
-                                o = new SoundSourceInstance(objectId, null);
+                                var ss = new SoundSourceInstance(objectId, Room);
+                                ss.SoundId = reader.ReadInt16();
+                                ss.CodeBits = (byte)(reader.ReadByte() & 0x1f);
+                                o = ss;
                                 break;
                             case ObjectInstanceType.FlyByCamera:
-                                o = new FlybyCameraInstance(objectId, null);
+                                var ffc = new FlybyCameraInstance(objectId, Room);
+                                ffc.Sequence = reader.ReadByte();
+                                ffc.Number = reader.ReadByte();
+                                ffc.Timer = reader.ReadUInt16();
+                                ffc.Flags = reader.ReadUInt16();
+                                ffc.Speed = reader.ReadSingle();
+                                ffc.Fov = reader.ReadSingle();
+                                ffc.Roll = reader.ReadSingle();
+                                ffc.RotationX = reader.ReadSingle();
+                                ffc.RotationY = reader.ReadSingle();
+                                o = ffc;
                                 break;
                             default:
                                 return null;
                         }
-
-                        o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        o.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
-
-                        if (o.Type == ObjectInstanceType.Static)
-                        {
-                            ((StaticInstance)o).WadObjectId = reader.ReadUInt32();
-                            ((StaticInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                            ((StaticInstance)o).Rotation = reader.ReadSingle();
-                            reader.ReadBytes(1);
-                        }
-
-                        if (o.Type == ObjectInstanceType.Moveable)
-                        {
-                            ((MoveableInstance)o).WadObjectId = reader.ReadUInt32();
-                            ((MoveableInstance)o).Ocb = reader.ReadInt16();
-                            ((MoveableInstance)o).Invisible = reader.ReadBoolean();
-                            ((MoveableInstance)o).ClearBody = reader.ReadBoolean();
-                            ((MoveableInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
-                            ((MoveableInstance)o).Rotation = reader.ReadSingle();
-                            reader.ReadBytes(4);
-                        }
-
-                        if (o.Type == ObjectInstanceType.Camera)
-                        {
-                            ((CameraInstance)o).Fixed = reader.ReadBoolean();
-                            reader.ReadBytes(7);
-                        }
-
-                        if (o.Type == ObjectInstanceType.Sink)
-                        {
-                            ((SinkInstance)o).Strength = reader.ReadInt16();
-                            reader.ReadBytes(6);
-                        }
-
-                        if (o.Type == ObjectInstanceType.SoundSource)
-                        {
-                            ((SoundSourceInstance)o).SoundId = reader.ReadInt16();
-                            ((SoundSourceInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
-                            reader.ReadBytes(6);
-                        }
-
-                        /*if (o.Type == ObjectInstanceType.Fkl)
-                        {
-                            ((SoundInstance)o).SoundID = reader.ReadInt16();
-                            reader.ReadBytes(6);
-                        }*/
-
+                        
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();
