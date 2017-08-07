@@ -28,11 +28,11 @@ namespace TombEditor
         {
             comboType.SelectedIndex = (int)_trigger.TriggerType;
             comboTargetType.SelectedIndex = (int)_trigger.TargetType;
-            cbBit1.Checked = _trigger.Bits[0];
-            cbBit2.Checked = _trigger.Bits[1];
-            cbBit3.Checked = _trigger.Bits[2];
-            cbBit4.Checked = _trigger.Bits[3];
-            cbBit5.Checked = _trigger.Bits[4];
+            cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
+            cbBit2.Checked = (_trigger.CodeBits & (1 << 1)) != 0;
+            cbBit3.Checked = (_trigger.CodeBits & (1 << 2)) != 0;
+            cbBit4.Checked = (_trigger.CodeBits & (1 << 3)) != 0;
+            cbBit5.Checked = (_trigger.CodeBits & (1 << 4)) != 0;
             cbOneShot.Checked = _trigger.OneShot;
             tbTimer.Text = _trigger.Timer.ToString();
         }
@@ -246,11 +246,13 @@ namespace TombEditor
             _trigger.TriggerType = (TriggerType)comboType.SelectedIndex;
             _trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedIndex;
             _trigger.Timer = Int16.Parse(tbTimer.Text);
-            _trigger.Bits[0] = cbBit1.Checked;
-            _trigger.Bits[1] = cbBit2.Checked;
-            _trigger.Bits[2] = cbBit3.Checked;
-            _trigger.Bits[3] = cbBit4.Checked;
-            _trigger.Bits[4] = cbBit5.Checked;
+            byte codeBits = 0;
+            codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
+            codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
+            codeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
+            codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
+            codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
+            _trigger.CodeBits = codeBits;
             _trigger.OneShot = cbOneShot.Checked;
 
             if (_trigger.TargetType == TriggerTargetType.Object || _trigger.TargetType == TriggerTargetType.Camera ||

@@ -110,15 +110,6 @@ namespace TombEditor.Geometry.IO
                         writer.Write(o.Position.Y);
                         writer.Write(o.Position.Z);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(o.Ocb);
-                        writer.Write(o.Rotation);
-                        writer.Write(o.Invisible);
-                        writer.Write(o.ClearBody);
-                        writer.Write(o.Bits[0]);
-                        writer.Write(o.Bits[1]);
-                        writer.Write(o.Bits[2]);
-                        writer.Write(o.Bits[3]);
-                        writer.Write(o.Bits[4]);
 
                         switch (o.Type)
                         {
@@ -128,12 +119,18 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(sm.Color.R);
                                 writer.Write(sm.Color.G);
                                 writer.Write(sm.Color.B);
+                                writer.Write(sm.Rotation);
 
                                 writer.Write(filler8);
                                 break;
                             case ObjectInstanceType.Moveable:
                                 var m = (MoveableInstance)o;
                                 writer.Write(m.WadObjectId);
+                                writer.Write(m.Ocb);
+                                writer.Write(m.Invisible);
+                                writer.Write(m.ClearBody);
+                                writer.Write(m.CodeBits);
+                                writer.Write(m.Rotation);
 
                                 writer.Write(filler32);
                                 break;
@@ -147,24 +144,21 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.Sink:
-                            {
                                 var s = (SinkInstance)o;
                                 writer.Write(s.Strength);
 
                                 writer.Write(filler8);
                                 writer.Write(filler8);
                                 writer.Write(filler32);
-                            }
                                 break;
                             case ObjectInstanceType.SoundSource:
-                            {
-                                var s = (SoundSourceInstance)o;
-                                writer.Write(s.SoundId);
+                                var ss = (SoundSourceInstance)o;
+                                writer.Write(ss.SoundId);
+                                writer.Write(ss.CodeBits);
 
                                 writer.Write(filler8);
                                 writer.Write(filler8);
                                 writer.Write(filler32);
-                            }
                                 break;
                         }
 
@@ -194,11 +188,7 @@ namespace TombEditor.Geometry.IO
                         writer.Write(o.Target);
                         writer.Write(o.Timer);
                         writer.Write(o.OneShot);
-                        writer.Write(o.Bits[0]);
-                        writer.Write(o.Bits[1]);
-                        writer.Write(o.Bits[2]);
-                        writer.Write(o.Bits[3]);
-                        writer.Write(o.Bits[4]);
+                        writer.Write(o.CodeBits);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(o.Room));
 
                         writer.Write(filler16);

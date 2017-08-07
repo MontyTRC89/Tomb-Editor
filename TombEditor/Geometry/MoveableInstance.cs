@@ -4,6 +4,11 @@ namespace TombEditor.Geometry
 {
     public class MoveableInstance : ItemInstance
     {
+        public short Ocb { get; set; } = 0;
+        public bool Invisible { get; set; } = false;
+        public bool ClearBody { get; set; } = false;
+        public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
+
         public MoveableInstance(int id, Room room)
             : base(id, room)
         { }
@@ -20,25 +25,7 @@ namespace TombEditor.Geometry
 
         public override ObjectInstance Clone()
         {
-            return new MoveableInstance(0, Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                Bits =
-                {
-                    [0] = Bits[0],
-                    [1] = Bits[1],
-                    [2] = Bits[2],
-                    [3] = Bits[3],
-                    [4] = Bits[4]
-                },
-                WadObjectId = WadObjectId
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
     }
 }

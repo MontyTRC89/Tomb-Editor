@@ -170,7 +170,7 @@ namespace TombEditor.Geometry.IO
                         int objectId = reader.ReadInt32();
                         var objectType = (ObjectInstanceType)reader.ReadByte();
 
-                        ObjectInstance o;
+                        PositionBasedObjectInstance o;
 
                         switch (objectType)
                         {
@@ -198,27 +198,23 @@ namespace TombEditor.Geometry.IO
 
                         o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         o.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
-                        o.Ocb = reader.ReadInt16();
-                        o.Rotation = reader.ReadInt16();
-                        o.Invisible = reader.ReadBoolean();
-                        o.ClearBody = reader.ReadBoolean();
-                        o.Bits[0] = reader.ReadBoolean();
-                        o.Bits[1] = reader.ReadBoolean();
-                        o.Bits[2] = reader.ReadBoolean();
-                        o.Bits[3] = reader.ReadBoolean();
-                        o.Bits[4] = reader.ReadBoolean();
 
                         if (o.Type == ObjectInstanceType.Static)
                         {
                             ((StaticInstance)o).WadObjectId = reader.ReadUInt32();
-                            ((StaticInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(),
-                                reader.ReadByte());
+                            ((StaticInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                            ((StaticInstance)o).Rotation = reader.ReadSingle();
                             reader.ReadBytes(1);
                         }
 
                         if (o.Type == ObjectInstanceType.Moveable)
                         {
                             ((MoveableInstance)o).WadObjectId = reader.ReadUInt32();
+                            ((MoveableInstance)o).Ocb = reader.ReadInt16();
+                            ((MoveableInstance)o).Invisible = reader.ReadBoolean();
+                            ((MoveableInstance)o).ClearBody = reader.ReadBoolean();
+                            ((MoveableInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
+                            ((MoveableInstance)o).Rotation = reader.ReadSingle();
                             reader.ReadBytes(4);
                         }
 
@@ -237,6 +233,7 @@ namespace TombEditor.Geometry.IO
                         if (o.Type == ObjectInstanceType.SoundSource)
                         {
                             ((SoundSourceInstance)o).SoundId = reader.ReadInt16();
+                            ((SoundSourceInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
                             reader.ReadBytes(6);
                         }
 
@@ -274,14 +271,7 @@ namespace TombEditor.Geometry.IO
                             Target = reader.ReadInt32(),
                             Timer = reader.ReadInt16(),
                             OneShot = reader.ReadBoolean(),
-                            Bits =
-                            {
-                                [0] = reader.ReadBoolean(),
-                                [1] = reader.ReadBoolean(),
-                                [2] = reader.ReadBoolean(),
-                                [3] = reader.ReadBoolean(),
-                                [4] = reader.ReadBoolean()
-                            },
+                            CodeBits = (byte)(reader.ReadByte() & 0x1f),
                             Room = level.GetOrCreateDummyRoom(reader.ReadInt16())
                         };
 

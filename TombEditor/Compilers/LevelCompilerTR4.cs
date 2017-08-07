@@ -316,7 +316,8 @@ namespace TombEditor.Compilers
                     Timer = (ushort)instance.Timer,
                     Speed = (ushort)(instance.Speed * 655),
                     Sequence = (byte)instance.Sequence,
-                    Index = (byte)instance.Number
+                    Index = (byte)instance.Number,
+                    Flags = instance.Flags
                 };
 
                 flyby.DirectionX = (int)(flyby.X + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.DirectionX)) *
@@ -324,11 +325,6 @@ namespace TombEditor.Compilers
                 flyby.DirectionY = (int)(flyby.Y - 1024 * Math.Sin(MathUtil.DegreesToRadians(instance.DirectionX)));
                 flyby.DirectionZ = (int)(flyby.Z + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.DirectionX)) *
                                           Math.Cos(MathUtil.DegreesToRadians(instance.DirectionY)));
-
-                for (int j = 0; j < 16; j++)
-                {
-                    flyby.Flags |= (ushort)((instance.Flags[j] ? 1 : 0) << j);
-                }
 
                 tempFlyby.Add(flyby);
             }
@@ -1834,7 +1830,7 @@ namespace TombEditor.Compilers
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
                     ObjectID = (short) instance.WadObjectId,
                     Room = (short) _level.Rooms.ReferenceIndexOf(instance.Room),
-                    Angle = (short)(instance.Rotation / 45 * 8192),
+                    Angle = (short)(instance.Rotation * 8192 / 45),
                     Intensity1 = -1,
                     Intensity2 = instance.Ocb
                 };
@@ -1843,21 +1839,8 @@ namespace TombEditor.Compilers
                     item.Flags |= 0x80;
                 if (instance.Invisible)
                     item.Flags |= 0x100;
-
-                ushort mask = 0;
-
-                if (instance.Bits[0])
-                    mask |= 0x01;
-                if (instance.Bits[1])
-                    mask |= 0x02;
-                if (instance.Bits[2])
-                    mask |= 0x04;
-                if (instance.Bits[3])
-                    mask |= 0x08;
-                if (instance.Bits[4])
-                    mask |= 0x10;
-
-                item.Flags |= (ushort)(mask << 9);
+                
+                item.Flags |= (ushort)(instance.CodeBits << 9);
 
                 tempItems.Add(item);
             }
@@ -1875,24 +1858,10 @@ namespace TombEditor.Compilers
                     Room = (ushort) _level.Rooms.ReferenceIndexOf(instance.Room)
                 };
 
-                short angle = instance.Rotation;
-                item.Angle = (short)(angle / 45 * 8192);
-                item.OCB = (ushort) instance.Ocb;
-
-                ushort mask = 0;
-
-                if (instance.Bits[0])
-                    mask |= 0x01;
-                if (instance.Bits[1])
-                    mask |= 0x02;
-                if (instance.Bits[2])
-                    mask |= 0x04;
-                if (instance.Bits[3])
-                    mask |= 0x08;
-                if (instance.Bits[4])
-                    mask |= 0x10;
-
-                item.Flags |= (ushort)(mask << 1);
+                double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));
+                item.Angle = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle)));
+                item.OCB = (ushort)instance.Ocb;
+                item.Flags |= (ushort)(instance.CodeBits << 1);
 
                 tempAiObjects.Add(item);
             }

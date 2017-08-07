@@ -21,18 +21,12 @@ namespace TombEditor.Geometry
 
         public override ObjectInstanceType Type => ObjectInstanceType.Portal;
 
+
         public override ObjectInstance Clone()
         {
-            return new Portal(Room)
-            {
-                Direction = Direction,
-                X = X,
-                Z = Z,
-                NumXBlocks = NumXBlocks,
-                NumZBlocks = NumZBlocks,
-                Other = Other,
-                AdjoiningRoom = AdjoiningRoom
-            };
+            Portal portalResult = (Portal)MemberwiseClone();
+            ((SectorBasedObjectInstance)portalResult).Id = _nextPortalId++;
+            return portalResult;
         }
 
         public override string ToString()

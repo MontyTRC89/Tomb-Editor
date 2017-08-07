@@ -1093,7 +1093,7 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _camerasToDraw.Count; i++)
             {
-                ObjectInstance instance = _editor.Level.Objects[_camerasToDraw[i]];
+                var instance = _editor.Level.Objects[_camerasToDraw[i]];
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                 var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -1143,7 +1143,7 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _flybyToDraw.Count; i++)
             {
-                ObjectInstance instance = _editor.Level.Objects[_flybyToDraw[i]];
+                var instance = _editor.Level.Objects[_flybyToDraw[i]];
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
@@ -1202,7 +1202,7 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _sinksToDraw.Count; i++)
             {
-                ObjectInstance instance = _editor.Level.Objects[_sinksToDraw[i]];
+                var instance = _editor.Level.Objects[_sinksToDraw[i]];
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
@@ -1252,7 +1252,7 @@ namespace TombEditor.Controls
 
             for (int i = 0; i < _soundSourcesToDraw.Count; i++)
             {
-                ObjectInstance instance = _editor.Level.Objects[_soundSourcesToDraw[i]];
+                var instance = _editor.Level.Objects[_soundSourcesToDraw[i]];
 
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 

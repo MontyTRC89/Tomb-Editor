@@ -65,11 +65,11 @@ namespace TombEditor
             }
 
             tbSound.Text = _sounds[_soundSource.SoundId];
-            cbBit1.Checked = _soundSource.Bits[0];
-            cbBit2.Checked = _soundSource.Bits[1];
-            cbBit3.Checked = _soundSource.Bits[2];
-            cbBit4.Checked = _soundSource.Bits[3];
-            cbBit5.Checked = _soundSource.Bits[4];
+            cbBit1.Checked = (_soundSource.CodeBits & (1 << 0)) != 0;
+            cbBit2.Checked = (_soundSource.CodeBits & (1 << 1)) != 0;
+            cbBit3.Checked = (_soundSource.CodeBits & (1 << 2)) != 0;
+            cbBit4.Checked = (_soundSource.CodeBits & (1 << 3)) != 0;
+            cbBit5.Checked = (_soundSource.CodeBits & (1 << 4)) != 0;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -85,11 +85,13 @@ namespace TombEditor
             RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
 
             _soundSource.SoundId = row.ID;
-            _soundSource.Bits[0] = cbBit1.Checked;
-            _soundSource.Bits[1] = cbBit2.Checked;
-            _soundSource.Bits[2] = cbBit3.Checked;
-            _soundSource.Bits[3] = cbBit4.Checked;
-            _soundSource.Bits[4] = cbBit5.Checked;
+            byte codeBits = 0;
+            codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
+            codeBits |= (byte)(cbBit1.Checked ? (1 << 1) : 0);
+            codeBits |= (byte)(cbBit1.Checked ? (1 << 2) : 0);
+            codeBits |= (byte)(cbBit1.Checked ? (1 << 3) : 0);
+            codeBits |= (byte)(cbBit1.Checked ? (1 << 4) : 0);
+            _soundSource.CodeBits = codeBits;
 
             DialogResult = DialogResult.OK;
             this.Close();

@@ -4,12 +4,26 @@ using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
-    public abstract class ItemInstance : ObjectInstance
+    public abstract class ItemInstance : PositionBasedObjectInstance
     {
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads
         // can change. It would be unnecesary difficult to update all this references.
         public uint WadObjectId { get; set; }
+
+        private float _rotation;
+        /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
+        public float Rotation
+        {
+            get { return _rotation; }
+            set { _rotation = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+        }
+        /// <summary> Rotation in radians in the interval [0, 2*Pi). The value is range reduced. </summary>
+        public float RotationRadians
+        {
+            get { return Rotation * (float)(Math.PI / 180); }
+            set { Rotation = value * (float)(180 / Math.PI); }
+        }
 
         protected ItemInstance(int id, Room room)
             : base(id, room)

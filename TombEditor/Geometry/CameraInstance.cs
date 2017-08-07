@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Geometry
 {
-    public class CameraInstance : ObjectInstance
+    public class CameraInstance : PositionBasedObjectInstance
     {
         public short Sequence { get; set; }
         public short Timer { get; set; }
@@ -19,32 +19,7 @@
 
         public override ObjectInstance Clone()
         {
-            return new CameraInstance(Editor.Instance.Level.GetNewObjectId(), Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                Bits =
-                {
-                    [0] = Bits[0],
-                    [1] = Bits[1],
-                    [2] = Bits[2],
-                    [3] = Bits[3],
-                    [4] = Bits[4]
-                },
-                Sequence = Sequence,
-                Timer = Timer,
-                Roll = Roll,
-                Number = Number,
-                Speed = Speed,
-                Fov = Fov,
-                Flags = Flags,
-                Fixed = Fixed
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
         
         public override string ToString()

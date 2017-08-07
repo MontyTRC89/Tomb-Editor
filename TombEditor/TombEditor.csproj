@@ -216,7 +216,6 @@
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Cube.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Plane.cs" />
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Sphere.cs" />
-    <Compile Include="Geometry\SectorBasedObjectInstance.cs" />
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
@@ -602,7 +601,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>del $(TargetDir)TombEditorConfiguration.xml</PostBuildEvent>
+    <PostBuildEvent>del $(TargetDir)TombEditorConfiguration.xml 2&gt;NUL</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

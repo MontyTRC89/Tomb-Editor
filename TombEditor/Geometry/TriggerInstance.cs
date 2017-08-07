@@ -13,6 +13,7 @@ namespace TombEditor.Geometry
         public int Target { get; set; }
         public short Timer { get; set; }
         public bool OneShot { get; set; }
+        public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
 
         public TriggerInstance(int id, Room room)
             : base(id, room)
@@ -122,24 +123,7 @@ namespace TombEditor.Geometry
         
         public override ObjectInstance Clone()
         {
-            return new TriggerInstance(Editor.Instance.Level.GetNewTriggerId(), Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                Bits =
-                {
-                    [0] = Bits[0],
-                    [1] = Bits[1],
-                    [2] = Bits[2],
-                    [3] = Bits[3],
-                    [4] = Bits[4]
-                }
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Geometry
 {
-    public class SinkInstance : ObjectInstance
+    public class SinkInstance : PositionBasedObjectInstance
     {
         public short Strength { get; set; }
 
@@ -12,25 +12,7 @@
 
         public override ObjectInstance Clone()
         {
-            return new SinkInstance(Editor.Instance.Level.GetNewObjectId(), Room)
-            {
-                X = X,
-                Y = Y,
-                Z = Z,
-                Ocb = Ocb,
-                Rotation = Rotation,
-                Invisible = Invisible,
-                ClearBody = ClearBody,
-                Bits =
-                {
-                    [0] = Bits[0],
-                    [1] = Bits[1],
-                    [2] = Bits[2],
-                    [3] = Bits[3],
-                    [4] = Bits[4]
-                },
-                Strength = Strength
-            };
+            return (ObjectInstance)MemberwiseClone();
         }
     }
 }
