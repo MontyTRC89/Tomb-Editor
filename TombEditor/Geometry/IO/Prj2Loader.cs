@@ -212,7 +212,8 @@ namespace TombEditor.Geometry.IO
                                 o = ffc;
                                 break;
                             default:
-                                return null;
+                                logger.Warn("Unknown object type " + objectType + " encountered that can't be loaded.");
+                                continue;
                         }
                         
                         reader.ReadInt32();
