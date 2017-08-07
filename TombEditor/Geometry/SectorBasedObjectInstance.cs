@@ -9,6 +9,8 @@ namespace TombEditor.Geometry
 {
     public abstract class SectorBasedObjectInstance : ObjectInstance
     {
+        public byte X { get; set; }
+        public byte Z { get; set; }
         public byte NumXBlocks { get; set; }
         public byte NumZBlocks { get; set; }
 

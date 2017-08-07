@@ -268,9 +268,7 @@ namespace TombEditor.Geometry.IO
                                         Invisible = (objOcb & 0x0001) != 0,
                                         ClearBody = (objOcb & 0x0080) != 0,
                                         WadObjectId = unchecked((uint)objSlot),
-                                        X = (byte)(objPosX),
-                                        Z = (byte)(objPosZ),
-                                        Y = (short)objLongY,
+                                        Position = new Vector3(objPosX, objLongY, objPosZ),
                                         Ocb = objTimer
                                     };
 
@@ -302,9 +300,7 @@ namespace TombEditor.Geometry.IO
                                     var instance = new StaticInstance(objectsThings[j], objRoom)
                                     {
                                         WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
-                                        X = (byte)(objPosX),
-                                        Z = (byte)(objPosZ),
-                                        Y = (short)objLongY
+                                        Position = new Vector3(objPosX, objLongY, objPosZ)
                                     };
 
                                     objFacing = (short)((objFacing >> 8) & 0xff);
@@ -547,22 +543,18 @@ namespace TombEditor.Geometry.IO
                                     var sound = new SoundSourceInstance(objectsThings2[j], objRoom)
                                     {
                                         SoundId = objSlot,
-                                        X = (byte)(objPosX),
-                                        Z = (byte)(objPosZ),
-                                        Y = (short)objLongY
+                                        Position = new Vector3(objPosX, objLongY, objPosZ)
                                     };
 
 
                                     level.Objects.Add(sound.Id, sound);
                                     break;
                                 case 0x4400:
-                                    var sink = new SinkInstance(objectsThings2[j], objRoom);
-
-                                    sink.X = (byte)(objPosX);
-                                    sink.Z = (byte)(objPosZ);
-                                    sink.Y = (short)objLongY;
-
-                                    sink.Strength = (short)(objTimer / 2);
+                                    var sink = new SinkInstance(objectsThings2[j], objRoom)
+                                    {
+                                        Strength = (short)(objTimer / 2),
+                                        Position = new Vector3(objPosX, objLongY, objPosZ)
+                                    };
 
                                     level.Objects.Add(sink.Id, sink);
                                     room.Sinks.Add(sink.Id);
@@ -574,9 +566,7 @@ namespace TombEditor.Geometry.IO
                                     {
                                         Timer = objTimer,
                                         Fixed = (objectType == 0x4080),
-                                        X = (byte)(objPosX),
-                                        Z = (byte)(objPosZ),
-                                        Y = (short)objLongY
+                                        Position = new Vector3(objPosX, objLongY, objPosZ)
                                     };
 
                                     level.Objects.Add(camera.Id, camera);
@@ -593,9 +583,7 @@ namespace TombEditor.Geometry.IO
                                         Fov = (short)((objSlot & 0x00ff)),
                                         Roll = objRoll,
                                         Speed = (short)(objSpeed / 655),
-                                        X = (byte)(objPosX),
-                                        Z = (byte)(objPosZ),
-                                        Y = (short)objLongY,
+                                        Position = new Vector3(objPosX, objLongY, objPosZ),
                                         DirectionX = (short)(-objUnk),
                                         DirectionY = (short)(objFacing + 90)
                                     };
@@ -1124,11 +1112,10 @@ namespace TombEditor.Geometry.IO
                     form.ReportProgress(70, "Fixing objects positions and data");
                     foreach (var instance in level.Objects.Values.ToList())
                     {
-                        instance.X = (byte)(instance.Room.NumXSectors - instance.X - 1);
-
-                        instance.Position = new Vector3(instance.X * 1024 + 512,
-                            -instance.Y - instance.Room.Position.Y * 256,
-                            instance.Z * 1024 + 512);
+                        instance.Position = new Vector3(
+                            (instance.Room.NumXSectors - instance.Position.X - 1) * 1024 + 512,
+                            -instance.Position.Y - instance.Room.Position.Y * 256,
+                            instance.Position.Z * 1024 + 512);
 
                         switch (instance.Type)
                         {
