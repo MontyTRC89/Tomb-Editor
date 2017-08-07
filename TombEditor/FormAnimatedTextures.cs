@@ -31,7 +31,7 @@ namespace TombEditor
         {
             _editor = Editor.Instance;
 
-            picTextureMap.Image = _editor.Level._textureMap;
+            picTextureMap.Image = _editor.Level.TextureMap;
 
             lstTextures.GetColumn(0).ImageGetter = delegate (object row)
             {

@@ -61,11 +61,9 @@ namespace TombEditor.Geometry.IO
             public short _thisThingIndex;
             public short _otherThingIndex;
         };
-
-        public static Level LoadFromPrj(string filename, FormImportPRJ form, GraphicsDevice device)
+        
+        public static Level LoadFromPrj(string filename, GraphicsDevice device, IProgressReporter owner)
         {
-            GC.Collect();
-
             var level = new Level();
 
             try
@@ -73,7 +71,9 @@ namespace TombEditor.Geometry.IO
                 // Open file
                 using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
                 {
-                    form.ReportProgress(0, "Begin of PRJ import");
+                    level.FileName = Path.ChangeExtension(filename, "prj2");
+
+                    owner.ReportProgress(0, "Begin of PRJ import");
 
                     logger.Warn("Opening Winroomedit PRJ file");
 
@@ -83,7 +83,7 @@ namespace TombEditor.Geometry.IO
                     var bytesNgle = reader.ReadBytes(4);
                     if (bytesNgle[0] == 0x4E && bytesNgle[1] == 0x47 && bytesNgle[2] == 0x4C && bytesNgle[3] == 0x45)
                     {
-                        form.ReportProgress(1, "This is a NGLE project");
+                        owner.ReportProgress(1, "This is a NGLE project");
                         logger.Debug("NGLE Project");
                         ngle = true;
                     }
@@ -104,7 +104,7 @@ namespace TombEditor.Geometry.IO
                     var tempRooms = new Dictionary<int, PrjBlock[,]>();
                     var flipInfos = new List<PrjFlipInfo>();
 
-                    form.ReportProgress(2, "Number of rooms: " + numRooms);
+                    owner.ReportProgress(2, "Number of rooms: " + numRooms);
                     double progress = 2;
 
                     var portalThingIndices = new Dictionary<Portal, PrjPortalThingIndex>();
@@ -197,10 +197,10 @@ namespace TombEditor.Geometry.IO
                             p.Room = room;
 
                             portalThingIndices.Add(p, new PrjPortalThingIndex
-                                {
-                                    _thisThingIndex = portalThings[j],
-                                    _otherThingIndex = portalSlot
-                                });
+                            {
+                                _thisThingIndex = portalThings[j],
+                                _otherThingIndex = portalSlot
+                            });
 
                             level.Portals.Add(p.Id, p);
                         }
@@ -329,7 +329,7 @@ namespace TombEditor.Geometry.IO
                                     instance.Color = Color.FromArgb(255, red * 8, green * 8, blu * 8);
 
                                     level.Objects.Add(instance.Id, instance);
-                                    room.StaticMeshes.Add(instance.Id);
+                                    room.Statics.Add(instance.Id);
                                 }
                             }
                             else
@@ -585,7 +585,7 @@ namespace TombEditor.Geometry.IO
                                         RotationY = objFacing + 90,
                                         Flags = unchecked((ushort)objOcb)
                                     };
-                                    
+
                                     level.Objects.Add(flybyCamera.Id, flybyCamera);
                                     room.FlyByCameras.Add(flybyCamera.Id);
                                     break;
@@ -770,16 +770,16 @@ namespace TombEditor.Geometry.IO
                                         [3] = b._edFaces[2]
                                     }
                                 };
-                                
-                                room.Blocks[x, z].WSFaces[0] = (sbyte)(b._wsFaces[0]);
-                                room.Blocks[x, z].WSFaces[1] = (sbyte)(b._wsFaces[3]);
-                                room.Blocks[x, z].WSFaces[2] = (sbyte)(b._wsFaces[2]);
-                                room.Blocks[x, z].WSFaces[3] = (sbyte)(b._wsFaces[1]);
 
-                                room.Blocks[x, z].RFFaces[0] = (sbyte)(b._rfFaces[0]);
-                                room.Blocks[x, z].RFFaces[1] = (sbyte)(b._rfFaces[3]);
-                                room.Blocks[x, z].RFFaces[2] = (sbyte)(b._rfFaces[2]);
-                                room.Blocks[x, z].RFFaces[3] = (sbyte)(b._rfFaces[1]);
+                                room.Blocks[x, z].WSFaces[0] = b._wsFaces[0];
+                                room.Blocks[x, z].WSFaces[1] = b._wsFaces[3];
+                                room.Blocks[x, z].WSFaces[2] = b._wsFaces[2];
+                                room.Blocks[x, z].WSFaces[3] = b._wsFaces[1];
+
+                                room.Blocks[x, z].RFFaces[0] = b._rfFaces[0];
+                                room.Blocks[x, z].RFFaces[1] = b._rfFaces[3];
+                                room.Blocks[x, z].RFFaces[2] = b._rfFaces[2];
+                                room.Blocks[x, z].RFFaces[3] = b._rfFaces[1];
 
                                 room.Blocks[x, z].SplitFoorType = (byte)b._flags3;
 
@@ -821,15 +821,15 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
                         }
-                        
+
                         System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateDummyRoom(i), room));
 
                         progress += (i / (float)numRooms * 0.28f);
 
-                        form.ReportProgress((int)progress, "");
+                        owner.ReportProgress((int)progress, "");
                     }
 
-                    form.ReportProgress(30, "Rooms loaded");
+                    owner.ReportProgress(30, "Rooms loaded");
 
                     logger.Info("All rooms loaded");
 
@@ -847,56 +847,32 @@ namespace TombEditor.Geometry.IO
                     reader.ReadBytes(512 * 4);
 
 
-                    // Read TGA string
-                    var stringBuffer = new byte[255];
-                    int sb = 0;
-                    while (true)
+                    // Read texture
                     {
-                        byte s = reader.ReadByte();
-                        if (s == 0x20)
-                            break;
-                        if (s == 0x00)
-                            continue;
-                        stringBuffer[sb] = s;
-                        sb++;
-                    }
-
-                    string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                    textureFilename = textureFilename.Replace('\0', ' ').Trim();
-
-                    logger.Debug("Texture map: " + textureFilename);
-
-                    if (textureFilename == "" || !File.Exists(textureFilename))
-                    {
-                        logger.Error("Can't find texture map!");
-
-                        if (DarkUI.Forms.DarkMessageBox.ShowWarning(
-                                "The texture file '" + textureFilename +
-                                " could not be found. Do you want to browse it or cancel importing?",
-                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                        var stringBuffer = new byte[255];
+                        int sb = 0;
+                        while (true)
                         {
-                            logger.Error("PRJ import canceled");
-                            return null;
+                            byte s = reader.ReadByte();
+                            if (s == 0x20)
+                                break;
+                            if (s == 0x00)
+                                continue;
+                            stringBuffer[sb] = s;
+                            sb++;
                         }
 
-                        // Ask for TGA file
-                        textureFilename = form.OpenTGA(textureFilename);
-                        if (String.IsNullOrEmpty(textureFilename))
-                        {
-                            logger.Error("PRJ import cancelled");
-                            return null;
-                        }
+                        string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                        textureFilename = textureFilename.Replace('\0', ' ').Trim();
+                        ResourceLoader.TryLoadingTexture(level, textureFilename, device, owner);
+                        owner.ReportProgress(50, "Loaded texture '" + textureFilename + "'");
                     }
-
-                    level.LoadTextureMap(textureFilename, device);
-
-                    form.ReportProgress(50, "Converted '" + textureFilename + "' to PNG format");
 
                     // Read textures
                     int numTextures = reader.ReadInt32();
 
-                    form.ReportProgress(52, "Loading textures");
-                    form.ReportProgress(52, "    Number of textures: " + numTextures);
+                    owner.ReportProgress(52, "Loading textures");
+                    owner.ReportProgress(52, "    Number of textures: " + numTextures);
 
                     var tempTextures = new List<PrjTexInfo>();
                     for (int t = 0; t < numTextures; t++)
@@ -915,66 +891,10 @@ namespace TombEditor.Geometry.IO
                         tempTextures.Add(tmpTxt);
                     }
 
-                    // Read WAD string
-                    stringBuffer = new byte[255];
-                    sb = 0;
-                    while (true)
+                    // Read WAD file
                     {
-                        byte s = reader.ReadByte();
-                        if (s == 0x20)
-                            break;
-                        if (s == 0x00)
-                            continue;
-                        stringBuffer[sb] = s;
-                        sb++;
-                    }
-
-                    string wadName = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                    wadName = wadName.Replace('\0', ' ').Trim();
-
-                    if (wadName == "" || !File.Exists(wadName))
-                    {
-                        if (DarkUI.Forms.DarkMessageBox.ShowWarning(
-                                "The WAD file '" + wadName +
-                                " could not be found. Do you want to browse it or cancel importing?",
-                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                        {
-                            return null;
-                        }
-
-                        // Ask for WAD file
-                        wadName = form.OpenWAD(wadName);
-                        if (String.IsNullOrEmpty(wadName))
-                        {
-                            return null;
-                        }
-                    }
-
-                    string wadPath = Path.GetDirectoryName(wadName);
-                    string wadBase = Path.GetFileNameWithoutExtension(wadName);
-
-                    form.ReportProgress(55, "Loading WAD '" + wadName + "'");
-
-                    level.LoadWad(wadPath + "\\" + wadBase + ".wad", device);
-
-                    form.ReportProgress(60, "WAD loaded");
-
-                    int numSlots = reader.ReadInt32();
-
-                    var writerSlots = new StreamWriter(File.OpenWrite("slots.txt"));
-
-                    for (int i = 0; i < numSlots; i++)
-                    {
-                        short slotType = reader.ReadInt16();
-                        if (slotType == 0x00)
-                        {
-                            writerSlots.WriteLine(i + "\t" + "NOT DEFINED");
-
-                            continue;
-                        }
-
-                        stringBuffer = new byte[255];
-                        sb = 0;
+                        var stringBuffer = new byte[255];
+                        int sb = 0;
                         while (true)
                         {
                             byte s = reader.ReadByte();
@@ -985,22 +905,52 @@ namespace TombEditor.Geometry.IO
                             stringBuffer[sb] = s;
                             sb++;
                         }
-
-                        string slotName = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                        slotName = slotName.Replace('\0', ' ').Trim();
-
-                        int objectId = reader.ReadInt32();
-
-                        reader.ReadBytes(108);
-
-                        writerSlots.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
+                        string wadName = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                        wadName = wadName.Replace('\0', ' ').Trim();
+                        ResourceLoader.TryLoadingWad(level, wadName, device, owner);
+                        owner.ReportProgress(60, "WAD loaded");
                     }
 
-                    writerSlots.Flush();
-                    writerSlots.Close();
+                    // Write slots
+                    using (var writerSlots = new StreamWriter("slots.txt"))
+                    {
+                        int numSlots = reader.ReadInt32();
+                        for (int i = 0; i < numSlots; i++)
+                        {
+                            short slotType = reader.ReadInt16();
+                            if (slotType == 0x00)
+                            {
+                                writerSlots.WriteLine(i + "\t" + "NOT DEFINED");
+
+                                continue;
+                            }
+
+                            var stringBuffer = new byte[255];
+                            int sb = 0;
+                            while (true)
+                            {
+                                byte s = reader.ReadByte();
+                                if (s == 0x20)
+                                    break;
+                                if (s == 0x00)
+                                    continue;
+                                stringBuffer[sb] = s;
+                                sb++;
+                            }
+
+                            string slotName = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                            slotName = slotName.Replace('\0', ' ').Trim();
+
+                            int objectId = reader.ReadInt32();
+
+                            reader.ReadBytes(108);
+
+                            writerSlots.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
+                        }
+                    }
 
                     // Read animated textures
-                    form.ReportProgress(61, "Loading animated textures and texture sounds");
+                    owner.ReportProgress(61, "Loading animated textures and texture sounds");
                     int numAnimationRanges = reader.ReadInt32();
                     for (int i = 0; i < 40; i++)
                         reader.ReadInt32();
@@ -1058,7 +1008,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Fix rooms coordinates (in TRLE reference system is messed up...)
-                    form.ReportProgress(65, "Flipping reference system");
+                    owner.ReportProgress(65, "Flipping reference system");
 
                     int minX = level.Rooms.Where(room => room != null).Select(room => (int)room.Position.X)
                         .Concat(new[] { 1024 }).Min();
@@ -1070,7 +1020,7 @@ namespace TombEditor.Geometry.IO
                             room.Position.Z);
                     }
 
-                    form.ReportProgress(67, "Building flipped rooms table");
+                    owner.ReportProgress(67, "Building flipped rooms table");
 
                     for (int i = 0; i < level.Rooms.Length; i++)
                     {
@@ -1101,7 +1051,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Fix objects
-                    form.ReportProgress(70, "Fixing objects positions and data");
+                    owner.ReportProgress(70, "Fixing objects positions and data");
                     foreach (var instance in level.Objects.Values.ToList())
                     {
                         instance.Position = new Vector3(
@@ -1130,7 +1080,7 @@ namespace TombEditor.Geometry.IO
                     var triggersToRemove = new List<int>();
 
                     // Fix triggers
-                    form.ReportProgress(73, "Fixing triggers");
+                    owner.ReportProgress(73, "Fixing triggers");
                     foreach (var instance in level.Triggers.Values.ToList())
                     {
                         if (instance.TargetType == TriggerTargetType.Object &&
@@ -1190,17 +1140,17 @@ namespace TombEditor.Geometry.IO
 
                     if (triggersToRemove.Count != 0)
                     {
-                        form.ReportProgress(75, "Found invalid triggers");
+                        owner.ReportProgress(75, "Found invalid triggers");
                         foreach (int trigger in triggersToRemove)
                         {
-                            form.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
+                            owner.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
                                                     level.Rooms.ReferenceIndexOf(level.Triggers[trigger].Room));
                             level.Triggers.Remove(trigger);
                         }
                     }
 
                     // Fix portals
-                    form.ReportProgress(76, "Building portals");
+                    owner.ReportProgress(76, "Building portals");
                     foreach (var currentPortal in level.Portals.Values.ToList())
                     {
                         currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
@@ -1417,7 +1367,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Fix faces
-                    form.ReportProgress(85, "Building faces and geometry");
+                    owner.ReportProgress(85, "Building faces and geometry");
                     for (int i = 0; i < level.Rooms.Length; i++)
                     {
                         var room = level.Rooms[i];
@@ -2524,6 +2474,17 @@ namespace TombEditor.Geometry.IO
                     if (room != null)
                         if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
                             throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+
+                foreach (var portal in level.Portals)
+                    portal.Value.Room.Portals.Add(portal.Key);
+
+                owner.ReportProgress(95, "Building rooms");
+                foreach (var room in level.Rooms.Where(r => r != null))
+                {
+                    room.BuildGeometry();
+                    room.CalculateLightingForThisRoom();
+                    room.UpdateBuffers();
+                }
             }
             catch (Exception ex)
             {
@@ -2533,23 +2494,8 @@ namespace TombEditor.Geometry.IO
                 return null;
             }
 
-            foreach (var portal in level.Portals)
-            {
-                portal.Value.Room.Portals.Add(portal.Key);
-            }
-
-            form.ReportProgress(95, "Building rooms");
-            foreach (var room in level.Rooms.Where(r => r != null))
-            {
-                room.BuildGeometry();
-                room.CalculateLightingForThisRoom();
-                room.UpdateBuffers();
-            }
-
-            form.ReportProgress(100, "Level loaded correctly!");
-
-            GC.Collect();
-
+            owner.ReportProgress(100, "Level loaded correctly!");
+            
             return level;
         }
     }

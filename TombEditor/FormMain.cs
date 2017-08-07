@@ -539,19 +539,6 @@ namespace TombEditor
             _editor.RoomPropertiesChange(room);
         }
 
-        public string BrowseTextureMap()
-        {
-            if (openFileDialogTextureMap.ShowDialog(this) != DialogResult.OK)
-                return "";
-            return openFileDialogTextureMap.FileName;
-        }
-
-        public string BrowseWAD()
-        {
-            if (openFileDialogWAD.ShowDialog(this) != DialogResult.OK)
-                return "";
-            return openFileDialogWAD.FileName;
-        }
         private void but3D_Click(object sender, EventArgs e)
         {
             _editor.Mode = EditorMode.Geometry;
@@ -908,14 +895,21 @@ namespace TombEditor
             _pressedZorY = false;
         }
         
-        private void loadTextureMapToolStripMenuItem_Click(object sender, EventArgs e)
+        private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogTextureMap.ShowDialog(this) != DialogResult.OK)
+            string path = Geometry.IO.ResourceLoader.BrowseTexture(_editor.Level.TextureFile, _editor.Level.FileName, this);
+            if (!string.IsNullOrEmpty(path))
                 return;
-            _editor.Level.LoadTextureMap(openFileDialogTextureMap.FileName, _deviceManager.Device);
+            _editor.Level.LoadTexture(path, _deviceManager.Device);
             _editor.LoadedTexturesChange();
         }
         
+        private void unloadTextureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Level.UnloadTexture();
+            _editor.LoadedTexturesChange();
+        }
+
         private void textureFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             butTextureFloor_Click(null, null);
@@ -989,17 +983,23 @@ namespace TombEditor
 
             DarkUI.Forms.DarkMessageBox.ShowInformation(
                 "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
-            _editor.Level.LoadTextureMap(pngFilePath, _deviceManager.Device);
+            _editor.Level.LoadTexture(pngFilePath, _deviceManager.Device);
             _editor.LoadedTexturesChange();
         }
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (openFileDialogWAD.ShowDialog(this) != DialogResult.OK)
+            string path = Geometry.IO.ResourceLoader.BrowseWad(_editor.Level.WadFile, _editor.Level.FileName, this);
+            if (!string.IsNullOrEmpty(path))
                 return;
-
-            _editor.Level.LoadWad(openFileDialogWAD.FileName, _deviceManager.Device);
+            _editor.Level.LoadWad(path, _deviceManager.Device);
             _editor.LoadedWadsChange(_editor.Level.Wad);
+        }
+
+        private void unloadWADToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Level.UnloadWad();
+            _editor.LoadedWadsChange(null);
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
@@ -1115,35 +1115,24 @@ namespace TombEditor
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_editor.Level.WadFile))
+            if (!string.IsNullOrEmpty(_editor.Level.FileName))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Can't save a project without a WAD", "Error");
-                return;
+                saveFileDialogPRJ2.InitialDirectory = Path.GetDirectoryName(_editor.Level.FileName);
+                saveFileDialogPRJ2.FileName = Path.GetFileName(_editor.Level.FileName);
             }
-
-            if (string.IsNullOrEmpty(_editor.Level.TextureFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("Can't save a project without a texture map", "Error");
-                return;
-            }
-
             if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            bool result = Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
-
-            if (!result)
+            if (Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");
-            }
-            else
-            {
-                DarkUI.Forms.DarkMessageBox.ShowInformation("Project file was saved correctly", "Informations");
                 _editor.Level.FileName = saveFileDialogPRJ2.FileName;
                 _editor.LevelFileNameChange();
             }
+            else
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");
+            }
         }
-
         private void butRoomUp_Click(object sender, EventArgs e)
         {
             _editor.SelectedRoom.Position += new Vector3(0.0f, 1.0f, 0.0f);
@@ -1188,20 +1177,6 @@ namespace TombEditor
         
         private void butCompileLevel_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_editor.Level.WadFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a WAD file", "Error",
-                    DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(_editor.Level.TextureFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a texture map", "Error",
-                    DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
             using (var form = new FormBuildLevel())
                 form.ShowDialog(this);
         }
@@ -1216,20 +1191,6 @@ namespace TombEditor
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_editor.Level.WadFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a WAD file", "Error",
-                    DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
-            if (string.IsNullOrEmpty(_editor.Level.TextureFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have not loaded a texture map", "Error",
-                    DarkUI.Forms.DarkDialogButton.Ok);
-                return;
-            }
-
             using (var form = new FormBuildLevel())
             {
                 form.AutoCloseWhenDone = true;
@@ -1544,44 +1505,7 @@ namespace TombEditor
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_editor.Level.WadFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("Can't save a project without a WAD", "Error");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(_editor.Level.TextureFile))
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("Can't save a project without a texture map", "Error");
-                return;
-            }
-
-            string fileName = "";
-
-            if (string.IsNullOrEmpty(_editor.Level.FileName))
-            {
-                if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
-                    return;
-                fileName = saveFileDialogPRJ2.FileName;
-            }
-            else
-            {
-                fileName = _editor.Level.FileName;
-            }
-
-            bool result = Prj2Writer.SaveToPrj2(fileName, _editor.Level);
-            _editor.Level.FileName = fileName;
-            
-            if (!result)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");
-            }
-            else
-            {
-                DarkUI.Forms.DarkMessageBox.ShowInformation("Project file was saved correctly", "Informations");
-                this.Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " +
-                            saveFileDialogPRJ2.FileName;
-            }
+            saveAsToolStripMenuItem_Click(sender, e);
         }
 
         private void cbFlagDamage_CheckedChanged(object sender, EventArgs e)

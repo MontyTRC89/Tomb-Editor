@@ -21,7 +21,7 @@ namespace TombEditor.Geometry
         public byte[,] NumVerticesInGrid { get; private set; }
         public Buffer<EditorVertex> VertexBuffer { get; private set; }
         public List<int> Moveables { get; private set; } = new List<int>();
-        public List<int> StaticMeshes { get; private set; } = new List<int>();
+        public List<int> Statics { get; private set; } = new List<int>();
         public List<Light> Lights { get; private set; } = new List<Light>();
         public List<int> SoundSources { get; private set; } = new List<int>();
         public List<int> Sinks { get; private set; } = new List<int>();

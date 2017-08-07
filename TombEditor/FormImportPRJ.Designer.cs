@@ -34,8 +34,6 @@ namespace TombEditor
             this.lstLog = new System.Windows.Forms.ListBox();
             this.bw = new System.ComponentModel.BackgroundWorker();
             this.pbStato = new System.Windows.Forms.ProgressBar();
-            this.openFileDialogTGA = new System.Windows.Forms.OpenFileDialog();
-            this.openFileDialogWAD = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // butCancel
@@ -73,16 +71,6 @@ namespace TombEditor
             this.pbStato.Size = new System.Drawing.Size(629, 23);
             this.pbStato.TabIndex = 3;
             // 
-            // openFileDialogTGA
-            // 
-            this.openFileDialogTGA.Filter = "Targe winroomedit file (*.tga)|*.tga|All files (*.*)|*.*";
-            this.openFileDialogTGA.Title = "Import TGA";
-            // 
-            // openFileDialogWAD
-            // 
-            this.openFileDialogWAD.Filter = "Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
-            this.openFileDialogWAD.Title = "Load WAD";
-            // 
             // FormImportPRJ
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,7 +97,5 @@ namespace TombEditor
         private System.Windows.Forms.ListBox lstLog;
         private System.ComponentModel.BackgroundWorker bw;
         private System.Windows.Forms.ProgressBar pbStato;
-        private System.Windows.Forms.OpenFileDialog openFileDialogTGA;
-        private System.Windows.Forms.OpenFileDialog openFileDialogWAD;
     }
 }

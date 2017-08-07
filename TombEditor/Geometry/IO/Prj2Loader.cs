@@ -14,7 +14,7 @@ namespace TombEditor.Geometry.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Level LoadFromPrj2(string filename, GraphicsDevice device, FormMain form)
+        public static Level LoadFromPrj2(string filename, GraphicsDevice device, IWin32Window owner)
         {
             var level = new Level();
 
@@ -22,70 +22,15 @@ namespace TombEditor.Geometry.IO
             {
                 using (var reader = CreatePrjReader(filename))
                 {
-                    if (reader == null)
-                        return null;
+                    level.FileName = filename;
 
                     // Read version code (in the future it can be used to have multiple PRJ versions)
                     int versionCode = reader.ReadInt32();
 
-                    // Read texture file
-                    int stringLength = reader.ReadInt32();
-                    level.TextureFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
-
-                    // Check if texture file exists
-                    if (level.TextureFile == "" || !File.Exists(level.TextureFile))
-                    {
-                        logger.Error("Can't find texture map!");
-
-                        if (DarkUI.Forms.DarkMessageBox.ShowWarning("The texture map '" + level.TextureFile + " could not be found. Do you want to browse it or cancel opening project?",
-                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        // Ask for texture file
-                        string textureFile = form.BrowseTextureMap();
-                        if (textureFile == "")
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        level.TextureFile = textureFile;
-                    }
-
-                    //Read WAD file
-                    stringLength = reader.ReadInt32();
-                    level.WadFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
-
-                    // Check if WAD file exists
-                    if (level.WadFile == "" || !File.Exists(level.WadFile))
-                    {
-                        logger.Error("Can't find WAD!");
-
-                        if (DarkUI.Forms.DarkMessageBox.ShowWarning("The WAD '" + level.WadFile + " could not be found. Do you want to browse it or cancel opening project?",
-                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        // Ask for texture file
-                        string wadFile = form.BrowseWAD();
-                        if (wadFile == "")
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        level.WadFile = wadFile;
-                    }
-
+                    // Read resource files
+                    ResourceLoader.TryLoadingTexture(level, reader.ReadStringUTF8(), device, owner);
+                    ResourceLoader.TryLoadingWad(level, reader.ReadStringUTF8(), device, owner);
+                    
                     // Read fillers
                     reader.ReadInt32();
                     reader.ReadInt32();
@@ -274,7 +219,7 @@ namespace TombEditor.Geometry.IO
                         }
 
                         var room = level.GetOrCreateDummyRoom(i);
-                        room.Name = reader.ReadString();
+                        room.Name = reader.ReadStringUTF8();
                         room.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         room.Resize(room.NumXSectors, room.NumZSectors);
 
@@ -485,13 +430,7 @@ namespace TombEditor.Geometry.IO
                 logger.Error(ex);
                 return null;
             }
-
-            // Now it's time to load texturs
-            level.LoadTextureMap(level.TextureFile, device);
-
-            // Now it's time to load WAD
-            level.LoadWad(level.WadFile, device);
-
+            
             // Now fill the structures loaded from PRJ2 
             for (int i = 0; i < level.Triggers.Count; i++)
             {
@@ -517,7 +456,7 @@ namespace TombEditor.Geometry.IO
                         obj.Room.Moveables.Add(objectId);
                         break;
                     case ObjectInstanceType.Static:
-                        obj.Room.StaticMeshes.Add(objectId);
+                        obj.Room.Statics.Add(objectId);
                         break;
                     case ObjectInstanceType.Camera:
                         obj.Room.Cameras.Add(objectId);
@@ -546,8 +485,6 @@ namespace TombEditor.Geometry.IO
             {
                 portal.Value.Room.Portals.Add(portal.Key);
             }
-
-            level.FileName = filename;
 
             return level;
         }
@@ -580,7 +517,7 @@ namespace TombEditor.Geometry.IO
             }
             else
             {
-                return null;
+                throw new NotSupportedException("The header of the *.prj2 file was unrecognizable.");
             }
         }
 
