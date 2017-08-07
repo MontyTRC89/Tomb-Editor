@@ -29,40 +29,40 @@ namespace TombLib.Graphics
         // Horizontal field of view angle of the camera in radians.
         public float FieldOfView { get; set; } = 0.872f;
         
-        public ArcBallCamera(Vector3 Target, float RotationX,
-            float RotationY, float MinRotationY, float MaxRotationY,
-            float Distance, float MinDistance, float MaxDistance)
+        public ArcBallCamera(Vector3 target, float rotationX,
+            float rotationY, float minRotationY, float maxRotationY,
+            float distance, float minDistance, float maxDistance)
         {
-            this.Target = Target;
-            this.MinRotationY = MinRotationY;
-            this.MaxRotationY = MaxRotationY;
+            Target = target;
+            MinRotationY = minRotationY;
+            MaxRotationY = maxRotationY;
 
             // Lock the y axis rotation between the min and max values
-            this.RotationY = MathUtil.Clamp(RotationY, MinRotationY, MaxRotationY);
-            this.RotationX = RotationX;
-            this.MinDistance = MinDistance;
-            this.MaxDistance = MaxDistance;
+            RotationY = MathUtil.Clamp(rotationY, minRotationY, maxRotationY);
+            RotationX = rotationX;
+            MinDistance = minDistance;
+            MaxDistance = maxDistance;
 
             // Lock the distance between the min and max values
-            this.Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
+            Distance = MathUtil.Clamp(distance, minDistance, maxDistance);
         }
 
-        public void Move(float DistanceChange)
+        public void Zoom(float distanceChange)
         {
-            this.Distance += DistanceChange;
-            this.Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
+            Distance += distanceChange;
+            Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
         }
 
-        public void Rotate(float RotationXChange, float RotationYChange)
+        public void Rotate(float rotationXChange, float rotationYChange)
         {
-            this.RotationX += RotationXChange;
-            this.RotationY += -RotationYChange;
-            this.RotationY = MathUtil.Clamp(RotationY, MinRotationY, MaxRotationY);
+            RotationX += rotationXChange;
+            RotationY -= rotationYChange;
+            RotationY = MathUtil.Clamp(RotationY, MinRotationY, MaxRotationY);
         }
 
-        public void Translate(Vector3 PositionChange)
+        public void MoveCameraPlane(Vector3 movementVec)
         {
-            this.Target += PositionChange;
+            Target += Vector3.TransformCoordinate(movementVec, GetRotationMatrix());
         }
         
         public override Matrix GetViewProjectionMatrix(float width, float height)
@@ -77,17 +77,23 @@ namespace TombLib.Graphics
             Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 10.0f, 100000.0f);
             return View * Projection;
         }
-        public Vector3 GetPosition()
-        {
-            // Calculate rotation matrix from rotation values
-            Matrix rotation = Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
 
+        public Matrix GetRotationMatrix()
+        {
+            return Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
+        }
+
+        public Vector3 GetDirection()
+        {
             // Translate down the Z axis by the desired distance
             // between the camera and object, then rotate that
             // vector to find the camera offset from the target
-            Vector3 translation = new Vector3(0, 0, Distance);
-            translation = Vector3.TransformCoordinate(translation, rotation);
-            return Target + translation;
+            return Vector3.TransformCoordinate(new Vector3(0, 0, Distance), GetRotationMatrix());
+        }
+
+        public Vector3 GetPosition()
+        {
+            return Target + GetDirection();
         }
     }
 }
