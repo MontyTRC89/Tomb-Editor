@@ -400,32 +400,32 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Up:
-                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
+                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
                     return true;
 
                 case Keys.Down:
-                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
+                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
                     return true;
 
                 case Keys.Left:
-                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
+                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
                     return true;
 
                 case Keys.Right:
-                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
+                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
                     return true;
 
                 case Keys.PageUp:
-                    Camera.Move(-_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
+                    Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
                     return true;
 
                 case Keys.PageDown:
-                    Camera.Move(_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
+                    Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
                     return true;
             }
@@ -641,14 +641,14 @@ namespace TombEditor.Controls
                 float relativeDeltaX = deltaX / (float)Height;
                 float relativeDeltaY = deltaY / (float)Height; 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMoveMouse);
+                    Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(relativeDeltaX, -relativeDeltaY, 0) * 
-                        _editor.Configuration.Rendering3D_NavigationSpeedTranslateMouse);
+                    Camera.MoveCameraPlane(new Vector3(-relativeDeltaX, -relativeDeltaY, 0) * 
+                        _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(
-                        relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse,
-                        -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse);
+                        relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                        -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
                 Invalidate();
             }

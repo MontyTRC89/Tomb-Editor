@@ -215,7 +215,7 @@ namespace TombEditor.Controls
             base.OnMouseWheel(e);
 
             Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.Map2D_NavigationSpeedScaleScroll);
+            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.Map2D_NavigationSpeedMouseZoom);
             MoveToFixedPoint(e.Location, FixedPointInWorld);
         }
 
@@ -226,27 +226,27 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedMoveKey / ViewScale);
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
                 case Keys.Up:
-                    ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedMoveKey / ViewScale);
+                    ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
                 case Keys.Left:
-                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedMoveKey / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.Right:
-                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedMoveKey / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.PageDown:
-                    ViewScale *= (float)Math.Exp(-_editor.Configuration.Map2D_NavigationSpeedScaleKey);
+                    ViewScale *= (float)Math.Exp(-_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
                     Invalidate();
                     break;
                 case Keys.PageUp:
-                    ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedScaleKey);
+                    ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
                     Invalidate();
                     break;
             }
