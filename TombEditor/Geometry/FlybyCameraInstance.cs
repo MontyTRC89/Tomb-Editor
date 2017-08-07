@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
-    public class FlybyCameraInstance : ObjectInstance
+    public class FlybyCameraInstance : PositionBasedObjectInstance
     {
         public short Sequence { get; set; }
         public short Timer { get; set; }

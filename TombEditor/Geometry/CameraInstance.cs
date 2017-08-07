@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Geometry
 {
-    public class CameraInstance : ObjectInstance
+    public class CameraInstance : PositionBasedObjectInstance
     {
         public short Sequence { get; set; }
         public short Timer { get; set; }

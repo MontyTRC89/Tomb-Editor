@@ -1394,7 +1394,7 @@ namespace TombEditor
             _editor.ObjectChange(instance);
         }
         
-        private static void AddObject(Room room, DrawingPoint pos, ObjectInstance instance)
+        private static void AddObject(Room room, DrawingPoint pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
             int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -1426,8 +1426,6 @@ namespace TombEditor
                     break;
             }
             _editor.ObjectChange(instance);
-
-
         }
 
         public static void PlaceItem(Room room, DrawingPoint pos, ItemType itemType)
@@ -1539,7 +1537,7 @@ namespace TombEditor
 
             for (int i = 0; i < _editor.Level.Objects.Count; i++)
             {
-                ObjectInstance obj = _editor.Level.Objects.ElementAt(i).Value;
+                var obj = _editor.Level.Objects.ElementAt(i).Value;
                 if (obj.Room == room)
                 {
                     if (obj.Position.X < (newX + 1) * 1024 || obj.Position.X > (newX + numXSectors - 1) * 1024 ||

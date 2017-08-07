@@ -4,7 +4,7 @@ using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
-    public abstract class ItemInstance : ObjectInstance
+    public abstract class ItemInstance : PositionBasedObjectInstance
     {
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads

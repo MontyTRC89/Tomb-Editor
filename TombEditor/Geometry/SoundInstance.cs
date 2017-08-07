@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Geometry
 {
-    public class SoundSourceInstance : ObjectInstance
+    public class SoundSourceInstance : PositionBasedObjectInstance
     {
         public short SoundId { get; set; } = 0;
         public short Flags { get; set; } = 0;
