@@ -1823,14 +1823,16 @@ namespace TombEditor.Compilers
 
             foreach (var instance in _moveablesTable.Keys.Select(obj => (MoveableInstance) _editor.Level.Objects[obj]))
             {
+                double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));
+
                 var item = new tr_item
                 {
                     X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
-                    ObjectID = (short) instance.WadObjectId,
-                    Room = (short) _level.Rooms.ReferenceIndexOf(instance.Room),
-                    Angle = (short)(instance.Rotation * 8192 / 45),
+                    ObjectID = (short)instance.WadObjectId,
+                    Room = (short)_level.Rooms.ReferenceIndexOf(instance.Room),
+                    Angle = unchecked((short)((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))))),
                     Intensity1 = -1,
                     Intensity2 = instance.Ocb
                 };
@@ -1859,7 +1861,7 @@ namespace TombEditor.Compilers
                 };
 
                 double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));
-                item.Angle = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle)));
+                item.Angle = unchecked((short)(ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))));
                 item.OCB = (ushort)instance.Ocb;
                 item.Flags |= (ushort)(instance.CodeBits << 1);
 
