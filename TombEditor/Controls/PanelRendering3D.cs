@@ -2946,6 +2946,10 @@ namespace TombEditor.Controls
                 }
             }
 
+            // Is it actually necessary to show the path?
+            if (flybyCameras.Count < 2)
+                return;
+            
             // Sort cameras
             flybyCameras.Sort(new ComparerFlybyCameras());
 
