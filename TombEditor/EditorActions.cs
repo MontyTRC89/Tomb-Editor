@@ -1012,18 +1012,9 @@ namespace TombEditor
                     {
                         FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[objectPtr.Id];
 
-                        flyby.DirectionX += (short)Math.Round(delta.X);
-                        flyby.DirectionY += (short)Math.Round(delta.Y);
-
-                        if (flyby.DirectionX >= 360)
-                            flyby.DirectionX -= 360;
-                        if (flyby.DirectionX < 0)
-                            flyby.DirectionX += 360;
-                        if (flyby.DirectionY < 0)
-                            flyby.DirectionY += 360;
-                        if (flyby.DirectionY >= 360)
-                            flyby.DirectionY -= 360;
-
+                        flyby.RotationX += delta.X;
+                        flyby.RotationY += delta.Y;
+                        
                         _editor.ObjectChange(flyby);
                     }
                     break;

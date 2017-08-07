@@ -305,27 +305,26 @@ namespace TombEditor.Compilers
             foreach (var instance in _flybyTable.Keys.Select(
                 flyby => (FlybyCameraInstance) _editor.Level.Objects[flyby]))
             {
+                Vector3 Direction = instance.GetDirection();
+                Vector3 Position = instance.Room.WorldPos + instance.Position;
                 var flyby = new tr4_flyby_camera
                 {
-                    X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
-                    Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
-                    Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(Position.X),
+                    Y = (int)Math.Round(-Position.Y),
+                    Z = (int)Math.Round(Position.Z),
                     Room = _level.Rooms.ReferenceIndexOf(instance.Room),
-                    FOV = (ushort)(182 * instance.Fov),
-                    Roll = (short)(182 * instance.Roll),
+                    FOV = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Fov * (65536.0 / 360.0)))),
+                    Roll = (short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, instance.Roll * (65536.0 / 360.0)))),
                     Timer = (ushort)instance.Timer,
-                    Speed = (ushort)(instance.Speed * 655),
+                    Speed = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Speed * 655.0f))),
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
-                    Flags = instance.Flags
+                    Flags = instance.Flags,
+                    DirectionX = (int)Math.Round(Position.X + 1024 * Direction.X),
+                    DirectionY = (int)Math.Round(Position.Y - 1024 * Direction.Y),
+                    DirectionZ = (int)Math.Round(Position.Z + 1024 * Direction.Z),
                 };
-
-                flyby.DirectionX = (int)(flyby.X + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.DirectionX)) *
-                                          Math.Sin(MathUtil.DegreesToRadians(instance.DirectionY)));
-                flyby.DirectionY = (int)(flyby.Y - 1024 * Math.Sin(MathUtil.DegreesToRadians(instance.DirectionX)));
-                flyby.DirectionZ = (int)(flyby.Z + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.DirectionX)) *
-                                          Math.Cos(MathUtil.DegreesToRadians(instance.DirectionY)));
-
+                
                 tempFlyby.Add(flyby);
             }
 

@@ -536,7 +536,7 @@ namespace TombEditor.Geometry.IO
                                     };
                                     if (light.DirectionY >= 360)
                                         light.DirectionY = light.DirectionY - 360.0f;
-                                    
+
                                     room.Lights.Add(light);
                                     break;
                                 case 0x4c00:
@@ -561,7 +561,6 @@ namespace TombEditor.Geometry.IO
                                     break;
                                 case 0x4800:
                                 case 0x4080:
-                                {
                                     var camera = new CameraInstance(objectsThings2[j], objRoom)
                                     {
                                         Timer = objTimer,
@@ -571,31 +570,24 @@ namespace TombEditor.Geometry.IO
 
                                     level.Objects.Add(camera.Id, camera);
                                     room.Cameras.Add(camera.Id);
-                                }
                                     break;
                                 case 0x4040:
-                                {
-                                    var camera = new FlybyCameraInstance(objectsThings2[j], objRoom)
+                                    var flybyCamera = new FlybyCameraInstance(objectsThings2[j], objRoom)
                                     {
-                                        Timer = objTimer,
-                                        Sequence = (short)((objSlot & 0xe000) >> 13),
-                                        Number = (short)((objSlot & 0x1f00) >> 8),
-                                        Fov = (short)((objSlot & 0x00ff)),
+                                        Timer = unchecked((ushort)objTimer),
+                                        Sequence = (byte)((objSlot & 0xe000) >> 13),
+                                        Number = (byte)((objSlot & 0x1f00) >> 8),
+                                        Fov = (short)(objSlot & 0x00ff),
                                         Roll = objRoll,
-                                        Speed = (short)(objSpeed / 655),
+                                        Speed = objSpeed / 655.0f,
                                         Position = new Vector3(objPosX, objLongY, objPosZ),
-                                        DirectionX = (short)(-objUnk),
-                                        DirectionY = (short)(objFacing + 90)
+                                        RotationX = -objUnk,
+                                        RotationY = objFacing + 90,
+                                        Flags = unchecked((ushort)objOcb)
                                     };
-
-                                    if (camera.DirectionY >= 360)
-                                        camera.DirectionY = (short)(camera.DirectionY - 360);
-
-                                    camera.Flags = unchecked((ushort)objOcb);
-
-                                    level.Objects.Add(camera.Id, camera);
-                                    room.FlyByCameras.Add(camera.Id);
-                                }
+                                    
+                                    level.Objects.Add(flybyCamera.Id, flybyCamera);
+                                    room.FlyByCameras.Add(flybyCamera.Id);
                                     break;
                             }
                         }
