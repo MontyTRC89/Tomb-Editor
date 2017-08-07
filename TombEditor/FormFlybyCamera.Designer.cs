@@ -60,6 +60,10 @@ namespace TombEditor
             this.label5 = new DarkUI.Controls.DarkLabel();
             this.tbSpeed = new DarkUI.Controls.DarkTextBox();
             this.label6 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.tbRotationX = new DarkUI.Controls.DarkTextBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.tbRotationY = new DarkUI.Controls.DarkTextBox();
             this.SuspendLayout();
             // 
             // butCancel
@@ -260,7 +264,7 @@ namespace TombEditor
             this.tbFOV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbFOV.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbFOV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbFOV.Location = new System.Drawing.Point(81, 71);
+            this.tbFOV.Location = new System.Drawing.Point(81, 124);
             this.tbFOV.Name = "tbFOV";
             this.tbFOV.Size = new System.Drawing.Size(71, 22);
             this.tbFOV.TabIndex = 23;
@@ -269,7 +273,7 @@ namespace TombEditor
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label3.Location = new System.Drawing.Point(16, 74);
+            this.label3.Location = new System.Drawing.Point(16, 127);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 22;
@@ -280,7 +284,7 @@ namespace TombEditor
             this.tbRoll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbRoll.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbRoll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbRoll.Location = new System.Drawing.Point(81, 97);
+            this.tbRoll.Location = new System.Drawing.Point(81, 151);
             this.tbRoll.Name = "tbRoll";
             this.tbRoll.Size = new System.Drawing.Size(71, 22);
             this.tbRoll.TabIndex = 25;
@@ -289,7 +293,7 @@ namespace TombEditor
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label4.Location = new System.Drawing.Point(16, 100);
+            this.label4.Location = new System.Drawing.Point(16, 154);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(30, 13);
             this.label4.TabIndex = 24;
@@ -300,7 +304,7 @@ namespace TombEditor
             this.tbTimer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbTimer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbTimer.Location = new System.Drawing.Point(81, 123);
+            this.tbTimer.Location = new System.Drawing.Point(81, 71);
             this.tbTimer.Name = "tbTimer";
             this.tbTimer.Size = new System.Drawing.Size(71, 22);
             this.tbTimer.TabIndex = 27;
@@ -309,7 +313,7 @@ namespace TombEditor
             // 
             this.label5.AutoSize = true;
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label5.Location = new System.Drawing.Point(16, 126);
+            this.label5.Location = new System.Drawing.Point(16, 74);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 26;
@@ -320,7 +324,7 @@ namespace TombEditor
             this.tbSpeed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbSpeed.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbSpeed.Location = new System.Drawing.Point(81, 149);
+            this.tbSpeed.Location = new System.Drawing.Point(81, 97);
             this.tbSpeed.Name = "tbSpeed";
             this.tbSpeed.Size = new System.Drawing.Size(71, 22);
             this.tbSpeed.TabIndex = 29;
@@ -329,11 +333,51 @@ namespace TombEditor
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label6.Location = new System.Drawing.Point(16, 152);
+            this.label6.Location = new System.Drawing.Point(16, 100);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(42, 13);
             this.label6.TabIndex = 28;
             this.label6.Text = "Speed:";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(16, 181);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(64, 13);
+            this.darkLabel1.TabIndex = 22;
+            this.darkLabel1.Text = "Rotation X:";
+            // 
+            // tbRotationX
+            // 
+            this.tbRotationX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbRotationX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbRotationX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbRotationX.Location = new System.Drawing.Point(81, 178);
+            this.tbRotationX.Name = "tbRotationX";
+            this.tbRotationX.Size = new System.Drawing.Size(71, 22);
+            this.tbRotationX.TabIndex = 23;
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(16, 208);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(63, 13);
+            this.darkLabel2.TabIndex = 24;
+            this.darkLabel2.Text = "Rotation Y:";
+            // 
+            // tbRotationY
+            // 
+            this.tbRotationY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbRotationY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbRotationY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbRotationY.Location = new System.Drawing.Point(81, 205);
+            this.tbRotationY.Name = "tbRotationY";
+            this.tbRotationY.Size = new System.Drawing.Size(71, 22);
+            this.tbRotationY.TabIndex = 25;
             // 
             // FormFlybyCamera
             // 
@@ -344,8 +388,12 @@ namespace TombEditor
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tbTimer);
             this.Controls.Add(this.label5);
+            this.Controls.Add(this.tbRotationY);
             this.Controls.Add(this.tbRoll);
+            this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.tbRotationX);
+            this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.tbFOV);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.tbNumber);
@@ -415,5 +463,9 @@ namespace TombEditor
         private DarkLabel label5;
         private DarkTextBox tbSpeed;
         private DarkLabel label6;
+        private DarkLabel darkLabel1;
+        private DarkTextBox tbRotationX;
+        private DarkLabel darkLabel2;
+        private DarkTextBox tbRotationY;
     }
 }

@@ -48,12 +48,14 @@ namespace TombEditor
             cbBit14.Checked = (_flyByCamera.Flags & (1 >> 14)) != 0;
             cbBit15.Checked = (_flyByCamera.Flags & (1 >> 15)) != 0;
 
-            tbTimer.Text = _flyByCamera.Timer.ToString();
             tbSequence.Text = _flyByCamera.Sequence.ToString();
-            tbSpeed.Text = _flyByCamera.Speed.ToString();
             tbNumber.Text = _flyByCamera.Number.ToString();
+            tbTimer.Text = _flyByCamera.Timer.ToString();
+            tbSpeed.Text = _flyByCamera.Speed.ToString();
             tbFOV.Text = _flyByCamera.Fov.ToString();
             tbRoll.Text = _flyByCamera.Roll.ToString();
+            tbRotationX.Text = _flyByCamera.RotationX.ToString();
+            tbRotationY.Text = _flyByCamera.RotationY.ToString();
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -77,13 +79,15 @@ namespace TombEditor
             flags |= (ushort)(cbBit15.Checked ? (1 << 15) : 0);
             _flyByCamera.Flags = flags;
 
-            _flyByCamera.Timer = short.Parse(tbTimer.Text);
-            _flyByCamera.Speed = short.Parse(tbSpeed.Text);
-            _flyByCamera.Roll = short.Parse(tbRoll.Text);
-            _flyByCamera.Sequence = short.Parse(tbSequence.Text);
-            _flyByCamera.Number = short.Parse(tbNumber.Text);
-            _flyByCamera.Fov = short.Parse(tbFOV.Text);
-            
+            _flyByCamera.Sequence = byte.Parse(tbSequence.Text);
+            _flyByCamera.Number = byte.Parse(tbNumber.Text);
+            _flyByCamera.Timer = ushort.Parse(tbTimer.Text);
+            _flyByCamera.Speed = float.Parse(tbSpeed.Text);
+            _flyByCamera.Fov = float.Parse(tbFOV.Text);
+            _flyByCamera.Roll = float.Parse(tbRoll.Text);
+            _flyByCamera.RotationX = short.Parse(tbRotationX.Text);
+            _flyByCamera.RotationY = float.Parse(tbRotationY.Text);
+
             DialogResult = DialogResult.OK;
             Close();
         }

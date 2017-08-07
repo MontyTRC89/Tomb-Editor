@@ -1322,7 +1322,7 @@ namespace TombEditor.Controls
                 float cutoffScaleH = 1;
                 float cutoffScaleW = MathUtil.DegreesToRadians(flyby.Fov / 2) / coneAngle * cutoffScaleH;
 
-                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(flyby.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(flyby.DirectionY));
+                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, flyby.RotationXRadians) * Matrix.RotationAxis(Vector3.UnitY, flyby.RotationYRadians);
 
                 Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
