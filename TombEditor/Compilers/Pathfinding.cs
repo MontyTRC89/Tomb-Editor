@@ -246,7 +246,7 @@ namespace TombEditor.Compilers
                 box.Xmax = (byte)dec_boxes[i].Xmax;
                 box.Zmin = (byte)dec_boxes[i].Zmin;
                 box.Zmax = (byte)dec_boxes[i].Zmax;
-                box.Room = dec_boxes[i].Room;
+                box.Room = (short)_level.Rooms.ReferenceIndexOf(dec_boxes[i].Room);
                 box.IsolatedBox = dec_boxes[i].IsolatedBox;
                 box.Monkey = dec_boxes[i].Monkey;
                 box.Jump = dec_boxes[i].Jump;

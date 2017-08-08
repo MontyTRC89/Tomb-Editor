@@ -34,7 +34,7 @@ namespace TombEditor.Compilers
         public bool NotWalkableBox;
         public bool Monkey;
         public bool Jump;
-        public short Room;
+        public Room Room;
         public bool Water;
         public int IsBaseRoom;
         public int IsAlternateRoom;
@@ -47,7 +47,7 @@ namespace TombEditor.Compilers
         private bool dec_monkey = false;
         private bool dec_flipped = false;
         private bool dec_jump = false;
-        private int dec_roomIndex = -1;
+        private Room dec_currentRoom = null;
         private short dec_q0 = -1;
         private short dec_q1 = -1;
         private short dec_q2 = -1;
@@ -63,7 +63,7 @@ namespace TombEditor.Compilers
 
         private void Dec_BuildBoxesAndOverlaps()
         {
-            dec_roomIndex = 0;
+            dec_currentRoom = _level.Rooms[0];
             dec_boxes = new dec_tr_box_aux[2040];
 
             int boxIndex = 0x7ff;
@@ -72,9 +72,9 @@ namespace TombEditor.Compilers
             watch.Start();
 
             // TODO: for now I replicate the flipping method of winroomedit
-            dec_rooms = new Room[_level.Rooms.Length];
-            dec_baseRooms = new Room[_level.Rooms.Length];
-            dec_alternateRooms = new Room[_level.Rooms.Length];
+           // dec_rooms = new Room[_level.Rooms.Length];
+           // dec_baseRooms = new Room[_level.Rooms.Length];
+           // dec_alternateRooms = new Room[_level.Rooms.Length];
 
             /* for (int n = 0; n < _level.Rooms.Length; n++)
              {
@@ -103,13 +103,13 @@ namespace TombEditor.Compilers
              }
              */
 
-            dec_rooms = _level.Rooms;
+            //dec_rooms = _level.Rooms;
 
             for (int flipped = 0; flipped < 2; flipped++)
             {
                 for (int i = 0; i < _level.Rooms.Length; i++)
                 {
-                    Room room = dec_rooms[i];
+                    Room room = _level.Rooms[i];
 
                     // Room must be defined and also must be base room or the flipped version
                     if (room != null && (flipped == 0 && room.BaseRoom == null || flipped == 1 && room.BaseRoom != null))
@@ -126,7 +126,7 @@ namespace TombEditor.Compilers
                                     z != 0 &&
                                     x != room.NumXSectors - 1 &&
                                     z != room.NumZSectors - 1 &&
-                                    Dec_CreateNewBox(ref box, x, z, i))
+                                    Dec_CreateNewBox(ref box, x, z, ref room))
                                 {
                                     // ...then try to add it to the box array
                                     boxIndex = Dec_AddBox(ref box);
@@ -187,9 +187,9 @@ namespace TombEditor.Compilers
             }
         }*/
 
-        private bool Dec_BuildOverlaps()
+       /* private bool Dec_BuildOverlaps()
         {
-           /* int numBoxes = dec_numBoxes;
+            int numBoxes = dec_numBoxes;
             int numOverlaps = 0;
             dec_numOverlaps = 0;
 
@@ -299,10 +299,10 @@ namespace TombEditor.Compilers
                 }
                 while (i < dec_numBoxes);
 
-            }*/
+            }
 
             return true;
-        }
+        }*/
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Dec_AddBox(ref dec_tr_box_aux box)
@@ -342,11 +342,11 @@ namespace TombEditor.Compilers
             return boxIndex;
         }
 
-        private bool Dec_CreateNewBox(ref dec_tr_box_aux box, int x, int z, int roomIndex)
+        private bool Dec_CreateNewBox(ref dec_tr_box_aux box, int x, int z, ref Room theRoom)
         {
             bool monkey = false;
 
-            Room room = dec_rooms[roomIndex];
+            Room room = theRoom;
             Block block = room.Blocks[x, z];
 
             if (block.Type == BlockType.Wall ||
@@ -365,7 +365,7 @@ namespace TombEditor.Compilers
             int currentX = (int)room.Position.X + x;
             int currentZ = (int)room.Position.Z + z;
 
-            dec_roomIndex = roomIndex;
+            dec_currentRoom = theRoom;
 
             Dec_CanSectorBeReachedAndIsSolid(currentX, currentZ);
 
@@ -378,7 +378,7 @@ namespace TombEditor.Compilers
 
             if (floor == 0x7fff) return false;
 
-            box.Room = (short)dec_roomIndex;
+            box.Room = dec_currentRoom;
             box.Water = room.FlagWater;
 
             if (dec_flipped)
@@ -423,18 +423,11 @@ namespace TombEditor.Compilers
                 int zMin = currentZ;
                 int zMax = currentZ;
 
-               /* int v34 = roomIndex;
-                int v22 = roomIndex;
-                int v35 = roomIndex;
-                int v25 = roomIndex;
-                int v36 = roomIndex;*
-                int v28 = roomIndex;*/
-
-                int currentRoomIndex = roomIndex;
-                int currentRoomIndex1 = roomIndex;
-                int currentRoomIndex2 = roomIndex;
-                int currentRoomIndex3 = roomIndex;
-                int currentRoomIndex4 = roomIndex;
+                Room currentRoom = theRoom;
+                Room currentRoom1 = theRoom;
+                Room currentRoom2 = theRoom;
+                Room currentRoom3 = theRoom;
+                Room currentRoom4 = theRoom;
 
                 int searchX = xMin;
                 int searchZ = zMin;
@@ -444,8 +437,8 @@ namespace TombEditor.Compilers
                     if ((directionBase & 0x04) == 0x04)
                     {
                         dec_boxExtendsInAnotherRoom = false;
-                        dec_roomIndex = currentRoomIndex1;
-                        currentRoomIndex = currentRoomIndex1;
+                        dec_currentRoom = currentRoom1;
+                        currentRoom = currentRoom1;
 
                         searchX = xMin;
 
@@ -457,20 +450,20 @@ namespace TombEditor.Compilers
                                    floor == Dec_GetBoxFloorHeight(searchX, zMin - 1) &&
                                    dec_monkey == monkey)
                             {
-                                if (searchX == xMin) currentRoomIndex1 = dec_roomIndex;
+                                if (searchX == xMin) currentRoom1 = dec_currentRoom;
 
                                 if (dec_boxExtendsInAnotherRoom)
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
-                                    if (dec_roomIndex != currentRoomIndex &&
-                                        (dec_rooms[dec_roomIndex].AlternateRoom != null ||
-                                         dec_rooms[currentRoomIndex].AlternateRoom != null))
+                                    if (dec_currentRoom != currentRoom &&
+                                        (dec_currentRoom.AlternateRoom != null ||
+                                         currentRoom.AlternateRoom != null))
                                     {
                                         break;
                                     }
 
                                     // Reset current room index to start room index
-                                    dec_roomIndex = currentRoomIndex;
+                                    dec_currentRoom = currentRoom;
 
                                     // If floor of starting block is != floor of block (X, Z - 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(searchX, zMin - 1)) break;
@@ -498,8 +491,8 @@ namespace TombEditor.Compilers
                     if ((directionBase & 0x02) == 0x02)
                     {
                         dec_boxExtendsInAnotherRoom = false;
-                        dec_roomIndex = currentRoomIndex2;
-                        currentRoomIndex = currentRoomIndex2;
+                        dec_currentRoom = currentRoom2;
+                        currentRoom = currentRoom2;
 
                         searchZ = zMin;
 
@@ -511,20 +504,20 @@ namespace TombEditor.Compilers
                                    floor == Dec_GetBoxFloorHeight(xMax + 1, searchZ) &&
                                    dec_monkey == monkey)
                             {
-                                if (searchZ == zMin) currentRoomIndex2 = dec_roomIndex;
+                                if (searchZ == zMin) currentRoom2 = dec_currentRoom;
 
                                 if (dec_boxExtendsInAnotherRoom)
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
-                                    if (dec_roomIndex != currentRoomIndex &&
-                                        (dec_rooms[dec_roomIndex].AlternateRoom != null ||
-                                         dec_rooms[currentRoomIndex].AlternateRoom != null))
+                                    if (dec_currentRoom != currentRoom &&
+                                        (dec_currentRoom.AlternateRoom != null ||
+                                         currentRoom.AlternateRoom != null))
                                     {
                                         break;
                                     }
 
                                     // Reset current room index to start room index
-                                    dec_roomIndex = currentRoomIndex;
+                                    dec_currentRoom = currentRoom;
 
                                     // If floor of starting block is != floor of block (X, Z - 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(xMax + 1, searchZ)) break;
@@ -552,8 +545,8 @@ namespace TombEditor.Compilers
                     if ((directionBase & 0x08) == 0x08)
                     {
                         dec_boxExtendsInAnotherRoom = false;
-                        dec_roomIndex = currentRoomIndex3;
-                        currentRoomIndex = currentRoomIndex3;
+                        dec_currentRoom = currentRoom3;
+                        currentRoom = currentRoom3;
 
                         searchX = xMax;
 
@@ -565,20 +558,20 @@ namespace TombEditor.Compilers
                                    floor == Dec_GetBoxFloorHeight(searchX, zMax + 1) &&
                                    dec_monkey == monkey)
                             {
-                                if (searchX == xMax) currentRoomIndex3 = dec_roomIndex;
+                                if (searchX == xMax) currentRoom3 = dec_currentRoom;
 
                                 if (dec_boxExtendsInAnotherRoom)
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
-                                    if (dec_roomIndex != currentRoomIndex &&
-                                        (dec_rooms[dec_roomIndex].AlternateRoom != null ||
-                                         dec_rooms[currentRoomIndex].AlternateRoom != null))
+                                    if (dec_currentRoom != currentRoom &&
+                                        (dec_currentRoom.AlternateRoom != null ||
+                                         currentRoom.AlternateRoom != null))
                                     {
                                         break;
                                     }
 
                                     // Reset current room index to start room index
-                                    dec_roomIndex = currentRoomIndex;
+                                    dec_currentRoom = currentRoom;
 
                                     // If floor of starting block is != floor of block (X, Z + 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(searchX, zMax + 1)) break;
@@ -606,8 +599,8 @@ namespace TombEditor.Compilers
                     if ((directionBase & 0x01) == 0x01)
                     {
                         dec_boxExtendsInAnotherRoom = false;
-                        dec_roomIndex = currentRoomIndex4;
-                        currentRoomIndex = currentRoomIndex4;
+                        dec_currentRoom = currentRoom4;
+                        currentRoom = currentRoom4;
 
                         searchZ = zMax;
 
@@ -619,20 +612,20 @@ namespace TombEditor.Compilers
                                    floor == Dec_GetBoxFloorHeight(xMin - 1, searchZ) &&
                                    dec_monkey == monkey)
                             {
-                                if (searchZ == zMax) currentRoomIndex4 = dec_roomIndex;
+                                if (searchZ == zMax) currentRoom4 = dec_currentRoom;
 
                                 if (dec_boxExtendsInAnotherRoom)
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
-                                    if (dec_roomIndex != currentRoomIndex &&
-                                        (dec_rooms[dec_roomIndex].AlternateRoom != null ||
-                                         dec_rooms[currentRoomIndex].AlternateRoom != null))
+                                    if (dec_currentRoom != currentRoom &&
+                                        (dec_currentRoom.AlternateRoom != null ||
+                                         currentRoom.AlternateRoom != null))
                                     {
                                         break;
                                     }
 
                                     // Reset current room index to start room index
-                                    dec_roomIndex = currentRoomIndex;
+                                    dec_currentRoom = currentRoom;
 
                                     // If floor of starting block is != floor of block (X, Z - 1) exit loop
                                     if (floor != Dec_GetBoxFloorHeight(xMin - 1, searchZ)) break;
@@ -675,7 +668,7 @@ namespace TombEditor.Compilers
         {
             bool borderOrOutside = Dec_IsOutsideOrdBorderRoom(x, z);
 
-            int roomIndex = dec_roomIndex;
+            Room theRoom = dec_currentRoom;
 
             int xInRoom = 0;
             int zInRoom = 0;
@@ -687,7 +680,7 @@ namespace TombEditor.Compilers
             {
                 while (true)
                 {
-                    room = dec_rooms[roomIndex];
+                    room = theRoom;
 
                     xInRoom = x - (int)room.Position.X;
                     zInRoom = z - (int)room.Position.Z;
@@ -719,14 +712,14 @@ namespace TombEditor.Compilers
 
                     Portal portal = _level.Portals[block.WallPortal];
 
-                    dec_roomIndex = dec_rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                    dec_currentRoom = portal.AdjoiningRoom;
 
                     if (block.WallOpacity == PortalOpacity.Opacity1) return false;
 
                     if (!Dec_IsOutsideOrdBorderRoom(x, z)) break;
                 }
 
-                room = dec_rooms[dec_roomIndex];
+                room = dec_currentRoom;
 
                 xInRoom = x - (int)room.Position.X;
                 zInRoom = z - (int)room.Position.Z;
@@ -744,9 +737,9 @@ namespace TombEditor.Compilers
                         break;
                     }
 
-                    dec_roomIndex = dec_rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                    dec_currentRoom = portal.AdjoiningRoom;
 
-                    room = dec_rooms[dec_roomIndex];
+                    room = dec_currentRoom;
 
                     xInRoom = x - (int)room.Position.X;
                     zInRoom = z - (int)room.Position.Z;
@@ -761,14 +754,14 @@ namespace TombEditor.Compilers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool Dec_IsOutsideOrdBorderRoom(int x, int z)
         {
-            Room room = dec_rooms[dec_roomIndex];
+            Room room = dec_currentRoom;
             return (x < 0 || z < 0 || x > room.NumXSectors - 1 || z > room.NumZSectors - 1);
         }
 
         private int Dec_GetBoxFloorHeight(int x, int z)
         {
-            int adjoiningRoom = dec_roomIndex;
-            Room room = dec_rooms[dec_roomIndex];
+            Room adjoiningRoom = dec_currentRoom;
+            Room room = dec_currentRoom;
 
             int posXblocks = (int)room.Position.X;
             int posZblocks = (int)room.Position.Z;
@@ -810,12 +803,12 @@ namespace TombEditor.Compilers
                 if (block.WallPortal == -1) return 0x7fff;
 
                 Portal portal = _level.Portals[block.WallPortal];
-                adjoiningRoom = dec_rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                adjoiningRoom = portal.AdjoiningRoom;
 
-                dec_roomIndex = adjoiningRoom;
+                dec_currentRoom = adjoiningRoom;
                 dec_boxExtendsInAnotherRoom = true;
 
-                room = dec_rooms[dec_roomIndex];
+                room = dec_currentRoom;
 
                 posXblocks = (int)room.Position.X;
                 posZblocks = (int)room.Position.Z;
@@ -826,24 +819,24 @@ namespace TombEditor.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
             }
 
-            int oldRoom = adjoiningRoom;
+            Room oldRoom = adjoiningRoom;
 
             while (block.FloorPortal != -1 && !block.IsFloorSolid)
             {
                 Portal portal = _level.Portals[block.FloorPortal];
 
-                int adjoiningRoom2 = dec_rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                Room adjoiningRoom2 = portal.AdjoiningRoom;
 
                 if (block.FloorOpacity == PortalOpacity.Opacity1)
                 {
-                    if (!(room.FlagWater ^ dec_rooms[adjoiningRoom].FlagWater))
+                    if (!(room.FlagWater ^ adjoiningRoom.FlagWater))
                     {
                         break;
                     }
                 }
 
-                dec_roomIndex = adjoiningRoom2;
-                room = dec_rooms[dec_roomIndex];
+                dec_currentRoom = adjoiningRoom2;
+                room = dec_currentRoom;
 
                 posXblocks = (int)room.Position.X;
                 posZblocks = (int)room.Position.Z;
@@ -907,7 +900,7 @@ namespace TombEditor.Compilers
                 }
             }
 
-            dec_roomIndex = oldRoom;
+            dec_currentRoom = oldRoom;
 
             if (slope1 + slope2 + slope4 + slope3 >= 3 || slope1 + slope3 == 2 || slope2 + slope4 == 2)
             {
@@ -977,7 +970,7 @@ namespace TombEditor.Compilers
 
             if (zMax == zMin - 1)
             {
-                dec_roomIndex = b.Room;
+                dec_currentRoom = b.Room;
 
                 if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1)) return false;
 
@@ -994,7 +987,7 @@ namespace TombEditor.Compilers
 
             if (zMax == zMin - 2)
             {
-                dec_roomIndex = b.Room;
+                dec_currentRoom = b.Room;
 
                 if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
                 {
@@ -1022,7 +1015,7 @@ namespace TombEditor.Compilers
             {
                 if (zMin != zMax + 2) return false;
 
-                dec_roomIndex = a.Room;
+                dec_currentRoom = a.Room;
 
                 if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1)) return false;
 
@@ -1042,7 +1035,7 @@ namespace TombEditor.Compilers
                 return false;
             }
 
-            dec_roomIndex = a.Room;
+            dec_currentRoom = a.Room;
 
             if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1) && Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
             {
@@ -1077,7 +1070,7 @@ namespace TombEditor.Compilers
 
             if (xMax == xMin - 1)
             {
-                dec_roomIndex = b.Room;
+                dec_currentRoom = b.Room;
 
                 if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ)) return false;
 
@@ -1094,7 +1087,7 @@ namespace TombEditor.Compilers
 
             if (xMax == xMin - 2)
             {
-                dec_roomIndex = b.Room;
+                dec_currentRoom = b.Room;
 
                 if (Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
                 {
@@ -1122,7 +1115,7 @@ namespace TombEditor.Compilers
             {
                 if (xMin != xMax + 2) return false;
 
-                dec_roomIndex = a.Room;
+                dec_currentRoom = a.Room;
 
                 if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ)) return false;
 
@@ -1142,7 +1135,7 @@ namespace TombEditor.Compilers
                 return false;
             }
 
-            dec_roomIndex = a.Room;
+            dec_currentRoom = a.Room;
 
             if (Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ) && Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
             {
@@ -1174,7 +1167,7 @@ namespace TombEditor.Compilers
             {
                 while (true)
                 {
-                    dec_roomIndex = a.Room;
+                    dec_currentRoom = a.Room;
 
                     if (!Dec_CanSectorBeReachedAndIsSolid(a.Xmax - 1, startZ)) break;
 
@@ -1210,7 +1203,7 @@ namespace TombEditor.Compilers
             {
                 while (true)
                 {
-                    dec_roomIndex = a.Room;
+                    dec_currentRoom = a.Room;
 
                     if (!Dec_CanSectorBeReachedAndIsSolid(a.Xmin, startZ)) break;
 
@@ -1246,7 +1239,7 @@ namespace TombEditor.Compilers
             {
                 while (true)
                 {
-                    dec_roomIndex = a.Room;
+                    dec_currentRoom = a.Room;
 
                     if (!Dec_CanSectorBeReachedAndIsSolid(startX, a.Zmax - 1)) break;
 
@@ -1282,7 +1275,7 @@ namespace TombEditor.Compilers
             {
                 while (true)
                 {
-                    dec_roomIndex = a.Room;
+                    dec_currentRoom = a.Room;
 
                     if (!Dec_CanSectorBeReachedAndIsSolid(startX, a.Zmin)) break;
 
