@@ -49,16 +49,16 @@ namespace TombEditor.Controls
             }
 
             if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
-                if (Image != _editor.Level._textureMap)
+                if (Image != _editor.Level.TextureMap)
                 {
-                    if (_editor.Level._textureMap == null)
+                    if (_editor.Level.TextureMap == null)
                     {
                         Image = null;
                         Height = 0;
                     }
                     else
                     {
-                        Image = _editor.Level._textureMap;
+                        Image = _editor.Level.TextureMap;
                         Height = 0;
                         Invalidate();
                     }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using TombEditor.Geometry;
+﻿using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
@@ -8,19 +7,19 @@ namespace TombEditor.Compilers
         protected readonly Level _level;
         protected readonly string _dest;
         protected readonly Editor _editor;
-        protected readonly BackgroundWorker _worker;
+        protected readonly IProgressReporter _progressReporter;
 
-        protected LevelCompiler(Level level, string dest, BackgroundWorker bw = null)
+        protected LevelCompiler(Level level, string dest, IProgressReporter progressReporter)
         {
             _level = level;
             _dest = dest;
             _editor = Editor.Instance;
-            _worker = bw;
+            _progressReporter = progressReporter;
         }
 
-        protected void ReportProgress(int percentage, string message)
+        protected void ReportProgress(float percentage, string message)
         {
-            _worker?.ReportProgress(percentage, message);
+            _progressReporter.ReportProgress(percentage, message);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace TombEditor.Geometry.IO
 
         private delegate Portal PortalGetter(int id);
         
-        public static Level LoadFromPrj2(string filename, GraphicsDevice device, FormMain form)
+        public static Level LoadFromPrj2(string filename, GraphicsDevice device, IProgressReporter progressReporter)
         {
             var level = new Level();
 
@@ -37,70 +37,15 @@ namespace TombEditor.Geometry.IO
             {
                 using (var reader = CreatePrjReader(filename))
                 {
-                    if (reader == null)
-                        return null;
+                    level.FileName = filename;
 
                     // Read version code (in the future it can be used to have multiple PRJ versions)
                     int versionCode = reader.ReadInt32();
 
-                    // Read texture file
-                    int stringLength = reader.ReadInt32();
-                    level.TextureFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
-
-                    // Check if texture file exists
-                    if (level.TextureFile == "" || !File.Exists(level.TextureFile))
-                    {
-                        logger.Error("Can't find texture map!");
-
-                        if (DarkUI.Forms.DarkMessageBox.ShowWarning("The texture map '" + level.TextureFile + " could not be found. Do you want to browse it or cancel opening project?",
-                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        // Ask for texture file
-                        string textureFile = form.BrowseTextureMap();
-                        if (textureFile == "")
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        level.TextureFile = textureFile;
-                    }
-
-                    //Read WAD file
-                    stringLength = reader.ReadInt32();
-                    level.WadFile = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(stringLength));
-
-                    // Check if WAD file exists
-                    if (level.WadFile == "" || !File.Exists(level.WadFile))
-                    {
-                        logger.Error("Can't find WAD!");
-
-                        if (DarkUI.Forms.DarkMessageBox.ShowWarning("The WAD '" + level.WadFile + " could not be found. Do you want to browse it or cancel opening project?",
-                                "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        // Ask for texture file
-                        string wadFile = form.BrowseWAD();
-                        if (wadFile == "")
-                        {
-                            logger.Error("PRJ2 loading canceled");
-                            reader.Close();
-                            return null;
-                        }
-
-                        level.WadFile = wadFile;
-                    }
-
+                    // Read resource files
+                    ResourceLoader.TryLoadingTexture(level, reader.ReadStringUTF8(), device, progressReporter);
+                    ResourceLoader.TryLoadingWad(level, reader.ReadStringUTF8(), device, progressReporter);
+                    
                     // Read fillers
                     reader.ReadInt32();
                     reader.ReadInt32();
@@ -169,80 +114,63 @@ namespace TombEditor.Geometry.IO
                     {
                         int objectId = reader.ReadInt32();
                         var objectType = (ObjectInstanceType)reader.ReadByte();
-
+                        var Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                        var Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        
                         PositionBasedObjectInstance o;
-
                         switch (objectType)
                         {
                             case ObjectInstanceType.Moveable:
-                                o = new MoveableInstance(objectId, null);
+                                var m = new MoveableInstance(objectId, Room);
+                                m.WadObjectId = reader.ReadUInt32();
+                                m.Ocb = reader.ReadInt16();
+                                m.Invisible = reader.ReadBoolean();
+                                m.ClearBody = reader.ReadBoolean();
+                                m.CodeBits = (byte)(reader.ReadByte() & 0x1f);
+                                m.Rotation = reader.ReadSingle();
+                                o = m;
                                 break;
                             case ObjectInstanceType.Static:
-                                o = new StaticInstance(objectId, null);
+                                var s = new StaticInstance(objectId, Room);
+                                s.WadObjectId = reader.ReadUInt32();
+                                s.Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                                s.Rotation = reader.ReadSingle();
+                                o = s;
                                 break;
                             case ObjectInstanceType.Camera:
-                                o = new CameraInstance(objectId, null);
+                                var c = new CameraInstance(objectId, Room);
+                                c.Fixed = reader.ReadBoolean();
+                                o = c;
                                 break;
                             case ObjectInstanceType.Sink:
-                                o = new SinkInstance(objectId, null);
+                                var si = new SinkInstance(objectId, Room);
+                                si.Strength = reader.ReadInt16();
+                                o = si;
                                 break;
                             case ObjectInstanceType.SoundSource:
-                                o = new SoundSourceInstance(objectId, null);
+                                var ss = new SoundSourceInstance(objectId, Room);
+                                ss.SoundId = reader.ReadInt16();
+                                ss.CodeBits = (byte)(reader.ReadByte() & 0x1f);
+                                o = ss;
                                 break;
                             case ObjectInstanceType.FlyByCamera:
-                                o = new FlybyCameraInstance(objectId, null);
+                                var ffc = new FlybyCameraInstance(objectId, Room);
+                                ffc.Sequence = reader.ReadByte();
+                                ffc.Number = reader.ReadByte();
+                                ffc.Timer = reader.ReadUInt16();
+                                ffc.Flags = reader.ReadUInt16();
+                                ffc.Speed = reader.ReadSingle();
+                                ffc.Fov = reader.ReadSingle();
+                                ffc.Roll = reader.ReadSingle();
+                                ffc.RotationX = reader.ReadSingle();
+                                ffc.RotationY = reader.ReadSingle();
+                                o = ffc;
                                 break;
                             default:
-                                return null;
+                                logger.Warn("Unknown object type " + objectType + " encountered that can't be loaded.");
+                                continue;
                         }
-
-                        o.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        o.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
-
-                        if (o.Type == ObjectInstanceType.Static)
-                        {
-                            ((StaticInstance)o).WadObjectId = reader.ReadUInt32();
-                            ((StaticInstance)o).Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                            ((StaticInstance)o).Rotation = reader.ReadSingle();
-                            reader.ReadBytes(1);
-                        }
-
-                        if (o.Type == ObjectInstanceType.Moveable)
-                        {
-                            ((MoveableInstance)o).WadObjectId = reader.ReadUInt32();
-                            ((MoveableInstance)o).Ocb = reader.ReadInt16();
-                            ((MoveableInstance)o).Invisible = reader.ReadBoolean();
-                            ((MoveableInstance)o).ClearBody = reader.ReadBoolean();
-                            ((MoveableInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
-                            ((MoveableInstance)o).Rotation = reader.ReadSingle();
-                            reader.ReadBytes(4);
-                        }
-
-                        if (o.Type == ObjectInstanceType.Camera)
-                        {
-                            ((CameraInstance)o).Fixed = reader.ReadBoolean();
-                            reader.ReadBytes(7);
-                        }
-
-                        if (o.Type == ObjectInstanceType.Sink)
-                        {
-                            ((SinkInstance)o).Strength = reader.ReadInt16();
-                            reader.ReadBytes(6);
-                        }
-
-                        if (o.Type == ObjectInstanceType.SoundSource)
-                        {
-                            ((SoundSourceInstance)o).SoundId = reader.ReadInt16();
-                            ((SoundSourceInstance)o).CodeBits = (byte)(reader.ReadByte() & 0x1f);
-                            reader.ReadBytes(6);
-                        }
-
-                        /*if (o.Type == ObjectInstanceType.Fkl)
-                        {
-                            ((SoundInstance)o).SoundID = reader.ReadInt16();
-                            reader.ReadBytes(6);
-                        }*/
-
+                        
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();
@@ -288,19 +216,16 @@ namespace TombEditor.Geometry.IO
                     int numRooms = reader.ReadInt32();
                     for (int i = 0; i < numRooms; i++)
                     {
-                        string roomMagicWord = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(4));
-
                         bool defined = reader.ReadBoolean();
                         if (!defined)
                         {
                             if (level.Rooms[i] != null)
                                 logger.Warn($"Room {i} is used, but is marked as undefined");
-                            level.Rooms[i] = null;
                             continue;
                         }
 
                         var room = level.GetOrCreateDummyRoom(i);
-                        room.Name = reader.ReadString();
+                        room.Name = reader.ReadStringUTF8();
                         room.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                         room.Resize(room.NumXSectors, room.NumZSectors);
 
@@ -511,13 +436,7 @@ namespace TombEditor.Geometry.IO
                 logger.Error(ex);
                 return null;
             }
-
-            // Now it's time to load texturs
-            level.LoadTextureMap(level.TextureFile, device);
-
-            // Now it's time to load WAD
-            level.LoadWad(level.WadFile, device);
-
+            
             // Now fill the structures loaded from PRJ2 
             for (int i = 0; i < level.Triggers.Count; i++)
             {
@@ -543,7 +462,7 @@ namespace TombEditor.Geometry.IO
                         obj.Room.Moveables.Add(objectId);
                         break;
                     case ObjectInstanceType.Static:
-                        obj.Room.StaticMeshes.Add(objectId);
+                        obj.Room.Statics.Add(objectId);
                         break;
                     case ObjectInstanceType.Camera:
                         obj.Room.Cameras.Add(objectId);
@@ -567,8 +486,6 @@ namespace TombEditor.Geometry.IO
                 room.CalculateLightingForThisRoom();
                 room.UpdateBuffers();
             }
-
-            level.FileName = filename;
 
             return level;
         }
@@ -601,7 +518,7 @@ namespace TombEditor.Geometry.IO
             }
             else
             {
-                return null;
+                throw new NotSupportedException("The header of the *.prj2 file was unrecognizable.");
             }
         }
     }

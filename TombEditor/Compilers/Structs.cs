@@ -533,6 +533,7 @@ namespace TombEditor.Compilers
         public short AlternateRoom;
         public bool Portal;
         public bool FlipMap;
+        public bool Water;
     }
 
     public struct tr_overlap_aux

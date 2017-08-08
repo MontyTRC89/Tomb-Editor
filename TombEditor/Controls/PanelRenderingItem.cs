@@ -209,11 +209,11 @@ namespace TombEditor.Controls
                 _lastY = e.Y;
 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMoveMouse);
+                    Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(deltaX, -deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedTranslateMouse);
+                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
-                    Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedRotateMouse, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedRotateMouse);
+                    Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 Invalidate();
             }
         }

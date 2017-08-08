@@ -19,8 +19,11 @@ namespace TombEditor.Geometry
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
 
-        public Light(LightType type, Vector3 Position)
+        public Light(LightType type, Vector3 position)
         {
+            Type = type;
+            Position = position;
+
             switch (type)
             {
                 case LightType.Shadow:
@@ -41,7 +44,6 @@ namespace TombEditor.Geometry
                     IsStaticallyUsed = false;
                     break;
             }
-            this.Position = Position;
         }
 
         public Light Clone()

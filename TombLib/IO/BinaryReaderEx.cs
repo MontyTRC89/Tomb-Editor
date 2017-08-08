@@ -108,5 +108,13 @@ namespace TombLib.IO
             }
             Marshal.FreeHGlobal(unmanaged);
         }
+
+        public string ReadStringUTF8()
+        {
+            int stringLength = ReadInt32();
+            byte[] stringData = ReadBytes(stringLength);
+            string result = Encoding.UTF8.GetString(stringData);
+            return result;
+        }
     }
 }

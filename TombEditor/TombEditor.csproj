@@ -142,17 +142,11 @@
     <Compile Include="FormSplash.Designer.cs">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormImportPRJ.cs">
+    <Compile Include="FormOperationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormImportPRJ.Designer.cs">
-      <DependentUpon>FormImportPRJ.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FormBuildLevel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormBuildLevel.Designer.cs">
-      <DependentUpon>FormBuildLevel.cs</DependentUpon>
+    <Compile Include="FormOperationDialog.Designer.cs">
+      <DependentUpon>FormOperationDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="FormInputBox.cs">
       <SubType>Form</SubType>
@@ -206,6 +200,8 @@
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
+    <Compile Include="IProgressReporter.cs" />
+    <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />
     <Compile Include="Geometry\IO\Prj2Writer.cs" />
     <Compile Include="Geometry\IO\PrjLoader.cs" />
@@ -273,11 +269,8 @@
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormImportPRJ.resx">
-      <DependentUpon>FormImportPRJ.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormBuildLevel.resx">
-      <DependentUpon>FormBuildLevel.cs</DependentUpon>
+    <EmbeddedResource Include="FormOperationDialog.resx">
+      <DependentUpon>FormOperationDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormInputBox.resx">
       <DependentUpon>FormInputBox.cs</DependentUpon>

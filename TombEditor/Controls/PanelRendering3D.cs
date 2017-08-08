@@ -10,6 +10,7 @@ using TombLib.Graphics;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
+using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
@@ -199,6 +200,8 @@ namespace TombEditor.Controls
         private GeometricPrimitive _cone;
         private GeometricPrimitive _littleCube;
         private GeometricPrimitive _littleSphere;
+        private const float _littleCubeRadius = 128.0f;
+        private const float _littleSphereRadius = 128.0f;
         private int _lastX;
         private int _lastY;
         private bool _doSectorSelection = false;
@@ -256,7 +259,9 @@ namespace TombEditor.Controls
                 (obj is Editor.SelectedObjectChangedEvent) ||
                 (obj is Editor.SelectedSectorsChangedEvent) ||
                 (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.ModeChangedEvent))
+                (obj is Editor.ModeChangedEvent) ||
+                (obj is Editor.LoadedWadsChangedEvent) ||
+                (obj is Editor.LoadedTexturesChangedEvent))
             {
                 if (_editor.Mode != EditorMode.Map2D)
                     Invalidate();
@@ -348,8 +353,8 @@ namespace TombEditor.Controls
             _sphere = GeometricPrimitive.Sphere.New(_device, 1024, 6);
 
             //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
-            _littleCube = GeometricPrimitive.Cube.New(_device, 256);
-            _littleSphere = GeometricPrimitive.Sphere.New(_device, 256, 8);
+            _littleCube = GeometricPrimitive.Cube.New(_device, 2 * _littleSphereRadius);
+            _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * _littleCubeRadius, 8);
 
             _cone = GeometricPrimitive.Cone.New(_device, 1024, 1024, 18);
 
@@ -400,32 +405,32 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Up:
-                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
+                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
                     return true;
 
                 case Keys.Down:
-                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedRotateKey);
+                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
                     return true;
 
                 case Keys.Left:
-                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
+                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
                     return true;
 
                 case Keys.Right:
-                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedRotateKey, 0);
+                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
                     return true;
 
                 case Keys.PageUp:
-                    Camera.Move(-_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
+                    Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
                     return true;
 
                 case Keys.PageDown:
-                    Camera.Move(_editor.Configuration.Rendering3D_NavigationSpeedZoomKey);
+                    Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
                     return true;
             }
@@ -641,14 +646,14 @@ namespace TombEditor.Controls
                 float relativeDeltaX = deltaX / (float)Height;
                 float relativeDeltaY = deltaY / (float)Height; 
                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Move(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMoveMouse);
+                    Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                 else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.Translate(new Vector3(relativeDeltaX, -relativeDeltaY, 0) * 
-                        _editor.Configuration.Rendering3D_NavigationSpeedTranslateMouse);
+                    Camera.MoveCameraPlane(new Vector3(-relativeDeltaX, -relativeDeltaY, 0) * 
+                        _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
                 else
                     Camera.Rotate(
-                        relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse,
-                        -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedRotateMouse);
+                        relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                        -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
                 Invalidate();
             }
@@ -751,7 +756,7 @@ namespace TombEditor.Controls
             // First check lights
             for (int i = 0; i < room.Lights.Count; i++)
             {
-                BoundingSphere sphere = new BoundingSphere(room.Lights[i].Position, 128.0f);
+                BoundingSphere sphere = new BoundingSphere(room.Lights[i].Position, _littleSphereRadius);
                 if (ray.Intersects(ref sphere, out distance) && ((result == null) || (distance < result.Distance)))
                     result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.Light, i));
             }
@@ -759,9 +764,10 @@ namespace TombEditor.Controls
             // Check for sinks
             for (int i = 0; i < room.Sinks.Count; i++)
             {
+                var Sink = _editor.Level.Objects[room.Sinks[i]];
                 BoundingBox box = new BoundingBox(
-                    _editor.Level.Objects[room.Sinks[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                    _editor.Level.Objects[room.Sinks[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                    _editor.Level.Objects[room.Sinks[i]].Position - new Vector3(_littleCubeRadius),
+                    _editor.Level.Objects[room.Sinks[i]].Position + new Vector3(_littleCubeRadius));
                 if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                     result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.Sink, room.Sinks[i]));
             }
@@ -770,8 +776,8 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.Cameras.Count; i++)
             {
                 BoundingBox box = new BoundingBox(
-                    _editor.Level.Objects[room.Cameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                    _editor.Level.Objects[room.Cameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                    _editor.Level.Objects[room.Cameras[i]].Position - new Vector3(_littleCubeRadius),
+                    _editor.Level.Objects[room.Cameras[i]].Position + new Vector3(_littleCubeRadius));
                 if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                     result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.Camera, room.Cameras[i]));
             }
@@ -780,8 +786,8 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.SoundSources.Count; i++)
             {
                 BoundingBox box = new BoundingBox(
-                    _editor.Level.Objects[room.SoundSources[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                    _editor.Level.Objects[room.SoundSources[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                    _editor.Level.Objects[room.SoundSources[i]].Position - new Vector3(_littleCubeRadius),
+                    _editor.Level.Objects[room.SoundSources[i]].Position + new Vector3(_littleCubeRadius));
                 if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                     result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.SoundSource, room.SoundSources[i]));
             }
@@ -790,8 +796,8 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.FlyByCameras.Count; i++)
             {
                 BoundingBox box = new BoundingBox(
-                    _editor.Level.Objects[room.FlyByCameras[i]].Position - new Vector3(128.0f, 128.0f, 128.0f),
-                    _editor.Level.Objects[room.FlyByCameras[i]].Position + new Vector3(128.0f, 128.0f, 128.0f));
+                    _editor.Level.Objects[room.FlyByCameras[i]].Position - new Vector3(_littleCubeRadius),
+                    _editor.Level.Objects[room.FlyByCameras[i]].Position + new Vector3(_littleCubeRadius));
                 if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                     result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.FlyByCamera, room.FlyByCameras[i]));
             }
@@ -800,29 +806,47 @@ namespace TombEditor.Controls
             for (int i = 0; i < room.Moveables.Count; i++)
             {
                 MoveableInstance modelInfo = (MoveableInstance)_editor.Level.Objects[room.Moveables[i]];
-                SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
-                model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
-
-                for (int j = 0; j < model.Meshes.Count; j++)
+                if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(modelInfo.WadObjectId) ?? false)
                 {
-                    SkinnedMesh mesh = model.Meshes[j];
-                    Matrix world = model.AnimationTransforms[j] *
-                                   Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                                   Matrix.Translation(modelInfo.Position);
-                    DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Moveable, room.Moveables[i]), mesh, world);
+                    SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
+                    model.BuildAnimationPose(model.Animations[0].KeyFrames[0]);
+
+                    for (int j = 0; j < model.Meshes.Count; j++)
+                    {
+                        SkinnedMesh mesh = model.Meshes[j];
+                        Matrix world = model.AnimationTransforms[j] *
+                                       Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                       Matrix.Translation(modelInfo.Position);
+                        DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Moveable, room.Moveables[i]), mesh, world);
+                    }
+                }
+                else
+                {
+                    BoundingBox box = new BoundingBox(modelInfo.Position - new Vector3(_littleCubeRadius), modelInfo.Position + new Vector3(_littleCubeRadius));
+                    if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                        result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.Moveable, room.Moveables[i]));
                 }
             }
 
             // Check for static meshes
-            for (int i = 0; i < room.StaticMeshes.Count; i++)
+            for (int i = 0; i < room.Statics.Count; i++)
             {
-                StaticInstance modelInfo = (StaticInstance)_editor.Level.Objects[room.StaticMeshes[i]];
-                StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
+                StaticInstance modelInfo = (StaticInstance)_editor.Level.Objects[room.Statics[i]];
+                if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(modelInfo.WadObjectId) ?? false)
+                {
+                    StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
 
-                StaticMesh mesh = model.Meshes[0];
-                Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
-                               Matrix.Translation(modelInfo.Position);
-                DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Moveable, room.StaticMeshes[i]), mesh, world);
+                    StaticMesh mesh = model.Meshes[0];
+                    Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
+                                   Matrix.Translation(modelInfo.Position);
+                    DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Moveable, room.Statics[i]), mesh, world);
+                }
+                else
+                {
+                    BoundingBox box = new BoundingBox(modelInfo.Position - new Vector3(_littleCubeRadius), modelInfo.Position + new Vector3(_littleCubeRadius));
+                    if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                        result = new PickingResultObject(distance, new ObjectPtr(ObjectInstanceType.Moveable, room.Statics[i]));
+                }
             }
 
             // Check room geometry
@@ -1144,26 +1168,21 @@ namespace TombEditor.Controls
             for (int i = 0; i < _flybyToDraw.Count; i++)
             {
                 var instance = _editor.Level.Objects[_flybyToDraw[i]];
-
+                
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-                Vector4 color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.FlyByCamera, instance.Id))
+                Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Sink, instance.Id))
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
-                }
 
-                FlybyCameraInstance flyby = (FlybyCameraInstance) instance;
-
-                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.FlyByCamera, instance.Id))
-                {
-                    string message = "Flyby Camera (" + flyby.Sequence + ":" + flyby.Number + ")";
+                    var message = "Sink (" + instance.Id + ")";
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(room, instance.Position);
 
-                    Matrix modelViewProjection =
+                    var modelViewProjection =
                         Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) *
                         viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
@@ -1174,7 +1193,7 @@ namespace TombEditor.Controls
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
                         if ((trigger.TargetType == TriggerTargetType.Object ||
-                             trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == instance.Id)
+                             trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.Id)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
                                        _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
@@ -1185,14 +1204,10 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
-
-                    // Add the flyby path
-                    AddFlybyPath(((FlybyCameraInstance)instance).Sequence);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) *
                                Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
-
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1306,6 +1321,111 @@ namespace TombEditor.Controls
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
+            if (_editor.SelectedRoom != null)
+            {
+                for (int i = 0; i < _editor.SelectedRoom.Moveables.Count; i++)
+                {
+                    var instance = (MoveableInstance)_editor.Level.Objects[_editor.SelectedRoom.Moveables[i]];
+                    if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false)
+                        continue;
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.2f, 0.2f, 0.5f, 1.0f);
+                    if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Moveable, instance.Id))
+                    {
+                        color = new Vector4(0.5f, 0.2f, 0.2f, 1.0f);
+                        _device.SetRasterizerState(_rasterizerWireframe);
+
+                        var message = "Unavailable " + instance.ItemType.ToString();
+
+                        // Object position
+                        message += Environment.NewLine + GetObjectPositionString(room, instance.Position);
+
+                        var modelViewProjection =
+                            Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) *
+                            viewProjection;
+                        Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                            _device.Viewport.MinDepth,
+                            _device.Viewport.MaxDepth, modelViewProjection);
+
+                        for (int n = 0; n < _editor.Level.Triggers.Count; n++)
+                        {
+                            TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
+                            if ((trigger.TargetType == TriggerTargetType.Object ||
+                                 trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.Id)
+                            {
+                                message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
+                                           _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
+                            }
+                        }
+
+                        Debug.AddString(message, screenPos);
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                    }
+
+                    Matrix model = Matrix.Translation(instance.Position) *
+                                   Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
+                    effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+                for (int i = 0; i < _editor.SelectedRoom.Statics.Count; i++)
+                {
+                    var instance = (StaticInstance)_editor.Level.Objects[_editor.SelectedRoom.Statics[i]];
+                    if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(instance.WadObjectId) ?? false)
+                        continue;
+
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.2f, 0.2f, 0.5f, 1.0f);
+                    if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Moveable, instance.Id))
+                    {
+                        color = new Vector4(0.5f, 0.2f, 0.2f, 1.0f);
+                        _device.SetRasterizerState(_rasterizerWireframe);
+
+                        var message = "Unavailable " + instance.ItemType.ToString();
+                        
+                        // Add the line height of the object
+                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                    }
+
+                    Matrix model = Matrix.Translation(instance.Position) *
+                                   Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
+                    effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
             _device.SetVertexBuffer(_cone.VertexBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
             _device.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
@@ -1322,7 +1442,7 @@ namespace TombEditor.Controls
                 float cutoffScaleH = 1;
                 float cutoffScaleW = MathUtil.DegreesToRadians(flyby.Fov / 2) / coneAngle * cutoffScaleH;
 
-                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(flyby.DirectionX)) * Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(flyby.DirectionY));
+                Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, flyby.RotationXRadians) * Matrix.RotationAxis(Vector3.UnitY, flyby.RotationYRadians);
 
                 Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -1352,10 +1472,10 @@ namespace TombEditor.Controls
             for (int k = 0; k < MoveablesToDraw.Count; k++)
             {
                 MoveableInstance modelInfo = (MoveableInstance) _editor.Level.Objects[MoveablesToDraw[k]];
-
-                Debug.NumMoveables++;
-
+                if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(modelInfo.WadObjectId) ?? false))
+                    continue;
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
+                Debug.NumMoveables++;
 
                 if (k == 0 || modelInfo.WadObjectId != _lastObject.WadObjectId)
                 {
@@ -1433,7 +1553,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawStaticMeshes(Matrix viewProjection, Room room)
+        private void DrawStatics(Matrix viewProjection, Room room)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -1451,6 +1571,8 @@ namespace TombEditor.Controls
             for (int k = 0; k < StaticMeshesToDraw.Count; k++)
             {
                 StaticInstance modelInfo = (StaticInstance) _editor.Level.Objects[StaticMeshesToDraw[k]];
+                if (!(_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(modelInfo.WadObjectId) ?? false))
+                    continue;
                 StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
 
                 if (k == 0)
@@ -1608,7 +1730,7 @@ namespace TombEditor.Controls
                 }
 
                 MoveablesToDraw.AddRange(_roomsToDraw[i].Moveables);
-                StaticMeshesToDraw.AddRange(_roomsToDraw[i].StaticMeshes);
+                StaticMeshesToDraw.AddRange(_roomsToDraw[i].Statics);
             }
 
             MoveablesToDraw.Sort(new ComparerMoveables(_editor.Level.Rooms));
@@ -1709,7 +1831,8 @@ namespace TombEditor.Controls
                             if (face.Defined)
                             {
                                 if ((_editor.Mode == EditorMode.Geometry && room == _editor.SelectedRoom) ||
-                                    (face.Texture == -1 && !face.Invisible))
+                                    (face.Texture == -1 && !face.Invisible) ||
+                                    (_editor.Level.DirectXTextures.Count == 0))
                                 {
                                     RenderBucket bucket = new RenderBucket
                                     {
@@ -1921,17 +2044,8 @@ namespace TombEditor.Controls
                 _device.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
             }
 
-            // Draw moveables and static meshes
-            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null && _editor.SelectedRoom != null)
-            {
-                DrawMoveables(viewProjection, _editor.SelectedRoom);
-                DrawStaticMeshes(viewProjection, _editor.SelectedRoom);
-            }
-
-            // Prepare the shader
-            _roomEffect = _deviceManager.Effects["Room"];
-
             // Set some common parameters of the shader
+            _roomEffect = _deviceManager.Effects["Room"];
             _roomEffect.Parameters["CameraPosition"].SetValue(viewProjection.TranslationVector);
             _roomEffect.Parameters["LightingEnabled"].SetValue(false);
             _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
@@ -2083,7 +2197,7 @@ namespace TombEditor.Controls
                 // Change texture if needed
                 if (_lastBucket == null)
                 {
-                    _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0]);
+                    _roomEffect.Parameters["Texture"].SetResource(_editor.Level.DirectXTextures[0]);
                     _roomEffect.Parameters["TextureSampler"]
                         .SetResource(_device.SamplerStates.AnisotropicWrap);
                 }
@@ -2207,7 +2321,7 @@ namespace TombEditor.Controls
                 if (_lastBucket == null /*|| _lastBucket.Texture!=bucket.Texture*/)
                 {
                     LevelTexture textureSample = _editor.Level.TextureSamples[face.Texture];
-                    _roomEffect.Parameters["Texture"].SetResource(_editor.Level.Textures[0 /*textureSample.Page*/]);
+                    _roomEffect.Parameters["Texture"].SetResource(_editor.Level.DirectXTextures[0 /*textureSample.Page*/]);
                     _roomEffect.Parameters["TextureSampler"]
                         .SetResource(_device.SamplerStates.AnisotropicWrap);
                 }
@@ -2944,6 +3058,10 @@ namespace TombEditor.Controls
                 }
             }
 
+            // Is it actually necessary to show the path?
+            if (flybyCameras.Count < 2)
+                return;
+            
             // Sort cameras
             flybyCameras.Sort(new ComparerFlybyCameras());
 

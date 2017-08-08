@@ -1002,18 +1002,9 @@ namespace TombEditor
                     {
                         FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[objectPtr.Id];
 
-                        flyby.DirectionX += (short)Math.Round(delta.X);
-                        flyby.DirectionY += (short)Math.Round(delta.Y);
-
-                        if (flyby.DirectionX >= 360)
-                            flyby.DirectionX -= 360;
-                        if (flyby.DirectionX < 0)
-                            flyby.DirectionX += 360;
-                        if (flyby.DirectionY < 0)
-                            flyby.DirectionY += 360;
-                        if (flyby.DirectionY >= 360)
-                            flyby.DirectionY -= 360;
-
+                        flyby.RotationX += delta.X;
+                        flyby.RotationY += delta.Y;
+                        
                         _editor.ObjectChange(flyby);
                     }
                     break;
@@ -1412,7 +1403,7 @@ namespace TombEditor
                     room.SoundSources.Add(instance.Id);
                     break;
                 case ObjectInstanceType.Static:
-                    room.StaticMeshes.Add(instance.Id);
+                    room.Statics.Add(instance.Id);
                     break;
             }
             _editor.ObjectChange(instance);
@@ -1635,12 +1626,12 @@ namespace TombEditor
                 }
             }
 
-            for (int i = 0; i < room.StaticMeshes.Count; i++)
+            for (int i = 0; i < room.Statics.Count; i++)
             {
-                if (!objectsToRemove.Contains(room.StaticMeshes[i]))
+                if (!objectsToRemove.Contains(room.Statics[i]))
                 {
-                    newRoom.StaticMeshes.Add(room.StaticMeshes[i]);
-                    _editor.Level.Objects[room.StaticMeshes[i]].Move(-worldX, 0, -worldZ);
+                    newRoom.Statics.Add(room.Statics[i]);
+                    _editor.Level.Objects[room.Statics[i]].Move(-worldX, 0, -worldZ);
                 }
             }
 

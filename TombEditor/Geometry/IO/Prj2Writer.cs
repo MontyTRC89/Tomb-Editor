@@ -35,16 +35,9 @@ namespace TombEditor.Geometry.IO
                     string textureFileName = Utils.GetRelativePath(filename, level.TextureFile);
                     string wadFileName = Utils.GetRelativePath(filename, level.WadFile);
 
-                    // Write texture map
-                    var textureFile = System.Text.Encoding.UTF8.GetBytes(textureFileName);
-                    int numBytes = textureFile.Length;
-                    writer.Write(numBytes);
-                    writer.Write(textureFile);
-
-                    var wadFile = System.Text.Encoding.UTF8.GetBytes(wadFileName);
-                    numBytes = wadFile.Length;
-                    writer.Write(numBytes);
-                    writer.Write(wadFile);
+                    // Write paths to dependent resources
+                    writer.WriteStringUTF8(textureFileName ?? string.Empty);
+                    writer.WriteStringUTF8(wadFileName ?? string.Empty);
 
                     writer.Write(filler32);
                     writer.Write(filler32);
@@ -120,8 +113,6 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(sm.Color.G);
                                 writer.Write(sm.Color.B);
                                 writer.Write(sm.Rotation);
-
-                                writer.Write(filler8);
                                 break;
                             case ObjectInstanceType.Moveable:
                                 var m = (MoveableInstance)o;
@@ -131,35 +122,34 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(m.ClearBody);
                                 writer.Write(m.CodeBits);
                                 writer.Write(m.Rotation);
-
-                                writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.Camera:
                                 var c = (CameraInstance)o;
                                 writer.Write(c.Fixed);
-
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.Sink:
                                 var s = (SinkInstance)o;
                                 writer.Write(s.Strength);
-
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler32);
                                 break;
                             case ObjectInstanceType.SoundSource:
                                 var ss = (SoundSourceInstance)o;
                                 writer.Write(ss.SoundId);
                                 writer.Write(ss.CodeBits);
-
-                                writer.Write(filler8);
-                                writer.Write(filler8);
-                                writer.Write(filler32);
                                 break;
+                            case ObjectInstanceType.FlyByCamera:
+                                var fbc = (FlybyCameraInstance)o;
+                                writer.Write(fbc.Sequence);
+                                writer.Write(fbc.Number);
+                                writer.Write(fbc.Timer);
+                                writer.Write(fbc.Flags);
+                                writer.Write(fbc.Speed);
+                                writer.Write(fbc.Fov);
+                                writer.Write(fbc.Roll);
+                                writer.Write(fbc.RotationX);
+                                writer.Write(fbc.RotationY);
+                                break;
+                            default:
+                                throw new NotSupportedException("Unknown object type " + o.Type + " encountered that can't be safed.");
                         }
 
                         writer.Write(filler32);
@@ -197,27 +187,25 @@ namespace TombEditor.Geometry.IO
                         writer.Write(filler32);
                     }
 
+                    // Figure out how many rooms are needed
+                    int numRooms = level.Rooms.Count();
+                    while (numRooms > 0)
+                    {
+                        if (level.Rooms[numRooms - 1] != null)
+                            break;
+                        --numRooms;
+                    }
+
                     // Write rooms
-                    const int numRooms = 255;
                     writer.Write(numRooms);
                     for (int i = 0; i < numRooms; i++)
                     {
-                        var roomMagicWord = System.Text.Encoding.ASCII.GetBytes("ROOM");
-                        writer.Write(roomMagicWord);
-
                         var r = level.Rooms[i];
-
+                        writer.Write(r != null);
                         if (r == null)
-                        {
-                            writer.Write(false);
                             continue;
-                        }
-                        else
-                        {
-                            writer.Write(true);
-                        }
                         
-                        writer.Write(r.Name);
+                        writer.WriteStringUTF8(r.Name);
                         writer.Write(r.Position.X);
                         writer.Write(r.Position.Y);
                         writer.Write(r.Position.Z);

@@ -101,7 +101,7 @@ namespace TombEditor
             {
                 for (int y = 0; y < 64; y++)
                 {
-                    System.Drawing.Color color = level._textureMap.GetPixel(xc + x, page * 256 + yc + y);
+                    System.Drawing.Color color = level.TextureMap.GetPixel(xc + x, page * 256 + yc + y);
                     bmp.SetPixel(x, y, color);
                 }
             }
@@ -293,21 +293,6 @@ namespace TombEditor
                     return obj;
 
             return null;
-        }
-
-        public static string ReadString(this BinaryReader stream)
-        {
-            int stringLength = stream.ReadInt32();
-            byte[] stringData = stream.ReadBytes(stringLength);
-            string result = Encoding.UTF8.GetString(stringData);
-            return result;
-        }
-
-        public static void Write(this BinaryWriter stream, string str)
-        {
-            byte[] stringData = Encoding.UTF8.GetBytes(str);
-            stream.Write(stringData.GetLength(0));
-            stream.Write(stringData);
         }
     }
 }
