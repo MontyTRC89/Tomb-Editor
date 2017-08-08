@@ -912,7 +912,8 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Write slots
-                    using (var writerSlots = new StreamWriter("slots.txt"))
+                    const bool writeSlots = false;
+                    using (var writerSlots = writeSlots ? new StreamWriter("slots.txt") : null)
                     {
                         int numSlots = reader.ReadInt32();
                         for (int i = 0; i < numSlots; i++)
@@ -920,8 +921,7 @@ namespace TombEditor.Geometry.IO
                             short slotType = reader.ReadInt16();
                             if (slotType == 0x00)
                             {
-                                writerSlots.WriteLine(i + "\t" + "NOT DEFINED");
-
+                                writerSlots?.WriteLine(i + "\t" + "NOT DEFINED");
                                 continue;
                             }
 
@@ -944,10 +944,10 @@ namespace TombEditor.Geometry.IO
                             int objectId = reader.ReadInt32();
 
                             reader.ReadBytes(108);
-
-                            writerSlots.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
+                            writerSlots?.WriteLine(i + "\t" + slotName + "\t" + slotType + "\t" + objectId);
                         }
                     }
+
 
                     // Read animated textures
                     owner.ReportProgress(61, "Loading animated textures and texture sounds");
