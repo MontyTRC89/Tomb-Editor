@@ -34,7 +34,7 @@ namespace TombEditor.Compilers
             _tempBoxes = new List<tr_box_aux>();
 
             // First build boxes except portal boxes
-            foreach (var room in _editor.Level.Rooms)
+            /*foreach (var room in _editor.Level.Rooms)
             {
                 if (room == null) continue;
 
@@ -233,6 +233,32 @@ namespace TombEditor.Compilers
                         }
                     }
                 }
+            }
+            */
+
+            Dec_BuildBoxesAndOverlaps();
+
+            for (int i = 0; i < dec_numBoxes; i++)
+            {
+                tr_box_aux box = new tr_box_aux();
+
+                box.Xmin = (byte)dec_boxes[i].Xmin;
+                box.Xmax = (byte)dec_boxes[i].Xmax;
+                box.Zmin = (byte)dec_boxes[i].Zmin;
+                box.Zmax = (byte)dec_boxes[i].Zmax;
+                box.Room = dec_boxes[i].Room;
+                box.IsolatedBox = dec_boxes[i].IsolatedBox;
+                box.Monkey = dec_boxes[i].Monkey;
+                box.Jump = dec_boxes[i].Jump;
+               // box.FlipMap = dec_boxes[i].FlipMap;
+                box.OverlapIndex = dec_boxes[i].OverlapIndex;
+               // box.Portal = dec_boxes[i].Portal;
+               // box.RoomBelow = dec_boxes[i].RoomBelow;
+                box.TrueFloor = (short)(dec_boxes[i].TrueFloor * -256);
+               // box.Border = dec_boxes[i].Border;
+                //box.AlternateRoom = dec_boxes[i].AlternateRoom;
+
+                _tempBoxes.Add(box);
             }
 
             // Build overlaps
