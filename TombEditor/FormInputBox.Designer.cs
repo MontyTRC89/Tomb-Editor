@@ -39,6 +39,9 @@ namespace TombEditor
             // 
             // labelMessage
             // 
+            this.labelMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMessage.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.labelMessage.Location = new System.Drawing.Point(12, 9);
             this.labelMessage.Name = "labelMessage";
@@ -47,6 +50,7 @@ namespace TombEditor
             // 
             // butCancel
             // 
+            this.butCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.butCancel.Location = new System.Drawing.Point(201, 123);
             this.butCancel.Name = "butCancel";
             this.butCancel.Padding = new System.Windows.Forms.Padding(5);
@@ -58,6 +62,7 @@ namespace TombEditor
             // 
             // butOK
             // 
+            this.butOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.butOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.butOK.Location = new System.Drawing.Point(109, 123);
             this.butOK.Name = "butOK";
@@ -70,10 +75,12 @@ namespace TombEditor
             // 
             // tbValue
             // 
+            this.tbValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbValue.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbValue.Location = new System.Drawing.Point(15, 84);
+            this.tbValue.Location = new System.Drawing.Point(15, 93);
             this.tbValue.Name = "tbValue";
             this.tbValue.Size = new System.Drawing.Size(364, 22);
             this.tbValue.TabIndex = 22;
@@ -88,10 +95,11 @@ namespace TombEditor
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormInputBox";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sink";
             this.ResumeLayout(false);

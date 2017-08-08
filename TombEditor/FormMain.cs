@@ -1079,7 +1079,7 @@ namespace TombEditor
             if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            Level level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, _deviceManager.Device, this);
+            Level level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, _deviceManager.Device, new ProgressReporterSimple(this));
             if (level == null)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError(
@@ -1091,6 +1091,7 @@ namespace TombEditor
         
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            // Choose actions
             if (DarkUI.Forms.DarkMessageBox.ShowWarning(
                     "Your project will be lost. Do you really want to open an existing project?",
                     "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
@@ -1098,18 +1099,24 @@ namespace TombEditor
 
             if (openFileDialogPRJ.ShowDialog(this) != DialogResult.OK)
                 return;
+            string fileName = openFileDialogPRJ.FileName;
 
-            using (var form = new FormImportPRJ(_deviceManager))
+            // Start import process
+            Level newLevel = null;
+            try
             {
-                form.FileName = openFileDialogPRJ.FileName;
-                if (form.ShowDialog() != DialogResult.OK || form.Level == null)
+                using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
+                    newLevel = PrjLoader.LoadFromPrj(fileName, _deviceManager.Device, progressReporter)))
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError(
-                        "There was an error while importing project file. File may be in use or may be corrupted",
-                        "Error");
-                    return;
+                    if (form.ShowDialog(this) != DialogResult.OK || newLevel == null)
+                        return;
+                    _editor.Level = newLevel;
+                    newLevel = null;
                 }
-                _editor.Level = form.Level;
+            }
+            finally
+            {
+                newLevel?.Dispose();
             }
         }
 
@@ -1174,28 +1181,27 @@ namespace TombEditor
                 portal.AdjoiningRoom.UpdateBuffers();
             }
         }
-        
-        private void butCompileLevel_Click(object sender, EventArgs e)
+
+        private void BuildLevel(bool autoCloseWhenDone)
         {
-            using (var form = new FormBuildLevel())
+            Level level = _editor.Level;
+            string fileName = Path.Combine("Game\\Data\\", Path.ChangeExtension(level.FileName ?? "", "tr4"));
+
+            using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
+                new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
+            {
                 form.ShowDialog(this);
+            }
         }
 
-        private void BuilLevel()
+        private void butCompileLevel_Click(object sender, EventArgs e)
         {
-            string baseName = Path.GetFileNameWithoutExtension(_editor.Level.WadFile);
-
-            var comp = new LevelCompilerTr4(_editor.Level, "Game\\Data\\" + baseName + ".tr4");
-            comp.CompileLevel();
+            BuildLevel(false);
         }
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
-            using (var form = new FormBuildLevel())
-            {
-                form.AutoCloseWhenDone = true;
-                form.ShowDialog(this);
-            }
+            BuildLevel(true);
 
             var info = new ProcessStartInfo
             {

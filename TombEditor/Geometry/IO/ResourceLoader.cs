@@ -56,73 +56,89 @@ namespace TombEditor.Geometry.IO
             }
         }
 
-        public static void TryLoadingTexture(Level level, string currentPath, GraphicsDevice device, IWin32Window owner)
+        public static void TryLoadingTexture(Level level, string currentPath, GraphicsDevice device, IProgressReporter progressReporter)
         {
             if (!string.IsNullOrEmpty(currentPath))
             {
-                RetryLoading:
-
-                // Resolve relative paths
-                if (!Path.IsPathRooted(currentPath))
-                    currentPath = Path.Combine(Path.GetDirectoryName(level.FileName), currentPath);
-
-                // Try loading the file
-                try
+                bool retry;
+                do
                 {
-                    level.LoadTexture(currentPath, device);
-                }
-                catch (Exception exc)
-                {
-                    logger.Warn(exc, "Unable to load texture file \"" + currentPath + "\".");
+                    retry = false;
 
-                    switch (MessageBox.Show(owner, "The texture file '" + currentPath + " could not be loaded." +
-                        "Do you want to load a substituting file now?", "Open project",
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
+                    // Resolve relative paths
+                    if (!Path.IsPathRooted(currentPath))
+                        currentPath = Path.Combine(Path.GetDirectoryName(level.FileName), currentPath);
+
+                    // Try loading the file
+                    try
                     {
-                        case DialogResult.Yes:
-                            currentPath = BrowseTexture(currentPath, level.FileName, owner);
-                            goto RetryLoading;
-                        case DialogResult.No:
-                            break;
-                        case DialogResult.Cancel:
-                            throw new OperationCanceledException("Canceled because texture was not loadable");
+                        level.LoadTexture(currentPath, device);
                     }
-                }
+                    catch (Exception exc)
+                    {
+                        logger.Warn(exc, "Unable to load texture file \"" + currentPath + "\".");
+
+                        progressReporter.InvokeGui(delegate (IWin32Window owner)
+                            {
+                                switch (MessageBox.Show(owner, "The texture file '" + currentPath + " could not be loaded. " +
+                                    "Do you want to load a substituting file now?", "Open project",
+                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
+                                {
+                                    case DialogResult.Yes:
+                                        currentPath = BrowseTexture(currentPath, level.FileName, owner);
+                                        retry = true;
+                                        break;
+                                    case DialogResult.No:
+                                        break;
+                                    case DialogResult.Cancel:
+                                        throw new OperationCanceledException("Canceled because texture was not loadable");
+                                }
+                            });
+                    }
+                } while (retry);
             }
         }
 
-        public static void TryLoadingWad(Level level, string currentPath, GraphicsDevice device, IWin32Window owner)
+        public static void TryLoadingWad(Level level, string currentPath, GraphicsDevice device, IProgressReporter progressReporter)
         {
             if (!string.IsNullOrEmpty(currentPath))
             {
-                RetryLoading:
-                
-                // Resolve relative paths
-                if (!Path.IsPathRooted(currentPath))
-                    currentPath = Path.Combine(Path.GetDirectoryName(level.FileName), currentPath);
-
-                // Try loading the file
-                try
+                bool retry;
+                do
                 {
-                    level.LoadWad(currentPath, device);
-                }
-                catch (Exception exc)
-                {
-                    logger.Warn(exc, "Unable to load texture file \"" + currentPath + "\".");
+                    retry = false;
 
-                    switch (MessageBox.Show(owner, "The *.wad file '" + currentPath + " could not be loaded." +
-                        "Do you want to load a substituting file now?", "Open project",
-                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
+                    // Resolve relative paths
+                    if (!Path.IsPathRooted(currentPath))
+                        currentPath = Path.Combine(Path.GetDirectoryName(level.FileName), currentPath);
+
+                    // Try loading the file
+                    try
                     {
-                        case DialogResult.Yes:
-                            currentPath = BrowseWad(currentPath, level.FileName, owner);
-                            goto RetryLoading;
-                        case DialogResult.No:
-                            break;
-                        case DialogResult.Cancel:
-                            throw new OperationCanceledException("Canceled because *.wad was not loadable");
+                        level.LoadWad(currentPath, device);
                     }
-                }
+                    catch (Exception exc)
+                    {
+                        logger.Warn(exc, "Unable to load texture file \"" + currentPath + "\".");
+
+                        progressReporter.InvokeGui(delegate(IWin32Window owner)
+                            {
+                                switch (MessageBox.Show(owner, "The *.wad file '" + currentPath + " could not be loaded. " +
+                                    "Do you want to load a substituting file now?", "Open project",
+                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
+                                {
+                                    case DialogResult.Yes:
+                                        currentPath = BrowseWad(currentPath, level.FileName, owner);
+                                        retry = true;
+                                        break;
+                                    case DialogResult.No:
+                                        break;
+                                    case DialogResult.Cancel:
+                                        throw new OperationCanceledException("Canceled because *.wad was not loadable");
+                                }
+                            });
+                    }
+                } while (retry);
             }
         }
     }
