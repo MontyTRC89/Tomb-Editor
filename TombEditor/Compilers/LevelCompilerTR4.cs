@@ -5,7 +5,6 @@ using TombEditor.Geometry;
 using TombLib.IO;
 using System.IO;
 using SharpDX;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
@@ -107,8 +106,8 @@ namespace TombEditor.Compilers
 
         private byte[] _bufferSamples;
 
-        public LevelCompilerTr4(Level level, string dest, BackgroundWorker bw = null) 
-            : base(level, dest, bw)
+        public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter) 
+            : base(level, dest, progressReporter)
         {}
 
         private void CompileLevelTask1()

@@ -14,7 +14,7 @@ namespace TombEditor.Geometry.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Level LoadFromPrj2(string filename, GraphicsDevice device, IWin32Window owner)
+        public static Level LoadFromPrj2(string filename, GraphicsDevice device, IProgressReporter progressReporter)
         {
             var level = new Level();
 
@@ -28,8 +28,8 @@ namespace TombEditor.Geometry.IO
                     int versionCode = reader.ReadInt32();
 
                     // Read resource files
-                    ResourceLoader.TryLoadingTexture(level, reader.ReadStringUTF8(), device, owner);
-                    ResourceLoader.TryLoadingWad(level, reader.ReadStringUTF8(), device, owner);
+                    ResourceLoader.TryLoadingTexture(level, reader.ReadStringUTF8(), device, progressReporter);
+                    ResourceLoader.TryLoadingWad(level, reader.ReadStringUTF8(), device, progressReporter);
                     
                     // Read fillers
                     reader.ReadInt32();

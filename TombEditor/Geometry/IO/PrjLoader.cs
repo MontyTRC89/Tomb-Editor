@@ -62,7 +62,7 @@ namespace TombEditor.Geometry.IO
             public short _otherThingIndex;
         };
         
-        public static Level LoadFromPrj(string filename, GraphicsDevice device, IProgressReporter owner)
+        public static Level LoadFromPrj(string filename, GraphicsDevice device, IProgressReporter progressReporter)
         {
             var level = new Level();
 
@@ -73,7 +73,7 @@ namespace TombEditor.Geometry.IO
                 {
                     level.FileName = Path.ChangeExtension(filename, "prj2");
 
-                    owner.ReportProgress(0, "Begin of PRJ import");
+                    progressReporter.ReportProgress(0, "Begin of PRJ import");
 
                     logger.Warn("Opening Winroomedit PRJ file");
 
@@ -83,7 +83,7 @@ namespace TombEditor.Geometry.IO
                     var bytesNgle = reader.ReadBytes(4);
                     if (bytesNgle[0] == 0x4E && bytesNgle[1] == 0x47 && bytesNgle[2] == 0x4C && bytesNgle[3] == 0x45)
                     {
-                        owner.ReportProgress(1, "This is a NGLE project");
+                        progressReporter.ReportProgress(1, "This is a NGLE project");
                         logger.Debug("NGLE Project");
                         ngle = true;
                     }
@@ -104,7 +104,7 @@ namespace TombEditor.Geometry.IO
                     var tempRooms = new Dictionary<int, PrjBlock[,]>();
                     var flipInfos = new List<PrjFlipInfo>();
 
-                    owner.ReportProgress(2, "Number of rooms: " + numRooms);
+                    progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
                     double progress = 2;
 
                     var portalThingIndices = new Dictionary<Portal, PrjPortalThingIndex>();
@@ -756,19 +756,19 @@ namespace TombEditor.Geometry.IO
                                 room.Blocks[x, z] = new Block(typ, BlockFlags.None)
                                 {
                                     QAFaces =
-                                    {
-                                        [0] = b._qaFaces[3],
-                                        [1] = b._qaFaces[0],
-                                        [2] = b._qaFaces[1],
-                                        [3] = b._qaFaces[2]
-                                    },
+                                {
+                                    [0] = b._qaFaces[3],
+                                    [1] = b._qaFaces[0],
+                                    [2] = b._qaFaces[1],
+                                    [3] = b._qaFaces[2]
+                                },
                                     EDFaces =
-                                    {
-                                        [0] = b._edFaces[3],
-                                        [1] = b._edFaces[0],
-                                        [2] = b._edFaces[1],
-                                        [3] = b._edFaces[2]
-                                    }
+                                {
+                                    [0] = b._edFaces[3],
+                                    [1] = b._edFaces[0],
+                                    [2] = b._edFaces[1],
+                                    [3] = b._edFaces[2]
+                                }
                                 };
 
                                 room.Blocks[x, z].WSFaces[0] = b._wsFaces[0];
@@ -826,10 +826,10 @@ namespace TombEditor.Geometry.IO
 
                         progress += (i / (float)numRooms * 0.28f);
 
-                        owner.ReportProgress((int)progress, "");
+                        progressReporter.ReportProgress((int)progress, "");
                     }
 
-                    owner.ReportProgress(30, "Rooms loaded");
+                    progressReporter.ReportProgress(30, "Rooms loaded");
 
                     logger.Info("All rooms loaded");
 
@@ -864,15 +864,15 @@ namespace TombEditor.Geometry.IO
 
                         string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
                         textureFilename = textureFilename.Replace('\0', ' ').Trim();
-                        ResourceLoader.TryLoadingTexture(level, textureFilename, device, owner);
-                        owner.ReportProgress(50, "Loaded texture '" + textureFilename + "'");
+                        ResourceLoader.TryLoadingTexture(level, textureFilename, device, progressReporter);
+                        progressReporter.ReportProgress(50, "Loaded texture '" + textureFilename + "'");
                     }
 
                     // Read textures
                     int numTextures = reader.ReadInt32();
 
-                    owner.ReportProgress(52, "Loading textures");
-                    owner.ReportProgress(52, "    Number of textures: " + numTextures);
+                    progressReporter.ReportProgress(52, "Loading textures");
+                    progressReporter.ReportProgress(52, "    Number of textures: " + numTextures);
 
                     var tempTextures = new List<PrjTexInfo>();
                     for (int t = 0; t < numTextures; t++)
@@ -907,8 +907,8 @@ namespace TombEditor.Geometry.IO
                         }
                         string wadName = System.Text.Encoding.ASCII.GetString(stringBuffer);
                         wadName = wadName.Replace('\0', ' ').Trim();
-                        ResourceLoader.TryLoadingWad(level, wadName, device, owner);
-                        owner.ReportProgress(60, "WAD loaded");
+                        ResourceLoader.TryLoadingWad(level, wadName, device, progressReporter);
+                        progressReporter.ReportProgress(60, "WAD loaded");
                     }
 
                     // Write slots
@@ -948,9 +948,8 @@ namespace TombEditor.Geometry.IO
                         }
                     }
 
-
                     // Read animated textures
-                    owner.ReportProgress(61, "Loading animated textures and texture sounds");
+                    progressReporter.ReportProgress(61, "Loading animated textures and texture sounds");
                     int numAnimationRanges = reader.ReadInt32();
                     for (int i = 0; i < 40; i++)
                         reader.ReadInt32();
@@ -1008,7 +1007,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Fix rooms coordinates (in TRLE reference system is messed up...)
-                    owner.ReportProgress(65, "Flipping reference system");
+                    progressReporter.ReportProgress(65, "Flipping reference system");
 
                     int minX = level.Rooms.Where(room => room != null).Select(room => (int)room.Position.X)
                         .Concat(new[] { 1024 }).Min();
@@ -1020,7 +1019,7 @@ namespace TombEditor.Geometry.IO
                             room.Position.Z);
                     }
 
-                    owner.ReportProgress(67, "Building flipped rooms table");
+                    progressReporter.ReportProgress(67, "Building flipped rooms table");
 
                     for (int i = 0; i < level.Rooms.Length; i++)
                     {
@@ -1051,7 +1050,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Fix objects
-                    owner.ReportProgress(70, "Fixing objects positions and data");
+                    progressReporter.ReportProgress(70, "Fixing objects positions and data");
                     foreach (var instance in level.Objects.Values.ToList())
                     {
                         instance.Position = new Vector3(
@@ -1080,7 +1079,7 @@ namespace TombEditor.Geometry.IO
                     var triggersToRemove = new List<int>();
 
                     // Fix triggers
-                    owner.ReportProgress(73, "Fixing triggers");
+                    progressReporter.ReportProgress(73, "Fixing triggers");
                     foreach (var instance in level.Triggers.Values.ToList())
                     {
                         if (instance.TargetType == TriggerTargetType.Object &&
@@ -1140,21 +1139,21 @@ namespace TombEditor.Geometry.IO
 
                     if (triggersToRemove.Count != 0)
                     {
-                        owner.ReportProgress(75, "Found invalid triggers");
+                        progressReporter.ReportProgress(75, "Found invalid triggers");
                         foreach (int trigger in triggersToRemove)
                         {
-                            owner.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
+                            progressReporter.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
                                                     level.Rooms.ReferenceIndexOf(level.Triggers[trigger].Room));
                             level.Triggers.Remove(trigger);
                         }
                     }
 
                     // Fix portals
-                    owner.ReportProgress(76, "Building portals");
+                    progressReporter.ReportProgress(76, "Building portals");
                     foreach (var currentPortal in level.Portals.Values.ToList())
                     {
                         currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
-                                                 currentPortal.X);
+                                                    currentPortal.X);
                     }
 
                     foreach (var currentPortal in level.Portals.Values.ToList())
@@ -1164,9 +1163,9 @@ namespace TombEditor.Geometry.IO
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
 
-                            if (portalThingIndices[currentPortal]._otherThingIndex != portalThingIndices[ otherPortal]._thisThingIndex)
+                            if (portalThingIndices[currentPortal]._otherThingIndex != portalThingIndices[otherPortal]._thisThingIndex)
                                 continue;
-                            
+
                             var currentRoom = currentPortal.Room;
                             var otherRoom = otherPortal.Room;
 
@@ -1201,13 +1200,13 @@ namespace TombEditor.Geometry.IO
                                 int zMax = currentPortal.Z + currentPortal.NumZBlocks;
 
                                 int otherXmin = xMin + (int)(currentRoom.Position.X -
-                                                             otherPortal.Room.Position.X);
+                                                                otherPortal.Room.Position.X);
                                 int otherXmax = xMax + (int)(currentRoom.Position.X -
-                                                             otherPortal.Room.Position.X);
+                                                                otherPortal.Room.Position.X);
                                 int otherZmin = zMin + (int)(currentRoom.Position.Z -
-                                                             otherPortal.Room.Position.Z);
+                                                                otherPortal.Room.Position.Z);
                                 int otherZmax = zMax + (int)(currentRoom.Position.Z -
-                                                             otherPortal.Room.Position.Z);
+                                                                otherPortal.Room.Position.Z);
 
                                 for (int x = xMin; x < xMax; x++)
                                 {
@@ -1367,7 +1366,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Fix faces
-                    owner.ReportProgress(85, "Building faces and geometry");
+                    progressReporter.ReportProgress(85, "Building faces and geometry");
                     for (int i = 0; i < level.Rooms.Length; i++)
                     {
                         var room = level.Rooms[i];
@@ -1546,7 +1545,7 @@ namespace TombEditor.Geometry.IO
                                                 otherBlock = null;
                                             }
                                             else if (!newBlock.Faces[(int)BlockFaces.SouthRF].Defined &&
-                                                     newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
+                                                        newBlock.Faces[(int)BlockFaces.SouthWS].Defined)
                                             {
                                                 faceIndex = (int)BlockFaces.SouthWS;
                                                 otherBlock = null;
@@ -1569,7 +1568,7 @@ namespace TombEditor.Geometry.IO
                                                     faceIndex = (int)BlockFaces.NorthRF;
                                                 }
                                                 else if (!otherBlock.Faces[(int)BlockFaces.NorthRF].Defined &&
-                                                         otherBlock.Faces[(int)BlockFaces.NorthWS].Defined)
+                                                            otherBlock.Faces[(int)BlockFaces.NorthWS].Defined)
                                                 {
                                                     faceIndex = (int)BlockFaces.NorthWS;
                                                 }
@@ -1643,7 +1642,7 @@ namespace TombEditor.Geometry.IO
                                                 otherBlock = null;
                                             }
                                             else if (!newBlock.Faces[(int)BlockFaces.EastRF].Defined &&
-                                                     newBlock.Faces[(int)BlockFaces.EastWS].Defined)
+                                                        newBlock.Faces[(int)BlockFaces.EastWS].Defined)
                                             {
                                                 faceIndex = (int)BlockFaces.EastWS;
                                                 otherBlock = null;
@@ -1666,7 +1665,7 @@ namespace TombEditor.Geometry.IO
                                                     faceIndex = (int)BlockFaces.WestRF;
                                                 }
                                                 else if (!otherBlock.Faces[(int)BlockFaces.WestRF].Defined &&
-                                                         otherBlock.Faces[(int)BlockFaces.WestWS].Defined)
+                                                            otherBlock.Faces[(int)BlockFaces.WestWS].Defined)
                                                 {
                                                     faceIndex = (int)BlockFaces.WestWS;
                                                 }
@@ -1837,7 +1836,7 @@ namespace TombEditor.Geometry.IO
                                         bool isFloor = (faceIndex == (int)BlockFaces.Floor ||
                                                         faceIndex == (int)BlockFaces.FloorTriangle2);
                                         bool isCeiling = (faceIndex == (int)BlockFaces.Ceiling ||
-                                                          faceIndex == (int)BlockFaces.CeilingTriangle2);
+                                                            faceIndex == (int)BlockFaces.CeilingTriangle2);
 
                                         switch (theFace._txtType)
                                         {
@@ -2478,25 +2477,23 @@ namespace TombEditor.Geometry.IO
                 foreach (var portal in level.Portals)
                     portal.Value.Room.Portals.Add(portal.Key);
 
-                owner.ReportProgress(95, "Building rooms");
+                progressReporter.ReportProgress(95, "Building rooms");
                 foreach (var room in level.Rooms.Where(r => r != null))
                 {
                     room.BuildGeometry();
                     room.CalculateLightingForThisRoom();
                     room.UpdateBuffers();
                 }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex, "PRJ loading failed");
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "There was an error while importing the PRJ file. Message: " + ex.Message, "Error");
-                return null;
-            }
 
-            owner.ReportProgress(100, "Level loaded correctly!");
-            
-            return level;
+                progressReporter.ReportProgress(100, "Level loaded correctly!");
+
+                return level;
+            }
+            catch
+            { 
+                level.Dispose(); // We log in the level above
+                throw;
+            }
         }
     }
 }
