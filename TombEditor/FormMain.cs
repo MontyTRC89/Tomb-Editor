@@ -1186,8 +1186,7 @@ namespace TombEditor
         {
             Level level = _editor.Level;
             string fileName = Path.Combine("Game\\Data\\", Path.ChangeExtension(level.FileName ?? "", "tr4"));
-            fileName = "Game\\Data\\karnak.tr4";
-
+            
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
                 new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
             {
@@ -1825,6 +1824,11 @@ namespace TombEditor
         {
             string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
                 "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

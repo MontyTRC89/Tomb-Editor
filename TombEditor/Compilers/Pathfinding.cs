@@ -930,7 +930,7 @@ namespace TombEditor.Compilers
 
                 for (int i = (_boxes[next].OverlapIndex & 0x3fff); i < _overlaps.Length && !last; i++)
                 {
-                    int overlapIndex = i; // _boxes[next].OverlapIndex & 0x3fff;
+                    int overlapIndex = i;
                     last = (_overlaps[overlapIndex] & 0x8000) != 0;
 
                     var boxIndex = _overlaps[overlapIndex] & 0x7ff;
