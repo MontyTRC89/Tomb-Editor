@@ -590,6 +590,8 @@ namespace TombEditor.Geometry.IO
                                         Flags = unchecked((ushort)objOcb)
                                     };
 
+                                    if (flybyCamera.RotationY >= 360) flybyCamera.RotationY = (short)(flybyCamera.RotationY - 360);
+                                    
                                     level.Objects.Add(flybyCamera.Id, flybyCamera);
                                     room.FlyByCameras.Add(flybyCamera.Id);
                                     break;
