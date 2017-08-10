@@ -141,7 +141,7 @@ namespace TombEditor.Compilers
                                 }
 
                                 // Assign the box index to the sector
-                                room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)(boxIndex << 4);
+                                room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)room._compiled.TextureSounds[x, z]);
                             }
                         }
                     }
