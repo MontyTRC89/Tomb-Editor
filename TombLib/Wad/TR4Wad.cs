@@ -169,7 +169,7 @@ namespace TombLib.Wad
             BasePath = Path.GetDirectoryName(fileName);
 
             // inizializzo lo stream
-            FileStream inputStream = File.OpenRead(BasePath + "\\" + BaseName + ".wad");
+            FileStream inputStream = File.OpenRead(fileName);
             BinaryReaderEx reader = new BinaryReaderEx(inputStream);
 
             // leggo la versione

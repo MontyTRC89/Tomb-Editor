@@ -14,16 +14,6 @@ namespace TombEditor
 {
     public static class Utils
     {
-        private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
-        private const int FILE_ATTRIBUTE_NORMAL = 0x80;
-
-        [DllImport("shlwapi.dll", SetLastError = true)]
-        private static extern int PathRelativePathTo(StringBuilder pszPath, string pszFrom, int dwAttrFrom, 
-                                                     string pszTo, int dwAttrTo);
-
-        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
-        static extern bool PathIsRelative([In] string lpszPath);
-
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public static Vector3 PositionInWorldCoordinates(Vector3 pos)
@@ -154,19 +144,48 @@ namespace TombEditor
             return outData;
         }
 
-        public static string GetRelativePath(string prjFileName, string fileName)
+        public static string GetDirectoryNameTry(string path)
         {
-            // If fileName is already a relative path return it, PathRelativePathTo() would return error
-            if (PathIsRelative(fileName)) return fileName;
+            if (string.IsNullOrEmpty(path))
+                return null;
 
-            string pathOfPrj = Path.GetDirectoryName(prjFileName) + "\\";
+            try
+            {
+                return Path.GetDirectoryName(path);
+            }
+            catch
+            {
+                return path;
+            }
+        }
 
-            // Use PathRelativePathTo() for returning the relative path
-            StringBuilder sb = new StringBuilder(260);
-            int result = PathRelativePathTo(sb, pathOfPrj, FILE_ATTRIBUTE_DIRECTORY, fileName, FILE_ATTRIBUTE_NORMAL);
-            if (result == 0) return fileName;
+        public static string GetRelativePath(string baseDir, string fileName)
+        {
+            if (string.IsNullOrEmpty(baseDir))
+                return Path.GetFullPath(fileName);
 
-            return sb.ToString();
+            // https://stackoverflow.com/questions/9042861/how-to-make-an-absolute-path-relative-to-a-particular-folder
+            //
+            // Roughly based on (slightly improved) 
+            //   https://sourceforge.net/p/syncproj/code/HEAD/tree/syncProj.cs#l976
+            //   makeRelative
+            baseDir = Path.GetFullPath(baseDir);
+            fileName = Path.GetFullPath(Path.Combine(baseDir, fileName));
+
+            var dictionarySeperators = new string[] { Path.DirectorySeparatorChar.ToString(), Path.AltDirectorySeparatorChar.ToString() };
+            string[] baseDirArr = baseDir.Split(dictionarySeperators, StringSplitOptions.RemoveEmptyEntries);
+            string[] fileNameArr = fileName.Split(dictionarySeperators, StringSplitOptions.RemoveEmptyEntries);
+
+            int i = 0;
+            for (; i < baseDirArr.Length && i < fileNameArr.Length; i++)
+                if (string.Compare(baseDirArr[i], fileNameArr[i], true) != 0) // Case insensitive match
+                    break;
+            if (i == 0) // Cannot make relative path, for example if resides on different drive
+                return fileName;
+
+            var resultFolders = Enumerable.Repeat("..", Math.Max(0, baseDirArr.Length - i)).Concat(fileNameArr.Skip(i));
+            string result = string.Join(Path.DirectorySeparatorChar.ToString(), resultFolders);
+            return result;
         }
 
         public static bool Contains(this SharpDX.Rectangle This, Point point)
@@ -284,6 +303,19 @@ namespace TombEditor
                     return obj;
 
             return null;
+        }
+
+        public static System.Drawing.Color MixWith(this System.Drawing.Color firstColor, System.Drawing.Color secondColor, double mixFactor)
+        {
+            if (mixFactor > 1)
+                mixFactor = 1;
+            if (!(mixFactor >= 0))
+                mixFactor = 0;
+            return System.Drawing.Color.FromArgb(
+                (int)Math.Round(firstColor.A * (1 - mixFactor) + secondColor.A * mixFactor),
+                (int)Math.Round(firstColor.R * (1 - mixFactor) + secondColor.R * mixFactor),
+                (int)Math.Round(firstColor.G * (1 - mixFactor) + secondColor.G * mixFactor),
+                (int)Math.Round(firstColor.B * (1 - mixFactor) + secondColor.B * mixFactor));
         }
     }
 }

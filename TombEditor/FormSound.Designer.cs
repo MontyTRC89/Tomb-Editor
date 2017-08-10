@@ -229,7 +229,7 @@
 
         private System.Windows.Forms.Button butOK;
         private System.Windows.Forms.Button butCancel;
-        internal BrightIdeasSoftware.FastObjectListView lstSamples;
+        private BrightIdeasSoftware.FastObjectListView lstSamples;
         private BrightIdeasSoftware.OLVColumn olvColumn3;
         private BrightIdeasSoftware.OLVColumn olvColumn4;
         private BrightIdeasSoftware.OLVColumn olvColumn5;

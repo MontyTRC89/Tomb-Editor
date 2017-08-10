@@ -61,21 +61,25 @@ namespace TombEditor.Geometry.IO
             public short _thisThingIndex;
             public short _otherThingIndex;
         };
-        
-        public static Level LoadFromPrj(string filename, GraphicsDevice device, IProgressReporter progressReporter)
+
+        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
 
+            // Setup paths
+            level.Settings.LevelFilePath = Path.ChangeExtension(filename, "prj2");
+
+            string gameDirectory = FindGameDirectory(filename);
+            progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
+            level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
+            
             try
             {
                 // Open file
                 using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
                 {
-                    level.FileName = Path.ChangeExtension(filename, "prj2");
-
-                    progressReporter.ReportProgress(0, "Begin of PRJ import");
-
-                    logger.Warn("Opening Winroomedit PRJ file");
+                    progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
+                    logger.Debug("Opening Winroomedit PRJ file " + filename);
 
                     // Check if it's a NGLE PRJ
                     bool ngle = false;
@@ -124,7 +128,7 @@ namespace TombEditor.Geometry.IO
                                 break;
                         string roomName = System.Text.Encoding.ASCII.GetString(roomNameBytes, 0, roomNameLength);
 
-                        logger.Warn("Room #" + i);
+                        logger.Info("Room #" + i);
                         logger.Info("    Name: " + roomName);
 
                         // Read position
@@ -871,9 +875,9 @@ namespace TombEditor.Geometry.IO
                         }
 
                         string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                        textureFilename = textureFilename.Replace('\0', ' ').Trim();
-                        ResourceLoader.TryLoadingTexture(level, textureFilename, device, progressReporter);
-                        progressReporter.ReportProgress(50, "Loaded texture '" + textureFilename + "'");
+                        level.Settings.TextureFilePath = level.Settings.MakeRelative(textureFilename.Replace('\0', ' ').Trim(), VariableType.LevelDirectory);
+                        ResourceLoader.TryLoadingTexture(level, progressReporter);
+                        progressReporter.ReportProgress(50, "Loaded texture '" + level.Settings.TextureFilePath + "'");
                     }
 
                     // Read textures
@@ -914,9 +918,30 @@ namespace TombEditor.Geometry.IO
                             sb++;
                         }
                         string wadName = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                        wadName = wadName.Replace('\0', ' ').Trim();
-                        ResourceLoader.TryLoadingWad(level, wadName, device, progressReporter);
-                        progressReporter.ReportProgress(60, "WAD loaded");
+                        level.Settings.WadFilePath = level.Settings.MakeRelative(Path.ChangeExtension(wadName.Replace('\0', ' ').Trim(), "wad"), VariableType.LevelDirectory);
+                        ResourceLoader.TryLoadingObjects(level, progressReporter);
+                        progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
+                    }
+
+                    // Setup paths to customized fonts and the skys
+                    if (!string.IsNullOrEmpty(level.Settings.WadFilePath))
+                    {
+                        string objectFilePath = level.Settings.MakeAbsolute(level.Settings.WadFilePath);
+
+                        string fontPcFilePath = Path.Combine(Path.GetDirectoryName(objectFilePath), "Font.pc");
+                        if (File.Exists(fontPcFilePath))
+                            level.Settings.FontTextureFilePath = level.Settings.MakeRelative(fontPcFilePath, VariableType.LevelDirectory);
+
+                        string wadSkyFilePath = Path.ChangeExtension(objectFilePath, "raw");
+                        string genericSkyFilePath = Path.Combine(Path.GetDirectoryName(objectFilePath), "pcsky.raw");
+                        if (File.Exists(wadSkyFilePath))
+                            level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(wadSkyFilePath, VariableType.LevelDirectory);
+                        else if (File.Exists(genericSkyFilePath))
+                            level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(genericSkyFilePath, VariableType.LevelDirectory);
+
+                        string soundPath = Path.Combine(Path.GetDirectoryName(objectFilePath), "../../sound/Samples");
+                        level.Settings.SoundPaths[0].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
+                        level.Settings.IgnoreMissingSounds = true;
                     }
 
                     // Write slots
@@ -2475,7 +2500,7 @@ namespace TombEditor.Geometry.IO
                         }
                     }
                 }
-
+                
                 // Check that there are uninitialized rooms
                 foreach (Room room in level.Rooms)
                     if (room != null)
@@ -2502,6 +2527,21 @@ namespace TombEditor.Geometry.IO
                 level.Dispose(); // We log in the level above
                 throw;
             }
+        }
+
+        private static string FindGameDirectory(string filename)
+        {
+            string directory = filename;
+            while (!string.IsNullOrEmpty(directory))
+            {
+                if (File.Exists(Path.Combine(directory, "Tomb4.exe")) ||
+                    File.Exists(Path.Combine(directory, "script.dat")))
+                {
+                    return directory;
+                }
+                directory = Path.GetDirectoryName(directory);
+            }
+            return Path.GetDirectoryName(filename);
         }
     }
 }

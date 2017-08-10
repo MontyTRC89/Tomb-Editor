@@ -29,12 +29,18 @@ namespace TombEditor.Geometry.IO
                     const int versionCode = 2;
                     writer.Write(versionCode);
 
-                    string textureFileName = Utils.GetRelativePath(filename, level.TextureFile);
-                    string wadFileName = Utils.GetRelativePath(filename, level.WadFile);
-
-                    // Write paths to dependent resources
-                    writer.WriteStringUTF8(textureFileName ?? string.Empty);
-                    writer.WriteStringUTF8(wadFileName ?? string.Empty);
+                    // Write settings
+                    writer.WriteStringUTF8(level.Settings.TextureFilePath ?? "");
+                    writer.WriteStringUTF8(level.Settings.WadFilePath ?? "");
+                    writer.WriteStringUTF8(level.Settings.FontTextureFilePath ?? "");
+                    writer.WriteStringUTF8(level.Settings.SkyTextureFilePath ?? "");
+                    writer.WriteStringUTF8(level.Settings.GameDirectory ?? "");
+                    writer.WriteStringUTF8(level.Settings.GameLevelFilePath ?? "");
+                    writer.WriteStringUTF8(level.Settings.GameExecutableFilePath ?? "");
+                    writer.Write(level.Settings.SoundPaths.Count);
+                    foreach (SoundPath path in level.Settings.SoundPaths)
+                        writer.WriteStringUTF8(path.Path ?? "");
+                    writer.Write(level.Settings.IgnoreMissingSounds);
 
                     writer.Write(filler32);
                     writer.Write(filler32);

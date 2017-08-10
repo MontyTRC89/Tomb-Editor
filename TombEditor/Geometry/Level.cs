@@ -34,9 +34,8 @@ namespace TombEditor.Geometry
         public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
         public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
         public Wad Wad { get; private set; }
-        public string TextureFile { get; private set; }
-        public string WadFile { get; private set; }
-        public string FileName { get; set; } // Can be null if the level has not been loaded from / saved to disk yet.  
+
+        public LevelSettings Settings { get; set; } = new LevelSettings();
 
         public static Level CreateSimpleLevel()
         {
@@ -134,26 +133,28 @@ namespace TombEditor.Geometry
             UnloadWad();
         }
 
-        public void UnloadTexture()
+        private void UnloadTexture()
         {
+            logger.Info("Reseting texture");
             TextureMap?.Dispose();
             TextureMap = null;
-            TextureFile = null;
+            foreach (var texture in DirectXTextures)
+                texture.Value.Dispose();
             DirectXTextures.Clear();
         }
 
-        public void UnloadWad()
+        private void UnloadWad()
         {
+            logger.Info("Reseting wad");
             Wad?.Dispose();
             Wad = null;
-            WadFile = null;
         }
 
-        public void LoadTexture(string filename, GraphicsDevice device)
+        public void ReloadTexture()
         {
-            if (string.IsNullOrEmpty(filename))
+            string path = Settings.MakeAbsolute(Settings.TextureFilePath);
+            if (string.IsNullOrEmpty(path))
             {
-                logger.Info("Reseting texture");
                 UnloadTexture();
                 return;
             }
@@ -165,7 +166,7 @@ namespace TombEditor.Geometry
 
             using (var oldTexture = TextureMap) //Free old texture map afterwards...
             {
-                var newTextureMap = TombLib.Graphics.TextureLoad.LoadToBitmap(filename);
+                var newTextureMap = TombLib.Graphics.TextureLoad.LoadToBitmap(path);
                 try
                 {
                     Utils.ConvertTextureTo256Width(ref newTextureMap);
@@ -177,53 +178,51 @@ namespace TombEditor.Geometry
 
                     logger.Debug("Building 2048x2048 texture atlas for DirectX");
 
-                    if (device != null)
+                    // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
+                    // textures.
+                    using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                     {
-                        // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
-                        // textures.
-                        using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
+                        tempBitmap.MakeTransparent(System.Drawing.Color.FromArgb(255, 255, 0, 255));
+                        ColorMap[] colorMap = new ColorMap[1];
+                        colorMap[0] = new ColorMap();
+                        colorMap[0].OldColor = Color.FromArgb(255, 255, 0, 255);
+                        colorMap[0].NewColor = Color.Transparent;
+                        ImageAttributes attr = new ImageAttributes();
+                        attr.SetRemapTable(colorMap);
+
+                        using (var g = Graphics.FromImage(tempBitmap))
                         {
-                            tempBitmap.MakeTransparent(System.Drawing.Color.FromArgb(255, 255, 0, 255));
-                            ColorMap[] colorMap = new ColorMap[1];
-                            colorMap[0] = new ColorMap();
-                            colorMap[0].OldColor = Color.FromArgb(255, 255, 0, 255);
-                            colorMap[0].NewColor = Color.Transparent;
-                            ImageAttributes attr = new ImageAttributes();
-                            attr.SetRemapTable(colorMap);
-
-                            using (var g = Graphics.FromImage(tempBitmap))
+                            int currentXblock = 0;
+                            int currentYblock = 0;
+                            for (int i = 0; i < numPages; i++)
                             {
-                                int currentXblock = 0;
-                                int currentYblock = 0;
-                                for (int i = 0; i < numPages; i++)
-                                {
-                                    var src = new System.Drawing.Rectangle(0, 256 * i, 256, 256);
-                                    var dest = new System.Drawing.Rectangle(currentXblock * 256, currentYblock * 256, 256,
-                                        256);
+                                var src = new System.Drawing.Rectangle(0, 256 * i, 256, 256);
+                                var dest = new System.Drawing.Rectangle(currentXblock * 256, currentYblock * 256, 256,
+                                    256);
 
-                                    g.DrawImage(newTextureMap, dest, src.X,src.Y,src.Width,src.Height, GraphicsUnit.Pixel, attr);
+                                g.DrawImage(newTextureMap, dest, src.X, src.Y, src.Width, src.Height, GraphicsUnit.Pixel, attr);
 
-                                    currentXblock++;
-                                    if (currentXblock != 8)
-                                        continue;
+                                currentXblock++;
+                                if (currentXblock != 8)
+                                    continue;
 
-                                    currentXblock = 0;
-                                    currentYblock++;
-                                }
+                                currentXblock = 0;
+                                currentYblock++;
                             }
-
-                            // Clean up DirectX texture
-                            if (DirectXTextures.ContainsKey(0))
-                            {
-                                logger.Debug("Cleaning memory used by a previous texture map");
-
-                                DirectXTextures[0].Dispose();
-                                DirectXTextures.Remove(0);
-                            }
-
-                            // Create DirectX texture
-                            DirectXTextures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(device, tempBitmap));
                         }
+
+                        // Clean up DirectX texture
+                        if (DirectXTextures.ContainsKey(0))
+                        {
+                            logger.Debug("Cleaning memory used by a previous texture map");
+
+                            DirectXTextures[0].Dispose();
+                            DirectXTextures.Remove(0);
+                        }
+
+                        // Create DirectX texture
+
+                        DirectXTextures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(DeviceManager.DefaultDeviceManager.Device, tempBitmap));
                     }
                 }
                 catch (Exception)
@@ -233,30 +232,28 @@ namespace TombEditor.Geometry
                 }
                 TextureMap = newTextureMap;
             }
-
-            TextureFile = filename;
-
+            
             watch.Stop();
 
             logger.Info("Texture map loaded");
             logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
         }
 
-        public void LoadWad(string filename, GraphicsDevice device)
+        public void ReloadWad()
         {
-            if (string.IsNullOrEmpty(filename))
+            string path = Settings.MakeAbsolute(Settings.WadFilePath);
+            if (string.IsNullOrEmpty(path))
             {
-                logger.Info("Reseting wad");
                 UnloadWad();
                 return;
             }
 
             using (var wad = Wad)
             {
-                var newWad = Wad.LoadWad(filename);
+                var newWad = Wad.LoadWad(path);
                 try
                 {
-                    newWad.GraphicsDevice = device;
+                    newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
                     newWad.PrepareDataForDirectX();
                 }
                 catch (Exception)
@@ -266,7 +263,32 @@ namespace TombEditor.Geometry
                 }
                 Wad = newWad;
             }
-            WadFile = filename;
+        }
+
+        public void ReloadTextureTry()
+        {
+            try
+            {
+                ReloadTexture();
+            }
+            catch (Exception exc)
+            {
+                UnloadTexture();
+                logger.Warn(exc, "Unable to load texture from '" + Settings.MakeAbsolute(Settings.TextureFilePath) + "'");
+            }
+        }
+
+        public void ReloadObjectsTry()
+        {
+            try
+            {
+                ReloadWad();
+            }
+            catch (Exception exc)
+            {
+                UnloadWad();
+                logger.Warn(exc, "Unable to load objects from '" + Settings.MakeAbsolute(Settings.WadFilePath) + "'");
+            }
         }
 
         public int GetNewPortalId()
