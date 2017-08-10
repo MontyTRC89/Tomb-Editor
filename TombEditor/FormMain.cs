@@ -1186,6 +1186,7 @@ namespace TombEditor
         {
             Level level = _editor.Level;
             string fileName = Path.Combine("Game\\Data\\", Path.ChangeExtension(level.FileName ?? "", "tr4"));
+            fileName = "Game\\Data\\karnak.tr4";
 
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
                 new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
@@ -1762,10 +1763,10 @@ namespace TombEditor
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load(""); 
-            var level = new TombRaider4Level("e:\\trle\\data\\coastal.tr4");
+            var level = new TombRaider4Level("e:\\trle\\data\\karnak.tr4");
             level.Load("originale");
 
-            level = new TombRaider4Level("Game\\Data\\coastal.tr4");
+            level = new TombRaider4Level("Game\\Data\\karnak.tr4");
             level.Load("editor");
 
             //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");

@@ -34,7 +34,7 @@ namespace TombEditor.Compilers
             _tempBoxes = new List<tr_box_aux>();
 
             // First build boxes except portal boxes
-            /*foreach (var room in _editor.Level.Rooms)
+         /*   foreach (var room in _editor.Level.Rooms)
             {
                 if (room == null) continue;
 
@@ -236,7 +236,7 @@ namespace TombEditor.Compilers
             }
             */
 
-            Dec_BuildBoxesAndOverlaps();
+           Dec_BuildBoxesAndOverlaps();
 
             for (int i = 0; i < dec_numBoxes; i++)
             {
@@ -260,9 +260,9 @@ namespace TombEditor.Compilers
 
                 _tempBoxes.Add(box);
             }
-
+            
             // Build overlaps
-            var tempOverlaps = new List<tr_overlap_aux>();
+           /* var tempOverlaps = new List<tr_overlap_aux>();
 
             for (var i = 0; i < _tempBoxes.Count; i++)
             {
@@ -334,7 +334,10 @@ namespace TombEditor.Compilers
                 if (canJump) ov |= 0x800;
 
                 _overlaps[i] = ov;
-            }
+            }*/
+
+              _overlaps = new ushort[dec_numOverlaps];
+              Array.Copy(dec_overlaps, _overlaps, dec_numOverlaps);
 
             _boxes = new tr_box[_tempBoxes.Count];
             _zones = new tr_zone[_tempBoxes.Count];
@@ -925,9 +928,9 @@ namespace TombEditor.Compilers
                 var next = stack.Pop();
                 var last = false;
 
-                for (int i = _boxes[next].OverlapIndex; i < _overlaps.Length && !last; i++)
+                for (int i = (_boxes[next].OverlapIndex & 0x3fff); i < _overlaps.Length && !last; i++)
                 {
-                    int overlapIndex = _boxes[next].OverlapIndex & 0x3fff;
+                    int overlapIndex = i; // _boxes[next].OverlapIndex & 0x3fff;
                     last = (_overlaps[overlapIndex] & 0x8000) != 0;
 
                     var boxIndex = _overlaps[overlapIndex] & 0x7ff;

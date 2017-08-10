@@ -8,12 +8,23 @@ namespace TombEditor.Compilers
 {
     public sealed partial class LevelCompilerTr4
     {
+        private Dictionary<int, int> _roomsRemappingDictionary;
+
         private void BuildRooms()
         {
             ReportProgress(20, "Building rooms");
 
             // Average lighting at the portals
             MatchPortalShades();
+
+            _roomsRemappingDictionary = new Dictionary<int, int>();
+
+            int index = 0;
+            foreach (var room in _level.Rooms.Where(r => r != null))
+            {
+                _roomsRemappingDictionary.Add(_level.Rooms.ReferenceIndexOf(room), index);
+                index++;
+            }
 
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
@@ -620,7 +631,7 @@ namespace TombEditor.Compilers
 
                 var newPortal = new tr_room_portal
                 {
-                    AdjoiningRoom = (ushort) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom),
+                    AdjoiningRoom = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)],
                     Vertices = new tr_vertex[4]
                 };
 
