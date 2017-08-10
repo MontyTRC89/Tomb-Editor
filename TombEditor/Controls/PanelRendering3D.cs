@@ -1172,12 +1172,14 @@ namespace TombEditor.Controls
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
                 Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Sink, instance.Id))
+                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.FlyByCamera, instance.Id))
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    var message = "Sink (" + instance.Id + ")";
+                    var message = "Flyby camera (" + instance.Id + ")";
+
+                    FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(room, instance.Position);
@@ -1193,7 +1195,7 @@ namespace TombEditor.Controls
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
                         if ((trigger.TargetType == TriggerTargetType.Object ||
-                             trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.Id)
+                             trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == flyby.Sequence)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
                                        _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
@@ -1204,6 +1206,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
+
+                    // Add the path of the flyby
+                    AddFlybyPath(flyby.Sequence);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) *
@@ -1527,7 +1532,7 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = model.ToString();
+                    string debugMessage = _editor.Level.Wad.WadMoveables[modelInfo.WadObjectId].ToString();
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(room, modelInfo.Position);
@@ -1627,7 +1632,7 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = model.ToString();
+                    string debugMessage = _editor.Level.Wad.WadStatics[modelInfo.WadObjectId].ToString();
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(_editor.SelectedRoom, modelInfo.Position);
