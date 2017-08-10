@@ -1926,8 +1926,8 @@ namespace TombEditor.Geometry.IO
                                                             else
                                                             {
                                                                 theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
-                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
-                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
+                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
                                                                 newRot = (sbyte)(newRot + 2);
                                                             }
@@ -1986,8 +1986,8 @@ namespace TombEditor.Geometry.IO
                                                             else
                                                             {
                                                                 theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
-                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
-                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
                                                                 newRot = (sbyte)(newRot + 2);
                                                             }
@@ -2046,8 +2046,8 @@ namespace TombEditor.Geometry.IO
                                                             else
                                                             {
                                                                 theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
-                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
-                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
                                                                 newRot = (sbyte)(newRot + 2);
                                                             }

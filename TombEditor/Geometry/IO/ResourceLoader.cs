@@ -119,7 +119,7 @@ namespace TombEditor.Geometry.IO
                     }
                     catch (Exception exc)
                     {
-                        logger.Warn(exc, "Unable to load texture file \"" + currentPath + "\".");
+                        logger.Warn(exc, "Unable to load WAD file \"" + currentPath + "\".");
 
                         progressReporter.InvokeGui(delegate(IWin32Window owner)
                             {
