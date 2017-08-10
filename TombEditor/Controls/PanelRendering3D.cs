@@ -1455,7 +1455,7 @@ namespace TombEditor.Controls
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
         }
 
-        private void DrawMoveables(Matrix viewProjection, Room room)
+        private void DrawMoveables(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -1476,6 +1476,8 @@ namespace TombEditor.Controls
                     continue;
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
                 Debug.NumMoveables++;
+
+                Room room = modelInfo.Room;
 
                 if (k == 0 || modelInfo.WadObjectId != _lastObject.WadObjectId)
                 {
@@ -1553,7 +1555,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawStatics(Matrix viewProjection, Room room)
+        private void DrawStatics(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -1628,7 +1630,7 @@ namespace TombEditor.Controls
                     string debugMessage = model.ToString();
 
                     // Object position
-                    debugMessage += Environment.NewLine + GetObjectPositionString(room, modelInfo.Position);
+                    debugMessage += Environment.NewLine + GetObjectPositionString(_editor.SelectedRoom, modelInfo.Position);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -1643,7 +1645,7 @@ namespace TombEditor.Controls
                     Debug.AddString(debugMessage, screenPos);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, modelInfo.Position);
+                    AddObjectHeightLine(viewProjection, _editor.SelectedRoom, modelInfo.Position);
                 }
 
                 _lastObject = modelInfo;
@@ -2040,10 +2042,17 @@ namespace TombEditor.Controls
             Task.WaitAll(task1, task2);
 
             // Draw the skybox if present
-            if (DrawHorizon)
+            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null && DrawHorizon)
             {
                 DrawSkyBox(viewProjection);
                 _device.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
+            }
+
+            // Draw moveables and static meshes
+            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
+            {
+                DrawMoveables(viewProjection);
+                DrawStatics(viewProjection);
             }
 
             // Set some common parameters of the shader
