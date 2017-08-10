@@ -272,7 +272,7 @@ namespace TombEditor.Compilers
                     X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
-                    Room = (short)_level.Rooms.ReferenceIndexOf(instance.Room)
+                    Room = (short)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)]
                 };
 
                 if (instance.Fixed)
@@ -315,7 +315,7 @@ namespace TombEditor.Compilers
                     X = (int)Math.Round(Position.X),
                     Y = (int)Math.Round(-Position.Y),
                     Z = (int)Math.Round(Position.Z),
-                    Room = _level.Rooms.ReferenceIndexOf(instance.Room),
+                    Room = _roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)],
                     FOV = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Fov * (65536.0 / 360.0)))),
                     Roll = (short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, instance.Roll * (65536.0 / 360.0)))),
                     Timer = (ushort)instance.Timer,
@@ -1833,7 +1833,7 @@ namespace TombEditor.Compilers
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
                     ObjectID = (short)instance.WadObjectId,
-                    Room = (short)_level.Rooms.ReferenceIndexOf(instance.Room),
+                    Room = (short)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)],
                     Angle = unchecked((short)((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))))),
                     Intensity1 = -1,
                     Intensity2 = instance.Ocb
@@ -1859,7 +1859,7 @@ namespace TombEditor.Compilers
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
                     ObjectID = (ushort) instance.WadObjectId,
-                    Room = (ushort) _level.Rooms.ReferenceIndexOf(instance.Room)
+                    Room = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)]
                 };
 
                 double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));

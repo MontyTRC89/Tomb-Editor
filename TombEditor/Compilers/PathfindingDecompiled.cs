@@ -38,6 +38,8 @@ namespace TombEditor.Compilers
         public bool Water;
         public int IsBaseRoom;
         public int IsAlternateRoom;
+        public bool Flipped;
+        public short ZoneID;
     }
 
     public sealed partial class LevelCompilerTr4
@@ -60,6 +62,7 @@ namespace TombEditor.Compilers
         private Room[] dec_rooms;
         private Room[] dec_baseRooms;
         private Room[] dec_alternateRooms;
+        private short[,] dec_zones;
 
         private void Dec_BuildBoxesAndOverlaps()
         {
@@ -72,9 +75,9 @@ namespace TombEditor.Compilers
             watch.Start();
 
             // TODO: for now I replicate the flipping method of winroomedit
-           // dec_rooms = new Room[_level.Rooms.Length];
-           // dec_baseRooms = new Room[_level.Rooms.Length];
-           // dec_alternateRooms = new Room[_level.Rooms.Length];
+            // dec_rooms = new Room[_level.Rooms.Length];
+            // dec_baseRooms = new Room[_level.Rooms.Length];
+            // dec_alternateRooms = new Room[_level.Rooms.Length];
 
             /* for (int n = 0; n < _level.Rooms.Length; n++)
              {
@@ -118,7 +121,7 @@ namespace TombEditor.Compilers
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                             //   Console.WriteLine("Room: " + i + ", X: " + x + ", Z: " + z);
+                                //   Console.WriteLine("Room: " + i + ", X: " + x + ", Z: " + z);
                                 dec_tr_box_aux box = new dec_tr_box_aux();
 
                                 // First create the box...
@@ -150,48 +153,62 @@ namespace TombEditor.Compilers
             dec_flipped = false;
 
             watch.Stop();
-            Console.WriteLine("Dec_BuildBoxesAndOverlaps(): " + watch.ElapsedMilliseconds + " ms");
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build boxes: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numBoxes);
+
+            watch.Restart();
 
             // Build the overlaps
-            //Dec_BuildOverlaps();
+            Dec_BuildOverlaps();
 
-             /*// Now put the boxes in the final array
-            if (dec_numBoxes > 0)
-            {
-                int currentBoxIndex = dec_numBoxes - 1;
+            watch.Stop();
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build overlaps: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numOverlaps);
 
-                do
-                {
-                    if (dec_boxes[currentBoxIndex].OverlapIndex != 0x7ff)
-                    {
-                        if (dec_boxes[currentBoxIndex].IsolatedBox)
-                            dec_boxes[currentBoxIndex].OverlapIndex = (short)(dec_boxes[currentBoxIndex].OverlapIndex | 0x8000);
-                    }
+            watch.Restart();
 
-                    /* dec_boxes[currentBoxIndex].Xmin <<= 10;
-                     dec_boxes[currentBoxIndex].Zmin <<= 10;
-                     dec_boxes[currentBoxIndex].Xmax = (byte)(dec_boxes[currentBoxIndex].Xmax << 10) - 1;
-                    dec_boxes[currentBoxIndex].TrueFloor *= -256;
+            // Build the overlaps
+            Dec_BuildZones();
 
-                    currentBoxIndex--;
-                }
-                while (currentBoxIndex > 0);
-            }*/
+            watch.Stop();
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build zones: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numBoxes);
+
+            /*// Now put the boxes in the final array
+           if (dec_numBoxes > 0)
+           {
+               int currentBoxIndex = dec_numBoxes - 1;
+
+               do
+               {
+                   if (dec_boxes[currentBoxIndex].OverlapIndex != 0x7ff)
+                   {
+                       if (dec_boxes[currentBoxIndex].IsolatedBox)
+                           dec_boxes[currentBoxIndex].OverlapIndex = (short)(dec_boxes[currentBoxIndex].OverlapIndex | 0x8000);
+                   }
+
+                   /* dec_boxes[currentBoxIndex].Xmin <<= 10;
+                    dec_boxes[currentBoxIndex].Zmin <<= 10;
+                    dec_boxes[currentBoxIndex].Xmax = (byte)(dec_boxes[currentBoxIndex].Xmax << 10) - 1;
+                   dec_boxes[currentBoxIndex].TrueFloor *= -256;
+
+                   currentBoxIndex--;
+               }
+               while (currentBoxIndex > 0);
+           }*/
         }
 
-       /* private void Dec_FlipAllRooms()
-        {
-            for (int i=0;i<dec_rooms.Length;i++)
-            {
-                if ()
-            }
-        }*/
+        /* private void Dec_FlipAllRooms()
+         {
+             for (int i=0;i<dec_rooms.Length;i++)
+             {
+                 if ()
+             }
+         }*/
 
-       /* private bool Dec_BuildOverlaps()
+        private bool Dec_BuildOverlaps()
         {
             int numBoxes = dec_numBoxes;
             int numOverlaps = 0;
             dec_numOverlaps = 0;
+            dec_overlaps = new ushort[16384];
 
             int i = 0;
             int j = 0;
@@ -205,7 +222,7 @@ namespace TombEditor.Compilers
                     dec_tr_box_aux box1 = dec_boxes[i];
                     dec_boxes[i].OverlapIndex = 0x7ff;
 
-                    if (!box1.FlipMap)
+                    if (!box1.Flipped)
                     {
                         if (dec_flipped)
                         {
@@ -222,9 +239,10 @@ namespace TombEditor.Compilers
                             {
                                 if (i != j)
                                 {
+                                    if (i % 50 == 0 && j % 50 == 0) Console.WriteLine("CHecking overlap " + i + " vs " + j);
                                     dec_tr_box_aux box2 = dec_boxes[j];
 
-                                    if (!box2.FlipMap)
+                                    if (!box2.Flipped)
                                     {
                                         bool overlap = Dec_BoxesOverlap(ref box1, ref box2);
                                         numOverlaps = dec_numOverlaps;
@@ -232,13 +250,15 @@ namespace TombEditor.Compilers
                                         if (overlap)
                                         {
                                             if (dec_numOverlaps == 16384) return false;
-                                            if (box1.OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (ushort)dec_numOverlaps;
+                                            if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
-                                            dec_overlaps[numOverlaps++] = (ushort)j;
-                                            dec_numOverlaps = numOverlaps;
+                                            dec_overlaps[dec_numOverlaps] = (ushort)j;
+                                            // dec_numOverlaps = numOverlaps;
 
-                                            if (dec_jump) dec_overlaps[numOverlaps] |= 0x800;
-                                            if (dec_monkey) dec_overlaps[numOverlaps] |= 0x2000;
+                                            if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
+                                            if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
+
+                                            dec_numOverlaps++;
                                         }
                                     }
                                 }
@@ -250,7 +270,7 @@ namespace TombEditor.Compilers
                         }
                     }
 
-                    if (box1.FlipMap)
+                    if (box1.Flipped)
                     {
                         if (!dec_flipped)
                         {
@@ -269,7 +289,7 @@ namespace TombEditor.Compilers
                                 {
                                     dec_tr_box_aux box2 = dec_boxes[j];
 
-                                    if (!box2.FlipMap)
+                                    if (!box2.Flipped)
                                     {
                                         bool overlap = Dec_BoxesOverlap(ref box1, ref box2);
                                         numOverlaps = dec_numOverlaps;
@@ -277,13 +297,15 @@ namespace TombEditor.Compilers
                                         if (overlap)
                                         {
                                             if (dec_numOverlaps == 16384) return false;
-                                            if (box1.OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (ushort)dec_numOverlaps;
+                                            if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
-                                            dec_overlaps[numOverlaps++] = (ushort)j;
-                                            dec_numOverlaps = numOverlaps;
+                                            dec_overlaps[dec_numOverlaps] = (ushort)j;
+                                            // dec_numOverlaps = numOverlaps;
 
-                                            if (dec_jump) dec_overlaps[numOverlaps] |= 0x800;
-                                            if (dec_monkey) dec_overlaps[numOverlaps] |= 0x2000;
+                                            if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
+                                            if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
+
+                                            dec_numOverlaps++;
                                         }
                                     }
                                 }
@@ -296,13 +318,15 @@ namespace TombEditor.Compilers
                     }
 
                     i++;
+
+                    dec_overlaps[dec_numOverlaps - 1] |= 0x8000;
                 }
                 while (i < dec_numBoxes);
 
             }
 
             return true;
-        }*/
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Dec_AddBox(ref dec_tr_box_aux box)
@@ -317,13 +341,13 @@ namespace TombEditor.Compilers
                     dec_boxes[i].Xmax == box.Xmax &&
                     dec_boxes[i].Zmin == box.Zmin &&
                     dec_boxes[i].Zmax == box.Zmax &&
-                    dec_boxes[i].TrueFloor == box.TrueFloor &&
+                    dec_boxes[i].TrueFloor == box.TrueFloor &&/*
                     dec_boxes[i].IsBaseRoom == box.IsBaseRoom &&
                     dec_boxes[i].IsAlternateRoom == box.IsAlternateRoom &&
                     dec_boxes[i].IsolatedBox == box.IsolatedBox &&
                     dec_boxes[i].Jump == box.Jump &&
                     dec_boxes[i].Monkey == box.Monkey &&
-                    dec_boxes[i].NotWalkableBox == box.NotWalkableBox &&
+                    dec_boxes[i].NotWalkableBox == box.NotWalkableBox &&*/
                     dec_boxes[i].Water == box.Water)
                 {
                     boxIndex = i;
@@ -383,11 +407,11 @@ namespace TombEditor.Compilers
 
             if (dec_flipped)
             {
-              //  box.IsAlternateRoom = true;
+                box.Flipped = true;
             }
             else
             {
-             //   box.FlipMap = false;
+                box.Flipped = false;
             }
 
             if (dec_monkey)
@@ -712,7 +736,11 @@ namespace TombEditor.Compilers
 
                     Portal portal = _level.Portals[block.WallPortal];
 
-                    dec_currentRoom = portal.AdjoiningRoom;
+                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
+
+                    dec_currentRoom = adjoiningRoom;
+                    theRoom = adjoiningRoom;
 
                     if (block.WallOpacity == PortalOpacity.Opacity1) return false;
 
@@ -731,13 +759,16 @@ namespace TombEditor.Compilers
                 {
                     Portal portal = _level.Portals[block.FloorPortal];
 
+                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
+
                     if (block.FloorOpacity == PortalOpacity.Opacity1 &&
-                        !(room.FlagWater ^ portal.AdjoiningRoom.FlagWater))
+                        !(room.FlagWater ^ adjoiningRoom.FlagWater))
                     {
                         break;
                     }
 
-                    dec_currentRoom = portal.AdjoiningRoom;
+                    dec_currentRoom = adjoiningRoom;
 
                     room = dec_currentRoom;
 
@@ -804,6 +835,7 @@ namespace TombEditor.Compilers
 
                 Portal portal = _level.Portals[block.WallPortal];
                 adjoiningRoom = portal.AdjoiningRoom;
+                if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                 dec_currentRoom = adjoiningRoom;
                 dec_boxExtendsInAnotherRoom = true;
@@ -826,10 +858,11 @@ namespace TombEditor.Compilers
                 Portal portal = _level.Portals[block.FloorPortal];
 
                 Room adjoiningRoom2 = portal.AdjoiningRoom;
+                if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
 
                 if (block.FloorOpacity == PortalOpacity.Opacity1)
                 {
-                    if (!(room.FlagWater ^ adjoiningRoom.FlagWater))
+                    if (!(room.FlagWater ^ adjoiningRoom2.FlagWater))
                     {
                         break;
                     }
@@ -894,7 +927,10 @@ namespace TombEditor.Compilers
             if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != -1 && !block.IsCeilingSolid)
             {
                 Portal portal = _level.Portals[block.CeilingPortal];
-                if (!portal.AdjoiningRoom.FlagWater)
+                Room adjoiningRoom3 = portal.AdjoiningRoom;
+                if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
+
+                if (!adjoiningRoom3.FlagWater)
                 {
                     dec_water = false;
                 }
@@ -958,7 +994,7 @@ namespace TombEditor.Compilers
                 xMin = b.Xmin;
 
             int xMax = a.Xmax;
-            if (a.Xmax <= b.Xmax)
+            if (a.Xmax >= b.Xmax)
                 xMax = b.Xmax;
 
             int zMin = a.Zmin;
@@ -1058,7 +1094,7 @@ namespace TombEditor.Compilers
                 zMin = b.Zmin;
 
             int zMax = a.Zmax;
-            if (a.Zmax <= b.Zmax)
+            if (a.Zmax >= b.Zmax)
                 zMax = b.Zmax;
 
             int xMin = a.Xmin;
@@ -1156,7 +1192,7 @@ namespace TombEditor.Compilers
                 startZ = a.Zmin;
 
             int endZ = a.Zmax;
-            if (a.Zmax >= endZ)
+            if (a.Zmax >= b.Zmax)
                 endZ = b.Zmax;
 
             if (startZ >= endZ)
@@ -1188,11 +1224,11 @@ namespace TombEditor.Compilers
         public bool Dec_OverlapXmin(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
         {
             int startZ = b.Zmin;
-            if (a.Zmin > startZ)
+            if (a.Zmin > b.Zmin)
                 startZ = a.Zmin;
 
             int endZ = a.Zmax;
-            if (a.Zmax >= endZ)
+            if (a.Zmax >= b.Zmax)
                 endZ = b.Zmax;
 
             if (startZ >= endZ)
@@ -1224,11 +1260,11 @@ namespace TombEditor.Compilers
         public bool Dec_OverlapZmax(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
         {
             int startX = b.Xmin;
-            if (a.Xmin > startX)
+            if (a.Xmin > b.Xmin)
                 startX = a.Xmin;
 
             int endX = a.Xmax;
-            if (a.Xmax >= endX)
+            if (a.Xmax >= b.Xmax)
                 endX = b.Xmax;
 
             if (startX >= endX)
@@ -1264,7 +1300,7 @@ namespace TombEditor.Compilers
                 startX = a.Xmin;
 
             int endX = a.Xmax;
-            if (a.Xmax >= endX)
+            if (a.Xmax >= b.Xmax)
                 endX = b.Xmax;
 
             if (startX >= endX)
@@ -1362,6 +1398,417 @@ namespace TombEditor.Compilers
             }
 
             return false;
+        }
+
+        private void Dec_BuildZones()
+        {
+            return;
+
+            dec_zones = new short[10, dec_numBoxes];
+
+            for (int i = 0; i < 5; i++)
+            {
+                Dec_BuildZonesData(i, false);
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                Dec_BuildZonesData(i, true);
+            }
+        }
+
+        private void Dec_BuildZonesData(int zone, bool flipped)
+        {
+            // This array is used for making a non-recursive version of the algorithm
+            short[] nextBoxes = new short[dec_numBoxes];
+
+            // Basing on zone type, choose the right step difference
+            int maxStep = 0;
+            switch (zone)
+            {
+                case 0:
+                case 1:
+                case 2:
+                    maxStep = 256;
+                    break;
+                case 3:
+                    maxStep = 1024;
+                    break;
+                case 4:
+                    maxStep = 20480;
+                    break;
+            }
+
+            int numBoxes = dec_numBoxes;
+
+            // Initialize arrays to 0x7ff (2047)
+            for (int j = 0; j < dec_numBoxes; j++)
+            {
+                dec_zones[zone, j] = 0x7ff;
+                nextBoxes[j] = 0x7ff;
+            }
+
+            int lastZoneID = 0;
+            int currentBoxIndex = 0;
+            int zoneID = 0;
+            int startBoxIndex = 0;
+            int currentZoneID = 0;
+            int linkedBox;
+            bool jump;
+            bool monkey;
+            int nextBoxIndex = 0;
+            int oldBoxIndex = 0;
+            bool isWater = false;
+            int step = 0;
+            dec_tr_box_aux box;
+            dec_tr_box_aux startBox;
+
+            bool thereAreBoxesToProcess = true;
+
+
+
+            box = dec_boxes[currentBoxIndex];
+            startBox = dec_boxes[currentBoxIndex];
+
+
+
+            while (thereAreBoxesToProcess)
+            {
+                // Do loop while the current zone is != 0x7ff or room is not flipped or current overlapindex is == 0x7ff
+                // I think that this loop tries to search a new box without zone from which starting
+                while (dec_zones[zone, currentBoxIndex] != 0x7ff || box.Flipped != flipped || (box.OverlapIndex & 0x3fff) == 0x7ff)
+                {
+                    // Select next zone and box
+                    currentBoxIndex++;
+                    box = dec_boxes[currentBoxIndex];
+                    startBox = dec_boxes[currentBoxIndex];
+                    oldBoxIndex = currentBoxIndex;
+
+                    // If I've reached the end of the boxes, then quit
+                    if (currentBoxIndex >= numBoxes) return;
+                }
+
+                thereAreBoxesToProcess = true;
+
+                zoneID = lastZoneID + 1;
+                int v23 = currentBoxIndex;
+
+                // Store the current zone ID
+                dec_boxes[currentBoxIndex].ZoneID = (short)zoneID;
+
+                startBoxIndex = currentBoxIndex;
+                currentZoneID = zoneID;
+                isWater = box.Water;
+
+                bool endOfOverlapList = false;
+
+                int currentOverlapIndex = (dec_boxes[startBoxIndex].OverlapIndex & 0x3fff);
+                int currentOverlap = dec_overlaps[currentOverlapIndex];
+                //int nextOverlap = 0;
+
+                // Walk through overlaps
+                while (!endOfOverlapList && currentOverlapIndex < dec_numOverlaps)
+                {
+                    //nextOverlap = currentOverlap + 1;
+
+                    // Check if is the end of the overlaps list
+                    if ((currentOverlap & 0x8000) != 0) endOfOverlapList = true;
+
+                    // Get real box index plus some flags
+                    linkedBox = currentOverlap & 0x7ff;
+                    jump = ((currentOverlap & 0x800) != 0);
+                    monkey = ((currentOverlap & 0x2000) != 0);
+
+                    currentOverlapIndex++;
+                    currentOverlap = dec_overlaps[currentOverlapIndex];
+
+                    if (linkedBox > dec_numBoxes)
+                    {
+                        nextBoxIndex = nextBoxes[startBoxIndex];
+                        nextBoxes[startBoxIndex] = 0x7ff;
+                        startBoxIndex = nextBoxIndex;
+
+                        // It's time to take a decision. 
+                        // a) If next box is 0x7ff, then I have no other boxes in the tree to traverse, then I'm done
+                        // b) If next box is not 0x7ff, then this becomes the new start box
+                        if (nextBoxIndex == 0x7ff)
+                        {
+                            numBoxes = dec_numBoxes;
+                            lastZoneID = currentZoneID;
+                            box = startBox;
+                            currentBoxIndex = oldBoxIndex;
+
+                            // Select next zone and box
+                            currentBoxIndex++;
+                            box = dec_boxes[currentBoxIndex];
+                            startBox = dec_boxes[currentBoxIndex];
+                            oldBoxIndex = currentBoxIndex;
+
+                            // If I've reached the end of the boxes, then quit
+                            if (currentBoxIndex >= numBoxes) return;
+
+                            //thereAreBoxesToProcess = false;
+                            break;
+                        }
+
+                        endOfOverlapList = false;
+                        //currentOverlap = (dec_boxes[startBoxIndex].OverlapIndex & 0x3fff);
+                        //nextOverlap = 0;
+
+                        continue;
+                    }
+
+                    // If the linked box has not a zone yet, then exit overlaps loop and assign a zone to it
+                    if (dec_zones[zone, linkedBox] == 0x7ff)
+                    {
+                        // IF 
+                        // a) current (flipped, water) status is != from start box (flipped, water)  
+                        // b) zone type is not crocodile or fly
+                        // c) is not monkey or zone type is not baddy
+                        if (dec_boxes[linkedBox].Flipped != flipped || dec_boxes[linkedBox].Water != isWater &&
+                            zone != 2 &&
+                            zone != 4 &&
+                            (!monkey || zone != 3))
+                        {
+                            continue;
+                        }
+
+                        // Calculate step height between boxes
+                        step = dec_boxes[linkedBox].TrueFloor - dec_boxes[startBoxIndex].TrueFloor;
+
+                        // If step is outside the max step range
+                        if (step < -maxStep || step > maxStep)
+                        {
+
+                        }
+                        else if (!jump ||
+                                zone == 0 ||
+                                zone == 3)// if not jump or zone is baddy or zone is skeleton
+                        {
+                            // Stores zone ID for linked box
+                            dec_zones[zone, linkedBox] = (short)currentZoneID;
+
+                            // If there isn't a next box, then store current box as next block
+                            if (nextBoxes[linkedBox] == 0x7ff)
+                            {
+                                int nextZonesBoxIndex = v23;
+                                v23 = linkedBox;
+                                nextBoxes[nextZonesBoxIndex] = (short)linkedBox;
+                            }
+
+                            continue;
+                        }
+
+                        if ((!monkey || zone != 3) &&
+                            (zone != 2 || !(dec_boxes[linkedBox].Water) || !(dec_boxes[startBoxIndex].Water)))
+                        {
+                            continue;
+                        }
+
+                        // Stores zone ID for linked box
+                        dec_zones[zone, linkedBox] = (short)currentZoneID;
+
+                        // If there isn't a next box, then store current box as next block
+                        if (nextBoxes[linkedBox] == 0x7ff)
+                        {
+                            int nextZonesBoxIndex = v23;
+                            v23 = linkedBox;
+                            nextBoxes[nextZonesBoxIndex] = (short)linkedBox;
+                        }
+
+                        continue;
+                    }
+
+                    // If I've reached the end of the overlap list, then quit loop
+                    if (endOfOverlapList)
+                    {
+                        nextBoxIndex = nextBoxes[startBoxIndex];
+                        nextBoxes[startBoxIndex] = 0x7ff;
+                        startBoxIndex = nextBoxIndex;
+
+                        // It's time to take a decision. 
+                        // a) If next box is 0x7ff, then I have no other boxes in the tree to traverse, then I'm done
+                        // b) If next box is not 0x7ff, then this becomes the new start box
+                        if (nextBoxIndex == 0x7ff)
+                        {
+                            numBoxes = dec_numBoxes;
+                            lastZoneID = currentZoneID;
+                            box = startBox;
+                            currentBoxIndex = oldBoxIndex;
+
+                            // Select next zone and box
+                            currentBoxIndex++;
+                            box = dec_boxes[currentBoxIndex];
+                            startBox = dec_boxes[currentBoxIndex];
+                            oldBoxIndex = currentBoxIndex;
+
+                            // If I've reached the end of the boxes, then quit
+                            if (currentBoxIndex >= numBoxes) return;
+
+                            //thereAreBoxesToProcess = false;
+                            break;
+                        }
+
+                        endOfOverlapList = false;
+                        //currentOverlap = (dec_boxes[startBoxIndex].OverlapIndex & 0x3fff);
+                        //nextOverlap = 0;
+
+                        continue;
+                    }
+                }
+            }
+
+
+
+
+
+            //dec_tr_box_aux box = dec_boxes[currentBoxIndex];
+            //dec_tr_box_aux startBox = dec_boxes[currentBoxIndex];
+
+            // Do loop while the current zone is != 0x7ff or room is not flipped or current overlapindex is == 0x7ff
+            // I think that this loop tries to search a new box without zone from which starting
+            /* while (dec_zones[zone, currentBoxIndex] != 0x7ff || !box.Flipped || (box.OverlapIndex & 0x3fff) == 0x7ff)
+             {
+                 // Select next zone and box
+                 currentBoxIndex++;
+                 box = dec_boxes[currentBoxIndex];
+                 startBox = dec_boxes[currentBoxIndex];
+                 oldBoxIndex = currentBoxIndex;
+
+                 // If I've reached the end of the boxes, then quit
+                 if (currentBoxIndex >= numBoxes) return;
+             }
+
+             // Generate new zone ID
+             zoneID = lastZoneID + 1;
+             int v23 = currentBoxIndex;
+
+             dec_boxes[currentBoxIndex].ZoneID = (short)zoneID;
+
+             startBoxIndex = currentBoxIndex;
+             currentZoneID = zoneID;
+             isWaterOrFlipped = flipped || box.Water;
+             isWater = box.Water;
+
+             // BEFORE_OVERLAPS_LOOP
+             bool endOfOverlapList = false;
+
+             // Now the overlaps loop
+             int currentOverlap = (dec_boxes[startBoxIndex].OverlapIndex & 0x3fff);
+             int nextOverlap = 0;
+
+             for (int i=currentOverlap;i<dec_numOverlaps;i++)
+             {
+                 nextOverlap = currentOverlap + 1;
+
+                 // Check if is the end of the overlaps list
+                 if ((currentOverlap & 0x8000) != 0) endOfOverlapList = true;
+
+                 // Get real box index plus some flags
+                 linkedBox = currentOverlap & 0x7ff;
+                 jump = ((currentOverlap & 0x800) != 0);
+                 monkey = ((currentOverlap & 0x2000) != 0);
+
+                 // Box index not valid
+                 if (linkedBox > dec_numBoxes)
+                 {
+                     nextBoxIndex = nextBoxes[startBoxIndex];
+                     nextBoxes[startBoxIndex] = 0x7ff;
+                     startBoxIndex = nextBoxIndex;
+
+                     // It's time to take a decision. 
+                     // a) If next box is 0x7ff, then I have no other boxes in the tree to traverse, then I'm done
+                     // b) If next box is not 0x7ff, then this becomes the new start box
+                     if (nextBoxIndex == 0x7ff)
+                     {
+                         numBoxes = dec_numBoxes;
+                         lastZoneID = currentZoneID;
+                         box = startBox;
+                         currentBoxIndex = oldBoxIndex;
+
+                         // goto ZONE_LOOP_START;
+                     }
+
+                     // goto BEFORE_OVERLAPS_LOOP;
+                 }
+
+                 // If the linked box has not a zone yet, then exit overlaps loop and assign a zone to it
+                 if (dec_zones[zone, linkedBox] == 0x7ff) break;
+
+                 // If I've reached the end of the overlap list, then quit loop
+                 if (endOfOverlapList)
+                 {
+                     nextBoxIndex = nextBoxes[startBoxIndex];
+                     nextBoxes[startBoxIndex] = 0x7ff;
+                     startBoxIndex = nextBoxIndex;
+
+                     // It's time to take a decision. 
+                     // a) If next box is 0x7ff, then I have no other boxes in the tree to traverse, then I'm done
+                     // b) If next box is not 0x7ff, then this becomes the new start box
+                     if (nextBoxIndex == 0x7ff)
+                     {
+                         numBoxes = dec_numBoxes;
+                         lastZoneID = currentZoneID;
+                         box = startBox;
+                         currentBoxIndex = oldBoxIndex;
+
+                         // goto ZONE_LOOP_START;
+                     }
+
+                     // goto BEFORE_OVERLAPS_LOOP;
+                 }
+             }
+
+             // IF 
+             // a) current (flipped, water) status is != from start box (flipped, water)  
+             // b) zone type is not crocodile or fly
+             // c) is not monkey or zone type is not baddy
+             if (dec_boxes[linkedBox].Flipped != flipped || dec_boxes[linkedBox].Water != isWater && 
+                 zone != 2 &&
+                 zone != 4 &&
+                 (!monkey || zone != 3))
+             {
+                 //goto BEFORE_JUMP_END_OVERLAPS_LOOP;
+             }
+
+             // Calculate step height between boxes
+             step = dec_boxes[linkedBox].TrueFloor - dec_boxes[startBoxIndex].TrueFloor;
+
+             int tempZoneType = 0;
+
+             // If step is outside the max step range
+             if (step < -maxStep || step > maxStep)
+             {
+                 tempZoneType = zone;
+             }
+             else if (!jump || 
+                     (tempZoneType = zone) == 0 || 
+                     zone == 3)// if not jump or zone is baddy or zone is skeleton
+             {
+                 //STORE_ZONE_ID_AND_SAVE_NEXT_BOX:
+
+                 // Stores zone ID for linked box
+                 dec_zones[zone, linkedBox] = (short)currentZoneID;
+
+                 // If there isn't a next box, then store current box as next block
+                 if (nextBoxes[linkedBox] == 0x7ff)
+                 {
+                     int nextZonesBoxIndex = v23;
+                     v23 = linkedBox;
+                     nextBoxes[nextZonesBoxIndex] = (short)linkedBox;
+                 }
+                // goto END_OF_OVERLAPS_LOOP;
+             }
+
+             if ((!monkey || zone != 3) && 
+                 (zone != 2 || !(dec_boxes[linkedBox].Water) || !(dec_boxes[startBoxIndex].Water)))
+             {
+                // BEFORE_JUMP_END_OVERLAPS_LOOP:
+                 //v5 = pNextZonesCopy;
+                 //pZones = pMemory;
+                 //goto END_OF_OVERLAPS_LOOP;
+             }*/
+            //  goto STORE_ZONE_ID_AND_SAVE_NEXT_BOX;
         }
     }
 }

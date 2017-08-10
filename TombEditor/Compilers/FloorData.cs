@@ -13,7 +13,7 @@ namespace TombEditor.Compilers
             ReportProgress(70, "Building floordata");
 
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-            var tempFloorData = new List<ushort> {0 | 0x8000};
+            var tempFloorData = new List<ushort> { 0 | 0x8000 };
 
             for (var i = 0; i < _editor.Level.Rooms.Length; i++)
             {
@@ -42,7 +42,7 @@ namespace TombEditor.Compilers
                         var sector = GetSector(room, x, z);
                         var block = room.Blocks[x, z];
 
-                        var baseFloorData = (ushort) tempFloorData.Count;
+                        var baseFloorData = (ushort)tempFloorData.Count;
 
                         // If a sector is a wall and this room is a water room, 
                         // I must check before if on the neighbour sector there's a ceiling portal 
@@ -58,8 +58,8 @@ namespace TombEditor.Compilers
                                     continue;
 
                                 var adjoining = portal.AdjoiningRoom;
-                                var x2 = (int) (room.Position.X + x - adjoining.Position.X);
-                                var z2 = (int) (room.Position.Z + z - adjoining.Position.Z);
+                                var x2 = (int)(room.Position.X + x - adjoining.Position.X);
+                                var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
 
                                 if (x2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 < 0 ||
                                     z2 > adjoining.NumZSectors - 1)
@@ -85,7 +85,7 @@ namespace TombEditor.Compilers
                              room.Blocks[x, z].Type == BlockType.BorderWall))
                         {
                             const ushort data1 = 0x8001;
-                            var data2 = (ushort) _level.Rooms.ReferenceIndexOf(isWallWithCeilingPortal);
+                            var data2 = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(isWallWithCeilingPortal)];
 
                             tempFloorData.Add(data1);
                             tempFloorData.Add(data2);
@@ -118,7 +118,7 @@ namespace TombEditor.Compilers
                                 (block.IsFloorSolid && block.NoCollisionFloor))
                             {
                                 var portal = _editor.Level.Portals[block.FloorPortal];
-                                sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                                sector.RoomBelow = (byte)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
                             }
                             else
                             {
@@ -134,7 +134,7 @@ namespace TombEditor.Compilers
                                 (block.IsCeilingSolid && block.NoCollisionCeiling))
                             {
                                 var portal = _editor.Level.Portals[block.CeilingPortal];
-                                sector.RoomAbove = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                                sector.RoomAbove = (byte)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
                             }
                             else
                             {
@@ -151,7 +151,7 @@ namespace TombEditor.Compilers
                             if (block.WallOpacity != PortalOpacity.Opacity1)
                             {
                                 const ushort data1 = 0x8001;
-                                var data2 = (ushort) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                                var data2 = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
 
                                 tempFloorData.Add(data1);
                                 tempFloorData.Add(data2);
@@ -174,24 +174,24 @@ namespace TombEditor.Compilers
                         // floordata value
                         sector.FloorDataIndex = baseFloorData;
                         var tempCodes = new List<ushort>();
-                        var lastFloorDataFunction = (ushort) tempCodes.Count;
+                        var lastFloorDataFunction = (ushort)tempCodes.Count;
 
                         // If sector is Death
                         if ((block.Flags & BlockFlags.Death) == BlockFlags.Death)
                         {
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x05);
                         }
 
                         // If sector has a floor slope
                         if (block.FloorSlopeX != 0 || block.FloorSlopeZ != 0)
                         {
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x02);
 
-                            sector.Floor = (sbyte) (-room.Position.Y - room.GetHighestFloorCorner(x, z));
+                            sector.Floor = (sbyte)(-room.Position.Y - room.GetHighestFloorCorner(x, z));
 
-                            var slope = (ushort) (((block.FloorSlopeZ) << 8) | ((block.FloorSlopeX) & 0xff));
+                            var slope = (ushort)(((block.FloorSlopeZ) << 8) | ((block.FloorSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
@@ -199,10 +199,10 @@ namespace TombEditor.Compilers
                         // If sector has a ceiling slope
                         if (block.CeilingSlopeX != 0 || block.CeilingSlopeZ != 0)
                         {
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x03);
 
-                            var slope = (ushort) (((block.CeilingSlopeZ) << 8) | ((block.CeilingSlopeX) & 0xff));
+                            var slope = (ushort)(((block.CeilingSlopeZ) << 8) | ((block.CeilingSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
@@ -229,15 +229,15 @@ namespace TombEditor.Compilers
 
                             // First, we fix the sector height
                             if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte) (room._compiled.Info.YBottom / 256.0f - 0x0f);
+                                sector.Floor = (sbyte)(room._compiled.Info.YBottom / 256.0f - 0x0f);
                             else
-                                sector.Floor = (sbyte) (room._compiled.Info.YBottom / 256.0f -
+                                sector.Floor = (sbyte)(room._compiled.Info.YBottom / 256.0f -
                                                         room.GetHighestFloorCorner(x, z));
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE ||
                                 block.FloorDiagonalSplit == DiagonalSplit.SW)
                             {
-                                lastFloorDataFunction = (ushort) tempCodes.Count;
+                                lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                 if (block.FloorPortal >= 0 && block.NoCollisionFloor)
                                 {
@@ -307,7 +307,7 @@ namespace TombEditor.Compilers
                             }
                             else
                             {
-                                lastFloorDataFunction = (ushort) tempCodes.Count;
+                                lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                 if (block.FloorPortal >= 0 && block.NoCollisionFloor)
                                 {
@@ -372,8 +372,8 @@ namespace TombEditor.Compilers
                                 }
                             }
 
-                            var code1 = (ushort) (function | (t2 << 5) | (t1 << 10));
-                            var code2 = (ushort) ((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
+                            var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                            var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
 
                             tempCodes.Add(code1);
                             tempCodes.Add(code2);
@@ -392,13 +392,13 @@ namespace TombEditor.Compilers
                                 {
                                     // First, we fix the sector height
                                     sector.Floor =
-                                        (sbyte) (room._compiled.Info.YBottom / 256.0f -
+                                        (sbyte)(room._compiled.Info.YBottom / 256.0f -
                                                  room.GetHighestFloorCorner(x, z));
 
                                     // Then we have to find the axis of the triangulation
                                     var min = room.GetLowestFloorCorner(x, z);
 
-                                    lastFloorDataFunction = (ushort) tempCodes.Count;
+                                    lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                     // Corner heights
                                     var h10 = q2 - min;
@@ -462,7 +462,7 @@ namespace TombEditor.Compilers
                                             //int maxTriangle1 = Math.Max(Math.Max(h01, h00), h10);
 
                                             // Correction is the max height of the sector minus the height of the fourth point
-                                            t2 = (int) (maxHeight - distance1) & 0x1f;
+                                            t2 = (int)(maxHeight - distance1) & 0x1f;
 
                                             var pl2 = new Plane(p10, p01, p11);
 
@@ -477,7 +477,7 @@ namespace TombEditor.Compilers
                                             //int maxTriangle2 = Math.Max(Math.Max(h11, h10), h01);
 
                                             // Correction is the max height of the sector minus the height of the fourth point
-                                            t1 = (int) (maxHeight - distance2) & 0x1f;
+                                            t1 = (int)(maxHeight - distance2) & 0x1f;
                                         }
                                         else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h11 < h00)
@@ -506,7 +506,7 @@ namespace TombEditor.Compilers
                                             else
                                             {
                                                 t1 = 0;
-                                                t2 = (int) (maxHeight - distance) & 0x1f;
+                                                t2 = (int)(maxHeight - distance) & 0x1f;
                                             }
                                         }
                                         else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
@@ -533,7 +533,7 @@ namespace TombEditor.Compilers
                                             else
                                             {
                                                 t2 = 0;
-                                                t1 = (int) (maxHeight - distance) & 0x1f;
+                                                t1 = (int)(maxHeight - distance) & 0x1f;
                                             }
                                         }
                                     }
@@ -575,7 +575,7 @@ namespace TombEditor.Compilers
                                             distance1 = 32768 - distance1;
                                             distance1 /= 256;
 
-                                            t2 = (int) (maxHeight - distance1) & 0x1f;
+                                            t2 = (int)(maxHeight - distance1) & 0x1f;
 
                                             var pl2 = new Plane(p00, p01, p11);
 
@@ -587,7 +587,7 @@ namespace TombEditor.Compilers
                                             distance2 = 32768 - distance2;
                                             distance2 /= 256;
 
-                                            t1 = (int) (maxHeight - distance2) & 0x1f;
+                                            t1 = (int)(maxHeight - distance2) & 0x1f;
                                         }
                                         else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h01 < h10)
@@ -611,7 +611,7 @@ namespace TombEditor.Compilers
                                             }
                                             else
                                             {
-                                                t1 = (int) (maxHeight - distance) & 0x1f;
+                                                t1 = (int)(maxHeight - distance) & 0x1f;
                                                 t2 = 0;
                                             }
                                         }
@@ -638,14 +638,14 @@ namespace TombEditor.Compilers
                                             else
                                             {
                                                 t1 = 0;
-                                                t2 = (int) (maxHeight - distance) & 0x1f;
+                                                t2 = (int)(maxHeight - distance) & 0x1f;
                                             }
                                         }
                                     }
 
                                     // Now build the floordata codes
-                                    var code1 = (ushort) (function | (t2 << 5) | (t1 << 10));
-                                    var code2 = (ushort) ((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
+                                    var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                                    var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
 
                                     tempCodes.Add(code1);
                                     tempCodes.Add(code2);
@@ -675,16 +675,16 @@ namespace TombEditor.Compilers
 
                                 // First, we fix the sector height
                                 if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte) (room._compiled.Info.YBottom / 256.0f - 0x0f);
+                                    sector.Floor = (sbyte)(room._compiled.Info.YBottom / 256.0f - 0x0f);
                                 else
                                     sector.Floor =
-                                        (sbyte) (room._compiled.Info.YBottom / 256.0f -
+                                        (sbyte)(room._compiled.Info.YBottom / 256.0f -
                                                  room.GetHighestFloorCorner(x, z));
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE ||
                                     block.CeilingDiagonalSplit == DiagonalSplit.SW)
                                 {
-                                    lastFloorDataFunction = (ushort) tempCodes.Count;
+                                    lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                     if (block.CeilingPortal >= 0 && block.NoCollisionCeiling)
                                     {
@@ -725,7 +725,7 @@ namespace TombEditor.Compilers
                                 }
                                 else
                                 {
-                                    lastFloorDataFunction = (ushort) tempCodes.Count;
+                                    lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                     if (block.CeilingPortal >= 0 && block.NoCollisionCeiling)
                                     {
@@ -765,8 +765,8 @@ namespace TombEditor.Compilers
                                     }
                                 }
 
-                                var code1 = (ushort) (function | (t2 << 5) | (t1 << 10));
-                                var code2 = (ushort) ((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
+                                var code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                                var code2 = (ushort)((h10) | (h00 << 4) | (h01 << 8) | (h11 << 12));
 
                                 tempCodes.Add(code1);
                                 tempCodes.Add(code2);
@@ -787,7 +787,7 @@ namespace TombEditor.Compilers
                                     // We have to find the axis of the triangulation
                                     var max = room.GetHighestCeilingCorner(x, z);
 
-                                    lastFloorDataFunction = (ushort) tempCodes.Count;
+                                    lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                     // Corner heights
                                     var h10 = max - w2;
@@ -845,7 +845,7 @@ namespace TombEditor.Compilers
                                             distance1 = 32768 - distance1;
                                             distance1 /= 256;
 
-                                            t2 = (int) (-maxHeight + distance1) & 0x1f;
+                                            t2 = (int)(-maxHeight + distance1) & 0x1f;
 
                                             var pl2 = new Plane(p10, p11, p01);
 
@@ -857,7 +857,7 @@ namespace TombEditor.Compilers
                                             distance2 = 32768 - distance2;
                                             distance2 /= 256;
 
-                                            t1 = (int) (-maxHeight + distance2) & 0x1f;
+                                            t1 = (int)(-maxHeight + distance2) & 0x1f;
                                         }
                                         else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h11 < h00)
@@ -882,7 +882,7 @@ namespace TombEditor.Compilers
                                             else
                                             {
                                                 t1 = 0;
-                                                t2 = (int) (-maxHeight + distance) & 0x1f;
+                                                t2 = (int)(-maxHeight + distance) & 0x1f;
                                             }
                                         }
                                         else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
@@ -908,7 +908,7 @@ namespace TombEditor.Compilers
                                             else
                                             {
                                                 t2 = 0;
-                                                t1 = (int) (-maxHeight + distance) & 0x1f;
+                                                t1 = (int)(-maxHeight + distance) & 0x1f;
                                             }
                                         }
                                     }
@@ -950,7 +950,7 @@ namespace TombEditor.Compilers
                                             distance1 = 32768 - distance1;
                                             distance1 /= 256;
 
-                                            t2 = (int) (-maxHeight + distance1) & 0x1f;
+                                            t2 = (int)(-maxHeight + distance1) & 0x1f;
 
                                             var pl2 = new Plane(p00, p11, p01);
 
@@ -962,7 +962,7 @@ namespace TombEditor.Compilers
                                             distance2 = 32768 - distance2;
                                             distance2 /= 256;
 
-                                            t1 = (int) (-maxHeight + distance2) & 0x1f;
+                                            t1 = (int)(-maxHeight + distance2) & 0x1f;
                                         }
                                         else if ((h11 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h01 < h10)
@@ -986,7 +986,7 @@ namespace TombEditor.Compilers
                                             }
                                             else
                                             {
-                                                t1 = (int) (-maxHeight + distance) & 0x1f;
+                                                t1 = (int)(-maxHeight + distance) & 0x1f;
                                                 t2 = 0;
                                             }
                                         }
@@ -1013,14 +1013,14 @@ namespace TombEditor.Compilers
                                             else
                                             {
                                                 t1 = 0;
-                                                t2 = (int) (-maxHeight + distance) & 0x1f;
+                                                t2 = (int)(-maxHeight + distance) & 0x1f;
                                             }
                                         }
                                     }
 
                                     // Now build the floordata codes
-                                    ushort code1 = (ushort) (function | (t2 << 5) | (t1 << 10));
-                                    ushort code2 = (ushort) ((h11) | (h01 << 4) | (h00 << 8) | (h10 << 12));
+                                    ushort code1 = (ushort)(function | (t2 << 5) | (t1 << 10));
+                                    ushort code2 = (ushort)((h11) | (h01 << 4) | (h00 << 8) | (h10 << 12));
 
                                     tempCodes.Add(code1);
                                     tempCodes.Add(code2);
@@ -1035,30 +1035,30 @@ namespace TombEditor.Compilers
 
                             for (int j = 0; j < 4; ++j)
                                 if (block.Climb[j])
-                                    climb |= (ushort) (j << 8);
+                                    climb |= (ushort)(j << 8);
 
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(climb);
                         }
 
                         // If sector is Death
                         if ((block.Flags & BlockFlags.Monkey) == BlockFlags.Monkey)
                         {
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x13);
                         }
 
                         // If sector is Beetle
                         if ((block.Flags & BlockFlags.Beetle) == BlockFlags.Beetle)
                         {
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x15);
                         }
 
                         // If sector is Trigger triggerer
                         if ((block.Flags & BlockFlags.TriggerTriggerer) == BlockFlags.TriggerTriggerer)
                         {
-                            lastFloorDataFunction = (ushort) tempCodes.Count;
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x14);
                         }
 
@@ -1087,13 +1087,13 @@ namespace TombEditor.Compilers
                                 break;
                             }
 
-                            var tempTriggers = new List<int> {room.Blocks[x, z].Triggers[found]};
+                            var tempTriggers = new List<int> { room.Blocks[x, z].Triggers[found] };
                             tempTriggers.AddRange(room.Blocks[x, z].Triggers.Where((t, j) => j != found));
 
                             {
                                 var trigger = _editor.Level.Triggers[room.Blocks[x, z].Triggers[found]];
 
-                                lastFloorDataFunction = (ushort) tempCodes.Count;
+                                lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                 // Trigger type and setup are coming from the found trigger. Other triggers are needed onlt for action.
                                 ushort trigger1 = 0x04;
@@ -1125,9 +1125,9 @@ namespace TombEditor.Compilers
                                     trigger1 |= 0x0c << 8;
 
                                 ushort triggerSetup = 0;
-                                triggerSetup |= (ushort) (trigger.Timer & 0xff);
-                                triggerSetup |= (ushort) (trigger.OneShot ? 0x100 : 0);
-                                triggerSetup |= (ushort) ((trigger.CodeBits & 0x1f) << 9);
+                                triggerSetup |= (ushort)(trigger.Timer & 0xff);
+                                triggerSetup |= (ushort)(trigger.OneShot ? 0x100 : 0);
+                                triggerSetup |= (ushort)((trigger.CodeBits & 0x1f) << 9);
 
                                 tempCodes.Add(trigger1);
                                 tempCodes.Add(triggerSetup);
@@ -1144,7 +1144,7 @@ namespace TombEditor.Compilers
                                         var item = trigger.Target;
                                         if (_editor.Level.Objects[trigger.Target].Type == ObjectInstanceType.Moveable)
                                         {
-                                            var instance = (MoveableInstance) _editor.Level.Objects[trigger.Target];
+                                            var instance = (MoveableInstance)_editor.Level.Objects[trigger.Target];
                                             if (instance.WadObjectId >= 398 && instance.WadObjectId <= 406)
                                             {
                                                 item = _aiObjectsTable[trigger.Target];
@@ -1155,58 +1155,58 @@ namespace TombEditor.Compilers
                                             }
                                         }
 
-                                        trigger2 = (ushort) (item & 0x3ff | (0x00 << 10));
+                                        trigger2 = (ushort)(item & 0x3ff | (0x00 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.Camera:
                                         // Trigger for camera
-                                        trigger2 = (ushort) (_cameraTable[trigger.Target] & 0x3ff | (0x01 << 10));
+                                        trigger2 = (ushort)(_cameraTable[trigger.Target] & 0x3ff | (0x01 << 10));
                                         tempCodes.Add(trigger2);
 
                                         // Additional short
                                         ushort trigger3 = 0;
-                                        trigger3 |= (ushort) (trigger.Timer & 0xff);
-                                        trigger3 |= (ushort) (trigger.OneShot ? 0x100 : 0);
+                                        trigger3 |= (ushort)(trigger.Timer & 0xff);
+                                        trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
                                         tempCodes.Add(trigger3);
                                         break;
                                     case TriggerTargetType.Sink:
                                         // Trigger for sink
-                                        trigger2 = (ushort) (_sinkTable[trigger.Target] & 0x3ff | (0x02 << 10));
+                                        trigger2 = (ushort)(_sinkTable[trigger.Target] & 0x3ff | (0x02 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipMap:
                                         // Trigger for flip map
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x03 << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x03 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipOn:
                                         // Trigger for flip map on
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x04 << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x04 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipOff:
                                         // Trigger for flip map off
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x05 << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x05 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.Target:
                                         // Trigger for look at item
-                                        trigger2 = (ushort) (_moveablesTable[trigger.Target] & 0x3ff | (0x06 << 10));
+                                        trigger2 = (ushort)(_moveablesTable[trigger.Target] & 0x3ff | (0x06 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FinishLevel:
                                         // Trigger for finish level
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x07 << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x07 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.PlayAudio:
                                         // Trigger for play soundtrack
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x08 << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x08 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipEffect:
                                         // Trigger for flip effect
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x09 << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x09 << 10));
                                         tempCodes.Add(trigger2);
 
                                         /*  trigger2 = (ushort)(trigger.Timer);
@@ -1214,15 +1214,15 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.Secret:
                                         // Trigger for secret found
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x0a << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x0a << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by
-                                        trigger2 = (ushort) (trigger.Target & 0x3ff | (0x0c << 10));
+                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x0c << 10));
                                         tempCodes.Add(trigger2);
 
-                                        trigger2 = (ushort) (trigger.OneShot ? 0x0100 : 0x00);
+                                        trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                                         tempCodes.Add(trigger2);
                                         break;
                                 }
