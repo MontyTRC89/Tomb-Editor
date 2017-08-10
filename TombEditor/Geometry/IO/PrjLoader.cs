@@ -499,20 +499,24 @@ namespace TombEditor.Geometry.IO
                                     {
                                         case 0x4000:
                                             lightType = LightType.Light;
+                                            lightIn /= 1024.0f;
+                                            lightOut /= 1024.0f;
                                             break;
                                         case 0x6000:
                                             lightType = LightType.Shadow;
+                                            lightIn /= 1024.0f;
+                                            lightOut /= 1024.0f;
                                             break;
                                         case 0x4200:
                                             lightType = LightType.Sun;
                                             break;
                                         case 0x5000:
-                                            lightIn = 1013.76f;
-                                            lightOut = 1024.0f;
                                             lightType = LightType.Effect;
                                             break;
                                         case 0x4100:
                                             lightType = LightType.Spot;
+                                            lightLen /= 1024.0f;
+                                            lightCut /= 1024.0f;
                                             break;
                                         case 0x4020:
                                             lightType = LightType.FogBulb;
@@ -530,8 +534,8 @@ namespace TombEditor.Geometry.IO
                                         DirectionX = 360.0f - lightX,
                                         DirectionY = lightY + 90.0f,
                                         Enabled = lightOn == 0x01,
-                                        In = lightIn / 1024.0f,
-                                        Out = lightOut / 1024.0f,
+                                        In = lightIn,
+                                        Out = lightOut,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
                                     if (light.DirectionY >= 360)
