@@ -151,9 +151,6 @@
   <data name="Floor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Floor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="layer_group1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\layer_group1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CrackMode-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CrackMode-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -214,9 +211,6 @@
   <data name="Camera-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Camera-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Move2Sector-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Move2Sector-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="RoomRaise-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RoomRaise-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -247,9 +241,6 @@
   <data name="camera1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\camera1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="opacity-none" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\opacity-none.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="toolbar-3d" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\toolbar-3d.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -258,6 +249,9 @@
   </data>
   <data name="layer_transparent1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\layer_transparent1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="diagonal-wall-SE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\diagonal-wall-SE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="draw_spiral" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\draw_spiral.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -285,6 +279,9 @@
   </data>
   <data name="Ankh Icon 08_256x256-32" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Ankh Icon 08_256x256-32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="diagonal-floor-NE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\diagonal-floor-NE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FloorIncrease-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FloorIncrease-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -358,6 +355,9 @@
   <data name="paste-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\paste-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="lightbulb1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\lightbulb1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="portals" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\portals.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -415,8 +415,8 @@
   <data name="Rooms48" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Rooms48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="rubber_stamp-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\rubber_stamp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DoubleSided-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DoubleSided-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="lightbulb_off" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\lightbulb_off.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -460,11 +460,11 @@
   <data name="invisible-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\invisible-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sun-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\sun-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="sound" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sound.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="lightbulb1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\lightbulb1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="opacity-none" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\opacity-none.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ToggleOpacity2-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ToggleOpacity2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -526,8 +526,11 @@
   <data name="trash-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\trash-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DoubleSided-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\DoubleSided-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="controller-down" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\controller-down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="climb-south" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\climb-south.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="copy_link-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\copy_link-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -553,8 +556,8 @@
   <data name="climb-north" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\climb-north.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="diagonal-floor-NE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\diagonal-floor-NE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="rubber_stamp-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\rubber_stamp-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Cubi48" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Cubi48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -577,20 +580,23 @@
   <data name="Effect-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Effect-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="controller-up" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\controller-up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="fog-bulb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fog-bulb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="texture-1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\texture-1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Sunlight-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Sunlight-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="cctv_camera" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cctv_camera.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="terreno" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\terreno.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="sound" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\sound.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="layer_group1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\layer_group1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="save_as-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\save_as-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -619,8 +625,8 @@
   <data name="Fog-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Fog-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="climb-south" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\climb-south.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Sunlight-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Sunlight-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="brick_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\brick_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -628,8 +634,8 @@
   <data name="camera2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\camera2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="cctv_camera" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cctv_camera.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="sun-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sun-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="luce" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\luce.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -643,8 +649,8 @@
   <data name="Camera-161" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Camera-161.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="diagonal-wall-SE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\diagonal-wall-SE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Move2Sector-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Move2Sector-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="texture-floor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\texture-floor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -673,10 +679,7 @@
   <data name="cut-16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cut-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="controller-down" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\controller-down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="controller-up" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\controller-up.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="TransparentBackground" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TransparentBackground.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -12,8 +12,7 @@ namespace TombLib.IO
     {
         public BinaryWriterEx(Stream output)
             : base(output)
-        {
-        }
+        {}
 
         public void Write(Vector2 value)
         {
@@ -66,29 +65,36 @@ namespace TombLib.IO
         {
             var sizeOfT = Marshal.SizeOf(typeof(T));
             var unmanaged = Marshal.AllocHGlobal(sizeOfT);
-            var buffer = new byte[sizeOfT];
-
-            Marshal.StructureToPtr(block, unmanaged, false);
-            Marshal.Copy(unmanaged, buffer, 0, sizeOfT);
-
-            Write(buffer);
-
-            Marshal.FreeHGlobal(unmanaged);
+            try
+            {
+                var buffer = new byte[sizeOfT];
+                Marshal.StructureToPtr(block, unmanaged, false);
+                Marshal.Copy(unmanaged, buffer, 0, sizeOfT);
+                Write(buffer);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(unmanaged);
+            }
         }
 
         public void WriteBlockArray<T>(IEnumerable<T> values)
         {
-            foreach (var s in values)
+            var sizeOfT = Marshal.SizeOf(typeof(T));
+            var unmanaged = Marshal.AllocHGlobal(sizeOfT);
+            try
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
-                var unmanaged = Marshal.AllocHGlobal(sizeOfT);
                 var buffer = new byte[sizeOfT];
 
-                Marshal.StructureToPtr(s, unmanaged, false);
-                Marshal.Copy(unmanaged, buffer, 0, sizeOfT);
-
-                Write(buffer);
-
+                foreach (var s in values)
+                {
+                    Marshal.StructureToPtr(s, unmanaged, false);
+                    Marshal.Copy(unmanaged, buffer, 0, sizeOfT);
+                    Write(buffer);
+                }
+            }
+            finally
+            {
                 Marshal.FreeHGlobal(unmanaged);
             }
         }

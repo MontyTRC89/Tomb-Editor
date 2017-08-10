@@ -17,11 +17,6 @@ namespace TombEditor.Controls
     public abstract class PickingResult
     {
         public float Distance { get; set; }
-
-        public PickingResult()
-        {
-            
-        }
     };
 
     public partial class PanelRendering3D : Panel
@@ -172,7 +167,6 @@ namespace TombEditor.Controls
             public DrawingPoint Pos { get; set; }
             public BlockFaces Face { get; set; }
             public PickingResultBlock(float Distance, DrawingPoint pos, BlockFaces face)
-            : base()
             {
                 this.Distance = Distance;
                 this.Pos = pos;
@@ -184,7 +178,6 @@ namespace TombEditor.Controls
         {
             public ObjectPtr ObjectPtr { get; set; }
             public PickingResultObject(float Distance,  ObjectPtr objectPtr)
-            : base()
             {
                 this.Distance = Distance;
                 this.ObjectPtr = objectPtr;

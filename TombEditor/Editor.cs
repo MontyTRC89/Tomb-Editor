@@ -368,6 +368,32 @@ namespace TombEditor
             SelectedObject = objectInstance.ObjectPtr;
         }
 
+        // Call this methode to easily change the settings of the level.
+        // All required update methods will be invoked automatically.
+        public void UpdateLevelSettings(LevelSettings settings)
+        {
+            if ((_level == null) || settings == null)
+                return;
+            LevelSettings oldSettings = _level.Settings;
+            _level.Settings = settings;
+
+            // Update state
+            if (settings.MakeAbsolute(settings.TextureFilePath) != oldSettings.MakeAbsolute(oldSettings.TextureFilePath))
+            {
+                _level.ReloadTextureTry();
+                LoadedTexturesChange();
+            }
+
+            if (settings.MakeAbsolute(settings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
+            {
+                _level.ReloadObjectsTry();
+                LoadedWadsChange(_level.Wad);
+            }
+
+            if (settings.MakeAbsolute(settings.LevelFilePath) != oldSettings.MakeAbsolute(oldSettings.LevelFilePath))
+                LevelFileNameChange();
+        }
+
         // Static instance
         private static Editor _instance;
 

@@ -126,31 +126,13 @@ namespace TombEditor.Compilers
         {
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
-            {
                 foreach (var sound in _editor.Level.Wad.OriginalWad.Sounds)
                 {
-                    string path = @"Sounds\Samples\" + sound;
-                    try
-                    {
-                        using (var readerSound = new BinaryReaderEx(File.OpenRead(path)))
-                        {
-                            int sampleUncompressedSize = (int)readerSound.BaseStream.Length;
-                            var sample = readerSound.ReadBytes(sampleUncompressedSize);
-                            writer.Write(sampleUncompressedSize);
-                            writer.Write(sampleUncompressedSize);
-                            writer.WriteBlockArray(sample);
-                        }
-                    }
-                    catch (Exception exc)
-                    {
-                        logger.Warn(exc, "Unable to open \"" + path + "\".");
-                        writer.Write(0);
-                        writer.Write(0);
-                    }
+                    byte[] soundData = _editor.Level.Settings.ReadSound(sound, _editor.Level.Settings.IgnoreMissingSounds);
+                    writer.Write(soundData.GetLength(0));
+                    writer.Write(soundData.GetLength(0));
+                    writer.Write(soundData);
                 }
-
-                writer.Flush();
-            }
 
             _bufferSamples = stream.ToArray();
         }
