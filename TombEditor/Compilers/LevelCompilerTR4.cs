@@ -322,12 +322,13 @@ namespace TombEditor.Compilers
                     Speed = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Speed * 655.0f))),
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
-                    Flags = instance.Flags,
-                    DirectionX = (int)Math.Round(Position.X + 1024 * Direction.X),
-                    DirectionY = (int)Math.Round(Position.Y - 1024 * Direction.Y),
-                    DirectionZ = (int)Math.Round(Position.Z + 1024 * Direction.Z),
+                    Flags = instance.Flags
                 };
-                
+
+                flyby.DirectionX = (int)(flyby.X + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(instance.RotationY)));
+                flyby.DirectionY = (int)(flyby.Y - 1024 * Math.Sin(MathUtil.DegreesToRadians(instance.RotationY)));
+                flyby.DirectionZ = (int)(flyby.Z + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(instance.RotationY)));
+
                 tempFlyby.Add(flyby);
             }
 

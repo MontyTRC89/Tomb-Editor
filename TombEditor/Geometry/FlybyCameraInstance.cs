@@ -58,7 +58,7 @@ namespace TombEditor.Geometry
         public float RotationX
         {
             get { return _rotationX; }
-            set { _rotationX = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+            set { _rotationX = value; /* (float)(value - Math.Floor(value / 360.0) * 360.0);*/ }
         }
 
         /// <summary> Radians in the range [0, 2*Pi) </summary>
@@ -72,7 +72,7 @@ namespace TombEditor.Geometry
         public float RotationY
         {
             get { return _rotationY; }
-            set { _rotationY = Math.Max(-90, Math.Min(90, value)); }
+            set { _rotationY = value; /* Math.Max(-90, Math.Min(90, value));*/ }
         }
 
         /// <summary> Radians in the range [-Pi/2, Pi/2] </summary>
