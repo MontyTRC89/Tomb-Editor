@@ -316,8 +316,8 @@ namespace TombEditor.Compilers
                     Y = (int)Math.Round(-Position.Y),
                     Z = (int)Math.Round(Position.Z),
                     Room = _roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)],
-                    FOV = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Fov * (65536.0 / 360.0)))),
-                    Roll = (short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, instance.Roll * (65536.0 / 360.0)))),
+                    FOV = (ushort)(182 * instance.Fov),
+                    Roll = (short)(182 * instance.Roll),
                     Timer = (ushort)instance.Timer,
                     Speed = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Speed * 655.0f))),
                     Sequence = (byte)instance.Sequence,
@@ -326,7 +326,7 @@ namespace TombEditor.Compilers
                 };
 
                 flyby.DirectionX = (int)(flyby.X + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(instance.RotationY)));
-                flyby.DirectionY = (int)(flyby.Y - 1024 * Math.Sin(MathUtil.DegreesToRadians(instance.RotationY)));
+                flyby.DirectionY = (int)(flyby.Y - 1024 * Math.Sin(MathUtil.DegreesToRadians(instance.RotationX)));
                 flyby.DirectionZ = (int)(flyby.Z + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(instance.RotationY)));
 
                 tempFlyby.Add(flyby);
