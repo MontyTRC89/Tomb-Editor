@@ -8,17 +8,6 @@ using System.Diagnostics;
 
 namespace TombEditor.Compilers
 {
-    public enum Dec_BoxFlag
-    {
-        None = 0,
-        Water = 1,
-        Monkey = 2,
-        Jump = 4,
-        FlipMap = 8,
-        IsolatedBox = 16,
-        NotWalkableBox = 32
-    }
-
     public struct dec_tr_box_aux
     {
         public int Zmin;
@@ -59,10 +48,6 @@ namespace TombEditor.Compilers
         private int dec_numBoxes = 0;
         private int dec_numOverlaps = 0;
         private bool dec_boxExtendsInAnotherRoom = false;
-        private Room[] dec_rooms;
-        private Room[] dec_baseRooms;
-        private Room[] dec_alternateRooms;
-        private short[,] dec_zones;
 
         private void Dec_BuildBoxesAndOverlaps()
         {
@@ -73,41 +58,7 @@ namespace TombEditor.Compilers
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
-
-            // TODO: for now I replicate the flipping method of winroomedit
-            // dec_rooms = new Room[_level.Rooms.Length];
-            // dec_baseRooms = new Room[_level.Rooms.Length];
-            // dec_alternateRooms = new Room[_level.Rooms.Length];
-
-            /* for (int n = 0; n < _level.Rooms.Length; n++)
-             {
-                 dec_rooms[n] = null;
-                 dec_baseRooms[n] = null;
-                 dec_alternateRooms[n] = null;
-             }
-
-             for (int n = 0; n < _level.Rooms.Length; n++)
-             {
-                 Room room = _level.Rooms[n];
-                 if (room != null && room.BaseRoom==null)
-                 {
-                     dec_rooms[n] = room;
-                     dec_baseRooms[n] = room;
-                 }
-             }
-
-             for (int n=0;n<_level.Rooms.Length;n++)
-             {
-                 Room room = _level.Rooms[n];
-                 if (room != null && room.BaseRoom != null)
-                 {
-                     dec_alternateRooms[dec_rooms.ReferenceIndexOf(room.BaseRoom)] = room;
-                 } 
-             }
-             */
-
-            //dec_rooms = _level.Rooms;
-
+                       
             for (int flipped = 0; flipped < 2; flipped++)
             {
                 for (int i = 0; i < _level.Rooms.Length; i++)
@@ -164,14 +115,6 @@ namespace TombEditor.Compilers
 
             watch.Stop();
             Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build overlaps: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numOverlaps);
-
-           // watch.Restart();
-
-            // Build the overlaps
-            //Dec_BuildZones();
-
-           // watch.Stop();
-         //   Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build zones: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numBoxes);
         }
 
         private bool Dec_BuildOverlaps()
@@ -286,13 +229,7 @@ namespace TombEditor.Compilers
                     dec_boxes[i].Xmax == box.Xmax &&
                     dec_boxes[i].Zmin == box.Zmin &&
                     dec_boxes[i].Zmax == box.Zmax &&
-                    dec_boxes[i].TrueFloor == box.TrueFloor &&/*
-                    dec_boxes[i].IsBaseRoom == box.IsBaseRoom &&
-                    dec_boxes[i].IsAlternateRoom == box.IsAlternateRoom &&
-                    dec_boxes[i].IsolatedBox == box.IsolatedBox &&
-                    dec_boxes[i].Jump == box.Jump &&
-                    dec_boxes[i].Monkey == box.Monkey &&
-                    dec_boxes[i].NotWalkableBox == box.NotWalkableBox &&*/
+                    dec_boxes[i].TrueFloor == box.TrueFloor && 
                     dec_boxes[i].Water == box.Water)
                 {
                     boxIndex = i;
@@ -317,6 +254,9 @@ namespace TombEditor.Compilers
 
             Room room = theRoom;
             Block block = room.Blocks[x, z];
+
+            // Check if current block is a not walkable sector
+            if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return false;
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
@@ -770,7 +710,8 @@ namespace TombEditor.Compilers
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall) && block.WallPortal == -1) ||
-                block.WallOpacity == PortalOpacity.Opacity1)
+                block.WallOpacity == PortalOpacity.Opacity1 || 
+                (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = -1;
                 dec_q1 = -1;
@@ -833,6 +774,8 @@ namespace TombEditor.Compilers
 
                 block = room.Blocks[xInRoom, zInRoom];
             }
+
+            if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
             int sumHeights = block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3];
             int meanFloorCornerHeight = sumHeights >> 2;

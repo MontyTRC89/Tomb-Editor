@@ -1606,29 +1606,12 @@ namespace TombEditor
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Clone();
 
-                    /* for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
-                     {
-                         if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
-                         {
-                             _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
-                         }
-                     }*/
-
                     for (int k = 0; k < room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers.Count; k++)
                     {
                         int triggerId = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers[k];
                         if (!triggersToRemove.Contains(triggerId))
                             newRoom.Blocks[x, z].Triggers.Add(triggerId);
                     }
-
-                    // TODO: remove
-                    /*
-                    if (newRoom.Blocks[x, z].Type == BlockType.Portal ||
-                        newRoom.Blocks[x, z].Type == BlockType.FloorPortal ||
-                        newRoom.Blocks[x, z].Type == BlockType.CeilingPortal)
-                    {
-                        newRoom.Blocks[x, z].Type = BlockType.Floor;
-                    }*/
                 }
             }
 
