@@ -678,7 +678,16 @@ namespace TombEditor.Compilers
                     block = room.Blocks[xInRoom, zInRoom];
 
                     bool isWallPortal = block.WallPortal != -1;
-                    //if (startRoom == theRoom && !isWallPortal) return false;
+
+                    // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
+                    // This happen for example when there are 3 room connected together and the corner is inside the box. 
+                    // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
+                    // For now I assume that the dest X, Z can't be reached.
+                    if (xInRoom == 0 && zInRoom == 0 ||
+                        xInRoom == 0 && zInRoom == room.NumZSectors - 1 ||
+                        xInRoom == room.NumXSectors - 1 && zInRoom == 0 ||
+                        xInRoom == room.NumXSectors - 1 && zInRoom == room.NumZSectors - 1) return false;
+
                     if (!isWallPortal) break;
 
                     Portal portal = _level.Portals[block.WallPortal];
@@ -778,8 +787,6 @@ namespace TombEditor.Compilers
             }
             else
             {
-                if (block.WallPortal == -1) return 0x7fff;
-
                 Portal portal = _level.Portals[block.WallPortal];
                 adjoiningRoom = portal.AdjoiningRoom;
                 if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -852,8 +859,8 @@ namespace TombEditor.Compilers
                 {
                     if (block.QAFaces[0] < block.QAFaces[1] && block.QAFaces[0] < block.QAFaces[3] ||
                         block.QAFaces[2] < block.QAFaces[1] && block.QAFaces[2] < block.QAFaces[3] ||
-                        block.QAFaces[0] < block.QAFaces[1] && block.QAFaces[0] < block.QAFaces[3] ||
-                        block.QAFaces[2] < block.QAFaces[1] && block.QAFaces[2] < block.QAFaces[3])
+                        block.QAFaces[0] > block.QAFaces[1] && block.QAFaces[0] > block.QAFaces[3] ||
+                        block.QAFaces[2] > block.QAFaces[1] && block.QAFaces[2] > block.QAFaces[3])
                     {
                         someFlag = true;
                     }
