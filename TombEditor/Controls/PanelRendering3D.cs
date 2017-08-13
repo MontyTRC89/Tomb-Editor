@@ -839,7 +839,7 @@ namespace TombEditor.Controls
                     StaticMesh mesh = model.Meshes[0];
                     Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
                                    Matrix.Translation(modelInfo.Position);
-                    DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Moveable, room.Statics[i]), mesh, world);
+                    DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Static, room.Statics[i]), mesh, world);
                 }
                 else
                 {
