@@ -689,6 +689,9 @@ namespace TombLib.Wad
                 staticMesh.BoundingBox = new BoundingBox(new Vector3(oldStaticMesh.VisibilityX1, oldStaticMesh.VisibilityY1, oldStaticMesh.VisibilityZ1),
                                                          new Vector3(oldStaticMesh.VisibilityX2, oldStaticMesh.VisibilityY2, oldStaticMesh.VisibilityZ2));
 
+                // HACK: WTF the WAD sometimes has multiple static meshes with same Object ID? I think it's WadMerger issue.
+                if (wad.WadStatics.ContainsKey(oldStaticMesh.ObjectId)) continue;
+
                 wad.WadStatics.Add(oldStaticMesh.ObjectId, staticMesh);
             }
 
