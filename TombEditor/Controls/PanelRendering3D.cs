@@ -2009,7 +2009,7 @@ namespace TombEditor.Controls
                 return;
 
             // reset the backbuffer
-            bool IsFlipMap = _editor?.SelectedRoom?.Flipped ?? false;
+            bool IsFlipMap = (_editor?.SelectedRoom?.BaseRoom != null);
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,

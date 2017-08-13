@@ -1497,6 +1497,8 @@ namespace TombEditor
         
         private void butFlipMap_Click(object sender, EventArgs e)
         {
+            butFlipMap.Checked = !butFlipMap.Checked;
+
             if (butFlipMap.Checked)
             {
                 if (_editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom != null)
@@ -1823,7 +1825,7 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
-                "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
+                            "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
         }
 
         private void FormMain_Load(object sender, EventArgs e)
