@@ -174,30 +174,48 @@ namespace TombEditor
                 int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, zMax + 1);
 
                 // Build smooth edges
-                getFaces(xMinSpecial, zMaxSpecial)[2] += increment;
-                getFaces(xMaxSpecial, zMaxSpecial)[3] += increment;
-                getFaces(xMaxSpecial, zMinSpecial)[0] += increment;
-                getFaces(xMinSpecial, zMinSpecial)[1] += increment;
+                if (xMinSpecial > 0 && zMaxSpecial < room.NumZSectors - 1)
+                    getFaces(xMinSpecial, zMaxSpecial)[2] += increment;
+
+                if (xMaxSpecial < room.NumXSectors - 1 && zMaxSpecial < room.NumZSectors - 1)
+                    getFaces(xMaxSpecial, zMaxSpecial)[3] += increment;
+
+                if (xMaxSpecial < room.NumXSectors - 1 && zMinSpecial > 0)
+                    getFaces(xMaxSpecial, zMinSpecial)[0] += increment;
+
+                if (xMinSpecial > 0 && zMinSpecial > 0)
+                    getFaces(xMinSpecial, zMinSpecial)[1] += increment;
 
                 for (int x = xMin; x <= xMax; x++)
                 {
-                    getFaces(x, zMinSpecial)[0] += increment;
-                    getFaces(x, zMinSpecial)[1] += increment;
+                    if (x > 0 && x < room.NumXSectors - 1 && zMinSpecial > 0)
+                    {
+                        getFaces(x, zMinSpecial)[0] += increment;
+                        getFaces(x, zMinSpecial)[1] += increment;
+                    }
 
-                    getFaces(x, zMaxSpecial)[3] += increment;
-                    getFaces(x, zMaxSpecial)[2] += increment;
+                    if (x > 0 && x < room.NumXSectors - 1 &&  zMaxSpecial < room.NumZSectors - 1)
+                    {
+                        getFaces(x, zMaxSpecial)[3] += increment;
+                        getFaces(x, zMaxSpecial)[2] += increment;
+                    }
                 }
 
                 for (int z = zMin; z <= zMax; z++)
                 {
-                    getFaces(xMinSpecial, z)[1] += increment;
-                    getFaces(xMinSpecial, z)[2] += increment;
+                    if (xMinSpecial > 0 && z > 0 && z < room.NumZSectors - 1)
+                    {
+                        getFaces(xMinSpecial, z)[1] += increment;
+                        getFaces(xMinSpecial, z)[2] += increment;
+                    }
 
-                    getFaces(xMaxSpecial, z)[0] += increment;
-                    getFaces(xMaxSpecial, z)[3] += increment;
+                    if (xMaxSpecial < room.NumXSectors - 1 && z > 0 && z < room.NumZSectors - 1)
+                    {
+                        getFaces(xMaxSpecial, z)[0] += increment;
+                        getFaces(xMaxSpecial, z)[3] += increment;
+                    }
                 }
             }
-
 
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
