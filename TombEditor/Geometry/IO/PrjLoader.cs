@@ -520,6 +520,8 @@ namespace TombEditor.Geometry.IO
                                             break;
                                         case 0x4020:
                                             lightType = LightType.FogBulb;
+                                            lightIn /= 1024.0f;
+                                            lightOut /= 1024.0f;
                                             break;
                                         default:
                                             throw new NotSupportedException("Unknown light type found inside *.prj file.");
