@@ -223,7 +223,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            var objRoom = reader.ReadInt16(); // level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -262,7 +262,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                 {
-                                    var instance = new MoveableInstance(objectsThings[j], objRoom)
+                                    var instance = new MoveableInstance(objectsThings[j], room)
                                     {
                                         CodeBits = (byte)((objOcb >> 1) & 0x1f),
                                         Invisible = (objOcb & 0x0001) != 0,
@@ -297,7 +297,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    var instance = new StaticInstance(objectsThings[j], objRoom)
+                                    var instance = new StaticInstance(objectsThings[j], room)
                                     {
                                         WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                         Position = new Vector3(objPosX, objLongY, objPosZ)
@@ -458,7 +458,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            var objRoom = reader.ReadInt16(); // level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -544,7 +544,7 @@ namespace TombEditor.Geometry.IO
                                     room.Lights.Add(light);
                                     break;
                                 case 0x4c00:
-                                    var sound = new SoundSourceInstance(objectsThings2[j], objRoom)
+                                    var sound = new SoundSourceInstance(objectsThings2[j], room)
                                     {
                                         SoundId = objSlot,
                                         Position = new Vector3(objPosX, objLongY, objPosZ)
@@ -554,7 +554,7 @@ namespace TombEditor.Geometry.IO
                                     level.Objects.Add(sound.Id, sound);
                                     break;
                                 case 0x4400:
-                                    var sink = new SinkInstance(objectsThings2[j], objRoom)
+                                    var sink = new SinkInstance(objectsThings2[j], room)
                                     {
                                         Strength = (short)(objTimer / 2),
                                         Position = new Vector3(objPosX, objLongY, objPosZ)
@@ -565,7 +565,7 @@ namespace TombEditor.Geometry.IO
                                     break;
                                 case 0x4800:
                                 case 0x4080:
-                                    var camera = new CameraInstance(objectsThings2[j], objRoom)
+                                    var camera = new CameraInstance(objectsThings2[j], room)
                                     {
                                         Timer = objTimer,
                                         Fixed = (objectType == 0x4080),
@@ -576,7 +576,7 @@ namespace TombEditor.Geometry.IO
                                     room.Cameras.Add(camera.Id);
                                     break;
                                 case 0x4040:
-                                    var flybyCamera = new FlybyCameraInstance(objectsThings2[j], objRoom)
+                                    var flybyCamera = new FlybyCameraInstance(objectsThings2[j], room)
                                     {
                                         Timer = unchecked((ushort)objTimer),
                                         Sequence = (byte)((objSlot & 0xe000) >> 13),
