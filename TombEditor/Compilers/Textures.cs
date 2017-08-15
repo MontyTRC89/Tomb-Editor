@@ -88,8 +88,8 @@ namespace TombEditor.Compilers
 
             foreach (var txtSound in _level.TextureSounds)
             {
-                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X <= txtSound.X + 64 &&
-                    txt.Y <= txtSound.Y + 64 &&
+                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X < txtSound.X + 64 &&
+                    txt.Y < txtSound.Y + 64 &&
                     txt.Page == txtSound.Page)
                 {
                     return txtSound.Sound;

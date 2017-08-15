@@ -1048,6 +1048,7 @@ namespace TombEditor
             face.Flipped = false;
 
             room.BuildGeometry(pos.X, pos.X, pos.Y, pos.Y);
+            room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
             _editor.RoomTextureChange(room);
         }
