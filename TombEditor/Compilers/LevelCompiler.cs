@@ -1,4 +1,5 @@
-﻿using TombEditor.Geometry;
+﻿using System.IO;
+using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
@@ -12,7 +13,7 @@ namespace TombEditor.Compilers
         protected LevelCompiler(Level level, string dest, IProgressReporter progressReporter)
         {
             _level = level;
-            _dest = dest;
+            _dest = "Game\\Data\\" + Path.GetFileName(dest); // dest;
             _editor = Editor.Instance;
             _progressReporter = progressReporter;
         }

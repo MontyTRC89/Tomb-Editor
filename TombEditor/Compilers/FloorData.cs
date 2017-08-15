@@ -1033,9 +1033,10 @@ namespace TombEditor.Compilers
                         {
                             ushort climb = 0x06;
 
-                            for (int j = 0; j < 4; ++j)
-                                if (block.Climb[j])
-                                    climb |= (ushort)(j << 8);
+                            if (block.Climb[0]) climb |= (ushort)(0x01 << 8);
+                            if (block.Climb[1]) climb |= (ushort)(0x02 << 8);
+                            if (block.Climb[2]) climb |= (ushort)(0x04 << 8);
+                            if (block.Climb[3]) climb |= (ushort)(0x08 << 8);
 
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(climb);
