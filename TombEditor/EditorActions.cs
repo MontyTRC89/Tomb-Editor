@@ -1706,14 +1706,45 @@ namespace TombEditor
                 }
             }
 
-            newRoom.UpdateCompletely();
-            
-            // Fix selection if necessary
-            if (_editor.SelectedRoom == room)
+            // Now copy back everything into the original room
+            room.Resize(newRoom.NumXSectors, newRoom.NumZSectors);
+
+            room.Moveables.Clear();
+            room.Moveables.AddRange(newRoom.Moveables);
+
+            room.Statics.Clear();
+            room.Statics.AddRange(newRoom.Statics);
+
+            room.Portals.Clear();
+            room.Portals.AddRange(newRoom.Portals);
+
+            room.Cameras.Clear();
+            room.Cameras.AddRange(newRoom.Cameras);
+
+            room.Sinks.Clear();
+            room.Sinks.AddRange(newRoom.Sinks);
+
+            room.FlyByCameras.Clear();
+            room.FlyByCameras.AddRange(newRoom.FlyByCameras);
+
+            room.SoundSources.Clear();
+            room.SoundSources.AddRange(newRoom.SoundSources);
+
+            room.Lights.Clear();
+            room.Lights.AddRange(newRoom.Lights);
+
+            for (int x = 0; x < room.NumXSectors; x++)
             {
-                _editor.SelectRoomAndCenterCamera(newRoom);
-                _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
+                for (int z = 0; z < room.NumZSectors; z++)
+                {
+                    room.Blocks[x, z] = newRoom.Blocks[x, z];
+                }
             }
+
+            room.UpdateCompletely();
+
+            _editor.SelectRoomAndCenterCamera(room);
+            _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
         }
 
         public static void SetDiagonalFloorSplit(Room room, Rectangle area)
