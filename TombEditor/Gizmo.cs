@@ -18,8 +18,10 @@ namespace TombEditor
     {
         public GizmoAxis Axis { get; set; }
         public PickingResultGizmo(float Distance, GizmoAxis axis)
+            : base()
         {
-            Axis = axis;
+            this.Distance = Distance;
+            this.Axis = axis;
         }
     }
 
