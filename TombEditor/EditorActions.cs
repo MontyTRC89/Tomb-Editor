@@ -171,7 +171,7 @@ namespace TombEditor
                 int xMinSpecial = Math.Max(0, xMin - 1);
                 int zMinSpecial = Math.Max(0, zMin - 1);
                 int xMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, xMax + 1);
-                int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, zMax + 1);
+                int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumZSectors - 1, zMax + 1);
 
                 // Build smooth edges
                 if (xMinSpecial > 0 && zMaxSpecial < room.NumZSectors - 1)
