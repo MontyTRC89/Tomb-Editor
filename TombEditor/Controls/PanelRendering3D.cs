@@ -17,6 +17,11 @@ namespace TombEditor.Controls
     public abstract class PickingResult
     {
         public float Distance { get; set; }
+
+        public PickingResult()
+        {
+            
+        }
     };
 
     public partial class PanelRendering3D : Panel
@@ -167,9 +172,11 @@ namespace TombEditor.Controls
             public DrawingPoint Pos { get; set; }
             public BlockFaces Face { get; set; }
             public PickingResultBlock(float Distance, DrawingPoint pos, BlockFaces face)
+            : base()
             {
-                Pos = pos;
-                Face = face;
+                this.Distance = Distance;
+                this.Pos = pos;
+                this.Face = face;
             }
         }
 
@@ -177,8 +184,10 @@ namespace TombEditor.Controls
         {
             public ObjectPtr ObjectPtr { get; set; }
             public PickingResultObject(float Distance,  ObjectPtr objectPtr)
+            : base()
             {
-                ObjectPtr = objectPtr;
+                this.Distance = Distance;
+                this.ObjectPtr = objectPtr;
             }
         }
 
@@ -858,8 +867,11 @@ namespace TombEditor.Controls
                         BlockFace face = room.Blocks[sx, sz].Faces[f];
                         if (!face.Defined)
                             continue;
-                        if (room.RayIntersectsFace(ref ray, ref face, out distance) && ((result == null) || (distance < result.Distance)))
-                            result = new PickingResultBlock(distance, new DrawingPoint(sx, sz), (BlockFaces)f);
+                        if (room.RayIntersectsFace(ref ray, ref face, out distance))
+                        {
+                            if ((result == null) || (distance < result.Distance))
+                                result = new PickingResultBlock(distance, new DrawingPoint(sx, sz), (BlockFaces)f);
+                        }
                     }
 
             return result;
