@@ -2083,6 +2083,9 @@ namespace TombEditor.Controls
 
             // Draw buckets
             DrawSolidBuckets(viewProjection);
+
+            DrawSelectedFogBulb();
+
             DrawOpaqueBuckets(viewProjection);
             DrawTransparentBuckets(viewProjection);
             DrawInvisibleBuckets(viewProjection);
@@ -2111,6 +2114,28 @@ namespace TombEditor.Controls
             _device.Present();
 
             logger.Debug($"Draw Call! {mils}ms");
+        }
+
+        private void DrawSelectedFogBulb()
+        {
+            if (_editor.SelectedObject != null && _editor.SelectedObject.HasValue && (_editor.SelectedObject.Value.Type == ObjectInstanceType.Light))
+            {
+                Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
+                if (light.Type == LightType.FogBulb)
+                {
+                    _roomEffect.Parameters["FogBulbEnabled"].SetValue(true);
+                    _roomEffect.Parameters["FogBulbPosition"].SetValue(Vector3.Transform(light.Position, _editor.SelectedRoom.Transform));
+                    _roomEffect.Parameters["FogBulbRadius"].SetValue(light.Out * 1024.0f);
+                }
+                else
+                {
+                    _roomEffect.Parameters["FogBulbEnabled"].SetValue(false);
+                }
+            }
+            else
+            {
+                _roomEffect.Parameters["FogBulbEnabled"].SetValue(false);
+            }
         }
 
         private void RenderTask1(object viewProjection_)
@@ -2209,6 +2234,8 @@ namespace TombEditor.Controls
                     bool lights = (room != _editor.SelectedRoom ||
                                    (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+
+                    _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }
 
                 _device.SetIndexBuffer(bucket.IndexBuffer, false);
@@ -2334,6 +2361,8 @@ namespace TombEditor.Controls
                     bool lights = (room != _editor.SelectedRoom ||
                                    (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+
+                    _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }
 
                 // Enable or disable double sided textures
