@@ -72,27 +72,33 @@ namespace TombEditor.Compilers
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                                //   Console.WriteLine("Room: " + i + ", X: " + x + ", Z: " + z);
-                                dec_tr_box_aux box = new dec_tr_box_aux();
-
-                                // First create the box...
-                                if (x != 0 &&
-                                    z != 0 &&
-                                    x != room.NumXSectors - 1 &&
-                                    z != room.NumZSectors - 1 &&
-                                    Dec_CreateNewBox(ref box, x, z, ref room))
+                                if (!room.ExcludeFromPathFinding)
                                 {
-                                    // ...then try to add it to the box array
-                                    boxIndex = Dec_AddBox(ref box);
-                                    if (boxIndex < 0) return;
+                                    dec_tr_box_aux box = new dec_tr_box_aux();
+
+                                    // First create the box...
+                                    if (x != 0 &&
+                                        z != 0 &&
+                                        x != room.NumXSectors - 1 &&
+                                        z != room.NumZSectors - 1 &&
+                                        Dec_CreateNewBox(ref box, x, z, ref room))
+                                    {
+                                        // ...then try to add it to the box array
+                                        boxIndex = Dec_AddBox(ref box);
+                                        if (boxIndex < 0) return;
+                                    }
+                                    else
+                                    {
+                                        boxIndex = 0x7ff;
+                                    }
+
+                                    // Assign the box index to the sector
+                                    room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)room._compiled.TextureSounds[x, z]);
                                 }
                                 else
                                 {
-                                    boxIndex = 0x7ff;
+                                    room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)room._compiled.TextureSounds[x, z]);
                                 }
-
-                                // Assign the box index to the sector
-                                room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)room._compiled.TextureSounds[x, z]);
                             }
                         }
                     }
@@ -689,6 +695,9 @@ namespace TombEditor.Compilers
         {
             Room adjoiningRoom = dec_currentRoom;
             Room room = dec_currentRoom;
+
+            // Ignore pathfinding for current room?
+            if (dec_currentRoom.ExcludeFromPathFinding) return 0x7fff;
 
             int posXblocks = (int)room.Position.X;
             int posZblocks = (int)room.Position.Z;
