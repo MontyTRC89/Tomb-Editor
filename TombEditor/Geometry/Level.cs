@@ -6,6 +6,7 @@ using SharpDX.Toolkit.Graphics;
 using TombLib.Wad;
 using System.Diagnostics;
 using NLog;
+using System.Drawing.Imaging;
 
 namespace TombEditor.Geometry
 {
@@ -182,17 +183,25 @@ namespace TombEditor.Geometry
                         // textures.
                         using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
                         {
+                            tempBitmap.MakeTransparent(System.Drawing.Color.FromArgb(255, 255, 0, 255));
+                            ColorMap[] colorMap = new ColorMap[1];
+                            colorMap[0] = new ColorMap();
+                            colorMap[0].OldColor = Color.FromArgb(255, 255, 0, 255);
+                            colorMap[0].NewColor = Color.Transparent;
+                            ImageAttributes attr = new ImageAttributes();
+                            attr.SetRemapTable(colorMap);
+
                             using (var g = Graphics.FromImage(tempBitmap))
                             {
                                 int currentXblock = 0;
                                 int currentYblock = 0;
                                 for (int i = 0; i < numPages; i++)
                                 {
-                                    var src = new System.Drawing.RectangleF(0, 256 * i, 256, 256);
-                                    var dest = new System.Drawing.RectangleF(currentXblock * 256, currentYblock * 256, 256,
+                                    var src = new System.Drawing.Rectangle(0, 256 * i, 256, 256);
+                                    var dest = new System.Drawing.Rectangle(currentXblock * 256, currentYblock * 256, 256,
                                         256);
 
-                                    g.DrawImage(newTextureMap, dest, src, GraphicsUnit.Pixel);
+                                    g.DrawImage(newTextureMap, dest, src.X,src.Y,src.Width,src.Height, GraphicsUnit.Pixel, attr);
 
                                     currentXblock++;
                                     if (currentXblock != 8)

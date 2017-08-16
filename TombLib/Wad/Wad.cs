@@ -8,6 +8,7 @@ using SharpDX.Toolkit.Graphics;
 using SharpDX;
 using TombLib.Graphics;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace TombLib.Wad
 {
@@ -203,6 +204,14 @@ namespace TombLib.Wad
             // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
             using (Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
             {
+                tempBitmap.MakeTransparent(System.Drawing.Color.FromArgb(255, 255, 0, 255));
+                ColorMap[] colorMap = new ColorMap[1];
+                colorMap[0] = new ColorMap();
+                colorMap[0].OldColor = System.Drawing.Color.FromArgb(255, 255, 0, 255);
+                colorMap[0].NewColor = System.Drawing.Color.Transparent;
+                ImageAttributes attr = new ImageAttributes();
+                attr.SetRemapTable(colorMap);
+
                 int currentXblock = 0;
                 int currentYblock = 0;
                 for (uint i = 0; i < TexturePages.Count; i++)
@@ -215,12 +224,14 @@ namespace TombLib.Wad
                             int x1 = currentXblock * 256 + x;
                             int y1 = currentYblock * 256 + y;
 
-                            System.Drawing.Color c = System.Drawing.Color.FromArgb(page.TexturePage[y, x * 4 + 3],
+                            /*System.Drawing.Color c = System.Drawing.Color.FromArgb(page.TexturePage[y, x * 4 + 3],
                                                                                    page.TexturePage[y, x * 4],
                                                                                    page.TexturePage[y, x * 4 + 1],
-                                                                                   page.TexturePage[y, x * 4 + 2]);
+                                                                                   page.TexturePage[y, x * 4 + 2]);*/
 
-                            tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, c.R, c.G, c.B));
+                            tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, page.TexturePage[y, x * 4],
+                                                                                           page.TexturePage[y, x * 4 + 1],
+                                                                                           page.TexturePage[y, x * 4 + 2]));
                         }
 
                     currentXblock++;
