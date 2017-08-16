@@ -122,6 +122,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
 			}
 		}
+
 		return pixel;
 	}
 }
