@@ -83,7 +83,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 					{
 						pixel = lerp(pixel, float4(0.75f, 0.75f, 0.75f, 1.0f), sqrt(1.0f - distance / FogBulbRadius));
 					}
-				}
+				}   
 			}
 		}
 		else
