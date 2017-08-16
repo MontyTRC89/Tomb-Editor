@@ -3233,11 +3233,6 @@ namespace TombEditor.Geometry
         {
             return Name;
         }
-
-        public void ResizeRoom(int numXblocks, int numZblocks)
-        {
-            Blocks = new Block[numXblocks, numZblocks]; 
-        }
     }
 
     public struct VerticalArea
