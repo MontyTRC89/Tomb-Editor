@@ -153,7 +153,7 @@ namespace TombEditor.Controls
                 if ((selectedSectorObject is Portal) && selectedSectorObject.Area.Contains(sectorPos))
                 {
                     _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
-                    _editor.SelectedObject = selectedSectorObject.ObjectPtr;
+                    _editor.SelectedObject = _editor.Level.Portals[((Portal)selectedSectorObject).OtherId].ObjectPtr;
                 }
                 else if ((selectedSectorObject is TriggerInstance) && selectedSectorObject.Area.Contains(sectorPos))
                 { // Open trigger options
