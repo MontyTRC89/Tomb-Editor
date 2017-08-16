@@ -54,28 +54,28 @@ namespace TombEditor.Geometry
             set { Roll = value * (float)(180.0 / Math.PI); }
         }
 
-        /// <summary> Degrees in the range [0, 360) </summary>
+        /// <summary> Degrees in the range [-90, 90] </summary>
         public float RotationX
         {
             get { return _rotationX; }
             set { _rotationX = Math.Max(-90, Math.Min(90, value)); }
         }
 
-        /// <summary> Radians in the range [0, 2*Pi) </summary>
+        /// <summary> Radians in the range [-Pi/2, Pi/2] </summary>
         public float RotationXRadians
         {
             get { return RotationX * (float)(Math.PI / 180.0); }
             set { RotationX = value * (float)(180.0 / Math.PI); }
         }
 
-        /// <summary> Degrees in the range [-90, 90] </summary>
+        /// <summary> Degrees in the range [0, 360) </summary>
         public float RotationY
         {
             get { return _rotationY; }
             set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
 
-        /// <summary> Radians in the range [-Pi/2, Pi/2] </summary>
+        /// <summary> Radians in the range [0, 2*Pi) </summary>
         public float RotationYRadians
         {
             get { return RotationY * (float)(Math.PI / 180.0); }
