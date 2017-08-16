@@ -364,7 +364,7 @@ namespace TombEditor
         public void ShowObject(ObjectInstance objectInstance)
         {
             if (SelectedRoom != objectInstance.Room)
-                SelectRoomAndCenterCamera(SelectedRoom);
+                SelectRoomAndCenterCamera(objectInstance.Room);
             SelectedObject = objectInstance.ObjectPtr;
         }
 
