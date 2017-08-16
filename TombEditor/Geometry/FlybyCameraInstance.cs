@@ -107,7 +107,8 @@ namespace TombEditor.Geometry
         public override string ToString()
         {
             return "FlyBy " +
-                ", ID = " + Id +
+                ", Sequence = " + Sequence +
+                ", Number = " + Number +
                 ", Room = " + Room.ToString() +
                 ", X = " + Position.X +
                 ", Y = " + Position.Y +

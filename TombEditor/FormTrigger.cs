@@ -46,199 +46,102 @@ namespace TombEditor
                 case TriggerTargetType.Object:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-
-                    comboParameter.Items.Clear();
-                    _items = new List<int>();
-
-                    for (int i = 0; i < _level.Objects.Count; i++)
-                    {
-                        ObjectInstance instance = _level.Objects.ElementAt(i).Value;
-
-                        if (instance.Type == ObjectInstanceType.Moveable)
-                        {
-                            MoveableInstance mov = (MoveableInstance)instance;
-
-                            _items.Add(instance.Id);
-                            comboParameter.Items.Add(mov.ToString());
-                            if (_trigger.Target == instance.Id)
-                                comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
-                        }
-                    }
-
-                    if (comboParameter.Items.Count != 0 && comboParameter.SelectedIndex == -1)
-                        comboParameter.SelectedIndex = 0;
-
+                    FindAndAddObjects(ObjectInstanceType.Moveable);
                     break;
 
                 case TriggerTargetType.Camera:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-
-                    comboParameter.Items.Clear();
-                    _items = new List<int>();
-
-                    for (int i = 0; i < _level.Objects.Count; i++)
-                    {
-                        ObjectInstance instance = _level.Objects[i];
-
-                        if (instance.Type == ObjectInstanceType.Camera)
-                        {
-                            CameraInstance mov = (CameraInstance)instance;
-
-                            _items.Add(instance.Id);
-                            comboParameter.Items.Add("Camera ID = " + instance.Id + ", Room = " + instance.Room +
-                                                     ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (_trigger.Target == instance.Id)
-                                comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
-                        }
-                    }
-
-                    if (comboParameter.Items.Count != 0 && comboParameter.SelectedIndex == -1)
-                        comboParameter.SelectedIndex = 0;
-
+                    FindAndAddObjects(ObjectInstanceType.Camera);
                     break;
 
                 case TriggerTargetType.Sink:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-
-                    comboParameter.Items.Clear();
-                    _items = new List<int>();
-
-                    for (int i = 0; i < _level.Objects.Count; i++)
-                    {
-                        ObjectInstance instance = _level.Objects[i];
-
-                        if (instance.Type == ObjectInstanceType.Sink)
-                        {
-                            SinkInstance mov = (SinkInstance)instance;
-
-                            _items.Add(instance.Id);
-                            comboParameter.Items.Add("Sink ID = " + instance.Id + ", Room = " + instance.Room +
-                                                     ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (_trigger.Target == instance.Id)
-                                comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
-                        }
-                    }
-
-                    if (comboParameter.Items.Count != 0 && comboParameter.SelectedIndex == -1)
-                        comboParameter.SelectedIndex = 0;
-
+                    FindAndAddObjects(ObjectInstanceType.Sink);
                     break;
 
                 case TriggerTargetType.FlipEffect:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.FlipOn:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.FlipOff:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.Target:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
 
-                    comboParameter.Items.Clear();
-                    _items = new List<int>();
-
-                    for (int i = 0; i < _level.Objects.Count; i++)
-                    {
-                        ObjectInstance instance = _level.Objects[i];
-
-                        if (instance.Type == ObjectInstanceType.Moveable)
-                        {
-                            MoveableInstance mov = (MoveableInstance)instance;
-                            if (mov.WadObjectId == 422)
-                            {
-                                _items.Add(instance.Id);
-                                comboParameter.Items.Add("Target ID = " + instance.Id + ", Room = " + instance.Room +
-                                                         ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                                if (_trigger.Target == instance.Id)
-                                    comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
-                            }
-                        }
-                    }
-
-                    if (comboParameter.Items.Count != 0 && comboParameter.SelectedIndex == -1)
-                        comboParameter.SelectedIndex = 0;
-
+                    // Actually it is possible to not only target Target objects, but all movables.
+                    // This is also useful: It makes sense to target egg a trap or an enemy.
+                    FindAndAddObjects(ObjectInstanceType.Moveable);
                     break;
 
                 case TriggerTargetType.FlipMap:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.FinishLevel:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.Secret:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.PlayAudio:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
 
                 case TriggerTargetType.FlyByCamera:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-
-                    comboParameter.Items.Clear();
-                    _items = new List<int>();
-
-                    for (int i = 0; i < _level.Objects.Count; i++)
-                    {
-                        ObjectInstance instance = _level.Objects[i];
-
-                        if (instance.Type == ObjectInstanceType.FlyByCamera)
-                        {
-                            FlybyCameraInstance mov = (FlybyCameraInstance)instance;
-                            _items.Add(instance.Id);
-                            comboParameter.Items.Add("Flyby ID = " + instance.Id + ", Room = " + instance.Room +
-                                                         ", X = " + mov.Position.X + ", Z = " + mov.Position.Z);
-                            if (_trigger.Target == instance.Id)
-                                comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
-                        }
-                    }
-
-                    if (comboParameter.Items.Count != 0 && comboParameter.SelectedIndex == -1)
-                        comboParameter.SelectedIndex = 0;
-
+                    FindAndAddObjects(ObjectInstanceType.FlyByCamera);
                     break;
 
                 case TriggerTargetType.Fmv:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
                     tbParameter.Text = _trigger.Target.ToString();
-
                     break;
             }
+        }
+
+        private void FindAndAddObjects(ObjectInstanceType type)
+        {
+            comboParameter.Items.Clear();
+            _items = new List<int>();
+
+            foreach (ObjectInstance instance in _level.Objects.Values)
+                if (instance.Type == type)
+                {
+                    _items.Add(instance.Id);
+                    comboParameter.Items.Add(instance.ToString());
+                    if (_trigger.Target == instance.Id)
+                        comboParameter.SelectedIndex = comboParameter.Items.Count - 1;
+                }
+
+            if (comboParameter.Items.Count != 0 && comboParameter.SelectedIndex == -1)
+                comboParameter.SelectedIndex = 0;
         }
 
         private void butOK_Click(object sender, EventArgs e)
