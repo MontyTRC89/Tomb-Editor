@@ -57,7 +57,8 @@ namespace TombEditor.Compilers
             }
 
             _overlaps = new ushort[dec_numOverlaps];
-            Array.Copy(dec_overlaps, _overlaps, dec_numOverlaps);
+            if (dec_numOverlaps != 0)
+                Array.Copy(dec_overlaps, _overlaps, dec_numOverlaps);
 
             _boxes = new tr_box[_tempBoxes.Count];
             _zones = new tr_zone[_tempBoxes.Count];
