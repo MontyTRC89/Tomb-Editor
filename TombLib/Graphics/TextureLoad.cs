@@ -35,6 +35,7 @@ namespace TombLib.Graphics
         {
             var lockData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height),
                 System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
             try
             {
                 Texture2DDescription description;
@@ -48,6 +49,7 @@ namespace TombLib.Graphics
                 description.SampleDescription = new SharpDX.DXGI.SampleDescription(1, 0);
                 description.Usage = ResourceUsage.Immutable;
                 description.Width = bitmap.Width;
+
                 //return Texture2D.New(graphicsDevice, description, new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }); //Only for the none toolkit version which unfortunately we cannot use currently.
                 return Texture2D.New(graphicsDevice, description.Width, description.Height, description.MipLevels, description.Format,
                     new DataBox[] { new DataBox(lockData.Scan0, lockData.Stride, 0) }, TextureFlags.ShaderResource, 1, description.Usage);
