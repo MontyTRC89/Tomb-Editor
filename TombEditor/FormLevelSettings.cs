@@ -122,7 +122,9 @@ namespace TombEditor
             // Populate variable list
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
                 if (variableType != VariableType.None)
+                {
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
+                }
             
             // Initialize controls
             UpdateDialog();
@@ -226,7 +228,7 @@ namespace TombEditor
             // Update path variables
             foreach (DataGridViewRow row in pathVariablesDataGridView.Rows)
             {
-                string value = _levelSettings.MakeAbsolute(row.Cells[0].Value.ToString());
+                string value = _levelSettings.ParseVariables(row.Cells[0].Value.ToString());
                 if (row.Cells[1].Value.ToString() != value)
                     row.Cells[1].Value = value;
             }
