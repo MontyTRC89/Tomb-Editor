@@ -39,6 +39,7 @@ sampler TextureSampler;
 bool FogBulbEnabled;
 float4 FogBulbPosition;
 float FogBulbRadius;
+float FogBulbIntensity;
 
 PixelInputType VS(VertexInputType input)
 {
@@ -81,7 +82,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 
 					if (distance < FogBulbRadius)
 					{
-						pixel = lerp(pixel, float4(0.75f, 0.75f, 0.75f, 1.0f), sqrt(1.0f - distance / FogBulbRadius));
+						pixel = lerp(pixel, float4(float3(1.0f, 1.0f, 1.0f) * FogBulbIntensity, 1.0f), pow(1.0f - distance / FogBulbRadius, 2));
 					}
 				}   
 			}
