@@ -2124,6 +2124,7 @@ namespace TombEditor.Controls
                 if (light.Type == LightType.FogBulb)
                 {
                     _roomEffect.Parameters["FogBulbEnabled"].SetValue(true);
+                    _roomEffect.Parameters["FogBulbIntensity"].SetValue(light.Intensity);
                     _roomEffect.Parameters["FogBulbPosition"].SetValue(Vector3.Transform(light.Position, _editor.SelectedRoom.Transform));
                     _roomEffect.Parameters["FogBulbRadius"].SetValue(light.Out * 1024.0f);
                 }
