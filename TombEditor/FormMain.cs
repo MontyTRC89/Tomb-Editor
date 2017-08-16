@@ -1194,7 +1194,7 @@ namespace TombEditor
             }
         }
 
-        private void BuildLevel(bool autoCloseWhenDone)
+        private bool BuildLevel(bool autoCloseWhenDone)
         {
             Level level = _editor.Level;
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
@@ -1203,6 +1203,7 @@ namespace TombEditor
                 new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
             {
                 form.ShowDialog(this);
+                return form.DialogResult != DialogResult.Cancel;
             }
         }
 
@@ -1213,7 +1214,8 @@ namespace TombEditor
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
-            BuildLevel(true);
+            if (!BuildLevel(true))
+                return;
 
             string executablePath = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.GameExecutableFilePath);
             var info = new ProcessStartInfo
