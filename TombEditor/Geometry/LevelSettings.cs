@@ -101,12 +101,9 @@ namespace TombEditor.Geometry
                     throw new ArgumentException();
             }
         }
-        
-        public string MakeAbsolute(string path, params VariableType[] excluded)
-        {
-            if (string.IsNullOrEmpty(path))
-                return null;
 
+        public string ParseVariables(string path, params VariableType[] excluded)
+        {
             int startIndex = 0;
             do
             {
@@ -133,6 +130,16 @@ namespace TombEditor.Geometry
                 path = path.Insert(startIndex, variableContent);
                 startIndex += variableContent.Length;
             } while (true);
+
+            return path;
+        }
+
+        public string MakeAbsolute(string path, params VariableType[] excluded)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            path = ParseVariables(path, excluded);
 
             try
             {
