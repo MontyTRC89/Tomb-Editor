@@ -1823,7 +1823,7 @@ namespace TombEditor
                 }
             }
             File.Delete("Editor\\Palette.bin");
-            using (var writer = new BinaryWriter(File.OpenWrite("Editor\\Palette.bin")))
+            using (var writer = new BinaryWriter(new FileStream("Editor\\Palette.bin", FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 foreach (int c in tempColors)
                 {

@@ -76,7 +76,7 @@ namespace TombEditor.Geometry.IO
             try
             {
                 // Open file
-                using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
+                using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
                     logger.Debug("Opening Winroomedit PRJ file " + filename);

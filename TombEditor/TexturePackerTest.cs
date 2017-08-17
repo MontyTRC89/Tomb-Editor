@@ -39,7 +39,7 @@ namespace TombEditor
             for (int i = 0; i < Textures.Count; i++)
             {
                 PngInfo info = new PngInfo();
-                BinaryReader reader = new BinaryReader(File.OpenRead("Textures\\" + Textures[i]));
+                BinaryReader reader = new BinaryReader(new FileStream("Textures\\" + Textures[i], FileMode.Open, FileAccess.Read, FileShare.None));
                 reader.BaseStream.Seek(16, SeekOrigin.Begin);
                 info.Name = Textures[i];
                 info.Width = ReadInt32(reader);
