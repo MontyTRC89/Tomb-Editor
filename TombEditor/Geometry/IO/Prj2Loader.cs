@@ -541,10 +541,12 @@ namespace TombEditor.Geometry.IO
                     if (id == -1)
                         return null;
 
-                    if (!_portalList.ContainsKey(id))
-                        _portalList.Add(id, _createT());
+                    if (_portalList.ContainsKey(id))
+                        return _portalList[id];
 
-                    return _portalList[id];
+                    T newT = _createT();
+                    _portalList.Add(id, newT);
+                    return newT;
                 }
             }
         }
