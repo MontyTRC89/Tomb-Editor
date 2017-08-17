@@ -15,9 +15,9 @@ namespace TombEditor.Compilers
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
             var tempFloorData = new List<ushort> { 0 | 0x8000 };
 
-            for (var i = 0; i < _editor.Level.Rooms.Length; i++)
+            for (var i = 0; i < _level.Rooms.Length; i++)
             {
-                var room = _editor.Level.Rooms[i];
+                var room = _level.Rooms[i];
                 if (room == null)
                     continue;
 
@@ -117,7 +117,7 @@ namespace TombEditor.Compilers
                             if ((!block.IsFloorSolid && block.FloorOpacity != PortalOpacity.Opacity1) ||
                                 (block.IsFloorSolid && block.NoCollisionFloor))
                             {
-                                var portal = _editor.Level.Portals[block.FloorPortal];
+                                var portal = _level.Portals[block.FloorPortal];
                                 sector.RoomBelow = (byte)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
                             }
                             else
@@ -133,7 +133,7 @@ namespace TombEditor.Compilers
                             if ((!block.IsCeilingSolid && block.CeilingOpacity != PortalOpacity.Opacity1) ||
                                 (block.IsCeilingSolid && block.NoCollisionCeiling))
                             {
-                                var portal = _editor.Level.Portals[block.CeilingPortal];
+                                var portal = _level.Portals[block.CeilingPortal];
                                 sector.RoomAbove = (byte)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
                             }
                             else
@@ -145,7 +145,7 @@ namespace TombEditor.Compilers
                         // If sector is a wall portal
                         if (block.WallPortal >= 0)
                         {
-                            var portal = _editor.Level.Portals[block.WallPortal];
+                            var portal = _level.Portals[block.WallPortal];
 
                             // Only if the portal is not a Toggle Opacity 1
                             if (block.WallOpacity != PortalOpacity.Opacity1)
@@ -1071,7 +1071,7 @@ namespace TombEditor.Compilers
                             // First, I search a special trigger, if exists
                             for (var j = 0; j < room.Blocks[x, z].Triggers.Count; j++)
                             {
-                                var trigger = _editor.Level.Triggers[room.Blocks[x, z].Triggers[j]];
+                                var trigger = _level.Triggers[room.Blocks[x, z].Triggers[j]];
 
                                 if (trigger.TriggerType == TriggerType.Trigger && found == -1)
                                 {
@@ -1092,7 +1092,7 @@ namespace TombEditor.Compilers
                             tempTriggers.AddRange(room.Blocks[x, z].Triggers.Where((t, j) => j != found));
 
                             {
-                                var trigger = _editor.Level.Triggers[room.Blocks[x, z].Triggers[found]];
+                                var trigger = _level.Triggers[room.Blocks[x, z].Triggers[found]];
 
                                 lastFloorDataFunction = (ushort)tempCodes.Count;
 
@@ -1134,7 +1134,7 @@ namespace TombEditor.Compilers
                                 tempCodes.Add(triggerSetup);
                             }
 
-                            foreach (var trigger in tempTriggers.Select(triggerId => _editor.Level.Triggers[triggerId]))
+                            foreach (var trigger in tempTriggers.Select(triggerId => _level.Triggers[triggerId]))
                             {
                                 ushort trigger2;
 
@@ -1143,9 +1143,9 @@ namespace TombEditor.Compilers
                                     case TriggerTargetType.Object:
                                         // Trigger for object
                                         var item = trigger.Target;
-                                        if (_editor.Level.Objects[trigger.Target].Type == ObjectInstanceType.Moveable)
+                                        if (_level.Objects[trigger.Target].Type == ObjectInstanceType.Moveable)
                                         {
-                                            var instance = (MoveableInstance)_editor.Level.Objects[trigger.Target];
+                                            var instance = (MoveableInstance)_level.Objects[trigger.Target];
                                             if (instance.WadObjectId >= 398 && instance.WadObjectId <= 406)
                                             {
                                                 item = _aiObjectsTable[trigger.Target];

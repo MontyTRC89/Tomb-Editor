@@ -14,7 +14,7 @@ namespace TombEditor.Compilers
             ReportProgress(50, "Building pathfinding data");
 
             // Fix monkey on portals
-            foreach (var fixRoom in _editor.Level.Rooms)
+            foreach (var fixRoom in _level.Rooms)
             {
                 if (fixRoom == null) continue;
 
@@ -296,8 +296,8 @@ namespace TombEditor.Compilers
             {
                 for (var z = a.Zmin - 1; z <= a.Zmax - 1; z++)
                 {
-                    var r1 = _editor.Level.Rooms[a.Room];
-                    var r2 = _editor.Level.Rooms[b.Room];
+                    var r1 = _level.Rooms[a.Room];
+                    var r2 = _level.Rooms[b.Room];
 
                     if (a.Room != b.Room && (IsVerticallyReachable(_level.Rooms[a.Room], _level.Rooms[b.Room]) ||
                                              r1.BaseRoom == r2._compiled.FlippedRoom || r1._compiled.FlippedRoom == r2.BaseRoom))
@@ -593,7 +593,7 @@ namespace TombEditor.Compilers
                 if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == -1) return false;
 
                 // Get the wall portal
-                var portal = _editor.Level.Portals[editorRoom.Blocks[xInRoom, zInRoom].WallPortal];
+                var portal = _level.Portals[editorRoom.Blocks[xInRoom, zInRoom].WallPortal];
                 room = portal.AdjoiningRoom;
                 destRoom = room;
 
@@ -621,7 +621,7 @@ namespace TombEditor.Compilers
             while (isFloorPortal)
             {
                 // Get the floor portal
-                var portal = _editor.Level.Portals[editorRoom.Blocks[xInRoom, zInRoom].FloorPortal];
+                var portal = _level.Portals[editorRoom.Blocks[xInRoom, zInRoom].FloorPortal];
                 room = portal.AdjoiningRoom;
                 destRoom = room;
 
@@ -662,7 +662,7 @@ namespace TombEditor.Compilers
             stack.Push(box);
 
             // All reachable boxes must have the same water flag and same flipped flag
-            var isWater = (_editor.Level.Rooms[_tempBoxes[box].Room]._compiled.Flags & 0x01) != 0;
+            var isWater = (_level.Rooms[_tempBoxes[box].Room]._compiled.Flags & 0x01) != 0;
             
             while (stack.Count > 0)
             {
@@ -681,7 +681,7 @@ namespace TombEditor.Compilers
                     // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
                     if (zoneType == 1)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256 && flipped == _tempBoxes[boxIndex].FlipMap) add = true;
                     }
@@ -689,7 +689,7 @@ namespace TombEditor.Compilers
                     // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
                     if (zoneType == 2)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
 
                         // Check all possibilities
@@ -702,7 +702,7 @@ namespace TombEditor.Compilers
                     // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step. In water they act like flying enemies.
                     if (zoneType == 3)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (((water == isWater && step <= 256) || water)) add = true;
                     }
@@ -710,7 +710,7 @@ namespace TombEditor.Compilers
                     // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
                     if (zoneType == 4)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
                         var step = _boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor;
 
                         // Check all possibilities
@@ -724,7 +724,7 @@ namespace TombEditor.Compilers
                     // Flying enemies. Here we just check if the water flag is the same.
                     if (zoneType == 5)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
                         if (water == isWater) add = true;
                     }
 
