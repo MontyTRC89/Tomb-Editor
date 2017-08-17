@@ -107,6 +107,18 @@ namespace TombEditor.Geometry
             return Blocks[pos.X, pos.Y];
         }
 
+        public Block GetBlockTry(int x, int z)
+        {
+            if ((x >= 0) && (z >= 0) && (x < NumXSectors) && (z < NumZSectors))
+                return Blocks[x, z];
+            return null;
+        }
+
+        public Block GetBlockTry(DrawingPoint pos)
+        {
+            return GetBlockTry(pos.X, pos.Y);
+        }
+        
         public void CalculateLightingForThisRoom()
         {
             var watch = new System.Diagnostics.Stopwatch();
