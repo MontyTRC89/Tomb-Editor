@@ -346,8 +346,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Ankh Icon 03.ico" />
-    <Content Include="Ankh Icon 15.ico" />
     <None Include="Editor\arrow_down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
