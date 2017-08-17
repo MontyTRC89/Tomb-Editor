@@ -501,7 +501,7 @@ namespace TombEditor.Geometry.IO
         
         private static BinaryReaderEx CreatePrjReader(string filename)
         {
-            var reader = new BinaryReaderEx(File.OpenRead(filename));
+            var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None));
 
             // Check file version
             var buffer = reader.ReadBytes(4);
