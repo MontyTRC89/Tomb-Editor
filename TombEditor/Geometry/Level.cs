@@ -129,12 +129,29 @@ namespace TombEditor.Geometry
                 Page = page,
                 Id = id,
                 Transparent = isTransparent,
-                DoubleSided = isDoubleSided
+                DoubleSided = isDoubleSided,
+                AlphaTest = Utils.HasTrasparency(Editor.Instance.Level.TextureMap, newX, newY, w, h)
             };
 
             TextureSamples.Add(id, newTexture);
 
             return id;
+        }
+
+        public void RebuildAllAlphaTests()
+        {
+            for (int i = 0; i < TextureSamples.Count; i++)
+            {
+                LevelTexture texture = TextureSamples.ElementAt(i).Value;
+
+                texture.AlphaTest = Utils.HasTrasparency(TextureMap,
+                                                         texture.X,
+                                                         texture.Y + 256 * texture.Page,
+                                                         texture.Width,
+                                                         texture.Height);
+
+                TextureSamples[TextureSamples.ElementAt(i).Key] = texture;
+            }
         }
 
         public void Dispose()

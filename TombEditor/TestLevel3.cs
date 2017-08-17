@@ -145,14 +145,14 @@ namespace TombEngine
 
         public void Load(string ind)
         {
-            FileStream fileStream = File.OpenRead(fileName);
+            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.None);
             BinaryReaderEx reader = new BinaryReaderEx(fileStream);
             MemoryStream stream = new MemoryStream();
             Inflater inflater = new Inflater(false);
 
             reader.ReadBlock(out Version);
             byte[] palette = reader.ReadBytes(768);
-            BinaryWriterEx wrPalette = new BinaryWriterEx(File.OpenWrite("Palette.bin"));
+            BinaryWriterEx wrPalette = new BinaryWriterEx(new FileStream("Palette.bin", FileMode.Create, FileAccess.Write, FileShare.None));
             for (int jj = 0; jj < palette.Length; jj++)
             {
                 byte col = (byte)(palette[jj] * 4);
@@ -190,7 +190,7 @@ namespace TombEngine
 
             int max = 0;
 
-            StreamWriter wp = new StreamWriter(File.OpenWrite("portals" + ind + ".txt"));
+            StreamWriter wp = new StreamWriter(new FileStream("portals" + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
 
             Rooms = new tr_room[NumRooms];
             for (int i = 0; i < NumRooms; i++)
@@ -404,7 +404,7 @@ namespace TombEngine
             string fn = Path.GetFileNameWithoutExtension(fileName);
             if (File.Exists("pathfinding." + fn + "." + ind + ".txt"))
                 File.Delete("pathfinding." + fn + "." + ind + ".txt");
-            StreamWriter writer = new StreamWriter(File.OpenWrite("pathfinding." + fn + "." + ind + ".txt"));
+            StreamWriter writer = new StreamWriter(new FileStream("pathfinding." + fn + "." + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
 
             writer.WriteLine("BOXES");
 
@@ -455,7 +455,7 @@ namespace TombEngine
 
             for (int ii = 0; ii < NumObjectTextures; ii++)
             {
-                /* BinaryWriterEx tmpwriter2 = new BinaryWriterEx(File.OpenWrite("test\\cleopal_" + ii + ".text"));
+                /* BinaryWriterEx tmpwriter2 = new BinaryWriterEx(new FileStream("test\\cleopal_" + ii + ".text", FileMode.Create, FileAccess.Write, FileShare.None));
                  tmpwriter2.WriteBlock(ObjectTextures[ii]);
                  tmpwriter2.Flush();
                  tmpwriter2.Close();*/
@@ -469,7 +469,7 @@ namespace TombEngine
             reader.ReadBlock(out NumAiItems);
             reader.ReadBlockArray(out AiItems, NumItems);
 
-            StreamWriter aiw = new StreamWriter(File.OpenWrite("AI" + ind + ".txt"));
+            StreamWriter aiw = new StreamWriter(new FileStream("AI" + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
 
             for (int n = 0; n < NumAiItems; n++)
             {
@@ -597,7 +597,7 @@ namespace TombEngine
                 currX += tex.width;
             }
 
-            BinaryWriterEx writer = new BinaryWriterEx(File.OpenWrite("sprites3.raw"));
+            BinaryWriterEx writer = new BinaryWriterEx(new FileStream("sprites3.raw", FileMode.Create, FileAccess.Write, FileShare.None));
 
             for (int z2 = 0; z2 < 256; z2++)
             {
@@ -610,7 +610,7 @@ namespace TombEngine
             writer.Flush();
             writer.Close();
 
-            writer = new BinaryWriterEx(File.OpenWrite("sprites3.bin"));
+            writer = new BinaryWriterEx(new FileStream("sprites3.bin", FileMode.Create, FileAccess.Write, FileShare.None));
 
             writer.WriteBlock(NumSpriteTextures);
 
@@ -638,7 +638,7 @@ namespace TombEngine
                     }
                 }
             }
-
+            
             writer.WriteBlock(NumSpriteSequences);
             writer.WriteBlockArray(SpriteSequences);
 

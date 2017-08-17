@@ -387,17 +387,12 @@ namespace TombEditor.Geometry.IO
                     writer.Write(filler32);
                     writer.Write(filler32);
                     writer.Write(filler32);
-
-                    writer.Flush();
-
+                    
                     projectData = ms.ToArray();
                 }
 
-                using (var writer = new BinaryWriterEx(File.OpenWrite(filename)))
-                {
-                    writer.Write(projectData);
-                    writer.Flush();
-                }
+                using (var writer = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
+                    writer.Write(projectData, 0, projectData.Length);
             }
             catch (Exception ex)
             {

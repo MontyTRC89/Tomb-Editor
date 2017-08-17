@@ -11,7 +11,7 @@ namespace TombEditor.Compilers
             var wad = _editor.Level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
-            using (var writer = new BinaryWriterEx(File.OpenWrite("temp.bin")))
+            using (var writer = new BinaryWriterEx(new FileStream("temp.bin", FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
@@ -181,8 +181,8 @@ namespace TombEditor.Compilers
                 byte[] soundDetails;
                 byte[] soundMap;
                 uint numSampleIndices;
-                using (var readerSounds = new BinaryReaderEx(File.OpenRead(
-                    _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx")))
+                using (var readerSounds = new BinaryReaderEx(new FileStream(
+                    _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     soundMap = readerSounds.ReadBytes(370 * 2);
                     _numSoundDetails = (uint) readerSounds.ReadInt32();
@@ -206,9 +206,9 @@ namespace TombEditor.Compilers
                 writer.Flush();
             }
 
-            using (var writer = new BinaryWriterEx(File.OpenWrite(_dest)))
+            using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
-                using (var reader = new BinaryReaderEx(File.OpenRead("temp.bin")))
+                using (var reader = new BinaryReaderEx(new FileStream("temp.bin", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     ReportProgress(90, "Writing final level");
 
@@ -267,7 +267,7 @@ namespace TombEditor.Compilers
             var wad = _editor.Level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
-            using (var writer = new BinaryWriterEx(File.OpenWrite(_dest)))
+            using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
@@ -275,7 +275,7 @@ namespace TombEditor.Compilers
                 var version = new byte[] {0x38, 0x00, 0x18, 0xFF};
                 writer.WriteBlockArray(version);
 
-                using (var readerPalette = new BinaryReader(File.OpenRead("Editor\\palette.bin")))
+                using (var readerPalette = new BinaryReader(new FileStream("Editor\\palette.bin", FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     var palette = readerPalette.ReadBytes(1792);
                     // Write palette
@@ -294,7 +294,7 @@ namespace TombEditor.Compilers
                 // 16 bit textures
                 writer.Write(_textures16);
 
-                using (var readerRaw = new BinaryReader(File.OpenRead("sprites3.raw")))
+                using (var readerRaw = new BinaryReader(new FileStream("sprites3.raw", FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     var raw = readerRaw.ReadBytes(131072);
                     writer.Write(raw);
@@ -474,7 +474,7 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                using (var readerSprites = new BinaryReader(File.OpenRead("sprites3.bin")))
+                using (var readerSprites = new BinaryReader(new FileStream("sprites3.bin", FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     var bufferSprites = readerSprites.ReadBytes((int) readerSprites.BaseStream.Length);
                     writer.Write(bufferSprites);
@@ -563,9 +563,8 @@ namespace TombEditor.Compilers
 
                 // Write sound data
                 byte[] sfxBuffer;
-                using (var readerSounds =
-                    new BinaryReaderEx(
-                        File.OpenRead(@"Graphics\Wads\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx")))
+                using (var readerSounds = new BinaryReaderEx(new FileStream(
+                        @"Graphics\Wads\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     sfxBuffer = readerSounds.ReadBytes((int) readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);

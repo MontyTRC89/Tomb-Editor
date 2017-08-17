@@ -40,6 +40,7 @@ namespace TombEditor.Controls
             public BlockFace Face { get; set; }
             public Buffer<short> IndexBuffer { get; set; }
             public List<short> Indices { get; set; }
+            public byte AlphaTest { get; set; }
 
             public RenderBucket()
             {
@@ -90,6 +91,9 @@ namespace TombEditor.Controls
                 if (result != 0)
                     return result;
                 result = _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                if (result != 0)
+                    return result;
+                result = x.AlphaTest.CompareTo(y.AlphaTest);
                 if (result != 0)
                     return result;
                 return x.Texture.CompareTo(y.Texture);
@@ -273,7 +277,23 @@ namespace TombEditor.Controls
             if (obj is Editor.ActionChangedEvent)
             {
                 EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
-                Cursor = currentAction.RelocateCameraActive ? Cursors.Cross : Cursors.Arrow;
+
+                bool hasCrossCurser = currentAction.RelocateCameraActive;
+                switch (currentAction.Action)
+                {
+                    case EditorActionType.Paste:
+                    case EditorActionType.PlaceCamera:
+                    case EditorActionType.PlaceFlyByCamera:
+                    case EditorActionType.PlaceItem:
+                    case EditorActionType.PlaceLight:
+                    case EditorActionType.PlaceNoCollision:
+                    case EditorActionType.PlaceSink:
+                    case EditorActionType.PlaceSoundSource:
+                    case EditorActionType.Stamp:
+                        hasCrossCurser = true;
+                        break;
+                }
+                Cursor = hasCrossCurser ? Cursors.Cross : Cursors.Arrow;
             }
 
             // Center camera
@@ -526,13 +546,13 @@ namespace TombEditor.Controls
                     case EditorActionType.Paste:
                         if (newPicking is PickingResultBlock)
                         {
-                            Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
+                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
                             _editor.Action = EditorAction.None;
                         }
                         break;
                     case EditorActionType.Stamp:
                         if (newPicking is PickingResultBlock)
-                            Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
+                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
                         break;
                     case EditorActionType.None:
                         switch (_editor.Mode)
@@ -1762,6 +1782,8 @@ namespace TombEditor.Controls
             stackRooms.Push(room);
             stackLimits.Push(0);
 
+            bool isFlipped = (room.Flipped && room.BaseRoom != null);
+
             while (stackRooms.Count > 0)
             {
                 var theRoom = stackRooms.Pop();
@@ -1772,10 +1794,21 @@ namespace TombEditor.Controls
 
                 visitedRooms.Add(theRoom);
 
-                if (theRoom.Flipped && theRoom.AlternateRoom != null)
-                    _roomsToDraw.Add(theRoom.AlternateRoom);
-                else
+                if (theRoom == room)
+                {
                     _roomsToDraw.Add(theRoom);
+                }
+                else
+                {
+                    if (isFlipped && theRoom.Flipped && theRoom.AlternateRoom != null)
+                    {
+                        _roomsToDraw.Add(theRoom.AlternateRoom);
+                    }
+                    else
+                    {
+                        _roomsToDraw.Add(theRoom);
+                    }
+                }
 
                 foreach (var portal in theRoom.Portals)
                 {
@@ -1892,7 +1925,9 @@ namespace TombEditor.Controls
                                     }
                                     else
                                     {
-                                        if (!face.Transparent && !face.Invisible)
+                                        LevelTexture texture = _editor.Level.TextureSamples[face.Texture];
+
+                                        if (!face.Transparent && !face.Invisible && !texture.AlphaTest)
                                         {
                                             int found = -1;
                                             for (int b = 0; b < _opaqueBuckets.Count; b++)
@@ -1937,18 +1972,19 @@ namespace TombEditor.Controls
 
                                             _invisibleBuckets.Add(bucket);
                                         }
-                                        else if (face.Transparent)
+                                        else if (face.Transparent || texture.AlphaTest)
                                         {
                                             RenderBucket bucket = new RenderBucket
                                             {
-                                                FaceType = (BlockFaces) f,
+                                                FaceType = (BlockFaces)f,
                                                 Face = face,
                                                 X = x,
                                                 Z = z,
-                                                DoubleSided = (byte) (face.DoubleSided ? 1 : 0),
+                                                DoubleSided = (byte)(face.DoubleSided ? 1 : 0),
                                                 Texture = face.Texture,
                                                 Room = room,
-                                                Plane = face.Plane
+                                                Plane = face.Plane,
+                                                AlphaTest = (byte)(face.Transparent ? 0 : 1)
                                             };
 
                                             // calcolo il piano passante per la faccia
@@ -2320,8 +2356,6 @@ namespace TombEditor.Controls
 
         private void DrawTransparentBuckets(Matrix viewProjection)
         {
-            _device.SetBlendState(_device.BlendStates.Additive);
-
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
             _roomEffect.Parameters["EditorTextureEnabled"].SetValue(false);
@@ -2364,6 +2398,15 @@ namespace TombEditor.Controls
                         _device.SetRasterizerState(_device.RasterizerStates.CullNone);
                     else
                         _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                }
+
+                // Check if is alpha trasparency or magenta trasparency
+                if (_lastBucket == null || _lastBucket.AlphaTest != bucket.AlphaTest)
+                {
+                    if (bucket.AlphaTest == 1)
+                        _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                    else
+                        _device.SetBlendState(_device.BlendStates.Additive);
                 }
 
                 // Change texture if needed
@@ -2504,43 +2547,44 @@ namespace TombEditor.Controls
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(false);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
                                 break;
+
                             case EditorArrowType.EdgeN:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
-                                break;
-                            case EditorArrowType.EdgeE:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_left"]);
-                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
-                                break;
-                            case EditorArrowType.EdgeS:
                                 _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
-                            case EditorArrowType.EdgeW:
+                            case EditorArrowType.EdgeE:
                                 _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_right"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
+                            case EditorArrowType.EdgeS:
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case EditorArrowType.EdgeW:
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_left"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
                             case EditorArrowType.CornerNW:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
                             case EditorArrowType.CornerNE:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
-                                break;
-                            case EditorArrowType.CornerSE:
                                 _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
+                            case EditorArrowType.CornerSE:
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
                             case EditorArrowType.CornerSW:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
@@ -2942,6 +2986,8 @@ namespace TombEditor.Controls
                                     break;
                                 case EditorArrowType.CornerSW:
                                     _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                             }
 

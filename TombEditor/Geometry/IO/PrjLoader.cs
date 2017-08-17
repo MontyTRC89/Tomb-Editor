@@ -78,7 +78,7 @@ namespace TombEditor.Geometry.IO
                 var portals = new List<Portal>();
                 
                 // Open file
-                using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
+                using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
                     logger.Debug("Opening Winroomedit PRJ file " + filename);
@@ -2512,6 +2512,8 @@ namespace TombEditor.Geometry.IO
                     room.CalculateLightingForThisRoom();
                     room.UpdateBuffers();
                 }
+
+                level.RebuildAllAlphaTests();
 
                 progressReporter.ReportProgress(100, "Level loaded correctly!");
 

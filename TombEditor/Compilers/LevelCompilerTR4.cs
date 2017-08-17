@@ -328,8 +328,8 @@ namespace TombEditor.Compilers
             ReportProgress(9, "Building sprites");
             ReportProgress(9, "Reading " + _editor.Level.Wad.OriginalWad.BaseName + ".swd");
 
-            using (var reader = new BinaryReaderEx(File.OpenRead(
-                _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".swd")))
+            using (var reader = new BinaryReaderEx(new FileStream(
+                _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".swd", FileMode.Open, FileAccess.Read, FileShare.None)))
             {
                 // Version
                 reader.ReadUInt32();
