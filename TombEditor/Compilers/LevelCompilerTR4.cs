@@ -126,9 +126,9 @@ namespace TombEditor.Compilers
         {
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
-                foreach (var sound in _editor.Level.Wad.OriginalWad.Sounds)
+                foreach (var sound in _level.Wad.OriginalWad.Sounds)
                 {
-                    byte[] soundData = _editor.Level.Settings.ReadSound(sound, _editor.Level.Settings.IgnoreMissingSounds);
+                    byte[] soundData = _level.Settings.ReadSound(sound, _level.Settings.IgnoreMissingSounds);
                     writer.Write(soundData.GetLength(0));
                     writer.Write(soundData.GetLength(0));
                     writer.Write(soundData);
@@ -195,7 +195,7 @@ namespace TombEditor.Compilers
 
             _soundSourcesTable = new Dictionary<int, int>();
 
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.SoundSource).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.SoundSource).Select(obj => obj.Key))
             {
                 _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
             }
@@ -203,7 +203,7 @@ namespace TombEditor.Compilers
             var tempSoundSources = new List<tr_sound_source>();
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var instance in _soundSourcesTable.Keys.Select(src => (SoundSourceInstance) _editor.Level.Objects[src]))
+            foreach (var instance in _soundSourcesTable.Keys.Select(src => (SoundSourceInstance) _level.Objects[src]))
             {
                 var source = new tr_sound_source
                 {
@@ -228,26 +228,26 @@ namespace TombEditor.Compilers
 
             int k = 0;
             _cameraTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Camera).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Camera).Select(obj => obj.Key))
             {
                 _cameraTable.Add(obj, k++);
             }
 
             _sinkTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sink).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sink).Select(obj => obj.Key))
             {
                 _sinkTable.Add(obj, k++);
             }
 
             _flybyTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.FlyByCamera).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.FlyByCamera).Select(obj => obj.Key))
             {
                 _flybyTable.Add(obj, k++);
             }
 
             var tempCameras = new List<tr_camera>();
 
-            foreach (var instance in _cameraTable.Keys.Select(cam => (CameraInstance) _editor.Level.Objects[cam]))
+            foreach (var instance in _cameraTable.Keys.Select(cam => (CameraInstance) _level.Objects[cam]))
             {
                 var camera = new tr_camera
                 {
@@ -264,7 +264,7 @@ namespace TombEditor.Compilers
             }
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var instance in _sinkTable.Keys.Select(sink => (SinkInstance) _editor.Level.Objects[sink]))
+            foreach (var instance in _sinkTable.Keys.Select(sink => (SinkInstance) _level.Objects[sink]))
             {
                 int xSector = (int) Math.Floor(instance.Position.X / 1024);
                 int zSector = (int) Math.Floor(instance.Position.Z / 1024);
@@ -288,7 +288,7 @@ namespace TombEditor.Compilers
             var tempFlyby = new List<tr4_flyby_camera>();
 
             foreach (var instance in _flybyTable.Keys.Select(
-                flyby => (FlybyCameraInstance) _editor.Level.Objects[flyby]))
+                flyby => (FlybyCameraInstance) _level.Objects[flyby]))
             {
                 Vector3 Direction = instance.GetDirection();
                 Vector3 Position = instance.Room.WorldPos + instance.Position;
@@ -326,10 +326,10 @@ namespace TombEditor.Compilers
         private void BuildSprites()
         {
             ReportProgress(9, "Building sprites");
-            ReportProgress(9, "Reading " + _editor.Level.Wad.OriginalWad.BaseName + ".swd");
+            ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             using (var reader = new BinaryReaderEx(new FileStream(
-                _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".swd", FileMode.Open, FileAccess.Read, FileShare.None)))
+                _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".swd", FileMode.Open, FileAccess.Read, FileShare.None)))
             {
                 // Version
                 reader.ReadUInt32();
@@ -409,7 +409,7 @@ namespace TombEditor.Compilers
         {
             ReportProgress(11, "Converting WAD data to TR4 format");
 
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             ReportProgress(12, "    Number of animations: " + wad.Animations.Count);
 
@@ -1568,20 +1568,20 @@ namespace TombEditor.Compilers
                 }
 
                 var room1 = room;
-                var room2 = _editor.Level.Rooms[sector.RoomBelow];
+                var room2 = _level.Rooms[sector.RoomBelow];
 
                 int x2 = room1._compiled.Info.X / 1024 + x - room2._compiled.Info.X / 1024;
                 int z2 = room1._compiled.Info.Z / 1024 + z - room2._compiled.Info.Z / 1024;
 
-                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
-                var aux2 = _editor.Level.Rooms[sector.RoomBelow]._compiled.AuxSectors[x2, z2];
+                var sector2 = GetSector(_level.Rooms[sector.RoomBelow], x2, z2);
+                var aux2 = _level.Rooms[sector.RoomBelow]._compiled.AuxSectors[x2, z2];
 
                 if (sector2.RoomBelow == 255 || aux2.IsFloorSolid)
                 {
                     return (short)(aux2.LowestFloor * 256);
                 }
 
-                room = _editor.Level.Rooms[sector.RoomBelow];
+                room = _level.Rooms[sector.RoomBelow];
                 x = x2;
                 z = z2;
             }
@@ -1600,22 +1600,22 @@ namespace TombEditor.Compilers
                 }
 
                 var room1 = room;
-                var room2 = _editor.Level.Rooms[sector.RoomBelow];
+                var room2 = _level.Rooms[sector.RoomBelow];
 
                 int x2 = room1._compiled.Info.X / 1024 + x - room2._compiled.Info.X / 1024;
                 int z2 = room1._compiled.Info.Z / 1024 + z - room2._compiled.Info.Z / 1024;
 
-                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
+                var sector2 = GetSector(_level.Rooms[sector.RoomBelow], x2, z2);
 
                 if (sector2.RoomBelow != 255)
                 {
-                    room = _editor.Level.Rooms[sector.RoomBelow];
+                    room = _level.Rooms[sector.RoomBelow];
                     x = x2;
                     z = z2;
                     continue;
                 }
 
-                roomIndex = _editor.Level.Rooms[sector.RoomBelow];
+                roomIndex = _level.Rooms[sector.RoomBelow];
                 floor = sector2.Floor;
                 return true;
             }
@@ -1632,19 +1632,19 @@ namespace TombEditor.Compilers
                 }
 
                 var room1 = room;
-                var room2 = _editor.Level.Rooms[sector.RoomBelow];
+                var room2 = _level.Rooms[sector.RoomBelow];
 
                 int x2 = room1._compiled.Info.X / 1024 + x - room2._compiled.Info.X / 1024;
                 int z2 = room1._compiled.Info.Z / 1024 + z - room2._compiled.Info.Z / 1024;
 
-                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
+                var sector2 = GetSector(_level.Rooms[sector.RoomBelow], x2, z2);
 
                 if (sector2.RoomBelow == 255)
                 {
-                    return _editor.Level.Rooms[sector.RoomBelow]._compiled.AuxSectors[x2, z2].Monkey;
+                    return _level.Rooms[sector.RoomBelow]._compiled.AuxSectors[x2, z2].Monkey;
                 }
 
-                room = _editor.Level.Rooms[sector.RoomBelow];
+                room = _level.Rooms[sector.RoomBelow];
                 x = x2;
                 z = z2;
             }
@@ -1654,7 +1654,7 @@ namespace TombEditor.Compilers
         {
             ReportProgress(11, "Converting WAD meshes to TR4 format");
 
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             ReportProgress(12, "    Number of meshes: " + wad.Meshes.Count);
 
@@ -1789,7 +1789,7 @@ namespace TombEditor.Compilers
             _moveablesTable = new Dictionary<int, int>();
             _aiObjectsTable = new Dictionary<int, int>();
 
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Moveable))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Moveable))
             {
                 uint objectId = ((MoveableInstance)obj.Value).WadObjectId;
 
@@ -1806,7 +1806,7 @@ namespace TombEditor.Compilers
             var tempItems = new List<tr_item>();
             var tempAiObjects = new List<tr_ai_item>();
 
-            foreach (var instance in _moveablesTable.Keys.Select(obj => (MoveableInstance) _editor.Level.Objects[obj]))
+            foreach (var instance in _moveablesTable.Keys.Select(obj => (MoveableInstance) _level.Objects[obj]))
             {
                 double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));
 
@@ -1834,7 +1834,7 @@ namespace TombEditor.Compilers
 
             _items = tempItems.ToArray();
 
-            foreach (var instance in _aiObjectsTable.Keys.Select(obj => (MoveableInstance) _editor.Level.Objects[obj]))
+            foreach (var instance in _aiObjectsTable.Keys.Select(obj => (MoveableInstance) _level.Objects[obj]))
             {
                 var item = new tr_ai_item
                 {
@@ -1891,7 +1891,7 @@ namespace TombEditor.Compilers
         private short BuildWadTextureInfo(short txt, bool triangle, short attributes)
         {
             int original = txt;
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             bool isFlipped = false;
             int shape = original & 0x7000;

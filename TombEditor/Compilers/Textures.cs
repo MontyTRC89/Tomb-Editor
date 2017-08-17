@@ -51,7 +51,7 @@ namespace TombEditor.Compilers
         {
             ReportProgress(7, "Building WAD textures pages");
 
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             _objectTexturePages = new byte[256 * 256 * 4 * wad.NumTexturePages];
             _numobjectTexturePages = wad.NumTexturePages;
@@ -113,13 +113,13 @@ namespace TombEditor.Compilers
                     using (Graphics g = Graphics.FromImage(image))
                     {
                         // Read font texture
-                        string fontFileName = _editor.Level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                        string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
                         ReportProgress(19, "Reading font texture: " + fontFileName);
                         using (Bitmap fontTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName))
                             g.DrawImageUnscaledAndClipped(fontTexture, new Rectangle(0, 256, 256, 256));
 
                         // Read sky texture
-                        string skyFileName = _editor.Level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+                        string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
                         ReportProgress(18, "Reading sky texture: " + skyFileName);
                         using (Bitmap skyTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName))
                             g.DrawImageUnscaledAndClipped(skyTexture, new Rectangle(0, 0, 256, 256));
