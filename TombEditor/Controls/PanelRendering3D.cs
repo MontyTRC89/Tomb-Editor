@@ -2958,6 +2958,8 @@ namespace TombEditor.Controls
                                     break;
                                 case EditorArrowType.CornerSW:
                                     _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                     break;
                             }
 
