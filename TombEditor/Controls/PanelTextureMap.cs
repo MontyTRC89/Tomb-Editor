@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -70,9 +71,6 @@ namespace TombEditor.Controls
         {
             MouseEventArgs args = (MouseEventArgs)e;
 
-            /*   int texture = _editor.Level.AddTexture((short)args.X, (short)args.Y, (short)64, (short)64);
-               _editor.SelectedTexture = texture;
-               Invalidate();*/
             var selectedTexture = _editor.SelectedTexture;
             selectedTexture.Invisible = false;
             _editor.SelectedTexture = selectedTexture;
@@ -122,16 +120,12 @@ namespace TombEditor.Controls
                 {
                     _drag = false;
                     return;
-                    //    _x -= _w;
-                    //     _w = (short)-_w;
                 }
 
                 if (_h < 0)
                 {
                     _drag = false;
                     return;
-                    //    _y -= _h;
-                    //    _h = (short)-_h;
                 }
             }
 
@@ -145,8 +139,6 @@ namespace TombEditor.Controls
             _deltaX = e.X - _lastX;
             _deltaY = e.Y - LastY;
 
-            // _x = (short) (Math.Floor(_lastX / 16.0f) * 16);
-            //    _y = (short)(Math.Floor(LastY / 16.0f) * 16);
             _w = (short)(Math.Ceiling(_deltaX / 16.0f) * 16);
             _h = (short)(Math.Ceiling(_deltaY / 16.0f) * 16);
 
@@ -154,28 +146,24 @@ namespace TombEditor.Controls
             {
                 _drag = false;
                 return;
-                //_x -= _w;
-                //_w = (short)-_w;
             }
 
             if (_h < 0)
             {
                 _drag = false;
                 return;
-                //_y -= _h;
-                //_h = (short)-_h;
             }
 
             LevelTexture sample;
 
-            // verifico di non aver attraversato una pagina
+            // Check if I've not changed page
             short page = (short)(Math.Floor(LastY / 256.0f));
 
             TextureSelection selectedTexture = _editor.SelectedTexture;
             selectedTexture.Invisible = false;
             if (Math.Abs(_deltaX) < 8 && Math.Abs(_deltaY) < 8)
             {
-                // click singolo, tile da 64x64 o confermo la texture corrente
+                // Single click: 64x64 texture or confirm current texture
                 if (selectedTexture.Index != -1)
                 {
                     sample = _editor.Level.TextureSamples[selectedTexture.Index];
@@ -206,11 +194,6 @@ namespace TombEditor.Controls
                     selectedTexture.Index = _editor.Level.AddTexture(_x, _y, _w, _h, selectedTexture.DoubleSided, selectedTexture.Transparent);
                     sample = _editor.Level.TextureSamples[selectedTexture.Index];
                 }
-
-                /*    _x = (short)(Math.Floor(_lastX / 64.0f) * 64);
-                    _y = (short)(Math.Floor(LastY / 64.0f) * 64);
-                    _w = 64;
-                    _h = 64;*/
             }
             else
             {
@@ -221,12 +204,12 @@ namespace TombEditor.Controls
                 if (_w > maxWidth)
                     _w = maxWidth;
 
-                // trascinamento prolungato, tile di forma variabile
+                // If drag, then variable size texture
                 selectedTexture.Index = _editor.Level.AddTexture(_x, _y, _w, _h, selectedTexture.DoubleSided, selectedTexture.Transparent);
                 sample = _editor.Level.TextureSamples[selectedTexture.Index];
             }
 
-            // trovo il triangolo
+            // Serach the correct triangle
             if (_lastX >= sample.X && _lastX <= sample.X + sample.Width / 2 && LastY >= sample.Y + page * 256 &&
                 LastY <= sample.Y + page * 256 + sample.Height / 2)
             {
@@ -255,7 +238,7 @@ namespace TombEditor.Controls
             _editor.SelectedTexture = selectedTexture;
 
             _drag = false;
-
+            
             Invalidate();
         }
 

@@ -9,6 +9,7 @@ using TombEditor.Geometry;
 using zlib;
 using NLog;
 using System.Runtime.InteropServices;
+using System.Drawing.Imaging;
 
 namespace TombEditor
 {
@@ -25,6 +26,35 @@ namespace TombEditor
         {
             long number;
             return Int64.TryParse(value, out number);
+        }
+
+        public static unsafe bool HasTrasparency(Bitmap b, int x, int y, int width, int height)
+        {
+            if (width <= 0 || height <= 0) return false;
+
+            BitmapData bData = b.LockBits(new System.Drawing.Rectangle(x, y, width, height), ImageLockMode.ReadOnly, b.PixelFormat);
+
+            byte bitsPerPixel = 24; // GetBitsPerPixel(bData.PixelFormat);
+
+            byte* scan0 = (byte*)bData.Scan0.ToPointer();
+
+            for (int i = 0; i < bData.Height; ++i)
+            {
+                for (int j = 0; j < bData.Width; ++j)
+                {
+                    byte* data = scan0 + i * bData.Stride + j * bitsPerPixel / 8;
+
+                    // Data is a pointer to the first byte of the 3-byte color data
+                    if (data[0] == 255 && data[1] == 0 && data[2] == 255)
+                    {
+                        b.UnlockBits(bData);
+                        return true;
+                    }
+                }
+            }
+
+            b.UnlockBits(bData);
+            return false;
         }
 
         public static void ConvertTextureTo256Width(ref Bitmap bitmap)
