@@ -526,13 +526,13 @@ namespace TombEditor.Controls
                     case EditorActionType.Paste:
                         if (newPicking is PickingResultBlock)
                         {
-                            Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
+                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
                             _editor.Action = EditorAction.None;
                         }
                         break;
                     case EditorActionType.Stamp:
                         if (newPicking is PickingResultBlock)
-                            Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
+                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
                         break;
                     case EditorActionType.None:
                         switch (_editor.Mode)

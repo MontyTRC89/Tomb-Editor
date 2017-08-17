@@ -14,17 +14,17 @@ namespace TombEditor
             _originalRoom = originalRoom;
         }
 
-        private static int CopyObject(int Index, Level level, Room room, Vector3 position)
+        private static ObjectInstance CopyObject(int Index, Level level, Room room, Vector3 position)
         {
             PositionBasedObjectInstance result = (PositionBasedObjectInstance)level.Objects[_objectPtr.Value.Id].Clone();
             result.Position = position;
             result.Id = level.GetNewObjectId();
             result.Room = room;
             level.Objects.Add(result.Id, result);
-            return result.Id;
+            return result;
         }
 
-        public static bool Paste(Level level, Room room, DrawingPoint pos)
+        public static object Paste(Level level, Room room, DrawingPoint pos)
         {
             Block block = room.GetBlock(pos);
             int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
@@ -34,44 +34,48 @@ namespace TombEditor
                 switch (_objectPtr.Value.Type)
                 {
                     case ObjectInstanceType.Light:
-                        {
-                            var light = _originalRoom.Lights[_objectPtr.Value.Id].Clone();
-                            light.Position = position;
+                        var light = _originalRoom.Lights[_objectPtr.Value.Id].Clone();
+                        light.Position = position;
 
-                            room.Lights.Add(light);
+                        room.Lights.Add(light);
 
-                            room.BuildGeometry();
-                            room.CalculateLightingForThisRoom();
-                            room.UpdateBuffers();
-                        }
-                        break;
+                        room.BuildGeometry();
+                        room.CalculateLightingForThisRoom();
+                        room.UpdateBuffers();
+                        return light;
 
                     case ObjectInstanceType.Camera:
-                        room.Cameras.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
-                        break;
+                        var camera = CopyObject(_objectPtr.Value.Id, level, room, position);
+                        room.Cameras.Add(camera.Id);
+                        return camera;
 
                     case ObjectInstanceType.FlyByCamera:
-                        room.FlyByCameras.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
-                        break;
+                        var flyByCamera = CopyObject(_objectPtr.Value.Id, level, room, position);
+                        room.FlyByCameras.Add(flyByCamera.Id);
+                        return flyByCamera;
 
                     case ObjectInstanceType.Sink:
-                        room.Sinks.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
-                        break;
+                        var sink = CopyObject(_objectPtr.Value.Id, level, room, position);
+                        room.Sinks.Add(sink.Id);
+                        return sink;
 
                     case ObjectInstanceType.SoundSource:
-                        room.SoundSources.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
-                        break;
+                        var soundSource = CopyObject(_objectPtr.Value.Id, level, room, position);
+                        room.SoundSources.Add(soundSource.Id);
+                        return soundSource;
 
                     case ObjectInstanceType.Moveable:
-                        room.Moveables.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
-                        break;
+                        var movable = CopyObject(_objectPtr.Value.Id, level, room, position);
+                        room.Moveables.Add(movable.Id);
+                        return movable;
 
                     case ObjectInstanceType.Static:
-                        room.Statics.Add(CopyObject(_objectPtr.Value.Id, level, room, position));
-                        break;
+                        var staticObj = CopyObject(_objectPtr.Value.Id, level, room, position);
+                        room.Statics.Add(staticObj.Id);
+                        return staticObj;
                 }
 
-            return _objectPtr.HasValue;
+            return null;
         }
     }
 }
