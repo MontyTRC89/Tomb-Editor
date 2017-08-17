@@ -70,24 +70,10 @@ namespace TombEditor
             this.comboType.ForeColor = System.Drawing.Color.White;
             this.comboType.FormattingEnabled = true;
             this.comboType.ItemHeight = 18;
-            this.comboType.Items.AddRange(new object[] {
-            "Trigger",
-            "Pad",
-            "Key",
-            "Pickup",
-            "Condition",
-            "Heavy",
-            "Dummy",
-            "Switch",
-            "Antipad",
-            "Combat",
-            "Antitrigger",
-            "HeavySwitch",
-            "HeavyAntritrigger",
-            "Monkey"});
             this.comboType.Location = new System.Drawing.Point(89, 10);
             this.comboType.Name = "comboType";
             this.comboType.Size = new System.Drawing.Size(159, 24);
+            this.comboType.Sorted = true;
             this.comboType.TabIndex = 1;
             // 
             // comboTargetType
@@ -98,25 +84,10 @@ namespace TombEditor
             this.comboTargetType.ForeColor = System.Drawing.Color.White;
             this.comboTargetType.FormattingEnabled = true;
             this.comboTargetType.ItemHeight = 18;
-            this.comboTargetType.Items.AddRange(new object[] {
-            "Object",
-            "Camera",
-            "Sink",
-            "FlipEffect",
-            "FlipOn",
-            "FlipOff",
-            "Target",
-            "FlipMap",
-            "FinishLevel",
-            "Secret",
-            "Variable",
-            "PlayAudio",
-            "FlyByCamera",
-            "Cutscene",
-            "        FMV = 14"});
             this.comboTargetType.Location = new System.Drawing.Point(89, 37);
             this.comboTargetType.Name = "comboTargetType";
             this.comboTargetType.Size = new System.Drawing.Size(159, 24);
+            this.comboTargetType.Sorted = true;
             this.comboTargetType.TabIndex = 3;
             this.comboTargetType.SelectedIndexChanged += new System.EventHandler(this.comboTargetType_SelectedIndexChanged);
             // 
@@ -257,6 +228,7 @@ namespace TombEditor
             this.comboParameter.Location = new System.Drawing.Point(89, 64);
             this.comboParameter.Name = "comboParameter";
             this.comboParameter.Size = new System.Drawing.Size(535, 24);
+            this.comboParameter.Sorted = true;
             this.comboParameter.TabIndex = 69;
             // 
             // FormTrigger
