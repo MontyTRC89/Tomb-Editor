@@ -143,6 +143,37 @@ namespace TombEditor
         {
             if (smooth)
             {
+                // Adjust editing area to exclude the side on which the arrow starts
+                // This is a superset of the behaviour of the old editor to smooth edit a single edge or side.
+                switch (arrow)
+                {
+                    case EditorArrowType.EdgeE:
+                        area = new Rectangle(area.X + 1, area.Y, area.Right, area.Bottom);
+                        break;
+                    case EditorArrowType.EdgeN:
+                        area = new Rectangle(area.X, area.Y + 1, area.Right, area.Bottom);
+                        break;
+                    case EditorArrowType.EdgeW:
+                        area = new Rectangle(area.X, area.Y, area.Right - 1, area.Bottom);
+                        break;
+                    case EditorArrowType.EdgeS:
+                        area = new Rectangle(area.X, area.Y, area.Right, area.Bottom - 1);
+                        break;
+                    case EditorArrowType.CornerNE:
+                        area = new Rectangle(area.X + 1, area.Y + 1, area.Right, area.Bottom);
+                        break;
+                    case EditorArrowType.CornerNW:
+                        area = new Rectangle(area.X, area.Y + 1, area.Right - 1, area.Bottom);
+                        break;
+                    case EditorArrowType.CornerSW:
+                        area = new Rectangle(area.X, area.Y, area.Right - 1, area.Bottom - 1);
+                        break;
+                    case EditorArrowType.CornerSE:
+                        area = new Rectangle(area.X + 1, area.Y, area.Right, area.Bottom - 1);
+                        break;
+                }
+                arrow = EditorArrowType.EntireFace;
+
                 // Smoothly change sectors on the corners
                 room.GetBlockTry(area.X - 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment);
                 room.GetBlockTry(area.Right + 1, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment);
