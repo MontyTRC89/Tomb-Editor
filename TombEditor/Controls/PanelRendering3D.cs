@@ -1762,6 +1762,8 @@ namespace TombEditor.Controls
             stackRooms.Push(room);
             stackLimits.Push(0);
 
+            bool isFlipped = (room.Flipped && room.BaseRoom != null);
+
             while (stackRooms.Count > 0)
             {
                 var theRoom = stackRooms.Pop();
@@ -1772,10 +1774,21 @@ namespace TombEditor.Controls
 
                 visitedRooms.Add(theRoom);
 
-                if (theRoom.Flipped && theRoom.AlternateRoom != null)
-                    _roomsToDraw.Add(theRoom.AlternateRoom);
-                else
+                if (theRoom == room)
+                {
                     _roomsToDraw.Add(theRoom);
+                }
+                else
+                {
+                    if (isFlipped && theRoom.Flipped && theRoom.AlternateRoom != null)
+                    {
+                        _roomsToDraw.Add(theRoom.AlternateRoom);
+                    }
+                    else
+                    {
+                        _roomsToDraw.Add(theRoom);
+                    }
+                }
 
                 for (int p = 0; p < theRoom.Portals.Count; p++)
                 {
