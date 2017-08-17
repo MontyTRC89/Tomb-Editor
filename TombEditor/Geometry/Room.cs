@@ -28,7 +28,6 @@ namespace TombEditor.Geometry
         public List<int> Sinks { get; private set; } = new List<int>();
         public List<int> Cameras { get; private set; } = new List<int>();
         public List<int> FlyByCameras { get; private set; } = new List<int>();
-        public IEnumerable<Portal> Portals => Blocks.Unwrap().Where(p => p != null).SelectMany(p => p.Portals).Distinct();
         public Room BaseRoom { get; set; }
         public bool Flipped { get; set; }
         public Room AlternateRoom { get; set; }
@@ -103,6 +102,18 @@ namespace TombEditor.Geometry
             set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
+        public IEnumerable<Portal> Portals
+        {
+            get
+            { // No LINQ because it is really slow.
+                HashSet<Portal> portals = new HashSet<Portal>();
+                foreach (Block block in Blocks)
+                    foreach (Portal portal in block.Portals)
+                        portals.Add(portal);
+                return portals;
+            }
+        }
+        
         public Block GetBlock(DrawingPoint pos)
         {
             return Blocks[pos.X, pos.Y];

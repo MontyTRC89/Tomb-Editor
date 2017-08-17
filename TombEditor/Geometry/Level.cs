@@ -25,7 +25,6 @@ namespace TombEditor.Geometry
             new Dictionary<int, Texture2D>(); //For now just one texture atlas 2048x2048 pixel
 
         public Bitmap TextureMap { get; private set; } //The texture map on the CPU
-        public IEnumerable<Portal> Portals => Rooms.Where(room => room != null).SelectMany(room => room.Portals);
         public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
 
         public Dictionary<int, PositionBasedObjectInstance> Objects { get; } =
@@ -36,6 +35,17 @@ namespace TombEditor.Geometry
         public Wad Wad { get; private set; }
 
         public LevelSettings Settings { get; set; } = new LevelSettings();
+
+        public IEnumerable<Portal> Portals
+        {
+            get
+            { // No LINQ because it is really slow
+                foreach (Room room in Rooms)
+                    if (room != null)
+                        foreach (Portal portal in room.Portals)
+                            yield return portal;
+            }
+        }
 
         public static Level CreateSimpleLevel()
         {
