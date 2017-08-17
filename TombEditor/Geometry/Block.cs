@@ -151,5 +151,37 @@ namespace TombEditor.Geometry
         {
             get { return Type != BlockType.Floor; }
         }
+
+        public short[] GetVerticalSubdivision(int verticalSubdivision)
+        {
+            switch (verticalSubdivision)
+            {
+                case 0:
+                    return QAFaces;
+                case 1:
+                    return WSFaces;
+                case 2:
+                    return EDFaces;
+                case 3:
+                    return RFFaces;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
+        public short GetEdge(int verticalSubdivision, int edge)
+        {
+            return GetVerticalSubdivision(verticalSubdivision)[edge];
+        }
+
+        public void SetEdge(int verticalSubdivision, int edge, short newValue)
+        {
+            GetVerticalSubdivision(verticalSubdivision)[edge] = newValue;
+        }
+
+        public void ChangeEdge(int verticalSubdivision, int edge, short increment)
+        {
+            GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
+        }
     }
 }
