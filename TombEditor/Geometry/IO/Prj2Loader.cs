@@ -17,7 +17,6 @@ namespace TombEditor.Geometry.IO
 
         private delegate Portal PortalGetter(int id);
         
-        public static Level LoadFromPrj2(string filename, GraphicsDevice device, IProgressReporter progressReporter)
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();

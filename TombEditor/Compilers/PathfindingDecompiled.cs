@@ -623,8 +623,6 @@ namespace TombEditor.Compilers
 
                     block = room.Blocks[xInRoom, zInRoom];
 
-                    bool isWallPortal = block.WallPortal != null;
-
                     // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
                     // This happen for example when there are 3 room connected together and the corner is inside the box. 
                     // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
@@ -634,12 +632,9 @@ namespace TombEditor.Compilers
                         xInRoom == room.NumXSectors - 1 && zInRoom == 0 ||
                         xInRoom == room.NumXSectors - 1 && zInRoom == room.NumZSectors - 1) return false;
 
-                    if (!isWallPortal) break;
-                    
+                    if (block.WallPortal == null) break;
 
-                    Portal portal = _level.Portals[block.WallPortal];
-
-                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    Room adjoiningRoom = block.WallPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                     dec_currentRoom = adjoiningRoom;
@@ -660,7 +655,7 @@ namespace TombEditor.Compilers
                 // After having probed that we can reach X, Z from the original room, do the following
                 while (block.FloorPortal != null && !block.IsFloorSolid)
                 {
-                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                     if (block.FloorOpacity == PortalOpacity.Opacity1 &&
@@ -730,14 +725,13 @@ namespace TombEditor.Compilers
             }
 
             // If it's not a wall portal or is vertical toggle opacity 1
-            if (block.WallPortal == null || block.WallOpacity == PortalOpacity.Opacity1)
+            if ((block.WallPortal == null || block.WallOpacity == PortalOpacity.Opacity1))
             {
 
             }
             else
             {
-                Portal portal = block.WallPortal;
-                adjoiningRoom = portal.AdjoiningRoom;
+                adjoiningRoom = block.WallPortal.AdjoiningRoom;
                 if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                 dec_currentRoom = adjoiningRoom;
@@ -755,10 +749,10 @@ namespace TombEditor.Compilers
             }
 
             Room oldRoom = adjoiningRoom;
-            while (block.FloorPortal != null)            {
-                Portal portal = block.FloorPortal;
 
-                Room adjoiningRoom2 = portal.AdjoiningRoom;
+            while (block.FloorPortal != null && !block.IsFloorSolid)
+            {
+                Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
 
                 if (block.FloorOpacity == PortalOpacity.Opacity1)
@@ -829,8 +823,7 @@ namespace TombEditor.Compilers
 
             if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null && !block.IsCeilingSolid)
             {
-                Portal portal = block.CeilingPortal;
-                Room adjoiningRoom3 = portal.AdjoiningRoom;
+                Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
                 if (!adjoiningRoom3.FlagWater)

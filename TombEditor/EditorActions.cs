@@ -1706,9 +1706,6 @@ namespace TombEditor
             room.Statics.Clear();
             room.Statics.AddRange(newRoom.Statics);
 
-            room.Portals.Clear();
-            room.Portals.AddRange(newRoom.Portals);
-
             room.Cameras.Clear();
             room.Cameras.AddRange(newRoom.Cameras);
 
@@ -1734,8 +1731,12 @@ namespace TombEditor
 
             room.UpdateCompletely();
 
-            _editor.SelectRoomAndCenterCamera(room);
-            _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
+            // Fix selection if necessary
+            if (_editor.SelectedRoom == room)
+            {
+                _editor.SelectRoomAndCenterCamera(room);
+                _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
+            }
         }
 
         public static void SetDiagonalFloorSplit(Room room, Rectangle area)
