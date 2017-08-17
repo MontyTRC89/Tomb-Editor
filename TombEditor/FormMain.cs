@@ -1160,11 +1160,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            foreach (var portal in _editor.Level.Portals)
+            foreach (var portal in _editor.SelectedRoom.Portals)
             {
-                if (portal.Room != _editor.SelectedRoom)
-                    continue;
-
                 portal.AdjoiningRoom.BuildGeometry();
                 portal.AdjoiningRoom.CalculateLightingForThisRoom();
                 portal.AdjoiningRoom.UpdateBuffers();
@@ -1179,11 +1176,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            foreach (var portal in _editor.Level.Portals)
+            foreach (var portal in _editor.SelectedRoom.Portals)
             {
-                if (portal.Room != _editor.SelectedRoom)
-                    continue;
-
                 portal.AdjoiningRoom.BuildGeometry();
                 portal.AdjoiningRoom.CalculateLightingForThisRoom();
                 portal.AdjoiningRoom.UpdateBuffers();

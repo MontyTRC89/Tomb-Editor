@@ -20,8 +20,7 @@ namespace TombEditor.Geometry
         {}
 
         public override ObjectInstanceType Type => ObjectInstanceType.Portal;
-
-
+        
         public override ObjectInstance Clone()
         {
             Portal portalResult = (Portal)MemberwiseClone();

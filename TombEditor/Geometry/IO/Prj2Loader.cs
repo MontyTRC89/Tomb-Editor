@@ -109,12 +109,9 @@ namespace TombEditor.Geometry.IO
                         portal.Z = reader.ReadByte();
                         portal.NumXBlocks = reader.ReadByte();
                         portal.NumZBlocks = reader.ReadByte();
-
-                        reader.ReadByte();
                         portal.MemberOfFlippedRoom = reader.ReadBoolean();
                         portal.Flipped = reader.ReadBoolean();
-                        reader.ReadInt32();
-
+                        
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();

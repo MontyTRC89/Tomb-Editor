@@ -168,8 +168,8 @@ namespace TombEditor
                 int zMax = area.Bottom;
                 int xMinSpecial = Math.Max(0, xMin - 1);
                 int zMinSpecial = Math.Max(0, zMin - 1);
-                int xMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, xMax + 1);
-                int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumZSectors - 1, zMax + 1);
+                int xMaxSpecial = Math.Min(room.NumXSectors - 1, xMax + 1);
+                int zMaxSpecial = Math.Min(room.NumZSectors - 1, zMax + 1);
 
                 // Build smooth edges
                 if (xMinSpecial > 0 && zMaxSpecial < room.NumZSectors - 1)
@@ -789,8 +789,8 @@ namespace TombEditor
                     // Update state
                     if (objectPtr.Type == ObjectInstanceType.Light)
                     {
-                        _editor.SelectedRoom.CalculateLightingForThisRoom();
-                        _editor.SelectedRoom.UpdateBuffers();
+                        room.CalculateLightingForThisRoom();
+                        room.UpdateBuffers();
                     }
                     _editor.ObjectChange(objectPtr.Type == ObjectInstanceType.Light ? 
                         (object)(room.Lights[objectPtr.Id]) : _editor.Level.Objects[objectPtr.Id]);
@@ -2848,16 +2848,11 @@ namespace TombEditor
             // Duplicate portals
             var duplicatedPortals = new Dictionary<Portal, Portal>();
 
-            foreach (var p in _editor.Level.Portals)
+            foreach (var p in room.Portals)
             {
-                if (p.Room != _editor.SelectedRoom)
-                    continue;
-
                 var newPortal = (Portal)p.Clone();
                 newPortal.Flipped = true;
-
                 p.Flipped = true;
-
                 duplicatedPortals.Add(p, newPortal);
             }
             
@@ -2899,11 +2894,8 @@ namespace TombEditor
         public static void AlternateRoomDisable(Room room)
         {
             // Check if room has portals
-            foreach (var p in _editor.Level.Portals)
+            if (room.Portals.Count() > 0)
             {
-                if ((p.Room != _editor.SelectedRoom && p.AdjoiningRoom != _editor.SelectedRoom) || p.MemberOfFlippedRoom)
-                    continue;
-
                 DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
                 return;
             }

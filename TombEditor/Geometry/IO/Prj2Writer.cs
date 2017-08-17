@@ -75,9 +75,9 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Write portals
-                    int numPortals = level.Portals.Count();
-                    writer.Write(numPortals);
-                    foreach (var p in level.Portals)
+                    List<Portal> portals = level.Portals.ToList();
+                    writer.Write(portals.Count);
+                    foreach (var p in portals)
                     {
                         writer.Write(PortalSaveIDs[p]);
                         writer.Write(PortalSaveIDs[p.Other]);
@@ -88,10 +88,9 @@ namespace TombEditor.Geometry.IO
                         writer.Write(p.Z);
                         writer.Write(p.NumXBlocks);
                         writer.Write(p.NumZBlocks);
-                        writer.Write(filler8);
                         writer.Write(p.MemberOfFlippedRoom);
                         writer.Write(p.Flipped);
-                        writer.Write(filler32);
+
                         writer.Write(filler32);
                         writer.Write(filler32);
                         writer.Write(filler32);
