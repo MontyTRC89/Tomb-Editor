@@ -22,6 +22,7 @@ namespace TombEditor.Geometry
     {
         public int Id { get; set; }
         public Room Room { get; set; }
+        public int PrjRoom { get; set; }
 
         protected ObjectInstance(int id, Room room)
         {

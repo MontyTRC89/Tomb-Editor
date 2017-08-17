@@ -4,6 +4,8 @@ using System.IO;
 using NLog;
 using TombEditor.Geometry;
 using TombLib.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace TombEditor.Compilers
 {
@@ -88,8 +90,8 @@ namespace TombEditor.Compilers
 
             foreach (var txtSound in _level.TextureSounds)
             {
-                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X <= txtSound.X + 64 &&
-                    txt.Y <= txtSound.Y + 64 &&
+                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X < txtSound.X + 64 &&
+                    txt.Y < txtSound.Y + 64 &&
                     txt.Page == txtSound.Page)
                 {
                     return txtSound.Sound;
@@ -105,54 +107,33 @@ namespace TombEditor.Compilers
             {
                 ReportProgress(18, "Building font & sky textures");
 
-                byte[] buffer;
-                byte[] uncMiscTexture;
-                using (var reader = new BinaryReaderEx(File.OpenRead("Graphics\\Common\\font.pc")))
+                byte[] rawData = new byte[256 * 256 * 4 * 2];
+                using (Bitmap image = new Bitmap(256, 512, PixelFormat.Format32bppArgb))
                 {
-                    uncMiscTexture = new byte[256 * 256 * 4 * 2];
-                    reader.ReadBlockArray(out buffer, 256 * 256 * 4);
-                }
-
-                Array.Copy(buffer, 0, uncMiscTexture, 0, 256 * 256 * 4);
-
-                buffer = new byte[256 * 256 * 4];
-
-                // If exists a sky with the same name of WAD, use it, otherwise take the default sky
-                string skyFileName;
-                if (File.Exists(_editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName +
-                                ".raw"))
-                    skyFileName = _editor.Level.Wad.OriginalWad.BasePath + "\\" +
-                                  _editor.Level.Wad.OriginalWad.BaseName + ".raw";
-                else
-                    skyFileName = "Graphics\\Common\\pcsky.raw";
-
-                ReportProgress(18, "Reading sky texture: " + skyFileName);
-
-
-                using (var reader = new BinaryReaderEx(File.OpenRead(skyFileName)))
-                {
-                    for (var y = 0; y < 256; y++)
+                    using (Graphics g = Graphics.FromImage(image))
                     {
-                        for (var x = 0; x < 256; x++)
-                        {
-                            var r = reader.ReadByte();
-                            var g = reader.ReadByte();
-                            var b = reader.ReadByte();
+                        // Read font texture
+                        string fontFileName = _editor.Level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                        ReportProgress(19, "Reading font texture: " + fontFileName);
+                        using (Bitmap fontTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName))
+                            g.DrawImageUnscaledAndClipped(fontTexture, new Rectangle(0, 256, 256, 256));
 
-                            buffer[y * 1024 + 4 * x] = b;
-                            buffer[y * 1024 + 4 * x + 1] = g;
-                            buffer[y * 1024 + 4 * x + 2] = r;
-                            buffer[y * 1024 + 4 * x + 3] = 255;
-                        }
+                        // Read sky texture
+                        string skyFileName = _editor.Level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+                        ReportProgress(18, "Reading sky texture: " + skyFileName);
+                        using (Bitmap skyTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName))
+                            g.DrawImageUnscaledAndClipped(skyTexture, new Rectangle(0, 0, 256, 256));
                     }
-                }
 
-                Array.Copy(buffer, 0, uncMiscTexture, 256 * 256 * 4, 256 * 256 * 4);
+                    // Extract raw texture data
+                    BitmapData lockData = image.LockBits(new Rectangle(0, 0, 256, 512), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                    System.Runtime.InteropServices.Marshal.Copy(lockData.Scan0, rawData, 0, rawData.Length);
+                    image.UnlockBits(lockData);
+                }
 
                 ReportProgress(80, "Compressing font & sky textures");
-
-                _miscTexture = Utils.CompressDataZLIB(uncMiscTexture);
-                _miscTextureUncompressedSize = (uint)uncMiscTexture.Length;
+                _miscTexture = Utils.CompressDataZLIB(rawData);
+                _miscTextureUncompressedSize = (uint)rawData.Length;
                 _miscTextureCompressedSize = (uint)_miscTexture.Length;
             }
             catch (Exception exc)

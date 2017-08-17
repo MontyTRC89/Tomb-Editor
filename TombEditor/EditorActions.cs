@@ -169,33 +169,51 @@ namespace TombEditor
                 int xMinSpecial = Math.Max(0, xMin - 1);
                 int zMinSpecial = Math.Max(0, zMin - 1);
                 int xMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, xMax + 1);
-                int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumXSectors - 1, zMax + 1);
+                int zMaxSpecial = Math.Min(_editor.SelectedRoom.NumZSectors - 1, zMax + 1);
 
                 // Build smooth edges
-                getFaces(xMinSpecial, zMaxSpecial)[2] += increment;
-                getFaces(xMaxSpecial, zMaxSpecial)[3] += increment;
-                getFaces(xMaxSpecial, zMinSpecial)[0] += increment;
-                getFaces(xMinSpecial, zMinSpecial)[1] += increment;
+                if (xMinSpecial > 0 && zMaxSpecial < room.NumZSectors - 1)
+                    getFaces(xMinSpecial, zMaxSpecial)[2] += increment;
+
+                if (xMaxSpecial < room.NumXSectors - 1 && zMaxSpecial < room.NumZSectors - 1)
+                    getFaces(xMaxSpecial, zMaxSpecial)[3] += increment;
+
+                if (xMaxSpecial < room.NumXSectors - 1 && zMinSpecial > 0)
+                    getFaces(xMaxSpecial, zMinSpecial)[0] += increment;
+
+                if (xMinSpecial > 0 && zMinSpecial > 0)
+                    getFaces(xMinSpecial, zMinSpecial)[1] += increment;
 
                 for (int x = xMin; x <= xMax; x++)
                 {
-                    getFaces(x, zMinSpecial)[0] += increment;
-                    getFaces(x, zMinSpecial)[1] += increment;
+                    if (x > 0 && x < room.NumXSectors - 1 && zMinSpecial > 0)
+                    {
+                        getFaces(x, zMinSpecial)[0] += increment;
+                        getFaces(x, zMinSpecial)[1] += increment;
+                    }
 
-                    getFaces(x, zMaxSpecial)[3] += increment;
-                    getFaces(x, zMaxSpecial)[2] += increment;
+                    if (x > 0 && x < room.NumXSectors - 1 &&  zMaxSpecial < room.NumZSectors - 1)
+                    {
+                        getFaces(x, zMaxSpecial)[3] += increment;
+                        getFaces(x, zMaxSpecial)[2] += increment;
+                    }
                 }
 
                 for (int z = zMin; z <= zMax; z++)
                 {
-                    getFaces(xMinSpecial, z)[1] += increment;
-                    getFaces(xMinSpecial, z)[2] += increment;
+                    if (xMinSpecial > 0 && z > 0 && z < room.NumZSectors - 1)
+                    {
+                        getFaces(xMinSpecial, z)[1] += increment;
+                        getFaces(xMinSpecial, z)[2] += increment;
+                    }
 
-                    getFaces(xMaxSpecial, z)[0] += increment;
-                    getFaces(xMaxSpecial, z)[3] += increment;
+                    if (xMaxSpecial < room.NumXSectors - 1 && z > 0 && z < room.NumZSectors - 1)
+                    {
+                        getFaces(xMaxSpecial, z)[0] += increment;
+                        getFaces(xMaxSpecial, z)[3] += increment;
+                    }
                 }
             }
-
 
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
@@ -1020,6 +1038,7 @@ namespace TombEditor
             face.Flipped = false;
 
             room.BuildGeometry(pos.X, pos.X, pos.Y, pos.Y);
+            room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
             _editor.RoomTextureChange(room);
         }
@@ -1578,29 +1597,12 @@ namespace TombEditor
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Clone();
 
-                    /* for (int f = 0; f < newRoom.Blocks[x, z].Faces.Length; f++)
-                     {
-                         if (newRoom.Blocks[x, z].Faces[f].Texture != -1)
-                         {
-                             _editor.Level.TextureSamples[newRoom.Blocks[x, z].Faces[f].Texture].UsageCount++;
-                         }
-                     }*/
-
                     for (int k = 0; k < room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers.Count; k++)
                     {
                         int triggerId = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers[k];
                         if (!triggersToRemove.Contains(triggerId))
                             newRoom.Blocks[x, z].Triggers.Add(triggerId);
                     }
-
-                    // TODO: remove
-                    /*
-                    if (newRoom.Blocks[x, z].Type == BlockType.Portal ||
-                        newRoom.Blocks[x, z].Type == BlockType.FloorPortal ||
-                        newRoom.Blocks[x, z].Type == BlockType.CeilingPortal)
-                    {
-                        newRoom.Blocks[x, z].Type = BlockType.Floor;
-                    }*/
                 }
             }
 
@@ -1695,14 +1697,45 @@ namespace TombEditor
                 }
             }
 
-            newRoom.UpdateCompletely();
-            
-            // Fix selection if necessary
-            if (_editor.SelectedRoom == room)
+            // Now copy back everything into the original room
+            room.Resize(newRoom.NumXSectors, newRoom.NumZSectors);
+
+            room.Moveables.Clear();
+            room.Moveables.AddRange(newRoom.Moveables);
+
+            room.Statics.Clear();
+            room.Statics.AddRange(newRoom.Statics);
+
+            room.Portals.Clear();
+            room.Portals.AddRange(newRoom.Portals);
+
+            room.Cameras.Clear();
+            room.Cameras.AddRange(newRoom.Cameras);
+
+            room.Sinks.Clear();
+            room.Sinks.AddRange(newRoom.Sinks);
+
+            room.FlyByCameras.Clear();
+            room.FlyByCameras.AddRange(newRoom.FlyByCameras);
+
+            room.SoundSources.Clear();
+            room.SoundSources.AddRange(newRoom.SoundSources);
+
+            room.Lights.Clear();
+            room.Lights.AddRange(newRoom.Lights);
+
+            for (int x = 0; x < room.NumXSectors; x++)
             {
-                _editor.SelectRoomAndCenterCamera(newRoom);
-                _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
+                for (int z = 0; z < room.NumZSectors; z++)
+                {
+                    room.Blocks[x, z] = newRoom.Blocks[x, z];
+                }
             }
+
+            room.UpdateCompletely();
+
+            _editor.SelectRoomAndCenterCamera(room);
+            _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
         }
 
         public static void SetDiagonalFloorSplit(Room room, Rectangle area)

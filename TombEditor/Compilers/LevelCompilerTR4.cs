@@ -126,31 +126,13 @@ namespace TombEditor.Compilers
         {
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
-            {
                 foreach (var sound in _editor.Level.Wad.OriginalWad.Sounds)
                 {
-                    string path = @"Sounds\Samples\" + sound;
-                    try
-                    {
-                        using (var readerSound = new BinaryReaderEx(File.OpenRead(path)))
-                        {
-                            int sampleUncompressedSize = (int)readerSound.BaseStream.Length;
-                            var sample = readerSound.ReadBytes(sampleUncompressedSize);
-                            writer.Write(sampleUncompressedSize);
-                            writer.Write(sampleUncompressedSize);
-                            writer.WriteBlockArray(sample);
-                        }
-                    }
-                    catch (Exception exc)
-                    {
-                        logger.Warn(exc, "Unable to open \"" + path + "\".");
-                        writer.Write(0);
-                        writer.Write(0);
-                    }
+                    byte[] soundData = _editor.Level.Settings.ReadSound(sound, _editor.Level.Settings.IgnoreMissingSounds);
+                    writer.Write(soundData.GetLength(0));
+                    writer.Write(soundData.GetLength(0));
+                    writer.Write(soundData);
                 }
-
-                writer.Flush();
-            }
 
             _bufferSamples = stream.ToArray();
         }
@@ -272,7 +254,7 @@ namespace TombEditor.Compilers
                     X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
-                    Room = (short)_level.Rooms.ReferenceIndexOf(instance.Room)
+                    Room = (short)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)]
                 };
 
                 if (instance.Fixed)
@@ -315,19 +297,20 @@ namespace TombEditor.Compilers
                     X = (int)Math.Round(Position.X),
                     Y = (int)Math.Round(-Position.Y),
                     Z = (int)Math.Round(Position.Z),
-                    Room = _level.Rooms.ReferenceIndexOf(instance.Room),
-                    FOV = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Fov * (65536.0 / 360.0)))),
-                    Roll = (short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, instance.Roll * (65536.0 / 360.0)))),
+                    Room = _roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)],
+                    FOV = (ushort)(182 * instance.Fov),
+                    Roll = (short)(182 * instance.Roll),
                     Timer = (ushort)instance.Timer,
                     Speed = (ushort)Math.Round(Math.Max(0, Math.Min(ushort.MaxValue, instance.Speed * 655.0f))),
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
-                    Flags = instance.Flags,
-                    DirectionX = (int)Math.Round(Position.X + 1024 * Direction.X),
-                    DirectionY = (int)Math.Round(Position.Y - 1024 * Direction.Y),
-                    DirectionZ = (int)Math.Round(Position.Z + 1024 * Direction.Z),
+                    Flags = instance.Flags
                 };
-                
+
+                flyby.DirectionX = (int)(flyby.X + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(instance.RotationY)));
+                flyby.DirectionY = (int)(flyby.Y - 1024 * Math.Sin(MathUtil.DegreesToRadians(instance.RotationX)));
+                flyby.DirectionZ = (int)(flyby.Z + 1024 * Math.Cos(MathUtil.DegreesToRadians(instance.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(instance.RotationY)));
+
                 tempFlyby.Add(flyby);
             }
 
@@ -1833,7 +1816,7 @@ namespace TombEditor.Compilers
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
                     ObjectID = (short)instance.WadObjectId,
-                    Room = (short)_level.Rooms.ReferenceIndexOf(instance.Room),
+                    Room = (short)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)],
                     Angle = unchecked((short)((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))))),
                     Intensity1 = -1,
                     Intensity2 = instance.Ocb
@@ -1859,7 +1842,7 @@ namespace TombEditor.Compilers
                     Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
                     Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
                     ObjectID = (ushort) instance.WadObjectId,
-                    Room = (ushort) _level.Rooms.ReferenceIndexOf(instance.Room)
+                    Room = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)]
                 };
 
                 double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));

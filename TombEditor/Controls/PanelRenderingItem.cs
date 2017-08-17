@@ -127,7 +127,7 @@ namespace TombEditor.Controls
                         _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
                     }
 
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(Matrix.Identity);
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
                     mioEffect.Techniques[0].Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);

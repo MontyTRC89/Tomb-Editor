@@ -14,7 +14,6 @@ namespace TombEditor
         private Action<IProgressReporter> _operation;
         private Thread _thread;
         private volatile bool _threadShouldAbort = false;
-        private volatile bool _success = false;
         private bool _autoCloseWhenDone = false;
 
         public FormOperationDialog(string operationName, bool autoCloseWhenDone, Action<IProgressReporter> operation)
@@ -35,7 +34,7 @@ namespace TombEditor
         
         private void FormImportPRJ_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if ((e.CloseReason == CloseReason.UserClosing) && !_success && !_threadShouldAbort)
+            if ((e.CloseReason == CloseReason.UserClosing) && _thread.IsAlive && !_threadShouldAbort)
             {
                 EndThread();
                 e.Cancel = true;
@@ -47,10 +46,9 @@ namespace TombEditor
             try
             {
                 _operation(this);
-                _success = true;
 
                 // Done
-                this?.Invoke((Action)delegate
+                this?.BeginInvoke((Action)delegate
                     {
                         pbStato.Value = 100;
                         butOk.Enabled = true;
@@ -67,7 +65,7 @@ namespace TombEditor
             {
                 logger.Error(ex, "PRJ loading failed");
 
-                string message = "There was an error while importing the PRJ file. Message: " + ex.Message;
+                string message = "There was an error. Message: " + ex.Message;
                 this?.Invoke((Action)delegate
                     {
                         pbStato.Value = 0;
@@ -115,7 +113,7 @@ namespace TombEditor
 
         private void butCancel_Click(object sender, EventArgs e)
         {
-            if (_threadShouldAbort)
+            if (_thread.IsAlive && _threadShouldAbort)
                 EndThread();
             else
                 Close();
@@ -123,7 +121,7 @@ namespace TombEditor
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            if (_thread.IsAlive || !_success)
+            if (_thread.IsAlive)
                 return;
             DialogResult = DialogResult.OK;
             Close();

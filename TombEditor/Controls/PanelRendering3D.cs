@@ -168,8 +168,9 @@ namespace TombEditor.Controls
             public BlockFaces Face { get; set; }
             public PickingResultBlock(float Distance, DrawingPoint pos, BlockFaces face)
             {
-                Pos = pos;
-                Face = face;
+                this.Distance = Distance;
+                this.Pos = pos;
+                this.Face = face;
             }
         }
 
@@ -178,7 +179,8 @@ namespace TombEditor.Controls
             public ObjectPtr ObjectPtr { get; set; }
             public PickingResultObject(float Distance,  ObjectPtr objectPtr)
             {
-                ObjectPtr = objectPtr;
+                this.Distance = Distance;
+                this.ObjectPtr = objectPtr;
             }
         }
 
@@ -839,7 +841,7 @@ namespace TombEditor.Controls
                     StaticMesh mesh = model.Meshes[0];
                     Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.Rotation)) *
                                    Matrix.Translation(modelInfo.Position);
-                    DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Moveable, room.Statics[i]), mesh, world);
+                    DoMeshPicking(ref result, ray, new ObjectPtr(ObjectInstanceType.Static, room.Statics[i]), mesh, world);
                 }
                 else
                 {
@@ -858,8 +860,11 @@ namespace TombEditor.Controls
                         BlockFace face = room.Blocks[sx, sz].Faces[f];
                         if (!face.Defined)
                             continue;
-                        if (room.RayIntersectsFace(ref ray, ref face, out distance) && ((result == null) || (distance < result.Distance)))
-                            result = new PickingResultBlock(distance, new DrawingPoint(sx, sz), (BlockFaces)f);
+                        if (room.RayIntersectsFace(ref ray, ref face, out distance))
+                        {
+                            if ((result == null) || (distance < result.Distance))
+                                result = new PickingResultBlock(distance, new DrawingPoint(sx, sz), (BlockFaces)f);
+                        }
                     }
 
             return result;
@@ -1172,12 +1177,14 @@ namespace TombEditor.Controls
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
                 Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
-                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.Sink, instance.Id))
+                if (_editor.SelectedObject == new ObjectPtr(ObjectInstanceType.FlyByCamera, instance.Id))
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    var message = "Sink (" + instance.Id + ")";
+                    var message = "Flyby camera (" + instance.Id + ")";
+
+                    FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
 
                     // Object position
                     message += Environment.NewLine + GetObjectPositionString(room, instance.Position);
@@ -1193,7 +1200,7 @@ namespace TombEditor.Controls
                     {
                         TriggerInstance trigger = _editor.Level.Triggers.ElementAt(n).Value;
                         if ((trigger.TargetType == TriggerTargetType.Object ||
-                             trigger.TargetType == TriggerTargetType.Sink) && trigger.Target == instance.Id)
+                             trigger.TargetType == TriggerTargetType.FlyByCamera) && trigger.Target == flyby.Sequence)
                         {
                             message += Environment.NewLine + "Triggered by Trigger #" + trigger.Id + " in Room #" +
                                        _editor.Level.Rooms.ReferenceIndexOf(trigger.Room) + " at X = " + trigger.X + ", Z = " + trigger.Z;
@@ -1204,6 +1211,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
+
+                    // Add the path of the flyby
+                    AddFlybyPath(flyby.Sequence);
                 }
 
                 Matrix model = Matrix.Translation(instance.Position) *
@@ -1455,7 +1465,7 @@ namespace TombEditor.Controls
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
         }
 
-        private void DrawMoveables(Matrix viewProjection, Room room)
+        private void DrawMoveables(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -1476,6 +1486,8 @@ namespace TombEditor.Controls
                     continue;
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[modelInfo.WadObjectId];
                 Debug.NumMoveables++;
+
+                Room room = modelInfo.Room;
 
                 if (k == 0 || modelInfo.WadObjectId != _lastObject.WadObjectId)
                 {
@@ -1525,7 +1537,7 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = model.ToString();
+                    string debugMessage = _editor.Level.Wad.WadMoveables[modelInfo.WadObjectId].ToString();
 
                     // Object position
                     debugMessage += Environment.NewLine + GetObjectPositionString(room, modelInfo.Position);
@@ -1553,7 +1565,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawStatics(Matrix viewProjection, Room room)
+        private void DrawStatics(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -1625,10 +1637,10 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string debugMessage = model.ToString();
+                    string debugMessage = _editor.Level.Wad.WadStatics[modelInfo.WadObjectId].ToString();
 
                     // Object position
-                    debugMessage += Environment.NewLine + GetObjectPositionString(room, modelInfo.Position);
+                    debugMessage += Environment.NewLine + GetObjectPositionString(_editor.SelectedRoom, modelInfo.Position);
 
                     for (int n = 0; n < _editor.Level.Triggers.Count; n++)
                     {
@@ -1643,7 +1655,7 @@ namespace TombEditor.Controls
                     Debug.AddString(debugMessage, screenPos);
 
                     // Add the line height of the object
-                    AddObjectHeightLine(viewProjection, room, modelInfo.Position);
+                    AddObjectHeightLine(viewProjection, _editor.SelectedRoom, modelInfo.Position);
                 }
 
                 _lastObject = modelInfo;
@@ -2000,7 +2012,7 @@ namespace TombEditor.Controls
                 return;
 
             // reset the backbuffer
-            bool IsFlipMap = _editor?.SelectedRoom?.Flipped ?? false;
+            bool IsFlipMap = (_editor?.SelectedRoom?.BaseRoom != null);
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
@@ -2038,10 +2050,17 @@ namespace TombEditor.Controls
             Task.WaitAll(task1, task2);
 
             // Draw the skybox if present
-            if (DrawHorizon)
+            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null && DrawHorizon)
             {
                 DrawSkyBox(viewProjection);
                 _device.Clear(ClearOptions.DepthBuffer, Color.Transparent, 1.0f, 0);
+            }
+
+            // Draw moveables and static meshes
+            if (_editor != null && _editor.Level != null && _editor.Level.Wad != null)
+            {
+                DrawMoveables(viewProjection);
+                DrawStatics(viewProjection);
             }
 
             // Set some common parameters of the shader
@@ -2055,6 +2074,9 @@ namespace TombEditor.Controls
 
             // Draw buckets
             DrawSolidBuckets(viewProjection);
+
+            DrawSelectedFogBulb();
+
             DrawOpaqueBuckets(viewProjection);
             DrawTransparentBuckets(viewProjection);
             DrawInvisibleBuckets(viewProjection);
@@ -2083,6 +2105,29 @@ namespace TombEditor.Controls
             _device.Present();
 
             logger.Debug($"Draw Call! {mils}ms");
+        }
+
+        private void DrawSelectedFogBulb()
+        {
+            if (_editor.SelectedObject != null && _editor.SelectedObject.HasValue && (_editor.SelectedObject.Value.Type == ObjectInstanceType.Light))
+            {
+                Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
+                if (light.Type == LightType.FogBulb)
+                {
+                    _roomEffect.Parameters["FogBulbEnabled"].SetValue(true);
+                    _roomEffect.Parameters["FogBulbIntensity"].SetValue(light.Intensity);
+                    _roomEffect.Parameters["FogBulbPosition"].SetValue(Vector3.Transform(light.Position, _editor.SelectedRoom.Transform));
+                    _roomEffect.Parameters["FogBulbRadius"].SetValue(light.Out * 1024.0f);
+                }
+                else
+                {
+                    _roomEffect.Parameters["FogBulbEnabled"].SetValue(false);
+                }
+            }
+            else
+            {
+                _roomEffect.Parameters["FogBulbEnabled"].SetValue(false);
+            }
         }
 
         private void RenderTask1(object viewProjection_)
@@ -2181,6 +2226,8 @@ namespace TombEditor.Controls
                     bool lights = (room != _editor.SelectedRoom ||
                                    (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+
+                    _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }
 
                 _device.SetIndexBuffer(bucket.IndexBuffer, false);
@@ -2306,6 +2353,8 @@ namespace TombEditor.Controls
                     bool lights = (room != _editor.SelectedRoom ||
                                    (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
                     _roomEffect.Parameters["LightingEnabled"].SetValue(lights);
+
+                    _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }
 
                 // Enable or disable double sided textures

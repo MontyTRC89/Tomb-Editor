@@ -8,17 +8,6 @@ using System.Diagnostics;
 
 namespace TombEditor.Compilers
 {
-    public enum Dec_BoxFlag
-    {
-        None = 0,
-        Water = 1,
-        Monkey = 2,
-        Jump = 4,
-        FlipMap = 8,
-        IsolatedBox = 16,
-        NotWalkableBox = 32
-    }
-
     public struct dec_tr_box_aux
     {
         public int Zmin;
@@ -38,6 +27,8 @@ namespace TombEditor.Compilers
         public bool Water;
         public int IsBaseRoom;
         public int IsAlternateRoom;
+        public bool Flipped;
+        public short ZoneID;
     }
 
     public sealed partial class LevelCompilerTr4
@@ -57,9 +48,6 @@ namespace TombEditor.Compilers
         private int dec_numBoxes = 0;
         private int dec_numOverlaps = 0;
         private bool dec_boxExtendsInAnotherRoom = false;
-        private Room[] dec_rooms;
-        private Room[] dec_baseRooms;
-        private Room[] dec_alternateRooms;
 
         private void Dec_BuildBoxesAndOverlaps()
         {
@@ -70,41 +58,7 @@ namespace TombEditor.Compilers
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
-
-            // TODO: for now I replicate the flipping method of winroomedit
-           // dec_rooms = new Room[_level.Rooms.Length];
-           // dec_baseRooms = new Room[_level.Rooms.Length];
-           // dec_alternateRooms = new Room[_level.Rooms.Length];
-
-            /* for (int n = 0; n < _level.Rooms.Length; n++)
-             {
-                 dec_rooms[n] = null;
-                 dec_baseRooms[n] = null;
-                 dec_alternateRooms[n] = null;
-             }
-
-             for (int n = 0; n < _level.Rooms.Length; n++)
-             {
-                 Room room = _level.Rooms[n];
-                 if (room != null && room.BaseRoom==null)
-                 {
-                     dec_rooms[n] = room;
-                     dec_baseRooms[n] = room;
-                 }
-             }
-
-             for (int n=0;n<_level.Rooms.Length;n++)
-             {
-                 Room room = _level.Rooms[n];
-                 if (room != null && room.BaseRoom != null)
-                 {
-                     dec_alternateRooms[dec_rooms.ReferenceIndexOf(room.BaseRoom)] = room;
-                 } 
-             }
-             */
-
-            //dec_rooms = _level.Rooms;
-
+                       
             for (int flipped = 0; flipped < 2; flipped++)
             {
                 for (int i = 0; i < _level.Rooms.Length; i++)
@@ -118,191 +72,155 @@ namespace TombEditor.Compilers
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                             //   Console.WriteLine("Room: " + i + ", X: " + x + ", Z: " + z);
-                                dec_tr_box_aux box = new dec_tr_box_aux();
-
-                                // First create the box...
-                                if (x != 0 &&
-                                    z != 0 &&
-                                    x != room.NumXSectors - 1 &&
-                                    z != room.NumZSectors - 1 &&
-                                    Dec_CreateNewBox(ref box, x, z, ref room))
+                                if (!room.ExcludeFromPathFinding)
                                 {
-                                    // ...then try to add it to the box array
-                                    boxIndex = Dec_AddBox(ref box);
-                                    if (boxIndex < 0) return;
+                                    dec_tr_box_aux box = new dec_tr_box_aux();
+
+                                    // First create the box...
+                                    if (x != 0 &&
+                                        z != 0 &&
+                                        x != room.NumXSectors - 1 &&
+                                        z != room.NumZSectors - 1 &&
+                                        Dec_CreateNewBox(ref box, x, z, ref room))
+                                    {
+                                        // ...then try to add it to the box array
+                                        boxIndex = Dec_AddBox(ref box);
+                                        if (boxIndex < 0) return;
+                                    }
+                                    else
+                                    {
+                                        boxIndex = 0x7ff;
+                                    }
+
+                                    // Assign the box index to the sector
+                                    room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)room._compiled.TextureSounds[x, z]);
                                 }
                                 else
                                 {
-                                    boxIndex = 0x7ff;
+                                    room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)room._compiled.TextureSounds[x, z]);
                                 }
-
-                                // Assign the box index to the sector
-                                room._compiled.Sectors[room._compiled.NumZSectors * x + z].BoxIndex = (short)(boxIndex << 4);
                             }
                         }
                     }
                 }
 
+                // Originally a FlipAllRooms() function was called. This function swap all base rooms with flipped room. 
+                // I've decided to simply set this global variable to true and, in each case, take the correct room.
                 dec_flipped = true;
             }
 
             dec_flipped = false;
 
             watch.Stop();
-            Console.WriteLine("Dec_BuildBoxesAndOverlaps(): " + watch.ElapsedMilliseconds + " ms");
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build boxes: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numBoxes);
+
+            watch.Restart();
 
             // Build the overlaps
-            //Dec_BuildOverlaps();
+            Dec_BuildOverlaps();
 
-             /*// Now put the boxes in the final array
-            if (dec_numBoxes > 0)
-            {
-                int currentBoxIndex = dec_numBoxes - 1;
-
-                do
-                {
-                    if (dec_boxes[currentBoxIndex].OverlapIndex != 0x7ff)
-                    {
-                        if (dec_boxes[currentBoxIndex].IsolatedBox)
-                            dec_boxes[currentBoxIndex].OverlapIndex = (short)(dec_boxes[currentBoxIndex].OverlapIndex | 0x8000);
-                    }
-
-                    /* dec_boxes[currentBoxIndex].Xmin <<= 10;
-                     dec_boxes[currentBoxIndex].Zmin <<= 10;
-                     dec_boxes[currentBoxIndex].Xmax = (byte)(dec_boxes[currentBoxIndex].Xmax << 10) - 1;
-                    dec_boxes[currentBoxIndex].TrueFloor *= -256;
-
-                    currentBoxIndex--;
-                }
-                while (currentBoxIndex > 0);
-            }*/
+            watch.Stop();
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build overlaps: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numOverlaps);
         }
 
-       /* private void Dec_FlipAllRooms()
+        private bool Dec_BuildOverlaps()
         {
-            for (int i=0;i<dec_rooms.Length;i++)
-            {
-                if ()
-            }
-        }*/
-
-       /* private bool Dec_BuildOverlaps()
-        {
-            int numBoxes = dec_numBoxes;
-            int numOverlaps = 0;
             dec_numOverlaps = 0;
+            dec_overlaps = new ushort[16384];
 
             int i = 0;
             int j = 0;
 
-            if (dec_numBoxes > 0)
+            i = 0;
+
+            do
             {
-                i = 0;
+                dec_tr_box_aux box1 = dec_boxes[i];
+                dec_boxes[i].OverlapIndex = 0x7ff;
 
-                do
+                if (!box1.Flipped)
                 {
-                    dec_tr_box_aux box1 = dec_boxes[i];
-                    dec_boxes[i].OverlapIndex = 0x7ff;
-
-                    if (!box1.FlipMap)
+                    if (dec_flipped)
                     {
-                        if (dec_flipped)
-                        {
-                            dec_flipped = false;
-                            numOverlaps = dec_numOverlaps;
-                        }
-
-                        numBoxes = dec_numBoxes;
-
-                        if (dec_numBoxes > 0)
-                        {
-                            j = 0;
-                            do
-                            {
-                                if (i != j)
-                                {
-                                    dec_tr_box_aux box2 = dec_boxes[j];
-
-                                    if (!box2.FlipMap)
-                                    {
-                                        bool overlap = Dec_BoxesOverlap(ref box1, ref box2);
-                                        numOverlaps = dec_numOverlaps;
-
-                                        if (overlap)
-                                        {
-                                            if (dec_numOverlaps == 16384) return false;
-                                            if (box1.OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (ushort)dec_numOverlaps;
-
-                                            dec_overlaps[numOverlaps++] = (ushort)j;
-                                            dec_numOverlaps = numOverlaps;
-
-                                            if (dec_jump) dec_overlaps[numOverlaps] |= 0x800;
-                                            if (dec_monkey) dec_overlaps[numOverlaps] |= 0x2000;
-                                        }
-                                    }
-                                }
-
-                                numBoxes = dec_numBoxes;
-                                j++;
-                            }
-                            while (j < dec_numBoxes);
-                        }
+                        dec_flipped = false;
                     }
 
-                    if (box1.FlipMap)
+                    j = 0;
+                    do
                     {
-                        if (!dec_flipped)
+                        if (i != j)
                         {
-                            dec_flipped = true;
-                            numOverlaps = dec_numOverlaps;
-                        }
+                            if (i % 50 == 0 && j % 50 == 0) Console.WriteLine("CHecking overlap " + i + " vs " + j);
+                            dec_tr_box_aux box2 = dec_boxes[j];
 
-                        numBoxes = dec_numBoxes;
-
-                        if (dec_numBoxes > 0)
-                        {
-                            j = 0;
-                            do
+                            if (!box2.Flipped)
                             {
-                                if (i != j)
+                                if (Dec_BoxesOverlap(ref box1, ref box2))
                                 {
-                                    dec_tr_box_aux box2 = dec_boxes[j];
+                                    if (dec_numOverlaps == 16384) return false;
+                                    if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
-                                    if (!box2.FlipMap)
-                                    {
-                                        bool overlap = Dec_BoxesOverlap(ref box1, ref box2);
-                                        numOverlaps = dec_numOverlaps;
+                                    dec_overlaps[dec_numOverlaps] = (ushort)j;
 
-                                        if (overlap)
-                                        {
-                                            if (dec_numOverlaps == 16384) return false;
-                                            if (box1.OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (ushort)dec_numOverlaps;
+                                    if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
+                                    if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
 
-                                            dec_overlaps[numOverlaps++] = (ushort)j;
-                                            dec_numOverlaps = numOverlaps;
-
-                                            if (dec_jump) dec_overlaps[numOverlaps] |= 0x800;
-                                            if (dec_monkey) dec_overlaps[numOverlaps] |= 0x2000;
-                                        }
-                                    }
+                                    dec_numOverlaps++;
                                 }
-
-                                numBoxes = dec_numBoxes;
-                                j++;
                             }
-                            while (j < dec_numBoxes);
                         }
-                    }
 
-                    i++;
+                        j++;
+                    }
+                    while (j < dec_numBoxes);
                 }
-                while (i < dec_numBoxes);
 
+                if (box1.Flipped)
+                {
+                    if (!dec_flipped)
+                    {
+                        dec_flipped = true;
+                    }
+
+                    j = 0;
+                    do
+                    {
+                        if (i != j)
+                        {
+                            dec_tr_box_aux box2 = dec_boxes[j];
+
+                            if (box2.Flipped)
+                            {
+                                if (Dec_BoxesOverlap(ref box1, ref box2))
+                                {
+                                    if (dec_numOverlaps == 16384) return false;
+                                    if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+
+                                    dec_overlaps[dec_numOverlaps] = (ushort)j;
+                                    
+                                    if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
+                                    if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
+
+                                    dec_numOverlaps++;
+                                }
+                            }
+                        }
+
+                        j++;
+                    }
+                    while (j < dec_numBoxes);
+                }
+
+                i++;
+
+                dec_overlaps[dec_numOverlaps - 1] |= 0x8000;
             }
+            while (i < dec_numBoxes);
+
+            dec_flipped = false;
 
             return true;
-        }*/
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Dec_AddBox(ref dec_tr_box_aux box)
@@ -317,13 +235,7 @@ namespace TombEditor.Compilers
                     dec_boxes[i].Xmax == box.Xmax &&
                     dec_boxes[i].Zmin == box.Zmin &&
                     dec_boxes[i].Zmax == box.Zmax &&
-                    dec_boxes[i].TrueFloor == box.TrueFloor &&
-                    dec_boxes[i].IsBaseRoom == box.IsBaseRoom &&
-                    dec_boxes[i].IsAlternateRoom == box.IsAlternateRoom &&
-                    dec_boxes[i].IsolatedBox == box.IsolatedBox &&
-                    dec_boxes[i].Jump == box.Jump &&
-                    dec_boxes[i].Monkey == box.Monkey &&
-                    dec_boxes[i].NotWalkableBox == box.NotWalkableBox &&
+                    dec_boxes[i].TrueFloor == box.TrueFloor && 
                     dec_boxes[i].Water == box.Water)
                 {
                     boxIndex = i;
@@ -348,6 +260,9 @@ namespace TombEditor.Compilers
 
             Room room = theRoom;
             Block block = room.Blocks[x, z];
+
+            // Check if current block is a not walkable sector
+            if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return false;
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
@@ -383,11 +298,11 @@ namespace TombEditor.Compilers
 
             if (dec_flipped)
             {
-              //  box.IsAlternateRoom = true;
+                box.Flipped = true;
             }
             else
             {
-             //   box.FlipMap = false;
+                box.Flipped = false;
             }
 
             if (dec_monkey)
@@ -669,6 +584,7 @@ namespace TombEditor.Compilers
             bool borderOrOutside = Dec_IsOutsideOrdBorderRoom(x, z);
 
             Room theRoom = dec_currentRoom;
+            Room startRoom = dec_currentRoom;
 
             int xInRoom = 0;
             int zInRoom = 0;
@@ -708,9 +624,26 @@ namespace TombEditor.Compilers
                     block = room.Blocks[xInRoom, zInRoom];
 
                     bool isWallPortal = block.WallPortal != null;
+
+                    // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
+                    // This happen for example when there are 3 room connected together and the corner is inside the box. 
+                    // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
+                    // For now I assume that the dest X, Z can't be reached.
+                    if (xInRoom == 0 && zInRoom == 0 ||
+                        xInRoom == 0 && zInRoom == room.NumZSectors - 1 ||
+                        xInRoom == room.NumXSectors - 1 && zInRoom == 0 ||
+                        xInRoom == room.NumXSectors - 1 && zInRoom == room.NumZSectors - 1) return false;
+
                     if (!isWallPortal) break;
                     
-                    dec_currentRoom = block.WallPortal.AdjoiningRoom;
+
+                    Portal portal = _level.Portals[block.WallPortal];
+
+                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
+
+                    dec_currentRoom = adjoiningRoom;
+                    theRoom = adjoiningRoom;
 
                     if (block.WallOpacity == PortalOpacity.Opacity1) return false;
 
@@ -727,13 +660,16 @@ namespace TombEditor.Compilers
                 // After having probed that we can reach X, Z from the original room, do the following
                 while (block.FloorPortal != null && !block.IsFloorSolid)
                 {
+                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
+
                     if (block.FloorOpacity == PortalOpacity.Opacity1 &&
-                        !(room.FlagWater ^ block.FloorPortal.AdjoiningRoom.FlagWater))
+                        !(room.FlagWater ^ adjoiningRoom.FlagWater))
                     {
                         break;
                     }
 
-                    dec_currentRoom = block.FloorPortal.AdjoiningRoom;
+                    dec_currentRoom = adjoiningRoom;
 
                     room = dec_currentRoom;
 
@@ -759,6 +695,9 @@ namespace TombEditor.Compilers
             Room adjoiningRoom = dec_currentRoom;
             Room room = dec_currentRoom;
 
+            // Ignore pathfinding for current room?
+            if (dec_currentRoom.ExcludeFromPathFinding) return 0x7fff;
+
             int posXblocks = (int)room.Position.X;
             int posZblocks = (int)room.Position.Z;
 
@@ -779,7 +718,8 @@ namespace TombEditor.Compilers
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
-                block.WallOpacity == PortalOpacity.Opacity1)
+                block.WallOpacity == PortalOpacity.Opacity1 || 
+                (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = -1;
                 dec_q1 = -1;
@@ -796,10 +736,9 @@ namespace TombEditor.Compilers
             }
             else
             {
-                if (block.WallPortal == null) return 0x7fff;
-
                 Portal portal = block.WallPortal;
                 adjoiningRoom = portal.AdjoiningRoom;
+                if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                 dec_currentRoom = adjoiningRoom;
                 dec_boxExtendsInAnotherRoom = true;
@@ -820,10 +759,11 @@ namespace TombEditor.Compilers
                 Portal portal = block.FloorPortal;
 
                 Room adjoiningRoom2 = portal.AdjoiningRoom;
+                if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
 
                 if (block.FloorOpacity == PortalOpacity.Opacity1)
                 {
-                    if (!(room.FlagWater ^ adjoiningRoom.FlagWater))
+                    if (!(room.FlagWater ^ adjoiningRoom2.FlagWater))
                     {
                         break;
                     }
@@ -840,6 +780,8 @@ namespace TombEditor.Compilers
 
                 block = room.Blocks[xInRoom, zInRoom];
             }
+
+            if ((block.Flags & BlockFlags.NotWalkableFloor) != 0) return 0x7fff;
 
             int sumHeights = block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3];
             int meanFloorCornerHeight = sumHeights >> 2;
@@ -866,8 +808,8 @@ namespace TombEditor.Compilers
                 {
                     if (block.QAFaces[0] < block.QAFaces[1] && block.QAFaces[0] < block.QAFaces[3] ||
                         block.QAFaces[2] < block.QAFaces[1] && block.QAFaces[2] < block.QAFaces[3] ||
-                        block.QAFaces[0] < block.QAFaces[1] && block.QAFaces[0] < block.QAFaces[3] ||
-                        block.QAFaces[2] < block.QAFaces[1] && block.QAFaces[2] < block.QAFaces[3])
+                        block.QAFaces[0] > block.QAFaces[1] && block.QAFaces[0] > block.QAFaces[3] ||
+                        block.QAFaces[2] > block.QAFaces[1] && block.QAFaces[2] > block.QAFaces[3])
                     {
                         someFlag = true;
                     }
@@ -888,7 +830,10 @@ namespace TombEditor.Compilers
             if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null && !block.IsCeilingSolid)
             {
                 Portal portal = block.CeilingPortal;
-                if (!portal.AdjoiningRoom.FlagWater)
+                Room adjoiningRoom3 = portal.AdjoiningRoom;
+                if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
+
+                if (!adjoiningRoom3.FlagWater)
                 {
                     dec_water = false;
                 }
@@ -952,7 +897,7 @@ namespace TombEditor.Compilers
                 xMin = b.Xmin;
 
             int xMax = a.Xmax;
-            if (a.Xmax <= b.Xmax)
+            if (a.Xmax >= b.Xmax)
                 xMax = b.Xmax;
 
             int zMin = a.Zmin;
@@ -1016,7 +961,7 @@ namespace TombEditor.Compilers
                 if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax)) return false;
 
                 floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor > b.TrueFloor || floor == 0x7fff) return false;
+                if (floor > b.TrueFloor - 2 || floor == 0x7fff) return false;
 
                 if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
                 {
@@ -1052,7 +997,7 @@ namespace TombEditor.Compilers
                 zMin = b.Zmin;
 
             int zMax = a.Zmax;
-            if (a.Zmax <= b.Zmax)
+            if (a.Zmax >= b.Zmax)
                 zMax = b.Zmax;
 
             int xMin = a.Xmin;
@@ -1116,7 +1061,7 @@ namespace TombEditor.Compilers
                 if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ)) return false;
 
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor > b.TrueFloor || floor == 0x7fff) return false;
+                if (floor > b.TrueFloor - 2 || floor == 0x7fff) return false;
 
                 if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
                 {
@@ -1146,11 +1091,11 @@ namespace TombEditor.Compilers
         public bool Dec_OverlapXmax(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
         {
             int startZ = b.Zmin;
-            if (a.Zmin > startZ)
+            if (a.Zmin > b.Zmin)
                 startZ = a.Zmin;
 
             int endZ = a.Zmax;
-            if (a.Zmax >= endZ)
+            if (a.Zmax >= b.Zmax)
                 endZ = b.Zmax;
 
             if (startZ >= endZ)
@@ -1182,11 +1127,11 @@ namespace TombEditor.Compilers
         public bool Dec_OverlapXmin(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
         {
             int startZ = b.Zmin;
-            if (a.Zmin > startZ)
+            if (a.Zmin > b.Zmin)
                 startZ = a.Zmin;
 
             int endZ = a.Zmax;
-            if (a.Zmax >= endZ)
+            if (a.Zmax >= b.Zmax)
                 endZ = b.Zmax;
 
             if (startZ >= endZ)
@@ -1218,11 +1163,11 @@ namespace TombEditor.Compilers
         public bool Dec_OverlapZmax(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
         {
             int startX = b.Xmin;
-            if (a.Xmin > startX)
+            if (a.Xmin > b.Xmin)
                 startX = a.Xmin;
 
             int endX = a.Xmax;
-            if (a.Xmax >= endX)
+            if (a.Xmax >= b.Xmax)
                 endX = b.Xmax;
 
             if (startX >= endX)
@@ -1254,11 +1199,11 @@ namespace TombEditor.Compilers
         public bool Dec_OverlapZmin(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
         {
             int startX = b.Xmin;
-            if (a.Xmin > startX)
+            if (a.Xmin > b.Xmin)
                 startX = a.Xmin;
 
             int endX = a.Xmax;
-            if (a.Xmax >= endX)
+            if (a.Xmax >= b.Xmax)
                 endX = b.Xmax;
 
             if (startX >= endX)

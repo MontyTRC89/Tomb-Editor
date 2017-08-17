@@ -58,6 +58,7 @@ namespace TombEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lstLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstLog.FormattingEnabled = true;
+            this.lstLog.IntegralHeight = false;
             this.lstLog.Location = new System.Drawing.Point(7, 7);
             this.lstLog.Name = "lstLog";
             this.lstLog.Size = new System.Drawing.Size(641, 325);

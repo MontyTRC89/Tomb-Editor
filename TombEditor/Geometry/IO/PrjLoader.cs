@@ -61,11 +61,18 @@ namespace TombEditor.Geometry.IO
             public short _thisThingIndex;
             public short _otherThingIndex;
         };
-        
-        public static Level LoadFromPrj(string filename, GraphicsDevice device, IProgressReporter progressReporter)
+
+        public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
 
+            // Setup paths
+            level.Settings.LevelFilePath = Path.ChangeExtension(filename, "prj2");
+
+            string gameDirectory = FindGameDirectory(filename);
+            progressReporter.ReportProgress(0, "Game directory: " + gameDirectory);
+            level.Settings.GameDirectory = level.Settings.MakeRelative(gameDirectory, VariableType.LevelDirectory);
+            
             try
             {
                 var portals = new List<Portal>();
@@ -73,11 +80,8 @@ namespace TombEditor.Geometry.IO
                 // Open file
                 using (var reader = new BinaryReaderEx(File.OpenRead(filename)))
                 {
-                    level.FileName = Path.ChangeExtension(filename, "prj2");
-
-                    progressReporter.ReportProgress(0, "Begin of PRJ import");
-
-                    logger.Warn("Opening Winroomedit PRJ file");
+                    progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
+                    logger.Debug("Opening Winroomedit PRJ file " + filename);
 
                     // Check if it's a NGLE PRJ
                     bool ngle = false;
@@ -126,7 +130,7 @@ namespace TombEditor.Geometry.IO
                                 break;
                         string roomName = System.Text.Encoding.ASCII.GetString(roomNameBytes, 0, roomNameLength);
 
-                        logger.Warn("Room #" + i);
+                        logger.Info("Room #" + i);
                         logger.Info("    Name: " + roomName);
 
                         // Read position
@@ -225,7 +229,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            var objRoom = reader.ReadInt16(); // level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -264,7 +268,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                 {
-                                    var instance = new MoveableInstance(objectsThings[j], objRoom)
+                                    var instance = new MoveableInstance(objectsThings[j], room)
                                     {
                                         CodeBits = (byte)((objOcb >> 1) & 0x1f),
                                         Invisible = (objOcb & 0x0001) != 0,
@@ -299,7 +303,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    var instance = new StaticInstance(objectsThings[j], objRoom)
+                                    var instance = new StaticInstance(objectsThings[j], room)
                                     {
                                         WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                         Position = new Vector3(objPosX, objLongY, objPosZ)
@@ -460,7 +464,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeX = reader.ReadInt16();
                             short objSizeZ = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            var objRoom = reader.ReadInt16(); // level.GetOrCreateDummyRoom(reader.ReadInt16());
                             short objSlot = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -501,23 +505,29 @@ namespace TombEditor.Geometry.IO
                                     {
                                         case 0x4000:
                                             lightType = LightType.Light;
+                                            lightIn /= 1024.0f;
+                                            lightOut /= 1024.0f;
                                             break;
                                         case 0x6000:
                                             lightType = LightType.Shadow;
+                                            lightIn /= 1024.0f;
+                                            lightOut /= 1024.0f;
                                             break;
                                         case 0x4200:
                                             lightType = LightType.Sun;
                                             break;
                                         case 0x5000:
-                                            lightIn = 1013.76f;
-                                            lightOut = 1024.0f;
                                             lightType = LightType.Effect;
                                             break;
                                         case 0x4100:
                                             lightType = LightType.Spot;
+                                            lightLen /= 1024.0f;
+                                            lightCut /= 1024.0f;
                                             break;
                                         case 0x4020:
                                             lightType = LightType.FogBulb;
+                                            lightIn /= 1024.0f;
+                                            lightOut /= 1024.0f;
                                             break;
                                         default:
                                             throw new NotSupportedException("Unknown light type found inside *.prj file.");
@@ -532,8 +542,8 @@ namespace TombEditor.Geometry.IO
                                         DirectionX = 360.0f - lightX,
                                         DirectionY = lightY + 90.0f,
                                         Enabled = lightOn == 0x01,
-                                        In = lightIn / 1024.0f,
-                                        Out = lightOut / 1024.0f,
+                                        In = lightIn,
+                                        Out = lightOut,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
                                     if (light.DirectionY >= 360)
@@ -542,7 +552,7 @@ namespace TombEditor.Geometry.IO
                                     room.Lights.Add(light);
                                     break;
                                 case 0x4c00:
-                                    var sound = new SoundSourceInstance(objectsThings2[j], objRoom)
+                                    var sound = new SoundSourceInstance(objectsThings2[j], room)
                                     {
                                         SoundId = objSlot,
                                         Position = new Vector3(objPosX, objLongY, objPosZ)
@@ -552,7 +562,7 @@ namespace TombEditor.Geometry.IO
                                     level.Objects.Add(sound.Id, sound);
                                     break;
                                 case 0x4400:
-                                    var sink = new SinkInstance(objectsThings2[j], objRoom)
+                                    var sink = new SinkInstance(objectsThings2[j], room)
                                     {
                                         Strength = (short)(objTimer / 2),
                                         Position = new Vector3(objPosX, objLongY, objPosZ)
@@ -563,7 +573,7 @@ namespace TombEditor.Geometry.IO
                                     break;
                                 case 0x4800:
                                 case 0x4080:
-                                    var camera = new CameraInstance(objectsThings2[j], objRoom)
+                                    var camera = new CameraInstance(objectsThings2[j], room)
                                     {
                                         Timer = objTimer,
                                         Fixed = (objectType == 0x4080),
@@ -574,7 +584,7 @@ namespace TombEditor.Geometry.IO
                                     room.Cameras.Add(camera.Id);
                                     break;
                                 case 0x4040:
-                                    var flybyCamera = new FlybyCameraInstance(objectsThings2[j], objRoom)
+                                    var flybyCamera = new FlybyCameraInstance(objectsThings2[j], room)
                                     {
                                         Timer = unchecked((ushort)objTimer),
                                         Sequence = (byte)((objSlot & 0xe000) >> 13),
@@ -588,6 +598,8 @@ namespace TombEditor.Geometry.IO
                                         Flags = unchecked((ushort)objOcb)
                                     };
 
+                                    if (flybyCamera.RotationY >= 360) flybyCamera.RotationY = (short)(flybyCamera.RotationY - 360);
+                                    
                                     level.Objects.Add(flybyCamera.Id, flybyCamera);
                                     room.FlyByCameras.Add(flybyCamera.Id);
                                     break;
@@ -865,9 +877,9 @@ namespace TombEditor.Geometry.IO
                         }
 
                         string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                        textureFilename = textureFilename.Replace('\0', ' ').Trim();
-                        ResourceLoader.TryLoadingTexture(level, textureFilename, device, progressReporter);
-                        progressReporter.ReportProgress(50, "Loaded texture '" + textureFilename + "'");
+                        level.Settings.TextureFilePath = level.Settings.MakeRelative(textureFilename.Replace('\0', ' ').Trim(), VariableType.LevelDirectory);
+                        ResourceLoader.TryLoadingTexture(level, progressReporter);
+                        progressReporter.ReportProgress(50, "Loaded texture '" + level.Settings.TextureFilePath + "'");
                     }
 
                     // Read textures
@@ -908,9 +920,30 @@ namespace TombEditor.Geometry.IO
                             sb++;
                         }
                         string wadName = System.Text.Encoding.ASCII.GetString(stringBuffer);
-                        wadName = wadName.Replace('\0', ' ').Trim();
-                        ResourceLoader.TryLoadingWad(level, wadName, device, progressReporter);
-                        progressReporter.ReportProgress(60, "WAD loaded");
+                        level.Settings.WadFilePath = level.Settings.MakeRelative(Path.ChangeExtension(wadName.Replace('\0', ' ').Trim(), "wad"), VariableType.LevelDirectory);
+                        ResourceLoader.TryLoadingObjects(level, progressReporter);
+                        progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
+                    }
+
+                    // Setup paths to customized fonts and the skys
+                    if (!string.IsNullOrEmpty(level.Settings.WadFilePath))
+                    {
+                        string objectFilePath = level.Settings.MakeAbsolute(level.Settings.WadFilePath);
+
+                        string fontPcFilePath = Path.Combine(Path.GetDirectoryName(objectFilePath), "Font.pc");
+                        if (File.Exists(fontPcFilePath))
+                            level.Settings.FontTextureFilePath = level.Settings.MakeRelative(fontPcFilePath, VariableType.LevelDirectory);
+
+                        string wadSkyFilePath = Path.ChangeExtension(objectFilePath, "raw");
+                        string genericSkyFilePath = Path.Combine(Path.GetDirectoryName(objectFilePath), "pcsky.raw");
+                        if (File.Exists(wadSkyFilePath))
+                            level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(wadSkyFilePath, VariableType.LevelDirectory);
+                        else if (File.Exists(genericSkyFilePath))
+                            level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(genericSkyFilePath, VariableType.LevelDirectory);
+
+                        string soundPath = Path.Combine(Path.GetDirectoryName(objectFilePath), "../../sound/Samples");
+                        level.Settings.SoundPaths[0].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
+                        level.Settings.IgnoreMissingSounds = true;
                     }
 
                     // Write slots
@@ -1920,8 +1953,8 @@ namespace TombEditor.Geometry.IO
                                                             else
                                                             {
                                                                 theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
-                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
-                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
+                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
 
                                                                 newRot = (sbyte)(newRot + 2);
                                                             }
@@ -1980,8 +2013,8 @@ namespace TombEditor.Geometry.IO
                                                             else
                                                             {
                                                                 theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
-                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
-                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
 
                                                                 newRot = (sbyte)(newRot + 2);
                                                             }
@@ -2040,8 +2073,8 @@ namespace TombEditor.Geometry.IO
                                                             else
                                                             {
                                                                 theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
-                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
-                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+                                                                theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                                theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
 
                                                                 newRot = (sbyte)(newRot + 2);
                                                             }
@@ -2465,7 +2498,7 @@ namespace TombEditor.Geometry.IO
                         }
                     }
                 }
-
+                
                 // Check that there are uninitialized rooms
                 foreach (Room room in level.Rooms)
                     if (room != null)
@@ -2489,6 +2522,21 @@ namespace TombEditor.Geometry.IO
                 level.Dispose(); // We log in the level above
                 throw;
             }
+        }
+
+        private static string FindGameDirectory(string filename)
+        {
+            string directory = filename;
+            while (!string.IsNullOrEmpty(directory))
+            {
+                if (File.Exists(Path.Combine(directory, "Tomb4.exe")) ||
+                    File.Exists(Path.Combine(directory, "script.dat")))
+                {
+                    return directory;
+                }
+                directory = Path.GetDirectoryName(directory);
+            }
+            return Path.GetDirectoryName(filename);
         }
     }
 }

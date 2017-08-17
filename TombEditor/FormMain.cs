@@ -265,8 +265,8 @@ namespace TombEditor
             // Update application title
             if (obj is Editor.LevelFileNameChanged)
             {
-                string LevelName = string.IsNullOrEmpty(_editor.Level.FileName) ? "Untitled" :
-                    Path.GetFileNameWithoutExtension(_editor.Level.FileName);
+                string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
+                    Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
             }
 
@@ -897,16 +897,22 @@ namespace TombEditor
         
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string path = Geometry.IO.ResourceLoader.BrowseTexture(_editor.Level.TextureFile, _editor.Level.FileName, this);
-            if (!string.IsNullOrEmpty(path))
+            if (!ResourceLoader.BrowseTextureFile(_editor.Level.Settings, this))
                 return;
-            _editor.Level.LoadTexture(path, _deviceManager.Device);
+            _editor.Level.ReloadTexture();
             _editor.LoadedTexturesChange();
         }
         
         private void unloadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.UnloadTexture();
+            _editor.Level.Settings.TextureFilePath = null;
+            _editor.Level.ReloadTexture();
+            _editor.LoadedTexturesChange();
+        }
+
+        private void reloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Level.ReloadTexture();
             _editor.LoadedTexturesChange();
         }
 
@@ -929,7 +935,7 @@ namespace TombEditor
         {
             if (_editor.Level == null)
                 return;
-            if (_editor.Level.TextureFile == null)
+            if (_editor.Level.Settings.LevelFilePath == null)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("Currently there is no texture loaded to convert it.",
                     "No texture loaded");
@@ -937,8 +943,8 @@ namespace TombEditor
             }
 
             string pngFilePath = Path.Combine(
-                Path.GetDirectoryName(_editor.Level.TextureFile),
-                Path.GetFileNameWithoutExtension(_editor.Level.TextureFile) + ".png");
+                Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath),
+                Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath) + ".png");
 
             if (File.Exists(pngFilePath))
             {
@@ -957,7 +963,7 @@ namespace TombEditor
                 try
                 {
                     //Convert...
-                    Bitmap bitmap = TombLib.Graphics.TextureLoad.LoadToBitmap(_editor.Level.TextureFile);
+                    Bitmap bitmap = TombLib.Graphics.TextureLoad.LoadToBitmap(_editor.Level.Settings.LevelFilePath);
                     try
                     {
                         Utils.ConvertTextureTo256Width(ref bitmap);
@@ -983,22 +989,28 @@ namespace TombEditor
 
             DarkUI.Forms.DarkMessageBox.ShowInformation(
                 "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
-            _editor.Level.LoadTexture(pngFilePath, _deviceManager.Device);
+            _editor.Level.Settings.TextureFilePath = pngFilePath;
             _editor.LoadedTexturesChange();
         }
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string path = Geometry.IO.ResourceLoader.BrowseWad(_editor.Level.WadFile, _editor.Level.FileName, this);
-            if (!string.IsNullOrEmpty(path))
+            if (!ResourceLoader.BrowseObjectFile(_editor.Level.Settings, this))
                 return;
-            _editor.Level.LoadWad(path, _deviceManager.Device);
+            _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(_editor.Level.Wad);
         }
 
         private void unloadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.UnloadWad();
+            _editor.Level.Settings.WadFilePath = null;
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(null);
+        }
+        
+        private void reloadWadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(null);
         }
 
@@ -1079,7 +1091,7 @@ namespace TombEditor
             if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            Level level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, _deviceManager.Device, new ProgressReporterSimple(this));
+            Level level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, new ProgressReporterSimple(this));
             if (level == null)
             {
                 DarkUI.Forms.DarkMessageBox.ShowError(
@@ -1106,7 +1118,7 @@ namespace TombEditor
             try
             {
                 using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
-                    newLevel = PrjLoader.LoadFromPrj(fileName, _deviceManager.Device, progressReporter)))
+                    newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
                 {
                     if (form.ShowDialog(this) != DialogResult.OK || newLevel == null)
                         return;
@@ -1122,17 +1134,17 @@ namespace TombEditor
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(_editor.Level.FileName))
+            if (!string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
             {
-                saveFileDialogPRJ2.InitialDirectory = Path.GetDirectoryName(_editor.Level.FileName);
-                saveFileDialogPRJ2.FileName = Path.GetFileName(_editor.Level.FileName);
+                saveFileDialogPRJ2.InitialDirectory = Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath);
+                saveFileDialogPRJ2.FileName = Path.GetFileName(_editor.Level.Settings.LevelFilePath);
             }
             if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
             if (Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level))
             {
-                _editor.Level.FileName = saveFileDialogPRJ2.FileName;
+                _editor.Level.Settings.LevelFilePath = saveFileDialogPRJ2.FileName;
                 _editor.LevelFileNameChange();
             }
             else
@@ -1178,15 +1190,16 @@ namespace TombEditor
             }
         }
 
-        private void BuildLevel(bool autoCloseWhenDone)
+        private bool BuildLevel(bool autoCloseWhenDone)
         {
             Level level = _editor.Level;
-            string fileName = Path.Combine("Game\\Data\\", Path.ChangeExtension(level.FileName ?? "", "tr4"));
-
+            string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
+            
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
                 new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
             {
                 form.ShowDialog(this);
+                return form.DialogResult != DialogResult.Cancel;
             }
         }
 
@@ -1197,12 +1210,14 @@ namespace TombEditor
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
-            BuildLevel(true);
+            if (!BuildLevel(true))
+                return;
 
+            string executablePath = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.GameExecutableFilePath);
             var info = new ProcessStartInfo
             {
-                WorkingDirectory = Path.GetDirectoryName(Application.ExecutablePath) + "\\Game",
-                FileName = "tomb4.exe"
+                WorkingDirectory = Path.GetDirectoryName(executablePath),
+                FileName = executablePath
             };
 
             Process.Start(info);
@@ -1493,6 +1508,8 @@ namespace TombEditor
         
         private void butFlipMap_Click(object sender, EventArgs e)
         {
+            butFlipMap.Checked = !butFlipMap.Checked;
+
             if (butFlipMap.Checked)
             {
                 if (_editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom != null)
@@ -1752,16 +1769,22 @@ namespace TombEditor
             butDrawHorizon.Checked = panel3D.DrawHorizon;
             panel3D.Invalidate();
         }
+    
+        private void levelSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormLevelSettings form = new FormLevelSettings(_editor))
+                form.ShowDialog(this);
+        }
 
         // Only for debugging purposes...
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //level.Load(""); 
-            var level = new TombRaider4Level("e:\\trle\\data\\coastal.tr4");
+            var level = new TombRaider4Level("e:\\trle\\data\\karnak.tr4");
             level.Load("originale");
 
-            level = new TombRaider4Level("Game\\Data\\coastal.tr4");
+            level = new TombRaider4Level("Game\\Data\\karnak.tr4");
             level.Load("editor");
 
             //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
@@ -1819,7 +1842,7 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
-                "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
+                            "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
         }
     }
 }

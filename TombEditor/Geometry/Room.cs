@@ -290,7 +290,13 @@ namespace TombEditor.Geometry
                     {
                         Blocks[x, z].Faces[f].Defined = false;
                     }
+                }
+            }
 
+            for (int x = xMin + 1; x < xMax; x++)
+            {
+                for (int z = zMin + 1; z < zMax; z++)
+                {
                     NumVerticesInGrid[x, z] = 0;
                 }
             }

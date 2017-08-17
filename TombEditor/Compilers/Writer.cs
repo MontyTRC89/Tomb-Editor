@@ -159,8 +159,7 @@ namespace TombEditor.Compilers
                 }
 
                 // Write object textures
-                var tex = new byte[] {0x00, 0x54, 0x45, 0x58};
-                writer.WriteBlockArray(tex);
+                writer.Write(new byte[] { 0x00, 0x54, 0x45, 0x58 });
 
                 _objectTextures = _tempObjectTextures.ToArray();
 
@@ -185,10 +184,6 @@ namespace TombEditor.Compilers
                 using (var readerSounds = new BinaryReaderEx(File.OpenRead(
                     _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx")))
                 {
-                    /*byte[] sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
-                    readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);
-                    readerSounds.ReadBytes(370 * 2);*/
-
                     soundMap = readerSounds.ReadBytes(370 * 2);
                     _numSoundDetails = (uint) readerSounds.ReadInt32();
                     soundDetails = readerSounds.ReadBytes((int) _numSoundDetails * 8);

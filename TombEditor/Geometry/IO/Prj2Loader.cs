@@ -18,6 +18,7 @@ namespace TombEditor.Geometry.IO
         private delegate Portal PortalGetter(int id);
         
         public static Level LoadFromPrj2(string filename, GraphicsDevice device, IProgressReporter progressReporter)
+        public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
 
@@ -37,14 +38,27 @@ namespace TombEditor.Geometry.IO
             {
                 using (var reader = CreatePrjReader(filename))
                 {
-                    level.FileName = filename;
+                    level.Settings.LevelFilePath = filename;
 
                     // Read version code (in the future it can be used to have multiple PRJ versions)
                     int versionCode = reader.ReadInt32();
 
                     // Read resource files
-                    ResourceLoader.TryLoadingTexture(level, reader.ReadStringUTF8(), device, progressReporter);
-                    ResourceLoader.TryLoadingWad(level, reader.ReadStringUTF8(), device, progressReporter);
+                    level.Settings.TextureFilePath = reader.ReadStringUTF8();
+                    level.Settings.WadFilePath = reader.ReadStringUTF8();
+                    level.Settings.FontTextureFilePath = reader.ReadStringUTF8();
+                    level.Settings.SkyTextureFilePath = reader.ReadStringUTF8();
+                    level.Settings.GameDirectory = reader.ReadStringUTF8();
+                    level.Settings.GameLevelFilePath = reader.ReadStringUTF8();
+                    level.Settings.GameExecutableFilePath = reader.ReadStringUTF8();
+                    level.Settings.SoundPaths.Clear();
+                    int soundPathCount = reader.ReadInt32();
+                    for (int i = 0; i < soundPathCount; ++i)
+                        level.Settings.SoundPaths.Add(new SoundPath(reader.ReadStringUTF8()));
+                    level.Settings.IgnoreMissingSounds = reader.ReadBoolean();
+
+                    ResourceLoader.TryLoadingTexture(level, progressReporter);
+                    ResourceLoader.TryLoadingObjects(level, progressReporter);
                     
                     // Read fillers
                     reader.ReadInt32();

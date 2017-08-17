@@ -16,6 +16,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +63,7 @@
             this.itemsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadWadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.addCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFlybyCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,8 +74,9 @@
             this.resetFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importConvertTextureToPng = new System.Windows.Forms.ToolStripMenuItem();
             this.UnloadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reloadTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importConvertTextureToPng = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
             this.textureFloorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureCeilingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,6 +87,7 @@
             this.bumpMappingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.levelSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -665,6 +669,7 @@
             this.itemsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadWADToolStripMenuItem,
             this.unloadWADToolStripMenuItem,
+            this.reloadWadToolStripMenuItem,
             this.toolStripMenuItem9,
             this.addCameraToolStripMenuItem,
             this.addFlybyCameraToolStripMenuItem,
@@ -695,6 +700,14 @@
             this.unloadWADToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.unloadWADToolStripMenuItem.Text = "Unload WAD";
             this.unloadWADToolStripMenuItem.Click += new System.EventHandler(this.unloadWADToolStripMenuItem_Click);
+            // 
+            // reloadWadToolStripMenuItem
+            // 
+            this.reloadWadToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.reloadWadToolStripMenuItem.Name = "reloadWadToolStripMenuItem";
+            this.reloadWadToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.reloadWadToolStripMenuItem.Text = "Reload Wad";
+            this.reloadWadToolStripMenuItem.Click += new System.EventHandler(this.reloadWadToolStripMenuItem_Click);
             // 
             // toolStripMenuItem9
             // 
@@ -768,8 +781,9 @@
             // 
             this.texturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadTextureToolStripMenuItem,
-            this.importConvertTextureToPng,
             this.UnloadTextureToolStripMenuItem,
+            this.reloadTexturesToolStripMenuItem,
+            this.importConvertTextureToPng,
             this.toolStripMenuItem5,
             this.textureFloorToolStripMenuItem,
             this.textureCeilingToolStripMenuItem,
@@ -793,6 +807,22 @@
             this.loadTextureToolStripMenuItem.Text = "Load texture";
             this.loadTextureToolStripMenuItem.Click += new System.EventHandler(this.loadTextureToolStripMenuItem_Click);
             // 
+            // UnloadTextureToolStripMenuItem
+            // 
+            this.UnloadTextureToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.UnloadTextureToolStripMenuItem.Name = "UnloadTextureToolStripMenuItem";
+            this.UnloadTextureToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.UnloadTextureToolStripMenuItem.Text = "Unload texture";
+            this.UnloadTextureToolStripMenuItem.Click += new System.EventHandler(this.unloadTextureToolStripMenuItem_Click);
+            // 
+            // reloadTexturesToolStripMenuItem
+            // 
+            this.reloadTexturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.reloadTexturesToolStripMenuItem.Name = "reloadTexturesToolStripMenuItem";
+            this.reloadTexturesToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.reloadTexturesToolStripMenuItem.Text = "Reload textures";
+            this.reloadTexturesToolStripMenuItem.Click += new System.EventHandler(this.reloadTexturesToolStripMenuItem_Click);
+            // 
             // importConvertTextureToPng
             // 
             this.importConvertTextureToPng.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -801,14 +831,6 @@
             this.importConvertTextureToPng.Size = new System.Drawing.Size(192, 22);
             this.importConvertTextureToPng.Text = "Convert texture to PNG";
             this.importConvertTextureToPng.Click += new System.EventHandler(this.importConvertTextureToPng_Click);
-            // 
-            // UnloadTextureToolStripMenuItem
-            // 
-            this.UnloadTextureToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.UnloadTextureToolStripMenuItem.Name = "UnloadTextureToolStripMenuItem";
-            this.UnloadTextureToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.UnloadTextureToolStripMenuItem.Text = "Unload texture";
-            this.UnloadTextureToolStripMenuItem.Click += new System.EventHandler(this.unloadTextureToolStripMenuItem_Click);
             // 
             // toolStripMenuItem5
             // 
@@ -881,7 +903,8 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.textureMapBuilderToolStripMenuItem});
+            this.textureMapBuilderToolStripMenuItem,
+            this.levelSettingsToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
@@ -894,6 +917,15 @@
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
             this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.textureMapBuilderToolStripMenuItem.Text = "Texture Map builder";
+            // 
+            // levelSettingsToolStripMenuItem
+            // 
+            this.levelSettingsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.levelSettingsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.settings_16;
+            this.levelSettingsToolStripMenuItem.Name = "levelSettingsToolStripMenuItem";
+            this.levelSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelSettingsToolStripMenuItem.Text = "Level settings";
+            this.levelSettingsToolStripMenuItem.Click += new System.EventHandler(this.levelSettingsToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -2819,6 +2851,7 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
             this.MinimumSize = new System.Drawing.Size(1220, 790);
@@ -3078,5 +3111,8 @@
         private DarkUI.Controls.DarkLabel darkLabel21;
         private System.Windows.Forms.ToolStripMenuItem UnloadTextureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unloadWADToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem levelSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadTexturesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem reloadWadToolStripMenuItem;
     }
 }

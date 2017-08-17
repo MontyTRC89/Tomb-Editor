@@ -38,7 +38,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Tomb Raider - The Last Revelation [Alternate].ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TombEditor.Program</StartupObject>
@@ -113,6 +114,15 @@
     <Compile Include="Compilers\Textures.cs" />
     <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="Controls\DarkDataGridViewControls.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DarkDataGridViewControls.Designer.cs">
+      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DarkDataGridView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\LightParameterController.cs">
       <SubType>UserControl</SubType>
@@ -136,6 +146,12 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
+    <Compile Include="FormLevelSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLevelSettings.designer.cs">
+      <DependentUpon>FormLevelSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSplash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,6 +216,7 @@
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
+    <Compile Include="Geometry\LevelSettings.cs" />
     <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />
@@ -216,14 +233,11 @@
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="Gizmo.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="RowAnimatedTexture.cs" />
-    <Compile Include="RowSoundSample.cs" />
     <Compile Include="TestLevel3.cs" />
     <Compile Include="TestLevel.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Controls\CheckBoxButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\MultiPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -266,6 +280,12 @@
     <Compile Include="Geometry\EditorVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
+      <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLevelSettings.resx">
+      <DependentUpon>FormLevelSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>
@@ -551,7 +571,13 @@
     <None Include="Resources\earth_element-16.png" />
     <None Include="Resources\controller-down.png" />
     <None Include="Resources\controller-up.png" />
-    <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
+    <Content Include="Editor\Font.pc.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Editor\pcsky.raw.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\TransparentBackground.png" />
     <None Include="Resources\toolbar-ombra.png" />
     <None Include="Resources\toolbar-luce.png" />
     <None Include="Resources\sprite-ombra.png" />
@@ -591,6 +617,18 @@
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
