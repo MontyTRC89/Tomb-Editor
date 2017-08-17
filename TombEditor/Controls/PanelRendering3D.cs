@@ -277,7 +277,23 @@ namespace TombEditor.Controls
             if (obj is Editor.ActionChangedEvent)
             {
                 EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;
-                Cursor = currentAction.RelocateCameraActive ? Cursors.Cross : Cursors.Arrow;
+
+                bool hasCrossCurser = currentAction.RelocateCameraActive;
+                switch (currentAction.Action)
+                {
+                    case EditorActionType.Paste:
+                    case EditorActionType.PlaceCamera:
+                    case EditorActionType.PlaceFlyByCamera:
+                    case EditorActionType.PlaceItem:
+                    case EditorActionType.PlaceLight:
+                    case EditorActionType.PlaceNoCollision:
+                    case EditorActionType.PlaceSink:
+                    case EditorActionType.PlaceSoundSource:
+                    case EditorActionType.Stamp:
+                        hasCrossCurser = true;
+                        break;
+                }
+                Cursor = hasCrossCurser ? Cursors.Cross : Cursors.Arrow;
             }
 
             // Center camera
