@@ -14,24 +14,12 @@ namespace TombEditor.Geometry.IO
     public static class Prj2Loader
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private delegate Portal PortalGetter(int id);
         
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
 
-            var portals = new Dictionary<int, Portal>();
-            PortalGetter getOrCreatePortal = id =>
-            {
-                if (id == -1)
-                    return null;
-
-                if (!portals.ContainsKey(id))
-                    return portals[id] = new Portal(null);
-
-                return portals[id];
-            };
+            IdResolver<Portal> portalIdResolver = new IdResolver<Portal>(() => new Portal(null));
             
             try
             {
@@ -100,8 +88,8 @@ namespace TombEditor.Geometry.IO
                     int numPortals = reader.ReadInt32();
                     for (int i = 0; i < numPortals; i++)
                     {
-                        var portal = getOrCreatePortal(reader.ReadInt32());
-                        portal.Other = getOrCreatePortal(reader.ReadInt32());
+                        var portal = portalIdResolver[reader.ReadInt32()];
+                        portal.Other = portalIdResolver[reader.ReadInt32()];
                         portal.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         portal.AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         portal.Direction = (PortalDirection) reader.ReadByte();
@@ -291,9 +279,9 @@ namespace TombEditor.Geometry.IO
                                     FloorOpacity = (PortalOpacity)reader.ReadByte(),
                                     CeilingOpacity = (PortalOpacity)reader.ReadByte(),
                                     WallOpacity = (PortalOpacity)reader.ReadByte(),
-                                    FloorPortal = getOrCreatePortal(reader.ReadInt32()),
-                                    CeilingPortal = getOrCreatePortal(reader.ReadInt32()),
-                                    WallPortal = getOrCreatePortal(reader.ReadInt32()),
+                                    FloorPortal = portalIdResolver[reader.ReadInt32()],
+                                    CeilingPortal = portalIdResolver[reader.ReadInt32()],
+                                    WallPortal = portalIdResolver[reader.ReadInt32()],
                                     IsFloorSolid = reader.ReadBoolean(),
                                     IsCeilingSolid = reader.ReadBoolean(),
                                     NoCollisionFloor = reader.ReadBoolean(),
@@ -435,10 +423,14 @@ namespace TombEditor.Geometry.IO
                 }
 
                 // Check that there are uninitialized rooms
-                foreach (Room room in level.Rooms)
-                    if (room != null)
-                        if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
-                            throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+                foreach (Room room in level.Rooms.Where(room => room != null))
+                    if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
+                        throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+
+                // Check that there are uninitialized portals
+                foreach (Portal portal in level.Portals)
+                    if ((portal.AdjoiningRoom == null) || (portal.Room == null))
+                        throw new Exception("There appears to be an uninitialized portal.");
 
             }
             catch (Exception ex)
@@ -529,6 +521,31 @@ namespace TombEditor.Geometry.IO
             else
             {
                 throw new NotSupportedException("The header of the *.prj2 file was unrecognizable.");
+            }
+        }
+
+        private class IdResolver<T> where T : class
+        {
+            private Func<T> _createT;
+            private readonly Dictionary<int, T> _portalList = new Dictionary<int, T>();
+
+            public IdResolver(Func<T> createT)
+            {
+                _createT = createT;
+            }
+
+            public T this[int id]
+            {
+                get
+                {
+                    if (id == -1)
+                        return null;
+
+                    if (!_portalList.ContainsKey(id))
+                        _portalList.Add(id, _createT());
+
+                    return _portalList[id];
+                }
             }
         }
     }
