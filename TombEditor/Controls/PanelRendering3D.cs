@@ -40,6 +40,7 @@ namespace TombEditor.Controls
             public BlockFace Face { get; set; }
             public Buffer<short> IndexBuffer { get; set; }
             public List<short> Indices { get; set; }
+            public byte AlphaTest { get; set; }
 
             public RenderBucket()
             {
@@ -90,6 +91,9 @@ namespace TombEditor.Controls
                 if (result != 0)
                     return result;
                 result = _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                if (result != 0)
+                    return result;
+                result = x.AlphaTest.CompareTo(y.AlphaTest);
                 if (result != 0)
                     return result;
                 return x.Texture.CompareTo(y.Texture);
@@ -1907,7 +1911,9 @@ namespace TombEditor.Controls
                                     }
                                     else
                                     {
-                                        if (!face.Transparent && !face.Invisible)
+                                        LevelTexture texture = _editor.Level.TextureSamples[face.Texture];
+
+                                        if (!face.Transparent && !face.Invisible && !texture.AlphaTest)
                                         {
                                             int found = -1;
                                             for (int b = 0; b < _opaqueBuckets.Count; b++)
@@ -1952,18 +1958,19 @@ namespace TombEditor.Controls
 
                                             _invisibleBuckets.Add(bucket);
                                         }
-                                        else if (face.Transparent)
+                                        else if (face.Transparent || texture.AlphaTest)
                                         {
                                             RenderBucket bucket = new RenderBucket
                                             {
-                                                FaceType = (BlockFaces) f,
+                                                FaceType = (BlockFaces)f,
                                                 Face = face,
                                                 X = x,
                                                 Z = z,
-                                                DoubleSided = (byte) (face.DoubleSided ? 1 : 0),
+                                                DoubleSided = (byte)(face.DoubleSided ? 1 : 0),
                                                 Texture = face.Texture,
                                                 Room = room,
-                                                Plane = face.Plane
+                                                Plane = face.Plane,
+                                                AlphaTest = (byte)(face.Transparent ? 0 : 1)
                                             };
 
                                             // calcolo il piano passante per la faccia
@@ -2335,8 +2342,6 @@ namespace TombEditor.Controls
 
         private void DrawTransparentBuckets(Matrix viewProjection)
         {
-            _device.SetBlendState(_device.BlendStates.Additive);
-
             // Setup shader
             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
             _roomEffect.Parameters["EditorTextureEnabled"].SetValue(false);
@@ -2379,6 +2384,15 @@ namespace TombEditor.Controls
                         _device.SetRasterizerState(_device.RasterizerStates.CullNone);
                     else
                         _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                }
+
+                // Check if is alpha trasparency or magenta trasparency
+                if (_lastBucket == null || _lastBucket.AlphaTest != bucket.AlphaTest)
+                {
+                    if (bucket.AlphaTest == 1)
+                        _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                    else
+                        _device.SetBlendState(_device.BlendStates.Additive);
                 }
 
                 // Change texture if needed

@@ -2518,6 +2518,8 @@ namespace TombEditor.Geometry.IO
                     room.UpdateBuffers();
                 }
 
+                level.RebuildAllAlphaTests();
+
                 progressReporter.ReportProgress(100, "Level loaded correctly!");
 
                 return level;
