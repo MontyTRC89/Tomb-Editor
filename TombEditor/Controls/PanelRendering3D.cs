@@ -2519,43 +2519,44 @@ namespace TombEditor.Controls
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(false);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(true);
                                 break;
+
                             case EditorArrowType.EdgeN:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
-                                break;
-                            case EditorArrowType.EdgeE:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_left"]);
-                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
-                                break;
-                            case EditorArrowType.EdgeS:
                                 _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
-                            case EditorArrowType.EdgeW:
+                            case EditorArrowType.EdgeE:
                                 _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_right"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
+                            case EditorArrowType.EdgeS:
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
+                            case EditorArrowType.EdgeW:
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_left"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
                             case EditorArrowType.CornerNW:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
                             case EditorArrowType.CornerNE:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
-                                break;
-                            case EditorArrowType.CornerSE:
                                 _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
+                            case EditorArrowType.CornerSE:
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
+                                break;
                             case EditorArrowType.CornerSW:
-                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
                                 _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                                 _roomEffect.Parameters["SelectionEnabled"].SetValue(false);
                                 break;
