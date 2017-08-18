@@ -18,7 +18,6 @@ namespace TombEditor
         {
             PositionBasedObjectInstance result = (PositionBasedObjectInstance)level.Objects[_objectPtr.Value.Id].Clone();
             result.Position = position;
-            result.Id = level.GetNewObjectId();
             result.Room = room;
             level.Objects.Add(result.Id, result);
             return result;

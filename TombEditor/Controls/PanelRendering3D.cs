@@ -1810,10 +1810,8 @@ namespace TombEditor.Controls
                     }
                 }
 
-                for (int p = 0; p < theRoom.Portals.Count; p++)
+                foreach (var portal in theRoom.Portals)
                 {
-                    Portal portal = _editor.Level.Portals[theRoom.Portals[p]];
-
                     Vector3 normal = Vector3.Zero;
 
                     if (portal.Direction == PortalDirection.North)
@@ -3059,19 +3057,19 @@ namespace TombEditor.Controls
                 // Portals
                 if (index < 25)
                 {
-                    if (room.Blocks[x, z].WallPortal != -1)
+                    if (room.Blocks[x, z].WallPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
                 if ((index == 25 || index == 26) && !noCollision)
                 {
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
                 if ((index == 27 || index == 28) && !noCollision)
                 {
-                    if (room.Blocks[x, z].CeilingPortal != -1)
+                    if (room.Blocks[x, z].CeilingPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 

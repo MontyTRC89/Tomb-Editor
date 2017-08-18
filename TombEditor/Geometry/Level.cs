@@ -18,6 +18,8 @@ namespace TombEditor.Geometry
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
 
+        public IEnumerable<Portal> Portals => Rooms.Where(room => room != null).SelectMany(room => room.Portals);
+
         public Dictionary<int, LevelTexture> TextureSamples { get; } =
             new Dictionary<int, LevelTexture>(); //Texture tiles
 
@@ -25,7 +27,6 @@ namespace TombEditor.Geometry
             new Dictionary<int, Texture2D>(); //For now just one texture atlas 2048x2048 pixel
 
         public Bitmap TextureMap { get; private set; } //The texture map on the CPU
-        public Dictionary<int, Portal> Portals { get; } = new Dictionary<int, Portal>();
         public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
 
         public Dictionary<int, PositionBasedObjectInstance> Objects { get; } =
@@ -59,9 +60,9 @@ namespace TombEditor.Geometry
         private void GetConnectedRoomsRecursively(ISet<Room> result, Room startingRoom)
         {
             result.Add(startingRoom);
-            foreach (int portalIndex in startingRoom.Portals)
+            foreach (var portal in startingRoom.Portals)
             {
-                var room = Portals[portalIndex].AdjoiningRoom;
+                var room = portal.AdjoiningRoom;
                 if (!result.Contains(room))
                 {
                     GetConnectedRoomsRecursively(result, room);
@@ -309,14 +310,6 @@ namespace TombEditor.Geometry
                 UnloadWad();
                 logger.Warn(exc, "Unable to load objects from '" + Settings.MakeAbsolute(Settings.WadFilePath) + "'");
             }
-        }
-
-        public int GetNewPortalId()
-        {
-            int i = 0;
-            while (Portals.ContainsKey(i))
-                ++i;
-            return i;
         }
 
         public int GetNewTriggerId()

@@ -163,13 +163,13 @@ namespace TombEditor
             byte[] outData;
 
             using (MemoryStream outMemoryStream = new MemoryStream())
-            using (ZOutputStream outZStream = new ZOutputStream(outMemoryStream))
-            using (Stream inMemoryStream = new MemoryStream(inData))
-            {
-                CopyStream(inMemoryStream, outZStream);
-                outZStream.finish();
-                outData = outMemoryStream.ToArray();
-            }
+                using (ZOutputStream outZStream = new ZOutputStream(outMemoryStream))
+                    using (Stream inMemoryStream = new MemoryStream(inData))
+                    {
+                        CopyStream(inMemoryStream, outZStream);
+                        outZStream.finish();
+                        outData = outMemoryStream.ToArray();
+                    }
 
             return outData;
         }
@@ -222,7 +222,7 @@ namespace TombEditor
         {
             return This.Contains(point.X, point.Y);
         }
-        
+
         public static void DrawRectangle(this Graphics g, Pen pen, System.Drawing.RectangleF rectangle)
         {
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
@@ -247,7 +247,7 @@ namespace TombEditor
         {
             return new PointF(Math.Min(point0.X, point1.X), Math.Min(point0.Y, point1.Y));
         }
-        
+
         public static bool ContainedBetween(this Point point, Point point0, Point point1)
         {
             return
@@ -273,12 +273,19 @@ namespace TombEditor
 
             if (needle == null)
                 return -1;
-            
+
             for (int i = 0; i < list.Count; ++i)
                 if (ReferenceEquals(list[i], needle))
                     return i;
 
             return -1;
+        }
+
+        public static IEnumerable<T> Unwrap<T>(this T[,] array)
+        {
+            for (int x = 0; x < array.GetLength(0); ++x)
+                for (int y = 0; y < array.GetLength(1); ++y)
+                    yield return array[x, y];
         }
 
         public static T TryGet<T>(this T[] array, int index0) where T : class
@@ -287,7 +294,7 @@ namespace TombEditor
                 return null;
             return array[index0];
         }
-        
+
         public static T TryGet<T>(this T[,] array, int index0, int index1) where T : class
         {
             if ((index0 < 0) || (index0 >= array.GetLength(0)))

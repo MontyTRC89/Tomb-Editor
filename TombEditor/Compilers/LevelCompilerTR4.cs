@@ -1377,7 +1377,7 @@ namespace TombEditor.Compilers
         private void GetAllReachableRoomsUp(Room baseRoom, Room currentRoom)
         {
             // Wall portals
-            foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
+            foreach (var p in currentRoom.Portals)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -1388,7 +1388,7 @@ namespace TombEditor.Compilers
             }
 
             // Ceiling portals
-            foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
+            foreach (var p in currentRoom.Portals)
             {
                 if (p.Direction != PortalDirection.Ceiling)
                     continue;
@@ -1405,7 +1405,7 @@ namespace TombEditor.Compilers
         private void GetAllReachableRoomsDown(Room baseRoom, Room currentRoom)
         {
             // portali laterali
-            foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
+            foreach (var p in currentRoom.Portals)
             {
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
@@ -1415,7 +1415,7 @@ namespace TombEditor.Compilers
                     tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
-            foreach (var p in _level.Portals.Values.Where(p => p.Room != currentRoom))
+            foreach (var p in currentRoom.Portals)
             {
                 if (p.Direction != PortalDirection.Floor)
                     continue;
@@ -1447,7 +1447,7 @@ namespace TombEditor.Compilers
             {
                 var aux2 = tempRoom.AuxSectors[x2, zc];
 
-                if (aux2.WallPortal != -1)
+                if (aux2.WallPortal != null)
                 {
                     xMin = x2;
                     break;
@@ -1465,7 +1465,7 @@ namespace TombEditor.Compilers
             {
                 var aux2 = tempRoom.AuxSectors[x2, zc];
 
-                if (aux2.WallPortal != -1)
+                if (aux2.WallPortal != null)
                 {
                     xMax = x2;
                     break;
@@ -1486,7 +1486,7 @@ namespace TombEditor.Compilers
                 {
                     var aux2 = tempRoom.AuxSectors[x2, z2];
 
-                    if (aux2.WallPortal != -1)
+                    if (aux2.WallPortal != null)
                     {
                         tmpZ = z2;
                         break;
@@ -1513,7 +1513,7 @@ namespace TombEditor.Compilers
                 {
                     var aux2 = tempRoom.AuxSectors[x2, z2];
 
-                    if (aux2.WallPortal != -1)
+                    if (aux2.WallPortal != null)
                     {
                         tmpZ = z2;
                         break;

@@ -322,16 +322,16 @@ namespace TombEditor.Controls
 
                             // Find portals on the selected sector
                             Pen belowPen = _roomBoundsPen;
-                            if ((room.Block != null) && (room.Block.FloorPortal != -1))
+                            if ((room.Block != null) && (room.Block.FloorPortal != null))
                             {
-                                Room portalRoom = level.Portals[room.Block.FloorPortal].AdjoiningRoom;
+                                Room portalRoom = room.Block.FloorPortal.AdjoiningRoom;
                                 if (((i - 1) >= 0) && (roomSequence[i - 1].Room == portalRoom))
                                     belowPen = _portalPen;
                             }
                             Pen abovePen = _roomBoundsPen;
-                            if ((room.Block != null) && (room.Block.CeilingPortal != -1))
+                            if ((room.Block != null) && (room.Block.CeilingPortal != null))
                             {
-                                Room portalRoom = level.Portals[room.Block.CeilingPortal].AdjoiningRoom;
+                                Room portalRoom = room.Block.CeilingPortal.AdjoiningRoom;
                                 if (((i + 1) < roomSequence.Count) && (roomSequence[i + 1].Room == portalRoom))
                                     abovePen = _portalPen;
                             }
@@ -412,10 +412,10 @@ namespace TombEditor.Controls
                         };
 
                     // Search for a fit in the sequence for rooms it the current room is connected to on this sector
-                    if ((block != null) && (block.FloorPortal != -1))
+                    if ((block != null) && (block.FloorPortal != null))
                     {
-                        Portal portal = level.Portals[block.FloorPortal];
-                        Room roomAbove = portal.AdjoiningRoom;
+                        var portal = block.FloorPortal;
+                        var roomAbove = portal.AdjoiningRoom;
                         foreach (var roomSequence in roomSequences)
                             if (roomSequence.Last().Room == roomAbove)
                             {
@@ -434,25 +434,24 @@ namespace TombEditor.Controls
             for (int i = 1; i < roomSequences.Count; ++i) // triangular iteration
             {
                 var roomSequenceAbove = roomSequences[i];
-                foreach (int portalIndex in roomSequenceAbove[0].Room.Portals)
+                foreach (var portal in roomSequenceAbove[0].Room.Portals)
                 {
-                    Portal portal = level.Portals[portalIndex];
-                    Room connectedRoom = portal.AdjoiningRoom;
+                    var connectedRoom = portal.AdjoiningRoom;
 
                     for (int j = 0; j < i; ++j)
                     {
                         var roomSequenceBelow = roomSequences[j];
-                        if (roomSequences[j].Last().Room == connectedRoom)
-                        {
-                            float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
-                            if (distanceBetweenSequences >= 0.0)
-                            {
-                                roomSequences[j].AddRange(roomSequences[i]);
-                                roomSequences.RemoveAt(i);
-                                --i;
-                                goto NextRoom;
-                            }
-                        }
+                        if (roomSequences[j].Last().Room != connectedRoom)
+                            continue;
+                        
+                        float distanceBetweenSequences = roomSequenceAbove[0].MinDepth - roomSequenceBelow.Last().MaxDepth;
+                        if (!(distanceBetweenSequences >= 0.0))
+                            continue;
+                        
+                        roomSequences[j].AddRange(roomSequences[i]);
+                        roomSequences.RemoveAt(i);
+                        --i;
+                        goto NextRoom;
                     }
                 }
                 NextRoom:

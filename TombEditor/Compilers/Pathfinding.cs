@@ -21,7 +21,7 @@ namespace TombEditor.Compilers
                     for (int z = 0; z < fixRoom.NumZSectors; z++)
                     {
                         var sector = fixRoom.AuxSectors[x, z];
-                        if (sector.FloorPortal != -1)
+                        if (sector.FloorPortal != null)
                             sector.Monkey = FindMonkeyFloor(fixRoom.OriginalRoom, x, z);
                     }
                 }
@@ -589,11 +589,10 @@ namespace TombEditor.Compilers
                 }
 
                 // If current X, Z is not a block wall then exit the loop
-                if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == -1) return false;
+                if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == null) return false;
 
                 // Get the wall portal
-                var portal = _level.Portals[editorRoom.Blocks[xInRoom, zInRoom].WallPortal];
-                room = portal.AdjoiningRoom;
+                room = editorRoom.Blocks[xInRoom, zInRoom].WallPortal.AdjoiningRoom;
                 destRoom = room;
 
                 // If portal is a toggle opacity 1 then I can't go to original X, Z so quit the function
@@ -615,13 +614,13 @@ namespace TombEditor.Compilers
             xInRoom = x - xRoomPosition;
             zInRoom = z - zRoomPosition;
 
-            bool isFloorPortal = (editorRoom.Blocks[xInRoom, zInRoom].FloorPortal != -1);
+            bool isFloorPortal = (editorRoom.Blocks[xInRoom, zInRoom].FloorPortal != null);
 
             // Navigate all floor portals until I come to a solid surface or to a water surface
             while (isFloorPortal)
             {
                 // Get the floor portal
-                var portal = _level.Portals[editorRoom.Blocks[xInRoom, zInRoom].FloorPortal];
+                var portal = editorRoom.Blocks[xInRoom, zInRoom].FloorPortal;
                 room = portal.AdjoiningRoom;
                 destRoom = room;
 
@@ -642,7 +641,7 @@ namespace TombEditor.Compilers
                 xInRoom = x - xRoomPosition;
                 zInRoom = z - zRoomPosition;
 
-                isFloorPortal = (editorRoom.Blocks[xInRoom, zInRoom].FloorPortal != -1);
+                isFloorPortal = (editorRoom.Blocks[xInRoom, zInRoom].FloorPortal != null);
             }
 
             return true;

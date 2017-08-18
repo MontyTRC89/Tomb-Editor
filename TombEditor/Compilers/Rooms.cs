@@ -81,7 +81,7 @@ namespace TombEditor.Compilers
 
                 // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of 
                 // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
-                var waterPortals = new List<int>();
+                var waterPortals = new List<Portal>();
 
                 if (!room.FlagWater)
                 {
@@ -89,20 +89,20 @@ namespace TombEditor.Compilers
                     {
                         for (var z = 0; z < room.NumZSectors; z++)
                         {
-                            if (room.Blocks[x, z].FloorPortal == -1)
+                            if (room.Blocks[x, z].FloorPortal == null)
                                 continue;
 
-                            if (!_level.Portals[room.Blocks[x, z].FloorPortal].AdjoiningRoom.FlagWater)
+                            if (!room.Blocks[x, z].FloorPortal.AdjoiningRoom.FlagWater)
                                 continue;
 
-                            if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
+                            if(!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
                                 waterPortals.Add(room.Blocks[x, z].FloorPortal);
                         }
                     }
 
-                    if (waterPortals.Count != 0)
+                    if (waterPortals.Count > 0)
                     {
-                        var waterRoom = _level.Portals[waterPortals[0]].AdjoiningRoom;
+                        var waterRoom = waterPortals[0].AdjoiningRoom;
 
                         if (!room.FlagReflection && waterRoom.WaterLevel == 1)
                             newRoom.WaterScheme = 0x06;
@@ -198,7 +198,7 @@ namespace TombEditor.Compilers
                     }
                     else
                     {
-                        foreach (var portal in waterPortals.Select(portalId => _level.Portals[portalId]))
+                        foreach (var portal in waterPortals)
                         {
                             if (v.X > portal.X * 1024 && v.X < (portal.X + portal.NumXBlocks) * 1024 &&
                                 v.Z > portal.Z * 1024 && v.Z < (portal.Z + portal.NumZBlocks) * 1024 &&
@@ -242,20 +242,20 @@ namespace TombEditor.Compilers
                 ConvertGeometry(room, ref newRoom, indicesDictionary);
 
                 // Build portals
-                var tempIdPortals = new List<int>();
+                var tempIdPortals = new List<Portal>();
 
                 for (var z = 0; z < room.NumZSectors; z++)
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        if (room.Blocks[x, z].WallPortal >= 0 && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
+                        if (room.Blocks[x, z].WallPortal != null && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
                             tempIdPortals.Add(room.Blocks[x, z].WallPortal);
 
-                        if (room.Blocks[x, z].FloorPortal >= 0 &&
+                        if (room.Blocks[x, z].FloorPortal != null &&
                             !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal))
                             tempIdPortals.Add(room.Blocks[x, z].FloorPortal);
 
-                        if (room.Blocks[x, z].CeilingPortal >= 0 &&
+                        if (room.Blocks[x, z].CeilingPortal != null &&
                             !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal))
                             tempIdPortals.Add(room.Blocks[x, z].CeilingPortal);
                     }
@@ -480,29 +480,27 @@ namespace TombEditor.Compilers
         private void ConvertSectors(Room room, ref tr_room newRoom)
         {
             newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
-            newRoom.AuxSectors = new tr_sector_aux[room.NumXSectors, room.NumZSectors];
+            newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
 
             for (var z = 0; z < room.NumZSectors; z++)
             {
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     var sector = new tr_room_sector();
-                    var aux = new tr_sector_aux();
+                    var aux = new TrSectorAux();
 
                     sector.BoxIndex = 0x7ff6;
                     sector.FloorDataIndex = 0;
 
-                    if (room.Blocks[x, z].FloorPortal >= 0)
+                    if (room.Blocks[x, z].FloorPortal != null)
                         sector.RoomBelow =
-                            (byte) _level.Rooms.ReferenceIndexOf(_level.Portals[room.Blocks[x, z].FloorPortal]
-                                .AdjoiningRoom);
+                            (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].FloorPortal.AdjoiningRoom);
                     else
                         sector.RoomBelow = 0xff;
 
-                    if (room.Blocks[x, z].CeilingPortal >= 0)
+                    if (room.Blocks[x, z].CeilingPortal != null)
                         sector.RoomAbove =
-                            (byte) _level.Rooms.ReferenceIndexOf(_level.Portals[room.Blocks[x, z].CeilingPortal]
-                                .AdjoiningRoom);
+                            (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].CeilingPortal.AdjoiningRoom);
                     else
                         sector.RoomAbove = 0xff;
 
@@ -539,14 +537,14 @@ namespace TombEditor.Compilers
                         aux.Wall = true;
 
                     // I must setup portal only if current sector is not solid and opacity if different from 1
-                    if (room.Blocks[x, z].FloorPortal != -1)
+                    if (room.Blocks[x, z].FloorPortal != null)
                     {
                         if ((!room.Blocks[x, z].IsFloorSolid &&
                              room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1) ||
                             (room.Blocks[x, z].IsFloorSolid && room.Blocks[x, z].NoCollisionFloor))
                         {
-                            var portal = _level.Portals[room.Blocks[x, z].FloorPortal];
-                            sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                            var portal = room.Blocks[x, z].FloorPortal;
+                            sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].FloorPortal.AdjoiningRoom);
                         }
                         else
                         {
@@ -558,7 +556,7 @@ namespace TombEditor.Compilers
                         sector.RoomBelow = 255;
                     }
 
-                    if ((room.Blocks[x, z].FloorPortal != -1 &&
+                    if ((room.Blocks[x, z].FloorPortal != null &&
                          room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1 &&
                          !room.Blocks[x, z].IsFloorSolid))
                     {
@@ -567,29 +565,23 @@ namespace TombEditor.Compilers
                     }
                     else
                     {
-                        aux.FloorPortal = -1;
+                        aux.FloorPortal = null;
                     }
 
                     aux.IsFloorSolid = room.Blocks[x, z].IsFloorSolid;
 
-                    aux.MeanFloorHeight = (sbyte) (-room.Position.Y - room.GetMeanFloorHeight(x, z));
-
-                    if ((room.Blocks[x, z].CeilingPortal != -1 &&
+                    if ((room.Blocks[x, z].CeilingPortal != null &&
                          room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1))
                     {
-                        aux.CeilingPortal = room.Blocks[x, z].CeilingPortal;
                     }
                     else
                     {
-                        aux.CeilingPortal = -1;
                     }
 
-                    if (room.Blocks[x, z].WallPortal != -1 && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
-                        aux.WallPortal =
-                            _level.Rooms.ReferenceIndexOf(_level.Portals[room.Blocks[x, z].WallPortal]
-                                .AdjoiningRoom);
+                    if (room.Blocks[x, z].WallPortal != null && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
+                        aux.WallPortal = room.Blocks[x, z].WallPortal.AdjoiningRoom;
                     else
-                        aux.WallPortal = -1;
+                        aux.WallPortal = null;
 
                     aux.LowestFloor = (sbyte) (-room.Position.Y - room.GetLowestFloorCorner(x, z));
                     var q0 = room.Blocks[x, z].QAFaces[0];
@@ -618,11 +610,11 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(IEnumerable<int> tempIdPortals, Room room, ref tr_room newRoom)
+        private void ConvertPortals(IEnumerable<Portal> tempIdPortals, Room room, ref tr_room newRoom)
         {
             var result = new List<tr_room_portal>();
 
-            foreach (var portal in tempIdPortals.Select(portalId => _level.Portals[portalId]))
+            foreach (var portal in tempIdPortals)
             {
                 int xMin;
                 int xMax;
@@ -1220,11 +1212,11 @@ namespace TombEditor.Compilers
 
         private void MatchPortalShades()
         {
-            for (var i = 0; i < _level.Portals.Count; i++)
+            foreach (var currentPortal in _level.Portals)
             {
                 // Get current portal and its paired portal
-                var currentPortal = _level.Portals.ElementAt(i).Value;
-                var otherPortal = _level.Portals[currentPortal.OtherId];
+                // Get its paired portal
+                var otherPortal = currentPortal.Other;
 
                 // If the light was already averaged, then continue loop
                 //if (currentPortal.LightAveraged) continue;

@@ -163,7 +163,7 @@ namespace TombEditor.Compilers
         public byte AlternateGroup;
 
         // Helper data
-        public tr_sector_aux[,] AuxSectors;
+        public TrSectorAux[,] AuxSectors;
 
         public TextureSounds[,] TextureSounds;
         public List<Room> ReachableRooms;
@@ -546,7 +546,7 @@ namespace TombEditor.Compilers
         public bool IsEdge;
     }
 
-    public struct tr_sector_aux
+    public class TrSectorAux
     {
         public bool Wall;
         public bool SoftSlope;
@@ -557,14 +557,9 @@ namespace TombEditor.Compilers
         public bool Portal;
         public bool IsFloorSolid;
         public bool NotWalkableFloor;
-        public int WallPortal;
-        public int FloorPortal;
-        public int CeilingPortal;
-        public int BoxIndex;
+        public Room WallPortal;
+        public Portal FloorPortal;
         public short LowestFloor;
-        public int RoomAbove;
-        public int RoomBelow;
-        public short MeanFloorHeight;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

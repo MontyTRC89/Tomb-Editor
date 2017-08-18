@@ -10,10 +10,7 @@
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.SoundSource; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.SoundSource;
 
         public override ObjectInstance Clone()
         {
