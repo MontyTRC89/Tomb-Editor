@@ -543,7 +543,7 @@ namespace TombEditor.Compilers
                              room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1) ||
                             (room.Blocks[x, z].IsFloorSolid && room.Blocks[x, z].NoCollisionFloor))
                         {
-                            var portal = _editor.Level.Portals[room.Blocks[x, z].FloorPortal];
+                            var portal = room.Blocks[x, z].FloorPortal;
                             sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].FloorPortal.AdjoiningRoom);
                         }
                         else
@@ -578,10 +578,8 @@ namespace TombEditor.Compilers
                     {
                     }
 
-                    if (room.Blocks[x, z].WallPortal != -1 && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
-                        aux.WallPortal =
-                            _level.Rooms.ReferenceIndexOf(_level.Portals[room.Blocks[x, z].WallPortal]
-                                .AdjoiningRoom);
+                    if (room.Blocks[x, z].WallPortal != null && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
+                        aux.WallPortal = room.Blocks[x, z].WallPortal.AdjoiningRoom;
                     else
                         aux.WallPortal = null;
 

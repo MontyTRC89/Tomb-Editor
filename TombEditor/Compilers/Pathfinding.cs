@@ -21,7 +21,7 @@ namespace TombEditor.Compilers
                     for (int z = 0; z < fixRoom.NumZSectors; z++)
                     {
                         var sector = fixRoom.AuxSectors[x, z];
-                        if (sector.FloorPortal != -1)
+                        if (sector.FloorPortal != null)
                             sector.Monkey = FindMonkeyFloor(fixRoom.OriginalRoom, x, z);
                     }
                 }
@@ -592,8 +592,7 @@ namespace TombEditor.Compilers
                 if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == null) return false;
 
                 // Get the wall portal
-                room = portal.AdjoiningRoom;
-                room = editorRoom.Blocks[xInRoom, zInRoom]..AdjoiningRoom;
+                room = editorRoom.Blocks[xInRoom, zInRoom].WallPortal.AdjoiningRoom;
                 destRoom = room;
 
                 // If portal is a toggle opacity 1 then I can't go to original X, Z so quit the function
@@ -621,7 +620,7 @@ namespace TombEditor.Compilers
             while (isFloorPortal)
             {
                 // Get the floor portal
-                var portal = Portals[editorRoom.Blocks[xInRoom, zInRoom].FloorPortal;
+                var portal = editorRoom.Blocks[xInRoom, zInRoom].FloorPortal;
                 room = portal.AdjoiningRoom;
                 destRoom = room;
 
