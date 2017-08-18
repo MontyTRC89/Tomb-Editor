@@ -169,226 +169,224 @@ namespace TombLib.Wad
             BasePath = Path.GetDirectoryName(fileName);
 
             // inizializzo lo stream
-            FileStream inputStream = File.OpenRead(fileName);
-            BinaryReaderEx reader = new BinaryReaderEx(inputStream);
-
-            // leggo la versione
-            int version = reader.ReadInt32();
-            if (version != 129)
-                throw new InvalidDataException();
-
-            // leggo le texture
-            uint numTextures = reader.ReadUInt32();
-            for (int i = 0; i < numTextures; i++)
+            using (BinaryReaderEx reader = new BinaryReaderEx(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                wad_object_texture text;
-                reader.ReadBlock<wad_object_texture>(out text);
-                Textures.Add(text);
-            }
+                // leggo la versione
+                int version = reader.ReadInt32();
+                if (version != 129)
+                    throw new InvalidDataException();
 
-            uint numTextureBytes = reader.ReadUInt32();
-            TexturePages = new byte[numTextureBytes / 768, 768];
-            for (int y = 0; y < numTextureBytes / 768; y++)
-                for (int x = 0; x < 768; x++)
-                    TexturePages[y, x] = reader.ReadByte();
-
-            NumTexturePages = (int)(numTextureBytes / 196608);
-
-            // leggo le mesh
-            uint numMeshPointers = reader.ReadUInt32();
-            for (int i = 0; i < numMeshPointers; i++)
-            {
-                Pointers.Add(reader.ReadUInt32());
-                RealPointers.Add(0);
-                HelperPointers.Add(0);
-            }
-
-            uint numMeshWords = reader.ReadUInt32();
-            uint bytesRead = 0;
-
-            while (bytesRead < (numMeshWords * 2))
-            {
-                uint startOfMesh = (uint)reader.BaseStream.Position;
-
-                wad_mesh mesh = new wad_mesh();
-                mesh.Polygons = new List<wad_polygon>();
-                mesh.Vertices = new List<wad_vertex>();
-                mesh.Normals = new List<wad_vertex>();
-                mesh.Shades = new List<short>();
-
-                mesh.SphereX = reader.ReadInt16();
-                mesh.SphereY = reader.ReadInt16();
-                mesh.SphereZ = reader.ReadInt16();
-                mesh.Radius = reader.ReadUInt16();
-                mesh.Unknown = reader.ReadUInt16();
-
-                ushort numVertices = reader.ReadUInt16();
-                mesh.NumVertices = numVertices;
-
-                int xMin = Int32.MaxValue;
-                int yMin = Int32.MaxValue;
-                int zMin = Int32.MaxValue;
-                int xMax = Int32.MinValue;
-                int yMax = Int32.MinValue;
-                int zMax = Int32.MinValue;
-
-                for (int i = 0; i < numVertices; i++)
+                // leggo le texture
+                uint numTextures = reader.ReadUInt32();
+                for (int i = 0; i < numTextures; i++)
                 {
-                    wad_vertex v;
-                    reader.ReadBlock<wad_vertex>(out v);
-
-                    if (v.X < xMin)
-                        xMin = v.X;
-                    if (-v.Y < yMin)
-                        yMin = -v.Y;
-                    if (v.Z < zMin)
-                        zMin = v.Z;
-
-                    if (v.X > xMax)
-                        xMax = v.X;
-                    if (-v.Y > yMax)
-                        yMax = -v.Y;
-                    if (v.Z > zMax)
-                        zMax = v.Z;
-
-                    mesh.Vertices.Add(v);
+                    wad_object_texture text;
+                    reader.ReadBlock<wad_object_texture>(out text);
+                    Textures.Add(text);
                 }
 
-                mesh.Minimum = new Vector3(xMin, yMin, zMin);
-                mesh.Maximum = new Vector3(xMax, yMax, zMax);
+                uint numTextureBytes = reader.ReadUInt32();
+                TexturePages = new byte[numTextureBytes / 768, 768];
+                for (int y = 0; y < numTextureBytes / 768; y++)
+                    for (int x = 0; x < 768; x++)
+                        TexturePages[y, x] = reader.ReadByte();
 
-                short numNormals = reader.ReadInt16();
-                mesh.NumNormals = numNormals;
-                if (numNormals > 0)
+                NumTexturePages = (int)(numTextureBytes / 196608);
+
+                // leggo le mesh
+                uint numMeshPointers = reader.ReadUInt32();
+                for (int i = 0; i < numMeshPointers; i++)
                 {
-                    for (int i = 0; i < numNormals; i++)
+                    Pointers.Add(reader.ReadUInt32());
+                    RealPointers.Add(0);
+                    HelperPointers.Add(0);
+                }
+
+                uint numMeshWords = reader.ReadUInt32();
+                uint bytesRead = 0;
+
+                while (bytesRead < (numMeshWords * 2))
+                {
+                    uint startOfMesh = (uint)reader.BaseStream.Position;
+
+                    wad_mesh mesh = new wad_mesh();
+                    mesh.Polygons = new List<wad_polygon>();
+                    mesh.Vertices = new List<wad_vertex>();
+                    mesh.Normals = new List<wad_vertex>();
+                    mesh.Shades = new List<short>();
+
+                    mesh.SphereX = reader.ReadInt16();
+                    mesh.SphereY = reader.ReadInt16();
+                    mesh.SphereZ = reader.ReadInt16();
+                    mesh.Radius = reader.ReadUInt16();
+                    mesh.Unknown = reader.ReadUInt16();
+
+                    ushort numVertices = reader.ReadUInt16();
+                    mesh.NumVertices = numVertices;
+
+                    int xMin = Int32.MaxValue;
+                    int yMin = Int32.MaxValue;
+                    int zMin = Int32.MaxValue;
+                    int xMax = Int32.MinValue;
+                    int yMax = Int32.MinValue;
+                    int zMax = Int32.MinValue;
+
+                    for (int i = 0; i < numVertices; i++)
                     {
                         wad_vertex v;
                         reader.ReadBlock<wad_vertex>(out v);
-                        mesh.Normals.Add(v);
+
+                        if (v.X < xMin)
+                            xMin = v.X;
+                        if (-v.Y < yMin)
+                            yMin = -v.Y;
+                        if (v.Z < zMin)
+                            zMin = v.Z;
+
+                        if (v.X > xMax)
+                            xMax = v.X;
+                        if (-v.Y > yMax)
+                            yMax = -v.Y;
+                        if (v.Z > zMax)
+                            zMax = v.Z;
+
+                        mesh.Vertices.Add(v);
                     }
-                }
-                else
-                {
-                    for (int i = 0; i < -numNormals; i++)
+
+                    mesh.Minimum = new Vector3(xMin, yMin, zMin);
+                    mesh.Maximum = new Vector3(xMax, yMax, zMax);
+
+                    short numNormals = reader.ReadInt16();
+                    mesh.NumNormals = numNormals;
+                    if (numNormals > 0)
                     {
-                        mesh.Shades.Add(reader.ReadInt16());
+                        for (int i = 0; i < numNormals; i++)
+                        {
+                            wad_vertex v;
+                            reader.ReadBlock<wad_vertex>(out v);
+                            mesh.Normals.Add(v);
+                        }
                     }
-                }
-
-                ushort numPolygons = reader.ReadUInt16();
-                mesh.NumPolygons = numPolygons;
-                ushort numQuads = 0;
-                for (int i = 0; i < numPolygons; i++)
-                {
-                    wad_polygon poly = new wad_polygon();
-                    poly.Shape = reader.ReadUInt16();
-                    poly.V1 = reader.ReadUInt16();
-                    poly.V2 = reader.ReadUInt16();
-                    poly.V3 = reader.ReadUInt16();
-                    if (poly.Shape == 9)
-                        poly.V4 = reader.ReadUInt16();
-                    poly.Texture = reader.ReadUInt16();
-                    poly.Attributes = reader.ReadByte();
-                    poly.Unknown = reader.ReadByte();
-
-                    if (poly.Shape == 9)
-                        numQuads++;
-                    mesh.Polygons.Add(poly);
-                }
-
-                if (numQuads % 2 != 0)
-                    reader.ReadInt16();
-
-                uint endPosition = (uint)reader.BaseStream.Position;
-                bytesRead += endPosition - startOfMesh;
-                Meshes.Add(mesh);
-
-                // aggiorno i real pointers
-                for (int k = 0; k < Pointers.Count; k++)
-                {
-                    if (Pointers[k] == bytesRead)
+                    else
                     {
-                        RealPointers[k] = (uint)Meshes.Count;
-                        HelperPointers[k] = (uint)Meshes.Count;
+                        for (int i = 0; i < -numNormals; i++)
+                        {
+                            mesh.Shades.Add(reader.ReadInt16());
+                        }
                     }
 
+                    ushort numPolygons = reader.ReadUInt16();
+                    mesh.NumPolygons = numPolygons;
+                    ushort numQuads = 0;
+                    for (int i = 0; i < numPolygons; i++)
+                    {
+                        wad_polygon poly = new wad_polygon();
+                        poly.Shape = reader.ReadUInt16();
+                        poly.V1 = reader.ReadUInt16();
+                        poly.V2 = reader.ReadUInt16();
+                        poly.V3 = reader.ReadUInt16();
+                        if (poly.Shape == 9)
+                            poly.V4 = reader.ReadUInt16();
+                        poly.Texture = reader.ReadUInt16();
+                        poly.Attributes = reader.ReadByte();
+                        poly.Unknown = reader.ReadByte();
+
+                        if (poly.Shape == 9)
+                            numQuads++;
+                        mesh.Polygons.Add(poly);
+                    }
+
+                    if (numQuads % 2 != 0)
+                        reader.ReadInt16();
+
+                    uint endPosition = (uint)reader.BaseStream.Position;
+                    bytesRead += endPosition - startOfMesh;
+                    Meshes.Add(mesh);
+
+                    // aggiorno i real pointers
+                    for (int k = 0; k < Pointers.Count; k++)
+                    {
+                        if (Pointers[k] == bytesRead)
+                        {
+                            RealPointers[k] = (uint)Meshes.Count;
+                            HelperPointers[k] = (uint)Meshes.Count;
+                        }
+
+                    }
                 }
-            }
 
-            // leggo le animazioni
-            uint numAnimations = reader.ReadUInt32();
-            for (int i = 0; i < numAnimations; i++)
-            {
-                wad_animation anim;
-                reader.ReadBlock<wad_animation>(out anim);
-                Animations.Add(anim);
-            }
+                // leggo le animazioni
+                uint numAnimations = reader.ReadUInt32();
+                for (int i = 0; i < numAnimations; i++)
+                {
+                    wad_animation anim;
+                    reader.ReadBlock<wad_animation>(out anim);
+                    Animations.Add(anim);
+                }
 
-            uint numChanges = reader.ReadUInt32();
-            for (int i = 0; i < numChanges; i++)
-            {
-                wad_state_change change;
-                reader.ReadBlock<wad_state_change>(out change);
-                Changes.Add(change);
-            }
+                uint numChanges = reader.ReadUInt32();
+                for (int i = 0; i < numChanges; i++)
+                {
+                    wad_state_change change;
+                    reader.ReadBlock<wad_state_change>(out change);
+                    Changes.Add(change);
+                }
 
-            uint numDispatches = reader.ReadUInt32();
-            for (int i = 0; i < numDispatches; i++)
-            {
-                wad_anim_dispatch anim;
-                reader.ReadBlock<wad_anim_dispatch>(out anim);
-                Dispatches.Add(anim);
-            }
+                uint numDispatches = reader.ReadUInt32();
+                for (int i = 0; i < numDispatches; i++)
+                {
+                    wad_anim_dispatch anim;
+                    reader.ReadBlock<wad_anim_dispatch>(out anim);
+                    Dispatches.Add(anim);
+                }
 
-            uint numCommands = reader.ReadUInt32();
-            for (int i = 0; i < numCommands; i++)
-            {
-                short anim;
-                reader.ReadBlock<short>(out anim);
-                Commands.Add(anim);
-            }
+                uint numCommands = reader.ReadUInt32();
+                for (int i = 0; i < numCommands; i++)
+                {
+                    short anim;
+                    reader.ReadBlock<short>(out anim);
+                    Commands.Add(anim);
+                }
 
-            uint numLinks = reader.ReadUInt32();
-            for (int i = 0; i < numLinks; i++)
-            {
-                int link;
-                reader.ReadBlock<int>(out link);
-                Links.Add(link);
-            }
+                uint numLinks = reader.ReadUInt32();
+                for (int i = 0; i < numLinks; i++)
+                {
+                    int link;
+                    reader.ReadBlock<int>(out link);
+                    Links.Add(link);
+                }
 
-            uint numFrames = reader.ReadUInt32();
-            for (int i = 0; i < numFrames; i++)
-            {
-                short frame;
-                reader.ReadBlock<short>(out frame);
-                KeyFrames.Add(frame);
-            }
+                uint numFrames = reader.ReadUInt32();
+                for (int i = 0; i < numFrames; i++)
+                {
+                    short frame;
+                    reader.ReadBlock<short>(out frame);
+                    KeyFrames.Add(frame);
+                }
 
-            // leggo gli oggetti
-            uint numMoveables = reader.ReadUInt32();
-            for (int i = 0; i < numMoveables; i++)
-            {
-                long pos = reader.BaseStream.Position;
-                wad_moveable moveable;
-                reader.ReadBlock<wad_moveable>(out moveable);
-                Moveables.Add(moveable);
-            }
+                // leggo gli oggetti
+                uint numMoveables = reader.ReadUInt32();
+                for (int i = 0; i < numMoveables; i++)
+                {
+                    long pos = reader.BaseStream.Position;
+                    wad_moveable moveable;
+                    reader.ReadBlock<wad_moveable>(out moveable);
+                    Moveables.Add(moveable);
+                }
 
-            uint numStaticMeshes = reader.ReadUInt32();
-            for (int i = 0; i < numStaticMeshes; i++)
-            {
-                wad_static_mesh staticMesh;
-                reader.ReadBlock<wad_static_mesh>(out staticMesh);
-                StaticMeshes.Add(staticMesh);
-            }
+                uint numStaticMeshes = reader.ReadUInt32();
+                for (int i = 0; i < numStaticMeshes; i++)
+                {
+                    wad_static_mesh staticMesh;
+                    reader.ReadBlock<wad_static_mesh>(out staticMesh);
+                    StaticMeshes.Add(staticMesh);
+                }
 
-            reader.Close();
+                reader.Close();
 
-            StreamReader readerSounds = new StreamReader(File.OpenRead(BasePath + "\\" + BaseName + ".sam"));
-            while (!readerSounds.EndOfStream)
-            {
-                Sounds.Add(readerSounds.ReadLine());
+                using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
+                    while (!readerSounds.EndOfStream)
+                        Sounds.Add(readerSounds.ReadLine());
             }
         }
 
