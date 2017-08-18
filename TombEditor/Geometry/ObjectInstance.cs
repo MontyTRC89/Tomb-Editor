@@ -33,10 +33,7 @@ namespace TombEditor.Geometry
 
         public abstract ObjectInstanceType Type { get; }
 
-        public ObjectPtr ObjectPtr
-        {
-            get { return new ObjectPtr(Type, Id); }
-        }
+        public ObjectPtr ObjectPtr => new ObjectPtr(Type, Id);
     }
 
     public abstract class SectorBasedObjectInstance : ObjectInstance

@@ -5,30 +5,27 @@ namespace TombEditor.Geometry
 {
     public class Portal : SectorBasedObjectInstance
     {
+        [Obsolete]
+        public new int Id { get { return base.Id; } }
         public PortalDirection Direction { get; set; }
-        public int OtherId { get; set; }
-        public int OtherIdFlipped { get; set; } = -1;
+        public Portal Other { get; set; }
         public Room AdjoiningRoom { get; set; }
         public bool MemberOfFlippedRoom { get; set; }
         public bool Flipped { get; set; }
 
-        public Portal(int id, Room room)
-            : base(id, room)
+        private static int _nextPortalId = 0;
+        
+        public Portal(Room room)
+            : base(_nextPortalId++, room)
         {}
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Portal; }
-        }
-
-        public Portal ClonePortal()
-        {
-            return (Portal)MemberwiseClone();
-        }
-
+        public override ObjectInstanceType Type => ObjectInstanceType.Portal;
+        
         public override ObjectInstance Clone()
         {
-            return (ObjectInstance)MemberwiseClone();
+            Portal portalResult = (Portal)MemberwiseClone();
+            ((SectorBasedObjectInstance)portalResult).Id = _nextPortalId++;
+            return portalResult;
         }
 
         public override string ToString()

@@ -143,7 +143,7 @@ namespace TombEditor.Controls
             SectorBasedObjectInstance selectedSectorObject = null;
             if (_editor.SelectedObject.HasValue)
                 if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Portal)
-                    selectedSectorObject = _editor.Level.Portals[_editor.SelectedObject.Value.Id];
+                    selectedSectorObject = _editor.Level.Portals.First(portal => portal.Id == _editor.SelectedObject.Value.Id);
                 else if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Trigger)
                     selectedSectorObject = _editor.Level.Triggers[_editor.SelectedObject.Value.Id];
 
@@ -153,7 +153,7 @@ namespace TombEditor.Controls
                 if ((selectedSectorObject is Portal) && selectedSectorObject.Area.Contains(sectorPos))
                 {
                     _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
-                    _editor.SelectedObject = _editor.Level.Portals[((Portal)selectedSectorObject).OtherId].ObjectPtr;
+                    _editor.SelectedObject = ((Portal)selectedSectorObject).Other.ObjectPtr;
                 }
                 else if ((selectedSectorObject is TriggerInstance) && selectedSectorObject.Area.Contains(sectorPos))
                 { // Open trigger options
@@ -171,9 +171,7 @@ namespace TombEditor.Controls
             else if (e.Button == MouseButtons.Right)
             {
                 // Find next object
-                var portalsInRoom = _editor.SelectedRoom.Portals
-                    .Select((portalIndex) => _editor.Level.Portals[portalIndex])
-                    .Cast<SectorBasedObjectInstance>();
+                var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
                 var triggersInRoom = _editor.Level.Triggers.Values
                     .Where((obj) => (obj.Room == _editor.SelectedRoom))
                     .Cast<SectorBasedObjectInstance>();
@@ -227,7 +225,7 @@ namespace TombEditor.Controls
                         // Draw floor tile
                         if (block.Triggers.Count != 0)
                             e.Graphics.FillRectangle(_triggerBrush, rectangle);
-                        else if ((block.FloorPortal != -1 && !block.IsFloorSolid) || block.CeilingPortal != -1 || block.WallPortal != -1)
+                        else if ((block.FloorPortal != null && !block.IsFloorSolid) || block.CeilingPortal != null || block.WallPortal != null)
                             e.Graphics.FillRectangle(_portalBrush, rectangle);
                         else if (block.Type == BlockType.BorderWall)
                             e.Graphics.FillRectangle(_borderWallBrush, rectangle);
@@ -274,7 +272,7 @@ namespace TombEditor.Controls
                 ObjectPtr? selectedObject = _editor.SelectedObject;
                 if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Portal))
                 {
-                    Portal portal = _editor.Level.Portals[selectedObject.Value.Id];
+                    Portal portal = _editor.Level.Portals.First(p => p.Id == selectedObject.Value.Id);
                     e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
                     DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
                 }

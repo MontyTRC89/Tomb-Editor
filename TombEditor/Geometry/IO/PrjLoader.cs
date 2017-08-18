@@ -75,6 +75,8 @@ namespace TombEditor.Geometry.IO
             
             try
             {
+                var portals = new List<Portal>();
+                
                 // Open file
                 using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
@@ -175,7 +177,7 @@ namespace TombEditor.Geometry.IO
 
                             var portalBuffer = reader.ReadBytes(26);
 
-                            var p = new Portal(level.GetNewPortalId(), portalRoom)
+                            var p = new Portal(portalRoom)
                             {
                                 X = (byte)portalX,
                                 Z = (byte)portalZ,
@@ -199,6 +201,7 @@ namespace TombEditor.Geometry.IO
 
                             p.MemberOfFlippedRoom = !ReferenceEquals(p.Room, room);
                             p.Room = room;
+                            portals.Add(p);
 
                             portalThingIndices.Add(p, new PrjPortalThingIndex
                             {
@@ -206,7 +209,6 @@ namespace TombEditor.Geometry.IO
                                 _otherThingIndex = portalSlot
                             });
 
-                            level.Portals.Add(p.Id, p);
                         }
 
                         short numObjects = reader.ReadInt16();
@@ -1185,15 +1187,15 @@ namespace TombEditor.Geometry.IO
 
                     // Fix portals
                     progressReporter.ReportProgress(76, "Building portals");
-                    foreach (var currentPortal in level.Portals.Values.ToList())
+                    foreach (var currentPortal in portals)
                     {
                         currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
                                                     currentPortal.X);
                     }
 
-                    foreach (var currentPortal in level.Portals.Values.ToList())
+                    foreach (var currentPortal in portals)
                     {
-                        foreach (var otherPortal in level.Portals.Values.ToList())
+                        foreach (var otherPortal in portals)
                         {
                             if (ReferenceEquals(currentPortal, otherPortal))
                                 continue;
@@ -1213,7 +1215,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     for (int z = currentPortal.Z; z < currentPortal.Z + currentPortal.NumZBlocks; z++)
                                     {
-                                        currentRoom.Blocks[x, z].WallPortal = currentPortal.Id;
+                                        currentRoom.Blocks[x, z].WallPortal = currentPortal;
                                     }
                                 }
 
@@ -1221,7 +1223,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     for (int z = otherPortal.Z; z < otherPortal.Z + otherPortal.NumZBlocks; z++)
                                     {
-                                        otherPortal.Room.Blocks[x, z].WallPortal = otherPortal.Id;
+                                        otherPortal.Room.Blocks[x, z].WallPortal = otherPortal;
                                     }
                                 }
                             }
@@ -1256,7 +1258,7 @@ namespace TombEditor.Geometry.IO
                                             int maxHeight = otherRoom.GetHighestCorner(otherXmin, otherZmin, otherXmax,
                                                 otherZmax);
 
-                                            currentPortal.Room.Blocks[x, z].FloorPortal = currentPortal.Id;
+                                            currentPortal.Room.Blocks[x, z].FloorPortal = currentPortal;
 
                                             int h1 = currentRoom.Blocks[x, z].QAFaces[0];
                                             int h2 = currentRoom.Blocks[x, z].QAFaces[1];
@@ -1300,7 +1302,7 @@ namespace TombEditor.Geometry.IO
                                                 otherZmax);
                                             int maxHeight = currentRoom.GetHighestCorner(xMin, zMin, xMax, zMax);
 
-                                            currentPortal.Room.Blocks[x, z].CeilingPortal = currentPortal.Id;
+                                            currentPortal.Room.Blocks[x, z].CeilingPortal = currentPortal;
 
                                             int h1 = currentRoom.Blocks[x, z].WSFaces[0];
                                             int h2 = currentRoom.Blocks[x, z].WSFaces[1];
@@ -1345,15 +1347,15 @@ namespace TombEditor.Geometry.IO
 
                             if ((!currentRoom.Flipped && !otherRoom.Flipped))
                             {
-                                currentPortal.OtherId = otherPortal.Id;
-                                otherPortal.OtherId = currentPortal.Id;
+                                currentPortal.Other = otherPortal;
+                                otherPortal.Other = currentPortal;
                                 currentPortal.AdjoiningRoom = otherPortal.Room;
                                 otherPortal.AdjoiningRoom = currentPortal.Room;
                             }
                             else if ((currentRoom.Flipped && otherRoom.Flipped))
                             {
-                                currentPortal.OtherId = otherPortal.Id;
-                                otherPortal.OtherId = currentPortal.Id;
+                                currentPortal.Other = otherPortal;
+                                otherPortal.Other = currentPortal;
                                 currentPortal.AdjoiningRoom =
                                     otherRoom.BaseRoom ?? otherPortal.Room;
                                 otherPortal.AdjoiningRoom =
@@ -1365,7 +1367,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     if (otherRoom.AlternateRoom != null)
                                     {
-                                        currentPortal.OtherId = otherPortal.Id;
+                                        currentPortal.Other = otherPortal;
                                         currentPortal.AdjoiningRoom = otherPortal.Room;
                                     }
                                     else
@@ -1373,14 +1375,14 @@ namespace TombEditor.Geometry.IO
                                         currentPortal.AdjoiningRoom = otherRoom.BaseRoom;
                                     }
 
-                                    otherPortal.OtherId = currentPortal.Id;
+                                    otherPortal.Other = currentPortal;
                                     otherPortal.AdjoiningRoom = currentPortal.Room;
                                 }
                                 if (currentRoom.Flipped && !otherRoom.Flipped)
                                 {
                                     if (currentRoom.AlternateRoom != null)
                                     {
-                                        otherPortal.OtherId = currentPortal.Id;
+                                        otherPortal.Other = currentPortal;
                                         otherPortal.AdjoiningRoom = currentPortal.Room;
                                     }
                                     else
@@ -1388,13 +1390,10 @@ namespace TombEditor.Geometry.IO
                                         otherPortal.AdjoiningRoom = currentRoom.BaseRoom;
                                     }
 
-                                    currentPortal.OtherId = otherPortal.Id;
+                                    currentPortal.Other = otherPortal;
                                     currentPortal.AdjoiningRoom = otherPortal.Room;
                                 }
                             }
-
-                            level.Portals[currentPortal.Id] = currentPortal;
-                            level.Portals[otherPortal.Id] = otherPortal;
 
                             break;
                         }
@@ -1408,9 +1407,8 @@ namespace TombEditor.Geometry.IO
                         if (room == null)
                             continue;
 
-                        for (int j = 0; j < room.Lights.Count; j++)
+                        foreach (var light in room.Lights)
                         {
-                            var light = room.Lights[j];
                             light.Position = new Vector3(
                                 room.NumXSectors * 1024.0f - light.Position.X,
                                 light.Position.Y - room.Position.Y * 256,
@@ -2508,10 +2506,7 @@ namespace TombEditor.Geometry.IO
                     if (room != null)
                         if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
                             throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
-
-                foreach (var portal in level.Portals)
-                    portal.Value.Room.Portals.Add(portal.Key);
-
+                
                 progressReporter.ReportProgress(95, "Building rooms");
                 foreach (var room in level.Rooms.Where(r => r != null))
                 {

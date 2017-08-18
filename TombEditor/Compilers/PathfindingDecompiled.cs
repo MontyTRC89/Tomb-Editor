@@ -624,8 +624,6 @@ namespace TombEditor.Compilers
 
                     block = room.Blocks[xInRoom, zInRoom];
 
-                    bool isWallPortal = block.WallPortal != -1;
-
                     // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
                     // This happen for example when there are 3 room connected together and the corner is inside the box. 
                     // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
@@ -635,11 +633,9 @@ namespace TombEditor.Compilers
                         xInRoom == room.NumXSectors - 1 && zInRoom == 0 ||
                         xInRoom == room.NumXSectors - 1 && zInRoom == room.NumZSectors - 1) return false;
 
-                    if (!isWallPortal) break;
+                    if (block.WallPortal == null) break;
 
-                    Portal portal = _level.Portals[block.WallPortal];
-
-                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    Room adjoiningRoom = block.WallPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                     dec_currentRoom = adjoiningRoom;
@@ -658,11 +654,9 @@ namespace TombEditor.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
-                while (block.FloorPortal != -1 && !block.IsFloorSolid)
+                while (block.FloorPortal != null && !block.IsFloorSolid)
                 {
-                    Portal portal = _level.Portals[block.FloorPortal];
-
-                    Room adjoiningRoom = portal.AdjoiningRoom;
+                    Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                     if (block.FloorOpacity == PortalOpacity.Opacity1 &&
@@ -719,7 +713,7 @@ namespace TombEditor.Compilers
             // If block is a wall or is a vertical toggle opacity 1
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
-                block.Type == BlockType.BorderWall) && block.WallPortal == -1) ||
+                block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
                 block.WallOpacity == PortalOpacity.Opacity1 || 
                 (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
@@ -732,14 +726,13 @@ namespace TombEditor.Compilers
             }
 
             // If it's not a wall portal or is vertical toggle opacity 1
-            if ((block.WallPortal == -1 || block.WallOpacity == PortalOpacity.Opacity1))
+            if ((block.WallPortal == null || block.WallOpacity == PortalOpacity.Opacity1))
             {
 
             }
             else
             {
-                Portal portal = _level.Portals[block.WallPortal];
-                adjoiningRoom = portal.AdjoiningRoom;
+                adjoiningRoom = block.WallPortal.AdjoiningRoom;
                 if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
 
                 dec_currentRoom = adjoiningRoom;
@@ -758,11 +751,9 @@ namespace TombEditor.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (block.FloorPortal != -1 && !block.IsFloorSolid)
+            while (block.FloorPortal != null && !block.IsFloorSolid)
             {
-                Portal portal = _level.Portals[block.FloorPortal];
-
-                Room adjoiningRoom2 = portal.AdjoiningRoom;
+                Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
 
                 if (block.FloorOpacity == PortalOpacity.Opacity1)
@@ -831,10 +822,9 @@ namespace TombEditor.Compilers
             int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
             int ceiling = room.GetHighestCeilingCorner(xInRoom, zInRoom) + (int)room.Position.Y;
 
-            if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != -1 && !block.IsCeilingSolid)
+            if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null && !block.IsCeilingSolid)
             {
-                Portal portal = _level.Portals[block.CeilingPortal];
-                Room adjoiningRoom3 = portal.AdjoiningRoom;
+                Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
                 if (!adjoiningRoom3.FlagWater)

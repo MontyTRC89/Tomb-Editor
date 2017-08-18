@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using NLog;
 using TombLib.IO;
 
@@ -15,6 +16,8 @@ namespace TombEditor.Geometry.IO
             const byte filler8 = 0;
             const short filler16 = 0;
             const int filler32 = 0;
+
+            var PortalSaveIDs = new IdResolver<Portal>();
 
             try
             {
@@ -72,12 +75,12 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Write portals
-                    int numPortals = level.Portals.Count;
-                    writer.Write(numPortals);
-                    foreach (var p in level.Portals.Values)
+                    List<Portal> portals = level.Portals.ToList();
+                    writer.Write(portals.Count);
+                    foreach (var p in portals)
                     {
-                        writer.Write(p.Id);
-                        writer.Write(p.OtherId);
+                        writer.Write(PortalSaveIDs[p]);
+                        writer.Write(PortalSaveIDs[p.Other]);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.Room));
                         writer.Write((short)level.Rooms.ReferenceIndexOf(p.AdjoiningRoom));
                         writer.Write((byte)p.Direction);
@@ -85,10 +88,9 @@ namespace TombEditor.Geometry.IO
                         writer.Write(p.Z);
                         writer.Write(p.NumXBlocks);
                         writer.Write(p.NumZBlocks);
-                        writer.Write(filler8);
                         writer.Write(p.MemberOfFlippedRoom);
                         writer.Write(p.Flipped);
-                        writer.Write(p.OtherIdFlipped);
+
                         writer.Write(filler32);
                         writer.Write(filler32);
                         writer.Write(filler32);
@@ -242,9 +244,9 @@ namespace TombEditor.Geometry.IO
                                 writer.Write((byte)b.FloorOpacity);
                                 writer.Write((byte)b.CeilingOpacity);
                                 writer.Write((byte)b.WallOpacity);
-                                writer.Write(b.FloorPortal);
-                                writer.Write(b.CeilingPortal);
-                                writer.Write(b.WallPortal);
+                                writer.Write(PortalSaveIDs[b.FloorPortal]);
+                                writer.Write(PortalSaveIDs[b.CeilingPortal]);
+                                writer.Write(PortalSaveIDs[b.WallPortal]);
                                 writer.Write(b.IsFloorSolid);
                                 writer.Write(b.IsCeilingSolid);
                                 writer.Write(b.NoCollisionFloor);
@@ -399,6 +401,22 @@ namespace TombEditor.Geometry.IO
             }
 
             return true;
+        }
+
+        private class IdResolver<T>
+        {
+            private readonly Dictionary<T, int> _idList = new Dictionary<T, int>();
+            public int this[T obj]
+            {
+                get
+                {
+                    if (obj == null)
+                        return -1;
+                    if (!_idList.ContainsKey(obj))
+                        _idList.Add(obj, _idList.Count);
+                    return _idList[obj];
+                }
+            }
         }
     }
 }

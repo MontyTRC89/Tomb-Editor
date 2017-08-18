@@ -644,7 +644,7 @@ namespace TombEditor
                     "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
-            EditorActions.SetPortalOpacity(_editor.SelectedRoom, _editor.Level.Portals[_editor.SelectedObject.Value.Id], opacity);
+            EditorActions.SetPortalOpacity(_editor.SelectedRoom, _editor.Level.Portals.First(p => p.Id == _editor.SelectedObject.Value.Id), opacity);
         }
 
         private void butAddCamera_Click(object sender, EventArgs e)
@@ -1163,13 +1163,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            for (int p = 0; p < _editor.Level.Portals.Count; p++)
+            foreach (var portal in _editor.SelectedRoom.Portals)
             {
-                var portal = _editor.Level.Portals.ElementAt(p).Value;
-
-                if (portal.Room != _editor.SelectedRoom)
-                    continue;
-
                 portal.AdjoiningRoom.BuildGeometry();
                 portal.AdjoiningRoom.CalculateLightingForThisRoom();
                 portal.AdjoiningRoom.UpdateBuffers();
@@ -1184,13 +1179,8 @@ namespace TombEditor
             _editor.SelectedRoom.CalculateLightingForThisRoom();
             _editor.SelectedRoom.UpdateBuffers();
 
-            for (int p = 0; p < _editor.Level.Portals.Count; p++)
+            foreach (var portal in _editor.SelectedRoom.Portals)
             {
-                var portal = _editor.Level.Portals.ElementAt(p).Value;
-
-                if (portal.Room != _editor.SelectedRoom)
-                    continue;
-
                 portal.AdjoiningRoom.BuildGeometry();
                 portal.AdjoiningRoom.CalculateLightingForThisRoom();
                 portal.AdjoiningRoom.UpdateBuffers();

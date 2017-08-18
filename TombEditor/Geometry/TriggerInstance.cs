@@ -19,10 +19,7 @@ namespace TombEditor.Geometry
             : base(id, room)
         { }
 
-        public override ObjectInstanceType Type
-        {
-            get { return ObjectInstanceType.Trigger; }
-        }
+        public override ObjectInstanceType Type => ObjectInstanceType.Trigger;
 
         public override string ToString()
         {

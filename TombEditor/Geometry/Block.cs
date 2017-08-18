@@ -42,9 +42,9 @@ namespace TombEditor.Geometry
         public PortalOpacity FloorOpacity { get; set; }
         public PortalOpacity CeilingOpacity { get; set; }
         public PortalOpacity WallOpacity { get; set; }
-        public int FloorPortal { get; set; } = -1;
-        public int WallPortal { get; set; } = -1;
-        public int CeilingPortal { get; set; } = -1;
+        public Portal FloorPortal { get; set; } = null;
+        public Portal WallPortal { get; set; } = null;
+        public Portal CeilingPortal { get; set; } = null;
         public short FloorSlopeX { get; set; }
         public short FloorSlopeZ { get; set; }
         public short CeilingSlopeX { get; set; }
@@ -142,14 +142,18 @@ namespace TombEditor.Geometry
             return b;
         }
 
-        public bool IsFloor
-        {
-            get { return Type == BlockType.Floor; }
-        }
+        public bool IsFloor => Type == BlockType.Floor;
 
-        public bool IsAnyWall
+        public bool IsAnyWall => Type != BlockType.Floor;
+
+        public IEnumerable<Portal> Portals
         {
-            get { return Type != BlockType.Floor; }
+            get
+            {
+                if (WallPortal != null) yield return WallPortal;
+                if (CeilingPortal != null) yield return CeilingPortal;
+                if (FloorPortal != null) yield return FloorPortal;
+            }
         }
 
         public short[] GetVerticalSubdivision(int verticalSubdivision)

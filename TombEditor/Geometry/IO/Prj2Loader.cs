@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,14 +11,16 @@ using TombLib.IO;
 
 namespace TombEditor.Geometry.IO
 {
-    public class Prj2Loader
+    public static class Prj2Loader
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
+        
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
             var level = new Level();
 
+            IdResolver<Portal> portalIdResolver = new IdResolver<Portal>(() => new Portal(null));
+            
             try
             {
                 using (var reader = CreatePrjReader(filename))
@@ -85,30 +88,22 @@ namespace TombEditor.Geometry.IO
                     int numPortals = reader.ReadInt32();
                     for (int i = 0; i < numPortals; i++)
                     {
-                        var portal = new Portal(0, null)
-                        {
-                            Id = reader.ReadInt32(),
-                            OtherId = reader.ReadInt32(),
-                            Room = level.GetOrCreateDummyRoom(reader.ReadInt16()),
-                            AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16()),
-                            Direction = (PortalDirection)reader.ReadByte(),
-                            X = reader.ReadByte(),
-                            Z = reader.ReadByte(),
-                            NumXBlocks = reader.ReadByte(),
-                            NumZBlocks = reader.ReadByte()
-                        };
-
-                        reader.ReadByte();
+                        var portal = portalIdResolver[reader.ReadInt32()];
+                        portal.Other = portalIdResolver[reader.ReadInt32()];
+                        portal.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        portal.AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        portal.Direction = (PortalDirection) reader.ReadByte();
+                        portal.X = reader.ReadByte();
+                        portal.Z = reader.ReadByte();
+                        portal.NumXBlocks = reader.ReadByte();
+                        portal.NumZBlocks = reader.ReadByte();
                         portal.MemberOfFlippedRoom = reader.ReadBoolean();
                         portal.Flipped = reader.ReadBoolean();
-                        portal.OtherIdFlipped = reader.ReadInt32();
-
+                        
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();
                         reader.ReadInt32();
-
-                        level.Portals.Add(portal.Id, portal);
                     }
 
                     // Read objects
@@ -191,9 +186,8 @@ namespace TombEditor.Geometry.IO
                     int numTriggers = reader.ReadInt32();
                     for (int i = 0; i < numTriggers; i++)
                     {
-                        var o = new TriggerInstance(0, null)
+                        var o = new TriggerInstance(reader.ReadInt32(), null)
                         {
-                            Id = reader.ReadInt32(),
                             X = reader.ReadByte(),
                             Z = reader.ReadByte(),
                             NumXBlocks = reader.ReadByte(),
@@ -285,9 +279,9 @@ namespace TombEditor.Geometry.IO
                                     FloorOpacity = (PortalOpacity)reader.ReadByte(),
                                     CeilingOpacity = (PortalOpacity)reader.ReadByte(),
                                     WallOpacity = (PortalOpacity)reader.ReadByte(),
-                                    FloorPortal = reader.ReadInt32(),
-                                    CeilingPortal = reader.ReadInt32(),
-                                    WallPortal = reader.ReadInt32(),
+                                    FloorPortal = portalIdResolver[reader.ReadInt32()],
+                                    CeilingPortal = portalIdResolver[reader.ReadInt32()],
+                                    WallPortal = portalIdResolver[reader.ReadInt32()],
                                     IsFloorSolid = reader.ReadBoolean(),
                                     IsCeilingSolid = reader.ReadBoolean(),
                                     NoCollisionFloor = reader.ReadBoolean(),
@@ -429,10 +423,14 @@ namespace TombEditor.Geometry.IO
                 }
 
                 // Check that there are uninitialized rooms
-                foreach (Room room in level.Rooms)
-                    if (room != null)
-                        if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
-                            throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+                foreach (Room room in level.Rooms.Where(room => room != null))
+                    if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
+                        throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+
+                // Check that there are uninitialized portals
+                foreach (Portal portal in level.Portals)
+                    if ((portal.AdjoiningRoom == null) || (portal.Room == null))
+                        throw new Exception("There appears to be an uninitialized portal.");
 
             }
             catch (Exception ex)
@@ -491,11 +489,6 @@ namespace TombEditor.Geometry.IO
                 room.UpdateBuffers();
             }
 
-            foreach (var portal in level.Portals)
-            {
-                portal.Value.Room.Portals.Add(portal.Key);
-            }
-
             return level;
         }
         
@@ -531,5 +524,31 @@ namespace TombEditor.Geometry.IO
             }
         }
 
+        private class IdResolver<T> where T : class
+        {
+            private Func<T> _createT;
+            private readonly Dictionary<int, T> _portalList = new Dictionary<int, T>();
+
+            public IdResolver(Func<T> createT)
+            {
+                _createT = createT;
+            }
+
+            public T this[int id]
+            {
+                get
+                {
+                    if (id == -1)
+                        return null;
+
+                    if (_portalList.ContainsKey(id))
+                        return _portalList[id];
+
+                    T newT = _createT();
+                    _portalList.Add(id, newT);
+                    return newT;
+                }
+            }
+        }
     }
 }
