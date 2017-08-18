@@ -1517,7 +1517,7 @@ namespace TombEditor.Geometry.IO
                                 bool isFloorSplitted = !Room.IsQuad(x, z, h1, h2, h3, h4, false);
 
                                 newBlock.SplitFloor = (isFloorSplitted && prjBlock._flags3 == 0x01);
-
+                                
                                 for (int n = 0; n < 14; n++)
                                 {
                                     var theFace = prjBlock._faces[n];
@@ -1907,12 +1907,11 @@ namespace TombEditor.Geometry.IO
                                                     {
                                                         if (theFace._txtTriangle == 0)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
@@ -1921,8 +1920,7 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
@@ -1933,16 +1931,55 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
@@ -1967,12 +2004,11 @@ namespace TombEditor.Geometry.IO
 
                                                         if (theFace._txtTriangle == 1)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
@@ -1981,8 +2017,7 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
@@ -1993,16 +2028,55 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
@@ -2027,12 +2101,11 @@ namespace TombEditor.Geometry.IO
 
                                                         if (theFace._txtTriangle == 3)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
@@ -2041,8 +2114,7 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
@@ -2053,16 +2125,55 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
@@ -2087,12 +2198,11 @@ namespace TombEditor.Geometry.IO
 
                                                         if (theFace._txtTriangle == 2)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
@@ -2101,8 +2211,7 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
@@ -2113,16 +2222,55 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling)
+                                                                    if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling== 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling)
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2)
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
@@ -2145,16 +2293,15 @@ namespace TombEditor.Geometry.IO
                                                                 TextureTileType.TriangleSE;
                                                         }
                                                     }
-                                                    else
+                                                    else // ===========================================================================================
                                                     {
                                                         if (theFace._txtTriangle == 0)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
@@ -2163,8 +2310,49 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2
+                                                                    ) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[3];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2
                                                                     ) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
@@ -2176,16 +2364,14 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[3];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2
                                                                     ) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[0];
@@ -2211,12 +2397,11 @@ namespace TombEditor.Geometry.IO
 
                                                         if (theFace._txtTriangle == 1)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
@@ -2225,8 +2410,7 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2
                                                                     ) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
@@ -2238,16 +2422,57 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2
+                                                                    ) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2
+                                                                    ) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[0];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[1];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[0];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2
                                                                     ) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[1];
@@ -2273,12 +2498,11 @@ namespace TombEditor.Geometry.IO
 
                                                         if (theFace._txtTriangle == 3)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // OK
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // OK
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
@@ -2287,8 +2511,48 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex ==
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2) // TODO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[2];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // OK
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2) // OK
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[2];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // OK
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex ==
                                                                         (int)BlockFaces.CeilingTriangle2) // TODO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
@@ -2300,16 +2564,14 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // OK
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // OK
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[0];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[2];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex ==
+                                                                    if (faceIndex ==
                                                                         (int)BlockFaces.CeilingTriangle2) // OK
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[3];
@@ -2335,12 +2597,11 @@ namespace TombEditor.Geometry.IO
 
                                                         if (theFace._txtTriangle == 2)
                                                         {
-                                                            if (isFloor || isCeiling)
+                                                            if (isFloor)
                                                             {
                                                                 if (theBlock.RealSplitFloor == 0)
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
@@ -2349,8 +2610,49 @@ namespace TombEditor.Geometry.IO
                                                                         newRot = (sbyte)(newRot + 2);
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex ==
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2) // TODO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+                                                                    }
+
+                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2
+                                                                    ) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV2[2] = uv[1];
+
+                                                                        newRot = (sbyte)(newRot + 1);
+                                                                    }
+                                                                }
+                                                            }
+                                                            else if (isCeiling)
+                                                            {
+                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                {
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    {
+                                                                        theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
+                                                                        theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
+
+                                                                        newRot = (sbyte)(newRot + 2);
+                                                                    }
+
+                                                                    if (faceIndex ==
                                                                         (int)BlockFaces.CeilingTriangle2) // TODO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];
@@ -2362,16 +2664,14 @@ namespace TombEditor.Geometry.IO
                                                                 }
                                                                 else
                                                                 {
-                                                                    if (faceIndex == (int)BlockFaces.Floor ||
-                                                                        faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
+                                                                    if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV[0] = uv[2];
                                                                         theBlock.Faces[faceIndex].TriangleUV[1] = uv[3];
                                                                         theBlock.Faces[faceIndex].TriangleUV[2] = uv[1];
                                                                     }
 
-                                                                    if (faceIndex == (int)BlockFaces.FloorTriangle2 ||
-                                                                        faceIndex == (int)BlockFaces.CeilingTriangle2
+                                                                    if (faceIndex == (int)BlockFaces.CeilingTriangle2
                                                                     ) // CORRETTO
                                                                     {
                                                                         theBlock.Faces[faceIndex].TriangleUV2[0] = uv[2];

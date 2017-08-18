@@ -2011,12 +2011,22 @@ namespace TombEditor.Geometry
                     return 0;
                 default:
                     int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
-                    if (min == h1)
+                    int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
+
+                    if (max == h1 && max == h3)
                         return 1;
-                    if (min == h2)
+                    if (max == h2 && max == h4)
                         return 0;
-                    if (min == h3)
+
+                    if (min == h1 && max == h3)
                         return 1;
+                    if (min == h2 && max == h4)
+                        return 0;
+                    if (min == h3 && max == h1)
+                        return 1;
+                    if (min == h4 && max == h2)
+                        return 0;
+
                     break;
             }
 
