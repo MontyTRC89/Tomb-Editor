@@ -266,7 +266,7 @@ namespace TombEditor.Compilers
                 ConvertSectors(room, ref newRoom);
                 
                 var tempStaticMeshes = room.Statics
-                    .Select(staticMesh => (StaticInstance) _editor.Level.Objects[staticMesh])
+                    .Select(staticMesh => (StaticInstance) _level.Objects[staticMesh])
                     .Select(instance => new tr_room_staticmesh
                     {
                         X = (uint)(newRoom.Info.X + instance.Position.X),
@@ -285,7 +285,7 @@ namespace TombEditor.Compilers
 
                 ConvertLights(room, ref newRoom);
 
-                room._compiled = newRoom;
+                _tempRooms.Add(room, newRoom);
             }
 
             ReportProgress(25, "    Number of rooms: " + _level.Rooms.Count(r => r != null));
@@ -406,9 +406,9 @@ namespace TombEditor.Compilers
             {
                 var newLight = new tr4_room_light
                 {
-                    X = (int) (newRoom.Info.X + light.Position.X),
-                    Y = (int) (-light.Position.Y + newRoom.Info.YBottom),
-                    Z = (int) (newRoom.Info.Z + light.Position.Z),
+                    X = (int)Math.Round(newRoom.Info.X + light.Position.X),
+                    Y = (int)Math.Round(-light.Position.Y + newRoom.Info.YBottom),
+                    Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
                     Color = new tr_color
                     {
                         Red = light.Color.R,
@@ -543,8 +543,8 @@ namespace TombEditor.Compilers
                              room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1) ||
                             (room.Blocks[x, z].IsFloorSolid && room.Blocks[x, z].NoCollisionFloor))
                         {
-                            var portal = room.Blocks[x, z].FloorPortal;
-                            sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom);
+                            var portal = _editor.Level.Portals[room.Blocks[x, z].FloorPortal];
+                            sector.RoomBelow = (byte) _level.Rooms.ReferenceIndexOf(room.Blocks[x, z].FloorPortal.AdjoiningRoom);
                         }
                         else
                         {
@@ -578,8 +578,10 @@ namespace TombEditor.Compilers
                     {
                     }
 
-                    if (room.Blocks[x, z].WallPortal != null && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
-                        aux.WallPortal = room.Blocks[x, z].WallPortal.AdjoiningRoom;
+                    if (room.Blocks[x, z].WallPortal != -1 && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
+                        aux.WallPortal =
+                            _level.Rooms.ReferenceIndexOf(_level.Portals[room.Blocks[x, z].WallPortal]
+                                .AdjoiningRoom);
                     else
                         aux.WallPortal = null;
 
@@ -1049,9 +1051,9 @@ namespace TombEditor.Compilers
             var tempTexturesList = new List<LevelTexture>();
             _texturesIdTable = new Dictionary<int, int>();
 
-            for (var i = 0; i < _editor.Level.TextureSamples.Count; i++)
+            for (var i = 0; i < _level.TextureSamples.Count; i++)
             {
-                var oldSample = _editor.Level.TextureSamples[i];
+                var oldSample = _level.TextureSamples[i];
 
                 // don't count for unused textures
                 // if (oldSample.UsageCount <= 0) continue;
@@ -1084,12 +1086,12 @@ namespace TombEditor.Compilers
             ReportProgress(3, "Building room texture map");
 
             // I've sorted the textures by height, now I build the texture map
-            var numRoomTexturePages = _editor.Level.TextureMap.Height / 256;
+            var numRoomTexturePages = _level.TextureMap.Height / 256;
             for (var x = 0; x < 256; x++)
             {
-                for (var y = 0; y < _editor.Level.TextureMap.Height; y++)
+                for (var y = 0; y < _level.TextureMap.Height; y++)
                 {
-                    var c = _editor.Level.TextureMap.GetPixel(x, y);
+                    var c = _level.TextureMap.GetPixel(x, y);
 
                     if (c.R == 255 & c.G == 0 && c.B == 255)
                     {
@@ -1125,7 +1127,7 @@ namespace TombEditor.Compilers
 
             // Build the TR4 texture tiles
 
-            foreach (var room in _editor.Level.Rooms.Where(r => r != null))
+            foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 for (var x = 0; x < room.NumXSectors; x++)
                 {

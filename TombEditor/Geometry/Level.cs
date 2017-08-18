@@ -140,6 +140,9 @@ namespace TombEditor.Geometry
 
         public void RebuildAllAlphaTests()
         {
+            if (TextureMap == null)
+                return;
+
             for (int i = 0; i < TextureSamples.Count; i++)
             {
                 LevelTexture texture = TextureSamples.ElementAt(i).Value;

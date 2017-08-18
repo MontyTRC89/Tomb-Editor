@@ -8,7 +8,7 @@ namespace TombEditor.Compilers
     {
         private void WriteLevelTr4()
         {
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream("temp.bin", FileMode.Create, FileAccess.Write, FileShare.None)))
@@ -18,12 +18,12 @@ namespace TombEditor.Compilers
                 const int filler = 0;
                 writer.Write(filler);
 
-                var numRooms = (ushort) _editor.Level.Rooms.Count(r => r != null);
+                var numRooms = (ushort) _level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                foreach (var r in _editor.Level.Rooms.Where(r => r != null))
+                foreach (var r in _level.Rooms.Where(r => r != null))
                 {
-                    r._compiled.Write(writer);
+                    _tempRooms[r].Write(writer);
                 }
 
                 // Write floordata
@@ -182,7 +182,7 @@ namespace TombEditor.Compilers
                 byte[] soundMap;
                 uint numSampleIndices;
                 using (var readerSounds = new BinaryReaderEx(new FileStream(
-                    _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
+                    _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     soundMap = readerSounds.ReadBytes(370 * 2);
                     _numSoundDetails = (uint) readerSounds.ReadInt32();
@@ -248,7 +248,7 @@ namespace TombEditor.Compilers
                     writer.WriteBlockArray(buffer);
 
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    int numSamples = _editor.Level.Wad.OriginalWad.Sounds.Count;
+                    int numSamples = _level.Wad.OriginalWad.Sounds.Count;
                     writer.WriteBlock(numSamples);
 
                     ReportProgress(80, "Writing WAVE sounds");
@@ -264,7 +264,7 @@ namespace TombEditor.Compilers
 
         private bool WriteLevelTr3()
         {
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
@@ -310,34 +310,35 @@ namespace TombEditor.Compilers
                 long offset2;
                 foreach (var room in _level.Rooms.Where(r => r != null))
                 {
-                    writer.WriteBlock(room._compiled.Info);
+                    var tempRoom = _tempRooms[room];
+                    writer.WriteBlock(tempRoom.Info);
 
                     offset = writer.BaseStream.Position;
 
                     const int numdw = 0;
                     writer.Write(numdw);
 
-                    var tmp = (ushort) room._compiled.Vertices.Length;
+                    var tmp = (ushort) tempRoom.Vertices.Length;
                     writer.Write(tmp);
-                    writer.WriteBlockArray(room._compiled.Vertices);
+                    writer.WriteBlockArray(tempRoom.Vertices);
 
-                    tmp = (ushort) room._compiled.Rectangles.Length;
+                    tmp = (ushort) tempRoom.Rectangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
-                        for (var k = 0; k < room._compiled.Rectangles.Length; k++)
+                        for (var k = 0; k < tempRoom.Rectangles.Length; k++)
                         {
-                            room._compiled.Rectangles[k].Write(writer);
+                            tempRoom.Rectangles[k].Write(writer);
                         }
                     }
 
-                    tmp = (ushort) room._compiled.Triangles.Length;
+                    tmp = (ushort) tempRoom.Triangles.Length;
                     writer.Write(tmp);
                     if (tmp != 0)
                     {
-                        for (var k = 0; k < room._compiled.Triangles.Length; k++)
+                        for (var k = 0; k < tempRoom.Triangles.Length; k++)
                         {
-                            room._compiled.Triangles[k].Write(writer);
+                            tempRoom.Triangles[k].Write(writer);
                         }
                     }
 
@@ -356,27 +357,27 @@ namespace TombEditor.Compilers
                     writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                     // Write portals
-                    tmp = (ushort) room._compiled.Portals.Length;
+                    tmp = (ushort) tempRoom.Portals.Length;
                     writer.WriteBlock(tmp);
                     if (tmp != 0)
-                        writer.WriteBlockArray(room._compiled.Portals);
+                        writer.WriteBlockArray(tempRoom.Portals);
 
                     // Write sectors
-                    writer.Write(room._compiled.NumZSectors);
-                    writer.Write(room._compiled.NumXSectors);
-                    writer.WriteBlockArray(room._compiled.Sectors);
+                    writer.Write(tempRoom.NumZSectors);
+                    writer.Write(tempRoom.NumXSectors);
+                    writer.WriteBlockArray(tempRoom.Sectors);
 
                     // Write room color
-                    writer.Write(room._compiled.AmbientIntensity1);
-                    writer.Write(room._compiled.AmbientIntensity2);
+                    writer.Write(tempRoom.AmbientIntensity1);
+                    writer.Write(tempRoom.AmbientIntensity2);
 
                     // Write lights
-                    tmp = (ushort) room._compiled.Lights.Length;
+                    tmp = (ushort) tempRoom.Lights.Length;
                     writer.WriteBlock(tmp);
 
                     for (var j = 0; j < tmp; j++)
                     {
-                        var light = room._compiled.Lights[j];
+                        var light = tempRoom.Lights[j];
                         writer.Write(light.X);
                         writer.Write(light.Y);
                         writer.Write(light.Z);
@@ -390,17 +391,17 @@ namespace TombEditor.Compilers
                     }
 
                     // Write static meshes
-                    tmp = (ushort) room._compiled.StaticMeshes.Length;
+                    tmp = (ushort) tempRoom.StaticMeshes.Length;
                     writer.WriteBlock(tmp);
                     if (tmp != 0)
-                        writer.WriteBlockArray(room._compiled.StaticMeshes);
+                        writer.WriteBlockArray(tempRoom.StaticMeshes);
 
                     // Write final data
-                    writer.Write(room._compiled.AlternateRoom);
-                    writer.Write(room._compiled.Flags);
-                    writer.Write(room._compiled.WaterScheme);
-                    writer.Write(room._compiled.ReverbInfo);
-                    writer.Write(room._compiled.AlternateGroup);
+                    writer.Write(tempRoom.AlternateRoom);
+                    writer.Write(tempRoom.Flags);
+                    writer.Write(tempRoom.WaterScheme);
+                    writer.Write(tempRoom.ReverbInfo);
+                    writer.Write(tempRoom.AlternateGroup);
                 }
 
                 // Write floordata
@@ -564,7 +565,7 @@ namespace TombEditor.Compilers
                 // Write sound data
                 byte[] sfxBuffer;
                 using (var readerSounds = new BinaryReaderEx(new FileStream(
-                        @"Graphics\Wads\" + _editor.Level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
+                        @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
                 {
                     sfxBuffer = readerSounds.ReadBytes((int) readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);

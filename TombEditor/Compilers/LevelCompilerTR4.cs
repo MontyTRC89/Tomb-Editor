@@ -12,6 +12,8 @@ namespace TombEditor.Compilers
 {
     public sealed partial class LevelCompilerTr4 : LevelCompiler
     {
+        private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>();
+
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
             public int Compare(tr4_flyby_camera x, tr4_flyby_camera y)
@@ -126,9 +128,9 @@ namespace TombEditor.Compilers
         {
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
-                foreach (var sound in _editor.Level.Wad.OriginalWad.Sounds)
+                foreach (var sound in _level.Wad.OriginalWad.Sounds)
                 {
-                    byte[] soundData = _editor.Level.Settings.ReadSound(sound, _editor.Level.Settings.IgnoreMissingSounds);
+                    byte[] soundData = _level.Settings.ReadSound(sound, _level.Settings.IgnoreMissingSounds);
                     writer.Write(soundData.GetLength(0));
                     writer.Write(soundData.GetLength(0));
                     writer.Write(soundData);
@@ -195,7 +197,7 @@ namespace TombEditor.Compilers
 
             _soundSourcesTable = new Dictionary<int, int>();
 
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.SoundSource).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.SoundSource).Select(obj => obj.Key))
             {
                 _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
             }
@@ -203,13 +205,14 @@ namespace TombEditor.Compilers
             var tempSoundSources = new List<tr_sound_source>();
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var instance in _soundSourcesTable.Keys.Select(src => (SoundSourceInstance) _editor.Level.Objects[src]))
+            foreach (var instance in _soundSourcesTable.Keys.Select(src => (SoundSourceInstance) _level.Objects[src]))
             {
+                Vector3 position = instance.Room.WorldPos + instance.Position;
                 var source = new tr_sound_source
                 {
-                    X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
-                    Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
-                    Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(position.X),
+                    Y = (int)-Math.Round(position.Y),
+                    Z = (int)Math.Round(position.Z),
                     SoundID = (ushort)instance.SoundId,
                     Flags = 0x80
                 };
@@ -228,32 +231,33 @@ namespace TombEditor.Compilers
 
             int k = 0;
             _cameraTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Camera).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Camera).Select(obj => obj.Key))
             {
                 _cameraTable.Add(obj, k++);
             }
 
             _sinkTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sink).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Sink).Select(obj => obj.Key))
             {
                 _sinkTable.Add(obj, k++);
             }
 
             _flybyTable = new Dictionary<int, int>();
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.FlyByCamera).Select(obj => obj.Key))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.FlyByCamera).Select(obj => obj.Key))
             {
                 _flybyTable.Add(obj, k++);
             }
 
             var tempCameras = new List<tr_camera>();
 
-            foreach (var instance in _cameraTable.Keys.Select(cam => (CameraInstance) _editor.Level.Objects[cam]))
+            foreach (var instance in _cameraTable.Keys.Select(cam => (CameraInstance) _level.Objects[cam]))
             {
+                Vector3 position = instance.Room.WorldPos + instance.Position;
                 var camera = new tr_camera
                 {
-                    X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
-                    Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
-                    Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(position.X),
+                    Y = (int)-Math.Round(position.Y),
+                    Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)]
                 };
 
@@ -264,19 +268,20 @@ namespace TombEditor.Compilers
             }
 
             // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var instance in _sinkTable.Keys.Select(sink => (SinkInstance) _editor.Level.Objects[sink]))
+            foreach (var instance in _sinkTable.Keys.Select(sink => (SinkInstance) _level.Objects[sink]))
             {
                 int xSector = (int) Math.Floor(instance.Position.X / 1024);
                 int zSector = (int) Math.Floor(instance.Position.Z / 1024);
 
+                var tempRoom = _tempRooms[instance.Room];
+                Vector3 position = instance.Room.WorldPos + instance.Position;
                 var camera = new tr_camera
                 {
-                    X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
-                    Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
-                    Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(position.X),
+                    Y = (int)-Math.Round(position.Y),
+                    Z = (int)Math.Round(position.Z),
                     Room = instance.Strength,
-                    Flags = (ushort)((instance.Room._compiled
-                                           .Sectors[instance.Room._compiled.NumZSectors * xSector + zSector].BoxIndex &
+                    Flags = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex &
                                        0x7f00) >> 4)
                 };
 
@@ -288,7 +293,7 @@ namespace TombEditor.Compilers
             var tempFlyby = new List<tr4_flyby_camera>();
 
             foreach (var instance in _flybyTable.Keys.Select(
-                flyby => (FlybyCameraInstance) _editor.Level.Objects[flyby]))
+                flyby => (FlybyCameraInstance) _level.Objects[flyby]))
             {
                 Vector3 Direction = instance.GetDirection();
                 Vector3 Position = instance.Room.WorldPos + instance.Position;
@@ -326,10 +331,10 @@ namespace TombEditor.Compilers
         private void BuildSprites()
         {
             ReportProgress(9, "Building sprites");
-            ReportProgress(9, "Reading " + _editor.Level.Wad.OriginalWad.BaseName + ".swd");
+            ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             using (var reader = new BinaryReaderEx(new FileStream(
-                _editor.Level.Wad.OriginalWad.BasePath + "\\" + _editor.Level.Wad.OriginalWad.BaseName + ".swd", FileMode.Open, FileAccess.Read, FileShare.None)))
+                _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".swd", FileMode.Open, FileAccess.Read, FileShare.None)))
             {
                 // Version
                 reader.ReadUInt32();
@@ -409,7 +414,7 @@ namespace TombEditor.Compilers
         {
             ReportProgress(11, "Converting WAD data to TR4 format");
 
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             ReportProgress(12, "    Number of animations: " + wad.Animations.Count);
 
@@ -1347,20 +1352,20 @@ namespace TombEditor.Compilers
             return (short)newId;
         }
 
-        private static tr_room_sector GetSector(Room room, int x, int z)
+        private static tr_room_sector GetSector(tr_room room, int x, int z)
         {
-            return room._compiled.Sectors[room._compiled.NumZSectors * x + z];
+            return room.Sectors[room.NumZSectors * x + z];
         }
 
-        private static void SaveSector(Room room, int x, int z, tr_room_sector sector)
+        private static void SaveSector(tr_room room, int x, int z, tr_room_sector sector)
         {
-            room._compiled.Sectors[room._compiled.NumZSectors * x + z] = sector;
+            room.Sectors[room.NumZSectors * x + z] = sector;
         }
 
         private void GetAllReachableRooms()
         {
             foreach (var room in _level.Rooms.Where(r => r != null))
-                room._compiled.ReachableRooms = new List<Room>();
+                _tempRooms[room].ReachableRooms = new List<Room>();
 
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
@@ -1377,8 +1382,9 @@ namespace TombEditor.Compilers
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
 
-                if (!baseRoom._compiled.ReachableRooms.Contains(p.AdjoiningRoom))
-                    baseRoom._compiled.ReachableRooms.Add(p.AdjoiningRoom);
+                var tempRoom = _tempRooms[baseRoom];
+                if (!tempRoom.ReachableRooms.Contains(p.AdjoiningRoom))
+                    tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
             // Ceiling portals
@@ -1387,10 +1393,11 @@ namespace TombEditor.Compilers
                 if (p.Direction != PortalDirection.Ceiling)
                     continue;
 
-                if (baseRoom._compiled.ReachableRooms.Contains(p.AdjoiningRoom))
+                var tempRoom = _tempRooms[baseRoom];
+                if (tempRoom.ReachableRooms.Contains(p.AdjoiningRoom))
                     continue;
 
-                baseRoom._compiled.ReachableRooms.Add(p.AdjoiningRoom);
+                tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
                 GetAllReachableRoomsUp(baseRoom, p.AdjoiningRoom);
             }
         }
@@ -1403,8 +1410,9 @@ namespace TombEditor.Compilers
                 if (p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)
                     continue;
 
-                if (!baseRoom._compiled.ReachableRooms.Contains(p.AdjoiningRoom))
-                    baseRoom._compiled.ReachableRooms.Add(p.AdjoiningRoom);
+                var tempRoom = _tempRooms[baseRoom];
+                if (!tempRoom.ReachableRooms.Contains(p.AdjoiningRoom))
+                    tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
             }
 
             foreach (var p in currentRoom.Portals)
@@ -1412,17 +1420,19 @@ namespace TombEditor.Compilers
                 if (p.Direction != PortalDirection.Floor)
                     continue;
 
-                if (baseRoom._compiled.ReachableRooms.Contains(p.AdjoiningRoom))
+                var tempRoom = _tempRooms[baseRoom];
+                if (tempRoom.ReachableRooms.Contains(p.AdjoiningRoom))
                     continue;
 
-                baseRoom._compiled.ReachableRooms.Add(p.AdjoiningRoom);
+                tempRoom.ReachableRooms.Add(p.AdjoiningRoom);
                 GetAllReachableRoomsDown(baseRoom, p.AdjoiningRoom);
             }
         }
 
         private bool BuildBox(Room room, int x, int z, int xm, int xM, int zm, int zM, out tr_box_aux box)
         {
-            var aux = room._compiled.AuxSectors[x, z];
+            var tempRoom = _tempRooms[room];
+            var aux = tempRoom.AuxSectors[x, z];
 
             int xMin = 0;
             int xMax = 0;
@@ -1435,7 +1445,7 @@ namespace TombEditor.Compilers
             // Find box corners in direction -X
             for (int x2 = xc; x2 > 0; x2--)
             {
-                var aux2 = room._compiled.AuxSectors[x2, zc];
+                var aux2 = tempRoom.AuxSectors[x2, zc];
 
                 if (aux2.WallPortal != null)
                 {
@@ -1453,7 +1463,7 @@ namespace TombEditor.Compilers
             // Find box corners in direction +X
             for (int x2 = xc; x2 < room.NumXSectors - 1; x2++)
             {
-                var aux2 = room._compiled.AuxSectors[x2, zc];
+                var aux2 = tempRoom.AuxSectors[x2, zc];
 
                 if (aux2.WallPortal != null)
                 {
@@ -1474,7 +1484,7 @@ namespace TombEditor.Compilers
                 int tmpZ = 0;
                 for (int z2 = zc; z2 > 0; z2--)
                 {
-                    var aux2 = room._compiled.AuxSectors[x2, z2];
+                    var aux2 = tempRoom.AuxSectors[x2, z2];
 
                     if (aux2.WallPortal != null)
                     {
@@ -1501,7 +1511,7 @@ namespace TombEditor.Compilers
 
                 for (int z2 = zc; z2 < room.NumZSectors - 1; z2++)
                 {
-                    var aux2 = room._compiled.AuxSectors[x2, z2];
+                    var aux2 = tempRoom.AuxSectors[x2, z2];
 
                     if (aux2.WallPortal != null)
                     {
@@ -1523,10 +1533,10 @@ namespace TombEditor.Compilers
 
             box = new tr_box_aux
             {
-                Xmin = (byte)(xMin + room._compiled.Info.X / 1024),
-                Xmax = (byte)(xMax + room._compiled.Info.X / 1024 + 1),
-                Zmin = (byte)(zMin + room._compiled.Info.Z / 1024),
-                Zmax = (byte)(zMax + room._compiled.Info.Z / 1024 + 1),
+                Xmin = (byte)(xMin + tempRoom.Info.X / 1024),
+                Xmax = (byte)(xMax + tempRoom.Info.X / 1024 + 1),
+                Zmin = (byte)(zMin + tempRoom.Info.Z / 1024),
+                Zmax = (byte)(zMax + tempRoom.Info.Z / 1024 + 1),
                 TrueFloor = GetMostDownFloor(room, x, z),
                 IsolatedBox = aux.Box,
                 Monkey = aux.Monkey,
@@ -1558,30 +1568,32 @@ namespace TombEditor.Compilers
 
         private short GetMostDownFloor(Room room, int x, int z)
         {
+            var tempRoom = _tempRooms[room];
             while (true)
             {
-                var sector = GetSector(room, x, z);
+                var sector = GetSector(tempRoom, x, z);
                 if (sector.RoomBelow == 255)
                 {
-                    var aux3 = room._compiled.AuxSectors[x, z];
+                    var aux3 = tempRoom.AuxSectors[x, z];
                     return (short)(aux3.LowestFloor * 256);
                 }
 
-                var room1 = room;
-                var room2 = _editor.Level.Rooms[sector.RoomBelow];
+                var roomBelow = _level.Rooms[sector.RoomBelow];
+                var tempRoomBelow = _tempRooms[roomBelow];
 
-                int x2 = room1._compiled.Info.X / 1024 + x - room2._compiled.Info.X / 1024;
-                int z2 = room1._compiled.Info.Z / 1024 + z - room2._compiled.Info.Z / 1024;
+                int x2 = tempRoom.Info.X / 1024 + x - tempRoomBelow.Info.X / 1024;
+                int z2 = tempRoom.Info.Z / 1024 + z - tempRoomBelow.Info.Z / 1024;
 
-                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
-                var aux2 = _editor.Level.Rooms[sector.RoomBelow]._compiled.AuxSectors[x2, z2];
+                var sector2 = GetSector(tempRoomBelow, x2, z2);
+                var aux2 = tempRoomBelow.AuxSectors[x2, z2];
 
                 if (sector2.RoomBelow == 255 || aux2.IsFloorSolid)
                 {
                     return (short)(aux2.LowestFloor * 256);
                 }
 
-                room = _editor.Level.Rooms[sector.RoomBelow];
+                room = roomBelow;
+                tempRoom = tempRoomBelow;
                 x = x2;
                 z = z2;
             }
@@ -1589,9 +1601,10 @@ namespace TombEditor.Compilers
 
         private bool GetMostDownFloorAndRoom(Room room, int x, int z, out Room roomIndex, out short floor)
         {
+            var tempRoom = _tempRooms[room];
             while (true)
             {
-                var sector = GetSector(room, x, z);
+                var sector = GetSector(tempRoom, x, z);
                 if (sector.RoomBelow == 255)
                 {
                     roomIndex = room;
@@ -1599,52 +1612,54 @@ namespace TombEditor.Compilers
                     return true;
                 }
 
-                var room1 = room;
-                var room2 = _editor.Level.Rooms[sector.RoomBelow];
+                var roomBelow = _level.Rooms[sector.RoomBelow];
+                var tempRoomBelow = _tempRooms[roomBelow];
 
-                int x2 = room1._compiled.Info.X / 1024 + x - room2._compiled.Info.X / 1024;
-                int z2 = room1._compiled.Info.Z / 1024 + z - room2._compiled.Info.Z / 1024;
+                int x2 = tempRoom.Info.X / 1024 + x - tempRoomBelow.Info.X / 1024;
+                int z2 = tempRoom.Info.Z / 1024 + z - tempRoomBelow.Info.Z / 1024;
 
-                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
+                var sector2 = GetSector(tempRoomBelow, x2, z2);
 
-                if (sector2.RoomBelow != 255)
+                if (sector2.RoomBelow == 255)
                 {
-                    room = _editor.Level.Rooms[sector.RoomBelow];
-                    x = x2;
-                    z = z2;
-                    continue;
+                    roomIndex = roomBelow;
+                    floor = sector2.Floor;
+                    return true;
                 }
 
-                roomIndex = _editor.Level.Rooms[sector.RoomBelow];
-                floor = sector2.Floor;
-                return true;
+                room = roomBelow;
+                tempRoom = tempRoomBelow;
+                x = x2;
+                z = z2;
             }
         }
 
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
+            var tempRoom = _tempRooms[room];
             while (true)
             {
-                var sector = GetSector(room, x, z);
+                var sector = GetSector(tempRoom, x, z);
                 if (sector.RoomBelow == 255)
                 {
-                    return room._compiled.AuxSectors[x, z].Monkey;
+                    return tempRoom.AuxSectors[x, z].Monkey;
                 }
 
-                var room1 = room;
-                var room2 = _editor.Level.Rooms[sector.RoomBelow];
+                var roomBelow = _level.Rooms[sector.RoomBelow];
+                var tempRoomBelow = _tempRooms[roomBelow];
 
-                int x2 = room1._compiled.Info.X / 1024 + x - room2._compiled.Info.X / 1024;
-                int z2 = room1._compiled.Info.Z / 1024 + z - room2._compiled.Info.Z / 1024;
+                int x2 = tempRoom.Info.X / 1024 + x - tempRoomBelow.Info.X / 1024;
+                int z2 = tempRoom.Info.Z / 1024 + z - tempRoomBelow.Info.Z / 1024;
 
-                var sector2 = GetSector(_editor.Level.Rooms[sector.RoomBelow], x2, z2);
+                var sector2 = GetSector(tempRoomBelow, x2, z2);
 
                 if (sector2.RoomBelow == 255)
                 {
-                    return _editor.Level.Rooms[sector.RoomBelow]._compiled.AuxSectors[x2, z2].Monkey;
+                    return tempRoomBelow.AuxSectors[x2, z2].Monkey;
                 }
 
-                room = _editor.Level.Rooms[sector.RoomBelow];
+                room = roomBelow;
+                tempRoom = tempRoomBelow;
                 x = x2;
                 z = z2;
             }
@@ -1654,7 +1669,7 @@ namespace TombEditor.Compilers
         {
             ReportProgress(11, "Converting WAD meshes to TR4 format");
 
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             ReportProgress(12, "    Number of meshes: " + wad.Meshes.Count);
 
@@ -1789,7 +1804,7 @@ namespace TombEditor.Compilers
             _moveablesTable = new Dictionary<int, int>();
             _aiObjectsTable = new Dictionary<int, int>();
 
-            foreach (var obj in _editor.Level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Moveable))
+            foreach (var obj in _level.Objects.Where(obj => obj.Value.Type == ObjectInstanceType.Moveable))
             {
                 uint objectId = ((MoveableInstance)obj.Value).WadObjectId;
 
@@ -1806,15 +1821,16 @@ namespace TombEditor.Compilers
             var tempItems = new List<tr_item>();
             var tempAiObjects = new List<tr_ai_item>();
 
-            foreach (var instance in _moveablesTable.Keys.Select(obj => (MoveableInstance) _editor.Level.Objects[obj]))
+            foreach (var instance in _moveablesTable.Keys.Select(obj => (MoveableInstance) _level.Objects[obj]))
             {
                 double angle = Math.Round(instance.Rotation * (65536.0 / 360.0));
+                Vector3 position = instance.Room.WorldPos + instance.Position;
 
                 var item = new tr_item
                 {
-                    X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
-                    Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
-                    Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(position.X),
+                    Y = (int)-Math.Round(position.Y),
+                    Z = (int)Math.Round(position.Z),
                     ObjectID = (short)instance.WadObjectId,
                     Room = (short)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)],
                     Angle = unchecked((short)((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))))),
@@ -1834,13 +1850,14 @@ namespace TombEditor.Compilers
 
             _items = tempItems.ToArray();
 
-            foreach (var instance in _aiObjectsTable.Keys.Select(obj => (MoveableInstance) _editor.Level.Objects[obj]))
+            foreach (var instance in _aiObjectsTable.Keys.Select(obj => (MoveableInstance) _level.Objects[obj]))
             {
+                Vector3 position = instance.Room.WorldPos + instance.Position;
                 var item = new tr_ai_item
                 {
-                    X = (int)(instance.Room._compiled.Info.X + instance.Position.X),
-                    Y = (int)(instance.Room._compiled.Info.YBottom - instance.Position.Y),
-                    Z = (int)(instance.Room._compiled.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(position.X),
+                    Y = (int)-Math.Round(position.Y),
+                    Z = (int)Math.Round(position.Z),
                     ObjectID = (ushort) instance.WadObjectId,
                     Room = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(instance.Room)]
                 };
@@ -1891,7 +1908,7 @@ namespace TombEditor.Compilers
         private short BuildWadTextureInfo(short txt, bool triangle, short attributes)
         {
             int original = txt;
-            var wad = _editor.Level.Wad.OriginalWad;
+            var wad = _level.Wad.OriginalWad;
 
             bool isFlipped = false;
             int shape = original & 0x7000;

@@ -14,18 +14,15 @@ namespace TombEditor.Compilers
             ReportProgress(50, "Building pathfinding data");
 
             // Fix monkey on portals
-            foreach (var fixRoom in _editor.Level.Rooms)
+            foreach (var fixRoom in _tempRooms.Values)
             {
-                if (fixRoom == null) continue;
-
                 for (int x = 0; x < fixRoom.NumXSectors; x++)
                 {
                     for (int z = 0; z < fixRoom.NumZSectors; z++)
                     {
-                        if (fixRoom._compiled.AuxSectors[x, z].FloorPortal != null)
-                        {
-                            fixRoom._compiled.AuxSectors[x, z].Monkey = FindMonkeyFloor(fixRoom, x, z);
-                        }
+                        var sector = fixRoom.AuxSectors[x, z];
+                        if (sector.FloorPortal != -1)
+                            sector.Monkey = FindMonkeyFloor(fixRoom.OriginalRoom, x, z);
                     }
                 }
             }
@@ -296,11 +293,11 @@ namespace TombEditor.Compilers
             {
                 for (var z = a.Zmin - 1; z <= a.Zmax - 1; z++)
                 {
-                    var r1 = _editor.Level.Rooms[a.Room];
-                    var r2 = _editor.Level.Rooms[b.Room];
-
+                    var r1 = _level.Rooms[a.Room];
+                    var r2 = _level.Rooms[b.Room];
+                    
                     if (a.Room != b.Room && (IsVerticallyReachable(_level.Rooms[a.Room], _level.Rooms[b.Room]) ||
-                                             r1.BaseRoom == r2._compiled.FlippedRoom || r1._compiled.FlippedRoom == r2.BaseRoom))
+                                             r1.BaseRoom == _tempRooms[r2].FlippedRoom || _tempRooms[r1].FlippedRoom == r2.BaseRoom))
                     {
                         return true;
                     }
@@ -339,7 +336,7 @@ namespace TombEditor.Compilers
             int floor;
             int xMax = 0;
 
-            Room currentRoom;
+            tr_room currentRoom;
 
             int xRoomPosition;
             int zRoomPosition;
@@ -369,10 +366,10 @@ namespace TombEditor.Compilers
                 if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax, currentZ, out destRoom))
                     return false;
 
-                currentRoom = destRoom;
+                currentRoom = _tempRooms[destRoom];
 
-                xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-                zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+                xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
+                zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
 
                 xInRoom = xMax - xRoomPosition;
                 zInRoom = currentZ - zRoomPosition;
@@ -393,10 +390,10 @@ namespace TombEditor.Compilers
             if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax, currentZ, out destRoom))
                 return false;
 
-            currentRoom = destRoom;
+            currentRoom = _tempRooms[destRoom];
 
-            xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-            zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+            xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
 
             xInRoom = xMax - xRoomPosition;
             zInRoom = currentZ - zRoomPosition;
@@ -409,10 +406,10 @@ namespace TombEditor.Compilers
             if (!CanSectorBeReachedAndIsSolid(roomIndex, xMax + 1, currentZ, out destRoom))
                 return false;
 
-            currentRoom = destRoom;
+            currentRoom = _tempRooms[destRoom];
 
-            xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-            zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+            xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
 
             xInRoom = xMax + 1 - xRoomPosition;
             zInRoom = currentZ - zRoomPosition;
@@ -466,7 +463,7 @@ namespace TombEditor.Compilers
 
             Room destRoom;
 
-            Room currentRoom;
+            tr_room currentRoom;
 
             int xRoomPosition;
             int zRoomPosition;
@@ -484,10 +481,10 @@ namespace TombEditor.Compilers
                 if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax, out destRoom))
                     return false;
 
-                currentRoom = destRoom;
+                currentRoom = _tempRooms[destRoom];
 
-                xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-                zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+                xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
+                zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
 
                 xInRoom = currentX - xRoomPosition;
                 zInRoom = zMax - zRoomPosition;
@@ -510,10 +507,10 @@ namespace TombEditor.Compilers
             if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax, out destRoom))
                 return false;
 
-            currentRoom = destRoom;
+            currentRoom = _tempRooms[destRoom];
 
-            xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-            zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+            xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
 
             xInRoom = currentX - xRoomPosition;
             zInRoom = zMax - zRoomPosition;
@@ -527,10 +524,10 @@ namespace TombEditor.Compilers
             if (!CanSectorBeReachedAndIsSolid(roomIndex, currentX, zMax + 1, out destRoom))
                 return false;
 
-            currentRoom = destRoom;
+            currentRoom = _tempRooms[destRoom];
 
-            xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-            zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+            xRoomPosition = (int) (currentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int) (currentRoom.Info.Z / 1024.0f);
 
             xInRoom = currentX - xRoomPosition;
             zInRoom = zMax + 1 - zRoomPosition;
@@ -548,23 +545,25 @@ namespace TombEditor.Compilers
             destRoom = room;
 
             var currentRoom = room;
+            tr_room tempCurrentRoom = _tempRooms[currentRoom];
             Room editorRoom;
 
-            var xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-            var zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+            var xRoomPosition = (int) (tempCurrentRoom.Info.X / 1024.0f);
+            var zRoomPosition = (int) (tempCurrentRoom.Info.Z / 1024.0f);
 
             var xInRoom = x - xRoomPosition;
             var zInRoom = z - zRoomPosition;
 
-            bool isOutside = IsXzInBorderOrOutsideRoom(room, xInRoom, zInRoom);
+            bool isOutside = IsXzInBorderOrOutsideRoom(tempCurrentRoom, xInRoom, zInRoom);
 
             while (isOutside)
             {
                 currentRoom = room;
-                editorRoom = currentRoom._compiled.OriginalRoom;
+                tempCurrentRoom = _tempRooms[currentRoom];
+                editorRoom = tempCurrentRoom.OriginalRoom;
 
-                xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-                zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+                xRoomPosition = (int) (tempCurrentRoom.Info.X / 1024.0f);
+                zRoomPosition = (int) (tempCurrentRoom.Info.Z / 1024.0f);
 
                 xInRoom = x - xRoomPosition;
                 zInRoom = z - zRoomPosition;
@@ -593,23 +592,25 @@ namespace TombEditor.Compilers
                 if (editorRoom.Blocks[xInRoom, zInRoom].WallPortal == null) return false;
 
                 // Get the wall portal
-                room = editorRoom.Blocks[xInRoom, zInRoom].WallPortal.AdjoiningRoom;
+                room = portal.AdjoiningRoom;
+                room = editorRoom.Blocks[xInRoom, zInRoom]..AdjoiningRoom;
                 destRoom = room;
 
                 // If portal is a toggle opacity 1 then I can't go to original X, Z so quit the function
                 if (editorRoom.Blocks[xInRoom, zInRoom].WallOpacity == PortalOpacity.Opacity1) return false;
 
                 // Check if now I'm outside
-                isOutside = IsXzInBorderOrOutsideRoom(room, x, z);
+                isOutside = IsXzInBorderOrOutsideRoom(tempCurrentRoom, x, z);
             }
 
             // If I am here, I've probed that I can reach the requested X, Z
             // Now I have to check if the floor under that sector is solid
             currentRoom = room;
-            editorRoom = currentRoom._compiled.OriginalRoom;
+            tempCurrentRoom = _tempRooms[currentRoom];
+            editorRoom = tempCurrentRoom.OriginalRoom;
 
-            xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-            zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+            xRoomPosition = (int) (tempCurrentRoom.Info.X / 1024.0f);
+            zRoomPosition = (int) (tempCurrentRoom.Info.Z / 1024.0f);
 
             xInRoom = x - xRoomPosition;
             zInRoom = z - zRoomPosition;
@@ -620,22 +621,23 @@ namespace TombEditor.Compilers
             while (isFloorPortal)
             {
                 // Get the floor portal
-                var portal = editorRoom.Blocks[xInRoom, zInRoom].FloorPortal;
+                var portal = Portals[editorRoom.Blocks[xInRoom, zInRoom].FloorPortal;
                 room = portal.AdjoiningRoom;
                 destRoom = room;
 
                 // If floor portal is toggle opacity 1 and not one of the two rooms are water rooms
                 if (editorRoom.Blocks[xInRoom, zInRoom].FloorOpacity == PortalOpacity.Opacity1 &&
-                    !(editorRoom.FlagWater ^ portal.AdjoiningRoom._compiled.OriginalRoom.FlagWater))
+                    !(editorRoom.FlagWater ^ _tempRooms[portal.AdjoiningRoom].OriginalRoom.FlagWater))
                 {
                     return true;
                 }
 
                 currentRoom = room;
-                editorRoom = currentRoom._compiled.OriginalRoom;
+                tempCurrentRoom = _tempRooms[currentRoom];
+                editorRoom = tempCurrentRoom.OriginalRoom;
 
-                xRoomPosition = (int) (currentRoom._compiled.Info.X / 1024.0f);
-                zRoomPosition = (int) (currentRoom._compiled.Info.Z / 1024.0f);
+                xRoomPosition = (int) (tempCurrentRoom.Info.X / 1024.0f);
+                zRoomPosition = (int) (tempCurrentRoom.Info.Z / 1024.0f);
 
                 xInRoom = x - xRoomPosition;
                 zInRoom = z - zRoomPosition;
@@ -646,9 +648,9 @@ namespace TombEditor.Compilers
             return true;
         }
 
-        private static bool IsXzInBorderOrOutsideRoom(Room room, int x, int z)
+        private static bool IsXzInBorderOrOutsideRoom(tr_room tempRoom, int x, int z)
         {
-            return (x <= 0 || z <= 0 || x >= room._compiled.NumXSectors - 1 || z >= room._compiled.NumZSectors - 1);
+            return (x <= 0 || z <= 0 || x >= tempRoom.NumXSectors - 1 || z >= tempRoom.NumZSectors - 1);
         }
 
         private IEnumerable<int> GetAllReachableBoxes(int box, int zoneType, bool flipped)
@@ -661,7 +663,7 @@ namespace TombEditor.Compilers
             stack.Push(box);
 
             // All reachable boxes must have the same water flag and same flipped flag
-            var isWater = (_editor.Level.Rooms[_tempBoxes[box].Room]._compiled.Flags & 0x01) != 0;
+            var isWater = (_tempRooms[_level.Rooms[_tempBoxes[box].Room]].Flags & 0x01) != 0;
             
             while (stack.Count > 0)
             {
@@ -680,7 +682,7 @@ namespace TombEditor.Compilers
                     // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
                     if (zoneType == 1)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256 && flipped == _tempBoxes[boxIndex].FlipMap) add = true;
                     }
@@ -688,7 +690,7 @@ namespace TombEditor.Compilers
                     // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
                     if (zoneType == 2)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
 
                         // Check all possibilities
@@ -701,7 +703,7 @@ namespace TombEditor.Compilers
                     // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step. In water they act like flying enemies.
                     if (zoneType == 3)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (((water == isWater && step <= 256) || water)) add = true;
                     }
@@ -709,7 +711,7 @@ namespace TombEditor.Compilers
                     // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
                     if (zoneType == 4)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = _boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor;
 
                         // Check all possibilities
@@ -723,7 +725,7 @@ namespace TombEditor.Compilers
                     // Flying enemies. Here we just check if the water flag is the same.
                     if (zoneType == 5)
                     {
-                        var water = (_editor.Level.Rooms[_tempBoxes[boxIndex].Room]._compiled.Flags & 0x01) != 0;
+                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         if (water == isWater) add = true;
                     }
 
@@ -740,9 +742,9 @@ namespace TombEditor.Compilers
             return boxes;
         }
 
-        private static bool IsVerticallyReachable(Room room, Room destRoom)
+        private bool IsVerticallyReachable(Room room, Room destRoom)
         {
-            return room == destRoom || room._compiled.ReachableRooms.Any(r => r == destRoom);
+            return room == destRoom || _tempRooms[room].ReachableRooms.Any(r => r == destRoom);
         }
     }
 }

@@ -169,8 +169,8 @@ namespace TombEditor.Geometry
                     case VariableType.GameDirectory:
                     case VariableType.LevelDirectory:
                         string relativePath = Utils.GetRelativePath(GetVariable(baseDirType), path);
-                        if (relativePath == path)
-                            return path;
+                        if (relativePath == null)
+                            return Path.GetFullPath(path);
                         return VariableCreate(baseDirType) + Path.DirectorySeparatorChar + relativePath;
                     default:
                         return path;

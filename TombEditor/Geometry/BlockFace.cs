@@ -23,10 +23,12 @@ namespace TombEditor.Geometry
         public Vector2[] TriangleUV2 { get; set; } = new Vector2[3];
         public byte[] EditorUv { get; set; }
         public TextureTileType TextureTriangle { get; set; }
-        public List<short> IndicesForSolidBucketsRendering { get; set; }
-        public List<short> IndicesForLightingCalculations { get; set; }
-        public List<short> IndicesForFinalLevel { get; set; } = new List<short>();
         public EditorVertex[] Vertices { get; set; }
+
+        // I would really like to get rid of those members in this class, however that is a seperate task.
+        public List<short> IndicesForSolidBucketsRendering { get; } = new List<short>();
+        public List<short> IndicesForLightingCalculations { get; } = new List<short>();
+        public List<short> IndicesForFinalLevel { get; } = new List<short>();
 
         public bool RayIntersect(ref Ray ray, out Vector3 point)
         {
