@@ -18,6 +18,8 @@ namespace TombEditor.Geometry
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
 
+        public IEnumerable<Portal> Portals => Rooms.Where(room => room != null).SelectMany(room => room.Portals);
+
         public Dictionary<int, LevelTexture> TextureSamples { get; } =
             new Dictionary<int, LevelTexture>(); //Texture tiles
 
@@ -35,17 +37,6 @@ namespace TombEditor.Geometry
         public Wad Wad { get; private set; }
 
         public LevelSettings Settings { get; set; } = new LevelSettings();
-
-        public IEnumerable<Portal> Portals
-        {
-            get
-            { // No LINQ because it is really slow
-                foreach (Room room in Rooms)
-                    if (room != null)
-                        foreach (Portal portal in room.Portals)
-                            yield return portal;
-            }
-        }
 
         public static Level CreateSimpleLevel()
         {
