@@ -1011,13 +1011,10 @@ namespace TombEditor.Geometry
                         Blocks[x, z].Faces[f].StartVertex = (short)Vertices.Count;
                         int baseIndex = Vertices.Count;
 
-                        Blocks[x, z].Faces[f].IndicesForSolidBucketsRendering = new List<short>
-                        {
-                            (short) (baseIndex + 0),
-                            (short) (baseIndex + 1),
-                            (short) (baseIndex + 2)
-                        };
-
+                        Blocks[x, z].Faces[f].IndicesForSolidBucketsRendering.Clear();
+                        Blocks[x, z].Faces[f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 0));
+                        Blocks[x, z].Faces[f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 1));
+                        Blocks[x, z].Faces[f].IndicesForSolidBucketsRendering.Add((short)(baseIndex + 2));
 
                         if (face.Shape == BlockFaceShape.Rectangle)
                         {
@@ -2068,8 +2065,8 @@ namespace TombEditor.Geometry
             Blocks[x, z].Faces[(int)face].Vertices = new EditorVertex[6];
 
             // creo una nuova lista dei vertici
-            Blocks[x, z].Faces[(int)face].IndicesForSolidBucketsRendering = new List<short>();
-            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations = new List<short>();
+            Blocks[x, z].Faces[(int)face].IndicesForSolidBucketsRendering.Clear();
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Clear();
             Blocks[x, z].Faces[(int)face].EditorUv = new byte[4];
 
             Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Rectangle;
@@ -2263,8 +2260,8 @@ namespace TombEditor.Geometry
             var plane = new Plane(p1, p2, p3);
 
             // creo una nuova lista dei vertici
-            Blocks[x, z].Faces[(int)face].IndicesForSolidBucketsRendering = new List<short>();
-            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations = new List<short>();
+            Blocks[x, z].Faces[(int)face].IndicesForSolidBucketsRendering.Clear();
+            Blocks[x, z].Faces[(int)face].IndicesForLightingCalculations.Clear();
             Blocks[x, z].Faces[(int)face].EditorUv = new byte[4];
 
             Blocks[x, z].Faces[(int)face].Shape = BlockFaceShape.Triangle;
