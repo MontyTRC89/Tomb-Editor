@@ -1112,7 +1112,7 @@ namespace TombEditor.Compilers
             for (var i = 0; i < _tempTexturesArray.Length; i++)
             {
                 var tex = _tempTexturesArray[i];
-                tex.AlphaTest = true;
+                tex.AlphaTest = Utils.HasTrasparency(_level.TextureMap, tex.X, tex.Y + 256 * tex.Page, tex.Width, tex.Height);
                 tex.NewX = tex.X;
                 tex.NewY = tex.Y;
                 tex.NewPage = tex.Page;

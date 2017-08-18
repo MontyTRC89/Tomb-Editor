@@ -2072,7 +2072,7 @@ namespace TombEditor.Controls
 
             // First collect rooms to draw
             _roomsToDraw = new List<Room>();
-            
+
             // Collect rooms to draw
             if (DrawPortals)
                 CollectRoomsToDraw(_editor.SelectedRoom);
