@@ -211,7 +211,7 @@ namespace TombEditor
                 if (string.Compare(baseDirArr[i], fileNameArr[i], true) != 0) // Case insensitive match
                     break;
             if (i == 0) // Cannot make relative path, for example if resides on different drive
-                return fileName;
+                return null;
 
             var resultFolders = Enumerable.Repeat("..", Math.Max(0, baseDirArr.Length - i)).Concat(fileNameArr.Skip(i));
             string result = string.Join(Path.DirectorySeparatorChar.ToString(), resultFolders);
