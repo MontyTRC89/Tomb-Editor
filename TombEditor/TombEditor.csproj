@@ -45,6 +45,10 @@
     <StartupObject>TombEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AssimpNet, Version=3.2.0.0, Culture=neutral, PublicKeyToken=7c35138f0d61254b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Vecchi\Tomb Editor\Build\AssimpNet.dll</HintPath>
+    </Reference>
     <Reference Include="DarkUI">
       <HintPath>..\Libs\DarkUI.dll</HintPath>
     </Reference>
@@ -216,6 +220,7 @@
     <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
+    <Compile Include="Geometry\GeometryImporter.cs" />
     <Compile Include="Geometry\LevelSettings.cs" />
     <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
