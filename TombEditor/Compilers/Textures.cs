@@ -116,13 +116,13 @@ namespace TombEditor.Compilers
                         string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
                         ReportProgress(19, "Reading font texture: " + fontFileName);
                         using (Bitmap fontTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName))
-                            g.DrawImageUnscaledAndClipped(fontTexture, new Rectangle(0, 256, 256, 256));
+                            g.DrawImageUnscaledAndClipped(fontTexture, new Rectangle(0, 0, 256, 256));
 
                         // Read sky texture
                         string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
                         ReportProgress(18, "Reading sky texture: " + skyFileName);
                         using (Bitmap skyTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName))
-                            g.DrawImageUnscaledAndClipped(skyTexture, new Rectangle(0, 0, 256, 256));
+                            g.DrawImageUnscaledAndClipped(skyTexture, new Rectangle(0, 256, 256, 256));
                     }
 
                     // Extract raw texture data
