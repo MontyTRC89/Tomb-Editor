@@ -55,9 +55,12 @@ namespace TombEditor
             _editor.EditorEventRaised += EditorEventRaised;
             _editor.Level = Level.CreateSimpleLevel();
 
-
+            // Initialize panels
             panel3D.InitializePanel(_deviceManager);
             panelItem.InitializePanel(_deviceManager);
+
+            // Initialize the geometry importer class
+            GeometryImporter.Initialize(_deviceManager);
 
             // Update 3D view
             but3D_Click(null, null);

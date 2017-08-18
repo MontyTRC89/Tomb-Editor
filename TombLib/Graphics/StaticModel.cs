@@ -19,17 +19,29 @@ namespace TombLib.Graphics
 
         public override void BuildBuffers()
         {
+            int lastBaseIndex = 0;
+            int lastBaseVertex = 0;
+
             Vertices = new List<StaticVertex>();
-            Vertices.AddRange(Meshes[0].Vertices);
-
             Indices = new List<int>();
-            Indices.AddRange(Meshes[0].Indices);
 
-            if (Vertices.Count == 0)
-                return;
+            for (int i = 0; i < Meshes.Count; i++)
+            {
+                Vertices.AddRange(Meshes[i].Vertices);
 
-            Meshes[0].BaseIndex = 0;
-            Meshes[0].NumIndices = Indices.Count;
+                Meshes[i].BaseIndex = lastBaseIndex;
+                Meshes[i].NumIndices = Meshes[i].Indices.Count;
+
+                for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                {
+                    Indices.Add((ushort)(lastBaseVertex + Meshes[i].Indices[j]));
+                }
+
+                lastBaseIndex += Meshes[i].Indices.Count;
+                lastBaseVertex += Meshes[i].Vertices.Count;
+            }
+
+            if (Vertices.Count == 0) return;
 
             VertexBuffer = Buffer.Vertex.New<StaticVertex>(GraphicsDevice, Vertices.ToArray<StaticVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
