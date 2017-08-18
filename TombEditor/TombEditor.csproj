@@ -47,7 +47,7 @@
   <ItemGroup>
     <Reference Include="AssimpNet, Version=3.2.0.0, Culture=neutral, PublicKeyToken=7c35138f0d61254b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Vecchi\Tomb Editor\Build\AssimpNet.dll</HintPath>
+      <HintPath>..\Libs\AssimpNet.dll</HintPath>
     </Reference>
     <Reference Include="DarkUI">
       <HintPath>..\Libs\DarkUI.dll</HintPath>
