@@ -8,6 +8,7 @@ using Assimp;
 using SharpDX;
 using Assimp.Configs;
 using SharpDX.Toolkit.Graphics;
+using System.IO;
 
 namespace TombEditor.Geometry
 {
@@ -40,7 +41,7 @@ namespace TombEditor.Geometry
 
             // Create a new static model
             RoomGeometryModel model = new RoomGeometryModel(_manager.Device);
-
+       
             // Load all textures
             foreach (var mat in scene.Materials)
             {
@@ -102,8 +103,12 @@ namespace TombEditor.Geometry
                                              positions[i].Y * scale,
                                              positions[i].Z * scale,
                                              1.0f);
-                    v.UV = new Vector2(texCoords[i].X, 
-                                       1.0f - texCoords[i].Y);
+
+                    if (hasTexCoords)
+                    {
+                        v.UV = new Vector2(texCoords[i].X,
+                                           1.0f - texCoords[i].Y);
+                    }
 
                     vertices.Add(v);
                 }
@@ -146,6 +151,71 @@ namespace TombEditor.Geometry
             Models[name].Dispose();
             Models.Remove(name);
             CleanUpGarbage();
+        }
+
+        public static bool ExportModelToObj(Room room, string fileName)
+        {
+            if (File.Exists(fileName)) File.Delete(fileName);
+
+            using (var writer = new StreamWriter(File.OpenWrite(fileName)))
+            {
+                writer.WriteLine("# Exported by Tomb Editor");
+                writer.WriteLine("o Room");
+
+                // Export positions
+                foreach (var vertex in room.Vertices)
+                {
+                    writer.WriteLine("v " + vertex.Position.X + " " + vertex.Position.Y + " " + vertex.Position.Z + " 1.0");
+                }
+
+                // TODO: to remove when materials will be exported
+                Random r = new Random(new Random().Next());
+
+                // Export UVs
+                foreach (var vertex in room.Vertices)
+                {
+                    // TODO: to remove when materials will be exported
+                    float randX = r.NextFloat(0, 1);
+                    float randY = r.NextFloat(0, 1);
+
+                    writer.WriteLine("vt " + /*vertex.UV.X*/ randX + " " + randY /* vertex.UV.Y*/);
+                }
+
+                writer.WriteLine("s 1");
+
+                // Export faces
+                for (int x = 0; x < room.NumXSectors; x++)
+                {
+                    for (int z = 0; z < room.NumZSectors; z++)
+                    {
+                        foreach (var face in room.Blocks[x, z].Faces)
+                        {
+                            if (!face.Defined) continue;
+
+                            writer.Write("f");
+
+                            for (int i = 0; i < face.IndicesForSolidBucketsRendering.Count;i++)
+                            {
+                                int index = face.IndicesForSolidBucketsRendering[i];
+
+                                if ((index % 3) == 0 && i != 0)
+                                {
+                                    writer.WriteLine();
+                                    writer.Write("f");
+                                }
+
+                                writer.Write(" " + (index + 1) + "/" + (index + 1));
+                            }
+
+                            writer.WriteLine();
+                        }
+                    }
+                }
+
+                writer.Flush();
+            }
+
+            return true;
         }
 
         public static void CleanUpGarbage()
