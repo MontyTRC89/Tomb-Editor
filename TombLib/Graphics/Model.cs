@@ -14,7 +14,8 @@ namespace TombLib.Graphics
     public enum ModelType : short
     {
         Static,
-        Skinned
+        Skinned,
+        RoomGeometry
     }
 
     public abstract class Model<T, U> : IDisposable where U : struct

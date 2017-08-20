@@ -111,6 +111,7 @@ namespace TombLib.Graphics
 
             // Prepare data by uploading data to the GPU
             model.BuildBuffers();
+
             return model;
         }
 
