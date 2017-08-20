@@ -176,7 +176,17 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                newRoom.Vertices = new tr_room_vertex[optimizedVertices.Count];
+                // Get the number of imported geometry vertices
+                int numImportedVertices = 0;
+                foreach (var geometry in room.RoomGeometryObjects)
+                {
+                    foreach (var mesh in geometry.Model.Meshes)
+                    {
+                        numImportedVertices += mesh.VertexCount;
+                    }
+                }
+                
+                newRoom.Vertices = new tr_room_vertex[optimizedVertices.Count + numImportedVertices];
                 for (var j = 0; j < optimizedVertices.Count; j++)
                 {
                     var rv = new tr_room_vertex();
@@ -239,6 +249,35 @@ namespace TombEditor.Compilers
                     }
 
                     newRoom.Vertices[j] = rv;
+                }
+
+                // Now add imported geometry vertices
+                int lastVertex = optimizedVertices.Count;
+
+                foreach (var geometry in room.RoomGeometryObjects)
+                {
+                    foreach (var mesh in geometry.Model.Meshes)
+                    {
+                        for (int j = 0; j < mesh.VertexCount; j++)
+                        {
+                            var rv = new tr_room_vertex();
+
+                            var v = new tr_vertex
+                            {
+                                X = (short)(mesh.Vertices[j].Position.X + geometry.Position.X),
+                                Y = (short)(-mesh.Vertices[j].Position.Y + newRoom.Info.YBottom - geometry.Position.Y),
+                                Z = (short)(mesh.Vertices[j].Position.Z + geometry.Position.Z)
+                            };
+
+                            rv.Vertex = v;
+                            rv.Lighting1 = 0;
+                            rv.Lighting2 = (short)(0x3fff); // TODO: apply light calculations also to imported geometry
+                            rv.Attributes = 0;
+
+                            newRoom.Vertices[lastVertex] = rv;
+                            lastVertex++;
+                        }
+                    }
                 }
 
                 ConvertGeometry(room, ref newRoom, indicesDictionary);
