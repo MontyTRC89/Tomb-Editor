@@ -12,7 +12,7 @@ using System.IO;
 
 namespace TombEditor.Geometry
 {
-    public static class GeometryImporter
+    public static class GeometryImporterExporter
     {
         public static Dictionary<string, Texture2D> Textures;
         public static Dictionary<string, RoomGeometryModel> Models;
@@ -153,7 +153,7 @@ namespace TombEditor.Geometry
             CleanUpGarbage();
         }
 
-        public static bool ExportModelToObj(Room room, string fileName)
+        public static bool ExportRoomToObj(Room room, string fileName)
         {
             if (File.Exists(fileName)) File.Delete(fileName);
 

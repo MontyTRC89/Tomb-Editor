@@ -60,7 +60,7 @@ namespace TombEditor
             panelItem.InitializePanel(_deviceManager);
 
             // Initialize the geometry importer class
-            GeometryImporter.Initialize(_deviceManager);
+            GeometryImporterExporter.Initialize(_deviceManager);
 
             // Update 3D view
             but3D_Click(null, null);
@@ -1830,7 +1830,7 @@ namespace TombEditor
 
         private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            GeometryImporter.ExportModelToObj(_editor.SelectedRoom, "room.obj");
+            GeometryImporterExporter.ExportRoomToObj(_editor.SelectedRoom, "room.obj");
         }
 
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1841,9 +1841,9 @@ namespace TombEditor
               instance.Position = new Vector3(4096, 512, 4096);
               _editor.SelectedRoom.RoomGeometryObjects.Add(instance);*/
 
-            GeometryImporter.LoadModel("room.obj", 1.0f);
+            GeometryImporterExporter.LoadModel("room.obj", 1.0f);
             RoomGeometryInstance instance = new RoomGeometryInstance(0, _editor.SelectedRoom);
-            instance.Model = GeometryImporter.Models["room.obj"];
+            instance.Model = GeometryImporterExporter.Models["room.obj"];
             instance.Position = new Vector3(4096, 512, 4096);
             _editor.SelectedRoom.RoomGeometryObjects.Add(instance);
         }
