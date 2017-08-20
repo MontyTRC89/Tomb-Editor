@@ -145,7 +145,7 @@ namespace TombEngine
 
         public void Load(string ind)
         {
-            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.None);
+            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReaderEx reader = new BinaryReaderEx(fileStream);
             MemoryStream stream = new MemoryStream();
             Inflater inflater = new Inflater(false);

@@ -83,10 +83,9 @@ namespace TombEditor.Controls
 
         private void SetParameters()
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
+            Light light = _editor.SelectedObject as Light;
+            if (light == null)
                 return;
-
-            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
 
             switch (LightParameter)
             {
@@ -204,15 +203,13 @@ namespace TombEditor.Controls
 
         private void butDown_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
+            Light light = _editor.SelectedObject as Light;
+            if (light == null)
                 return;
 
             // Hack for setting up light parameter ranges
             SetParameters();
-
-            // Get the current light
-            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
-
+            
             float newValue = _value;
 
             // Change parameter value
@@ -244,15 +241,13 @@ namespace TombEditor.Controls
 
         private void butUp_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
+            Light light = _editor.SelectedObject as Light;
+            if (light == null)
                 return;
 
             // Hack for setting up light parameter ranges
             SetParameters();
-
-            // Get the current light
-            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
-
+            
             float newValue = _value;
 
             // Change parameter value
@@ -292,59 +287,57 @@ namespace TombEditor.Controls
 
         private void ChangeLightParameter()
         {
-            if (_editor.SelectedObject.HasValue && (_editor.SelectedObject.Value.Type == ObjectInstanceType.Light))
+            Light light = _editor.SelectedObject as Light;
+            if (light == null)
+                return;
+            
+            switch (LightParameter)
             {
-                Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
+                case LightParameter.Intensity:
+                    if (light.Intensity == _value)
+                        return;
+                    light.Intensity = _value;
+                    break;
 
-                switch (LightParameter)
-                {
-                    case LightParameter.Intensity:
-                        if (light.Intensity == _value)
-                            return;
-                        light.Intensity = _value;
-                        break;
+                case LightParameter.In:
+                    if (light.In == _value)
+                        return;
+                    light.In = _value;
+                    break;
 
-                    case LightParameter.In:
-                        if (light.In == _value)
-                            return;
-                        light.In = _value;
-                        break;
+                case LightParameter.Out:
+                    if (light.Out == _value)
+                        return;
+                    light.Out = _value;
+                    break;
 
-                    case LightParameter.Out:
-                        if (light.Out == _value)
-                            return;
-                        light.Out = _value;
-                        break;
+                case LightParameter.Len:
+                    if (light.Len == _value)
+                        return;
+                    light.Len = _value;
+                    break;
 
-                    case LightParameter.Len:
-                        if (light.Len == _value)
-                            return;
-                        light.Len = _value;
-                        break;
+                case LightParameter.CutOff:
+                    if (light.Cutoff == _value)
+                        return;
+                    light.Cutoff = _value;
+                    break;
 
-                    case LightParameter.CutOff:
-                        if (light.Cutoff == _value)
-                            return;
-                        light.Cutoff = _value;
-                        break;
+                case LightParameter.DirectionX:
+                    if (light.RotationX == _value)
+                        return;
+                    light.RotationX = _value;
+                    break;
 
-                    case LightParameter.DirectionX:
-                        if (light.DirectionX == _value)
-                            return;
-                        light.DirectionX = _value;
-                        break;
-
-                    case LightParameter.DirectionY:
-                        if (light.DirectionY == _value)
-                            return;
-                        light.DirectionY = _value;
-                        break;
-                }
-                
-                _editor.SelectedRoom.CalculateLightingForThisRoom();
-                _editor.SelectedRoom.UpdateBuffers();
-                _editor.ObjectChange(light);
+                case LightParameter.DirectionY:
+                    if (light.RotationY == _value)
+                        return;
+                    light.RotationY = _value;
+                    break;
             }
+                
+            _editor.SelectedRoom.UpdateCompletely();
+            _editor.ObjectChange(light);
         }
     }
 }

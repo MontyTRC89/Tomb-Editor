@@ -11,7 +11,7 @@ namespace TombEditor.Compilers
 {
     public sealed partial class LevelCompilerTr4
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private byte[] _textures16;
 

@@ -1,17 +1,20 @@
 ﻿using SharpDX;
+using System;
 
 namespace TombEditor.Geometry
 {
-    public class Light
+    public enum LightType : byte
     {
-        public LightType Type { get; set; }
-        public Vector3 Position { get; set; }
+        Light, Shadow, Spot, Effect, Sun, FogBulb
+    }
+
+    public class Light : PositionBasedObjectInstance, IRotateableYX
+    {
+        public LightType Type { get; }
         public System.Drawing.Color Color { get; set; } = System.Drawing.Color.White;
         public float Intensity { get; set; } = 0.5f;
         public float In { get; set; } = 1.0f;
         public float Out { get; set; } = 5.0f;
-        public float DirectionX { get; set; } = 0.0f;
-        public float DirectionY { get; set; } = 0.0f;
         public float Len { get; set; } = 2.0f;
         public float Cutoff { get; set; } = 3.0f;
         public bool Enabled { get; set; } = true;
@@ -19,11 +22,26 @@ namespace TombEditor.Geometry
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
 
-        public Light(LightType type, Vector3 position)
+        private float _rotationX = 0.0f;
+        private float _rotationY = 0.0f;
+
+        /// <summary> Degrees in the range [-90, 90] </summary>
+        public float RotationX
+        {
+            get { return _rotationX; }
+            set { _rotationX = Math.Max(-90, Math.Min(90, value)); }
+        }
+        
+        /// <summary> Degrees in the range [0, 360) </summary>
+        public float RotationY
+        {
+            get { return _rotationY; }
+            set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+        }
+
+        public Light(LightType type)
         {
             Type = type;
-            Position = position;
-
             switch (type)
             {
                 case LightType.Shadow:
@@ -45,10 +63,10 @@ namespace TombEditor.Geometry
                     break;
             }
         }
-
-        public Light Clone()
+        
+        public override ObjectInstance Clone()
         {
-            return (Light)(this.MemberwiseClone());
+            return (ObjectInstance)(this.MemberwiseClone());
         }
 
         public override string ToString()
@@ -57,6 +75,18 @@ namespace TombEditor.Geometry
                 ", X = " + Position.X +
                 ", Y = " + Position.Y +
                 ", Z = " + Position.Z;
+        }
+
+        public override void AddToRoom(Level level, Room room)
+        {
+            base.AddToRoom(level, room);
+            room.UpdateCompletely();
+        }
+
+        public override void RemoveFromRoon(Level level, Room room)
+        {
+            base.RemoveFromRoon(level, room);
+            room.UpdateCompletely(); // Rebuild lighting!
         }
     }
 }

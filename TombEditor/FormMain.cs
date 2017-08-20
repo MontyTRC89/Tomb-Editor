@@ -27,14 +27,13 @@ namespace TombEditor
         public FormMain()
         {
             InitializeComponent();
-            lightPalette.SelectedColorChanged += delegate 
-                {
-                    if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
+            lightPalette.SelectedColorChanged += delegate
+            {
+                    Light light = _editor.SelectedObject as Light;
+                    if (light == null)
                         return;
-                    Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
                     light.Color = lightPalette.SelectedColor;
-                    _editor.SelectedRoom.CalculateLightingForThisRoom();
-                    _editor.SelectedRoom.UpdateBuffers();
+                    _editor.SelectedRoom.UpdateCompletely();
                     _editor.ObjectChange(light);
                 };
 
@@ -160,7 +159,7 @@ namespace TombEditor
                     var area = _editor.SelectedSectors.Area;
                     for (int x = area.X; x <= area.Right; x++)
                         for (int z = area.Y; z <= area.Bottom; z++)
-                            foreach (var trigger in _editor.SelectedRoom.Blocks[x, z].Triggers.Select((triggerID) => _editor.Level.Triggers[triggerID]))
+                            foreach (var trigger in _editor.SelectedRoom.Blocks[x, z].Triggers)
                                 if (!triggers.Contains(trigger))
                                     triggers.Add(trigger);
 
@@ -175,16 +174,8 @@ namespace TombEditor
                 (obj is Editor.SelectedRoomChangedEvent) ||
                 (obj is Editor.SelectedObjectChangedEvent))
             {
-                if (_editor.SelectedObject.HasValue && _editor.SelectedObject.Value.Type == ObjectInstanceType.Trigger)
-                {
-                    var trigger = _editor.Level.Triggers[_editor.SelectedObject.Value.Id];
-                    if (this.lstTriggers.Items.Contains(trigger))
-                        this.lstTriggers.SelectedItem = trigger;
-                    else
-                        this.lstTriggers.SelectedItem = null;
-                }
-                else
-                    this.lstTriggers.SelectedItem = null;
+                var trigger = _editor.SelectedObject as TriggerInstance;
+                lstTriggers.SelectedItem = (trigger != null) && lstTriggers.Items.Contains(trigger) ? trigger : null;
             }
 
             // Update texture properties
@@ -205,7 +196,7 @@ namespace TombEditor
                     statusStripSelectedRoom.Text = "Selected room: None";
                 else
                     statusStripSelectedRoom.Text = "Selected room: " +
-                        "ID = " + _editor.Level.Rooms.ReferenceIndexOf(room) + " | " +
+                        "Name = " + room + " | " +
                         "X = " + room.Position.X + " | " +
                         "Y = " + room.Position.Y + " | " +
                         "Z = " + room.Position.Z + " | " +
@@ -258,11 +249,8 @@ namespace TombEditor
             // Update static color control
             if (obj is Editor.SelectedObjectChangedEvent)
             {
-                ObjectPtr? selectedObject = ((Editor.SelectedObjectChangedEvent)obj).Current;
-                if (!selectedObject.HasValue || (selectedObject.Value.Type != ObjectInstanceType.Static))
-                    panelStaticMeshColor.BackColor = System.Drawing.Color.Black;
-                else
-                    panelStaticMeshColor.BackColor = ((StaticInstance)_editor.Level.Objects[selectedObject.Value.Id]).Color;
+                StaticInstance staticInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
+                panelStaticMeshColor.BackColor = staticInstance?.Color ?? System.Drawing.Color.Black;
             }
 
             // Update application title
@@ -277,7 +265,7 @@ namespace TombEditor
             if ((obj is Editor.ObjectChangedEvent) ||
                (obj is Editor.SelectedObjectChangedEvent))
             {
-                var selectedObject = _editor.SelectedObject;
+                var light = _editor.SelectedObject as Light;
                 
                 bool IsLight = false;
                 bool HasInOutRange = false;
@@ -285,10 +273,9 @@ namespace TombEditor
                 bool HasDirection = false;
                 bool CanCastShadows = false;
                 bool CanIlluminateStaticAndDynamicGeometry = false;
-                if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Light))
+                if (light != null)
                 {
                     IsLight = true;
-                    var light = _editor.SelectedRoom.Lights[selectedObject.Value.Id];
                     switch (light.Type)
                     {
                         case LightType.Light:
@@ -333,8 +320,8 @@ namespace TombEditor
                     numLightOut.Value = light.Out;
                     numLightLen.Value = light.Len;
                     numLightCutoff.Value = light.Cutoff;
-                    numLightDirectionX.Value = light.DirectionX;
-                    numLightDirectionY.Value = light.DirectionY;
+                    numLightDirectionX.Value = light.RotationX;
+                    numLightDirectionY.Value = light.RotationY;
                 }
                 else
                     panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
@@ -393,11 +380,15 @@ namespace TombEditor
         {
             if (!CheckForRoomAndBlockSelection())
                 return;
-            if (!EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area))
+
+            try
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Not a valid portal position",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return;
+                EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            }
+            catch (Exception exc)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("Unable to create portal: " + exc.Message, "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                logger.Warn(exc, "Portal creation failed.");
             }
         }
 
@@ -637,14 +628,14 @@ namespace TombEditor
 
         private void SetPortalOpacity(PortalOpacity opacity)
         {
-            if ((_editor.SelectedRoom == null) || !_editor.SelectedObject.HasValue ||
-                (_editor.SelectedObject.Value.Type != ObjectInstanceType.Portal))
+            var portal = _editor.SelectedObject as Portal;
+            if ((_editor.SelectedRoom == null) || (portal == null))
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You have to select a portal first",
                     "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
-            EditorActions.SetPortalOpacity(_editor.SelectedRoom, _editor.Level.Portals.First(p => p.Id == _editor.SelectedObject.Value.Id), opacity);
+            EditorActions.SetPortalOpacity(_editor.SelectedRoom, portal, opacity);
         }
 
         private void butAddCamera_Click(object sender, EventArgs e)
@@ -669,10 +660,10 @@ namespace TombEditor
 
         private void UpdateLight<T>(Func<Light, T> getLightValue, Action<Light, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Light))
+            var light = _editor.SelectedObject as Light;
+            if (light == null)
                 return;
-
-            Light light = _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id];
+            
             T? newValue = getGuiValue(getLightValue(light));
             if ((!newValue.HasValue) || newValue.Value.Equals(getLightValue(light)))
                 return;
@@ -765,7 +756,7 @@ namespace TombEditor
                     if (_editor.SelectedRoom == null)
                         return;
                     if (_editor.SelectedObject != null)
-                        EditorActions.DeleteObjectWithWarning(_editor.SelectedRoom, _editor.SelectedObject.Value, this);
+                        EditorActions.DeleteObjectWithWarning(_editor.SelectedRoom, _editor.SelectedObject, this);
                     break;
 
                 case Keys.T: // Add trigger
@@ -775,31 +766,31 @@ namespace TombEditor
 
                 case Keys.O: // Show options dialog
                     if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                        EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject.Value, this);
+                        EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject, this);
                     break;
 
-                case Keys.Left: 
+                case Keys.Left:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateCone(_editor.SelectedRoom, _editor.SelectedObject.Value, new Vector2(0, -1));
+                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
                     break;
 
                 case Keys.Right: 
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateCone(_editor.SelectedRoom, _editor.SelectedObject.Value, new Vector2(0, 1));
+                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
                     break;
 
                 case Keys.Up:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateCone(_editor.SelectedRoom, _editor.SelectedObject.Value, new Vector2(1, 0));
+                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.X, 1);
                     break;
 
                 case Keys.Down:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateCone(_editor.SelectedRoom, _editor.SelectedObject.Value, new Vector2(-1, 0));
+                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.X, -1);
                     break;
 
                 case Keys.Q:
@@ -834,7 +825,7 @@ namespace TombEditor
 
                 case Keys.R: // Rotate object
                     if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject.Value, 1, e.Shift);
+                        EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, e.Shift ? 5.0f : 45.0f);
                     else if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
@@ -1407,9 +1398,9 @@ namespace TombEditor
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
         {
-            if (!_editor.SelectedObject.HasValue || (_editor.SelectedObject.Value.Type != ObjectInstanceType.Static))
+            var instance = _editor.SelectedObject as StaticInstance;
+            if (instance == null)
                 return;
-            var instance = (StaticInstance)_editor.Level.Objects[_editor.SelectedObject.Value.Id];
 
             colorDialog.Color = instance.Color;
             if (colorDialog.ShowDialog(this) != DialogResult.OK)
@@ -1427,9 +1418,9 @@ namespace TombEditor
                 return;
 
             // Search for matching objects after the previous one
-            ObjectPtr? previousFind = _editor.SelectedObject;
-            ObjectInstance instance = _editor.Level.Objects.Values.FindFirstAfterWithWrapAround(
-                (obj) => previousFind == obj.ObjectPtr,
+            ObjectInstance previousFind = _editor.SelectedObject;
+            ObjectInstance instance = _editor.Level.Rooms.SelectMany(room => room.Objects).FindFirstAfterWithWrapAround(
+                (obj) => previousFind == obj,
                 (obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == currentItem.Value);
             
             // Show result
@@ -1446,18 +1437,16 @@ namespace TombEditor
 
         private void butDeleteTrigger_Click(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject.HasValue) || 
-                (_editor.SelectedObject.Value.Type != ObjectInstanceType.Trigger))
+            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
                 return;
-            EditorActions.DeleteObject(_editor.SelectedRoom, _editor.SelectedObject.Value);
+            EditorActions.DeleteObject(_editor.SelectedRoom, _editor.SelectedObject);
         }
 
         private void butEditTrigger_Click(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject.HasValue) || 
-                (_editor.SelectedObject.Value.Type != ObjectInstanceType.Trigger))
+            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
                 return;
-            EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject.Value, this);
+            EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject, this);
         }
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1514,8 +1503,8 @@ namespace TombEditor
             }
             else
             {
-                if (_editor.SelectedRoom.Flipped && _editor.SelectedRoom.BaseRoom != null)
-                    _editor.SelectedRoom = _editor.SelectedRoom.BaseRoom;
+                if (_editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateBaseRoom != null)
+                    _editor.SelectedRoom = _editor.SelectedRoom.AlternateBaseRoom;
             }
         }
 
@@ -1700,12 +1689,13 @@ namespace TombEditor
         
         private void butCopy_Click(object sender, EventArgs e)
         {
-            if ((_editor.SelectedRoom == null) || (_editor.SelectedObject == null))
+            var instance = _editor.SelectedObject as PositionBasedObjectInstance;
+            if (instance == null)
             {
                 MessageBox.Show(this, "You have to select an object, before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            Clipboard.Copy(_editor.SelectedRoom, _editor.SelectedObject.Value);
+            Clipboard.Copy(instance);
         }
 
         private void butPaste_Click(object sender, EventArgs e)
@@ -1750,7 +1740,7 @@ namespace TombEditor
         {
             if ((_editor.SelectedRoom == null) || (lstTriggers.SelectedItem == null))
                 return;
-            _editor.SelectedObject = ((ObjectInstance)(lstTriggers.SelectedItem)).ObjectPtr;
+            _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem);
         }
 
         private void butAddTrigger_Click(object sender, EventArgs e)
@@ -1842,21 +1832,16 @@ namespace TombEditor
               _editor.SelectedRoom.RoomGeometryObjects.Add(instance);*/
 
             GeometryImporterExporter.LoadModel("room.obj", 1.0f);
-            RoomGeometryInstance instance = new RoomGeometryInstance(0, _editor.SelectedRoom);
+            RoomGeometryInstance instance = new RoomGeometryInstance();
             instance.Model = GeometryImporterExporter.Models["room.obj"];
             instance.Position = new Vector3(4096, 512, 4096);
-            _editor.SelectedRoom.RoomGeometryObjects.Add(instance);
+            _editor.SelectedRoom.AddObject(_editor.Level, instance);
         }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
                             "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

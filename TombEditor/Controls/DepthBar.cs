@@ -398,7 +398,7 @@ namespace TombEditor.Controls
             var roomSequences = new List<List<RelevantRoom>>();
             foreach (Room room in sortedRoomList)
             {
-                Vector2 roomLocal = probePos - room.SectorPos;
+                Vector2 roomLocal = probePos - room.SectorPos.ToVec2();
                 bool CollidesWithProbe = (roomLocal.X >= 1) && (roomLocal.Y >= 1) && (roomLocal.X < (room.NumXSectors - 1)) && (roomLocal.Y < (room.NumZSectors - 1));
                 if (shouldCheckRoomsToMove ? _roomsToMove.Contains(room) : CollidesWithProbe)
                 {

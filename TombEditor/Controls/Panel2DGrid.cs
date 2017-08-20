@@ -41,8 +41,7 @@ namespace TombEditor.Controls
         private static readonly Brush _messageBackground = new SolidBrush(Color.Yellow);
         private static readonly Pen _messagePen = Pens.Black;
         private const float _textMargin = 2.0f;
-        private const float _gridStep = 11.0f;
-        private const int _gridSize = 20;
+        private float _gridStep => Math.Min(Width, Height) / Room.MaxRoomDimensions;
 
         public Panel2DGrid()
         {
@@ -81,26 +80,20 @@ namespace TombEditor.Controls
 
         private static bool IsObjectChangeRelevant(Editor.SelectedObjectChangedEvent e)
         {
-            bool PreviousIsRelevant = (e.Previous.HasValue &&
-                ((e.Previous.Value.Type == ObjectInstanceType.Trigger) ||
-                (e.Previous.Value.Type == ObjectInstanceType.Portal)));
-            bool CurrentIsRelevant = (e.Current.HasValue &&
-                ((e.Current.Value.Type == ObjectInstanceType.Trigger) ||
-                (e.Current.Value.Type == ObjectInstanceType.Portal)));
-            return PreviousIsRelevant || CurrentIsRelevant;
+            return (e.Previous is SectorBasedObjectInstance) || (e.Current is SectorBasedObjectInstance);
         }
 
         private RectangleF getVisualRoomArea()
         {
             Room currentRoom = _editor.SelectedRoom;
             return new RectangleF(
-                _gridStep * ((_gridSize - currentRoom.NumXSectors) / 2),
-                _gridStep * ((_gridSize - currentRoom.NumZSectors) / 2),
+                _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumXSectors) / 2),
+                _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumZSectors) / 2),
                 _gridStep * currentRoom.NumXSectors,
                 _gridStep * currentRoom.NumZSectors);
         }
 
-        private PointF toVisualCoord(Point point)
+        private PointF toVisualCoord(SharpDX.DrawingPoint point)
         {
             RectangleF roomArea = getVisualRoomArea();
             return new PointF(point.X * _gridStep + roomArea.X, roomArea.Bottom - (point.Y + 1) * _gridStep);
@@ -109,8 +102,8 @@ namespace TombEditor.Controls
         private RectangleF toVisualCoord(SharpDX.Rectangle area)
         {
             RectangleF roomArea = getVisualRoomArea();
-            PointF convertedPoint0 = toVisualCoord(new Point(area.Left, area.Top));
-            PointF convertedPoint1 = toVisualCoord(new Point(area.Right, area.Bottom));
+            PointF convertedPoint0 = toVisualCoord(new SharpDX.DrawingPoint(area.Left, area.Top));
+            PointF convertedPoint1 = toVisualCoord(new SharpDX.DrawingPoint(area.Right, area.Bottom));
             return RectangleF.FromLTRB(
                 Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
@@ -140,24 +133,20 @@ namespace TombEditor.Controls
             SharpDX.DrawingPoint sectorPos = fromVisualCoord(e.Location);
 
             // Find existing sector based object (eg portal or trigger)
-            SectorBasedObjectInstance selectedSectorObject = null;
-            if (_editor.SelectedObject.HasValue)
-                if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Portal)
-                    selectedSectorObject = _editor.Level.Portals.First(portal => portal.Id == _editor.SelectedObject.Value.Id);
-                else if (_editor.SelectedObject.Value.Type == ObjectInstanceType.Trigger)
-                    selectedSectorObject = _editor.Level.Triggers[_editor.SelectedObject.Value.Id];
+            SectorBasedObjectInstance selectedSectorObject = _editor.SelectedObject as SectorBasedObjectInstance;
 
             // Choose action
             if (e.Button == MouseButtons.Left)
             {
                 if ((selectedSectorObject is Portal) && selectedSectorObject.Area.Contains(sectorPos))
                 {
+                    Room room = _editor.SelectedRoom;
                     _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
-                    _editor.SelectedObject = ((Portal)selectedSectorObject).Other.ObjectPtr;
+                    _editor.SelectedObject = ((Portal)selectedSectorObject).FindOppositePortal(room);
                 }
                 else if ((selectedSectorObject is TriggerInstance) && selectedSectorObject.Area.Contains(sectorPos))
                 { // Open trigger options
-                    EditorActions.EditObject(_editor.SelectedRoom, selectedSectorObject.ObjectPtr, this.Parent);
+                    EditorActions.EditObject(_editor.SelectedRoom, selectedSectorObject, this.Parent);
                 }
                 else
                 { // Do block selection
@@ -172,16 +161,14 @@ namespace TombEditor.Controls
             {
                 // Find next object
                 var portalsInRoom = _editor.SelectedRoom.Portals.Cast<SectorBasedObjectInstance>();
-                var triggersInRoom = _editor.Level.Triggers.Values
-                    .Where((obj) => (obj.Room == _editor.SelectedRoom))
-                    .Cast<SectorBasedObjectInstance>();
+                var triggersInRoom = _editor.SelectedRoom.Triggers.Cast<SectorBasedObjectInstance>();
                 var relevantTriggersAndPortals = portalsInRoom.Concat(triggersInRoom)
                     .Where((obj) => obj.Area.Contains(sectorPos));
 
                 SectorBasedObjectInstance nextPortalOrTrigger = relevantTriggersAndPortals.
                     FindFirstAfterWithWrapAround((obj) => obj == selectedSectorObject, (obj) => true);
                 if (nextPortalOrTrigger != null)
-                    _editor.SelectedObject = nextPortalOrTrigger.ObjectPtr;
+                    _editor.SelectedObject = nextPortalOrTrigger;
             }
         }
 
@@ -225,7 +212,7 @@ namespace TombEditor.Controls
                         // Draw floor tile
                         if (block.Triggers.Count != 0)
                             e.Graphics.FillRectangle(_triggerBrush, rectangle);
-                        else if ((block.FloorPortal != null && !block.IsFloorSolid) || block.CeilingPortal != null || block.WallPortal != null)
+                        else if (block.FloorPortal != null || block.CeilingPortal != null || block.WallPortal != null)
                             e.Graphics.FillRectangle(_portalBrush, rectangle);
                         else if (block.Type == BlockType.BorderWall)
                             e.Graphics.FillRectangle(_borderWallBrush, rectangle);
@@ -269,22 +256,16 @@ namespace TombEditor.Controls
                     e.Graphics.DrawLine(_gridPen, 0, y, 320, y);
 
                 // Draw selection
-                ObjectPtr? selectedObject = _editor.SelectedObject;
-                if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Portal))
-                {
-                    Portal portal = _editor.Level.Portals.First(p => p.Id == selectedObject.Value.Id);
-                    e.Graphics.DrawRectangle(_selectedPortalPen, toVisualCoord(portal.Area));
-                    DrawMessage(e, portal.ToString(), toVisualCoord(new Point(portal.X + portal.NumXBlocks / 2, portal.Z + portal.NumZBlocks)));
-                }
-                if (selectedObject.HasValue && (selectedObject.Value.Type == ObjectInstanceType.Trigger))
-                {
-                    TriggerInstance trigger = _editor.Level.Triggers[selectedObject.Value.Id];
-                    e.Graphics.DrawRectangle(_selectedTriggerPen, toVisualCoord(trigger.Area));
-                    DrawMessage(e, trigger.ToString(), toVisualCoord(new Point(trigger.X + trigger.NumXBlocks / 2, trigger.Z + trigger.NumZBlocks)));
-                }
-                else if (_editor.SelectedSectors.Valid)
-                {
+                if (_editor.SelectedSectors.Valid)
                     e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.SelectedSectors.Area));
+
+                var instance = _editor.SelectedObject as SectorBasedObjectInstance;
+                if (instance != null)
+                {
+                    Pen pen = instance is Portal ? _selectedPortalPen : _selectedTriggerPen;
+                    RectangleF visualArea = toVisualCoord(instance.Area);
+                    e.Graphics.DrawRectangle(pen, visualArea);
+                    DrawMessage(e, instance.ToString(), visualArea);
                 }
             }
             catch (Exception exc)
@@ -293,14 +274,25 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawMessage(PaintEventArgs e, string text, PointF visualPos)
+        private void DrawMessage(PaintEventArgs e, string text, RectangleF visualArea)
         {
-            // Measure how much area is required for the message
-            RectangleF textRectangle = new RectangleF(visualPos, 
-                e.Graphics.MeasureString(text, _font, this.Width, StringFormat.GenericDefault));
-            textRectangle.Offset(textRectangle.Width * -0.5f, 0.0f);
-            textRectangle.Inflate(_textMargin, _textMargin);
+            SizeF textSize = e.Graphics.MeasureString(text, _font, this.Width, StringFormat.GenericDefault);
+            textSize += new SizeF(_textMargin * 2, _textMargin * 2);
 
+            // Choose appropriate space that does not occlude 'visualArea' if possible
+            float spaceAbove = visualArea.Y;
+            float spaceBelow = Height - visualArea.Bottom;
+            float posX = visualArea.X + (visualArea.Width - textSize.Width) * 0.5f;
+            RectangleF textRectangle;
+            if ((spaceAbove <= textSize.Height) && (spaceBelow >= textSize.Height))
+            { // Place message below
+                textRectangle = new RectangleF(new PointF(posX, visualArea.Bottom + _textMargin), textSize);
+            }
+            else
+            { // Place message above
+                textRectangle = new RectangleF(new PointF(posX, visualArea.Y - textSize.Height - _textMargin), textSize);
+            }
+            
             // Move the area so that it is always visible
             textRectangle.Offset(-Math.Min(textRectangle.Left, 0.0f), -Math.Min(textRectangle.Top, 0.0f));
             textRectangle.Offset(-Math.Max(textRectangle.Right - Width, 0.0f), -Math.Max(textRectangle.Bottom - Height, 0.0f));

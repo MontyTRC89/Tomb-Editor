@@ -1,70 +1,111 @@
 ﻿using SharpDX;
+using System;
 
 namespace TombEditor.Geometry
 {
-    public enum ObjectInstanceType : byte
+    public abstract class ObjectInstance : ICloneable
     {
-        Moveable,
-        Static,
-        Camera,
-        Sink,
-        Portal,
-        Trigger,
-        SoundSource,
-        FlyByCamera,
-        // TODO Light does not derive from "ObjectInstance".
-        // Are there side effects from this approach?
-        // We should make light derive from ObjectInstance.
-        Light,
-        RoomGeometry
-    }
+        public Room Room { get; private set; }
+        
+        public abstract ObjectInstance Clone();
 
-    public abstract class ObjectInstance
-    {
-        public int Id { get; set; }
-        public Room Room { get; set; }
-
-        protected ObjectInstance(int id, Room room)
+        object ICloneable.Clone()
         {
-            Id = id;
+            return Clone();
+        }
+
+        public virtual void AddToRoom(Level level, Room room)
+        {
             Room = room;
         }
 
-        public abstract ObjectInstance Clone();
+        public virtual void RemoveFromRoon(Level level, Room room)
+        { }
 
-        public abstract ObjectInstanceType Type { get; }
-
-        public ObjectPtr ObjectPtr => new ObjectPtr(Type, Id);
+        public virtual bool CopyToFlipRooms => true;
     }
 
     public abstract class SectorBasedObjectInstance : ObjectInstance
     {
-        public byte X { get; set; }
-        public byte Z { get; set; }
-        public byte NumXBlocks { get; set; }
-        public byte NumZBlocks { get; set; }
+        public Rectangle Area { get; }
 
-        public SectorBasedObjectInstance(int id, Room room)
-            : base(id, room)
-        { }
-
-        public Rectangle Area
+        public SectorBasedObjectInstance(Rectangle area)
         {
-            get { return new Rectangle(X, Z, X + NumXBlocks - 1, Z + NumZBlocks - 1); }
+            Area = area;
         }
+
+        public abstract SectorBasedObjectInstance Clone(Rectangle newArea);
     }
 
     public abstract class PositionBasedObjectInstance : ObjectInstance
     {
         public Vector3 Position { get; set; }
 
-        public PositionBasedObjectInstance(int id, Room room)
-            : base(id, room)
-        { }
+        public Vector3 SectorPosition => Position / 1024;
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {
             Position = Position + new Vector3(deltaX, deltaY, deltaZ);
+        }
+    }
+
+    public interface IHasScriptID
+    {
+        ushort? ScriptId { get; set; }
+    };
+
+    public interface IRotateableY
+    {
+        float RotationY { get; set; }
+    };
+
+    public interface IRotateableYX : IRotateableY
+    {
+        float RotationX { get; set; }
+    };
+
+    public interface IRotateableYXRoll : IRotateableYX
+    {
+        float Roll { get; set; }
+    };
+
+    public static class RotatableExtensions
+    {
+        public static float GetRotationYRadians(this IRotateableY obj)
+        {
+            return obj.RotationY * (float)(Math.PI / 180.0);
+        }
+        public static void SetRotationYRadians(this IRotateableY obj, float value)
+        {
+            obj.RotationY = value * (float)(180.0 / Math.PI);
+        }
+
+        public static float GetRotationXRadians(this IRotateableYX obj)
+        {
+            return obj.RotationX * (float)(Math.PI / 180.0);
+        }
+        public static void SetRotationXRadians(this IRotateableYX obj, float value)
+        {
+            obj.RotationX = value * (float)(180.0 / Math.PI);
+        }
+
+        public static float GetRotationRollRadians(this IRotateableYXRoll obj)
+        {
+            return obj.Roll * (float)(Math.PI / 180.0);
+        }
+        public static void SetRotationRollRadians(this IRotateableYXRoll obj, float value)
+        {
+            obj.Roll = value * (float)(180.0 / Math.PI);
+        }
+
+        public static Vector3 GetDirection(this IRotateableYX obj)
+        {
+            float RadiansX = GetRotationXRadians(obj);
+            float RadiansY = GetRotationYRadians(obj);
+            return new Vector3(
+                (float)(Math.Cos(RadiansX) * Math.Sin(RadiansY)),
+                (float)Math.Sin(RadiansX),
+                (float)(Math.Cos(RadiansX) * Math.Cos(RadiansY)));
         }
     }
 }

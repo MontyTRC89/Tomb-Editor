@@ -17,27 +17,15 @@ namespace TombEditor.Geometry
         public const short MaxSectorCoord = 255;
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
-
-        public IEnumerable<Portal> Portals => Rooms.Where(room => room != null).SelectMany(room => room.Portals);
-
-        public Dictionary<int, LevelTexture> TextureSamples { get; } =
-            new Dictionary<int, LevelTexture>(); //Texture tiles
-
-        public Dictionary<int, Texture2D> DirectXTextures { get; } =
-            new Dictionary<int, Texture2D>(); //For now just one texture atlas 2048x2048 pixel
-
-        public Bitmap TextureMap { get; private set; } //The texture map on the CPU
-        public Dictionary<int, TriggerInstance> Triggers { get; } = new Dictionary<int, TriggerInstance>();
-
-        public Dictionary<int, PositionBasedObjectInstance> Objects { get; } =
-            new Dictionary<int, PositionBasedObjectInstance>(); //Objects (moveables, static meshes, sinks, camera, fly-by cameras, sound sources)
-
-        public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
-        public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
         public Wad Wad { get; private set; }
-
         public LevelSettings Settings { get; set; } = new LevelSettings();
 
+        public Dictionary<int, LevelTexture> TextureSamples { get; } = new Dictionary<int, LevelTexture>(); //Texture tiles
+        public Dictionary<int, Texture2D> DirectXTextures { get; } = new Dictionary<int, Texture2D>(); //For now just one texture atlas 2048x2048 pixel
+        public Bitmap TextureMap { get; private set; } //The texture map on the CPU
+        public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
+        public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
+        
         public static Level CreateSimpleLevel()
         {
             logger.Info("Creating new empty level");
@@ -311,22 +299,6 @@ namespace TombEditor.Geometry
                 logger.Warn(exc, "Unable to load objects from '" + Settings.MakeAbsolute(Settings.WadFilePath) + "'");
             }
         }
-
-        public int GetNewTriggerId()
-        {
-            int i = 0;
-            while (Triggers.ContainsKey(i))
-                ++i;
-            return i;
-        }
-
-        public int GetNewObjectId()
-        {
-            int i = 0;
-            while (Objects.ContainsKey(i))
-                ++i;
-            return i;
-        }
         
         public Room GetOrCreateDummyRoom(int index)
         {
@@ -356,57 +328,11 @@ namespace TombEditor.Geometry
             if (roomIndex == -1)
                 throw new ArgumentException("The room does not belong to the level from which should be removed.");
 
-            // Collect all triggers and objects
-                var objectsToRemove = new List<int>();
-            var triggersToRemove = new List<int>();
-
-            for (int i = 0; i < Objects.Count; i++)
-            {
-                var obj = Objects.ElementAt(i).Value;
-                if (!ReferenceEquals(obj.Room, room))
-                    continue;
-
-                // We must remove that object. First try to find a trigger.
-                for (int j = 0; j < Triggers.Count; j++)
-                {
-                    var trigger = Triggers.ElementAt(j).Value;
-
-                    if (trigger.TargetType == TriggerTargetType.Camera && obj.Type == ObjectInstanceType.Camera &&
-                        trigger.Target == obj.Id)
-                    {
-                        triggersToRemove.Add(trigger.Id);
-                    }
-
-                    if (trigger.TargetType == TriggerTargetType.FlyByCamera &&
-                        obj.Type == ObjectInstanceType.FlyByCamera &&
-                        trigger.Target == ((FlybyCameraInstance)obj).Sequence)
-                    {
-                        triggersToRemove.Add(trigger.Id);
-                    }
-
-                    if (trigger.TargetType == TriggerTargetType.Sink && obj.Type == ObjectInstanceType.Sink &&
-                        trigger.Target == obj.Id)
-                    {
-                        triggersToRemove.Add(trigger.Id);
-                    }
-
-                    if (trigger.TargetType == TriggerTargetType.Object && obj.Type == ObjectInstanceType.Moveable &&
-                        trigger.Target == obj.Id)
-                    {
-                        triggersToRemove.Add(trigger.Id);
-                    }
-                }
-
-                // Remove the object
-                objectsToRemove.Add(obj.Id);
-            }
-
-            // Remove objects and triggers
-            foreach (int o in objectsToRemove)
-                Objects.Remove(o);
-            foreach (int t in triggersToRemove)
-                Triggers.Remove(t);
-
+            // Remove all objects in the room
+            var objectsToRemove = room.AnyObjects.ToList();
+            foreach (var instance in objectsToRemove)
+                room.RemoveObject(this, instance);
+            
             // Remove all references to this room
             Rooms[roomIndex] = null;
         }

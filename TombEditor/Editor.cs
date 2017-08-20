@@ -168,11 +168,11 @@ namespace TombEditor
 
         public struct SelectedObjectChangedEvent : IEditorProperyChangedEvent
         {
-            public ObjectPtr? Previous { get; set; }
-            public ObjectPtr? Current { get; set; }
+            public ObjectInstance Previous { get; set; }
+            public ObjectInstance Current { get; set; }
         }
-        private ObjectPtr? _selectedObject;
-        public ObjectPtr? SelectedObject
+        private ObjectInstance _selectedObject;
+        public ObjectInstance SelectedObject
         {
             get { return _selectedObject; }
             set
@@ -365,7 +365,7 @@ namespace TombEditor
         {
             if (SelectedRoom != objectInstance.Room)
                 SelectRoomAndCenterCamera(objectInstance.Room);
-            SelectedObject = objectInstance.ObjectPtr;
+            SelectedObject = objectInstance;
         }
 
         // Call this methode to easily change the settings of the level.

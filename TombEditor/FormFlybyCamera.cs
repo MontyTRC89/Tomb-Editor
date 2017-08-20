@@ -31,22 +31,22 @@ namespace TombEditor
 
         private void FormFlybyCamera_Load(object sender, EventArgs e)
         {
-            cbBit0.Checked = (_flyByCamera.Flags & (1 >> 0)) != 0;
-            cbBit1.Checked = (_flyByCamera.Flags & (1 >> 1)) != 0;
-            cbBit2.Checked = (_flyByCamera.Flags & (1 >> 2)) != 0;
-            cbBit3.Checked = (_flyByCamera.Flags & (1 >> 3)) != 0;
-            cbBit4.Checked = (_flyByCamera.Flags & (1 >> 4)) != 0;
-            cbBit5.Checked = (_flyByCamera.Flags & (1 >> 5)) != 0;
-            cbBit6.Checked = (_flyByCamera.Flags & (1 >> 6)) != 0;
-            cbBit7.Checked = (_flyByCamera.Flags & (1 >> 7)) != 0;
-            cbBit8.Checked = (_flyByCamera.Flags & (1 >> 8)) != 0;
-            cbBit9.Checked = (_flyByCamera.Flags & (1 >> 9)) != 0;
-            cbBit10.Checked = (_flyByCamera.Flags & (1 >> 10)) != 0;
-            cbBit11.Checked = (_flyByCamera.Flags & (1 >> 11)) != 0;
-            cbBit12.Checked = (_flyByCamera.Flags & (1 >> 12)) != 0;
-            cbBit13.Checked = (_flyByCamera.Flags & (1 >> 13)) != 0;
-            cbBit14.Checked = (_flyByCamera.Flags & (1 >> 14)) != 0;
-            cbBit15.Checked = (_flyByCamera.Flags & (1 >> 15)) != 0;
+            cbBit0.Checked = (_flyByCamera.Flags & (1 << 0)) != 0;
+            cbBit1.Checked = (_flyByCamera.Flags & (1 << 1)) != 0;
+            cbBit2.Checked = (_flyByCamera.Flags & (1 << 2)) != 0;
+            cbBit3.Checked = (_flyByCamera.Flags & (1 << 3)) != 0;
+            cbBit4.Checked = (_flyByCamera.Flags & (1 << 4)) != 0;
+            cbBit5.Checked = (_flyByCamera.Flags & (1 << 5)) != 0;
+            cbBit6.Checked = (_flyByCamera.Flags & (1 << 6)) != 0;
+            cbBit7.Checked = (_flyByCamera.Flags & (1 << 7)) != 0;
+            cbBit8.Checked = (_flyByCamera.Flags & (1 << 8)) != 0;
+            cbBit9.Checked = (_flyByCamera.Flags & (1 << 9)) != 0;
+            cbBit10.Checked = (_flyByCamera.Flags & (1 << 10)) != 0;
+            cbBit11.Checked = (_flyByCamera.Flags & (1 << 11)) != 0;
+            cbBit12.Checked = (_flyByCamera.Flags & (1 << 12)) != 0;
+            cbBit13.Checked = (_flyByCamera.Flags & (1 << 13)) != 0;
+            cbBit14.Checked = (_flyByCamera.Flags & (1 << 14)) != 0;
+            cbBit15.Checked = (_flyByCamera.Flags & (1 << 15)) != 0;
 
             tbSequence.Text = _flyByCamera.Sequence.ToString();
             tbNumber.Text = _flyByCamera.Number.ToString();

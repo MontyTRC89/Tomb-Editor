@@ -20,117 +20,7 @@ namespace TombEditor
         {
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
-
-            room.BuildGeometry(Math.Max(0, area.X - 1), Math.Min(room.NumXSectors, area.Right + 1),
-                                                                 Math.Max(0, area.Y - 1), Math.Min(room.NumZSectors, area.Bottom + 1));
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
-
-            var portalsToTravel = new List<Portal>();
-
-            for (int x = 0; x < room.NumXSectors; x++)
-            {
-                for (int z = 0; z < room.NumZSectors; z++)
-                {
-                    var wallPortal = room.Blocks[x, z].WallPortal;
-                    var ceilingPortal = room.Blocks[x, z].CeilingPortal;
-                    var floorPortal = room.Blocks[x, z].FloorPortal;
-
-                    if (wallPortal != null && !portalsToTravel.Contains(wallPortal))
-                        portalsToTravel.Add(wallPortal);
-
-                    if (ceilingPortal != null && !portalsToTravel.Contains(ceilingPortal))
-                        portalsToTravel.Add(ceilingPortal);
-
-                    if (floorPortal != null && !portalsToTravel.Contains(floorPortal))
-                        portalsToTravel.Add(floorPortal);
-                }
-            }
-
-            //Parallel.ForEach(portalsToTravel, p =>
-            // {
-            List<Room> roomsProcessed = new List<Room>();
-
-            foreach (var portal in portalsToTravel)
-            {
-                if (roomsProcessed.Contains(portal.AdjoiningRoom))
-                    continue;
-                roomsProcessed.Add(portal.AdjoiningRoom);
-
-                // Calculate facing X and Z
-                int facingXmin = 0;
-                int facingXmax = 0;
-                int facingZmin = 0;
-                int facingZmax = 0;
-
-                Room otherRoom = portal.AdjoiningRoom;
-
-                if (portal.Direction == PortalDirection.North)
-                {
-                    if (area.Bottom < room.NumZSectors - 2)
-                        continue;
-
-                    facingXmin = portal.X + (int)(room.Position.X - otherRoom.Position.X) - 1;
-                    facingXmin = portal.X + portal.NumXBlocks + (int)(room.Position.X - otherRoom.Position.X);
-                    facingZmin = 0;
-                    facingZmax = 1;
-                }
-                else if (portal.Direction == PortalDirection.South)
-                {
-                    if (area.Y > 1)
-                        continue;
-
-                    facingXmin = portal.X + (int)(room.Position.X - otherRoom.Position.X) - 1;
-                    facingXmax = portal.X + portal.NumXBlocks + (int)(room.Position.X - otherRoom.Position.X);
-                    facingZmin = otherRoom.NumZSectors - 2;
-                    facingZmax = otherRoom.NumZSectors - 1;
-                }
-                else if (portal.Direction == PortalDirection.East)
-                {
-                    if (area.Right < room.NumXSectors - 2)
-                        continue;
-
-                    facingXmin = 0;
-                    facingXmax = 1;
-                    facingZmin = portal.Z + (int)(room.Position.Z - otherRoom.Position.Z) - 1;
-                    facingZmax = portal.Z + portal.NumZBlocks + (int)(room.Position.Z - otherRoom.Position.Z);
-                }
-                else if (portal.Direction == PortalDirection.West)
-                {
-                    if (area.X > 1)
-                        continue;
-
-                    facingXmin = otherRoom.NumXSectors - 2;
-                    facingXmax = otherRoom.NumXSectors - 1;
-                    facingZmin = portal.Z + (int)(room.Position.Z - otherRoom.Position.Z) - 1;
-                    facingZmax = portal.Z + portal.NumZBlocks + (int)(room.Position.Z - otherRoom.Position.Z);
-                }
-                else if (portal.Direction == PortalDirection.Floor)
-                {
-                    facingXmin = portal.X + (int)(room.Position.X - otherRoom.Position.X) - 1;
-                    facingXmax = portal.X + portal.NumXBlocks + (int)(room.Position.X - otherRoom.Position.X);
-                    facingZmin = portal.Z + (int)(room.Position.Z - otherRoom.Position.Z) - 1;
-                    facingZmax = portal.Z + portal.NumZBlocks + (int)(room.Position.Z - otherRoom.Position.Z);
-                }
-                else if (portal.Direction == PortalDirection.Ceiling)
-                {
-                    facingXmin = portal.X + (int)(room.Position.X - otherRoom.Position.X) - 1;
-                    facingXmax = portal.X + portal.NumXBlocks + (int)(room.Position.X - otherRoom.Position.X);
-                    facingZmin = portal.Z + (int)(room.Position.Z - otherRoom.Position.Z) - 1;
-                    facingZmax = portal.Z + portal.NumZBlocks + (int)(room.Position.Z - otherRoom.Position.Z);
-                }
-
-                portal.AdjoiningRoom.BuildGeometry(facingXmin,
-                    facingXmax,
-                    facingZmin,
-                    facingZmax);
-
-                portal.AdjoiningRoom.CalculateLightingForThisRoom();
-                portal.AdjoiningRoom.UpdateBuffers();
-            }
-
-            //   });
-
+            room.SmartBuildGeometry(area);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
 
@@ -226,7 +116,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SW)
                                     room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -256,7 +146,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[2] += increment;
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -279,7 +169,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.NE)
                                     room.Blocks[x, z].QAFaces[1] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -300,7 +190,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[0] += increment;
                                 room.Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -324,7 +214,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SE)
                                     room.Blocks[x, z].QAFaces[2] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -342,7 +232,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[1] += increment;
                                 room.Blocks[x, z].EDFaces[2] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -363,7 +253,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SW)
                                     room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -381,7 +271,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[2] += increment;
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -402,7 +292,7 @@ namespace TombEditor
                                 if (block.FloorDiagonalSplit != DiagonalSplit.SW)
                                     room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -420,7 +310,7 @@ namespace TombEditor
                                 room.Blocks[x, z].EDFaces[0] += increment;
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -444,7 +334,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[0] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -464,7 +354,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[0] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -487,7 +377,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[1] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -507,7 +397,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[1] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -530,7 +420,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[2] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -550,7 +440,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[2] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -573,7 +463,7 @@ namespace TombEditor
 
                                 room.Blocks[x, z].QAFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 1)
@@ -593,7 +483,7 @@ namespace TombEditor
                             {
                                 room.Blocks[x, z].EDFaces[3] += increment;
 
-                                if (block.FloorPortal != null && !block.IsFloorSolid)
+                                if (block.FloorPortal != null)
                                     continue;
                             }
                             else if (verticalSubdivision == 3)
@@ -691,21 +581,12 @@ namespace TombEditor
 
         public static void AddTrigger(Room room, Rectangle area, IWin32Window parent)
         { 
-            TriggerInstance trigger = new TriggerInstance(_editor.Level.GetNewTriggerId(), room);
-            using (FormTrigger formTrigger = new FormTrigger(_editor.Level, trigger))
+            var trigger = new TriggerInstance(area);
+            using (var formTrigger = new FormTrigger(_editor.Level, trigger))
             {
                 if (formTrigger.ShowDialog(parent) != DialogResult.OK)
                     return;
-                trigger.Room = room;
-                trigger.X = (byte)area.X;
-                trigger.Z = (byte)area.Y;
-                trigger.NumXBlocks = (byte)(area.Width + 1);
-                trigger.NumZBlocks = (byte)(area.Height + 1);
-                _editor.Level.Triggers.Add(trigger.Id, trigger);
-
-                for (int x = area.X; x <= area.Right; x++)
-                    for (int z = area.Y; z <= area.Bottom; z++)
-                        room.Blocks[x, z].Triggers.Add(trigger.Id);
+                room.AddObject(_editor.Level, trigger);
             }
             _editor.RoomSectorPropertiesChange(room);
         }
@@ -719,299 +600,156 @@ namespace TombEditor
             return new Vector3(512.0f, 128.0f, 512.0f);
         }
 
-        public static void MoveObject(Room room, ObjectPtr objectPtr, Vector3 pos, Keys modifierKeys)
+        public static void MoveObject(Room room, PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
         {
-            MoveObject(room, objectPtr, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
+            MoveObject(room, instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
         }
 
-        public static void MoveObject(Room room, ObjectPtr objectPtr, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
+        public static void MoveObject(Room room, PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
-            switch (objectPtr.Type)
+            if (instance == null)
+                return;
+
+            // Limit movement precision
+            for (int i = 0; i < 3; ++i)
+                if (precision[i] != 0)
+                    pos[i] = ((float)Math.Round(pos[i] / precision[i])) * precision[i];
+
+            // Limit movement area ...
+            if (!canGoOutsideRoom)
             {
-                case ObjectInstanceType.Moveable:
-                case ObjectInstanceType.Static:
-                case ObjectInstanceType.SoundSource:
-                case ObjectInstanceType.Sink:
-                case ObjectInstanceType.Camera:
-                case ObjectInstanceType.FlyByCamera:
-                case ObjectInstanceType.Light:
-                    // Limit movement precision
-                    for (int i = 0; i < 3; ++i)
-                        if (precision[i] != 0)
-                            pos[i] = ((float)Math.Round(pos[i] / precision[i])) * precision[i];
+                float x = (float)Math.Floor(pos.X / 1024.0f);
+                float z = (float)Math.Floor(pos.Z / 1024.0f);
 
-                    // Limit movement area ...
-                    if (!canGoOutsideRoom)
-                    {
-                        float x = (float)Math.Floor(pos.X / 1024.0f);
-                        float z = (float)Math.Floor(pos.Z / 1024.0f);
+                if ((x < 0.0f) || (x > (room.NumXSectors - 1)) ||
+                    (z < 0.0f) || (z > (room.NumZSectors - 1)))
+                    return;
 
-                        if ((x < 0.0f) || (x > (room.NumXSectors - 1)) ||
-                            (z < 0.0f) || (z > (room.NumZSectors - 1)))
-                            return;
+                if (room.Blocks[(int)x, (int)z].IsAnyWall)
+                    return;
 
-                        if (room.Blocks[(int)x, (int)z].IsAnyWall)
-                            return;
+                var lowest = room.GetLowestFloorCorner((int)x, (int)z);
+                var highest = room.GetHighestCeilingCorner((int)x, (int)z);
 
-                        var lowest = room.GetLowestFloorCorner((int)x, (int)z);
-                        var highest = room.GetHighestCeilingCorner((int)x, (int)z);
+                // Don't go outside room boundaries
+                if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
+                    (pos.Z < 1024.0f) || (pos.Z > (room.NumZSectors - 1) * 1024.0f) ||
+                    (pos.Y < lowest * 256.0f) || (pos.Y > highest * 256.0f))
+                    return;
+            }
 
-                        // Don't go outside room boundaries
-                        if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
-                            (pos.Z < 1024.0f) || (pos.Z > (room.NumZSectors - 1) * 1024.0f) ||
-                            (pos.Y < lowest * 256.0f) || (pos.Y > highest * 256.0f))
-                            return;
-                    }
+            // Update position
+            instance.Position = pos;
 
-                    // Update position
-                    if (objectPtr.Type == ObjectInstanceType.Light)
-                        room.Lights[objectPtr.Id].Position = pos;
-                    else
-                        _editor.Level.Objects[objectPtr.Id].Position = pos;
+            // Update state
+            if (instance is Light)
+            {
+                room.CalculateLightingForThisRoom();
+                room.UpdateBuffers();
+            }
+            _editor.ObjectChange(instance);
+        }
 
-                    // Update state
-                    if (objectPtr.Type == ObjectInstanceType.Light)
-                    {
-                        room.CalculateLightingForThisRoom();
-                        room.UpdateBuffers();
-                    }
-                    _editor.ObjectChange(objectPtr.Type == ObjectInstanceType.Light ? 
-                        (object)(room.Lights[objectPtr.Id]) : _editor.Level.Objects[objectPtr.Id]);
+        public enum RotationAxis
+        {
+            Y,
+            X,
+            Roll
+        };
+
+        public static void RotateObject(Room room, ObjectInstance instance, RotationAxis axis, float angleInDegrees)
+        {
+            switch (axis)
+            {
+                case RotationAxis.Y:
+                    IRotateableY rotateableY = instance as IRotateableY;
+                    if (rotateableY == null)
+                        return;
+                    rotateableY.RotationY += angleInDegrees;
                     break;
+                case RotationAxis.X:
+                    IRotateableYX rotateableX = instance as IRotateableYX;
+                    if (rotateableX == null)
+                        return;
+                    rotateableX.RotationY += angleInDegrees;
+                    break;
+                case RotationAxis.Roll:
+                    IRotateableY rotateableRoll = instance as IRotateableY;
+                    if (rotateableRoll == null)
+                        return;
+                    rotateableRoll.RotationY += angleInDegrees;
+                    break;
+            }
+            if (instance is Light)
+                room.UpdateCompletely();
+            _editor.ObjectChange(instance);
+        }
+
+        public static void EditObject(Room room, ObjectInstance instance, IWin32Window owner)
+        {
+            if (instance is MoveableInstance)
+            {
+                using (var formMoveable = new FormMoveable((MoveableInstance)instance))
+                    formMoveable.ShowDialog(owner);
+                _editor.ObjectChange(instance);
+            }
+            else if (instance is FlybyCameraInstance)
+            {
+                using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))
+                    formFlyby.ShowDialog(owner);
+                _editor.ObjectChange(instance);
+            }
+            else if (instance is SinkInstance)
+            {
+                using (var formSink = new FormSink((SinkInstance)instance))
+                    formSink.ShowDialog(owner);
+                _editor.ObjectChange(instance);
+            }
+            else if (instance is SoundSourceInstance)
+            {
+                using (var formSoundSource = new FormSound((SoundSourceInstance)instance, _editor.Level.Wad))
+                    formSoundSource.ShowDialog(owner);
+                _editor.ObjectChange(instance);
+            }
+            else if (instance is TriggerInstance)
+            {
+                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance))
+                    formTrigger.ShowDialog(owner);
+                _editor.ObjectChange(instance);
             }
         }
 
-        public static void RotateObject(Room room, ObjectPtr objectPtr, int sign, bool smoothMove)
+        public static void DeleteObjectWithWarning(Room room, ObjectInstance instance, IWin32Window owner)
         {
-            switch (objectPtr.Type)
-            {
-                case ObjectInstanceType.Moveable:
-                case ObjectInstanceType.Static:
-                case ObjectInstanceType.SoundSource:
-                case ObjectInstanceType.Sink:
-                case ObjectInstanceType.Camera:
-                case ObjectInstanceType.FlyByCamera:
-                    var itemObject = _editor.Level.Objects[objectPtr.Id] as ItemInstance;
-                    if (itemObject != null)
-                    {
-                        itemObject.Rotation += sign * (smoothMove ? 5.0f : 45.0f);
-                        _editor.ObjectChange(itemObject);
-                    }
-                    break;
-            }
-        }
-
-        public static void EditObject(Room room, ObjectPtr objectPtr, IWin32Window owner)
-        {
-            switch (objectPtr.Type)
-            {
-                case ObjectInstanceType.Moveable:
-                    using (FormMoveable formMoveable = new FormMoveable((MoveableInstance)(_editor.Level.Objects[objectPtr.Id])))
-                        formMoveable.ShowDialog(owner);
-                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
-                    break;
-                case ObjectInstanceType.FlyByCamera:
-                    using (FormFlybyCamera formFlyby = new FormFlybyCamera((FlybyCameraInstance)(_editor.Level.Objects[objectPtr.Id])))
-                        formFlyby.ShowDialog(owner);
-                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
-                    break;
-                case ObjectInstanceType.Sink:
-                    using (FormSink formSink = new FormSink((SinkInstance)(_editor.Level.Objects[objectPtr.Id])))
-                        formSink.ShowDialog(owner);
-                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
-                    break;
-                case ObjectInstanceType.SoundSource:
-                    using (FormSound formSound = new FormSound((SoundSourceInstance)(_editor.Level.Objects[objectPtr.Id]), _editor.Level.Wad))
-                        formSound.ShowDialog(owner);
-                    _editor.ObjectChange(_editor.Level.Objects[objectPtr.Id]);
-                    break;
-                case ObjectInstanceType.Trigger:
-                    using (FormTrigger formSound = new FormTrigger(_editor.Level, (TriggerInstance)(_editor.Level.Triggers[objectPtr.Id])))
-                        formSound.ShowDialog(owner);
-                    _editor.ObjectChange(_editor.Level.Triggers[objectPtr.Id]);
-                    _editor.RoomSectorPropertiesChange(room);
-                    break;
-            }
-        }
-
-        public static void DeleteObjectWithWarning(Room room, ObjectPtr objectPtr, IWin32Window owner)
-        {
-            if ((room.Flipped) && (objectPtr.Type == ObjectInstanceType.Portal))
+            if (room.Flipped && (instance is Portal))
             {
                 DarkUI.Forms.DarkMessageBox.ShowError("You can't delete portals of a flipped room", "Error");
                 return;
             }
 
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete " + objectPtr.ToString() + "?",
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete " + instance.ToString() + "?",
                     "Confirm delete", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                 return;
 
-            DeleteObject(room, objectPtr);
+            DeleteObject(room, instance);
         }
 
-        public static void DeleteObject(Room room, ObjectPtr objectPtr)
+        public static void DeleteObject(Room room, ObjectInstance instance)
         {
-            switch (objectPtr.Type)
-            {
-                case ObjectInstanceType.Portal:
-                    if (room.Flipped)
-                        return;
+            room.RemoveObject(_editor.Level, instance);
 
-                    Portal current = _editor.Level.Portals.First(p => p.Id == objectPtr.Id);
-                    var other = current.Other;
-
-                    for (int x = current.X; x < current.X + current.NumXBlocks; x++)
-                    {
-                        for (int z = current.Z; z < current.Z + current.NumZBlocks; z++)
-                        {
-                            if (current.Direction == PortalDirection.Floor)
-                            {
-                                room.Blocks[x, z].FloorPortal = null;
-                                room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
-                            }
-
-                            if (current.Direction == PortalDirection.Ceiling)
-                            {
-                                room.Blocks[x, z].CeilingPortal = null;
-                                room.Blocks[x, z].CeilingOpacity = PortalOpacity.None;
-                            }
-
-                            if (current.Direction == PortalDirection.North || current.Direction == PortalDirection.South ||
-                                current.Direction == PortalDirection.West || current.Direction == PortalDirection.East)
-                            {
-                                room.Blocks[x, z].WallPortal = null;
-                                room.Blocks[x, z].WallOpacity = PortalOpacity.None;
-                            }
-                        }
-                    }
-
-                    for (int x = other.X; x < other.X + other.NumXBlocks; x++)
-                    {
-                        for (int z = other.Z; z < other.Z + other.NumZBlocks; z++)
-                        {
-                            if (other.Direction == PortalDirection.Ceiling)
-                            {
-                                other.Room.Blocks[x, z].CeilingPortal = null;
-                                other.Room.Blocks[x, z].CeilingOpacity = PortalOpacity.None;
-                            }
-
-                            if (other.Direction == PortalDirection.Floor)
-                            {
-                                other.Room.Blocks[x, z].FloorPortal = null;
-                                other.Room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
-                            }
-
-                            if (other.Direction == PortalDirection.North || other.Direction == PortalDirection.South ||
-                                other.Direction == PortalDirection.West || other.Direction == PortalDirection.East)
-                            {
-                                other.Room.Blocks[x, z].WallPortal = null;
-                                other.Room.Blocks[x, z].WallOpacity = PortalOpacity.None;
-                            }
-                        }
-                    }
-
-                    // Update state
-                    room.UpdateCompletely();
-                    other.Room.UpdateCompletely();
-
-                    if (_editor.SelectedObject == objectPtr)
-                        _editor.SelectedObject = null;
-                    _editor.RoomSectorPropertiesChange(room);
-                    break;
-
-                case ObjectInstanceType.Trigger:
-                    var trigger = _editor.Level.Triggers[objectPtr.Id];
-                    for (int x = trigger.X; x < trigger.X + trigger.NumXBlocks; x++)
-                        for (int z = trigger.Z; z < trigger.Z + trigger.NumZBlocks; z++)
-                            room.Blocks[x, z].Triggers.Remove(objectPtr.Id);
-                    room.UpdateCompletely();
-
-                    if (_editor.SelectedObject == objectPtr)
-                        _editor.SelectedObject = null;
-                    _editor.RoomSectorPropertiesChange(room);
-                    break;
-
-                case ObjectInstanceType.Light:
-                    room.Lights.RemoveAt(objectPtr.Id);
-                    room.UpdateCompletely();
-                    break;
-
-                case ObjectInstanceType.Moveable:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
-                    break;
-
-                case ObjectInstanceType.Static:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
-                    break;
-
-                case ObjectInstanceType.SoundSource:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
-                    break;
-
-                case ObjectInstanceType.Sink:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
-                    break;
-
-                case ObjectInstanceType.Camera:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
-                    break;
-
-                case ObjectInstanceType.FlyByCamera:
-                    _editor.Level.Objects.Remove(objectPtr.Id);
-                    room.Moveables.Remove(objectPtr.Id);
-                    break;
-            }
+            // Additional updates
+            if (instance is SectorBasedObjectInstance)
+                _editor.RoomSectorPropertiesChange(room);
+            if (instance is Light)
+                room.UpdateCompletely();
 
             // Avoid having the removed object still selected
-            if (_editor.SelectedObject == objectPtr)
+            if (_editor.SelectedObject == instance)
                 _editor.SelectedObject = null;
             _editor.ObjectChange(null);
         }
         
-        public static void RotateCone(Room room, ObjectPtr objectPtr, Vector2 delta)
-        {
-            switch (objectPtr.Type)
-            {
-                case ObjectInstanceType.Light:
-                    {
-                        Light light = room.Lights[objectPtr.Id];
-
-                        light.DirectionX += delta.X;
-                        light.DirectionY += delta.Y;
-
-                        if (light.DirectionX >= 360)
-                            light.DirectionX -= 360;
-                        if (light.DirectionX < 0)
-                            light.DirectionX += 360;
-                        if (light.DirectionY < 0)
-                            light.DirectionY += 360;
-                        if (light.DirectionY >= 360)
-                            light.DirectionY -= 360;
-                        
-                        room.CalculateLightingForThisRoom();
-                        room.UpdateBuffers();
-                        _editor.ObjectChange(light);
-                    }
-                    break;
-
-                case ObjectInstanceType.FlyByCamera:
-                    {
-                        FlybyCameraInstance flyby = (FlybyCameraInstance)_editor.Level.Objects[objectPtr.Id];
-
-                        flyby.RotationX += delta.X;
-                        flyby.RotationY += delta.Y;
-                        
-                        _editor.ObjectChange(flyby);
-                    }
-                    break;
-            }
-        }
-
         public static void PlaceTexture(Room room, DrawingPoint pos, BlockFaces faceType)
         {
             BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
@@ -1020,7 +758,7 @@ namespace TombEditor
 
             face.Flipped = false;
 
-            room.BuildGeometry(pos.X, pos.X, pos.Y, pos.Y);
+            room.BuildGeometry(new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
             room.CalculateLightingForThisRoom();
             room.UpdateBuffers();
             _editor.RoomTextureChange(room);
@@ -1367,13 +1105,10 @@ namespace TombEditor
         {
             Block block = room.GetBlock(pos);
             int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-            Vector3 Position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
+            Vector3 position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
 
-            Light instance = new Light(lightType, Position);
-            room.Lights.Add(instance);
-            
-            room.CalculateLightingForThisRoom();
-            room.UpdateBuffers();
+            var instance = new Light(lightType) { Position = position };
+            room.AddObject(_editor.Level, instance);
             _editor.ObjectChange(instance);
         }
         
@@ -1383,57 +1118,33 @@ namespace TombEditor
             int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
-
-            _editor.Level.Objects.Add(instance.Id, instance);
-            switch (instance.Type)
-            {
-                case ObjectInstanceType.Camera:
-                    room.Cameras.Add(instance.Id);
-                    break;
-                case ObjectInstanceType.FlyByCamera:
-                    room.FlyByCameras.Add(instance.Id);
-                    break;
-                case ObjectInstanceType.Light:
-                    throw new NotSupportedException();
-                case ObjectInstanceType.Moveable:
-                    room.Moveables.Add(instance.Id);
-                    break;
-                case ObjectInstanceType.Sink:
-                    room.Sinks.Add(instance.Id);
-                    break;
-                case ObjectInstanceType.SoundSource:
-                    room.SoundSources.Add(instance.Id);
-                    break;
-                case ObjectInstanceType.Static:
-                    room.Statics.Add(instance.Id);
-                    break;
-            }
+            room.AddObject(_editor.Level, instance);
             _editor.ObjectChange(instance);
         }
 
         public static void PlaceItem(Room room, DrawingPoint pos, ItemType itemType)
         {
-            AddObject(room, pos, ItemInstance.FromItemType(_editor.Level.GetNewObjectId(), room, itemType));
+            AddObject(room, pos, ItemInstance.FromItemType(itemType));
         }
 
         public static void PlaceCamera(Room room, DrawingPoint pos)
         {
-            AddObject(room, pos, new CameraInstance(_editor.Level.GetNewObjectId(), room));
+            AddObject(room, pos, new CameraInstance());
         }
 
         public static void PlaceFlyByCamera(Room room, DrawingPoint pos)
         {
-            AddObject(room, pos, new FlybyCameraInstance(_editor.Level.GetNewObjectId(), room));
+            AddObject(room, pos, new FlybyCameraInstance());
         }
 
         public static void PlaceSoundSource(Room room, DrawingPoint pos)
         {
-            AddObject(room, pos, new SoundSourceInstance(_editor.Level.GetNewObjectId(), room));
+            AddObject(room, pos, new SoundSourceInstance());
         }
 
         public static void PlaceSink(Room room, DrawingPoint pos)
         {
-            AddObject(room, pos, new SinkInstance(_editor.Level.GetNewObjectId(), room));
+            AddObject(room, pos, new SinkInstance());
         }
 
         public static void DeleteRoom(Room room)
@@ -1476,277 +1187,40 @@ namespace TombEditor
         {
             if (room.Flipped)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a flipped room", "Error");
+                DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a flipped room yet :(", "Error");
                 return;
             }
-
-            // First check if there are portals
-            for (int x = 0; x < room.NumXSectors; x++)
+            newArea = newArea.Inflate(1);
+            if ((newArea.Width + 1) > Room.MaxRoomDimensions ||
+                (newArea.Height + 1) > Room.MaxRoomDimensions)
             {
-                for (int z = 0; z < room.NumZSectors; z++)
-                {
-                    if (room.Blocks[x, z].FloorPortal != null || room.Blocks[x, z].CeilingPortal != null ||
-                        room.Blocks[x, z].WallPortal != null)
-                    {
-                        DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a room with portals. Please delete all portals before doing this.",
-                                                                "Error");
-                        return;
-                    }
-                }
-            }
-
-            // Warning
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Warning: if you crop this room, all objects outside the new area will be deleted and " +
-                                                        "triggers pointing to them will be removed. Do you want to continue?",
-                                                        "Crop room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-            {
+                DarkUI.Forms.DarkMessageBox.ShowError("The selected area exceeds the maximum room size.", "Error");
                 return;
             }
-
-            byte numXSectors = (byte)(newArea.Width + 3);
-            byte numZSectors = (byte)(newArea.Height + 3);
-            int newX = (int)(room.Position.X + newArea.X - 1);
-            int newZ = (int)(room.Position.Z + newArea.Y - 1);
-            int worldX = newX * 1024;
-            int worldZ = newZ * 1024;
-
-            var newRoom = new Room(_editor.Level, numXSectors, numZSectors, "Unnamed");
-            newRoom.Position = new Vector3(newX, room.Position.Y, newZ);
-
-            // First collect all items to remove
-            List<int> objectsToRemove = new List<int>();
-            List<int> lightsToRemove = new List<int>();
-            List<int> triggersToRemove = new List<int>();
-
-            for (int i = 0; i < _editor.Level.Objects.Count; i++)
-            {
-                var obj = _editor.Level.Objects.ElementAt(i).Value;
-                if (obj.Room == room)
-                {
-                    if (obj.Position.X < (newX + 1) * 1024 || obj.Position.X > (newX + numXSectors - 1) * 1024 ||
-                        obj.Position.Z < (newZ + 1) * 1024 || obj.Position.Z > (newZ + numZSectors - 1) * 1024)
-                    {
-                        // We must remove that object. First try to find a trigger.
-                        for (int j = 0; j < _editor.Level.Triggers.Count; j++)
-                        {
-                            TriggerInstance trigger = _editor.Level.Triggers.ElementAt(j).Value;
-
-                            if (trigger.TargetType == TriggerTargetType.Camera && obj.Type == ObjectInstanceType.Camera &&
-                                trigger.Target == obj.Id)
-                            {
-                                triggersToRemove.Add(trigger.Id);
-                            }
-
-                            if (trigger.TargetType == TriggerTargetType.FlyByCamera && obj.Type == ObjectInstanceType.FlyByCamera &&
-                                trigger.Target == ((FlybyCameraInstance)obj).Sequence)
-                            {
-                                triggersToRemove.Add(trigger.Id);
-                            }
-
-                            if (trigger.TargetType == TriggerTargetType.Sink && obj.Type == ObjectInstanceType.Sink &&
-                                trigger.Target == obj.Id)
-                            {
-                                triggersToRemove.Add(trigger.Id);
-                            }
-
-                            if (trigger.TargetType == TriggerTargetType.Object && obj.Type == ObjectInstanceType.Moveable &&
-                                trigger.Target == obj.Id)
-                            {
-                                triggersToRemove.Add(trigger.Id);
-                            }
-                        }
-
-                        // Remove the object
-                        objectsToRemove.Add(obj.Id);
-                    }
-                }
-            }
-
-            // Now search for lights
-            for (int i = 0; i < room.Lights.Count; i++)
-            {
-                Light light = room.Lights[i];
-                if (light.Position.X < (newX + 1) * 1024 || light.Position.X > (newX + numXSectors) * 1024 ||
-                        light.Position.Z < (newZ + 1) * 1024 || light.Position.Z > (newZ + numZSectors) * 1024)
-                {
-                    lightsToRemove.Add(i);
-                }
-            }
-
-            // Now crop the room
-            for (int x = 1; x < numXSectors - 1; x++)
-            {
-                for (int z = 1; z < numZSectors - 1; z++)
-                {
-                    newRoom.Blocks[x, z] = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Clone();
-
-                    for (int k = 0; k < room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers.Count; k++)
-                    {
-                        int triggerId = room.Blocks[x + newArea.X - 1, z + newArea.Y - 1].Triggers[k];
-                        if (!triggersToRemove.Contains(triggerId))
-                            newRoom.Blocks[x, z].Triggers.Add(triggerId);
-                    }
-                }
-            }
-
-            // Add everything except items to delete
-            for (int i = 0; i < room.Lights.Count; i++)
-            {
-                if (!lightsToRemove.Contains(i))
-                {
-                    Light light = room.Lights[i];
-                    newRoom.Lights.Add(light);
-                    newRoom.Lights[newRoom.Lights.Count - 1].Position = new Vector3(light.Position.X - worldX,
-                                                                                    light.Position.Y,
-                                                                                    light.Position.Z - worldZ);
-                }
-            }
-
-            for (int i = 0; i < room.Moveables.Count; i++)
-            {
-                if (!objectsToRemove.Contains(room.Moveables[i]))
-                {
-                    newRoom.Moveables.Add(room.Moveables[i]);
-                    _editor.Level.Objects[room.Moveables[i]].Move(-worldX, 0, -worldZ);
-                }
-            }
-
-            for (int i = 0; i < room.Statics.Count; i++)
-            {
-                if (!objectsToRemove.Contains(room.Statics[i]))
-                {
-                    newRoom.Statics.Add(room.Statics[i]);
-                    _editor.Level.Objects[room.Statics[i]].Move(-worldX, 0, -worldZ);
-                }
-            }
-
-            for (int i = 0; i < room.SoundSources.Count; i++)
-            {
-                if (!objectsToRemove.Contains(room.SoundSources[i]))
-                {
-                    newRoom.SoundSources.Add(room.SoundSources[i]);
-                    _editor.Level.Objects[room.SoundSources[i]].Move(-worldX, 0, -worldZ);
-                }
-            }
-
-            for (int i = 0; i < room.Sinks.Count; i++)
-            {
-                if (!objectsToRemove.Contains(room.Sinks[i]))
-                {
-                    newRoom.Sinks.Add(room.Sinks[i]);
-                    _editor.Level.Objects[room.Sinks[i]].Move(-worldX, 0, -worldZ);
-                }
-            }
-
-            for (int i = 0; i < room.Cameras.Count; i++)
-            {
-                if (!objectsToRemove.Contains(room.Cameras[i]))
-                {
-                    newRoom.Cameras.Add(room.Cameras[i]);
-                    _editor.Level.Objects[room.Cameras[i]].Move(-worldX, 0, -worldZ);
-                }
-            }
-
-            for (int i = 0; i < room.FlyByCameras.Count; i++)
-            {
-                if (!objectsToRemove.Contains(room.FlyByCameras[i]))
-                {
-                    newRoom.FlyByCameras.Add(room.FlyByCameras[i]);
-                    _editor.Level.Objects[room.FlyByCameras[i]].Move(-worldX, 0, -worldZ);
-                }
-            }
-
-            // Remove objects, triggers, lights
-            for (int i = 0; i < objectsToRemove.Count; i++)
-            {
-                _editor.Level.Objects.Remove(objectsToRemove[i]);
-            }
-
-            for (int i = 0; i < triggersToRemove.Count; i++)
-            {
-                _editor.Level.Triggers.Remove(triggersToRemove[i]);
-            }
-
-            // Update triggers position
-            for (int i = 0; i < _editor.Level.Triggers.Count; i++)
-            {
-                TriggerInstance trigger = _editor.Level.Triggers.ElementAt(i).Value;
-                if (trigger.Room == room)
-                {
-                    trigger.X -= (byte)newX;
-                    trigger.Z -= (byte)newZ;
-
-                    _editor.Level.Triggers[trigger.Id] = trigger;
-                }
-            }
-
-            // Now copy back everything into the original room
-            room.Resize(newRoom.NumXSectors, newRoom.NumZSectors);
-
-            room.Moveables.Clear();
-            room.Moveables.AddRange(newRoom.Moveables);
-
-            room.Statics.Clear();
-            room.Statics.AddRange(newRoom.Statics);
-
-            room.Cameras.Clear();
-            room.Cameras.AddRange(newRoom.Cameras);
-
-            room.Sinks.Clear();
-            room.Sinks.AddRange(newRoom.Sinks);
-
-            room.FlyByCameras.Clear();
-            room.FlyByCameras.AddRange(newRoom.FlyByCameras);
-
-            room.SoundSources.Clear();
-            room.SoundSources.AddRange(newRoom.SoundSources);
-
-            room.Lights.Clear();
-            room.Lights.AddRange(newRoom.Lights);
-
-            for (int x = 0; x < room.NumXSectors; x++)
-            {
-                for (int z = 0; z < room.NumZSectors; z++)
-                {
-                    room.Blocks[x, z] = newRoom.Blocks[x, z];
-                }
-            }
-
-            room.UpdateCompletely();
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
+                " Do you want to continue?", "Crop room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
+            
+            // Resize room
+            room.Resize(_editor.Level, newArea.Width + 1, newArea.Height + 1,
+                (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), new DrawingPoint(newArea.X, newArea.Y));
 
             // Fix selection if necessary
-            if (_editor.SelectedRoom == room)
-            {
-                _editor.SelectRoomAndCenterCamera(room);
-                _editor.SelectedSectors = new SectorSelection { Start = new DrawingPoint(1, 1), End = new DrawingPoint(numXSectors - 2, numZSectors - 2) };
-            }
+            if ((_editor.SelectedRoom == room) && _editor.SelectedSectors.Valid)
+                _editor.SelectedSectors = new SectorSelection
+                {
+                    Area = _editor.SelectedSectors.Area.Intersect(newArea).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y)),
+                    Arrow = _editor.SelectedSectors.Arrow
+                };
+            _editor.RoomPropertiesChange(room);
+            _editor.RoomSectorPropertiesChange(room);
         }
-
+        
         public static void SetDiagonalFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                    }
-
-                    if (room.Blocks[x, z].CeilingPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].CeilingPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].CeilingPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsFloorSolid = true;
-                    }
-
                     // Now try to guess the floor split
                     short maxHeight = -32767;
                     byte theCorner = 0;
@@ -1815,26 +1289,6 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                    }
-
-                    if (room.Blocks[x, z].CeilingPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].CeilingPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].CeilingPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsFloorSolid = true;
-                    }
-
                     // Now try to guess the floor split
                     short minHeight = 32767;
                     byte theCorner = 0;
@@ -1903,26 +1357,6 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
-                    if (room.Blocks[x, z].FloorPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                    }
-
-                    if (room.Blocks[x, z].CeilingPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].CeilingPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].CeilingPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsFloorSolid = true;
-                    }
-
                     // Now try to guess the floor split
                     short maxHeight = -32767;
                     byte theCorner = 0;
@@ -1997,26 +1431,6 @@ namespace TombEditor
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     room.Blocks[x, z].Type = BlockType.Wall;
-
-                    if (room.Blocks[x, z].FloorPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].FloorPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].FloorPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                    }
-
-                    if (room.Blocks[x, z].CeilingPortal != null)
-                    {
-                        Room otherRoom = room.Blocks[x, z].CeilingPortal.AdjoiningRoom;
-
-                        int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                        int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                        room.Blocks[x, z].CeilingPortal.AdjoiningRoom.Blocks[lowX, lowZ].IsFloorSolid = true;
-                    }
                 }
 
             SmartBuildGeometry(room, area);
@@ -2070,675 +1484,97 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(room);
         }
 
-        public static bool AddPortal(Room room, Rectangle area)
+        public static void AddPortal(Room room, Rectangle area)
         {
-            // The size of the portal
-            int numXblocks = room.NumXSectors;
-            int numZblocks = room.NumZSectors;
+            // Check if fliproom
+            if (room.Flipped)
+                throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
+
+            // Check for possible candidates ...
+            VerticalSpace? verticalSpaceLocal = room.GetHeightInAreaMaxSpace(new Rectangle(area.X, area.Y, area.Right + 1, area.Bottom + 1));
+
+            List<Tuple<PortalDirection, Room>> candidates = new List<Tuple<PortalDirection, Room>>();
+            if (verticalSpaceLocal != null)
+            {
+                VerticalSpace verticalSpace = verticalSpaceLocal.Value + room.Position.Y;
+                bool couldBeFloorCeilingPortal = false;
+                if (new Rectangle(1, 1, room.NumXSectors - 2, room.NumZSectors - 2).Contains(area))
+                    for (int z = area.Top; z <= area.Bottom; ++z)
+                        for (int x = area.Left; x <= area.Right; ++x)
+                            if (room.Blocks[x, z].IsFloor)
+                                couldBeFloorCeilingPortal = true;
+                
+                foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
+                {
+                    if (neighborRoom == room)
+                        continue;
+                    Rectangle neighborArea = area.Offset(room.SectorPos).OffsetNeg(neighborRoom.SectorPos);
+                    if (!new Rectangle(0, 0, neighborRoom.NumXSectors - 1, neighborRoom.NumZSectors - 1).Contains(neighborArea))
+                        continue;
+
+                    // Check if they vertically touch
+                    VerticalSpace? neighborVerticalSpaceLocal = neighborRoom.GetHeightInAreaMaxSpace(
+                        new Rectangle(neighborArea.X, neighborArea.Y, neighborArea.Right + 1, neighborArea.Bottom + 1));
+                    if (neighborVerticalSpaceLocal == null)
+                        continue;
+                    VerticalSpace neighborVerticalSpace = neighborVerticalSpaceLocal.Value + neighborRoom.Position.Y;
+                    if (!((verticalSpace.FloorY <= neighborVerticalSpace.CeilingY) && (verticalSpace.CeilingY >= neighborVerticalSpace.FloorY)))
+                        continue;
+
+                    // Decide on a direction
+                    if (couldBeFloorCeilingPortal &&
+                        new Rectangle(1, 1, neighborRoom.NumXSectors - 2, neighborRoom.NumZSectors - 2).Contains(neighborArea))
+                    {
+                        if (Math.Abs(neighborVerticalSpace.CeilingY - verticalSpace.FloorY) <
+                            Math.Abs(neighborVerticalSpace.FloorY - verticalSpace.CeilingY))
+                        { // Consider floor portal
+                            candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Floor, neighborRoom));
+                        }
+                        else
+                        { // Consider ceiling portal
+                            candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.Ceiling, neighborRoom));
+                        }
+                    }
+                    if ((area.Width == 0) && (area.X == 0))
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.West, neighborRoom));
+                    if ((area.Width == 0) && (area.X == (room.NumXSectors - 1)))
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.East, neighborRoom));
+                    if ((area.Height == 0) && (area.Y == 0))
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.North, neighborRoom));
+                    if ((area.Height == 0) && (area.Y == (room.NumZSectors - 1)))
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.South, neighborRoom));
+                }
+            }
+
+            if (candidates.Count > 1)
+                throw new NotSupportedException("There is more than 1 valid way to connect to a room here! An option dialog is not yet implemented, sorry. :(");
+            if (candidates.Count < 1)
+                throw new ApplicationException("No room candidate found to connect to.");
+
+            PortalDirection destinationDirection = candidates[0].Item1;
+            Room destination = candidates[0].Item2;
+            if (destination.Flipped)
+                throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
             
-            // West wall
-            if (area.X == 0 && area.Right == 0 && area.Y != 0 && area.Bottom != numZblocks - 1)
-            {
-                // Check for portal overlaps
-                for (int z = area.Y; z <= area.Bottom; z++)
-                {
-                    if (room.Blocks[area.X, z].WallPortal != null)
-                    {
-                        return false;
-                    }
-                }
-
-                int xPortalWorld = Utils.GetWorldX(room, area.X);
-                int zPortalWorld = Utils.GetWorldZ(room, area.Y);
-
-                // Search a compatible neighbour
-                Room found = null;
-                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
-                {
-                    found = null;
-                    Room otherRoom = _editor.Level.Rooms[i];
-
-                    if (ReferenceEquals(otherRoom, room) || otherRoom == null)
-                        continue;
-                    if (otherRoom.Flipped != room.Flipped)
-                        continue;
-
-                    if (otherRoom.Position.X + otherRoom.NumXSectors - 1 == room.Position.X + 1 && room.Position.Z + area.Y >= otherRoom.Position.Z + 1 &&
-                        room.Position.Z + area.Bottom <= otherRoom.Position.Z + otherRoom.NumZSectors - 1)
-                    {
-                        for (int z = area.Y; z <= area.Bottom; z++)
-                        {
-                            int facingZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-                            if (facingZ < 1 || facingZ > otherRoom.NumZSectors - 1)
-                            {
-                                found = null;
-                                break;
-                            }
-
-                            if (otherRoom.Blocks[otherRoom.NumXSectors - 1, facingZ].WallPortal != null)
-                            {
-                                found = null;
-                                break;
-                            }
-                            else
-                            {
-                                found = otherRoom;
-                            }
-                        }
-                    }
-
-                    if (found != null)
-                        break;
-                }
-
-                if (found != null)
-                {
-                    var currentRoomPortal = new Portal(room);
-                    var otherRoomPortal = new Portal(found);
-
-                    int xPortalOther = (int)(xPortalWorld - found.Position.X);
-                    int zPortalOther = (int)(zPortalWorld - found.Position.Z);
-
-                    currentRoomPortal.NumXBlocks = 1;
-                    currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
-                    currentRoomPortal.Direction = PortalDirection.West;
-                    currentRoomPortal.X = 0;
-                    currentRoomPortal.Z = (byte)area.Y;
-                    currentRoomPortal.AdjoiningRoom = found;
-                    currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
-
-                    otherRoomPortal.NumXBlocks = 1;
-                    otherRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
-                    otherRoomPortal.Direction = PortalDirection.East;
-                    otherRoomPortal.X = (byte)(found.NumXSectors - 1);
-                    otherRoomPortal.Z = (byte)zPortalOther;
-                    otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
-
-                    currentRoomPortal.Other = otherRoomPortal;
-                    otherRoomPortal.Other = currentRoomPortal;
-
-                    // Set the portal ID in sectors
-                    for (int z = area.Y; z <= area.Bottom; z++)
-                    {
-                        room.Blocks[0, z].WallPortal = currentRoomPortal;
-                        found.Blocks[found.NumXSectors - 1, z + (int)(room.Position.Z - found.Position.Z)].WallPortal = otherRoomPortal;
-                    }
-
-                    // Build geometry for current room
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-
-                    // Build geometry for adjoining room
-                    found.BuildGeometry();
-                    found.CalculateLightingForThisRoom();
-                    found.UpdateBuffers();
-
-                    _editor.ObjectChange(currentRoomPortal);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            // East wall
-            if (area.X == numXblocks - 1 && area.Right == area.X && area.Y != 0 && area.Bottom != numZblocks - 1)
-            {
-                // Check for portal overlaps
-                for (int z = area.Y; z <= area.Bottom; z++)
-                {
-                    if (room.Blocks[area.X, z].WallPortal != null)
-                    {
-                        return false;
-                    }
-                }
-
-                int xPortalWorld = Utils.GetWorldX(room, area.X);
-                int zPortalWorld = Utils.GetWorldZ(room, area.Y);
-
-                // Search a compatible neighbour
-                Room found = null;
-                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
-                {
-                    found = null;
-                    Room otherRoom = _editor.Level.Rooms[i];
-
-                    if (ReferenceEquals(otherRoom, room) || otherRoom == null)
-                        continue;
-                    if (otherRoom.Flipped != room.Flipped)
-                        continue;
-
-                    if (room.Position.X + room.NumXSectors - 1 == otherRoom.Position.X + 1 && room.Position.Z + area.Y >= otherRoom.Position.Z + 1 &&
-                        room.Position.Z + area.Bottom <= otherRoom.Position.Z + otherRoom.NumZSectors - 1)
-                    {
-                        for (int z = area.Y; z <= area.Bottom; z++)
-                        {
-                            int facingZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-                            if (facingZ < 1 || facingZ > otherRoom.NumZSectors - 1)
-                            {
-                                found = null;
-                                break;
-                            }
-
-                            if (otherRoom.Blocks[0, facingZ].WallPortal != null)
-                            {
-                                found = null;
-                                break;
-                            }
-                            else
-                            {
-                                found = otherRoom;
-                            }
-                        }
-                    }
-
-                    if (found != null)
-                        break;
-                }
-
-                if (found != null)
-                {
-                    var currentRoomPortal = new Portal(room);
-                    var otherRoomPortal = new Portal(found);
-
-                    int xPortalOther = (int)(xPortalWorld - found.Position.X);
-                    int zPortalOther = (int)(zPortalWorld - found.Position.Z);
-
-                    currentRoomPortal.NumXBlocks = 1;
-                    currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
-                    currentRoomPortal.Direction = PortalDirection.East;
-                    currentRoomPortal.X = (byte)(numXblocks - 1);
-                    currentRoomPortal.Z = (byte)area.Y;
-                    currentRoomPortal.AdjoiningRoom = found;
-                    currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
-
-                    otherRoomPortal.NumXBlocks = 1;
-                    otherRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
-                    otherRoomPortal.Direction = PortalDirection.West;
-                    otherRoomPortal.X = 0;
-                    otherRoomPortal.Z = (byte)zPortalOther;
-                    otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
-
-                    currentRoomPortal.Other = otherRoomPortal;
-                    otherRoomPortal.Other = currentRoomPortal;
-
-                    // Set the portal ID in sectors
-                    for (int z = area.Y; z <= area.Bottom; z++)
-                    {
-                        room.Blocks[numXblocks - 1, z].WallPortal = currentRoomPortal;
-                        found.Blocks[0, z + (int)(room.Position.Z - found.Position.Z)].WallPortal = otherRoomPortal;
-                    }
-
-                    // Build geometry for current room
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-
-                    // Build geometry for adjoining room
-                    found.BuildGeometry();
-                    found.CalculateLightingForThisRoom();
-                    found.UpdateBuffers();
-                    
-                    _editor.ObjectChange(currentRoomPortal);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            // North wall
-            if (area.Y == numZblocks - 1 && area.Bottom == area.Y && area.X != 0 && area.Right != numXblocks - 1)
-            {
-                // Check for portal overlaps
-                for (int x = area.X; x <= area.Right; x++)
-                {
-                    if (room.Blocks[x, area.Y].WallPortal != null)
-                    {
-                        return false;
-                    }
-                }
-
-                int xPortalWorld = Utils.GetWorldX(room, area.X);
-                int zPortalWorld = Utils.GetWorldZ(room, area.Y);
-
-                // Search a compatible neighbour
-                Room found = null;
-                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
-                {
-                    found = null;
-                    Room otherRoom = _editor.Level.Rooms[i];
-
-                    if (ReferenceEquals(otherRoom, room) || otherRoom == null)
-                        continue;
-                    if (otherRoom.Flipped != room.Flipped)
-                        continue;
-
-                    if (room.Position.Z + room.NumZSectors - 1 == otherRoom.Position.Z + 1 && room.Position.X + area.X >= otherRoom.Position.X + 1 &&
-                        room.Position.X + area.Right <= otherRoom.Position.X + otherRoom.NumXSectors - 1)
-                    {
-                        for (int x = area.X; x <= area.Right; x++)
-                        {
-                            int facingX = x + (int)(room.Position.X - otherRoom.Position.X);
-                            if (facingX < 1 || facingX > otherRoom.NumXSectors - 1)
-                            {
-                                found = null;
-                                break;
-                            }
-
-                            if (otherRoom.Blocks[facingX, 0].WallPortal != null)
-                            {
-                                found = null;
-                                break;
-                            }
-                            else
-                            {
-                                found = otherRoom;
-                            }
-                        }
-                    }
-
-                    if (found != null)
-                        break;
-                }
-
-                if (found != null)
-                {
-                    var currentRoomPortal = new Portal(room);
-                    var otherRoomPortal = new Portal(found);
-
-                    byte xPortalOther = (byte)(xPortalWorld - found.Position.X);
-                    byte zPortalOther = (byte)(zPortalWorld - found.Position.Z);
-
-                    currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
-                    currentRoomPortal.NumZBlocks = 1;
-                    currentRoomPortal.Direction = PortalDirection.North;
-                    currentRoomPortal.X = (byte)area.X;
-                    currentRoomPortal.Z = (byte)(numZblocks - 1);
-                    currentRoomPortal.AdjoiningRoom = found;
-                    currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
-
-                    otherRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
-                    otherRoomPortal.NumZBlocks = 1;
-                    otherRoomPortal.Direction = PortalDirection.South;
-                    otherRoomPortal.X = xPortalOther;
-                    otherRoomPortal.Z = 0;
-                    otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
-
-                    currentRoomPortal.Other = otherRoomPortal;
-                    otherRoomPortal.Other = currentRoomPortal;
-
-                    // Set portal ID in sectors
-                    for (int x = area.X; x <= area.Right; x++)
-                    {
-                        room.Blocks[x, numZblocks - 1].WallPortal = currentRoomPortal;
-                        found.Blocks[x + xPortalOther - area.X, 0].WallPortal = otherRoomPortal;
-                    }
-
-                    // Build geometry for current room
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-
-                    // Build geometry for adjoining room
-                    found.BuildGeometry();
-                    found.CalculateLightingForThisRoom();
-                    found.UpdateBuffers();
-
-                    _editor.ObjectChange(currentRoomPortal);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            // South wall
-            if (area.Y == 0 && area.Bottom == area.Y && area.X != 0 && area.Right != numXblocks - 1)
-            {
-                // Check for portal overlaps
-                for (int x = area.X; x <= area.Right; x++)
-                {
-                    if (room.Blocks[x, area.Y].WallPortal != null)
-                    {
-                        return false;
-                    }
-                }
-
-                int xPortalWorld = Utils.GetWorldX(room, area.X);
-                int zPortalWorld = Utils.GetWorldZ(room, area.Y);
-
-                // Search a compatible neighbour
-                Room found = null;
-                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
-                {
-                    found = null;
-                    Room otherRoom = _editor.Level.Rooms[i];
-
-                    if (ReferenceEquals(otherRoom, room) || otherRoom == null)
-                        continue;
-                    if (otherRoom.Flipped != room.Flipped)
-                        continue;
-
-                    if (otherRoom.Position.Z + otherRoom.NumZSectors - 1 == room.Position.Z + 1 && room.Position.X + area.X >= otherRoom.Position.X + 1 &&
-                        room.Position.X + area.Right <= otherRoom.Position.X + otherRoom.NumXSectors - 1)
-                    {
-                        for (int x = area.X; x <= area.Right; x++)
-                        {
-                            int facingX = x + (int)(room.Position.X - otherRoom.Position.X);
-                            if (facingX < 1 || facingX > otherRoom.NumXSectors - 1)
-                            {
-                                found = null;
-                                break;
-                            }
-
-                            if (otherRoom.Blocks[facingX, 0].WallPortal != null)
-                            {
-                                found = null;
-                                break;
-                            }
-                            else
-                            {
-                                found = otherRoom;
-                            }
-                        }
-                    }
-
-                    if (found != null)
-                        break;
-                }
-
-                if (found != null)
-                {
-                    var currentRoomPortal = new Portal(room);
-                    var otherRoomPortal = new Portal(found);
-
-                    int xPortalOther = (int)(xPortalWorld - found.Position.X);
-                    int zPortalOther = (int)(zPortalWorld - found.Position.Z);
-
-                    currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
-                    currentRoomPortal.NumZBlocks = 1;
-                    currentRoomPortal.Direction = PortalDirection.South;
-                    currentRoomPortal.X = (byte)area.X;
-                    currentRoomPortal.Z = 0;
-                    currentRoomPortal.AdjoiningRoom = found;
-                    currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
-
-                    otherRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
-                    otherRoomPortal.NumZBlocks = 1;
-                    otherRoomPortal.Direction = PortalDirection.North;
-                    otherRoomPortal.X = (byte)xPortalOther;
-                    otherRoomPortal.Z = (byte)(found.NumZSectors - 1);
-                    otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = found.Flipped;
-
-                    currentRoomPortal.Other = otherRoomPortal;
-                    otherRoomPortal.Other = currentRoomPortal;
-
-                    // Set portal ID in sectors
-                    for (int x = area.X; x <= area.Right; x++)
-                    {
-                        room.Blocks[x, 0].WallPortal = currentRoomPortal;
-                        found.Blocks[x + xPortalOther - area.X, found.NumZSectors - 1].WallPortal = otherRoomPortal;
-                    }
-
-                    // Build geometry for current room
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-
-                    // Build geometry for adjoining room
-                    found.BuildGeometry();
-                    found.CalculateLightingForThisRoom();
-                    found.UpdateBuffers();
-
-                    _editor.ObjectChange(currentRoomPortal);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            // Floor - ceiling portal
-            if (area.X > 0 && area.Right < numXblocks - 1 && area.Y > 0 && area.Bottom < numZblocks - 1)
-            {
-                int lowest = room.GetLowestCorner();
-                ;
-
-                // Check for floor heights in selected area
-                for (int x = area.X; x <= area.Right; x++)
-                {
-                    for (int z = area.Y; z <= area.Bottom; z++)
-                    {
-                        int h1 = room.Blocks[x, z].QAFaces[0];
-                        int h2 = room.Blocks[x, z].QAFaces[1];
-                        int h3 = room.Blocks[x, z].QAFaces[2];
-                        int h4 = room.Blocks[x, z].QAFaces[3];
-
-                        // Check if the sector already has a portal
-                        if (room.Blocks[x, z].Type != BlockType.Floor || room.Blocks[x, z].FloorPortal != null)
-                        {
-                            return false;
-                        }
-
-                        // The lowest corner of the floor must be the same of the lowest corner of the room
-                        int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
-                        if (min < lowest)
-                        {
-                            return false;
-                        }
-                    }
-                }
-
-                // Search a compatible neighbour
-                Room found = null;
-
-                for (int i = 0; i < Level.MaxNumberOfRooms; i++)
-                {
-                    found = null;
-                    Room otherRoom = _editor.Level.Rooms[i];
-
-                    if (ReferenceEquals(otherRoom, room) || otherRoom == null)
-                        continue;
-                    if (otherRoom.Flipped != room.Flipped)
-                        continue;
-
-                    int distance = (int)room.Position.Y + room.GetLowestCorner() - ((int)otherRoom.Position.Y + otherRoom.GetHighestCorner());
-                    if (distance < 0 || distance > 2)
-                        continue;
-
-                    int lowXmin = area.X + (int)(room.Position.X - otherRoom.Position.X);
-                    int lowXmax = area.Right + (int)(room.Position.X - otherRoom.Position.X);
-                    int lowZmin = area.Y + (int)(room.Position.Z - otherRoom.Position.Z);
-                    int lowZmax = area.Bottom + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                    // If one of the coordinates of the possible neighbour are out of range, then ignore this room
-                    if (lowXmin < 1 || lowXmin > otherRoom.NumXSectors - 2 || lowXmax < 1 || lowXmax > otherRoom.NumXSectors - 2 ||
-                        lowZmin < 1 || lowZmin > otherRoom.NumZSectors - 2 || lowZmax < 1 || lowZmax > otherRoom.NumZSectors - 2)
-                        continue;
-
-                    bool validRoom = true;
-                    int highest = otherRoom.GetHighestCorner();
-
-                    for (int x = lowXmin; x <= lowXmax; x++)
-                    {
-                        for (int z = lowZmin; z <= lowZmax; z++)
-                        {
-                            // Now I do the same checks already done before, but this time for ceiling
-                            int h1 = otherRoom.Blocks[x, z].WSFaces[0];
-                            int h2 = otherRoom.Blocks[x, z].WSFaces[1];
-                            int h3 = otherRoom.Blocks[x, z].WSFaces[2];
-                            int h4 = otherRoom.Blocks[x, z].WSFaces[3];
-
-                            // Check if the sector already has a ceiling portal
-                            if ((otherRoom.Blocks[x, z].Type != BlockType.Floor && otherRoom.Blocks[x, z].Type != BlockType.Wall) ||
-                                otherRoom.Blocks[x, z].CeilingPortal != null)
-                            {
-                                validRoom = false;
-                                break;
-                            }
-
-                            // The highest corner of the sector must be the same of the highest corner of the room
-                            int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-                            if (max > highest)
-                            {
-                                validRoom = false;
-                                break;
-                            }
-                        }
-
-                        if (!validRoom)
-                            break;
-                    }
-
-                    if (!validRoom)
-                        continue;
-                    else
-                    {
-                        found = otherRoom;
-                        break;
-                    }
-                }
-
-                // We have found a compatible neighbour
-                if (found != null)
-                {
-                    Room otherRoom = found;
-                    int highest = found.GetHighestCorner();
-
-                    for (int x = area.X; x <= area.Right; x++)
-                    {
-                        for (int z = area.Y; z <= area.Bottom; z++)
-                        {
-                            int lowX = x + (int)(room.Position.X - otherRoom.Position.X);
-                            int lowZ = z + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                            int h1 = room.Blocks[x, z].QAFaces[0];
-                            int h2 = room.Blocks[x, z].QAFaces[1];
-                            int h3 = room.Blocks[x, z].QAFaces[2];
-                            int h4 = room.Blocks[x, z].QAFaces[3];
-
-                            int lh1 = otherRoom.Blocks[lowX, lowZ].WSFaces[0];
-                            int lh2 = otherRoom.Blocks[lowX, lowZ].WSFaces[1];
-                            int lh3 = otherRoom.Blocks[lowX, lowZ].WSFaces[2];
-                            int lh4 = otherRoom.Blocks[lowX, lowZ].WSFaces[3];
-
-                            bool defined = false;
-
-                            bool isCurrentWall = (room.Blocks[x, z].Type == BlockType.Wall);
-                            bool isOtherWall = (found.Blocks[lowX, lowZ].Type == BlockType.Wall);
-
-                            bool isCurrentDiagonal = (room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None);
-                            bool isOtherDiagonal = ((isOtherWall && found.Blocks[lowX, lowZ].FloorDiagonalSplit != DiagonalSplit.None) ||
-                                                    found.Blocks[lowX, lowZ].CeilingDiagonalSplit != DiagonalSplit.None);
-
-                            // In some cases the surface of the floor must be solid
-                            if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == lowest)
-                            {
-                                if (isCurrentWall || isOtherWall || isCurrentDiagonal || isOtherDiagonal)
-                                {
-                                    room.Blocks[x, z].IsFloorSolid = true;
-                                    defined = false;
-                                }
-                                else
-                                {
-                                    room.Blocks[x, z].IsFloorSolid = false;
-                                    defined = true;
-                                }
-                            }
-                            else
-                            {
-                                room.Blocks[x, z].IsFloorSolid = true;
-                                defined = false;
-                            }
-
-                            // In some cases the surface of the ceiling must be solid
-                            if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && lh1 == highest && defined)
-                            {
-                                if (isCurrentWall || isOtherWall || isCurrentDiagonal || isOtherDiagonal)
-                                {
-                                    found.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                                }
-                                else
-                                {
-                                    found.Blocks[lowX, lowZ].IsCeilingSolid = false;
-                                }
-                            }
-                            else
-                            {
-                                found.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                            }
-                        }
-                    }
-
-                    var currentRoomPortal = new Portal(room);
-                    var otherRoomPortal = new Portal(found);
-
-                    currentRoomPortal.NumXBlocks = (byte)(area.Right - area.X + 1);
-                    currentRoomPortal.NumZBlocks = (byte)(area.Bottom - area.Y + 1);
-                    currentRoomPortal.Direction = PortalDirection.Floor;
-                    currentRoomPortal.X = (byte)area.X;
-                    currentRoomPortal.Z = (byte)area.Y;
-                    currentRoomPortal.AdjoiningRoom = found;
-                    currentRoomPortal.MemberOfFlippedRoom = room.Flipped;
-
-                    int lowXmin = area.X + (int)(room.Position.X - otherRoom.Position.X);
-                    int lowXmax = area.Right + (int)(room.Position.X - otherRoom.Position.X);
-                    int lowZmin = area.Y + (int)(room.Position.Z - otherRoom.Position.Z);
-                    int lowZmax = area.Bottom + (int)(room.Position.Z - otherRoom.Position.Z);
-
-                    otherRoomPortal.NumXBlocks = (byte)(lowXmax - lowXmin + 1);
-                    otherRoomPortal.NumZBlocks = (byte)(lowZmax - lowZmin + 1);
-                    otherRoomPortal.Direction = PortalDirection.Ceiling;
-                    otherRoomPortal.X = (byte)lowXmin;
-                    otherRoomPortal.Z = (byte)lowZmin;
-                    otherRoomPortal.AdjoiningRoom = room;
-                    otherRoomPortal.MemberOfFlippedRoom = otherRoom.Flipped;
-
-                    currentRoomPortal.Other = otherRoomPortal;
-                    otherRoomPortal.Other = currentRoomPortal;
-
-                    // Set floor portal ID
-                    for (int x = area.X; x <= area.Right; x++)
-                        for (int z = area.Y; z <= area.Bottom; z++)
-                            room.Blocks[x, z].FloorPortal = currentRoomPortal;
-
-                    // Set ceiling portal ID
-                    for (int x = otherRoomPortal.X; x <= otherRoomPortal.X + otherRoomPortal.NumXBlocks - 1; x++)
-                        for (int z = otherRoomPortal.Z; z <= otherRoomPortal.Z + otherRoomPortal.NumZBlocks - 1; z++)
-                            found.Blocks[x, z].CeilingPortal = otherRoomPortal;
-
-                    // Build geometry for current room
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-
-                    // Build geometry for adjoining room
-                    found.BuildGeometry();
-                    found.CalculateLightingForThisRoom();
-                    found.UpdateBuffers();
-
-                    _editor.ObjectChange(currentRoomPortal);
-                    return true;
-                }
-            }
-
-            return false;
+            // Create portals
+            Portal portal = new Portal(area, destinationDirection, destination);
+            Portal oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
+
+            // Update
+            room.UpdateCompletely();
+            destination.UpdateCompletely();
+
+            _editor.ObjectChange(portal);
+            _editor.ObjectChange(oppositePortal);
+
+            _editor.RoomSectorPropertiesChange(room);
+            _editor.RoomSectorPropertiesChange(destination);
         }
 
         public static void SetPortalOpacity(Room room, Portal portal, PortalOpacity opacity)
         {
-            for (int x = portal.X; x < portal.X + portal.NumXBlocks; x++)
-                for (int z = portal.Z; z < portal.Z + portal.NumZBlocks; z++)
+            for (int x = portal.Area.X; x <= portal.Area.Right; x++)
+                for (int z = portal.Area.Y; z <= portal.Area.Bottom; z++)
                 {
                     switch (portal.Direction)
                     {
@@ -2759,21 +1595,17 @@ namespace TombEditor
                             break;
 
                         case PortalDirection.Floor:
-                            if (!room.Blocks[x, z].IsFloorSolid)
+                            if (room.Blocks[x, z].FloorPortal != null)
                                 room.Blocks[x, z].FloorOpacity = opacity;
                             else
-                                room.Blocks[x, z].FloorOpacity =
-                                    PortalOpacity.None;
-
+                                room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
                             break;
 
                         case PortalDirection.Ceiling:
-                            if (!room.Blocks[x, z].IsCeilingSolid)
+                            if (room.Blocks[x, z].CeilingPortal != null)
                                 room.Blocks[x, z].CeilingOpacity = opacity;
                             else
-                                room.Blocks[x, z].CeilingOpacity =
-                                    PortalOpacity.None;
-
+                                room.Blocks[x, z].CeilingOpacity = PortalOpacity.None;
                             break;
                     }
                 }
@@ -2807,11 +1639,11 @@ namespace TombEditor
             int found = _editor.Level.GetFreeRoomIndex();
             var newRoom = new Room(_editor.Level, area.Width + 3, area.Height + 3, "Room " + found);
 
-            for (int x = 1; x < area.Width + 2; x++)
-                for (int z = 1; z < area.Height + 2; z++)
+            for (int x = 0; x < area.Width + 1; x++)
+                for (int z = 0; z < area.Height + 1; z++)
                 {
-                    newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
-                    room.Blocks[x + area.X - 1, z + area.Y - 1].Type = BlockType.Wall;
+                    newRoom.Blocks[x, z] = room.Blocks[x + area.X, z + area.Y].Clone();
+                    room.Blocks[x + area.X, z + area.Y].Type = BlockType.Wall;
                 }
 
             // Build the geometry of the new room
@@ -2832,12 +1664,7 @@ namespace TombEditor
             var duplicatedPortals = new Dictionary<Portal, Portal>();
 
             foreach (var p in room.Portals)
-            {
-                var newPortal = (Portal)p.Clone();
-                newPortal.Flipped = true;
-                p.Flipped = true;
-                duplicatedPortals.Add(p, newPortal);
-            }
+                duplicatedPortals.Add(p, (Portal)p.Clone());
             
             string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
             var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
@@ -2854,23 +1681,22 @@ namespace TombEditor
                         ? duplicatedPortals[room.Blocks[x, z].WallPortal] : null);
                 }
 
-            for (int i = 0; i < room.Lights.Count; i++)
-                newRoom.Lights.Add(room.Lights[i].Clone());
+            foreach (var instance in room.Objects)
+                if (instance.CopyToFlipRooms)
+                    newRoom.Objects.Add((PositionBasedObjectInstance)instance.Clone());
 
             // Build the geometry of the new room
             newRoom.UpdateCompletely();
 
             _editor.Level.Rooms[freeRoomIndex] = newRoom;
             _editor.RoomListChange();
-
-            room.Flipped = true;
+            
             room.AlternateGroup = AlternateGroup;
             room.AlternateRoom = newRoom;
             _editor.RoomPropertiesChange(room);
-
-            newRoom.Flipped = true;
+            
             newRoom.AlternateGroup = AlternateGroup;
-            newRoom.BaseRoom = room;
+            newRoom.AlternateBaseRoom = room;
             _editor.RoomPropertiesChange(newRoom);
         }
 
@@ -2892,8 +1718,7 @@ namespace TombEditor
 
             _editor.Level.DeleteRoom(room.AlternateRoom);
             _editor.RoomListChange();
-
-            room.Flipped = false;
+            
             room.AlternateRoom = null;
             room.AlternateGroup = -1;
             _editor.RoomPropertiesChange(room);
@@ -3002,14 +1827,14 @@ namespace TombEditor
                     Block block = room.Blocks[x, z];
                     if (block.IsAnyWall)
                     {
-                        VerticalArea?[] verticalAreas = new VerticalArea?[4];
+                        VerticalSpace?[] verticalAreas = new VerticalSpace?[4];
                         for (int i = 0; i < 4; ++i)
                             verticalAreas[i] = room.GetHeightAtPointMinSpace(x + Block.FaceX[i], z + Block.FaceZ[i]);
                         if (verticalAreas.Any((verticalArea) => verticalArea.HasValue)) // We can only do it if there is information available
                             for (int i = 0; i < 4; ++i)
                             {
                                 // Use the closest available vertical area information and divide it equally
-                                VerticalArea verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
+                                VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
                                 block.EDFaces[i] = (short)Math.Round(verticalArea.FloorY);
                                 block.QAFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 1.0f) / 3.0f);
                                 block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 1.0f + verticalArea.CeilingY * 2.0f) / 3.0f);
@@ -3029,14 +1854,14 @@ namespace TombEditor
                     Block block = room.Blocks[x, z];
                     if (block.IsAnyWall)
                     {
-                        VerticalArea?[] verticalAreas = new VerticalArea?[4];
+                        VerticalSpace?[] verticalAreas = new VerticalSpace?[4];
                         for (int i = 0; i < 4; ++i)
                             verticalAreas[i] = room.GetHeightAtPointMinSpace(x + Block.FaceX[i], z + Block.FaceZ[i]);
                         if (verticalAreas.Any(verticalArea => verticalArea.HasValue)) // We can only do it if there is information available
                             for (int i = 0; i < 4; ++i)
                             {
                                 // Use the closest available vertical area information and divide it equally
-                                VerticalArea verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
+                                VerticalSpace verticalArea = verticalAreas[i] ?? verticalAreas[(i + 1) % 4] ?? verticalAreas[(i + 3) % 4] ?? verticalAreas[(i + 2) % 4].Value;
                                 block.EDFaces[i] = (short)Math.Round((verticalArea.FloorY * 4.0f + verticalArea.CeilingY * 1.0f) / 5.0f);
                                 block.QAFaces[i] = (short)Math.Round((verticalArea.FloorY * 3.0f + verticalArea.CeilingY * 2.0f) / 5.0f);
                                 block.WSFaces[i] = (short)Math.Round((verticalArea.FloorY * 2.0f + verticalArea.CeilingY * 3.0f) / 5.0f);

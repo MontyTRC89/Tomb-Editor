@@ -82,25 +82,43 @@ namespace TombEditor
                     });
             }
         }
-        
+
+        void AddMessage(float? progress, string message)
+        {
+            if (!(bool)this?.Invoke((Func<bool>)delegate
+            {
+                if (progress.HasValue)
+                    pbStato.Value = (int)Math.Round(progress.Value, 0);
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    lstLog.Items.Add(message);
+                    lstLog.SelectedIndex = lstLog.Items.Count - 1;
+                    lstLog.TopIndex = lstLog.Items.Count - 1;
+                }
+
+                return !_threadShouldAbort;
+            }))
+                throw new OperationCanceledException();
+        }
+
+        void IProgressReporter.ReportWarn(string message)
+        {
+            logger.Warn(message);
+            AddMessage(null, message);
+
+        }
+
+        void IProgressReporter.ReportInfo(string message)
+        {
+            logger.Info(message);
+            AddMessage(null, message);
+        }
+
         void IProgressReporter.ReportProgress(float progress, string message)
         {
             logger.Info(progress.ToString() + " - " + message);
-
-            if (!(bool)this?.Invoke((Func<bool>)delegate
-                {
-                    pbStato.Value = (int)Math.Round(progress, 0);
-
-                    if (!string.IsNullOrEmpty(message))
-                    {
-                        lstLog.Items.Add(message);
-                        lstLog.SelectedIndex = lstLog.Items.Count - 1;
-                        lstLog.TopIndex = lstLog.Items.Count - 1;
-                    }
-                    
-                    return !_threadShouldAbort;
-                }))
-                throw new OperationCanceledException();
+            AddMessage(null, message);
         }
 
         void IProgressReporter.InvokeGui(Action<IWin32Window> action)

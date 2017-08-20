@@ -13,6 +13,8 @@ namespace TombEditor.Geometry.IO
 
         public static bool SaveToPrj2(string filename, Level level)
         {
+            throw new NotSupportedException();
+            /*
             const byte filler8 = 0;
             const short filler16 = 0;
             const int filler32 = 0;
@@ -103,13 +105,13 @@ namespace TombEditor.Geometry.IO
                     foreach (var o in level.Objects.Values)
                     {
                         writer.Write(o.Id);
-                        writer.Write((byte)o.Type);
+                        writer.Write((byte)o.ObjType);
                         writer.Write(o.Position.X);
                         writer.Write(o.Position.Y);
                         writer.Write(o.Position.Z);
                         writer.Write((short)level.Rooms.ReferenceIndexOf(o.Room));
 
-                        switch (o.Type)
+                        switch (o.ObjType)
                         {
                             case ObjectInstanceType.Static:
                                 var sm = (StaticInstance)o;
@@ -154,7 +156,7 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(fbc.RotationY);
                                 break;
                             default:
-                                throw new NotSupportedException("Unknown object type " + o.Type + " encountered that can't be safed.");
+                                throw new NotSupportedException("Unknown object type " + o.ObjType + " encountered that can't be safed.");
                         }
 
                         writer.Write(filler32);
@@ -400,7 +402,7 @@ namespace TombEditor.Geometry.IO
                 return false;
             }
 
-            return true;
+            return true;*/
         }
 
         private class IdResolver<T>

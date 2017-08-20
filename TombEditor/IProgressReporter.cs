@@ -7,6 +7,8 @@ namespace TombEditor
 {
     public interface IProgressReporter
     {
+        void ReportWarn(string message);
+        void ReportInfo(string message);
         void ReportProgress(float progress, string message);
         void InvokeGui(Action<IWin32Window> action);
     }
@@ -20,6 +22,14 @@ namespace TombEditor
         public ProgressReporterSimple(IWin32Window owner)
         {
             Owner = owner;
+        }
+        public void ReportWarn(string message)
+        {
+            logger.Warn(message);
+        }
+        public void ReportInfo(string message)
+        {
+            logger.Info(message);
         }
         public void ReportProgress(float progress, string message)
         {

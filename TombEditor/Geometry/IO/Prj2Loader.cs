@@ -17,7 +17,8 @@ namespace TombEditor.Geometry.IO
         
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
-            var level = new Level();
+            throw new NotSupportedException();
+            /*var level = new Level();
 
             IdResolver<Portal> portalIdResolver = new IdResolver<Portal>(() => new Portal(null));
             
@@ -66,8 +67,7 @@ namespace TombEditor.Geometry.IO
                             Height = reader.ReadInt16(),
                             Page = reader.ReadInt16()
                         };
-
-                        /*texture.UsageCount =*/
+                        
                         reader.ReadInt32();
                         texture.Transparent = reader.ReadBoolean();
                         texture.DoubleSided = reader.ReadBoolean();
@@ -93,8 +93,8 @@ namespace TombEditor.Geometry.IO
                         portal.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         portal.AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         portal.Direction = (PortalDirection) reader.ReadByte();
-                        portal.X = reader.ReadByte();
-                        portal.Z = reader.ReadByte();
+                        portal.Area.X = reader.ReadByte();
+                        portal.Area.Y = reader.ReadByte();
                         portal.NumXBlocks = reader.ReadByte();
                         portal.NumZBlocks = reader.ReadByte();
                         portal.MemberOfFlippedRoom = reader.ReadBoolean();
@@ -119,7 +119,7 @@ namespace TombEditor.Geometry.IO
                         switch (objectType)
                         {
                             case ObjectInstanceType.Moveable:
-                                var m = new MoveableInstance(objectId, Room);
+                                var m = new MoveableInstance();
                                 m.WadObjectId = reader.ReadUInt32();
                                 m.Ocb = reader.ReadInt16();
                                 m.Invisible = reader.ReadBoolean();
@@ -129,30 +129,30 @@ namespace TombEditor.Geometry.IO
                                 o = m;
                                 break;
                             case ObjectInstanceType.Static:
-                                var s = new StaticInstance(objectId, Room);
+                                var s = new StaticInstance();
                                 s.WadObjectId = reader.ReadUInt32();
                                 s.Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
                                 s.Rotation = reader.ReadSingle();
                                 o = s;
                                 break;
                             case ObjectInstanceType.Camera:
-                                var c = new CameraInstance(objectId, Room);
+                                var c = new CameraInstance();
                                 c.Fixed = reader.ReadBoolean();
                                 o = c;
                                 break;
                             case ObjectInstanceType.Sink:
-                                var si = new SinkInstance(objectId, Room);
+                                var si = new SinkInstance();
                                 si.Strength = reader.ReadInt16();
                                 o = si;
                                 break;
                             case ObjectInstanceType.SoundSource:
-                                var ss = new SoundSourceInstance(objectId, Room);
+                                var ss = new SoundSourceInstance();
                                 ss.SoundId = reader.ReadInt16();
                                 ss.CodeBits = (byte)(reader.ReadByte() & 0x1f);
                                 o = ss;
                                 break;
                             case ObjectInstanceType.FlyByCamera:
-                                var ffc = new FlybyCameraInstance(objectId, Room);
+                                var ffc = new FlybyCameraInstance();
                                 ffc.Sequence = reader.ReadByte();
                                 ffc.Number = reader.ReadByte();
                                 ffc.Timer = reader.ReadUInt16();
@@ -422,16 +422,16 @@ namespace TombEditor.Geometry.IO
                     reader.ReadInt32();
                 }
 
-                // Check that there are uninitialized rooms
+                // Check that there are uninitialized objects
                 foreach (Room room in level.Rooms.Where(room => room != null))
+                {
                     if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
                         throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
 
-                // Check that there are uninitialized portals
-                foreach (Portal portal in level.Portals)
-                    if ((portal.AdjoiningRoom == null) || (portal.Room == null))
-                        throw new Exception("There appears to be an uninitialized portal.");
-
+                    foreach (var currentPortal in room.Portals)
+                        if ((currentPortal.AdjoiningRoom == null) || (currentPortal.Room == null))
+                            throw new Exception("There appears to be an uninitialized portal.");
+                }
             }
             catch (Exception ex)
             {
@@ -445,17 +445,13 @@ namespace TombEditor.Geometry.IO
                 var trigger = level.Triggers[i];
 
                 for (int x = trigger.X; x < trigger.X + trigger.NumXBlocks; x++)
-                {
                     for (int z = trigger.Z; z < trigger.Z + trigger.NumZBlocks; z++)
-                    {
-                        trigger.Room.Blocks[x, z].Triggers.Add(trigger.Id);
-                    }
-                }
+                        trigger.Room.Blocks[x, z].Triggers.Add(trigger);
             }
 
             foreach (var obj in level.Objects.Values)
             {
-                var objectType = obj.Type;
+                var objectType = obj.ObjType;
                 int objectId = obj.Id;
 
                 switch (objectType)
@@ -489,12 +485,12 @@ namespace TombEditor.Geometry.IO
                 room.UpdateBuffers();
             }
 
-            return level;
+            return level;*/
         }
         
         private static BinaryReaderEx CreatePrjReader(string filename)
         {
-            var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None));
+            var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read));
 
             // Check file version
             var buffer = reader.ReadBytes(4);

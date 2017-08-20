@@ -138,7 +138,7 @@ namespace TombEditor
                     break;
             }
 
-            EditorActions.MoveObject(_editor.SelectedRoom, _editor.SelectedObject.Value, newPos, modifierKeys);
+            EditorActions.MoveObject(_editor.SelectedRoom, _editor.SelectedObject as PositionBasedObjectInstance, newPos, modifierKeys);
             return true;
         }
 
@@ -236,47 +236,8 @@ namespace TombEditor
             _device.SetDepthStencilState(_depthStencilStateDefault);
         }
 
-        private bool DrawGizmo
-        {
-            get
-            {
-                if (_editor.SelectedObject.HasValue)
-                    switch (_editor.SelectedObject.Value.Type)
-                    {
-                        case ObjectInstanceType.Camera:
-                        case ObjectInstanceType.FlyByCamera:
-                        case ObjectInstanceType.Moveable:
-                        case ObjectInstanceType.Sink:
-                        case ObjectInstanceType.SoundSource:
-                        case ObjectInstanceType.Static:
-                        case ObjectInstanceType.Light:
-                            return true;
-                    }
-                return false;
-            }
-        }
+        private bool DrawGizmo => _editor.SelectedObject is PositionBasedObjectInstance;
 
-        private Vector3 Position
-        {
-            get
-            {
-                if (_editor.SelectedObject.HasValue)
-                    switch (_editor.SelectedObject.Value.Type)
-                    {
-                        case ObjectInstanceType.Camera:
-                        case ObjectInstanceType.FlyByCamera:
-                        case ObjectInstanceType.Moveable:
-                        case ObjectInstanceType.Sink:
-                        case ObjectInstanceType.SoundSource:
-                        case ObjectInstanceType.Static:
-                            return _editor.Level.Objects[_editor.SelectedObject.Value.Id].Position;
-                        case ObjectInstanceType.Light:
-                            if (Editor.Instance.SelectedRoom != null)
-                                return _editor.SelectedRoom.Lights[_editor.SelectedObject.Value.Id].Position;
-                            break;
-                    }
-                throw new NotSupportedException();
-            }
-        }
+        private Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position;
     }
 }
