@@ -1153,7 +1153,7 @@ namespace TombEditor.Compilers
             ReportProgress(3, "Building room texture map");
 
             // I've sorted the textures by height, now I build the texture map
-            var numRoomTexturePages = _level.TextureMap.Height / 256 + GeometryImporter.Textures.Count;
+            var numRoomTexturePages = _level.TextureMap.Height / 256 + GeometryImporterExporter.Textures.Count;
             _numRoomTexturePagesFromMap = _level.TextureMap.Height / 256;
 
             for (var x = 0; x < 256; x++)
@@ -1181,17 +1181,17 @@ namespace TombEditor.Compilers
 
             // Now add the textures of imported geometry
             _importedTexturesDictionary = new Dictionary<string, int>();
-            for (int i = 0; i < GeometryImporter.Textures.Count; i++)
+            for (int i = 0; i < GeometryImporterExporter.Textures.Count; i++)
             {
-                _importedTexturesDictionary.Add(GeometryImporter.Textures.ElementAt(i).Key, i);
+                _importedTexturesDictionary.Add(GeometryImporterExporter.Textures.ElementAt(i).Key, i);
             }
 
             int lastHeight = _level.TextureMap.Height;
 
-            for (int i = 0; i < GeometryImporter.Textures.Count; i++)
+            for (int i = 0; i < GeometryImporterExporter.Textures.Count; i++)
             {
                 // Load the texture as a bitmap
-                using (Bitmap sourceTexture = (Bitmap)Bitmap.FromFile(GeometryImporter.Textures.ElementAt(i).Key))
+                using (Bitmap sourceTexture = (Bitmap)Bitmap.FromFile(GeometryImporterExporter.Textures.ElementAt(i).Key))
                 {
                     // Create the 256x256 destination texture
                     using (Bitmap destTexture = new Bitmap(256, 256, PixelFormat.Format32bppArgb))
