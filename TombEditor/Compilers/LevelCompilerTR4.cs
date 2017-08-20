@@ -108,6 +108,8 @@ namespace TombEditor.Compilers
 
         private byte[] _bufferSamples;
 
+        private Dictionary<string, int> _importedTexturesDictionary;
+
         public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter) 
             : base(level, dest, progressReporter)
         {}

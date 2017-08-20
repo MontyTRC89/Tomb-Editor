@@ -26,7 +26,7 @@ namespace TombEditor.Geometry
             Textures = new Dictionary<string, Texture2D>();
         }
 
-        public static RoomGeometryModel ImportGeometry(string filename)
+        public static RoomGeometryModel ImportGeometry(string filename, float scale = 300.0f)
         {
             // Use Assimp.NET for importing model
             AssimpImporter importer = new AssimpImporter();
@@ -93,9 +93,9 @@ namespace TombEditor.Geometry
                 {
                     RoomGeometryVertex v = new RoomGeometryVertex();
 
-                    v.Position = new Vector4(positions[i].X * 300.0f, 
-                                             positions[i].Y * 300.0f,
-                                             positions[i].Z * 300.0f, 
+                    v.Position = new Vector4(positions[i].X * scale, 
+                                             positions[i].Y * scale,
+                                             positions[i].Z * scale,
                                              1.0f);
                     v.UV = new Vector2(texCoords[i].X, 
                                        1.0f - texCoords[i].Y);
