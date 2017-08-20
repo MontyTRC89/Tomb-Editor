@@ -1112,6 +1112,12 @@ namespace TombEditor.Compilers
             }
 
             // Now add the textures of imported geometry
+            _importedTexturesDictionary = new Dictionary<string, int>();
+            for (int i = 0; i < GeometryImporter.Textures.Count; i++)
+            {
+                _importedTexturesDictionary.Add(GeometryImporter.Textures.ElementAt(i).Key, i);
+            }
+
             int lastHeight = _level.TextureMap.Height;
 
             for (int i = 0; i < GeometryImporter.Textures.Count; i++)
