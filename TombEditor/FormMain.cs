@@ -1834,6 +1834,11 @@ namespace TombEditor
 
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            GeometryImporter.LoadModel("low-poly-wooden-door.obj");
+            RoomGeometryInstance instance = new RoomGeometryInstance(0, _editor.SelectedRoom);
+            instance.Model = GeometryImporter.Models["low-poly-wooden-door.obj"];
+            instance.Position = new Vector3(4096, 512, 4096);
+            _editor.SelectedRoom.RoomGeometryObjects.Add(instance);
         }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
