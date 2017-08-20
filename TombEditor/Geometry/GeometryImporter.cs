@@ -14,6 +14,7 @@ namespace TombEditor.Geometry
     public static class GeometryImporter
     {
         public static Dictionary<string, Texture2D> Textures;
+        public static Dictionary<string, RoomGeometryModel> Models;
 
         private static Editor _editor;
         private static DeviceManager _manager;
@@ -24,10 +25,14 @@ namespace TombEditor.Geometry
             _editor = Editor.Instance;
 
             Textures = new Dictionary<string, Texture2D>();
+            Models = new Dictionary<string, RoomGeometryModel>();
         }
 
-        public static RoomGeometryModel ImportGeometry(string filename, float scale = 300.0f)
+        public static RoomGeometryModel LoadModel(string filename, float scale = 300.0f)
         {
+            // Load the model just one time
+            if (Models.ContainsKey(filename)) return Models[filename];
+
             // Use Assimp.NET for importing model
             AssimpImporter importer = new AssimpImporter();
             importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
@@ -127,7 +132,61 @@ namespace TombEditor.Geometry
                 model.Meshes.Add(modelMesh);
             }
 
+            // Add the model to global loaded models
+            Models.Add(filename, model);
+
             return model;
+        }
+
+        public static void UnloadModel(string name)
+        {
+            // TODO: check in rooms
+
+            // Remove the model and clean garbage
+            Models[name].Dispose();
+            Models.Remove(name);
+            CleanUpGarbage();
+        }
+
+        public static void CleanUpGarbage()
+        {
+            List<string> texturesToRemove = new List<string>();
+
+            // Loop for each model and found used/unused textures
+            for (int t = 0; t < Textures.Count; t++)
+            {
+                bool used = false;
+
+                for (int i = 0; i < Models.Count; i++)
+                {
+                    RoomGeometryModel model = Models.ElementAt(i).Value;
+
+                    foreach (RoomGeometryMesh mesh in model.Meshes)
+                    {
+                        if (mesh.TextureFileName == Textures.ElementAt(t).Key)
+                        {
+                            used = true;
+                            break;
+                        }
+                    }
+
+                    if (used) break;
+                }
+
+                if (used) continue;
+
+                texturesToRemove.Add(Textures.ElementAt(t).Key);
+            }
+
+            // Dispose textures and remove them from the dictionary
+            foreach (var texture in texturesToRemove)
+            {
+                Textures[texture].Dispose();
+                Textures.Remove(texture);
+            }
+
+            // Collect garbage
+            GC.Collect();
         }
     }
 }
