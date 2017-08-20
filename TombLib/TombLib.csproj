@@ -73,6 +73,9 @@
     <Compile Include="Graphics\MaterialType.cs" />
     <Compile Include="Graphics\Mesh.cs" />
     <Compile Include="Graphics\Model.cs" />
+    <Compile Include="Graphics\RoomGeometryMesh.cs" />
+    <Compile Include="Graphics\RoomGeometryModel.cs" />
+    <Compile Include="Graphics\RoomGeometryVertex.cs" />
     <Compile Include="Graphics\SkinnedMesh.cs" />
     <Compile Include="Graphics\SkinnedModel.cs" />
     <Compile Include="Graphics\SkinnedVertex.cs" />

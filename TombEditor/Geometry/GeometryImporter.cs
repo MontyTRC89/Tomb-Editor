@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 using TombLib.Graphics;
 using Assimp;
 using SharpDX;
+using Assimp.Configs;
+using SharpDX.Toolkit.Graphics;
 
 namespace TombEditor.Geometry
 {
     public static class GeometryImporter
     {
+        public static Dictionary<string, Texture2D> Textures;
+
         private static Editor _editor;
         private static DeviceManager _manager;
 
@@ -18,53 +22,110 @@ namespace TombEditor.Geometry
         {
             _manager = manager;
             _editor = Editor.Instance;
+
+            Textures = new Dictionary<string, Texture2D>();
         }
 
-        public static StaticModel ImportGeometry(string filename)
+        public static RoomGeometryModel ImportGeometry(string filename)
         {
             // Use Assimp.NET for importing model
             AssimpImporter importer = new AssimpImporter();
-            Scene scene = importer.ImportFile(filename, PostProcessSteps.Triangulate | 
-                                                        PostProcessSteps.SortByPrimitiveType | 
-                                                        PostProcessSteps.OptimizeMeshes | 
-                                                        PostProcessSteps.JoinIdenticalVertices);
+            importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
+            Scene scene = importer.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
 
             // Create a new static model
-            StaticModel model = new StaticModel(_manager.Device);
-                    
+            RoomGeometryModel model = new RoomGeometryModel(_manager.Device);
+
+            // Load all textures
+            foreach (var mat in scene.Materials)
+            {
+                var diffusePath = mat.GetTexture(TextureType.Diffuse, 0).FilePath;
+                if (diffusePath == null || diffusePath == "") continue;
+
+                if (!Textures.ContainsKey(diffusePath))
+                    Textures.Add(diffusePath, Texture2D.Load(_manager.Device, diffusePath));
+            }
+
             // Loop for each mesh loaded in scene
             foreach (var mesh in scene.Meshes)
             {
-                List<StaticVertex> vertices = new List<StaticVertex>();
-                List<uint> indices = new List<uint>();
+                RoomGeometryMesh modelMesh = new RoomGeometryMesh(_manager.Device, "Imported");
 
-                StaticMesh importedMesh = new StaticMesh(_manager.Device, "IMPORTED");
-
-                // Build the vertices array
-                // HACK: the scale is 300.0f for sponza.obj but in the future or we add a scaling parameter in a 
-                // window before import or we force users to build their models respecting the scale of TR world
-                for (int i = 0; i < mesh.VertexCount; i++)
+                //if mesh has a material extract the diffuse texture, if present
+                Assimp.Material material = scene.Materials[mesh.MaterialIndex];
+                if (material != null && material.GetTextureCount(TextureType.Diffuse) > 0)
                 {
-                    StaticVertex vertex = new StaticVertex();
-                    vertex.Position = new Vector4(mesh.Vertices[i].X * 300.0f, mesh.Vertices[i].Y * 300.0f, mesh.Vertices[i].Z * 300.0f, 1.0f);
-                    vertex.UV = new Vector2(mesh.GetTextureCoords(0)[i].X, mesh.GetTextureCoords(0)[i].Y);
-                    vertices.Add(vertex);
+                    TextureSlot texture = material.GetTexture(TextureType.Diffuse, 0);
+
+                    modelMesh.Texture = Textures[texture.FilePath]; 
+                    modelMesh.TextureFileName = texture.FilePath;
+                }
+                else
+                {
+                    modelMesh.TextureFileName = "";
                 }
 
-                // Add vertices to the mesh
-                importedMesh.Vertices.AddRange(vertices);
+                bool hasTexCoords = mesh.HasTextureCoords(0);
 
-                // Add indices to the mesh
-                var tempIndices = mesh.GetIndices();
-                for (int i = 0; i < tempIndices.Length; i++)
-                    importedMesh.Indices.Add((int)tempIndices[i]);
+                Vector3D[] positions = mesh.Vertices;
+                Vector3D[] texCoords = mesh.GetTextureCoords(0);
 
-                // Add the mesh to the model
-                model.Meshes.Add(importedMesh);
+                // Determine primitive type (should be always triangle)
+                switch (mesh.PrimitiveType)
+                {
+                    case Assimp.PrimitiveType.Point:
+                        modelMesh.PrimitiveType = SharpDX.Toolkit.Graphics.PrimitiveType.PointList;
+                        break;
+                    case Assimp.PrimitiveType.Line:
+                        modelMesh.PrimitiveType = SharpDX.Toolkit.Graphics.PrimitiveType.LineList;
+                        break;
+                    case Assimp.PrimitiveType.Triangle:
+                        modelMesh.PrimitiveType = SharpDX.Toolkit.Graphics.PrimitiveType.TriangleList;
+                        break;
+                    default:
+                        throw new Exception("Unknown primitive type");
+                }
+
+                // Add vertices
+                List<RoomGeometryVertex> vertices = new List<RoomGeometryVertex>();
+
+                for (int i = 0; i < mesh.VertexCount; i++)
+                {
+                    RoomGeometryVertex v = new RoomGeometryVertex();
+
+                    v.Position = new Vector4(positions[i].X * 300.0f, 
+                                             positions[i].Y * 300.0f,
+                                             positions[i].Z * 300.0f, 
+                                             1.0f);
+                    v.UV = new Vector2(texCoords[i].X, 
+                                       1.0f - texCoords[i].Y);
+
+                    vertices.Add(v);
+                }
+                
+                modelMesh.VertexCount = mesh.VertexCount;
+                modelMesh.PrimitiveCount = mesh.FaceCount;
+
+                // Add indices
+                uint[] indices = mesh.GetIndices();
+
+                List<int> tempIndices = new List<int>();
+
+                for (int i = 0; i < indices.GetLength(0); i++)
+                {
+                    tempIndices.Add((int)indices[i]);
+                }
+                
+                modelMesh.IndexCount = indices.GetLength(0);
+
+                // Prepare DirectX data for this mesh
+                modelMesh.Vertices.AddRange(vertices);
+                modelMesh.Indices.AddRange(tempIndices);
+                modelMesh.BuildBuffers();
+
+                // Add mesh to the model
+                model.Meshes.Add(modelMesh);
             }
-
-            // Build the DirectX buffer for this model
-            model.BuildBuffers();
 
             return model;
         }
