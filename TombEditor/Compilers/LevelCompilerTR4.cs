@@ -108,8 +108,9 @@ namespace TombEditor.Compilers
 
         private byte[] _bufferSamples;
 
-        // Dictionaries for imported geometry
+        // Variables for imported geometry
         private Dictionary<string, int> _importedTexturesDictionary;
+        private int _numRoomTexturePagesFromMap;
 
         public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter) 
             : base(level, dest, progressReporter)

@@ -280,7 +280,7 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                ConvertGeometry(room, ref newRoom, indicesDictionary);
+                ConvertGeometry(room, ref newRoom, indicesDictionary, optimizedVertices.Count);
 
                 // Build portals
                 var tempIdPortals = new List<Portal>();
@@ -332,7 +332,8 @@ namespace TombEditor.Compilers
             ReportProgress(25, "    Number of rooms: " + _level.Rooms.Count(r => r != null));
         }
 
-        private void ConvertGeometry(Room room, ref tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary)
+        private void ConvertGeometry(Room room, ref tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary,
+                                     int numOptimizedVertices)
         {
             var tempRectangles = new List<tr_face4>();
             var tempTriangles = new List<tr_face3>();
@@ -430,6 +431,34 @@ namespace TombEditor.Compilers
                             tempTriangles.Add(triangle);
                         }
                     }
+                }
+            }
+
+            // Now add imported geometry faces
+            int lastVertex = numOptimizedVertices;
+
+            foreach (var geometry in room.RoomGeometryObjects)
+            {
+                foreach (var mesh in geometry.Model.Meshes)
+                {
+                    for (int j = 0; j < mesh.IndexCount; j += 3)
+                    {
+                        var triangle = new tr_face3();
+
+                        triangle.Vertices = new ushort[4];
+                        triangle.Vertices[0] = (ushort)(lastVertex + mesh.Indices[j + 0]);
+                        triangle.Vertices[1] = (ushort)(lastVertex + mesh.Indices[j + 1]);
+                        triangle.Vertices[2] = (ushort)(lastVertex + mesh.Indices[j + 2]);
+
+                        triangle.Texture = BuildRoomGeometryTextureInfo(mesh.Vertices[mesh.Indices[j + 0]].UV,
+                                                                        mesh.Vertices[mesh.Indices[j + 1]].UV,
+                                                                        mesh.Vertices[mesh.Indices[j + 2]].UV,
+                                                                        _importedTexturesDictionary[_numRoomTexturePagesFromMap + mesh.TextureFileName]);
+
+                        tempTriangles.Add(triangle);
+                    }
+
+                    lastVertex += mesh.VertexCount;
                 }
             }
 
@@ -1126,6 +1155,7 @@ namespace TombEditor.Compilers
 
             // I've sorted the textures by height, now I build the texture map
             var numRoomTexturePages = _level.TextureMap.Height / 256 + GeometryImporter.Textures.Count;
+            _numRoomTexturePagesFromMap = _level.TextureMap.Height / 256;
 
             for (var x = 0; x < 256; x++)
             {
