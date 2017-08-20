@@ -231,6 +231,7 @@ namespace TombEditor.Controls
         private List<int> _soundSourcesToDraw;
         private List<int> MoveablesToDraw;
         private List<int> StaticMeshesToDraw;
+        private List<RoomGeometryInstance> RoomGeometryToDraw;
 
         // Debug lines
         private Buffer<EditorVertex> _objectHeightLineVertexBuffer;
@@ -1585,6 +1586,64 @@ namespace TombEditor.Controls
             }
         }
 
+        private void DrawRoomGeometry(Matrix viewProjection)
+        {
+            _device.SetBlendState(_device.BlendStates.Opaque);
+
+            Effect geometryEffect = _deviceManager.Effects["RoomGeometry"];
+
+            geometryEffect.Parameters["TextureEnabled"].SetValue(true);
+            
+            RoomGeometryInstance _lastObject = null;
+
+            for (int k = 0; k < RoomGeometryToDraw.Count; k++)
+            {
+                RoomGeometryInstance modelInfo = RoomGeometryToDraw[k];
+                RoomGeometryModel model = modelInfo.Model;
+
+                //Debug.NumMoveables++;
+
+                Room room = modelInfo.Room;
+                
+                Matrix world = Matrix.Identity;
+                Matrix worldDebug = Matrix.Identity;
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    RoomGeometryMesh mesh = model.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    if (k == 0 && i == 0)
+                    {
+                        _device.SetVertexInputLayout(
+                            VertexInputLayout.FromBuffer<RoomGeometryVertex>(0, mesh.VertexBuffer));
+                    }
+
+                    _device.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _device.SetIndexBuffer(mesh.IndexBuffer, true);
+
+                    var theRoom = modelInfo.Room;
+
+                    world = Matrix.Translation(modelInfo.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(theRoom.Position));
+                    worldDebug = Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position));
+
+                    geometryEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
+
+                    geometryEffect.Parameters["Texture"].SetResource(mesh.Texture);
+                    geometryEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
+
+                    geometryEffect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.IndexCount, mesh.BaseIndex);
+
+                    Debug.NumVertices += mesh.NumIndices;
+                    Debug.NumTriangles += mesh.NumIndices / 3;
+                }
+
+                _lastObject = modelInfo;
+            }
+        }
+        
         private void DrawStatics(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
@@ -1750,6 +1809,7 @@ namespace TombEditor.Controls
             _soundSourcesToDraw = new List<int>();
             MoveablesToDraw = new List<int>();
             StaticMeshesToDraw = new List<int>();
+            RoomGeometryToDraw = new List<RoomGeometryInstance>();
 
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
@@ -1763,6 +1823,7 @@ namespace TombEditor.Controls
 
                 MoveablesToDraw.AddRange(_roomsToDraw[i].Moveables);
                 StaticMeshesToDraw.AddRange(_roomsToDraw[i].Statics);
+                RoomGeometryToDraw.AddRange(_roomsToDraw[i].RoomGeometryObjects);
             }
 
             MoveablesToDraw.Sort(new ComparerMoveables(_editor.Level.Rooms));
@@ -2097,6 +2158,12 @@ namespace TombEditor.Controls
             {
                 DrawMoveables(viewProjection);
                 DrawStatics(viewProjection);
+            }
+
+            // Draw room geometry imported
+            if (_editor != null && _editor.Level != null)
+            {
+                DrawRoomGeometry(viewProjection);
             }
 
             // Set some common parameters of the shader

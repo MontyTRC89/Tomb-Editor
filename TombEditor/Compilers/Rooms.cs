@@ -271,7 +271,7 @@ namespace TombEditor.Compilers
 
                             rv.Vertex = v;
                             rv.Lighting1 = 0;
-                            rv.Lighting2 = (short)(0x3fff); // TODO: apply light calculations also to imported geometry
+                            rv.Lighting2 = (short)(0x4210); // TODO: apply light calculations also to imported geometry
                             rv.Attributes = 0;
 
                             newRoom.Vertices[lastVertex] = rv;
@@ -453,8 +453,7 @@ namespace TombEditor.Compilers
                         triangle.Texture = BuildRoomGeometryTextureInfo(mesh.Vertices[mesh.Indices[j + 0]].UV,
                                                                         mesh.Vertices[mesh.Indices[j + 1]].UV,
                                                                         mesh.Vertices[mesh.Indices[j + 2]].UV,
-                                                                        _importedTexturesDictionary[_numRoomTexturePagesFromMap + mesh.TextureFileName]);
-
+                                                                        _numRoomTexturePagesFromMap + _importedTexturesDictionary[mesh.TextureFileName]);
                         tempTriangles.Add(triangle);
                     }
 
