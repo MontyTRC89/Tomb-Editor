@@ -15,7 +15,8 @@ namespace TombEditor.Geometry
         // TODO Light does not derive from "ObjectInstance".
         // Are there side effects from this approach?
         // We should make light derive from ObjectInstance.
-        Light
+        Light,
+        RoomGeometry
     }
 
     public abstract class ObjectInstance

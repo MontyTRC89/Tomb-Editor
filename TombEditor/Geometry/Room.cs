@@ -49,7 +49,7 @@ namespace TombEditor.Geometry
         private List<EditorVertex> Vertices { get; set; }
         private Level Level { get; }
 
-
+        public List<RoomGeometryInstance> RoomGeometryObjects { get; private set; } = new List<RoomGeometryInstance>();
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {

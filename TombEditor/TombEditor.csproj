@@ -222,6 +222,7 @@
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\GeometryImporter.cs" />
     <Compile Include="Geometry\LevelSettings.cs" />
+    <Compile Include="Geometry\RoomGeometryInstance.cs" />
     <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />
