@@ -42,7 +42,7 @@ namespace TombEditor.Compilers
                 box.Xmax = (byte)dec_boxes[i].Xmax;
                 box.Zmin = (byte)dec_boxes[i].Zmin;
                 box.Zmax = (byte)dec_boxes[i].Zmax;
-                box.Room = (short)_level.Rooms.ReferenceIndexOf(dec_boxes[i].Room);
+                box.Room = (short)_roomsRemappingDictionary[dec_boxes[i].Room];
                 box.IsolatedBox = dec_boxes[i].IsolatedBox;
                 box.Monkey = dec_boxes[i].Monkey;
                 box.Jump = dec_boxes[i].Jump;
@@ -293,11 +293,11 @@ namespace TombEditor.Compilers
             {
                 for (var z = a.Zmin - 1; z <= a.Zmax - 1; z++)
                 {
-                    var r1 = _level.Rooms[a.Room];
-                    var r2 = _level.Rooms[b.Room];
+                    var r1 = _roomsUnmapping[a.Room];
+                    var r2 = _roomsUnmapping[b.Room];
                     
-                    if (a.Room != b.Room && (IsVerticallyReachable(_level.Rooms[a.Room], _level.Rooms[b.Room]) ||
-                                             r1.BaseRoom == _tempRooms[r2].FlippedRoom || _tempRooms[r1].FlippedRoom == r2.BaseRoom))
+                    if (a.Room != b.Room && (IsVerticallyReachable(_roomsUnmapping[a.Room], _roomsUnmapping[b.Room]) ||
+                                             r1.AlternateBaseRoom == _tempRooms[r2].FlippedRoom || _tempRooms[r1].FlippedRoom == r2.AlternateBaseRoom))
                     {
                         return true;
                     }
@@ -347,13 +347,13 @@ namespace TombEditor.Compilers
             if (b.Xmax == a.Xmin - 1 || b.Xmax == a.Xmin - 2)
             {
                 xMax = b.Xmax;
-                roomIndex = _level.Rooms[b.Room];
+                roomIndex = _roomsUnmapping[b.Room];
             }
 
             if (a.Xmax == b.Xmin - 1 || a.Xmax == b.Xmin - 2)
             {
                 xMax = a.Xmax;
-                roomIndex = _level.Rooms[a.Room];
+                roomIndex = _roomsUnmapping[a.Room];
             }
 
             // If the gap is of 1 sector
@@ -452,13 +452,13 @@ namespace TombEditor.Compilers
             if (b.Zmax == a.Zmin - 1 || b.Zmax == a.Zmin - 2)
             {
                 zMax = b.Zmax;
-                roomIndex = _level.Rooms[b.Room];
+                roomIndex = _roomsUnmapping[b.Room];
             }
 
             if (a.Zmax == b.Zmin - 1 || a.Zmax == b.Zmin - 2)
             {
                 zMax = a.Zmax;
-                roomIndex = _level.Rooms[a.Room];
+                roomIndex = _roomsUnmapping[a.Room];
             }
 
             Room destRoom;
@@ -662,7 +662,7 @@ namespace TombEditor.Compilers
             stack.Push(box);
 
             // All reachable boxes must have the same water flag and same flipped flag
-            var isWater = (_tempRooms[_level.Rooms[_tempBoxes[box].Room]].Flags & 0x01) != 0;
+            var isWater = (_tempRooms[_roomsUnmapping[_tempBoxes[box].Room]].Flags & 0x01) != 0;
             
             while (stack.Count > 0)
             {
@@ -681,7 +681,7 @@ namespace TombEditor.Compilers
                     // Enemies like scorpions, mummies, dogs, wild boars. They can go only on land, and climb 1 click step
                     if (zoneType == 1)
                     {
-                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
+                        var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256 && flipped == _tempBoxes[boxIndex].FlipMap) add = true;
                     }
@@ -689,7 +689,7 @@ namespace TombEditor.Compilers
                     // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
                     if (zoneType == 2)
                     {
-                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
+                        var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
 
                         // Check all possibilities
@@ -702,7 +702,7 @@ namespace TombEditor.Compilers
                     // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step. In water they act like flying enemies.
                     if (zoneType == 3)
                     {
-                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
+                        var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (((water == isWater && step <= 256) || water)) add = true;
                     }
@@ -710,7 +710,7 @@ namespace TombEditor.Compilers
                     // Enemies like baddy 1 & 2. They can go only on land, and climb 4 clicks step. They can also jump 2 blocks and monkey.
                     if (zoneType == 4)
                     {
-                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
+                        var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = _boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor;
 
                         // Check all possibilities
@@ -724,7 +724,7 @@ namespace TombEditor.Compilers
                     // Flying enemies. Here we just check if the water flag is the same.
                     if (zoneType == 5)
                     {
-                        var water = (_tempRooms[_level.Rooms[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
+                        var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         if (water == isWater) add = true;
                     }
 

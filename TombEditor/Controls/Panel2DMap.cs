@@ -67,6 +67,7 @@ namespace TombEditor.Controls
             // Update drawing
             if ((obj is Editor.SelectedRoomChangedEvent) ||
                 (obj is Editor.RoomGeometryChangedEvent) ||
+                (obj is Editor.RoomSectorPropertiesChangedEvent) ||
                 (obj is Editor.RoomListChangedEvent))
             {
                 if (_editor.Mode == EditorMode.Map2D)
@@ -114,7 +115,7 @@ namespace TombEditor.Controls
 
                 _editor.SelectedRoom = _roomMouseClicked;
                 _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
-                _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos;
+                _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
 
                 // Update state
                 _editor.SelectedRoom = _editor.SelectedRoom;
@@ -412,9 +413,9 @@ namespace TombEditor.Controls
         {
             newRoomPos = new Vector2((float)Math.Round(newRoomPos.X), (float)Math.Round(newRoomPos.Y));
             //currentRoomPos = Vector2.Clamp(currentRoomPos, new Vector2(0), new Vector2(Level.MaxSectorCoord));
-            Vector2 roomMovement = newRoomPos - roomReference.SectorPos;
+            Vector2 roomMovement = newRoomPos - roomReference.SectorPos.ToVec2();
             foreach (Room room in roomsToMove)
-                room.SectorPos += roomMovement;
+                room.SectorPos = room.SectorPos.Offset(new DrawingPoint((int)roomMovement.X, (int)roomMovement.Y));
 
             // Update state
             Invalidate();

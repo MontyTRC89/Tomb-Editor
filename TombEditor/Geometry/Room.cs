@@ -8,10 +8,16 @@ using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombEditor.Geometry
 {
+    public enum Reverberation : byte
+    {
+        Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
+    }
+
     public class Room
     {
         public const short DefaultHeight = 12;
-        
+        public const short MaxRoomDimensions = 20;
+
         public string Name { get; set; }
         public Vector3 Position { get; set; }
         public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);
@@ -19,17 +25,12 @@ namespace TombEditor.Geometry
         public EditorVertex[,,] VerticesGrid { get; private set; }
         public byte[,] NumVerticesInGrid { get; private set; }
         public Buffer<EditorVertex> VertexBuffer { get; private set; }
-        public List<int> Moveables { get; private set; } = new List<int>();
-        public List<int> Statics { get; private set; } = new List<int>();
-        public List<Light> Lights { get; private set; } = new List<Light>();
-        public List<int> SoundSources { get; private set; } = new List<int>();
-        public List<int> Sinks { get; private set; } = new List<int>();
-        public List<int> Cameras { get; private set; } = new List<int>();
-        public List<int> FlyByCameras { get; private set; } = new List<int>();
-        public Room BaseRoom { get; set; }
-        public bool Flipped { get; set; }
-        public Room AlternateRoom { get; set; }
+        public List<PositionBasedObjectInstance> Objects { get; } = new List<PositionBasedObjectInstance>();
+
+        public Room AlternateBaseRoom { get; set; }
+        public Room AlternateRoom { get; set; } = null;
         public short AlternateGroup { get; set; } = -1;
+
         public short WaterLevel { get; set; }
         public short MistLevel { get; set; }
         public short ReflectionLevel { get; set; }
@@ -46,57 +47,96 @@ namespace TombEditor.Geometry
         public bool ExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
 
-        public List<EditorVertex> Vertices { get; set; }
-        private Level Level { get; }
+        public List<EditorVertex> Vertices { get; private set; }
 
-        public List<RoomGeometryInstance> RoomGeometryObjects { get; private set; } = new List<RoomGeometryInstance>();
+
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
-            Level = level;
             Name = name;
-            Resize(numXSectors, numZSectors, ceiling);
+            Resize(level, numXSectors, numZSectors, 0, ceiling);
         }
 
-        public void Resize(int numXSectors, int numZSectors, short ceiling = DefaultHeight)
+        public void Resize(Level level, int numXSectors, int numZSectors, short floor = 0, short ceiling = DefaultHeight, DrawingPoint offset = new DrawingPoint())
         {
-            System.Diagnostics.Debug.Assert(numXSectors > 0);
-            System.Diagnostics.Debug.Assert(numZSectors > 0);
+            // Remove sector based objects if there are any
+            var sectorObjects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
+            foreach (var instance in sectorObjects)
+                RemoveObject(level, instance);
+            DrawingPoint oldSectorSize = Blocks != null ? SectorSize : new DrawingPoint();
+
+            // Build new blocks
+            Block[,] newBlocks = new Block[numXSectors, numZSectors];
+            for (int x = 0; x < numXSectors; x++)
+                for (int z = 0; z < numZSectors; z++)
+                {
+                    Block oldBlock = GetBlockTry(new DrawingPoint(x, z).Offset(offset));
+                    newBlocks[x, z] = oldBlock ?? new Block(floor, ceiling);
+                    if (newBlocks[x, z].Type == BlockType.BorderWall)
+                        newBlocks[x, z].Type = BlockType.Wall;
+                    if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
+                        newBlocks[x, z].Type = BlockType.BorderWall;
+                }
 
             // Update data structures
             VerticesGrid = new EditorVertex[numXSectors, numZSectors, 16];
             NumVerticesInGrid = new byte[numXSectors, numZSectors];
-            Blocks = new Block[numXSectors, numZSectors];
-            for (int x = 0; x < numXSectors; x++)
-                for (int z = 0; z < numZSectors; z++)
-                {
-                    Block block;
-                    if (x == 0 || z == 0 || x == numXSectors - 1 || z == numZSectors - 1)
-                    {
-                        block = new Block(BlockType.BorderWall, BlockFlags.None);
-                    }
-                    else
-                    {
-                        block = new Block(BlockType.Floor, BlockFlags.None);
-                    }
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        block.WSFaces[i] = ceiling;
-                        block.RFFaces[i] = ceiling;
-                    }
+            Blocks = newBlocks;
 
-                    Blocks[x, z] = block;
-                }
-            
+            // Move objects
+            SectorPos = SectorPos.Offset(offset);
+            foreach (var instance in Objects)
+                instance.Position -= new Vector3(offset.X * 1024, 0, offset.Y * 1024);
+          
+            // Add sector based objects again
+            Rectangle newArea = new Rectangle(offset.X, offset.Y, numXSectors - 1, numZSectors - 1);
+            foreach (var instance in sectorObjects)
+            {
+                Rectangle instanceNewAreaConstraint = newArea.Inflate(-1);
+                if (instance is Portal)
+                    switch (((Portal)instance).Direction) // Special constraints for portals on walls
+                    {
+                        case PortalDirection.North:
+                            if (newArea.Bottom != (oldSectorSize.Y - 1))
+                                continue;
+                            instanceNewAreaConstraint = newArea.Inflate(-1, 0);
+                            break;
+                        case PortalDirection.South:
+                            if (newArea.Top != 0)
+                                continue;
+                            instanceNewAreaConstraint = newArea.Inflate(-1, 0);
+                            break;
+                        case PortalDirection.East:
+                            if (newArea.Right != (oldSectorSize.X - 1))
+                                continue;
+                            instanceNewAreaConstraint = newArea.Inflate(0, -1);
+                            break;
+                        case PortalDirection.West:
+                            if (newArea.Left != 0)
+                                continue;
+                            instanceNewAreaConstraint = newArea.Inflate(0, -1);
+                            break;
+                    }
+                if (!instance.Area.Intersects(instanceNewAreaConstraint))
+                    continue;
+                Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(offset);
+                if (instance is Portal)
+                    AddBidirectionalPortalsToLevel(level, (Portal)instance.Clone(instanceNewArea));
+                else
+                    AddObject(level, instance.Clone(instanceNewArea));
+            }
+
             // Update state
-            BuildGeometry();
-            CalculateLightingForThisRoom();
-            UpdateBuffers();
+            UpdateCompletely();
         }
 
-        public Vector2 SectorPos
+        public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
+
+        public DrawingPoint SectorSize => new DrawingPoint(NumXSectors, NumZSectors);
+
+        public DrawingPoint SectorPos
         {
-            get { return new Vector2(Position.X, Position.Z); }
+            get { return new DrawingPoint((int)Position.X, (int)Position.Z); }
             set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
@@ -104,14 +144,52 @@ namespace TombEditor.Geometry
         {
             get
             { // No LINQ because it is really slow.
-                HashSet<Portal> portals = new HashSet<Portal>();
-                foreach (Block block in Blocks)
-                    foreach (Portal portal in block.Portals)
+                var portals = new HashSet<Portal>();
+                foreach (var block in Blocks)
+                    foreach (var portal in block.Portals)
                         portals.Add(portal);
                 return portals;
             }
         }
-        
+
+        public IEnumerable<TriggerInstance> Triggers
+        {
+            get
+            { // No LINQ because it is really slow.
+                var triggers = new HashSet<TriggerInstance>();
+                foreach (var block in Blocks)
+                    foreach (var trigger in block.Triggers)
+                        triggers.Add(trigger);
+                return triggers;
+            }
+        }
+
+        public IEnumerable<SectorBasedObjectInstance> SectorObjects
+        {
+            get
+            {
+                foreach (var instance in Portals)
+                    yield return instance;
+                foreach (var instance in Triggers)
+                    yield return instance;
+            }
+        }
+
+        public IEnumerable<ObjectInstance> AnyObjects
+        {
+            get
+            {
+                foreach (var instance in Portals)
+                    yield return instance;
+                foreach (var instance in Triggers)
+                    yield return instance;
+                foreach (var instance in Objects)
+                    yield return instance;
+            }
+        }
+
+        public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, NumXSectors + (int)Position.X, NumZSectors + (int)Position.Z);
+
         public Block GetBlock(DrawingPoint pos)
         {
             return Blocks[pos.X, pos.Y];
@@ -119,6 +197,8 @@ namespace TombEditor.Geometry
 
         public Block GetBlockTry(int x, int z)
         {
+            if (Blocks == null)
+                return null;
             if ((x >= 0) && (z >= 0) && (x < NumXSectors) && (z < NumZSectors))
                 return Blocks[x, z];
             return null;
@@ -284,10 +364,10 @@ namespace TombEditor.Geometry
 
         public void BuildGeometry()
         {
-            BuildGeometry(0, NumXSectors - 1, 0, NumZSectors - 1);
+            BuildGeometry(new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1));
         }
 
-        public void BuildGeometry(int xMin, int xMax, int zMin, int zMax)
+        public void BuildGeometry(Rectangle area)
         {
             Vertices = new List<EditorVertex>();
 
@@ -297,10 +377,10 @@ namespace TombEditor.Geometry
             var e4 = new Vector2(0.0f, 1.0f);
 
             // Adjust ranges
-            xMin = Math.Max(0, xMin);
-            xMax = Math.Min(NumXSectors - 1, xMax);
-            zMin = Math.Max(0, zMin);
-            zMax = Math.Min(NumZSectors - 1, zMax);
+            int xMin = Math.Max(0, area.X);
+            int xMax = Math.Min(NumXSectors - 1, area.Right);
+            int zMin = Math.Max(0, area.Y);
+            int zMax = Math.Min(NumZSectors - 1, area.Bottom);
 
             // Reset faces
             for (int x = xMin; x <= xMax; x++)
@@ -430,7 +510,7 @@ namespace TombEditor.Geometry
                         {
                             var portal = FindPortal(x, z, PortalDirection.South);
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (Flipped && BaseRoom != null)
+                            if (Flipped && AlternateBaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -465,7 +545,7 @@ namespace TombEditor.Geometry
                         {
                             var portal = FindPortal(x, z, PortalDirection.North);
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (Flipped && BaseRoom != null)
+                            if (Flipped && AlternateBaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -499,7 +579,7 @@ namespace TombEditor.Geometry
                         {
                             var portal = FindPortal(x, z, PortalDirection.West);
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (Flipped && BaseRoom != null)
+                            if (Flipped && AlternateBaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -533,7 +613,7 @@ namespace TombEditor.Geometry
                         {
                             var portal = FindPortal(x, z, PortalDirection.East);
                             var adjoiningRoom = portal.AdjoiningRoom;
-                            if (Flipped && BaseRoom != null)
+                            if (Flipped && AlternateBaseRoom != null)
                             {
                                 if (adjoiningRoom.Flipped)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -588,9 +668,9 @@ namespace TombEditor.Geometry
                             CalculateFloorSlope(x, z, qa0, qa1, qa2, qa3);
                         }
 
-                        if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == null) || /*Blocks[x, z].CeilingPortal != -1 ||*/
-                            (Blocks[x, z].FloorPortal != null && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
-                            Blocks[x, z].IsFloorSolid || Blocks[x, z].Type == BlockType.Wall)
+                        if ((Blocks[x, z].FloorPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
+                            (Blocks[x, z].FloorPortal != null && (Blocks[x, z].FloorOpacity != PortalOpacity.None || IsFloorSolid(new DrawingPoint(x, z)))) ||
+                             Blocks[x, z].Type == BlockType.Wall)
                         {
                             if (Blocks[x, z].SplitFloor == false && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
                             {
@@ -743,9 +823,8 @@ namespace TombEditor.Geometry
                     }
                     else
                     {
-                        if ((Blocks[x, z].Type == BlockType.Floor && Blocks[x, z].FloorPortal == null) || /*Blocks[x, z].Type == BlockType.CeilingPortal ||*/
-                            (Blocks[x, z].FloorPortal != null && Blocks[x, z].FloorOpacity != PortalOpacity.None) ||
-                            Blocks[x, z].IsFloorSolid)
+                        if ((Blocks[x, z].FloorPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
+                            (Blocks[x, z].FloorPortal != null && (Blocks[x, z].FloorOpacity != PortalOpacity.None || IsFloorSolid(new DrawingPoint(x, z)))))
                         {
                             int split = GetBestFloorSplit(x, z, qa0, qa1, qa2, qa3);
                             if (Blocks[x, z].SplitFoorType == 1)
@@ -803,9 +882,9 @@ namespace TombEditor.Geometry
                             CalculateCeilingSlope(x, z, ws0, ws1, ws2, ws3);
                         }
 
-                        if ((Blocks[x, z].Type != BlockType.Floor || Blocks[x, z].CeilingPortal != null) &&
-                            (Blocks[x, z].CeilingPortal == null || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
-                            !Blocks[x, z].IsCeilingSolid && Blocks[x, z].Type != BlockType.Wall)
+                        if (!((Blocks[x, z].CeilingPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
+                            (Blocks[x, z].CeilingPortal != null && (Blocks[x, z].CeilingOpacity != PortalOpacity.None || IsCeilingSolid(new DrawingPoint(x, z)))) ||
+                             Blocks[x, z].Type == BlockType.Wall))
                             continue;
 
                         if (Blocks[x, z].SplitCeiling == false && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
@@ -961,9 +1040,8 @@ namespace TombEditor.Geometry
                     }
                     else
                     {
-                        if ((Blocks[x, z].Type != BlockType.Floor || Blocks[x, z].CeilingPortal != null) &&
-                            (Blocks[x, z].CeilingPortal == null || Blocks[x, z].CeilingOpacity == PortalOpacity.None) &&
-                            !Blocks[x, z].IsCeilingSolid)
+                        if (!((Blocks[x, z].CeilingPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
+                            (Blocks[x, z].CeilingPortal != null && (Blocks[x, z].CeilingOpacity != PortalOpacity.None || IsCeilingSolid(new DrawingPoint(x, z))))))
                             continue;
 
                         int split = GetBestCeilingSplit(x, z, ws0, ws1, ws2, ws3);
@@ -1052,6 +1130,11 @@ namespace TombEditor.Geometry
             UpdateBuffers();
         }
 
+        private enum FaceDirection
+        {
+            North, South, East, West, DiagonalFloor, DiagonalCeiling, DiagonalWall
+        }
+
         private void AddVerticalFaces(int x, int z, FaceDirection direction, bool floor, bool ceiling, bool middle)
         {
             int xA, xB, zA, zB, yA, yB;
@@ -1097,7 +1180,7 @@ namespace TombEditor.Geometry
                     {
                         var portal = FindPortal(x, z, PortalDirection.South);
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (Flipped && BaseRoom != null)
+                        if (Flipped && AlternateBaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -1218,7 +1301,7 @@ namespace TombEditor.Geometry
                     {
                         var portal = FindPortal(x, z, PortalDirection.North);
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (Flipped && BaseRoom != null)
+                        if (Flipped && AlternateBaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -1338,7 +1421,7 @@ namespace TombEditor.Geometry
                     {
                         var portal = FindPortal(x, z, PortalDirection.West);
                         var adjoiningRoom = portal.AdjoiningRoom;
-                        if (Flipped && BaseRoom != null)
+                        if (Flipped && AlternateBaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -1658,7 +1741,7 @@ namespace TombEditor.Geometry
                         var portal = FindPortal(x, z, PortalDirection.East);
                         var adjoiningRoom = portal.AdjoiningRoom;
 
-                        if (Flipped && BaseRoom != null)
+                        if (Flipped && AlternateBaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -2011,22 +2094,12 @@ namespace TombEditor.Geometry
                     return 0;
                 default:
                     int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
-                    int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-
-                    if (max == h1 && max == h3)
+                    if (min == h1)
                         return 1;
-                    if (max == h2 && max == h4)
+                    if (min == h2)
                         return 0;
-
-                    if (min == h1 && max == h3)
+                    if (min == h3)
                         return 1;
-                    if (min == h2 && max == h4)
-                        return 0;
-                    if (min == h3 && max == h1)
-                        return 1;
-                    if (min == h4 && max == h2)
-                        return 0;
-
                     break;
             }
 
@@ -2703,6 +2776,8 @@ namespace TombEditor.Geometry
 
             var n = face.Plane.Normal;
 
+            var lights = Objects.OfType<Light>().ToList();
+
             foreach (short index in face.IndicesForLightingCalculations)
             {
                 int theX = (index >> 9) & 0x1f;
@@ -2717,10 +2792,7 @@ namespace TombEditor.Geometry
                 int g = AmbientLight.G;
                 int b = AmbientLight.B;
 
-                // Get all nearest lights. Maybe in the future limit to max number of lights?
-                var lights = GetNearestLights(p);
-
-                foreach (var light in lights)
+                foreach (var light in GetNearestLights(p, lights))
                 {
                     if ((!light.Enabled) || (!light.IsStaticallyUsed))
                         continue;
@@ -2803,9 +2875,9 @@ namespace TombEditor.Geometry
                                 // Calculate the light direction
                                 var lightDirection = Vector3.Zero;
 
-                                lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
-                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
-                                lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
+                                lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(light.RotationY)));
+                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.RotationX)));
+                                lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(light.RotationY)));
 
                                 lightDirection.Normalize();
 
@@ -2845,9 +2917,9 @@ namespace TombEditor.Geometry
                                 // Calculate the light direction
                                 var lightDirection = Vector3.Zero;
 
-                                lightDirection.X = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Sin(MathUtil.DegreesToRadians(light.DirectionY)));
-                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.DirectionX)));
-                                lightDirection.Z = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.DirectionX)) * Math.Cos(MathUtil.DegreesToRadians(light.DirectionY)));
+                                lightDirection.X = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(light.RotationY)));
+                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.RotationX)));
+                                lightDirection.Z = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(light.RotationY)));
 
                                 lightDirection.Normalize();
 
@@ -2923,30 +2995,23 @@ namespace TombEditor.Geometry
             }
         }
 
-        private List<Light> GetNearestLights(Vector3 p)
+        private static IEnumerable<Light> GetNearestLights(Vector3 p, List<Light> lights)
         {
-            var lights = new List<Light>();
-
-            foreach (var light in Lights)
-            {
+            // Get all nearest lights. Maybe in the future limit to max number of lights?
+            foreach (var light in lights)
                 if ((light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.Effect) &&
                     Math.Abs((p - light.Position).Length()) + 64.0f <= light.Out * 1024.0f)
                 {
-                    lights.Add(light);
+                    yield return light;
                 }
-
-                if (light.Type == LightType.Spot && Math.Abs((p - light.Position).Length()) + 64.0f <= light.Cutoff * 1024.0f)
+                else if (light.Type == LightType.Spot && Math.Abs((p - light.Position).Length()) + 64.0f <= light.Cutoff * 1024.0f)
                 {
-                    lights.Add(light);
+                    yield return light;
                 }
-
-                if (light.Type == LightType.Sun)
+                else if(light.Type == LightType.Sun)
                 {
-                    lights.Add(light);
+                    yield return light;
                 }
-            }
-
-            return lights;
         }
 
         public void UpdateBuffers()
@@ -3159,7 +3224,7 @@ namespace TombEditor.Geometry
 
         ///<param name="x">The X-coordinate. The point at room.Position it at (0, 0)</param>
         ///<param name="z">The Z-coordinate. The point at room.Position it at (0, 0)</param>
-        public VerticalArea? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
+        public VerticalSpace? GetHeightAtPoint(int x, int z, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
         {
             Block blockXnZn = GetBlockIfFloor(x - 1, z - 1);
             Block blockXnZp = GetBlockIfFloor(x - 1, z);
@@ -3168,7 +3233,7 @@ namespace TombEditor.Geometry
             if ((blockXnZn == null) && (blockXnZp == null) && (blockXpZn == null) && (blockXpZp == null))
                 return null;
 
-            return new VerticalArea
+            return new VerticalSpace
             {
                 FloorY = combineFloor(
                     blockXnZn?.QAFaces[Block.FaceXpZp],
@@ -3182,6 +3247,25 @@ namespace TombEditor.Geometry
                     blockXpZp?.WSFaces[Block.FaceXnZn])
             };
         }
+
+        public VerticalSpace? GetHeightInArea(Rectangle area, Func<float?, float?, float?, float?, float> combineFloor, Func<float?, float?, float?, float?, float> combineCeiling)
+        {
+            VerticalSpace? result = null;
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
+                {
+                    VerticalSpace? verticalSpace = GetHeightAtPoint(x, z, combineFloor, combineCeiling);
+                    if (verticalSpace == null)
+                        continue;
+                    result = new VerticalSpace
+                        {
+                            FloorY = combineFloor(verticalSpace?.FloorY, result?.FloorY, null, null),
+                            CeilingY = combineCeiling(verticalSpace?.CeilingY, result?.CeilingY, null, null)
+                        };
+                }
+            return result;
+        }
+
 
         private static float Average(float? Height0, float? Height1, float? Height2, float? Height3)
         {
@@ -3202,21 +3286,36 @@ namespace TombEditor.Geometry
                 Math.Min(Height2 ?? float.PositiveInfinity, Height3 ?? float.PositiveInfinity));
         }
 
-        public VerticalArea? GetHeightAtPointAverage(int x, int z)
+        public VerticalSpace? GetHeightAtPointAverage(int x, int z)
         {
             return GetHeightAtPoint(x, z, Average, Average);
         }
 
-        public VerticalArea? GetHeightAtPointMinSpace(int x, int z)
+        public VerticalSpace? GetHeightAtPointMinSpace(int x, int z)
         {
             return GetHeightAtPoint(x, z, Max, Min);
         }
 
-        public VerticalArea? VGetHeightAtPointMaxSpace(int x, int z)
+        public VerticalSpace? GetHeightAtPointMaxSpace(int x, int z)
         {
             return GetHeightAtPoint(x, z, Min, Max);
         }
 
+        public VerticalSpace? GetHeightInAreaAverage(Rectangle area)
+        {
+            return GetHeightInArea(area, Average, Average);
+        }
+
+        public VerticalSpace? GetHeightInAreaMinSpace(Rectangle area)
+        {
+            return GetHeightInArea(area, Max, Min);
+        }
+
+        public VerticalSpace? GetHeightInAreaMaxSpace(Rectangle area)
+        {
+            return GetHeightInArea(area, Min, Max);
+        }
+        
         public byte NumXSectors
         {
             get { return (byte)(Blocks.GetLength(0)); }
@@ -3231,11 +3330,162 @@ namespace TombEditor.Geometry
         {
             return Name;
         }
+
+        /// <summary>Transforms the coordinates of QAFaces in such a way that the lowest one falls on Y = 0</summary>
+        public void NormalizeRoomY()
+        {
+            // Determine lowest QAFace
+            short lowest = short.MaxValue;
+            for (int z = 0; z < NumZSectors; z++)
+                for (int x = 0; x < NumXSectors; x++)
+                {
+                    var b = Blocks[x, z];
+                    if (b.IsFloor)
+                        for (int i = 0; i < 4; i++)
+                            lowest = Math.Min(lowest, b.QAFaces[i]);
+                }
+
+            // Move room to new position
+            Position += new Vector3(0, lowest, 0);
+
+            // Transform room content in such a way, their world position is identical to before even though the room position changed
+            for (int z = 0; z < NumZSectors; z++)
+                for (int x = 0; x < NumXSectors; x++)
+                {
+                    var b = Blocks[x, z];
+                    for (int i = 0; i < 4; i++)
+                    {
+                        b.QAFaces[i] -= lowest;
+                        b.EDFaces[i] -= lowest;
+                        b.WSFaces[i] -= lowest;
+                        b.RFFaces[i] -= lowest;
+                    }
+                }
+
+            foreach (var instance in Objects)
+                instance.Position -= new Vector3(0, lowest * 256, 0);
+        }
+
+
+        public void AddObject(Level level, ObjectInstance instance)
+        {
+            if (instance is PositionBasedObjectInstance)
+                Objects.Add((PositionBasedObjectInstance)instance);
+            try
+            {
+                instance.AddToRoom(level, this);
+            }
+            catch
+            { // If we fail, remove the object from the list
+                if (instance is PositionBasedObjectInstance)
+                    Objects.Remove((PositionBasedObjectInstance)instance); 
+                throw;
+            }
+        }
+
+        public void RemoveObject(Level level, ObjectInstance instance)
+        {
+            instance.RemoveFromRoon(level, this);
+            if (instance is PositionBasedObjectInstance)
+                Objects.Remove((PositionBasedObjectInstance)instance);
+        }
+        
+        public Portal AddBidirectionalPortalsToLevel(Level level, Portal portal)
+        {
+            Rectangle oppositeArea = Portal.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+            Portal oppositePortal = new Portal(oppositeArea, Portal.GetOppositeDirection(portal.Direction), this);
+
+            AddObject(level, portal);
+            try
+            {
+                portal.AdjoiningRoom.AddObject(level, oppositePortal);
+            }
+            catch
+            {
+                RemoveObject(level, portal);
+                throw;
+            }
+
+            UpdateCompletely();
+            portal.AdjoiningRoom.UpdateCompletely();
+
+            return oppositePortal;
+        }
+
+        public bool IsFloorSolid(DrawingPoint pos)
+        {
+            Block block = GetBlock(pos);
+            if ((block.FloorPortal == null) || block.IsAnyWall)
+                return true;
+
+            Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
+            Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
+            if (adjoiningBlock.IsAnyWall)
+                return true;
+
+            int identicalEdgeCount = 0;
+            for (int i = 0; i < 4; ++i)
+                if ((Position.Y + block.QAFaces[i]) == (adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[i]))
+                    ++identicalEdgeCount;
+            return identicalEdgeCount < 4;
+        }
+        
+        public bool IsCeilingSolid(DrawingPoint pos)
+        {
+            Block block = GetBlock(pos);
+            if ((block.CeilingPortal == null) || block.IsAnyWall)
+                return true;
+
+            Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
+            Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
+            if (adjoiningBlock.IsAnyWall)
+                return true;
+
+            int identicalEdgeCount = 0;
+            for (int i = 0; i < 4; ++i)
+                if ((Position.Y + block.WSFaces[i]) == (adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[i]))
+                    ++identicalEdgeCount;
+            return identicalEdgeCount < 4;
+        }
+
+        public void SmartBuildGeometry(Rectangle area)
+        {
+            BuildGeometry(area.Inflate(1));
+            CalculateLightingForThisRoom();
+            UpdateBuffers();
+
+            // Update adjoining rooms
+            HashSet<Room> roomsProcessed = new HashSet<Room>();
+            List<Portal> listOfPortals = Portals.ToList();
+            foreach (var portal in listOfPortals)
+            {
+                if (!portal.Area.Intersects(area))
+                    continue; // This portal is irrelavant since no changes happend in its area
+                
+                Rectangle portalArea = portal.Area.Intersect(area);
+                Rectangle otherRoomPortalArea = Portal.GetOppositePortalArea(portal.Direction, portalArea)
+                    .Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+                portal.AdjoiningRoom.BuildGeometry(otherRoomPortalArea);
+                roomsProcessed.Add(portal.AdjoiningRoom);
+            }
+
+            // Update lighting in room that were updated geometrically
+            foreach (var adjoiningRoom in roomsProcessed)
+            {
+                adjoiningRoom.CalculateLightingForThisRoom();
+                adjoiningRoom.UpdateBuffers();
+            }
+        }
     }
 
-    public struct VerticalArea
+    public struct VerticalSpace
     {
         public float FloorY;
         public float CeilingY;
+
+        public static VerticalSpace operator +(VerticalSpace old, float offset)
+        {
+            return new VerticalSpace { FloorY = old.FloorY + offset, CeilingY = old.CeilingY + offset };
+        }
     };
 }

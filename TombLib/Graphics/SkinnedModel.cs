@@ -136,14 +136,9 @@ namespace TombLib.Graphics
 
                         break;
                     case WadLinkOpcode.Push:
-                        try
-                        {
-                            currentBone = stack.Pop();
-                        }
-                        catch (Exception)
-                        {
+                        if (stack.Count <= 0)
                             continue;
-                        }
+                        currentBone = stack.Pop();
 
                         model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
                         model.Bones[j].Parent = currentBone;
@@ -152,30 +147,18 @@ namespace TombLib.Graphics
 
                         break;
                     case WadLinkOpcode.Pop:
+                        stack.Push(currentBone);
+
                         model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
-                        try
-                        {
-                            stack.Push(currentBone);
-                        }
-                        catch (Exception)
-                        {
-                            continue;
-                        }
                         model.Bones[j].Parent = currentBone;
                         currentBone.Children.Add(model.Bones[j]);
                         currentBone = model.Bones[j];
 
                         break;
                     case WadLinkOpcode.Read:
-                        Bone bone;
-                        try
-                        {
-                            bone = stack.Pop();
-                        }
-                        catch (Exception)
-                        {
+                        if (stack.Count <= 0)
                             continue;
-                        }
+                        Bone bone = stack.Pop();
                         model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
                         model.Bones[j].Parent = bone;
                         bone.Children.Add(model.Bones[j]);

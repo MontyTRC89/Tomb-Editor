@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using NLog;
 using SharpDX;
@@ -13,6 +14,7 @@ namespace TombEditor.Geometry.IO
 {
     public class PrjLoader
     {
+        private static readonly Encoding _encodingCodepageWindows = Encoding.GetEncoding(1252);
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private struct PrjFlipInfo
@@ -35,14 +37,6 @@ namespace TombEditor.Geometry.IO
 
         private struct PrjBlock
         {
-            public short _blockType;
-            public short _blockFlags1;
-            public short _blockYfloor;
-            public short _blockYceiling;
-            public sbyte[] _qaFaces;
-            public sbyte[] _wsFaces;
-            public sbyte[] _edFaces;
-            public sbyte[] _rfFaces;
             public PrjFace[] _faces;
             public short _flags2;
             public short _flags3;
@@ -56,11 +50,13 @@ namespace TombEditor.Geometry.IO
             public byte _height;
         }
 
-        private struct PrjPortalThingIndex
+        private struct PrjPortal
         {
-            public short _thisThingIndex;
-            public short _otherThingIndex;
-        };
+            public Room _room;
+            public Rectangle _area;
+            public PortalDirection _direction;
+            public short _oppositePortalId;
+        }
 
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
         {
@@ -75,10 +71,8 @@ namespace TombEditor.Geometry.IO
             
             try
             {
-                var portals = new List<Portal>();
-                
                 // Open file
-                using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.None)))
+                using (var reader = new BinaryReaderEx(new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     progressReporter.ReportProgress(0, "Begin of PRJ import from " + filename);
                     logger.Debug("Opening Winroomedit PRJ file " + filename);
@@ -109,12 +103,10 @@ namespace TombEditor.Geometry.IO
 
                     var tempRooms = new Dictionary<int, PrjBlock[,]>();
                     var flipInfos = new List<PrjFlipInfo>();
+                    var tempPortals = new Dictionary<int, PrjPortal>();
 
                     progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
-                    double progress = 2;
-
-                    var portalThingIndices = new Dictionary<Portal, PrjPortalThingIndex>();
-
+                    
                     for (int i = 0; i < numRooms; i++)
                     {
                         // Room is defined?
@@ -128,10 +120,10 @@ namespace TombEditor.Geometry.IO
                         for (; roomNameLength < 80; ++roomNameLength)
                             if (roomNameBytes[roomNameLength] == 0)
                                 break;
-                        string roomName = System.Text.Encoding.ASCII.GetString(roomNameBytes, 0, roomNameLength);
+                        string roomName = _encodingCodepageWindows.GetString(roomNameBytes, 0, roomNameLength);
 
-                        logger.Info("Room #" + i);
-                        logger.Info("    Name: " + roomName);
+                        logger.Debug("Room #" + i);
+                        logger.Debug("    Name: " + roomName);
 
                         // Read position
                         int zPos = reader.ReadInt32();
@@ -151,7 +143,7 @@ namespace TombEditor.Geometry.IO
                         reader.ReadInt16();
 
                         var room = new Room(level, numXBlocks, numZBlocks, roomName);
-                        room.Position = new Vector3(posXBlocks, yPos / 256.0f, posZBlocks);
+                        room.Position = new Vector3(128 - posXBlocks - numXBlocks, yPos / -256.0f, posZBlocks);
                         level.Rooms[i] = room;
 
                         short numPortals = reader.ReadInt16();
@@ -162,7 +154,7 @@ namespace TombEditor.Geometry.IO
                             portalThings[j] = reader.ReadInt16();
                         }
 
-                        logger.Info("    Portals: " + numPortals);
+                        logger.Debug("    Portals: " + numPortals);
 
                         for (int j = 0; j < numPortals; j++)
                         {
@@ -172,43 +164,52 @@ namespace TombEditor.Geometry.IO
                             short portalXBlocks = reader.ReadInt16();
                             short portalZBlocks = reader.ReadInt16();
                             reader.ReadInt16();
-                            var portalRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
-                            short portalSlot = reader.ReadInt16();
+                            var thisPortalRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            short portalOppositeSlot = reader.ReadInt16();
 
-                            var portalBuffer = reader.ReadBytes(26);
+                            reader.ReadBytes(26);
 
-                            var p = new Portal(portalRoom)
+                            PortalDirection directionEnum;
+                            switch (direction)
                             {
-                                X = (byte)portalX,
-                                Z = (byte)portalZ,
-                                NumXBlocks = (byte)portalXBlocks,
-                                NumZBlocks = (byte)portalZBlocks
-                            };
+                                case 0x0001:
+                                    directionEnum = PortalDirection.East;
+                                    break;
+                                case 0x0002:
+                                    directionEnum = PortalDirection.South;
+                                    break;
+                                case 0x0004:
+                                    directionEnum = PortalDirection.Floor;
+                                    break;
+                                case 0xfffe:
+                                    directionEnum = PortalDirection.West;
+                                    break;
+                                case 0xfffd:
+                                    directionEnum = PortalDirection.North;
+                                    break;
+                                case 0xfffb:
+                                    directionEnum = PortalDirection.Ceiling;
+                                    break;
+                                default:
+                                    progressReporter.ReportWarn("Unknown portal direction value " + direction + " encountered in room #" + i + " '" + roomName + "'");
+                                    continue;
+                            }
 
-
-                            if (direction == 0x0001)
-                                p.Direction = PortalDirection.East;
-                            if (direction == 0x0002)
-                                p.Direction = PortalDirection.South;
-                            if (direction == 0x0004)
-                                p.Direction = PortalDirection.Floor;
-                            if (direction == 0xfffe)
-                                p.Direction = PortalDirection.West;
-                            if (direction == 0xfffd)
-                                p.Direction = PortalDirection.North;
-                            if (direction == 0xfffb)
-                                p.Direction = PortalDirection.Ceiling;
-
-                            p.MemberOfFlippedRoom = !ReferenceEquals(p.Room, room);
-                            p.Room = room;
-                            portals.Add(p);
-
-                            portalThingIndices.Add(p, new PrjPortalThingIndex
+                            // We don't know yet the adjoining room because it is only indirectly known through the 'portalOppositeSlot'
+                            // This means that here we only collect the portals and later, when all rooms are read, we can actually create the real portals.
+                            if (tempPortals.ContainsKey(portalThings[j]))
                             {
-                                _thisThingIndex = portalThings[j],
-                                _otherThingIndex = portalSlot
-                            });
+                                progressReporter.ReportWarn("The portal thing index  " + portalThings[j] + " is found twice! The second occurance will be ignored.");
+                                continue;
+                            }
 
+                            tempPortals.Add(portalThings[j], new PrjPortal
+                                {
+                                    _room = room,
+                                    _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
+                                    _direction = directionEnum,
+                                    _oppositePortalId = portalOppositeSlot
+                                });
                         }
 
                         short numObjects = reader.ReadInt16();
@@ -219,7 +220,7 @@ namespace TombEditor.Geometry.IO
                             objectsThings[j] = reader.ReadInt16();
                         }
 
-                        logger.Info("    Objects and Triggers: " + numObjects);
+                        logger.Debug("    Objects and Triggers: " + numObjects);
 
                         for (int j = 0; j < numObjects; j++)
                         {
@@ -244,212 +245,184 @@ namespace TombEditor.Geometry.IO
                             short objTint = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
 
-                            short triggerType = 0;
-                            short triggerItemNumber = 0;
-                            short triggerTimere = 0;
-                            short triggerFlags = 0;
-                            short triggerItemType = 0;
+                            Vector3 position = new Vector3(room.NumXSectors * 1024 - objLongX, -objLongY - room.WorldPos.Y, objLongZ);
 
-                            if (objectType == 0x0010)
+                            switch (objectType)
                             {
-                                triggerType = reader.ReadInt16();
-                                triggerItemNumber = reader.ReadInt16();
-                                triggerTimere = reader.ReadInt16();
-                                triggerFlags = reader.ReadInt16();
-                                triggerItemType = reader.ReadInt16();
-                            }
+                                case 0x0008:
+                                    if (objSlot >= 460 && objSlot <= 464)
+                                        continue;
 
-                            if (objectType == 0x0008)
-                            {
-                                if (objSlot >= 460 && objSlot <= 464)
-                                {
+                                    if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
+                                    {
+                                        var instance = new MoveableInstance()
+                                        {
+                                            ScriptId = unchecked((ushort)(objectsThings[j])),
+                                            CodeBits = (byte)((objOcb >> 1) & 0x1f),
+                                            Invisible = (objOcb & 0x0001) != 0,
+                                            ClearBody = (objOcb & 0x0080) != 0,
+                                            WadObjectId = unchecked((uint)objSlot),
+                                            Position = position,
+                                            Ocb = objTimer,
+                                            RotationY = objFacing * (360.0f / 65535.0f) - 90.0f
+                                        };
+                                        room.AddObject(level, instance);
+                                    }
+                                    else
+                                    {
+                                        var instance = new StaticInstance()
+                                        {
+                                            ScriptId = unchecked((ushort)(objectsThings[j])),
+                                            WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
+                                            Position = position,
+                                            RotationY = objFacing * (360.0f / 65535.0f) - 90.0f
+                                        };
+                                        
+                                        int red = objTint & 0x001f;
+                                        int green = (objTint & 0x03e0) >> 5;
+                                        int blue = (objTint & 0x7c00) >> 10;
+                                        instance.Color = Color.FromArgb(255, red * 8, green * 8, blue * 8);
+
+                                        room.AddObject(level, instance);
+                                    }
+                                    break;
+
+                                case 0x0010:
+                                    short triggerType = reader.ReadInt16();
+                                    short triggerItemNumber = reader.ReadInt16();
+                                    short triggerTimer = reader.ReadInt16();
+                                    short triggerFlags = reader.ReadInt16();
+                                    short triggerItemType = reader.ReadInt16();
+                                    
+                                    TriggerType triggerTypeEnum;
+                                    switch (triggerType)
+                                    {
+                                        case 0:
+                                            triggerTypeEnum = TriggerType.Trigger;
+                                            break;
+                                        case 1:
+                                            triggerTypeEnum = TriggerType.Pad;
+                                            break;
+                                        case 2:
+                                            triggerTypeEnum = TriggerType.Switch;
+                                            break;
+                                        case 3:
+                                            triggerTypeEnum = TriggerType.Key;
+                                            break;
+                                        case 4:
+                                            triggerTypeEnum = TriggerType.Pickup;
+                                            break;
+                                        case 5:
+                                            triggerTypeEnum = TriggerType.Heavy;
+                                            break;
+                                        case 6:
+                                            triggerTypeEnum = TriggerType.Antipad;
+                                            break;
+                                        case 7:
+                                            triggerTypeEnum = TriggerType.Combat;
+                                            break;
+                                        case 8:
+                                            triggerTypeEnum = TriggerType.Dummy;
+                                            break;
+                                        case 9:
+                                            triggerTypeEnum = TriggerType.Antitrigger;
+                                            break;
+                                        case 10:
+                                            triggerTypeEnum = TriggerType.HeavySwitch;
+                                            break;
+                                        case 11:
+                                            triggerTypeEnum = TriggerType.HeavyAntritrigger;
+                                            break;
+                                        case 12:
+                                            triggerTypeEnum = TriggerType.Monkey;
+                                            break;
+                                        default:
+                                            progressReporter.ReportWarn("Unknown trigger type " + triggerType + " encountered in room #" + i + " '" + roomName + "'");
+                                            continue;
+                                    }
+
+                                    TriggerTargetType triggerTargetTypeEnum;
+                                    switch (triggerItemType)
+                                    {
+                                        case 0:
+                                            triggerTargetTypeEnum = TriggerTargetType.Object;
+                                            break;
+                                        case 1:
+                                            triggerTargetTypeEnum = TriggerTargetType.Camera;
+                                            break;
+                                        case 2:
+                                            triggerTargetTypeEnum = TriggerTargetType.Sink;
+                                            break;
+                                        case 3:
+                                            triggerTargetTypeEnum = TriggerTargetType.FlipMap;
+                                            break;
+                                        case 4:
+                                            triggerTargetTypeEnum = TriggerTargetType.FlipOn;
+                                            break;
+                                        case 5:
+                                            triggerTargetTypeEnum = TriggerTargetType.FlipOff;
+                                            break;
+                                        case 6:
+                                            triggerTargetTypeEnum = TriggerTargetType.Target;
+                                            break;
+                                        case 7:
+                                            triggerTargetTypeEnum = TriggerTargetType.FinishLevel;
+                                            break;
+                                        case 8:
+                                            triggerTargetTypeEnum = TriggerTargetType.PlayAudio;
+                                            break;
+                                        case 9:
+                                            triggerTargetTypeEnum = TriggerTargetType.FlipEffect;
+                                            break;
+                                        case 10:
+                                            triggerTargetTypeEnum = TriggerTargetType.Secret;
+                                            break;
+                                        case 11:
+                                            triggerTargetTypeEnum = TriggerTargetType.ActionNg;
+                                            break;
+                                        case 12:
+                                            triggerTargetTypeEnum = TriggerTargetType.FlyByCamera;
+                                            break;
+                                        case 13:
+                                            triggerTargetTypeEnum = TriggerTargetType.ParameterNg;
+                                            break;
+                                        case 14:
+                                            triggerTargetTypeEnum = TriggerTargetType.FmvNg;
+                                            break;
+                                        case 15:
+                                            triggerTargetTypeEnum = TriggerTargetType.TimerfieldNg;
+                                            break;
+                                        default:
+                                            triggerTargetTypeEnum = TriggerTargetType.FlipEffect;
+                                            progressReporter.ReportWarn("Unknown trigger target type " + triggerItemType + " encountered in room #" + i + " '" + roomName + "'");
+                                            continue;
+                                    }
+
+                                    var trigger = new TriggerInstance(GetArea(room, 1, objPosX, objPosZ, objSizeX, objSizeZ))
+                                    {
+                                        TriggerType = triggerTypeEnum,
+                                        TargetType = triggerTargetTypeEnum,
+                                        CodeBits = (byte)((~triggerFlags >> 1) & 0x1f),
+                                        OneShot = (triggerFlags & 0x0001) != 0,
+                                        Timer = triggerTimer,
+                                        TargetData = triggerItemNumber
+                                    };
+                                    room.AddObject(level, trigger);
+                                    break;
+
+                                default:
+                                    progressReporter.ReportWarn("Unknown object (first *.prj array) type " + objectType + " encountered in room #" + i + " '" + roomName + "'");
                                     continue;
-                                }
-
-                                if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
-                                {
-                                    var instance = new MoveableInstance(objectsThings[j], room)
-                                    {
-                                        CodeBits = (byte)((objOcb >> 1) & 0x1f),
-                                        Invisible = (objOcb & 0x0001) != 0,
-                                        ClearBody = (objOcb & 0x0080) != 0,
-                                        WadObjectId = unchecked((uint)objSlot),
-                                        Position = new Vector3(objPosX, objLongY, objPosZ),
-                                        Ocb = objTimer
-                                    };
-
-
-                                    objFacing = (short)((objFacing >> 8) & 0xff);
-
-                                    if (objFacing == 0x00)
-                                        instance.Rotation = 270;
-                                    if (objFacing == 0x20)
-                                        instance.Rotation = 315;
-                                    if (objFacing == 0x40)
-                                        instance.Rotation = 0;
-                                    if (objFacing == 0x60)
-                                        instance.Rotation = 45;
-                                    if (objFacing == 0x80)
-                                        instance.Rotation = 90;
-                                    if (objFacing == 0xa0)
-                                        instance.Rotation = 135;
-                                    if (objFacing == 0xc0)
-                                        instance.Rotation = 180;
-                                    if (objFacing == 0xe0)
-                                        instance.Rotation = 225;
-
-                                    level.Objects.Add(instance.Id, instance);
-                                    room.Moveables.Add(instance.Id);
-                                }
-                                else
-                                {
-                                    var instance = new StaticInstance(objectsThings[j], room)
-                                    {
-                                        WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
-                                        Position = new Vector3(objPosX, objLongY, objPosZ)
-                                    };
-
-                                    objFacing = (short)((objFacing >> 8) & 0xff);
-
-                                    if (objFacing == 0x00)
-                                        instance.Rotation = 270;
-                                    if (objFacing == 0x20)
-                                        instance.Rotation = 315;
-                                    if (objFacing == 0x40)
-                                        instance.Rotation = 0;
-                                    if (objFacing == 0x60)
-                                        instance.Rotation = 45;
-                                    if (objFacing == 0x80)
-                                        instance.Rotation = 90;
-                                    if (objFacing == 0xa0)
-                                        instance.Rotation = 135;
-                                    if (objFacing == 0xc0)
-                                        instance.Rotation = 180;
-                                    if (objFacing == 0xe0)
-                                        instance.Rotation = 225;
-
-                                    byte red = (byte)(objTint & 0x001f);
-                                    byte green = (byte)((objTint & 0x03e0) >> 5);
-                                    byte blu = (byte)((objTint & 0x7c00) >> 10);
-
-                                    instance.Color = Color.FromArgb(255, red * 8, green * 8, blu * 8);
-
-                                    level.Objects.Add(instance.Id, instance);
-                                    room.Statics.Add(instance.Id);
-                                }
-                            }
-                            else
-                            {
-                                var trigger = new TriggerInstance(level.GetNewTriggerId(), level.GetOrCreateDummyRoom(i))
-                                {
-                                    X = (byte)objPosX,
-                                    Z = (byte)objPosZ,
-                                    NumXBlocks = (byte)objSizeX,
-                                    NumZBlocks = (byte)objSizeZ,
-                                    Target = triggerItemNumber
-                                };
-
-
-                                switch (triggerType)
-                                {
-                                    case 0:
-                                        trigger.TriggerType = TriggerType.Trigger;
-                                        break;
-                                    case 1:
-                                        trigger.TriggerType = TriggerType.Pad;
-                                        break;
-                                    case 2:
-                                        trigger.TriggerType = TriggerType.Switch;
-                                        break;
-                                    case 3:
-                                        trigger.TriggerType = TriggerType.Key;
-                                        break;
-                                    case 4:
-                                        trigger.TriggerType = TriggerType.Pickup;
-                                        break;
-                                    case 5:
-                                        trigger.TriggerType = TriggerType.Heavy;
-                                        break;
-                                    case 6:
-                                        trigger.TriggerType = TriggerType.Antipad;
-                                        break;
-                                    case 7:
-                                        trigger.TriggerType = TriggerType.Combat;
-                                        break;
-                                    case 8:
-                                        trigger.TriggerType = TriggerType.Dummy;
-                                        break;
-                                    case 9:
-                                        trigger.TriggerType = TriggerType.Antitrigger;
-                                        break;
-                                    case 10:
-                                        trigger.TriggerType = TriggerType.HeavySwitch;
-                                        break;
-                                    case 11:
-                                        trigger.TriggerType = TriggerType.HeavyAntritrigger;
-                                        break;
-                                    case 12:
-                                        trigger.TriggerType = TriggerType.Monkey;
-                                        break;
-                                }
-
-                                trigger.CodeBits = (byte)((~triggerFlags >> 1) & 0x1f);
-                                trigger.OneShot = (triggerFlags & 0x0001) != 0;
-
-                                trigger.Timer = triggerTimere;
-
-                                switch (triggerItemType)
-                                {
-                                    case 0:
-                                        trigger.TargetType = TriggerTargetType.Object;
-                                        break;
-                                    case 3:
-                                        trigger.TargetType = TriggerTargetType.FlipMap;
-                                        break;
-                                    case 4:
-                                        trigger.TargetType = TriggerTargetType.FlipOn;
-                                        break;
-                                    case 5:
-                                        trigger.TargetType = TriggerTargetType.FlipOff;
-                                        break;
-                                    case 6:
-                                        trigger.TargetType = TriggerTargetType.Target;
-                                        break;
-                                    case 7:
-                                        trigger.TargetType = TriggerTargetType.FinishLevel;
-                                        break;
-                                    case 8:
-                                        trigger.TargetType = TriggerTargetType.PlayAudio;
-                                        break;
-                                    case 9:
-                                        trigger.TargetType = TriggerTargetType.FlipEffect;
-                                        break;
-                                    case 10:
-                                        trigger.TargetType = TriggerTargetType.Secret;
-                                        break;
-                                    case 12:
-                                        trigger.TargetType = TriggerTargetType.FlyByCamera;
-                                        break;
-                                    case 13:
-                                        trigger.TargetType = TriggerTargetType.CutsceneOrParameterNg;
-                                        break;
-                                    case 14:
-                                        trigger.TargetType = TriggerTargetType.Fmv;
-                                        break;
-                                }
-
-                                level.Triggers.Add(trigger.Id, trigger);
                             }
                         }
 
-                        room.AmbientLight =
-                            Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                        room.AmbientLight = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
                         reader.ReadByte();
 
                         short numObjects2 = reader.ReadInt16();
                         var objectsThings2 = new short[numObjects2];
 
-                        logger.Info("    Lights and other objects: " + numObjects2);
+                        logger.Debug("    Lights and other objects: " + numObjects2);
 
                         for (int j = 0; j < numObjects2; j++)
                         {
@@ -478,6 +451,8 @@ namespace TombEditor.Geometry.IO
                             short objRoll = reader.ReadInt16();
                             short objSpeed = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
+
+                            Vector3 position = new Vector3(room.NumXSectors * 1024 - objLongX, -objLongY - room.WorldPos.Y, objLongZ);
 
                             switch (objectType)
                             {
@@ -533,76 +508,73 @@ namespace TombEditor.Geometry.IO
                                             throw new NotSupportedException("Unknown light type found inside *.prj file.");
                                     }
 
-                                    var light = new Light(lightType,
-                                        new Vector3(objPosX * 1024.0f + 512.0f, -objLongY, objPosZ * 1024.0f + 512.0f))
+                                    var light = new Light(lightType)
                                     {
+                                        Position = position,
                                         Color = Color.FromArgb(255, lightR, lightG, lightB),
                                         Cutoff = lightCut,
                                         Len = lightLen,
-                                        DirectionX = 360.0f - lightX,
-                                        DirectionY = lightY + 90.0f,
+                                        RotationX = 360.0f - lightX,
+                                        RotationY = lightY + 90.0f,
                                         Enabled = lightOn == 0x01,
                                         In = lightIn,
                                         Out = lightOut,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
-                                    if (light.DirectionY >= 360)
-                                        light.DirectionY = light.DirectionY - 360.0f;
-
-                                    room.Lights.Add(light);
+                                    room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
-                                    var sound = new SoundSourceInstance(objectsThings2[j], room)
+                                    var sound = new SoundSourceInstance()
                                     {
                                         SoundId = objSlot,
-                                        Position = new Vector3(objPosX, objLongY, objPosZ)
+                                        Position = position
                                     };
 
-
-                                    level.Objects.Add(sound.Id, sound);
+                                    room.AddObject(level, sound);
                                     break;
                                 case 0x4400:
-                                    var sink = new SinkInstance(objectsThings2[j], room)
+                                    var sink = new SinkInstance()
                                     {
+                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
                                         Strength = (short)(objTimer / 2),
-                                        Position = new Vector3(objPosX, objLongY, objPosZ)
+                                        Position = position
                                     };
 
-                                    level.Objects.Add(sink.Id, sink);
-                                    room.Sinks.Add(sink.Id);
+                                    room.AddObject(level, sink);
                                     break;
                                 case 0x4800:
                                 case 0x4080:
-                                    var camera = new CameraInstance(objectsThings2[j], room)
+                                    var camera = new CameraInstance()
                                     {
+                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
                                         Timer = objTimer,
                                         Fixed = (objectType == 0x4080),
-                                        Position = new Vector3(objPosX, objLongY, objPosZ)
+                                        Position = position
                                     };
 
-                                    level.Objects.Add(camera.Id, camera);
-                                    room.Cameras.Add(camera.Id);
+                                    room.AddObject(level, camera);
                                     break;
                                 case 0x4040:
-                                    var flybyCamera = new FlybyCameraInstance(objectsThings2[j], room)
+                                    var flybyCamera = new FlybyCameraInstance()
                                     {
+                                        ScriptId = unchecked((ushort)(objectsThings2[j])),
                                         Timer = unchecked((ushort)objTimer),
                                         Sequence = (byte)((objSlot & 0xe000) >> 13),
                                         Number = (byte)((objSlot & 0x1f00) >> 8),
                                         Fov = (short)(objSlot & 0x00ff),
                                         Roll = objRoll,
                                         Speed = objSpeed / 655.0f,
-                                        Position = new Vector3(objPosX, objLongY, objPosZ),
+                                        Position = position,
                                         RotationX = -objUnk,
                                         RotationY = objFacing + 90,
                                         Flags = unchecked((ushort)objOcb)
                                     };
-
-                                    if (flybyCamera.RotationY >= 360) flybyCamera.RotationY = (short)(flybyCamera.RotationY - 360);
                                     
-                                    level.Objects.Add(flybyCamera.Id, flybyCamera);
-                                    room.FlyByCameras.Add(flybyCamera.Id);
+                                    room.AddObject(level, flybyCamera);
                                     break;
+                                default:
+                                    progressReporter.ReportWarn("Unknown object (second *.prj array) type " + objectType + " encountered in room #" + i + " '" + roomName + "'");
+                                    continue;
                             }
                         }
 
@@ -628,11 +600,7 @@ namespace TombEditor.Geometry.IO
 
                             flipInfos.Add(info);
                         }
-
-                        room.Flipped = false;
-                        room.AlternateRoom = null;
-                        room.AlternateGroup = -1;
-
+                        
                         if ((flags1 & 0x0200) != 0)
                             room.FlagReflection = true;
                         if ((flags1 & 0x0100) != 0)
@@ -647,40 +615,99 @@ namespace TombEditor.Geometry.IO
                             room.FlagWater = true;
 
                         var tempBlocks = new PrjBlock[numXBlocks, numZBlocks];
-
                         for (int z = 0; z < room.NumZSectors; z++)
-                        {
-                            for (int x = 0; x < room.NumXSectors; x++)
+                            for (int x = room.NumXSectors - 1; x >= 0; x--)
                             {
-                                var b = new PrjBlock
+                                short blockType = reader.ReadInt16();
+                                short blockFlags1 = reader.ReadInt16();
+                                short blockYfloor = reader.ReadInt16();
+                                short blockYceiling = reader.ReadInt16();
+                                
+                                var block = room.Blocks[x, z];
+                                switch (blockType)
                                 {
-                                    _blockType = reader.ReadInt16(),
-                                    _blockFlags1 = reader.ReadInt16(),
-                                    _blockYfloor = reader.ReadInt16(),
-                                    _blockYceiling = reader.ReadInt16(),
-                                    _qaFaces = new sbyte[4]
-                                };
+                                    case 0x01:
+                                    case 0x05:
+                                    case 0x07:
+                                    case 0x03:
+                                        block.Type = BlockType.Floor;
+                                        break;
+                                    case 0x1e:
+                                        block.Type = BlockType.BorderWall;
+                                        break;
+                                    case 0x0e:
+                                        block.Type = BlockType.Wall;
+                                        break;
+                                    case 0x06:
+                                        block.Type = BlockType.BorderWall;
+                                        break;
+                                    default:
+                                        block.Type = BlockType.Floor;
+                                        break;
+                                }
 
-                                for (int k = 0; k < 4; k++)
-                                    b._qaFaces[k] = reader.ReadSByte();
+                                block.QAFaces[1] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QAFaces[2] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QAFaces[3] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.QAFaces[0] = (short)(reader.ReadSByte() + blockYfloor);
 
-                                b._wsFaces = new sbyte[4];
-                                for (int k = 0; k < 4; k++)
-                                    b._wsFaces[k] = reader.ReadSByte();
+                                block.WSFaces[0] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WSFaces[3] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WSFaces[2] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.WSFaces[1] = (short)(reader.ReadSByte() + blockYceiling);
 
-                                b._edFaces = new sbyte[4];
-                                for (int k = 0; k < 4; k++)
-                                    b._edFaces[k] = reader.ReadSByte();
+                                block.EDFaces[1] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.EDFaces[2] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.EDFaces[3] = (short)(reader.ReadSByte() + blockYfloor);
+                                block.EDFaces[0] = (short)(reader.ReadSByte() + blockYfloor);
 
-                                b._rfFaces = new sbyte[4];
-                                for (int k = 0; k < 4; k++)
-                                    b._rfFaces[k] = reader.ReadSByte();
+                                block.RFFaces[0] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RFFaces[3] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RFFaces[2] = (short)(reader.ReadSByte() + blockYceiling);
+                                block.RFFaces[1] = (short)(reader.ReadSByte() + blockYceiling);
+                                
+                                if ((blockFlags1 & 0x4000) != 0)
+                                    block.Flags |= BlockFlags.Monkey;
+                                if ((blockFlags1 & 0x0020) != 0)
+                                    block.Flags |= BlockFlags.Box;
+                                if ((blockFlags1 & 0x0010) != 0)
+                                    block.Flags |= BlockFlags.Death;
+                                if ((blockFlags1 & 0x0200) != 0)
+                                    block.Climb[2] = true;
+                                if ((blockFlags1 & 0x0100) != 0)
+                                    block.Climb[1] = true;
+                                if ((blockFlags1 & 0x0080) != 0)
+                                    block.Climb[0] = true;
+                                if ((blockFlags1 & 0x0040) != 0)
+                                    block.Climb[3] = true;
 
-                                b._faces = new PrjFace[14];
+                                if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
+                                {
+                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0)
+                                        block.WallOpacity = PortalOpacity.Opacity1;
+                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0x1000)
+                                        block.WallOpacity = PortalOpacity.Opacity2;
+                                }
+                                else
+                                {
+                                    if ((blockFlags1 & 0x0002) == 0x0002)
+                                        block.FloorOpacity = PortalOpacity.Opacity1;
 
+                                    if ((blockFlags1 & 0x0004) == 0x0004)
+                                        block.CeilingOpacity = PortalOpacity.Opacity1;
+
+                                    if ((blockFlags1 & 0x0800) == 0x0800)
+                                        block.FloorOpacity = PortalOpacity.Opacity2;
+
+                                    if ((blockFlags1 & 0x0400) == 0x0400)
+                                        block.CeilingOpacity = PortalOpacity.Opacity2;
+                                }
+                                
+                                // Read temp blocks that contain texturing informations that will be needed later
+                                var tempBlock = new PrjBlock { _faces = new PrjFace[14] };
                                 for (int j = 0; j < 14; j++)
                                 {
-                                    var fc = new PrjFace
+                                    tempBlock._faces[j] = new PrjFace
                                     {
                                         _txtType = reader.ReadInt16(),
                                         _txtIndex = reader.ReadByte(),
@@ -688,167 +715,92 @@ namespace TombEditor.Geometry.IO
                                         _txtRotation = reader.ReadByte(),
                                         _txtTriangle = reader.ReadByte()
                                     };
-
                                     reader.ReadInt16();
-
-                                    b._faces[j] = (fc);
                                 }
 
-                                b._flags2 = reader.ReadInt16();
-                                b._flags3 = reader.ReadInt16();
+                                tempBlock._flags2 = reader.ReadInt16();
+                                tempBlock._flags3 = reader.ReadInt16();
+                                block.SplitFoorType = unchecked((byte)(tempBlock._flags3));
 
-                                tempBlocks[x, z] = b;
+                                tempBlocks[x, z] = tempBlock;
                             }
-                        }
-
                         tempRooms.Add(i, tempBlocks);
+                        
+                        room.NormalizeRoomY();
 
-                        short lowest = 1024;
-                        short highest = -1024;
-
-                        for (int z = 1; z < room.NumZSectors - 1; z++)
-                        {
-                            for (int x = 1; x < room.NumXSectors - 1; x++)
-                            {
-                                var b = tempBlocks[x, z];
-
-                                if (b._blockYfloor < lowest)
-                                    lowest = b._blockYfloor;
-                                if (b._blockYceiling > highest)
-                                    highest = b._blockYceiling;
-                            }
-                        }
-
-                        room.Position = new Vector3(-room.Position.X, lowest, room.Position.Z);
-
-                        sbyte deltaCeilingMain = (sbyte)lowest;
-
-                        for (int z = 0; z < room.NumZSectors; z++)
-                        {
-                            for (int x = 0; x < room.NumXSectors; x++)
-                            {
-                                var b = tempBlocks[room.NumXSectors - 1 - x, z];
-
-                                sbyte deltaFloor = (sbyte)(b._blockYfloor - lowest);
-                                sbyte deltaCeiling = (sbyte)(deltaCeilingMain - b._blockYceiling);
-
-                                for (int j = 0; j < 4; j++)
-                                    b._qaFaces[j] += deltaFloor;
-                                for (int j = 0; j < 4; j++)
-                                    b._edFaces[j] += deltaFloor;
-                                for (int j = 0; j < 4; j++)
-                                    b._wsFaces[j] -= deltaCeiling;
-                                for (int j = 0; j < 4; j++)
-                                    b._rfFaces[j] -= deltaCeiling;
-
-                                var typ = BlockType.Floor;
-                                switch (b._blockType)
-                                {
-                                    case 0x01:
-                                        typ = BlockType.Floor;
-                                        break;
-                                    case 0x1e:
-                                        typ = BlockType.BorderWall;
-                                        break;
-                                    case 0x0e:
-                                        typ = BlockType.Wall;
-                                        break;
-                                    case 0x06:
-                                        typ = BlockType.BorderWall; // BlockType.WallPortal;
-                                        break;
-                                    case 0x03:
-                                        typ = BlockType.Floor; // BlockType.FloorPortal;
-                                        break;
-                                    case 0x05:
-                                        typ = BlockType.Floor; // BlockType.CeilingPortal;
-                                        break;
-                                    case 0x07:
-                                        typ = BlockType.Floor; // BlockType.FloorPortal;
-                                        break;
-                                }
-
-                                room.Blocks[x, z] = new Block(typ, BlockFlags.None)
-                                {
-                                    QAFaces =
-                                {
-                                    [0] = b._qaFaces[3],
-                                    [1] = b._qaFaces[0],
-                                    [2] = b._qaFaces[1],
-                                    [3] = b._qaFaces[2]
-                                },
-                                    EDFaces =
-                                {
-                                    [0] = b._edFaces[3],
-                                    [1] = b._edFaces[0],
-                                    [2] = b._edFaces[1],
-                                    [3] = b._edFaces[2]
-                                }
-                                };
-
-                                room.Blocks[x, z].WSFaces[0] = b._wsFaces[0];
-                                room.Blocks[x, z].WSFaces[1] = b._wsFaces[3];
-                                room.Blocks[x, z].WSFaces[2] = b._wsFaces[2];
-                                room.Blocks[x, z].WSFaces[3] = b._wsFaces[1];
-
-                                room.Blocks[x, z].RFFaces[0] = b._rfFaces[0];
-                                room.Blocks[x, z].RFFaces[1] = b._rfFaces[3];
-                                room.Blocks[x, z].RFFaces[2] = b._rfFaces[2];
-                                room.Blocks[x, z].RFFaces[3] = b._rfFaces[1];
-
-                                room.Blocks[x, z].SplitFoorType = (byte)b._flags3;
-
-                                if ((b._blockFlags1 & 0x4000) != 0)
-                                    room.Blocks[x, z].Flags |= BlockFlags.Monkey;
-                                if ((b._blockFlags1 & 0x0020) != 0)
-                                    room.Blocks[x, z].Flags |= BlockFlags.Box;
-                                if ((b._blockFlags1 & 0x0010) != 0)
-                                    room.Blocks[x, z].Flags |= BlockFlags.Death;
-                                if ((b._blockFlags1 & 0x0200) != 0)
-                                    room.Blocks[x, z].Climb[2] = true;
-                                if ((b._blockFlags1 & 0x0100) != 0)
-                                    room.Blocks[x, z].Climb[1] = true;
-                                if ((b._blockFlags1 & 0x0080) != 0)
-                                    room.Blocks[x, z].Climb[0] = true;
-                                if ((b._blockFlags1 & 0x0040) != 0)
-                                    room.Blocks[x, z].Climb[3] = true;
-
-                                if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
-                                {
-                                    if ((b._blockFlags1 & 0x0008) == 0x0008 && (b._blockFlags1 & 0x1000) == 0)
-                                        room.Blocks[x, z].WallOpacity = PortalOpacity.Opacity1;
-                                    if ((b._blockFlags1 & 0x0008) == 0x0008 && (b._blockFlags1 & 0x1000) == 0x1000)
-                                        room.Blocks[x, z].WallOpacity = PortalOpacity.Opacity2;
-                                }
-                                else
-                                {
-                                    if ((b._blockFlags1 & 0x0002) == 0x0002)
-                                        room.Blocks[x, z].FloorOpacity = PortalOpacity.Opacity1;
-
-                                    if ((b._blockFlags1 & 0x0004) == 0x0004)
-                                        room.Blocks[x, z].CeilingOpacity = PortalOpacity.Opacity1;
-
-                                    if ((b._blockFlags1 & 0x0800) == 0x0800)
-                                        room.Blocks[x, z].FloorOpacity = PortalOpacity.Opacity2;
-
-                                    if ((b._blockFlags1 & 0x0400) == 0x0400)
-                                        room.Blocks[x, z].CeilingOpacity = PortalOpacity.Opacity2;
-                                }
-                            }
-                        }
-
-                        System.Diagnostics.Debug.Assert(ReferenceEquals(level.GetOrCreateDummyRoom(i), room));
-
-                        progress += (i / (float)numRooms * 0.28f);
-
-                        progressReporter.ReportProgress((int)progress, "");
+                        System.Diagnostics.Debug.Assert(level.GetOrCreateDummyRoom(i) == room);
+                        
+                        progressReporter.ReportProgress(i / ((float)numRooms) * 28.0f, "");
                     }
 
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
-                    logger.Info("All rooms loaded");
+                    // Link portals
+                    {
+                        progressReporter.ReportProgress(31, "Link portals");
 
-                    // Read unused things indices
-                    //      byte[] bufIndices=reader.ReadBytes(13136);
+                        foreach (PrjPortal prjPortal in tempPortals.Values)
+                        {
+                            if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
+                            {
+                                progressReporter.ReportWarn("A portal in room '" + prjPortal._room + "' refers to an invalid opposite portal.");
+                                continue;
+                            }
+
+                            Room adjoiningRoom = tempPortals[prjPortal._oppositePortalId]._room;
+                            prjPortal._room.AddObject(level, new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom));
+                        }
+
+                        progressReporter.ReportProgress(32, "Portals linked");
+                    }
+
+
+                    // Link triggers
+                    {
+                        progressReporter.ReportProgress(31, "Link triggers");
+
+                        // Build lookup table for IDs
+                        Dictionary<ushort, PositionBasedObjectInstance> objectLookup =
+                            level.Rooms.Where(room => room != null)
+                            .SelectMany(room => room.Objects)
+                            .Where(instance => instance is IHasScriptID)
+                            .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
+
+                        // Lookup objects from IDs for all triggers
+                        foreach (Room room in level.Rooms.Where(room => room != null))
+                            foreach (var instance in room.Triggers.ToList())
+                                switch (instance.TargetType)
+                                {
+                                    case TriggerTargetType.Object:
+                                    case TriggerTargetType.Target:
+                                    case TriggerTargetType.Camera:
+                                    case TriggerTargetType.FlyByCamera:
+                                    case TriggerTargetType.Sink:
+                                        ushort triggerTargetId = unchecked((ushort)(instance.TargetData));
+                                        if (!objectLookup.ContainsKey(triggerTargetId))
+                                        {
+                                            progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + triggerTargetId + " that is unavailable.");
+                                            room.RemoveObject(level, instance);
+                                            continue;
+                                        }
+                                        
+                                        instance.TargetObj = objectLookup[triggerTargetId];
+                                        instance.TargetData = 0;
+
+                                        // Sinks and cameras are classified as 'object's most of time for some reason.
+                                        // We have to fix that.
+                                        if (instance.TargetObj is FlybyCameraInstance)
+                                            instance.TargetType = TriggerTargetType.FlyByCamera;
+                                        if (instance.TargetObj is SinkInstance)
+                                            instance.TargetType = TriggerTargetType.Sink;
+                                        if (instance.TargetObj is CameraInstance)
+                                            instance.TargetType = TriggerTargetType.Camera;
+                                        break;
+                                }
+                        progressReporter.ReportProgress(35, "Triggers linked");
+                    }
+
+                    // Ignore unused things indices
 
                     int dwNumThings = reader.ReadInt32(); // number of things in the map
                     int dwMaxThings = reader.ReadInt32(); // always 2000
@@ -859,8 +811,7 @@ namespace TombEditor.Geometry.IO
 
                     int dwNumTriggers = reader.ReadInt32(); // number of triggers in the map
                     reader.ReadBytes(512 * 4);
-
-
+                    
                     // Read texture
                     {
                         var stringBuffer = new byte[255];
@@ -876,7 +827,7 @@ namespace TombEditor.Geometry.IO
                             sb++;
                         }
 
-                        string textureFilename = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                        string textureFilename = _encodingCodepageWindows.GetString(stringBuffer);
                         level.Settings.TextureFilePath = level.Settings.MakeRelative(TryFindAbsolutePath(
                             level.Settings, textureFilename.Replace('\0', ' ').Trim()), VariableType.LevelDirectory);
                         ResourceLoader.TryLoadingTexture(level, progressReporter);
@@ -920,7 +871,7 @@ namespace TombEditor.Geometry.IO
                             stringBuffer[sb] = s;
                             sb++;
                         }
-                        string wadName = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                        string wadName = _encodingCodepageWindows.GetString(stringBuffer);
                         level.Settings.WadFilePath = level.Settings.MakeRelative(TryFindAbsolutePath(
                             level.Settings, Path.ChangeExtension(wadName.Replace('\0', ' ').Trim(), "wad")), VariableType.LevelDirectory);
                         ResourceLoader.TryLoadingObjects(level, progressReporter);
@@ -975,7 +926,7 @@ namespace TombEditor.Geometry.IO
                                 sb++;
                             }
 
-                            string slotName = System.Text.Encoding.ASCII.GetString(stringBuffer);
+                            string slotName = _encodingCodepageWindows.GetString(stringBuffer);
                             slotName = slotName.Replace('\0', ' ').Trim();
 
                             int objectId = reader.ReadInt32();
@@ -1042,21 +993,9 @@ namespace TombEditor.Geometry.IO
 
                         level.TextureSounds.Add(txtSound);
                     }
-
-                    // Fix rooms coordinates (in TRLE reference system is messed up...)
-                    progressReporter.ReportProgress(65, "Flipping reference system");
-
-                    int minX = level.Rooms.Where(room => room != null).Select(room => (int)room.Position.X)
-                        .Concat(new[] { 1024 }).Min();
-
-                    foreach (var room in level.Rooms.Where(room => room != null))
-                    {
-                        room.Position = new Vector3(room.Position.X - minX - room.NumXSectors + 10,
-                            room.Position.Y,
-                            room.Position.Z);
-                    }
-
-                    progressReporter.ReportProgress(67, "Building flipped rooms table");
+                    
+                    // Connect flip rooms
+                    progressReporter.ReportProgress(67, "Prcessing flip rooms table");
 
                     for (int i = 0; i < level.Rooms.Length; i++)
                     {
@@ -1069,336 +1008,21 @@ namespace TombEditor.Geometry.IO
                         {
                             if (info._baseRoom == i)
                             {
-                                room.Flipped = true;
                                 room.AlternateRoom = level.Rooms[info._flipRoom];
                                 room.AlternateGroup = info._group;
                             }
 
                             if (info._flipRoom != i)
                                 continue;
-
-                            room.Flipped = true;
-                            room.BaseRoom = level.Rooms[info._baseRoom];
+                            
+                            room.AlternateBaseRoom = level.Rooms[info._baseRoom];
                             room.AlternateGroup = info._group;
                             room.Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
                                 level.Rooms[info._baseRoom].Position.Y,
                                 level.Rooms[info._baseRoom].Position.Z);
                         }
                     }
-
-                    // Fix objects
-                    progressReporter.ReportProgress(70, "Fixing objects positions and data");
-                    foreach (var instance in level.Objects.Values.ToList())
-                    {
-                        instance.Position = new Vector3(
-                            (instance.Room.NumXSectors - instance.Position.X - 1) * 1024 + 512,
-                            -instance.Position.Y - instance.Room.Position.Y * 256,
-                            instance.Position.Z * 1024 + 512);
-
-                        switch (instance.Type)
-                        {
-                            case ObjectInstanceType.Moveable:
-                                var moveable = (MoveableInstance)instance;
-                                moveable.WadObjectId = moveable.WadObjectId;
-                                level.Objects[instance.Id] = moveable;
-                                break;
-                            case ObjectInstanceType.Static:
-                                var staticMesh = (StaticInstance)instance;
-                                staticMesh.WadObjectId = staticMesh.WadObjectId;
-                                level.Objects[instance.Id] = staticMesh;
-                                break;
-                            default:
-                                level.Objects[instance.Id] = instance;
-                                break;
-                        }
-                    }
-
-                    var triggersToRemove = new List<int>();
-
-                    // Fix triggers
-                    progressReporter.ReportProgress(73, "Fixing triggers");
-                    foreach (var instance in level.Triggers.Values.ToList())
-                    {
-                        if (instance.TargetType == TriggerTargetType.Object &&
-                            !level.Objects.ContainsKey(instance.Target))
-                        {
-                            triggersToRemove.Add(instance.Id);
-                            continue;
-                        }
-
-                        if (instance.X < 1)
-                            instance.X = 1;
-                        if (instance.X > instance.Room.NumXSectors - 2)
-                            instance.X = (byte)(instance.Room.NumXSectors - 2);
-                        if (instance.Z < 1)
-                            instance.Z = 1;
-                        if (instance.Z > instance.Room.NumZSectors - 2)
-                            instance.Z = (byte)(instance.Room.NumZSectors - 2);
-
-                        instance.X = (byte)(instance.Room.NumXSectors - instance.X - instance.NumXBlocks);
-
-                        for (int x = instance.X; x < instance.X + instance.NumXBlocks; x++)
-                        {
-                            for (int z = instance.Z; z < instance.Z + instance.NumZBlocks; z++)
-                            {
-                                instance.Room.Blocks[x, z].Triggers.Add(instance.Id);
-                            }
-                        }
-
-                        if (instance.TargetType == TriggerTargetType.Object &&
-                            level.Objects[instance.Target].Type == ObjectInstanceType.FlyByCamera)
-                        {
-                            instance.TargetType = TriggerTargetType.FlyByCamera;
-                            instance.Target = ((FlybyCameraInstance)level.Objects[instance.Target]).Sequence;
-                        }
-
-                        if (instance.TargetType == TriggerTargetType.Object &&
-                            level.Objects[instance.Target].Type == ObjectInstanceType.Camera)
-                        {
-                            instance.TargetType = TriggerTargetType.Camera;
-                        }
-
-                        if (instance.TargetType == TriggerTargetType.Object &&
-                            level.Objects[instance.Target].Type == ObjectInstanceType.Moveable &&
-                            ((MoveableInstance)level.Objects[instance.Target]).WadObjectId == 422)
-                        {
-                            instance.TargetType = TriggerTargetType.Target;
-                        }
-
-                        if (instance.TargetType == TriggerTargetType.Object &&
-                            level.Objects[instance.Target].Type == ObjectInstanceType.Sink)
-                        {
-                            instance.TargetType = TriggerTargetType.Sink;
-                        }
-
-                        level.Triggers[instance.Id] = instance;
-                    }
-
-                    if (triggersToRemove.Count != 0)
-                    {
-                        progressReporter.ReportProgress(75, "Found invalid triggers");
-                        foreach (int trigger in triggersToRemove)
-                        {
-                            progressReporter.ReportProgress(75, "    Deleted trigger #" + trigger + " in room " +
-                                                    level.Rooms.ReferenceIndexOf(level.Triggers[trigger].Room));
-                            level.Triggers.Remove(trigger);
-                        }
-                    }
-
-                    // Fix portals
-                    progressReporter.ReportProgress(76, "Building portals");
-                    foreach (var currentPortal in portals)
-                    {
-                        currentPortal.X = (byte)(currentPortal.Room.NumXSectors - currentPortal.NumXBlocks -
-                                                    currentPortal.X);
-                    }
-
-                    foreach (var currentPortal in portals)
-                    {
-                        foreach (var otherPortal in portals)
-                        {
-                            if (ReferenceEquals(currentPortal, otherPortal))
-                                continue;
-
-                            if (portalThingIndices[currentPortal]._otherThingIndex != portalThingIndices[otherPortal]._thisThingIndex)
-                                continue;
-
-                            var currentRoom = currentPortal.Room;
-                            var otherRoom = otherPortal.Room;
-
-                            if (currentPortal.Direction == PortalDirection.North ||
-                                currentPortal.Direction == PortalDirection.South ||
-                                currentPortal.Direction == PortalDirection.East ||
-                                currentPortal.Direction == PortalDirection.West)
-                            {
-                                for (int x = currentPortal.X; x < currentPortal.X + currentPortal.NumXBlocks; x++)
-                                {
-                                    for (int z = currentPortal.Z; z < currentPortal.Z + currentPortal.NumZBlocks; z++)
-                                    {
-                                        currentRoom.Blocks[x, z].WallPortal = currentPortal;
-                                    }
-                                }
-
-                                for (int x = otherPortal.X; x < otherPortal.X + otherPortal.NumXBlocks; x++)
-                                {
-                                    for (int z = otherPortal.Z; z < otherPortal.Z + otherPortal.NumZBlocks; z++)
-                                    {
-                                        otherPortal.Room.Blocks[x, z].WallPortal = otherPortal;
-                                    }
-                                }
-                            }
-
-                            if (currentPortal.Direction == PortalDirection.Floor ||
-                                currentPortal.Direction == PortalDirection.Ceiling)
-                            {
-                                int xMin = currentPortal.X;
-                                int xMax = currentPortal.X + currentPortal.NumXBlocks;
-                                int zMin = currentPortal.Z;
-                                int zMax = currentPortal.Z + currentPortal.NumZBlocks;
-
-                                int otherXmin = xMin + (int)(currentRoom.Position.X -
-                                                                otherPortal.Room.Position.X);
-                                int otherXmax = xMax + (int)(currentRoom.Position.X -
-                                                                otherPortal.Room.Position.X);
-                                int otherZmin = zMin + (int)(currentRoom.Position.Z -
-                                                                otherPortal.Room.Position.Z);
-                                int otherZmax = zMax + (int)(currentRoom.Position.Z -
-                                                                otherPortal.Room.Position.Z);
-
-                                for (int x = xMin; x < xMax; x++)
-                                {
-                                    for (int z = zMin; z < zMax; z++)
-                                    {
-                                        int lowX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
-                                        int lowZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
-
-                                        if (currentPortal.Direction == PortalDirection.Floor)
-                                        {
-                                            int minHeight = currentRoom.GetLowestCorner(xMin, zMin, xMax, zMax);
-                                            int maxHeight = otherRoom.GetHighestCorner(otherXmin, otherZmin, otherXmax,
-                                                otherZmax);
-
-                                            currentPortal.Room.Blocks[x, z].FloorPortal = currentPortal;
-
-                                            int h1 = currentRoom.Blocks[x, z].QAFaces[0];
-                                            int h2 = currentRoom.Blocks[x, z].QAFaces[1];
-                                            int h3 = currentRoom.Blocks[x, z].QAFaces[2];
-                                            int h4 = currentRoom.Blocks[x, z].QAFaces[3];
-
-                                            int lh1 = otherRoom.Blocks[lowX, lowZ].WSFaces[0];
-                                            int lh2 = otherRoom.Blocks[lowX, lowZ].WSFaces[1];
-                                            int lh3 = otherRoom.Blocks[lowX, lowZ].WSFaces[2];
-                                            int lh4 = otherRoom.Blocks[lowX, lowZ].WSFaces[3];
-
-                                            bool defined;
-
-                                            if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == minHeight &&
-                                                otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall &&
-                                                lh1 == maxHeight &&
-                                                currentRoom.Blocks[x, z].Type != BlockType.Wall)
-                                            {
-                                                currentPortal.Room.Blocks[x, z].IsFloorSolid = false;
-                                                defined = true;
-                                            }
-                                            else
-                                            {
-                                                currentRoom.Blocks[x, z].IsFloorSolid = true;
-                                                defined = false;
-                                            }
-
-                                            if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && defined &&
-                                                lh1 == maxHeight)
-                                            {
-                                                otherPortal.Room.Blocks[lowX, lowZ].IsCeilingSolid = false;
-                                            }
-                                            else
-                                            {
-                                                otherPortal.Room.Blocks[lowX, lowZ].IsCeilingSolid = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            int minHeight = otherRoom.GetLowestCorner(otherXmin, otherZmin, otherXmax,
-                                                otherZmax);
-                                            int maxHeight = currentRoom.GetHighestCorner(xMin, zMin, xMax, zMax);
-
-                                            currentPortal.Room.Blocks[x, z].CeilingPortal = currentPortal;
-
-                                            int h1 = currentRoom.Blocks[x, z].WSFaces[0];
-                                            int h2 = currentRoom.Blocks[x, z].WSFaces[1];
-                                            int h3 = currentRoom.Blocks[x, z].WSFaces[2];
-                                            int h4 = currentRoom.Blocks[x, z].WSFaces[3];
-
-                                            int lh1 = otherRoom.Blocks[lowX, lowZ].QAFaces[0];
-                                            int lh2 = otherRoom.Blocks[lowX, lowZ].QAFaces[1];
-                                            int lh3 = otherRoom.Blocks[lowX, lowZ].QAFaces[2];
-                                            int lh4 = otherRoom.Blocks[lowX, lowZ].QAFaces[3];
-
-                                            bool defined;
-
-                                            if (Room.IsQuad(x, z, h1, h2, h3, h4, true) && h1 == maxHeight &&
-                                                otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall &&
-                                                lh1 == minHeight &&
-                                                currentRoom.Blocks[x, z].Type != BlockType.Wall)
-                                            {
-                                                currentRoom.Blocks[x, z].IsCeilingSolid = false;
-                                                defined = true;
-                                            }
-                                            else
-                                            {
-                                                currentRoom.Blocks[x, z].IsCeilingSolid = true;
-                                                defined = false;
-                                            }
-
-                                            if (Room.IsQuad(x, z, lh1, lh2, lh3, lh4, true) && defined &&
-                                                lh1 ==
-                                                minHeight /*&& otherRoom.Blocks[lowX, lowZ].Type != BlockType.Wall*/)
-                                            {
-                                                otherPortal.Room.Blocks[lowX, lowZ].IsFloorSolid = false;
-                                            }
-                                            else
-                                            {
-                                                otherPortal.Room.Blocks[lowX, lowZ].IsFloorSolid = true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if ((!currentRoom.Flipped && !otherRoom.Flipped))
-                            {
-                                currentPortal.Other = otherPortal;
-                                otherPortal.Other = currentPortal;
-                                currentPortal.AdjoiningRoom = otherPortal.Room;
-                                otherPortal.AdjoiningRoom = currentPortal.Room;
-                            }
-                            else if ((currentRoom.Flipped && otherRoom.Flipped))
-                            {
-                                currentPortal.Other = otherPortal;
-                                otherPortal.Other = currentPortal;
-                                currentPortal.AdjoiningRoom =
-                                    otherRoom.BaseRoom ?? otherPortal.Room;
-                                otherPortal.AdjoiningRoom =
-                                    currentRoom.BaseRoom ?? currentPortal.Room;
-                            }
-                            else
-                            {
-                                if (!currentRoom.Flipped && otherRoom.Flipped)
-                                {
-                                    if (otherRoom.AlternateRoom != null)
-                                    {
-                                        currentPortal.Other = otherPortal;
-                                        currentPortal.AdjoiningRoom = otherPortal.Room;
-                                    }
-                                    else
-                                    {
-                                        currentPortal.AdjoiningRoom = otherRoom.BaseRoom;
-                                    }
-
-                                    otherPortal.Other = currentPortal;
-                                    otherPortal.AdjoiningRoom = currentPortal.Room;
-                                }
-                                if (currentRoom.Flipped && !otherRoom.Flipped)
-                                {
-                                    if (currentRoom.AlternateRoom != null)
-                                    {
-                                        otherPortal.Other = currentPortal;
-                                        otherPortal.AdjoiningRoom = currentPortal.Room;
-                                    }
-                                    else
-                                    {
-                                        otherPortal.AdjoiningRoom = currentRoom.BaseRoom;
-                                    }
-
-                                    currentPortal.Other = otherPortal;
-                                    currentPortal.AdjoiningRoom = otherPortal.Room;
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-
+                    
                     // Fix faces
                     progressReporter.ReportProgress(85, "Building faces and geometry");
                     for (int i = 0; i < level.Rooms.Length; i++)
@@ -1407,19 +1031,11 @@ namespace TombEditor.Geometry.IO
                         if (room == null)
                             continue;
 
-                        foreach (var light in room.Lights)
-                        {
-                            light.Position = new Vector3(
-                                room.NumXSectors * 1024.0f - light.Position.X,
-                                light.Position.Y - room.Position.Y * 256,
-                                light.Position.Z);
-                        }
-
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                                var b = tempRooms[i][room.NumXSectors - 1 - x, z];
+                                var b = tempRooms[i][x, z];
 
                                 for (int j = 0; j < 14; j++)
                                 {
@@ -1486,7 +1102,7 @@ namespace TombEditor.Geometry.IO
                                     b._faces[j] = prjFace;
                                 }
 
-                                tempRooms[i][room.NumXSectors - 1 - x, z] = b;
+                                tempRooms[i][x, z] = b;
                             }
                         }
 
@@ -1497,7 +1113,7 @@ namespace TombEditor.Geometry.IO
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
                                 var newBlock = room.Blocks[x, z];
-                                var prjBlock = tempRooms[i][room.NumXSectors - 1 - x, z];
+                                var prjBlock = tempRooms[i][x, z];
 
                                 newBlock.NoCollisionFloor =
                                     (((prjBlock._flags2 & 0x04) != 0) || ((prjBlock._flags2 & 0x02) != 0));
@@ -2805,7 +2421,7 @@ namespace TombEditor.Geometry.IO
                 foreach (Room room in level.Rooms)
                     if (room != null)
                         if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
-                            throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
+                            throw new Exception("Room '" + room + "' has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
                 
                 progressReporter.ReportProgress(95, "Building rooms");
                 foreach (var room in level.Rooms.Where(r => r != null))
@@ -2826,6 +2442,16 @@ namespace TombEditor.Geometry.IO
                 level.Dispose(); // We log in the level above
                 throw;
             }
+        }
+
+        private static Rectangle GetArea(Room room, int roomBorder, int objPosX, int objPosZ, int objSizeX, int objSizeZ)
+        {
+            int realObjPosX = (room.NumXSectors - objSizeX) - objPosX;
+            int startX = Math.Max(roomBorder, Math.Min(room.NumXSectors - 1 - roomBorder, realObjPosX));
+            int startZ = Math.Max(roomBorder, Math.Min(room.NumZSectors - 1 - roomBorder, objPosZ));
+            int endX = Math.Max(startX, Math.Min(room.NumXSectors - 1 - roomBorder, realObjPosX + objSizeX - 1));
+            int endZ = Math.Max(startZ, Math.Min(room.NumZSectors - 1 - roomBorder, objPosZ + objSizeZ - 1));
+            return new Rectangle(startX, startZ, endX, endZ);
         }
 
         private static string FindGameDirectory(string filename)

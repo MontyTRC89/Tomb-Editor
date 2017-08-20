@@ -1,11 +1,53 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace TombEditor.Geometry
 {
+    public enum BlockType : byte
+    {
+        Floor, Wall, BorderWall
+    }
+
+    public enum DiagonalSplitType : byte
+    {
+        None = 0,
+        Floor = 1,
+        Ceiling = 2,
+        FloorAndCeiling = 3,
+        Wall = 4
+    }
+
+    [Flags]
+    public enum BlockFlags : short
+    {
+        None = 0,
+        Monkey = 1,
+        Opacity2 = 2,
+        Trigger = 4,
+        Box = 8,
+        Death = 16,
+        Lava = 32,
+        Electricity = 64,
+        Opacity = 128,
+        Beetle = 256,
+        TriggerTriggerer = 512,
+        NotWalkableFloor = 1024
+    }
+
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public enum DiagonalSplit : byte
+    {
+        None = 0,
+        NW = 1,
+        NE = 2,
+        SE = 3,
+        SW = 4
+    }
+
     public class Block
     {
         /// <summary> Index of faces on the negative X and positive Z direction </summary>
@@ -20,20 +62,20 @@ namespace TombEditor.Geometry
         public static readonly int[] FaceX = new int[] { 0, 1, 1, 0 };
         /// <summary> The x offset of each face index in [0, 4). </summary>
         public static readonly int[] FaceZ = new int[] { 1, 1, 0, 0 };
-        
-        public BlockType Type { get; set; }
-        public BlockFlags Flags { get; set; }
+
+        public BlockType Type { get; set; } = BlockType.Floor;
+        public BlockFlags Flags { get; set; } = BlockFlags.None;
         // ReSharper disable once InconsistentNaming
-        public short[] EDFaces { get; set; } = new short[4];
+        public short[] EDFaces { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
-        public short[] QAFaces { get; set; } = new short[4];
+        public short[] QAFaces { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
-        public short[] WSFaces { get; set; } = new short[4];
+        public short[] WSFaces { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
-        public short[] RFFaces { get; set; } = new short[4];
-        public BlockFace[] Faces { get; set; } = new BlockFace[29];
-        public byte SplitFoorType { get; set; }
-        public byte SplitCeilingType { get; set; }
+        public short[] RFFaces { get; } = new short[4];
+        public BlockFace[] Faces { get; } = new BlockFace[29];
+        public byte SplitFoorType { get; set; } = 0;
+        public byte SplitCeilingType { get; set; } = 0;
         public bool SplitFloor { get; set; } = false;
         public byte RealSplitFloor { get; set; }
         public byte RealSplitCeiling { get; set; }
@@ -45,73 +87,35 @@ namespace TombEditor.Geometry
         public Portal FloorPortal { get; set; } = null;
         public Portal WallPortal { get; set; } = null;
         public Portal CeilingPortal { get; set; } = null;
-        public short FloorSlopeX { get; set; }
-        public short FloorSlopeZ { get; set; }
-        public short CeilingSlopeX { get; set; }
-        public short CeilingSlopeZ { get; set; }
-        public bool IsFloorSolid { get; set; }
-        public bool IsCeilingSolid { get; set; }
+        public short FloorSlopeX { get; set; } // To remove since information is confusing and redundant
+        public short FloorSlopeZ { get; set; } // To remove since information is confusing and redundant
+        public short CeilingSlopeX { get; set; } // To remove since information is confusing and redundant
+        public short CeilingSlopeZ { get; set; } // To remove since information is confusing and redundant
         public bool NoCollisionFloor { get; set; }
         public bool NoCollisionCeiling { get; set; }
-        public List<int> Triggers { get; set; } = new List<int>();
+        public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified.
         public DiagonalSplit FloorDiagonalSplit { get; set; }
         public DiagonalSplitType FloorDiagonalSplitType { get; set; }
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
         public DiagonalSplitType CeilingDiagonalSplitType { get; set; }
 
-        public Block(BlockType type, BlockFlags flags)
+        public Block(int floor, int ceiling)
         {
-            Type = type;
-            Flags = flags;
-
             for (int i = 0; i < 29; i++)
+                Faces[i] = new BlockFace();
+
+            for (int i = 0; i < 4; i++)
             {
-                var face = new BlockFace();
-                Faces[i] = face;
+                QAFaces[i] = (short)floor;
+                EDFaces[i] = (short)floor;
+                WSFaces[i] = (short)ceiling;
+                RFFaces[i] = (short)ceiling;
             }
         }
-
-        public bool IsFloorSplit
-        {
-            get
-            {
-                const int x = 0;
-                const int z = 0;
-
-                var p1 = new Vector3(x * 1024.0f, QAFaces[0] * 256.0f, z * 1024.0f);
-                var p2 = new Vector3((x + 1) * 1024.0f, QAFaces[1] * 256.0f, z * 1024.0f);
-                var p3 = new Vector3((x + 1) * 1024.0f, QAFaces[2] * 256.0f, (z + 1) * 1024.0f);
-                var p4 = new Vector3(x * 1024.0f, QAFaces[3] * 256.0f, (z + 1) * 1024.0f);
-
-                var plane1 = new Plane(p1, p2, p3);
-                var plane2 = new Plane(p1, p2, p4);
-
-                return plane1.Normal == plane2.Normal;
-            }
-        }
-
-        public bool IsCeilingSplit
-        {
-            get
-            {
-                const int x = 0;
-                const int z = 0;
-
-                var p1 = new Vector3(x * 1024.0f, WSFaces[0] * 256.0f, z * 1024.0f);
-                var p2 = new Vector3((x + 1) * 1024.0f, WSFaces[1] * 256.0f, z * 1024.0f);
-                var p3 = new Vector3((x + 1) * 1024.0f, WSFaces[2] * 256.0f, (z + 1) * 1024.0f);
-                var p4 = new Vector3(x * 1024.0f, WSFaces[3] * 256.0f, (z + 1) * 1024.0f);
-
-                var plane1 = new Plane(p1, p2, p3);
-                var plane2 = new Plane(p1, p2, p4);
-
-                return plane1.Normal == plane2.Normal;
-            }
-        }
-
+        
         public Block Clone()
         {
-            var b = new Block(Type, Flags);
+            var b = new Block(0, 0);
 
             for (int i = 0; i < 4; i++)
                 b.QAFaces[i] = QAFaces[i];
@@ -121,6 +125,9 @@ namespace TombEditor.Geometry
                 b.WSFaces[i] = WSFaces[i];
             for (int i = 0; i < 4; i++)
                 b.RFFaces[i] = RFFaces[i];
+
+            b.Flags = Flags;
+            b.Type = Type;
 
             b.RealSplitFloor = RealSplitFloor;
             b.SplitFloor = SplitFloor;
@@ -145,7 +152,7 @@ namespace TombEditor.Geometry
         public bool IsFloor => Type == BlockType.Floor;
 
         public bool IsAnyWall => Type != BlockType.Floor;
-
+        
         public IEnumerable<Portal> Portals
         {
             get

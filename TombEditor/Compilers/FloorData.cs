@@ -11,7 +11,7 @@ namespace TombEditor.Compilers
         private void BuildFloorData()
         {
             ReportProgress(70, "Building floordata");
-
+            
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
             var tempFloorData = new List<ushort> { 0 | 0x8000 };
 
@@ -42,6 +42,8 @@ namespace TombEditor.Compilers
                     {
                         var sector = GetSector(tempRoom, x, z);
                         var block = room.Blocks[x, z];
+                        bool isFloorSolid = room.IsFloorSolid(new DrawingPoint(x, z));
+                        bool isCeilingSolid = room.IsCeilingSolid(new DrawingPoint(x, z));
 
                         var baseFloorData = (ushort)tempFloorData.Count;
 
@@ -54,8 +56,7 @@ namespace TombEditor.Compilers
                             // Find a suitable portal
                             foreach (var portal in portals)
                             {
-                                if (x < portal.X - 1 || x > portal.X + portal.NumXBlocks + 1 || z < portal.Z - 1 ||
-                                    z > portal.Z + portal.NumZBlocks + 1)
+                                if (x < portal.Area.X - 1 || x > portal.Area.Right + 2 || z < portal.Area.Y - 1 || z > portal.Area.Right + 2)
                                     continue;
 
                                 var adjoining = portal.AdjoiningRoom;
@@ -86,7 +87,7 @@ namespace TombEditor.Compilers
                              room.Blocks[x, z].Type == BlockType.BorderWall))
                         {
                             const ushort data1 = 0x8001;
-                            var data2 = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(isWallWithCeilingPortal)];
+                            var data2 = (ushort)_roomsRemappingDictionary[isWallWithCeilingPortal];
 
                             tempFloorData.Add(data1);
                             tempFloorData.Add(data2);
@@ -115,11 +116,11 @@ namespace TombEditor.Compilers
                         if (block.FloorPortal != null)
                         {
                             // I must setup portal only if current sector is not solid and opacity if different from 1
-                            if ((!block.IsFloorSolid && block.FloorOpacity != PortalOpacity.Opacity1) ||
-                                (block.IsFloorSolid && block.NoCollisionFloor))
+                            if ((!isFloorSolid && block.FloorOpacity != PortalOpacity.Opacity1) ||
+                                (isFloorSolid && block.NoCollisionFloor))
                             {
                                 var portal = block.FloorPortal;
-                                sector.RoomBelow = (byte)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
+                                sector.RoomBelow = (byte)_roomsRemappingDictionary[portal.AdjoiningRoom];
                             }
                             else
                             {
@@ -131,11 +132,11 @@ namespace TombEditor.Compilers
                         if (block.CeilingPortal != null)
                         {
                             // I must setup portal only if current sector is not solid and opacity if different from 1
-                            if ((!block.IsCeilingSolid && block.CeilingOpacity != PortalOpacity.Opacity1) ||
-                                (block.IsCeilingSolid && block.NoCollisionCeiling))
+                            if ((!isCeilingSolid && block.CeilingOpacity != PortalOpacity.Opacity1) ||
+                                (isCeilingSolid && block.NoCollisionCeiling))
                             {
                                 var portal = block.CeilingPortal;
-                                sector.RoomAbove = (byte)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
+                                sector.RoomAbove = (byte)_roomsRemappingDictionary[portal.AdjoiningRoom];
                             }
                             else
                             {
@@ -152,7 +153,7 @@ namespace TombEditor.Compilers
                             if (block.WallOpacity != PortalOpacity.Opacity1)
                             {
                                 const ushort data1 = 0x8001;
-                                var data2 = (ushort)_roomsRemappingDictionary[_level.Rooms.ReferenceIndexOf(portal.AdjoiningRoom)];
+                                var data2 = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom];
 
                                 tempFloorData.Add(data1);
                                 tempFloorData.Add(data2);
@@ -1067,17 +1068,15 @@ namespace TombEditor.Compilers
                         // Triggers
                         if (room.Blocks[x, z].Triggers.Count > 0)
                         {
-                            var found = -1;
+                            TriggerInstance found = null;
 
                             // First, I search a special trigger, if exists
-                            for (var j = 0; j < room.Blocks[x, z].Triggers.Count; j++)
+                            foreach (var trigger in room.Blocks[x, z].Triggers)
                             {
-                                var trigger = _level.Triggers[room.Blocks[x, z].Triggers[j]];
-
-                                if (trigger.TriggerType == TriggerType.Trigger && found == -1)
+                                if (trigger.TriggerType == TriggerType.Trigger && found == null)
                                 {
                                     // Normal trigger can be used only if in the sector there aren't special triggers
-                                    found = j;
+                                    found = trigger;
                                     continue;
                                 }
 
@@ -1085,57 +1084,73 @@ namespace TombEditor.Compilers
                                     continue;
 
                                 // For now I use the first special trigger of the chain, ignoring the following triggers
-                                found = j;
+                                found = trigger;
                                 break;
                             }
 
-                            var tempTriggers = new List<int> { room.Blocks[x, z].Triggers[found] };
-                            tempTriggers.AddRange(room.Blocks[x, z].Triggers.Where((t, j) => j != found));
+                            var tempTriggers = new List<TriggerInstance> { found };
+                            tempTriggers.AddRange(room.Blocks[x, z].Triggers.Where(trigger => trigger != found));
 
                             {
-                                var trigger = _level.Triggers[room.Blocks[x, z].Triggers[found]];
-
                                 lastFloorDataFunction = (ushort)tempCodes.Count;
 
                                 // Trigger type and setup are coming from the found trigger. Other triggers are needed onlt for action.
                                 ushort trigger1 = 0x04;
-                                if (trigger.TriggerType == TriggerType.Trigger)
-                                    trigger1 |= 0x00 << 8;
-                                if (trigger.TriggerType == TriggerType.Pad)
-                                    trigger1 |= 0x01 << 8;
-                                if (trigger.TriggerType == TriggerType.Switch)
-                                    trigger1 |= 0x02 << 8;
-                                if (trigger.TriggerType == TriggerType.Key)
-                                    trigger1 |= 0x03 << 8;
-                                if (trigger.TriggerType == TriggerType.Pickup)
-                                    trigger1 |= 0x04 << 8;
-                                if (trigger.TriggerType == TriggerType.Heavy)
-                                    trigger1 |= 0x05 << 8;
-                                if (trigger.TriggerType == TriggerType.Antipad)
-                                    trigger1 |= 0x06 << 8;
-                                if (trigger.TriggerType == TriggerType.Combat)
-                                    trigger1 |= 0x07 << 8;
-                                if (trigger.TriggerType == TriggerType.Dummy)
-                                    trigger1 |= 0x08 << 8;
-                                if (trigger.TriggerType == TriggerType.Antitrigger)
-                                    trigger1 |= 0x09 << 8;
-                                if (trigger.TriggerType == TriggerType.HeavySwitch)
-                                    trigger1 |= 0x0a << 8;
-                                if (trigger.TriggerType == TriggerType.HeavyAntritrigger)
-                                    trigger1 |= 0x0b << 8;
-                                if (trigger.TriggerType == TriggerType.Monkey)
-                                    trigger1 |= 0x0c << 8;
+                                switch (found.TriggerType)
+                                {
+                                    case TriggerType.Trigger:
+                                        trigger1 |= 0x00 << 8;
+                                        break;
+                                    case TriggerType.Pad:
+                                        trigger1 |= 0x01 << 8;
+                                        break;
+                                    case TriggerType.Switch:
+                                        trigger1 |= 0x02 << 8;
+                                        break;
+                                    case TriggerType.Key:
+                                        trigger1 |= 0x03 << 8;
+                                        break;
+                                    case TriggerType.Pickup:
+                                        trigger1 |= 0x04 << 8;
+                                        break;
+                                    case TriggerType.Heavy:
+                                        trigger1 |= 0x05 << 8;
+                                        break;
+                                    case TriggerType.Antipad:
+                                        trigger1 |= 0x06 << 8;
+                                        break;
+                                    case TriggerType.Combat:
+                                        trigger1 |= 0x07 << 8;
+                                        break;
+                                    case TriggerType.Dummy:
+                                        trigger1 |= 0x08 << 8;
+                                        break;
+                                    case TriggerType.Antitrigger:
+                                        trigger1 |= 0x09 << 8;
+                                        break;
+                                    case TriggerType.HeavySwitch:
+                                        trigger1 |= 0x0a << 8;
+                                        break;
+                                    case TriggerType.HeavyAntritrigger:
+                                        trigger1 |= 0x0b << 8;
+                                        break;
+                                    case TriggerType.Monkey:
+                                        trigger1 |= 0x0c << 8;
+                                        break;
+                                    default:
+                                        throw new Exception("Unknown trigger type found '" + found.TriggerType + "' room '" + room + "' at trigger '" + found + "'");
+                                }
 
                                 ushort triggerSetup = 0;
-                                triggerSetup |= (ushort)(trigger.Timer & 0xff);
-                                triggerSetup |= (ushort)(trigger.OneShot ? 0x100 : 0);
-                                triggerSetup |= (ushort)((trigger.CodeBits & 0x1f) << 9);
+                                triggerSetup |= (ushort)(found.Timer & 0xff);
+                                triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
+                                triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
 
                                 tempCodes.Add(trigger1);
                                 tempCodes.Add(triggerSetup);
                             }
 
-                            foreach (var trigger in tempTriggers.Select(triggerId => _level.Triggers[triggerId]))
+                            foreach (var trigger in tempTriggers)
                             {
                                 ushort trigger2;
 
@@ -1143,26 +1158,16 @@ namespace TombEditor.Compilers
                                 {
                                     case TriggerTargetType.Object:
                                         // Trigger for object
-                                        var item = trigger.Target;
-                                        if (_level.Objects[trigger.Target].Type == ObjectInstanceType.Moveable)
-                                        {
-                                            var instance = (MoveableInstance)_level.Objects[trigger.Target];
-                                            if (instance.WadObjectId >= 398 && instance.WadObjectId <= 406)
-                                            {
-                                                item = _aiObjectsTable[trigger.Target];
-                                            }
-                                            else
-                                            {
-                                                item = _moveablesTable[trigger.Target];
-                                            }
-                                        }
-
-                                        trigger2 = (ushort)(item & 0x3ff | (0x00 << 10));
+                                        var object_ = trigger.CastTargetType<MoveableInstance>(room);
+                                        bool isAI = object_.WadObjectId >= 398 && object_.WadObjectId <= 406;
+                                        int item = (isAI ? _aiObjectsTable : _moveablesTable)[object_];
+                                        trigger2 = (ushort)(item & 0x3ff | (0 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.Camera:
                                         // Trigger for camera
-                                        trigger2 = (ushort)(_cameraTable[trigger.Target] & 0x3ff | (0x01 << 10));
+                                        var camera = trigger.CastTargetType<CameraInstance>(room);
+                                         trigger2 = (ushort)(_cameraTable[camera] & 0x3ff | (1 << 10));
                                         tempCodes.Add(trigger2);
 
                                         // Additional short
@@ -1173,60 +1178,72 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.Sink:
                                         // Trigger for sink
-                                        trigger2 = (ushort)(_sinkTable[trigger.Target] & 0x3ff | (0x02 << 10));
+                                        var sink = trigger.CastTargetType<SinkInstance>(room);
+                                        trigger2 = (ushort)(_sinkTable[sink] & 0x3ff | (2 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipMap:
                                         // Trigger for flip map
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x03 << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (3 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipOn:
                                         // Trigger for flip map on
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x04 << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (4 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipOff:
                                         // Trigger for flip map off
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x05 << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (5 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.Target:
                                         // Trigger for look at item
-                                        trigger2 = (ushort)(_moveablesTable[trigger.Target] & 0x3ff | (0x06 << 10));
+                                        var target = trigger.CastTargetType<MoveableInstance>(room);
+                                        trigger2 = (ushort)(_moveablesTable[target] & 0x3ff | (6 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FinishLevel:
                                         // Trigger for finish level
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x07 << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (7 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.PlayAudio:
                                         // Trigger for play soundtrack
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x08 << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (8 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlipEffect:
                                         // Trigger for flip effect
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x09 << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (9 << 10));
                                         tempCodes.Add(trigger2);
-
-                                        /*  trigger2 = (ushort)(trigger.Timer);
-                                      tempCodes.Add(trigger2);*/
                                         break;
                                     case TriggerTargetType.Secret:
                                         // Trigger for secret found
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x0a << 10));
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (10 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by
-                                        trigger2 = (ushort)(trigger.Target & 0x3ff | (0x0c << 10));
+                                        var flyByCamera = trigger.CastTargetType<FlybyCameraInstance>(room);
+                                        trigger2 = (ushort)(flyByCamera.Sequence & 0x3ff | (12 << 10));
                                         tempCodes.Add(trigger2);
 
                                         trigger2 = (ushort)(trigger.OneShot ? 0x0100 : 0x00);
                                         tempCodes.Add(trigger2);
                                         break;
+                                    case TriggerTargetType.ParameterNg:
+                                        // Trigger for secret found
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (13 << 10));
+                                        tempCodes.Add(trigger2);
+                                        break;
+                                    case TriggerTargetType.FmvNg:
+                                        // Trigger for secret found
+                                        trigger2 = (ushort)(trigger.TargetData & 0x3ff | (14 << 10));
+                                        tempCodes.Add(trigger2);
+                                        break;
+                                    default:
+                                        throw new Exception("Unknown trigger type found '" + trigger.TargetType + "' in room '" + room + "' at trigger '" + trigger + "'");
                                 }
                             }
 

@@ -50,37 +50,37 @@ namespace TombEditor
                 case TriggerTargetType.Object:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-                    FindAndAddObjects(ObjectInstanceType.Moveable);
+                    FindAndAddObjects<MoveableInstance>();
                     break;
 
                 case TriggerTargetType.Camera:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-                    FindAndAddObjects(ObjectInstanceType.Camera);
+                    FindAndAddObjects<CameraInstance>();
                     break;
 
                 case TriggerTargetType.Sink:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-                    FindAndAddObjects(ObjectInstanceType.Sink);
+                    FindAndAddObjects<SinkInstance>();
                     break;
 
                 case TriggerTargetType.FlipEffect:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.FlipOn:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.FlipOff:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.Target:
@@ -89,61 +89,59 @@ namespace TombEditor
 
                     // Actually it is possible to not only target Target objects, but all movables.
                     // This is also useful: It makes sense to target egg a trap or an enemy.
-                    FindAndAddObjects(ObjectInstanceType.Moveable);
+                    FindAndAddObjects<MoveableInstance>();
                     break;
 
                 case TriggerTargetType.FlipMap:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.FinishLevel:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.Secret:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.PlayAudio:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
 
                 case TriggerTargetType.FlyByCamera:
                     tbParameter.Visible = false;
                     comboParameter.Visible = true;
-                    FindAndAddObjects(ObjectInstanceType.FlyByCamera);
+                    FindAndAddObjects<FlybyCameraInstance>();
                     break;
 
-                case TriggerTargetType.Fmv:
+                case TriggerTargetType.FmvNg:
                     tbParameter.Visible = true;
                     comboParameter.Visible = false;
-                    tbParameter.Text = _trigger.Target.ToString();
+                    tbParameter.Text = _trigger.TargetData.ToString();
                     break;
             }
         }
 
-        private void FindAndAddObjects(ObjectInstanceType type)
+        private void FindAndAddObjects<T>() where T : ObjectInstance
         {
             comboParameter.Items.Clear();
             comboParameter.SelectedItem = null;
 
-            foreach (ObjectInstance instance in _level.Objects.Values)
-            {
-                if (instance.Type != type)
-                    continue;
-
-                comboParameter.Items.Add(instance);
-                if (_trigger.Target == instance.Id)
-                    comboParameter.SelectedItem = instance;
-            }
+            foreach (Room room in _level.Rooms.Where(room => room != null))
+                foreach (var instance in room.Objects.OfType<T>())
+                {
+                    comboParameter.Items.Add(instance);
+                    if (_trigger.TargetObj == instance)
+                        comboParameter.SelectedItem = instance;
+                }
 
             if ((comboParameter.Items.Count > 0) && (comboParameter.SelectedItem == null))
                 comboParameter.SelectedIndex = 0; // Select top item, no matter what it is.
@@ -174,11 +172,13 @@ namespace TombEditor
                     return;
                 }
 
-                _trigger.Target = ((ObjectInstance)comboParameter.SelectedItem).Id;
+                _trigger.TargetObj = (ObjectInstance)comboParameter.SelectedItem;
+                _trigger.TargetData = 0;
             }
             else
             {
-                _trigger.Target = Int16.Parse(tbParameter.Text);
+                _trigger.TargetObj = null;
+                _trigger.TargetData = Int16.Parse(tbParameter.Text);
             }
 
             DialogResult = DialogResult.OK;

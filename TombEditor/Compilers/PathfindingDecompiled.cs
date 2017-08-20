@@ -66,7 +66,7 @@ namespace TombEditor.Compilers
                     Room room = _level.Rooms[i];
 
                     // Room must be defined and also must be base room or the flipped version
-                    if (room != null && (flipped == 0 && room.BaseRoom == null || flipped == 1 && room.BaseRoom != null))
+                    if (room != null && (flipped == 0 && room.AlternateBaseRoom == null || flipped == 1 && room.AlternateBaseRoom != null))
                     {
                         tr_room tempRoom = _tempRooms[room];
                         for (int z = 0; z < room.NumZSectors; z++)
@@ -654,7 +654,7 @@ namespace TombEditor.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
-                while (block.FloorPortal != null && !block.IsFloorSolid)
+                while (!room.IsFloorSolid(new DrawingPoint(xInRoom, zInRoom)))
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
@@ -751,7 +751,7 @@ namespace TombEditor.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (block.FloorPortal != null && !block.IsFloorSolid)
+            while (room.IsFloorSolid(new DrawingPoint(xInRoom, zInRoom)))
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
@@ -822,7 +822,7 @@ namespace TombEditor.Compilers
             int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
             int ceiling = room.GetHighestCeilingCorner(xInRoom, zInRoom) + (int)room.Position.Y;
 
-            if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null && !block.IsCeilingSolid)
+            if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
             {
                 Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;

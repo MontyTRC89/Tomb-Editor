@@ -150,8 +150,7 @@ namespace TombEditor
             this.cbBit13.Name = "cbBit13";
             this.cbBit13.Size = new System.Drawing.Size(300, 32);
             this.cbBit13.TabIndex = 15;
-            this.cbBit13.Text = "checkBox7";
-            this.cbBit13.Visible = false;
+            this.cbBit13.Text = "Unused";
             // 
             // cbBit12
             // 
@@ -159,8 +158,7 @@ namespace TombEditor
             this.cbBit12.Name = "cbBit12";
             this.cbBit12.Size = new System.Drawing.Size(300, 32);
             this.cbBit12.TabIndex = 14;
-            this.cbBit12.Text = "checkBox8";
-            this.cbBit12.Visible = false;
+            this.cbBit12.Text = "Unused";
             // 
             // cbBit11
             // 
@@ -208,8 +206,7 @@ namespace TombEditor
             this.cbBit15.Name = "cbBit15";
             this.cbBit15.Size = new System.Drawing.Size(300, 32);
             this.cbBit15.TabIndex = 17;
-            this.cbBit15.Text = "checkBox14";
-            this.cbBit15.Visible = false;
+            this.cbBit15.Text = "Unused";
             // 
             // cbBit14
             // 

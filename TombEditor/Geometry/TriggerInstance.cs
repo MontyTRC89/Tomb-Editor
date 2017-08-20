@@ -6,124 +6,128 @@ using System.Text;
 
 namespace TombEditor.Geometry
 {
+    public enum TriggerType : byte
+    {
+        Trigger = 0,
+        Pad = 1,
+        Switch = 2,
+        Key = 3,
+        Pickup = 4,
+        Heavy = 5,
+        Antipad = 6,
+        Combat = 7,
+        Dummy = 8,
+        Antitrigger = 9,
+        HeavySwitch = 10,
+        HeavyAntritrigger = 11,
+        Monkey = 12,
+        Condition = 13 // TODO we do not yet import this from *.prj
+    }
+
+    public enum TriggerTargetType : byte
+    {
+        Object = 0,
+        Camera = 1,
+        Sink = 2,
+        FlipMap = 3,
+        FlipOn = 4,
+        FlipOff = 5,
+        Target = 6,
+        FinishLevel = 7,
+        PlayAudio = 8,
+        FlipEffect = 9,
+        Secret = 10,
+        ActionNg = 11,
+        FlyByCamera = 12,
+        ParameterNg = 13,
+        FmvNg = 14,
+        TimerfieldNg = 15,
+    }
+
     public class TriggerInstance : SectorBasedObjectInstance
     {
         public TriggerType TriggerType { get; set; }
         public TriggerTargetType TargetType { get; set; }
-        public int Target { get; set; }
+        public ObjectInstance TargetObj { get; set; } //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+        public short TargetData { get; set; }
         public short Timer { get; set; }
         public bool OneShot { get; set; }
-        public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
+        public byte CodeBits { get; set; } = 0x1f; // Only the lower 5 bits are used.
 
-        public TriggerInstance(int id, Room room)
-            : base(id, room)
+        public TriggerInstance(Rectangle area)
+            : base(area)
         { }
 
-        public override ObjectInstanceType Type => ObjectInstanceType.Trigger;
-
-        public override string ToString()
-        {
-            string output = "Unknown trigger";
-            switch (TriggerType)
-            {
-                case TriggerType.Antipad:
-                    output = "Antipad Trigger";
-                    break;
-                case TriggerType.Antitrigger:
-                    output = "Antitrigger";
-                    break;
-                case TriggerType.Combat:
-                    output = "Combat Trigger";
-                    break;
-                case TriggerType.Condition:
-                    output = "Condition Trigger";
-                    break;
-                case TriggerType.Dummy:
-                    output = "Dummy Trigger";
-                    break;
-                case TriggerType.Heavy:
-                    output = "Heavy Trigger";
-                    break;
-                case TriggerType.HeavyAntritrigger:
-                    output = "HeavyAntritrigger";
-                    break;
-                case TriggerType.HeavySwitch:
-                    output = "HeavySwitch Trigger";
-                    break;
-                case TriggerType.Key:
-                    output = "Key Trigger";
-                    break;
-                case TriggerType.Monkey:
-                    output = "Monkey Trigger";
-                    break;
-                case TriggerType.Pad:
-                    output = "Pad Trigger";
-                    break;
-                case TriggerType.Pickup:
-                    output = "Pickup Trigger";
-                    break;
-                case TriggerType.Switch:
-                    output = "Switch Trigger";
-                    break;
-                case TriggerType.Trigger:
-                    output = "Trigger";
-                    break;
-            }
-
-            output += " (" + Id + ") for ";
-
-            switch (TargetType)
-            {
-                case TriggerTargetType.Camera:
-                    output += "Camera (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
-                    break;
-                case TriggerTargetType.FinishLevel:
-                    output += "FinishLevel (" + Target + ")";
-                    break;
-                case TriggerTargetType.FlipEffect:
-                    output += "FlipEffect (" + Target + ")";
-                    break;
-                case TriggerTargetType.FlipMap:
-                    output += "FlipMap (" + Target + ")";
-                    break;
-                case TriggerTargetType.FlipOff:
-                    output += "FlipOff (" + Target + ")";
-                    break;
-                case TriggerTargetType.FlipOn:
-                    output += "FlipOn (" + Target + ")";
-                    break;
-                case TriggerTargetType.FlyByCamera:
-                    output += "FlybyCamera (FLYBY" + Editor.Instance.Level.Objects[Target].ToString() + ")";
-                    break;
-                case TriggerTargetType.Fmv:
-                    output += "FMV (" + Target + ")";
-                    break;
-                case TriggerTargetType.Object:
-                    output += "Movable (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
-                    break;
-                case TriggerTargetType.PlayAudio:
-                    output += "CD Track (" + Target + ")";
-                    break;
-                case TriggerTargetType.Secret:
-                    output += "Secret (" + Target + ")";
-                    break;
-                case TriggerTargetType.Sink:
-                    output += "Sink (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
-                    break;
-                case TriggerTargetType.Target:
-                    output += "Camera Target (" + Editor.Instance.Level.Objects[Target].ToString() + ")";
-                    break;
-                default:
-                    output += "Unkown";
-                    break;
-            }
-
-            return output;
-        }
-        
         public override ObjectInstance Clone()
         {
             return (ObjectInstance)MemberwiseClone();
+        }
+
+        public override SectorBasedObjectInstance Clone(Rectangle newArea)
+        {
+            return new TriggerInstance(newArea)
+            {
+                TriggerType = TriggerType,
+                TargetType = TargetType,
+                TargetObj = TargetObj,
+                TargetData = TargetData,
+                Timer = Timer,
+                OneShot = OneShot,
+                CodeBits = CodeBits
+            };
+        }
+
+        public string TargetObjString => TargetObj?.ToString() ?? "NULL";
+
+        public override string ToString()
+        {
+            string output = TriggerType.ToString() + " ";
+            if (output.IndexOf("trigger", StringComparison.OrdinalIgnoreCase) == -1)
+                output += "Trigger ";
+            output += "in room '" + (Room?.ToString() ?? "NULL") + "' ";
+            output += "on sectors [" + Area.X + ", " + Area.Y + " to " + Area.Right + ", " + Area.Bottom + "] ";
+            output += "for " + TargetType.ToString() + " ";
+            switch (TargetType)
+            {
+                case TriggerTargetType.Camera:
+                case TriggerTargetType.Target:
+                case TriggerTargetType.Sink:
+                case TriggerTargetType.FlyByCamera:
+                case TriggerTargetType.Object:
+                    output += "(" + TargetObjString + ") ";
+                    break;
+                default:
+                    output += "(" + TargetData + ") ";
+                    break;
+            }
+            return output;
+        }
+
+        public override void AddToRoom(Level level, Room room)
+        {
+            base.AddToRoom(level, room);
+
+            for (int x = Area.X; x <= Area.Right; x++)
+                for (int z = Area.Y; z <= Area.Bottom; z++)
+                    room.Blocks[x, z].Triggers.Add(this);
+        }
+
+        public override void RemoveFromRoon(Level level, Room room)
+        {
+            base.RemoveFromRoon(level, room);
+
+            for (int x = Area.X; x <= Area.Right; x++)
+                for (int z = Area.Y; z <= Area.Bottom; z++)
+                    room.Blocks[x, z].Triggers.Remove(this);
+        }
+
+        public T CastTargetType<T>(Room room) where T : ObjectInstance
+        {
+            var castedObject = TargetObj as T;
+            if (castedObject == null)
+                throw new Exception("Object trigger target of trigger does mistakenly point to '" + TargetObjString + 
+                    "' instead of an " + typeof(T).ToString().Replace("Instance", "") + ". Trigger (Room: " + room + ") information: '" + this + "'");
+            return castedObject;
         }
     }
 }

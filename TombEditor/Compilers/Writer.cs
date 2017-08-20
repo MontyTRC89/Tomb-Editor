@@ -182,7 +182,7 @@ namespace TombEditor.Compilers
                 byte[] soundMap;
                 uint numSampleIndices;
                 using (var readerSounds = new BinaryReaderEx(new FileStream(
-                    _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
+                    _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     soundMap = readerSounds.ReadBytes(370 * 2);
                     _numSoundDetails = (uint) readerSounds.ReadInt32();
@@ -294,7 +294,7 @@ namespace TombEditor.Compilers
                 // 16 bit textures
                 writer.Write(_textures16);
 
-                using (var readerRaw = new BinaryReader(new FileStream("sprites3.raw", FileMode.Open, FileAccess.Read, FileShare.None)))
+                using (var readerRaw = new BinaryReader(new FileStream("sprites3.raw", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     var raw = readerRaw.ReadBytes(131072);
                     writer.Write(raw);
@@ -475,7 +475,7 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
-                using (var readerSprites = new BinaryReader(new FileStream("sprites3.bin", FileMode.Open, FileAccess.Read, FileShare.None)))
+                using (var readerSprites = new BinaryReader(new FileStream("sprites3.bin", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     var bufferSprites = readerSprites.ReadBytes((int) readerSprites.BaseStream.Length);
                     writer.Write(bufferSprites);
@@ -565,7 +565,7 @@ namespace TombEditor.Compilers
                 // Write sound data
                 byte[] sfxBuffer;
                 using (var readerSounds = new BinaryReaderEx(new FileStream(
-                        @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.None)))
+                        @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     sfxBuffer = readerSounds.ReadBytes((int) readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);

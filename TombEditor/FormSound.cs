@@ -80,7 +80,7 @@ namespace TombEditor
 
             InitializeComponent();
             
-            using (StreamReader reader = new StreamReader(new FileStream("Sounds\\Sounds.txt", FileMode.Open, FileAccess.Read, FileShare.None)))
+            using (StreamReader reader = new StreamReader(new FileStream("Sounds\\Sounds.txt", FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 List<RowSoundSample> rows = new List<RowSoundSample>();
                 short id = 0;

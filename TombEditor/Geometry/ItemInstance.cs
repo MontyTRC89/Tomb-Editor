@@ -4,8 +4,10 @@ using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
-    public abstract class ItemInstance : PositionBasedObjectInstance
+    public abstract class ItemInstance : PositionBasedObjectInstance, IRotateableY, IHasScriptID
     {
+        public ushort? ScriptId { get; set; }
+
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads
         // can change. It would be unnecesary difficult to update all this references.
@@ -13,40 +15,35 @@ namespace TombEditor.Geometry
 
         private float _rotation;
         /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
-        public float Rotation
+        public float RotationY
         {
             get { return _rotation; }
             set { _rotation = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
         /// <summary> Rotation in radians in the interval [0, 2*Pi). The value is range reduced. </summary>
-        public float RotationRadians
+        public float RotationYRadians
         {
-            get { return Rotation * (float)(Math.PI / 180); }
-            set { Rotation = value * (float)(180 / Math.PI); }
+            get { return RotationY * (float)(Math.PI / 180); }
+            set { RotationY = value * (float)(180 / Math.PI); }
         }
-
-        protected ItemInstance(int id, Room room)
-            : base(id, room)
-        {}
 
         public abstract ItemType ItemType { get; }
         
         public override string ToString()
         {
             return ItemType.ToString() +
-                ", ID = " + Id +
-                ", Room = " + Room.ToString() +
-                ", X = " + Position.X +
-                ", Y = " + Position.Y +
-                ", Z = " + Position.Z;
+                ", Room = " + (Room?.ToString() ?? "NULL") +
+                ", X = " + SectorPosition.X +
+                ", Y = " + SectorPosition.Y +
+                ", Z = " + SectorPosition.Z;
         }
 
-        public static ItemInstance FromItemType(int id, Room room, ItemType item)
+        public static ItemInstance FromItemType(ItemType item)
         {
             if (item.IsStatic)
-                return new StaticInstance(id, room) { WadObjectId = item.Id };
+                return new StaticInstance() { WadObjectId = item.Id };
             else
-                return new MoveableInstance(id, room) { WadObjectId = item.Id };
+                return new MoveableInstance() { WadObjectId = item.Id };
         }
     }
 
@@ -60,12 +57,7 @@ namespace TombEditor.Geometry
             IsStatic = isStatic;
             Id = id;
         }
-
-        public ObjectInstanceType ObjectInstanceType
-        {
-            get { return IsStatic ? ObjectInstanceType.Static : ObjectInstanceType.Moveable; }
-        }
-
+        
         public static bool operator ==(ItemType first, ItemType second)
         {
             return (first.IsStatic == second.IsStatic) && (first.Id == second.Id);
