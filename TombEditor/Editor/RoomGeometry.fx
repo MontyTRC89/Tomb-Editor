@@ -41,7 +41,10 @@ PixelInputType VS(VertexInputType input)
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS(PixelInputType input) : SV_TARGET
 {
-	float4 pixel = Texture.Sample(TextureSampler, input.UV);
+	float4 pixel = float4(input.UV.x, input.UV.y, input.UV.x, 1.0f);
+	
+	if (TextureEnabled) pixel = Texture.Sample(TextureSampler, input.UV);
+
 	return pixel;
 }
 

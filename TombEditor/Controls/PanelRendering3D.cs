@@ -1591,8 +1591,6 @@ namespace TombEditor.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Effect geometryEffect = _deviceManager.Effects["RoomGeometry"];
-
-            geometryEffect.Parameters["TextureEnabled"].SetValue(true);
             
             RoomGeometryInstance _lastObject = null;
 
@@ -1630,8 +1628,16 @@ namespace TombEditor.Controls
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
-                    geometryEffect.Parameters["Texture"].SetResource(mesh.Texture);
-                    geometryEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
+                    if (mesh.Texture != null)
+                    {
+                        geometryEffect.Parameters["TextureEnabled"].SetValue(true);
+                        geometryEffect.Parameters["Texture"].SetResource(mesh.Texture);
+                        geometryEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
+                    }
+                    else
+                    {
+                        geometryEffect.Parameters["TextureEnabled"].SetValue(false);
+                    }
 
                     geometryEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.IndexCount, mesh.BaseIndex);

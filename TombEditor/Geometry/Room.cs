@@ -46,7 +46,7 @@ namespace TombEditor.Geometry
         public bool ExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
 
-        private List<EditorVertex> Vertices { get; set; }
+        public List<EditorVertex> Vertices { get; set; }
         private Level Level { get; }
 
         public List<RoomGeometryInstance> RoomGeometryObjects { get; private set; } = new List<RoomGeometryInstance>();
