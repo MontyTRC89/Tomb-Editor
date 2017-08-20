@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using TombEditor.Geometry;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace TombEditor.Compilers
 {
@@ -1084,7 +1086,8 @@ namespace TombEditor.Compilers
             ReportProgress(3, "Building room texture map");
 
             // I've sorted the textures by height, now I build the texture map
-            var numRoomTexturePages = _level.TextureMap.Height / 256;
+            var numRoomTexturePages = _level.TextureMap.Height / 256 + GeometryImporter.Textures.Count;
+
             for (var x = 0; x < 256; x++)
             {
                 for (var y = 0; y < _level.TextureMap.Height; y++)
@@ -1108,6 +1111,74 @@ namespace TombEditor.Compilers
                 }
             }
 
+            // Now add the textures of imported geometry
+            int lastHeight = _level.TextureMap.Height;
+
+            for (int i = 0; i < GeometryImporter.Textures.Count; i++)
+            {
+                // Load the texture as a bitmap
+                using (Bitmap sourceTexture = (Bitmap)Bitmap.FromFile(GeometryImporter.Textures.ElementAt(i).Key))
+                {
+                    // Create the 256x256 destination texture
+                    using (Bitmap destTexture = new Bitmap(256, 256, PixelFormat.Format32bppArgb))
+                    {
+                        // Resize the source texture if needed
+                        using (Graphics g = Graphics.FromImage(destTexture))
+                        {
+
+                            int w = sourceTexture.Width;
+                            int h = sourceTexture.Height;
+
+                            if (w > 256 || h > 256)
+                            {
+                                if (sourceTexture.Width >= sourceTexture.Height)
+                                {
+                                    w = 256;
+                                    h = (int)(256 / (sourceTexture.Width / (float)sourceTexture.Height));
+                                }
+                                else
+                                {
+                                    h = 256;
+                                    w = (int)(256 / (sourceTexture.Height / (float)sourceTexture.Width));
+                                }
+                            }
+
+                            // Copy the source texture to the destination bitmap
+                            g.DrawImage(sourceTexture,
+                                        new System.Drawing.Rectangle(0, 0, w, h),
+                                        new System.Drawing.Rectangle(0, 0, sourceTexture.Width, sourceTexture.Height),
+                                        GraphicsUnit.Pixel);
+
+                            // Now copy the destination bitmap to the final level texture map
+                            for (var x = 0; x < 256; x++)
+                            {
+                                for (var y = 0; y < 256; y++)
+                                {
+                                    var c = destTexture.GetPixel(x, y);
+
+                                    if (c.R == 255 & c.G == 0 && c.B == 255)
+                                    {
+                                        roomTextureMap[x * 4 + 0, y + lastHeight] = 0;
+                                        roomTextureMap[x * 4 + 1, y + lastHeight] = 0;
+                                        roomTextureMap[x * 4 + 2, y + lastHeight] = 0;
+                                        roomTextureMap[x * 4 + 3, y + lastHeight] = 0;
+                                    }
+                                    else
+                                    {
+                                        roomTextureMap[x * 4 + 0, y + lastHeight] = c.B;
+                                        roomTextureMap[x * 4 + 1, y + lastHeight] = c.G;
+                                        roomTextureMap[x * 4 + 2, y + lastHeight] = c.R;
+                                        roomTextureMap[x * 4 + 3, y + lastHeight] = 255;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                lastHeight += 256;
+            }
+
             // Rebuild the ID table
             for (var i = 0; i < _tempTexturesArray.Length; i++)
             {
@@ -1124,7 +1195,6 @@ namespace TombEditor.Compilers
             }
 
             // Build the TR4 texture tiles
-
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 for (var x = 0; x < room.NumXSectors; x++)
@@ -1504,6 +1574,54 @@ namespace TombEditor.Compilers
             }
 
             return tmp;
+        }
+
+        private short BuildRoomGeometryTextureInfo(Vector2 uv1, Vector2 uv2, Vector2 uv3, int textureTile)
+        {
+            var tile = new tr_object_texture();
+            
+            // Texture page
+            tile.Tile = (ushort)textureTile;
+            tile.Tile |= 0x8000; // It's always a triangle
+
+            // Attributes
+            // TODO: for now no alpha test or trasparency
+            tile.Attributes = 0;
+            
+            // Flags
+            tile.Flags = 0x8000;
+
+            // Create texture vertices
+            tile.Vertices = new tr_object_texture_vert[4];
+
+            tile.Vertices[0] = new tr_object_texture_vert
+            {
+                Xcoordinate = (byte)(uv1.X * 256.0f),
+                Xpixel = 0,
+                Ycoordinate = (byte)(uv1.Y * 256.0f),
+                Ypixel = 0
+            };
+
+            tile.Vertices[1] = new tr_object_texture_vert
+            {
+                Xcoordinate = (byte)(uv2.X * 256.0f),
+                Xpixel = 255,
+                Ycoordinate = (byte)(uv2.Y * 256.0f),
+                Ypixel = 0
+            };
+
+            tile.Vertices[2] = new tr_object_texture_vert
+            {
+                Xcoordinate = (byte)(uv3.X * 256.0f),
+                Xpixel = 0,
+                Ycoordinate = (byte)(uv3.Y * 256.0f),
+                Ypixel = 255
+            };
+
+            // Add the new tile to the list
+            _tempObjectTextures.Add(tile);
+
+            return (short)(_tempObjectTextures.Count - 1);
         }
     }
 }
