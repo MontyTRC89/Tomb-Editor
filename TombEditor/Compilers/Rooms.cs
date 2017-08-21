@@ -645,7 +645,7 @@ namespace TombEditor.Compilers
                     if (!Room.IsQuad(x, z, q0, q1, q2, q3, true) && room.Blocks[x, z].FloorSlopeX == 0 &&
                         room.Blocks[x, z].FloorSlopeZ == 0)
                     {
-                        if (room.Blocks[x, z].RealSplitFloor == 0)
+                        if (!room.Blocks[x, z].FloorSplitRealDirection)
                         {
                             aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(room.Blocks[x, z].QAFaces[0],
                                                            room.Blocks[x, z].QAFaces[2]));

@@ -412,10 +412,9 @@ namespace TombEditor.Compilers
                                     var t2 = 0;
 
                                     // The real floor split of the sector
-                                    int split = block.RealSplitFloor;
                                     int function;
 
-                                    if (split == 0)
+                                    if (!block.FloorSplitRealDirection)
                                     {
                                         if (block.FloorPortal != null && block.NoCollisionFloor)
                                         {
@@ -801,7 +800,6 @@ namespace TombEditor.Compilers
                                     var t2 = 0;
 
                                     // The real ceiling split of the sector
-                                    int split = block.RealSplitCeiling;
                                     int function;
 
                                     // Now, for each of the two possible splits, apply the algorithm described by meta2tr and 
@@ -809,7 +807,7 @@ namespace TombEditor.Compilers
                                     // decide if apply the height correction to both triangles or just one of them.
                                     // Function must be decided looking at portals.
 
-                                    if (split == 0)
+                                    if (!block.CeilingSplitRealDirection)
                                     {
                                         if (block.CeilingPortal != null && block.NoCollisionCeiling)
                                         {

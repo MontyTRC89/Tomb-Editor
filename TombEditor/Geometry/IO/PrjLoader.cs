@@ -720,7 +720,7 @@ namespace TombEditor.Geometry.IO
 
                                 tempBlock._flags2 = reader.ReadInt16();
                                 tempBlock._flags3 = reader.ReadInt16();
-                                block.SplitFoorType = unchecked((byte)(tempBlock._flags3));
+                                block.FloorSplitDirectionToggled = tempBlock._flags3 != 0;
 
                                 tempBlocks[x, z] = tempBlock;
                             }
@@ -1132,7 +1132,7 @@ namespace TombEditor.Geometry.IO
 
                                 bool isFloorSplitted = !Room.IsQuad(x, z, h1, h2, h3, h4, false);
 
-                                newBlock.SplitFloor = (isFloorSplitted && prjBlock._flags3 == 0x01);
+                                newBlock.FloorIsSplit = (isFloorSplitted && prjBlock._flags3 == 0x01);
                                 
                                 for (int n = 0; n < 14; n++)
                                 {
@@ -1525,7 +1525,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
@@ -1566,7 +1566,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling)
                                                                     {
@@ -1622,7 +1622,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
@@ -1663,7 +1663,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling)
                                                                     {
@@ -1719,7 +1719,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
@@ -1760,7 +1760,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling)
                                                                     {
@@ -1816,7 +1816,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor)
                                                                     {
@@ -1857,7 +1857,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling== 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling)
                                                                     {
@@ -1915,7 +1915,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
@@ -1957,7 +1957,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
                                                                     {
@@ -2015,7 +2015,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
@@ -2058,7 +2058,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
                                                                     {
@@ -2116,7 +2116,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor) // OK
                                                                     {
@@ -2157,7 +2157,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling) // OK
                                                                     {
@@ -2215,7 +2215,7 @@ namespace TombEditor.Geometry.IO
                                                         {
                                                             if (isFloor)
                                                             {
-                                                                if (theBlock.RealSplitFloor == 0)
+                                                                if (!theBlock.FloorSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Floor) // CORRETTO
                                                                     {
@@ -2257,7 +2257,7 @@ namespace TombEditor.Geometry.IO
                                                             }
                                                             else if (isCeiling)
                                                             {
-                                                                if (theBlock.RealSplitCeiling == 0)
+                                                                if (!theBlock.CeilingSplitRealDirection)
                                                                 {
                                                                     if (faceIndex == (int)BlockFaces.Ceiling) // CORRETTO
                                                                     {
