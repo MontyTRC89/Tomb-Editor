@@ -1465,15 +1465,7 @@ namespace TombEditor
                     room.Blocks[x, z].Flags ^= flag;
             _editor.RoomSectorPropertiesChange(room);
         }
-
-        public static void ToggleClimb(Room room, Rectangle area, int direction)
-        {
-            for (int x = area.X; x <= area.Right; x++)
-                for (int z = area.Y; z <= area.Bottom; z++)
-                    room.Blocks[x, z].Climb[direction] = !room.Blocks[x, z].Climb[direction];
-            _editor.RoomSectorPropertiesChange(room);
-        }
-
+        
         public static void AddPortal(Room room, Rectangle area)
         {
             // Check if fliproom

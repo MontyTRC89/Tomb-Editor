@@ -17,16 +17,18 @@ namespace TombEditor.Geometry
     {
         None = 0,
         Monkey = 1,
-        Opacity2 = 2,
-        Trigger = 4,
-        Box = 8,
-        Death = 16,
-        Lava = 32,
-        Electricity = 64,
-        Opacity = 128,
-        Beetle = 256,
-        TriggerTriggerer = 512,
-        NotWalkableFloor = 1024
+        Box = 2,
+        DeathFire = 4,
+        DeathLava = 8,
+        DeathElectricity = 16,
+        Beetle = 32,
+        TriggerTriggerer = 64,
+        NotWalkableFloor = 128,
+        ClimbPositiveX = 256,
+        ClimbNegativeX = 512,
+        ClimbPositiveZ = 1024,
+        ClimbNegativeZ = 2048,
+        ClimbAny = ClimbPositiveX  | ClimbNegativeX | ClimbPositiveZ | ClimbNegativeZ
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -69,20 +71,19 @@ namespace TombEditor.Geometry
         public bool CeilingSplitDirectionToggled { get; set; } = false;
         public bool FloorIsSplit { get; set; } = false;
         public bool CeilingIsSplit { get; set; } = false;
-        public bool[] Climb { get; set; } = new bool[4];
         public PortalOpacity FloorOpacity { get; set; }
         public PortalOpacity CeilingOpacity { get; set; }
         public PortalOpacity WallOpacity { get; set; }
-        public Portal FloorPortal { get; set; } = null;
-        public Portal WallPortal { get; set; } = null;
-        public Portal CeilingPortal { get; set; } = null;
+        public Portal FloorPortal { get; set; } = null; // This array is not supposed to be modified here.
+        public Portal WallPortal { get; set; } = null; // This array is not supposed to be modified here.
+        public Portal CeilingPortal { get; set; } = null; // This array is not supposed to be modified here.
         public short FloorSlopeX { get; set; } // To remove since information is confusing and redundant
         public short FloorSlopeZ { get; set; } // To remove since information is confusing and redundant
         public short CeilingSlopeX { get; set; } // To remove since information is confusing and redundant
         public short CeilingSlopeZ { get; set; } // To remove since information is confusing and redundant
         public bool NoCollisionFloor { get; set; }
         public bool NoCollisionCeiling { get; set; }
-        public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified.
+        public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
         public DiagonalSplit FloorDiagonalSplit { get; set; }
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
 
@@ -127,10 +128,7 @@ namespace TombEditor.Geometry
 
             b.CeilingSlopeX = CeilingSlopeX;
             b.CeilingSlopeZ = CeilingSlopeZ;
-
-            for (int i = 0; i < 4; i++)
-                b.Climb[i] = Climb[i];
-
+            
             return b;
         }
 

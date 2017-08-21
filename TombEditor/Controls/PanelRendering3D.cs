@@ -2934,11 +2934,11 @@ namespace TombEditor.Controls
                 {
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 200.0f / 255.0f, 200.0f / 255.0f, 1.0f));
 
-                    if ((room.Blocks[x, z].Flags & BlockFlags.Electricity) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.DeathElectricity) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                    if ((room.Blocks[x, z].Flags & BlockFlags.Death) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.DeathFire) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
-                    if ((room.Blocks[x, z].Flags & BlockFlags.Lava) != 0)
+                    if ((room.Blocks[x, z].Flags & BlockFlags.DeathLava) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorDeath));
                     if ((room.Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorMonkey));
@@ -2946,10 +2946,7 @@ namespace TombEditor.Controls
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorBox));
                     if ((room.Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNotWalkable));
-                    if (room.Blocks[x, z].Climb[0] ||
-                        room.Blocks[x, z].Climb[1] ||
-                        room.Blocks[x, z].Climb[2] ||
-                        room.Blocks[x, z].Climb[3])
+                    if ((room.Blocks[x, z].Flags & BlockFlags.ClimbAny) != BlockFlags.None)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorClimb));
                     if ((room.Blocks[x, z].NoCollisionFloor &&
                          (index == (int) BlockFaces.Floor || index == (int) BlockFaces.FloorTriangle2)))
