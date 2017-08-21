@@ -246,11 +246,11 @@ namespace TombEditor
                     comboItems.Items.Add(_editor.Level.Wad.WadMoveables[e.Current.Value.Id]);
             }
 
-            // Update static color control
+            // Update item color control
             if (obj is Editor.SelectedObjectChangedEvent)
             {
-                StaticInstance staticInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
-                panelStaticMeshColor.BackColor = staticInstance?.Color ?? System.Drawing.Color.Black;
+                ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
+                panelStaticMeshColor.BackColor = itemInstance?.Color ?? System.Drawing.Color.Black;
             }
 
             // Update application title
@@ -1398,7 +1398,7 @@ namespace TombEditor
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
         {
-            var instance = _editor.SelectedObject as StaticInstance;
+            var instance = _editor.SelectedObject as ItemInstance;
             if (instance == null)
                 return;
 

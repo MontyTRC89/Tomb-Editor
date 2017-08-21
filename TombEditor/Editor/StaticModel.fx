@@ -16,10 +16,7 @@ struct PixelInputType
 float4x4 ModelViewProjection;
 
 float4 Color;
-bool TextureEnabled;
 bool SelectionEnabled;
-bool EditorTextureEnabled;
-bool LightEnabled;
 
 int Shape;
 int SplitMode;
@@ -44,22 +41,13 @@ float4 PS(PixelInputType input) : SV_TARGET
 	float4 pixel = Texture.Sample(TextureSampler, input.UV);
 	//if (pixel.x == 1.0f && pixel.y == 0.0f && pixel.z == 1.0f) return float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	if (TextureEnabled)
-	{
-		if (SelectionEnabled)
-		{
-			pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
-		}
-		else
-		{
-			if (LightEnabled) 
-			{
-				float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
-				float3 colorMul = min(Color.xyz * 2.0f, 1.0f);
-				pixel.xyz = pixel.xyz * colorMul * input.Shade.x + colorAdd;
-			}
-		}		
-	}
+	pixel.xyz *= input.Shade.x;
+	float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
+	float3 colorMul = min(Color.xyz * 2.0f, 1.0f);
+	pixel.xyz = pixel.xyz * colorMul + colorAdd;
+
+	if (SelectionEnabled) 
+		pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);	
 	return pixel;
 }
 

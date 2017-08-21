@@ -27,6 +27,8 @@ namespace TombEditor.Geometry
             set { RotationY = value * (float)(180 / Math.PI); }
         }
 
+        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
+
         public abstract ItemType ItemType { get; }
         
         public override string ToString()

@@ -253,6 +253,10 @@ namespace TombEditor.Geometry.IO
                                     if (objSlot >= 460 && objSlot <= 464)
                                         continue;
 
+                                    int red = objTint & 0x001f;
+                                    int green = (objTint & 0x03e0) >> 5;
+                                    int blue = (objTint & 0x7c00) >> 10;
+
                                     if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                     {
                                         var instance = new MoveableInstance()
@@ -264,7 +268,8 @@ namespace TombEditor.Geometry.IO
                                             WadObjectId = unchecked((uint)objSlot),
                                             Position = position,
                                             Ocb = objTimer,
-                                            RotationY = objFacing * (360.0f / 65535.0f) - 90.0f
+                                            RotationY = objFacing * (360.0f / 65535.0f) - 90.0f,
+                                            Color = Color.FromArgb(255, red * 8, green * 8, blue * 8)
                                         };
                                         room.AddObject(level, instance);
                                     }
@@ -275,14 +280,10 @@ namespace TombEditor.Geometry.IO
                                             ScriptId = unchecked((ushort)(objectsThings[j])),
                                             WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                             Position = position,
-                                            RotationY = objFacing * (360.0f / 65535.0f) - 90.0f
+                                            RotationY = objFacing * (360.0f / 65535.0f) - 90.0f,
+                                            Color = Color.FromArgb(255, red * 8, green * 8, blue * 8)
                                         };
                                         
-                                        int red = objTint & 0x001f;
-                                        int green = (objTint & 0x03e0) >> 5;
-                                        int blue = (objTint & 0x7c00) >> 10;
-                                        instance.Color = Color.FromArgb(255, red * 8, green * 8, blue * 8);
-
                                         room.AddObject(level, instance);
                                     }
                                     break;

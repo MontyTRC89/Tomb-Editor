@@ -139,8 +139,6 @@ namespace TombEditor.Controls
                 SkinnedModel skin = model;
                 
                 Effect mioEffect = _deviceManager.Effects["Model"];
-                mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
-                mioEffect.Parameters["TextureEnabled"].SetValue(true);
                 mioEffect.Parameters["SelectionEnabled"].SetValue(false);
 
                 _device.SetVertexBuffer(0, model.VertexBuffer);
