@@ -224,7 +224,7 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_boxBrush, rectangle);
                         else if (block.Flags.HasFlag(BlockFlags.Monkey))
                             e.Graphics.FillRectangle(_monkeyBrush, rectangle);
-                        else if (block.Flags.HasFlag(BlockFlags.Death) || block.Flags.HasFlag(BlockFlags.Electricity) || block.Flags.HasFlag(BlockFlags.Lava))
+                        else if (block.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
                             e.Graphics.FillRectangle(_deathBrush, rectangle);
                         else if (block.NoCollisionFloor || block.NoCollisionCeiling)
                             e.Graphics.FillRectangle(_noCollisionBrush, rectangle);
@@ -232,13 +232,13 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_floorBrush, rectangle);
 
                         //Draw additional features on floor tile
-                        if (block.Climb[0])
+                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
-                        if (block.Climb[1])
+                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
-                        if (block.Climb[2])
+                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX))
                         e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
-                        if (block.Climb[3])
+                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
                         RectangleF beetleTriggerRectangle = rectangle;
                         beetleTriggerRectangle.Inflate(-2, -2);

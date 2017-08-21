@@ -671,15 +671,15 @@ namespace TombEditor.Geometry.IO
                                 if ((blockFlags1 & 0x0020) != 0)
                                     block.Flags |= BlockFlags.Box;
                                 if ((blockFlags1 & 0x0010) != 0)
-                                    block.Flags |= BlockFlags.Death;
+                                    block.Flags |= BlockFlags.DeathFire;
                                 if ((blockFlags1 & 0x0200) != 0)
-                                    block.Climb[2] = true;
+                                    block.Flags |= BlockFlags.ClimbNegativeX;
                                 if ((blockFlags1 & 0x0100) != 0)
-                                    block.Climb[1] = true;
+                                    block.Flags |= BlockFlags.ClimbPositiveZ;
                                 if ((blockFlags1 & 0x0080) != 0)
-                                    block.Climb[0] = true;
+                                    block.Flags |= BlockFlags.ClimbPositiveX;
                                 if ((blockFlags1 & 0x0040) != 0)
-                                    block.Climb[3] = true;
+                                    block.Flags |= BlockFlags.ClimbNegativeZ;
 
                                 if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
                                 {

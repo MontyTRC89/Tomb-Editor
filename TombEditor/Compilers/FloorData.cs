@@ -179,7 +179,7 @@ namespace TombEditor.Compilers
                         var lastFloorDataFunction = (ushort)tempCodes.Count;
 
                         // If sector is Death
-                        if ((block.Flags & BlockFlags.Death) == BlockFlags.Death)
+                        if ((block.Flags & BlockFlags.DeathFire) == BlockFlags.DeathFire)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x05);
@@ -1029,14 +1029,14 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is Climbable
-                        if (block.Climb[0] || block.Climb[1] || block.Climb[2] || block.Climb[3])
+                        if ((block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
                         {
                             ushort climb = 0x06;
 
-                            if (block.Climb[0]) climb |= (ushort)(0x01 << 8);
-                            if (block.Climb[1]) climb |= (ushort)(0x02 << 8);
-                            if (block.Climb[2]) climb |= (ushort)(0x04 << 8);
-                            if (block.Climb[3]) climb |= (ushort)(0x08 << 8);
+                            if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX)) climb |= (ushort)(0x01 << 8);
+                            if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ)) climb |= (ushort)(0x02 << 8);
+                            if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX)) climb |= (ushort)(0x04 << 8);
+                            if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ)) climb |= (ushort)(0x08 << 8);
 
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(climb);
