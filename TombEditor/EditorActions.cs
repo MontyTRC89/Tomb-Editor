@@ -563,8 +563,7 @@ namespace TombEditor
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    room.Blocks[x, z].SplitFoorType = 
-                        (byte)(room.Blocks[x, z].SplitFoorType == 0 ? 1 : 0);
+                    room.Blocks[x, z].FloorSplitDirectionToggled = !room.Blocks[x, z].FloorSplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
         }
@@ -573,8 +572,7 @@ namespace TombEditor
         {
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    room.Blocks[x, z].SplitCeilingType =
-                        (byte)(room.Blocks[x, z].SplitCeilingType == 0 ? 1 : 0);
+                    room.Blocks[x, z].CeilingSplitDirectionToggled = !room.Blocks[x, z].CeilingSplitDirectionToggled;
 
             SmartBuildGeometry(room, area);
         }
@@ -1436,7 +1434,7 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].SplitFloor = false;
+                    room.Blocks[x, z].FloorIsSplit = false;
                     room.Blocks[x, z].Type = BlockType.Floor;
                     room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
                 }
@@ -1452,7 +1450,7 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].SplitCeiling = false;
+                    room.Blocks[x, z].CeilingIsSplit = false;
                     room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
                 }
 

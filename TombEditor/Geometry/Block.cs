@@ -65,12 +65,10 @@ namespace TombEditor.Geometry
         // ReSharper disable once InconsistentNaming
         public short[] RFFaces { get; } = new short[4];
         public BlockFace[] Faces { get; } = new BlockFace[29];
-        public byte SplitFoorType { get; set; } = 0;
-        public byte SplitCeilingType { get; set; } = 0;
-        public bool SplitFloor { get; set; } = false;
-        public byte RealSplitFloor { get; set; }
-        public byte RealSplitCeiling { get; set; }
-        public bool SplitCeiling { get; set; } = false;
+        public bool FloorSplitDirectionToggled { get; set; } = false;
+        public bool CeilingSplitDirectionToggled { get; set; } = false;
+        public bool FloorIsSplit { get; set; } = false;
+        public bool CeilingIsSplit { get; set; } = false;
         public bool[] Climb { get; set; } = new bool[4];
         public PortalOpacity FloorOpacity { get; set; }
         public PortalOpacity CeilingOpacity { get; set; }
@@ -117,14 +115,12 @@ namespace TombEditor.Geometry
 
             b.Flags = Flags;
             b.Type = Type;
-
-            b.RealSplitFloor = RealSplitFloor;
-            b.SplitFloor = SplitFloor;
-            b.SplitFoorType = SplitFoorType;
-
-            b.RealSplitCeiling = RealSplitCeiling;
-            b.SplitCeiling = SplitCeiling;
-            b.SplitCeilingType = SplitCeilingType;
+            
+            b.FloorIsSplit = FloorIsSplit;
+            b.FloorSplitDirectionToggled = FloorSplitDirectionToggled;
+            
+            b.CeilingIsSplit = CeilingIsSplit;
+            b.CeilingSplitDirectionToggled = CeilingSplitDirectionToggled;
 
             b.FloorSlopeX = FloorSlopeX;
             b.FloorSlopeZ = FloorSlopeZ;
@@ -141,7 +137,7 @@ namespace TombEditor.Geometry
         public bool IsFloor => Type == BlockType.Floor;
 
         public bool IsAnyWall => Type != BlockType.Floor;
-        
+
         public IEnumerable<Portal> Portals
         {
             get
@@ -182,6 +178,108 @@ namespace TombEditor.Geometry
         public void ChangeEdge(int verticalSubdivision, int edge, short increment)
         {
             GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
+        }
+
+        private static int FindHorizontalTriangle(int h1, int h2, int h3, int h4)
+        {
+            const int x = 0;
+            const int z = 0;
+            var p1 = new Vector3(x * 1024.0f, h1 * 256.0f, z * 1024.0f);
+            var p2 = new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f);
+            var p3 = new Vector3((x + 1) * 1024.0f, h3 * 256.0f, (z + 1) * 1024.0f);
+            var p4 = new Vector3(x * 1024.0f, h4 * 256.0f, (z + 1) * 1024.0f);
+
+            var plane = new Plane(p1, p2, p4);
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 0;
+
+            plane = new Plane(p1, p2, p3);
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 1;
+
+            plane = new Plane(p2, p3, p4);
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 2;
+
+            plane = new Plane(p3, p4, p1);
+            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
+                return 3;
+
+            return -1;
+        }
+
+        public bool FloorSplitRealDirection
+        {
+            get
+            {
+                int h1 = QAFaces[0],h2 = QAFaces[1], h3 = QAFaces[2], h4 = QAFaces[3];
+                int horizontalTriangle = FindHorizontalTriangle(h1, h2, h3, h4);
+
+                switch (horizontalTriangle)
+                {
+                    case 0:
+                        return !FloorSplitDirectionToggled;
+                    case 1:
+                        return FloorSplitDirectionToggled;
+                    case 2:
+                        return !FloorSplitDirectionToggled;
+                    case 3:
+                        return FloorSplitDirectionToggled;
+                    default:
+                        int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
+                        int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
+
+                        if (max == h1 && max == h3)
+                            return !FloorSplitDirectionToggled;
+                        if (max == h2 && max == h4)
+                            return FloorSplitDirectionToggled;
+
+                        if (min == h1 && max == h3)
+                            return !FloorSplitDirectionToggled;
+                        if (min == h2 && max == h4)
+                            return FloorSplitDirectionToggled;
+                        if (min == h3 && max == h1)
+                            return !FloorSplitDirectionToggled;
+                        if (min == h4 && max == h2)
+                            return FloorSplitDirectionToggled;
+
+                        break;
+                }
+
+                return FloorSplitDirectionToggled;
+            }
+        }
+
+        public bool CeilingSplitRealDirection
+        {
+            get
+            {
+                int h1 = WSFaces[0], h2 = WSFaces[1], h3 = WSFaces[2], h4 = WSFaces[3];
+                int horizontalTriangle = FindHorizontalTriangle(h1, h2, h3, h4);
+
+                switch (horizontalTriangle)
+                {
+                    case 0:
+                        return !CeilingSplitDirectionToggled;
+                    case 1:
+                        return CeilingSplitDirectionToggled;
+                    case 2:
+                        return !CeilingSplitDirectionToggled;
+                    case 3:
+                        return CeilingSplitDirectionToggled;
+                    default:
+                        int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
+                        if (min == h1)
+                            return !CeilingSplitDirectionToggled;
+                        if (min == h2)
+                            return CeilingSplitDirectionToggled;
+                        if (min == h3)
+                            return !CeilingSplitDirectionToggled;
+                        break;
+                }
+
+                return CeilingSplitDirectionToggled;
+            }
         }
     }
 }

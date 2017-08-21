@@ -672,7 +672,7 @@ namespace TombEditor.Geometry
                             (Blocks[x, z].FloorPortal != null && (Blocks[x, z].FloorOpacity != PortalOpacity.None || IsFloorSolid(new DrawingPoint(x, z)))) ||
                              Blocks[x, z].Type == BlockType.Wall)
                         {
-                            if (Blocks[x, z].SplitFloor == false && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
+                            if (Blocks[x, z].FloorIsSplit == false && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
                             {
                                 AddRectangle(x, z, BlockFaces.Floor, new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
                                                                     new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
@@ -683,12 +683,7 @@ namespace TombEditor.Geometry
                             }
                             else
                             {
-                                int split = GetBestFloorSplit(x, z, qa0, qa1, qa2, qa3);
-                                if (Blocks[x, z].Type != BlockType.Wall)
-                                {
-                                    if (Blocks[x, z].SplitFoorType == 1)
-                                        split = split == 0 ? 1 : 0;
-                                }
+                                bool splitDirection = Blocks[x, z].FloorSplitRealDirection;
 
                                 bool addTriangle1 = true;
                                 bool addTriangle2 = true;
@@ -704,7 +699,7 @@ namespace TombEditor.Geometry
                                 {
                                     if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW)
                                     {
-                                        split = 1;
+                                        splitDirection = true;
                                         addTriangle1 = true;
                                         addTriangle2 = Blocks[x, z].Type != BlockType.Wall;
                                         y1 = qa0;
@@ -717,7 +712,7 @@ namespace TombEditor.Geometry
 
                                     if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE)
                                     {
-                                        split = 0;
+                                        splitDirection = false;
                                         addTriangle1 = true;
                                         addTriangle2 = Blocks[x, z].Type != BlockType.Wall;
                                         y1 = qa1;
@@ -730,7 +725,7 @@ namespace TombEditor.Geometry
 
                                     if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE)
                                     {
-                                        split = 1;
+                                        splitDirection = true;
                                         addTriangle1 = Blocks[x, z].Type != BlockType.Wall;
                                         addTriangle2 = true;
                                         y1 = qa0;
@@ -743,7 +738,7 @@ namespace TombEditor.Geometry
 
                                     if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW)
                                     {
-                                        split = 0;
+                                        splitDirection = false;
                                         addTriangle1 = Blocks[x, z].Type != BlockType.Wall;
                                         addTriangle2 = true;
                                         y1 = qa1;
@@ -756,7 +751,7 @@ namespace TombEditor.Geometry
                                 }
                                 else
                                 {
-                                    if (split == 0)
+                                    if (!splitDirection)
                                     {
                                         addTriangle1 = true;
                                         addTriangle2 = true;
@@ -780,7 +775,7 @@ namespace TombEditor.Geometry
                                     }
                                 }
 
-                                if (split == 0)
+                                if (!splitDirection)
                                 {
                                     if (addTriangle1)
                                     {
@@ -826,13 +821,7 @@ namespace TombEditor.Geometry
                         if ((Blocks[x, z].FloorPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
                             (Blocks[x, z].FloorPortal != null && (Blocks[x, z].FloorOpacity != PortalOpacity.None || IsFloorSolid(new DrawingPoint(x, z)))))
                         {
-                            int split = GetBestFloorSplit(x, z, qa0, qa1, qa2, qa3);
-                            if (Blocks[x, z].SplitFoorType == 1)
-                                split = split == 0 ? 1 : 0;
-
-                            Blocks[x, z].RealSplitFloor = (byte)split;
-
-                            if (split == 0)
+                            if (!Blocks[x, z].FloorSplitRealDirection)
                             {
                                 AddTriangle(x, z, BlockFaces.Floor, new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
                                                                     new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
@@ -887,7 +876,7 @@ namespace TombEditor.Geometry
                              Blocks[x, z].Type == BlockType.Wall))
                             continue;
 
-                        if (Blocks[x, z].SplitCeiling == false && Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
+                        if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
                         {
                             AddRectangle(x, z, BlockFaces.Ceiling, new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
@@ -898,15 +887,7 @@ namespace TombEditor.Geometry
                         }
                         else
                         {
-                            int split = GetBestCeilingSplit(x, z, ws0, ws1, ws2, ws3);
-                            if (Blocks[x, z].SplitCeilingType == 1)
-                                split = split == 0 ? 1 : 0;
-
-                            if (Blocks[x, z].Type != BlockType.Wall)
-                            {
-                                if (Blocks[x, z].SplitFoorType == 1)
-                                    split = split == 0 ? 1 : 0;
-                            }
+                            bool splitDirection = Blocks[x, z].CeilingSplitRealDirection;
 
                             bool addTriangle1 = true;
                             bool addTriangle2 = true;
@@ -922,7 +903,7 @@ namespace TombEditor.Geometry
                             {
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NW)
                                 {
-                                    split = 0;
+                                    splitDirection = false;
                                     addTriangle1 = true;
                                     addTriangle2 = (Blocks[x, z].Type != BlockType.Wall);
                                     y1 = ws0;
@@ -935,7 +916,7 @@ namespace TombEditor.Geometry
 
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NE)
                                 {
-                                    split = 1;
+                                    splitDirection = true;
                                     addTriangle1 = true;
                                     addTriangle2 = (Blocks[x, z].Type != BlockType.Wall);
                                     y1 = ws1;
@@ -948,7 +929,7 @@ namespace TombEditor.Geometry
 
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SE)
                                 {
-                                    split = 0;
+                                    splitDirection = false;
                                     addTriangle1 = (Blocks[x, z].Type != BlockType.Wall);
                                     addTriangle2 = true;
                                     y1 = ws0;
@@ -961,7 +942,7 @@ namespace TombEditor.Geometry
 
                                 if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SW)
                                 {
-                                    split = 1;
+                                    splitDirection = true;
                                     addTriangle1 = (Blocks[x, z].Type != BlockType.Wall);
                                     addTriangle2 = true;
                                     y1 = ws1;
@@ -974,7 +955,7 @@ namespace TombEditor.Geometry
                             }
                             else
                             {
-                                if (split == 0)
+                                if (!splitDirection)
                                 {
                                     addTriangle1 = true;
                                     addTriangle2 = true;
@@ -998,7 +979,7 @@ namespace TombEditor.Geometry
                                 }
                             }
 
-                            if (split == 0)
+                            if (!splitDirection)
                             {
                                 if (addTriangle1)
                                 {
@@ -1043,14 +1024,8 @@ namespace TombEditor.Geometry
                         if (!((Blocks[x, z].CeilingPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
                             (Blocks[x, z].CeilingPortal != null && (Blocks[x, z].CeilingOpacity != PortalOpacity.None || IsCeilingSolid(new DrawingPoint(x, z))))))
                             continue;
-
-                        int split = GetBestCeilingSplit(x, z, ws0, ws1, ws2, ws3);
-                        if (Blocks[x, z].SplitCeilingType == 1)
-                            split = split == 0 ? 1 : 0;
-
-                        Blocks[x, z].RealSplitCeiling = (byte)split;
-
-                        if (split == 1)
+                        
+                        if (!Blocks[x, z].CeilingSplitRealDirection)
                         {
                             AddTriangle(x, z, BlockFaces.Ceiling, new Vector3(x * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3(x * 1024.0f, ws3 * 256.0f, z * 1024.0f),
@@ -2012,98 +1987,6 @@ namespace TombEditor.Geometry
                 return false;
 
             return !horizontal || (plane1.Normal == Vector3.UnitY || plane1.Normal == -Vector3.UnitY);
-        }
-
-        private static int FindHorizontalTriangle(int x, int z, int h1, int h2, int h3, int h4)
-        {
-            var p1 = new Vector3(x * 1024.0f, h1 * 256.0f, z * 1024.0f);
-            var p2 = new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f);
-            var p3 = new Vector3((x + 1) * 1024.0f, h3 * 256.0f, (z + 1) * 1024.0f);
-            var p4 = new Vector3(x * 1024.0f, h4 * 256.0f, (z + 1) * 1024.0f);
-
-            var plane = new Plane(p1, p2, p4);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
-                return 0;
-
-            plane = new Plane(p1, p2, p3);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
-                return 1;
-
-            plane = new Plane(p2, p3, p4);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
-                return 2;
-
-            plane = new Plane(p3, p4, p1);
-            if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
-                return 3;
-
-            return -1;
-        }
-
-        private static int GetBestFloorSplit(int x, int z, int h1, int h2, int h3, int h4)
-        {
-            int horizontalTriangle = FindHorizontalTriangle(x, z, h1, h2, h3, h4);
-
-            switch (horizontalTriangle)
-            {
-                case 0:
-                    return 1;
-                case 1:
-                    return 0;
-                case 2:
-                    return 1;
-                case 3:
-                    return 0;
-                default:
-                    int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
-                    int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-
-                    if (max == h1 && max == h3)
-                        return 1;
-                    if (max == h2 && max == h4)
-                        return 0;
-
-                    if (min == h1 && max == h3)
-                        return 1;
-                    if (min == h2 && max == h4)
-                        return 0;
-                    if (min == h3 && max == h1)
-                        return 1;
-                    if (min == h4 && max == h2)
-                        return 0;
-
-                    break;
-            }
-
-            return 0;
-        }
-
-        private static int GetBestCeilingSplit(int x, int z, int h1, int h2, int h3, int h4)
-        {
-            int horizontalTriangle = FindHorizontalTriangle(x, z, h1, h2, h3, h4);
-
-            switch (horizontalTriangle)
-            {
-                case 0:
-                    return 1;
-                case 1:
-                    return 0;
-                case 2:
-                    return 1;
-                case 3:
-                    return 0;
-                default:
-                    int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
-                    if (min == h1)
-                        return 1;
-                    if (min == h2)
-                        return 0;
-                    if (min == h3)
-                        return 1;
-                    break;
-            }
-
-            return 0;
         }
 
         private Portal FindPortal(int x, int z, PortalDirection type)
