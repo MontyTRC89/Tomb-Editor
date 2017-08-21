@@ -751,7 +751,7 @@ namespace TombEditor.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (room.IsFloorSolid(new DrawingPoint(xInRoom, zInRoom)))
+            while (!room.IsFloorSolid(new DrawingPoint(xInRoom, zInRoom)))
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
