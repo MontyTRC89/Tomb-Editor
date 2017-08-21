@@ -159,7 +159,6 @@ namespace TombEditor
                 if (value == _selectedRoom)
                     return;
                 SelectedSectors = SectorSelection.None;
-                SelectedObject = null;
                 var previous = _selectedRoom;
                 _selectedRoom = value;
                 RaiseEvent(new SelectedRoomChangedEvent { Previous = previous, Current = value });
