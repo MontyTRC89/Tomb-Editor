@@ -1276,9 +1276,6 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[2] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.NE;
                     }
-
-
-                    room.Blocks[x, z].FloorDiagonalSplitType = DiagonalSplitType.Floor;
                 }
 
             SmartBuildGeometry(room, area);
@@ -1344,9 +1341,6 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[2] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.NE;
                     }
-
-
-                    room.Blocks[x, z].CeilingDiagonalSplitType = DiagonalSplitType.Floor;
                 }
 
             SmartBuildGeometry(room, area);
@@ -1418,8 +1412,6 @@ namespace TombEditor
                     }
 
                     room.Blocks[x, z].Type = BlockType.Wall;
-                    room.Blocks[x, z].FloorDiagonalSplitType = DiagonalSplitType.Wall;
-                    room.Blocks[x, z].CeilingDiagonalSplitType = DiagonalSplitType.None;
                 }
 
             SmartBuildGeometry(room, area);
