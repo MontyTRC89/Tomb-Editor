@@ -1358,10 +1358,7 @@ namespace TombEditor.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
-
-            skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
-            skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
-
+            
             MoveableInstance _lastObject = null;
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
@@ -1392,6 +1389,7 @@ namespace TombEditor.Controls
                     skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(true);
                 else
                     skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
+                skinnedModelEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.Mode == EditorMode.Lighting ? instance.Color : System.Drawing.Color.Gray));
 
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
@@ -1515,11 +1513,7 @@ namespace TombEditor.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Effect staticMeshEffect = _deviceManager.Effects["StaticModel"];
-
-            staticMeshEffect.Parameters["TextureEnabled"].SetValue(true);
-            staticMeshEffect.Parameters["SelectionEnabled"].SetValue(false);
-            staticMeshEffect.Parameters["LightEnabled"].SetValue(true);
-
+            
             staticMeshEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
@@ -1547,8 +1541,8 @@ namespace TombEditor.Controls
 
                 bool SelectionEnabled = _editor.SelectedObject == instance;
                 staticMeshEffect.Parameters["SelectionEnabled"].SetValue(SelectionEnabled);
-                staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(instance.Color));
-
+                staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.Mode == EditorMode.Lighting ? instance.Color : System.Drawing.Color.Gray));
+                
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
 

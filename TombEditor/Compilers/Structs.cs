@@ -417,8 +417,8 @@ namespace TombEditor.Compilers
         public int Y;
         public int Z;
         public short Angle;
-        public short Intensity1;
-        public short Intensity2;
+        public ushort Intensity1;
+        public short Ocb;
         public ushort Flags;
     }
 
