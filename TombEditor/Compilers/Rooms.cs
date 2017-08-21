@@ -191,7 +191,7 @@ namespace TombEditor.Compilers
 
                     rv.Vertex = v;
                     rv.Lighting1 = 0;
-                    rv.Lighting2 = (short)Pack24BitColorTo16Bit(optimizedVertices[j].FaceColor);
+                    rv.Lighting2 = (short)PackColorTo16Bit(optimizedVertices[j].FaceColor);
                     rv.Attributes = 0;
 
                     // Water special effects
@@ -306,7 +306,7 @@ namespace TombEditor.Compilers
                         Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
                             Math.Round(instance.RotationY * (65536.0 / 360.0))))),
                         ObjectID = (ushort)instance.WadObjectId,
-                        Intensity1 = Pack24BitColorTo16Bit(instance.Color),
+                        Intensity1 = PackColorTo16Bit(instance.Color),
                         Intensity2 = 0
                     })
                     .ToArray();
@@ -1407,78 +1407,23 @@ namespace TombEditor.Compilers
             }
         }
 
-        private static ushort Pack24BitColorTo16Bit(Vector4 color)
+        private static ushort PackColorTo16Bit(Vector4 color)
         {
-            var r1 = (ushort)color.X;
-            var g1 = (ushort)color.Y;
-            var b1 = (ushort)color.Z;
-
-            var r = (ushort)Math.Floor(color.X / 8);
-            var g = (ushort)Math.Floor(color.Y / 8);
-            var b = (ushort)Math.Floor(color.Z / 8);
-
-            if (r1 < 8)
-                r = 0;
-            if (g1 < 8)
-                g = 0;
-            if (b1 < 8)
-                b = 0;
-
+            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
+            
             ushort tmp = 0;
-
-            if (r1 > 255)
-                r1 = 255;
-            if (g1 > 255)
-                g1 = 255;
-            if (b1 > 255)
-                b1 = 255;
-
-            if (r1 == 255 && g1 == 255 && b1 == 255)
-            {
-                tmp = 0x7fff;
-            }
-            else
-            {
-                tmp |= 0;
-                tmp |= (ushort)(r << 10);
-                tmp |= (ushort)(g << 5);
-                tmp |= b;
-            }
-
+            tmp |= (ushort)((ushort)(color.X / 8.0) << 10);
+            tmp |= (ushort)((ushort)(color.Y / 8.0) << 5);
+            tmp |= (ushort)(color.Z / 8.0);
             return tmp;
         }
 
-        private static ushort Pack24BitColorTo16Bit(System.Drawing.Color color)
+        private static ushort PackColorTo16Bit(System.Drawing.Color color)
         {
-            var r1 = (ushort)color.R;
-            var g1 = (ushort)color.G;
-            var b1 = (ushort)color.B;
-
-            var r = (ushort)(color.R / 8);
-            var g = (ushort)(color.G / 8);
-            var b = (ushort)(color.B / 8);
-
-            if (r1 < 8)
-                r = 0;
-            if (g1 < 8)
-                g = 0;
-            if (b1 < 8)
-                b = 0;
-
             ushort tmp = 0;
-
-            if (r1 == 255 && g1 == 255 && b1 == 255)
-            {
-                tmp = 0xffff;
-            }
-            else
-            {
-                tmp |= 0;
-                tmp |= (ushort)((b << 10) & 0x7c00);
-                tmp |= (ushort)((g << 5) & 0x03e0);
-                tmp |= (ushort)(r & 0x1f);
-            }
-
+            tmp |= (ushort)((ushort)(color.R / 8) << 10);
+            tmp |= (ushort)((ushort)(color.G / 8) << 5);
+            tmp |= (ushort)(color.B / 8);
             return tmp;
         }
 
