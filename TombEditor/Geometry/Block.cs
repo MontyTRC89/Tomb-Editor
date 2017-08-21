@@ -11,16 +11,7 @@ namespace TombEditor.Geometry
     {
         Floor, Wall, BorderWall
     }
-
-    public enum DiagonalSplitType : byte
-    {
-        None = 0,
-        Floor = 1,
-        Ceiling = 2,
-        FloorAndCeiling = 3,
-        Wall = 4
-    }
-
+    
     [Flags]
     public enum BlockFlags : short
     {
@@ -95,9 +86,7 @@ namespace TombEditor.Geometry
         public bool NoCollisionCeiling { get; set; }
         public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified.
         public DiagonalSplit FloorDiagonalSplit { get; set; }
-        public DiagonalSplitType FloorDiagonalSplitType { get; set; }
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
-        public DiagonalSplitType CeilingDiagonalSplitType { get; set; }
 
         public Block(int floor, int ceiling)
         {
