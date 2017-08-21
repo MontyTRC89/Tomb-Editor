@@ -1458,6 +1458,36 @@ namespace TombEditor
         {
             butResetSearch_Click(null, null);
         }
+        
+        private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!CheckForRoomAndBlockSelection())
+                return;
+
+            // Search for first Lara and remove her
+            MoveableInstance lara;
+            foreach (Room room in _editor.Level.Rooms.Where(room => room != null))
+                foreach (var instance in room.Objects)
+                {
+                    lara = instance as MoveableInstance;
+                    if ((lara != null) && (lara.WadObjectId == 0))
+                    {
+                        room.RemoveObject(_editor.Level, instance);
+                        goto FoundLara;
+                    }
+                }
+            lara = new MoveableInstance { WadObjectId = 0 }; // Lara
+            FoundLara:
+
+            // Add lara to current sector
+            {
+                var room = _editor.SelectedRoom;
+                int y = room.GetHighestFloorCorner(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.Start.Y);
+                lara.Position = new Vector3(_editor.SelectedSectors.Start.X * 1024 + 512, y * 256, _editor.SelectedSectors.Start.Y * 1024 + 512);
+                room.AddObject(_editor.Level, lara);
+                _editor.ObjectChange(lara);
+            }
+        }
 
         private void comboFlipMap_SelectedIndexChanged(object sender, EventArgs e)
         {

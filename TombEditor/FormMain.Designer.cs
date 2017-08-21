@@ -246,6 +246,7 @@
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.moveLaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -410,7 +411,7 @@
             this.undoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.undoToolStripMenuItem.Image = global::TombEditor.Properties.Resources.undo_16;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Visible = false;
             // 
@@ -419,7 +420,7 @@
             this.redoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.redoToolStripMenuItem.Image = global::TombEditor.Properties.Resources.redo_16;
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.redoToolStripMenuItem.Text = "Redo";
             this.redoToolStripMenuItem.Visible = false;
             // 
@@ -428,7 +429,7 @@
             this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(105, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(149, 6);
             this.toolStripMenuItem4.Visible = false;
             // 
             // copyToolStripMenuItem
@@ -436,7 +437,7 @@
             this.copyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.copyToolStripMenuItem.Image = global::TombEditor.Properties.Resources.copy_16;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -445,7 +446,7 @@
             this.pasteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pasteToolStripMenuItem.Image = global::TombEditor.Properties.Resources.clipboard_16;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -454,7 +455,7 @@
             this.stampToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.stampToolStripMenuItem.Image = global::TombEditor.Properties.Resources.rubber_stamp_16;
             this.stampToolStripMenuItem.Name = "stampToolStripMenuItem";
-            this.stampToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.stampToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stampToolStripMenuItem.Text = "Stamp";
             this.stampToolStripMenuItem.Click += new System.EventHandler(this.stampToolStripMenuItem_Click);
             // 
@@ -677,7 +678,8 @@
             this.addSoundSourceToolStripMenuItem,
             this.toolStripMenuItem7,
             this.findObjectToolStripMenuItem,
-            this.resetFilterToolStripMenuItem});
+            this.resetFilterToolStripMenuItem,
+            this.moveLaraToolStripMenuItem});
             this.itemsToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.itemsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.itemsToolStripMenuItem.Name = "itemsToolStripMenuItem";
@@ -2838,6 +2840,14 @@
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
+            // moveLaraToolStripMenuItem
+            // 
+            this.moveLaraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveLaraToolStripMenuItem.Name = "moveLaraToolStripMenuItem";
+            this.moveLaraToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.moveLaraToolStripMenuItem.Text = "Move Lara";
+            this.moveLaraToolStripMenuItem.Click += new System.EventHandler(this.moveLaraToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3114,5 +3124,6 @@
         private System.Windows.Forms.ToolStripMenuItem levelSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadTexturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadWadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveLaraToolStripMenuItem;
     }
 }
