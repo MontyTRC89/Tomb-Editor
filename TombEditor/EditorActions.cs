@@ -614,27 +614,25 @@ namespace TombEditor
                     pos[i] = ((float)Math.Round(pos[i] / precision[i])) * precision[i];
 
             // Limit movement area ...
-            if (!canGoOutsideRoom)
-            {
-                float x = (float)Math.Floor(pos.X / 1024.0f);
-                float z = (float)Math.Floor(pos.Z / 1024.0f);
+            float x = (float)Math.Floor(pos.X / 1024.0f);
+            float z = (float)Math.Floor(pos.Z / 1024.0f);
 
-                if ((x < 0.0f) || (x > (room.NumXSectors - 1)) ||
-                    (z < 0.0f) || (z > (room.NumZSectors - 1)))
-                    return;
+            if ((x < 0.0f) || (x > (room.NumXSectors - 1)) ||
+                (z < 0.0f) || (z > (room.NumZSectors - 1)))
+                return;
 
-                if (room.Blocks[(int)x, (int)z].IsAnyWall)
-                    return;
+            if (room.Blocks[(int)x, (int)z].IsAnyWall)
+                return;
 
-                var lowest = room.GetLowestFloorCorner((int)x, (int)z);
-                var highest = room.GetHighestCeilingCorner((int)x, (int)z);
+            var lowest = room.GetLowestFloorCorner((int)x, (int)z);
+            var highest = room.GetHighestCeilingCorner((int)x, (int)z);
 
-                // Don't go outside room boundaries
-                if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
-                    (pos.Z < 1024.0f) || (pos.Z > (room.NumZSectors - 1) * 1024.0f) ||
-                    (pos.Y < lowest * 256.0f) || (pos.Y > highest * 256.0f))
-                    return;
-            }
+            // Don't go outside room boundaries
+            // TODO: remove in a few commits
+            /*if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
+                (pos.Z < 1024.0f) || (pos.Z > (room.NumZSectors - 1) * 1024.0f) ||
+                (pos.Y < lowest * 256.0f) || (pos.Y > highest * 256.0f))
+                return;*/
 
             // Update position
             instance.Position = pos;

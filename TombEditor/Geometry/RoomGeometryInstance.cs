@@ -25,5 +25,10 @@ namespace TombEditor.Geometry
         {
             return (ObjectInstance)MemberwiseClone();
         }
+
+        public override string ToString()
+        {
+            return (Model != null ? Model.Name : "Imported geometry");
+        }
     }
 }

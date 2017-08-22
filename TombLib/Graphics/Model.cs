@@ -28,6 +28,7 @@ namespace TombLib.Graphics
         public ModelType Type { get; set; }
         public List<U> Vertices { get; set; }
         public List<int> Indices { get; set; }
+        public string Name { get; set; }
 
         public Model(GraphicsDevice device, ModelType type)
         {
