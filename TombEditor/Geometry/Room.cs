@@ -3268,7 +3268,7 @@ namespace TombEditor.Geometry
 
         public void RemoveObject(Level level, ObjectInstance instance)
         {
-            instance.RemoveFromRoon(level, this);
+            instance.RemoveFromRoom(level, this);
             if (instance is PositionBasedObjectInstance)
                 Objects.Remove((PositionBasedObjectInstance)instance);
         }

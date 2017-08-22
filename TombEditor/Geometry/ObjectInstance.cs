@@ -19,7 +19,7 @@ namespace TombEditor.Geometry
             Room = room;
         }
 
-        public virtual void RemoveFromRoon(Level level, Room room)
+        public virtual void RemoveFromRoom(Level level, Room room)
         { }
 
         public virtual bool CopyToFlipRooms => true;

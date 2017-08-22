@@ -83,9 +83,9 @@ namespace TombEditor.Geometry
             room.UpdateCompletely();
         }
 
-        public override void RemoveFromRoon(Level level, Room room)
+        public override void RemoveFromRoom(Level level, Room room)
         {
-            base.RemoveFromRoon(level, room);
+            base.RemoveFromRoom(level, room);
             room.UpdateCompletely(); // Rebuild lighting!
         }
     }

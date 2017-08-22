@@ -112,9 +112,9 @@ namespace TombEditor.Geometry
                     room.Blocks[x, z].Triggers.Add(this);
         }
 
-        public override void RemoveFromRoon(Level level, Room room)
+        public override void RemoveFromRoom(Level level, Room room)
         {
-            base.RemoveFromRoon(level, room);
+            base.RemoveFromRoom(level, room);
 
             for (int x = Area.X; x <= Area.Right; x++)
                 for (int z = Area.Y; z <= Area.Bottom; z++)
