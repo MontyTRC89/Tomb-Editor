@@ -817,6 +817,12 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
+                else if (instance is RoomGeometryInstance)
+                {
+                    BoundingBox box = ((RoomGeometryInstance)instance).Model.BoundingBox;
+                    if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                        result = new PickingResultObject(distance, instance);
+                }
                 else
                 {
                     BoundingBox box = new BoundingBox(

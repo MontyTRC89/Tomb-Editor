@@ -51,6 +51,9 @@ namespace TombEditor.Geometry
                     Textures.Add(diffusePath, Texture2D.Load(_manager.Device, diffusePath));
             }
 
+            Vector3 minVertex = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            Vector3 maxVertex = new Vector3(float.MinValue, float.MinValue, float.MinValue); ;
+            
             // Loop for each mesh loaded in scene
             foreach (var mesh in scene.Meshes)
             {
@@ -103,6 +106,12 @@ namespace TombEditor.Geometry
                                              positions[i].Z * scale,
                                              1.0f);
 
+                    if (v.Position.X <= minVertex.X && v.Position.Y <= minVertex.Y && v.Position.Z <= minVertex.Z)
+                        minVertex = new Vector3(v.Position.X, v.Position.Y, v.Position.Z);
+
+                    if (v.Position.X >= maxVertex.X && v.Position.Y >= maxVertex.Y && v.Position.Z >= maxVertex.Z)
+                        maxVertex = new Vector3(v.Position.X, v.Position.Y, v.Position.Z);
+
                     if (hasTexCoords)
                     {
                         v.UV = new Vector2(texCoords[i].X,
@@ -135,6 +144,9 @@ namespace TombEditor.Geometry
                 // Add mesh to the model
                 model.Meshes.Add(modelMesh);
             }
+
+            // Set the bounding box
+            model.BoundingBox = new BoundingBox(minVertex, maxVertex);
 
             // Add the model to global loaded models
             Models.Add(filename, model);
