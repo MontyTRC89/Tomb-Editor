@@ -40,7 +40,9 @@ namespace TombEditor.Geometry
             
             // Create a new static model
             RoomGeometryModel model = new RoomGeometryModel(_manager.Device);
-       
+
+            model.Name = Path.GetFileName(filename);
+
             // Load all textures
             foreach (var mat in scene.Materials)
             {

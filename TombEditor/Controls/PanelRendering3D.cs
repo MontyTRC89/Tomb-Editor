@@ -1510,6 +1510,24 @@ namespace TombEditor.Controls
                     Debug.NumTriangles += mesh.NumIndices / 3;
                 }
 
+                if (_editor.SelectedObject == modelInfo)
+                {
+                    Matrix modelViewProjection = worldDebug * viewProjection;
+                    Vector3 screenPos = Vector3.Project(modelInfo.Position + 512.0f * Vector3.UnitY, 0, 0, Width,
+                        Height, _device.Viewport.MinDepth,
+                        _device.Viewport.MaxDepth, modelViewProjection);
+
+                    string message = modelInfo.ToString();
+
+                    // Object position
+                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, modelInfo.Position);
+
+                    Debug.AddString(message, screenPos);
+
+                    // Add the line height of the object
+                    AddObjectHeightLine(viewProjection, _editor.SelectedRoom, modelInfo.Position);
+                }
+
                 _lastObject = modelInfo;
             }
         }
