@@ -158,9 +158,9 @@ namespace TombEditor.Geometry
             }
         }
 
-        public override void RemoveFromRoon(Level level, Room room)
+        public override void RemoveFromRoom(Level level, Room room)
         {
-            base.RemoveFromRoon(level, room);
+            base.RemoveFromRoom(level, room);
 
             if ((room.Flipped) || (AdjoiningRoom?.Flipped ?? false))
                 throw new NotImplementedException("Removing portals from rooms that are flipped is not supported just yet. :(");
