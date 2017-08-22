@@ -35,17 +35,16 @@ namespace TombEditor.Geometry
             if (Models.ContainsKey(filename)) return Models[filename];
 
             // Use Assimp.NET for importing model
-            AssimpImporter importer = new AssimpImporter();
-            importer.SetConfig(new NormalSmoothingAngleConfig(66.0f));
-            Scene scene = importer.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
-
+            AssimpContext context = new AssimpContext();
+            Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
+            
             // Create a new static model
             RoomGeometryModel model = new RoomGeometryModel(_manager.Device);
        
             // Load all textures
             foreach (var mat in scene.Materials)
             {
-                var diffusePath = mat.GetTexture(TextureType.Diffuse, 0).FilePath;
+                var diffusePath = (mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null);
                 if (diffusePath == null || diffusePath == "") continue;
 
                 if (!Textures.ContainsKey(diffusePath))
@@ -59,9 +58,9 @@ namespace TombEditor.Geometry
 
                 //if mesh has a material extract the diffuse texture, if present
                 Assimp.Material material = scene.Materials[mesh.MaterialIndex];
-                if (material != null && material.GetTextureCount(TextureType.Diffuse) > 0)
+                if (material != null && material.HasTextureDiffuse)
                 {
-                    TextureSlot texture = material.GetTexture(TextureType.Diffuse, 0);
+                    TextureSlot texture = material.TextureDiffuse;
 
                     modelMesh.Texture = Textures[texture.FilePath]; 
                     modelMesh.TextureFileName = texture.FilePath;
@@ -73,8 +72,8 @@ namespace TombEditor.Geometry
 
                 bool hasTexCoords = mesh.HasTextureCoords(0);
 
-                Vector3D[] positions = mesh.Vertices;
-                Vector3D[] texCoords = mesh.GetTextureCoords(0);
+                List<Vector3D> positions = mesh.Vertices;
+                List<Vector3D> texCoords = mesh.TextureCoordinateChannels[0];
 
                 // Determine primitive type (should be always triangle)
                 switch (mesh.PrimitiveType)
@@ -117,7 +116,7 @@ namespace TombEditor.Geometry
                 modelMesh.PrimitiveCount = mesh.FaceCount;
 
                 // Add indices
-                uint[] indices = mesh.GetIndices();
+                int[] indices = mesh.GetIndices();
 
                 List<int> tempIndices = new List<int>();
 
