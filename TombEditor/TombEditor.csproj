@@ -289,9 +289,6 @@
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\LightParameterController.resx">
-      <DependentUpon>LightParameterController.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormLevelSettings.resx">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>
     </EmbeddedResource>
