@@ -467,15 +467,15 @@ namespace TombEditor.Geometry.IO
                                     short lightIntensity = reader.ReadInt16();
                                     float lightIn = reader.ReadSingle();
                                     float lightOut = reader.ReadSingle();
-                                    float lightX = reader.ReadSingle();
-                                    float lightY = reader.ReadSingle();
+                                    float lightX = -reader.ReadSingle();
+                                    float lightY = reader.ReadSingle() + 90.0f;
                                     float lightLen = reader.ReadSingle();
                                     float lightCut = reader.ReadSingle();
                                     byte lightR = reader.ReadByte();
                                     byte lightG = reader.ReadByte();
                                     byte lightB = reader.ReadByte();
                                     byte lightOn = reader.ReadByte();
-
+                                    
                                     LightType lightType;
                                     switch (objectType)
                                     {
@@ -515,13 +515,12 @@ namespace TombEditor.Geometry.IO
                                         Color = Color.FromArgb(255, lightR, lightG, lightB),
                                         Cutoff = lightCut,
                                         Len = lightLen,
-                                        RotationX = 360.0f - lightX,
-                                        RotationY = lightY + 90.0f,
                                         Enabled = lightOn == 0x01,
                                         In = lightIn,
                                         Out = lightOut,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
+                                    light.SetArbitaryRotationsYX(lightY, lightX);
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
