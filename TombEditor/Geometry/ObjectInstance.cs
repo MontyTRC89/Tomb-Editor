@@ -107,5 +107,20 @@ namespace TombEditor.Geometry
                 (float)Math.Sin(RadiansX),
                 (float)(Math.Cos(RadiansX) * Math.Cos(RadiansY)));
         }
+
+        public static void SetArbitaryRotationsYX(this IRotateableYX obj, float rotationY, float rotationX)
+        {
+            rotationX -= (float)(360 * Math.Floor(rotationX / 360));
+            if (rotationX > 270)
+                rotationX = rotationX - 360;
+            else if (rotationX > 180)
+            {
+                rotationX = rotationX - 360;
+                rotationY += 180;
+            }
+            
+            obj.RotationX = rotationX;
+            obj.RotationY = rotationY;
+        }
     }
 }

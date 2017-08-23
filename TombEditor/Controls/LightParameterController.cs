@@ -178,8 +178,8 @@ namespace TombEditor.Controls
                     break;
 
                 case LightParameter.DirectionX:
-                    _minValue = 0.0f;
-                    _maxValue = 359.0f;
+                    _minValue = -90.0f;
+                    _maxValue = 90.0f;
 
                     _step = 1.0f;
                     _fastStep = 10.0f;
