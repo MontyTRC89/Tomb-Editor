@@ -40,6 +40,9 @@ namespace TombEditor.Geometry.IO
             public PrjFace[] _faces;
             public short _flags2;
             public short _flags3;
+            public PortalOpacity _floorOpacity;
+            public PortalOpacity _ceilingOpacity;
+            public PortalOpacity _wallOpacity;
         }
 
         private struct PrjTexInfo
@@ -680,28 +683,6 @@ namespace TombEditor.Geometry.IO
                                     block.Flags |= BlockFlags.ClimbPositiveX;
                                 if ((blockFlags1 & 0x0040) != 0)
                                     block.Flags |= BlockFlags.ClimbNegativeZ;
-
-                                if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
-                                {
-                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0)
-                                        block.WallOpacity = PortalOpacity.Opacity1;
-                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0x1000)
-                                        block.WallOpacity = PortalOpacity.Opacity2;
-                                }
-                                else
-                                {
-                                    if ((blockFlags1 & 0x0002) == 0x0002)
-                                        block.FloorOpacity = PortalOpacity.Opacity1;
-
-                                    if ((blockFlags1 & 0x0004) == 0x0004)
-                                        block.CeilingOpacity = PortalOpacity.Opacity1;
-
-                                    if ((blockFlags1 & 0x0800) == 0x0800)
-                                        block.FloorOpacity = PortalOpacity.Opacity2;
-
-                                    if ((blockFlags1 & 0x0400) == 0x0400)
-                                        block.CeilingOpacity = PortalOpacity.Opacity2;
-                                }
                                 
                                 // Read temp blocks that contain texturing informations that will be needed later
                                 var tempBlock = new PrjBlock { _faces = new PrjFace[14] };
@@ -716,6 +697,28 @@ namespace TombEditor.Geometry.IO
                                         _txtTriangle = reader.ReadByte()
                                     };
                                     reader.ReadInt16();
+                                }
+
+                                if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
+                                {
+                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0)
+                                        tempBlock._wallOpacity = PortalOpacity.Opacity1;
+                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0x1000)
+                                        tempBlock._wallOpacity = PortalOpacity.Opacity2;
+                                }
+                                else
+                                {
+                                    if ((blockFlags1 & 0x0002) == 0x0002)
+                                        tempBlock._floorOpacity = PortalOpacity.Opacity1;
+
+                                    if ((blockFlags1 & 0x0004) == 0x0004)
+                                        tempBlock._ceilingOpacity = PortalOpacity.Opacity1;
+
+                                    if ((blockFlags1 & 0x0800) == 0x0800)
+                                        tempBlock._floorOpacity = PortalOpacity.Opacity2;
+
+                                    if ((blockFlags1 & 0x0400) == 0x0400)
+                                        tempBlock._ceilingOpacity = PortalOpacity.Opacity2;
                                 }
 
                                 tempBlock._flags2 = reader.ReadInt16();
@@ -754,6 +757,25 @@ namespace TombEditor.Geometry.IO
                         progressReporter.ReportProgress(32, "Portals linked");
                     }
 
+                    // Adjust opacities
+                    {
+                        for (int i = 0; i < level.Rooms.Length; i++)
+                        {
+                            if (level.Rooms[i] == null) continue;
+
+                            var blocks = tempRooms[i];
+
+                            for (int x = 0; x < level.Rooms[i].NumXSectors; x++)
+                            {
+                                for (int z = 0; z < level.Rooms[i].NumZSectors; z++)
+                                {
+                                    level.Rooms[i].Blocks[x, z].FloorOpacity = blocks[x, z]._floorOpacity;
+                                    level.Rooms[i].Blocks[x, z].CeilingOpacity = blocks[x, z]._ceilingOpacity;
+                                    level.Rooms[i].Blocks[x, z].WallOpacity = blocks[x, z]._wallOpacity;
+                                }
+                            }
+                        }
+                    }
 
                     // Link triggers
                     {
