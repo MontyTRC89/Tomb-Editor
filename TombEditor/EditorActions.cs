@@ -626,14 +626,7 @@ namespace TombEditor
 
             var lowest = room.GetLowestFloorCorner((int)x, (int)z);
             var highest = room.GetHighestCeilingCorner((int)x, (int)z);
-
-            // Don't go outside room boundaries
-            // TODO: remove in a few commits
-            /*if ((pos.X < 1024.0f) || (pos.X > (room.NumXSectors - 1) * 1024.0f) ||
-                (pos.Z < 1024.0f) || (pos.Z > (room.NumZSectors - 1) * 1024.0f) ||
-                (pos.Y < lowest * 256.0f) || (pos.Y > highest * 256.0f))
-                return;*/
-
+                        
             // Update position
             instance.Position = pos;
 
@@ -739,6 +732,25 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is Light)
                 room.UpdateCompletely();
+
+            // Remove triggers pointing to that object
+            foreach (var r in _editor.Level.Rooms)
+            {
+                if (r == null) continue;
+
+                List<TriggerInstance> triggersToDelete = new List<TriggerInstance>();
+
+                foreach (var trigger in r.Triggers)
+                {
+                    if (trigger.TargetObj != null && trigger.TargetObj == instance)
+                        triggersToDelete.Add(trigger);
+                }
+
+                foreach (var trigger in triggersToDelete)
+                {
+                    r.RemoveObject(_editor.Level, trigger);
+                }
+            }
 
             // Avoid having the removed object still selected
             if (_editor.SelectedObject == instance)
