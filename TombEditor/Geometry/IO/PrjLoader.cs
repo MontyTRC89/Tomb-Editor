@@ -2446,6 +2446,7 @@ namespace TombEditor.Geometry.IO
                             throw new Exception("Room '" + room + "' has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
                 
                 progressReporter.ReportProgress(95, "Building rooms");
+
                 foreach (var room in level.Rooms.Where(r => r != null))
                 {
                     room.BuildGeometry();
