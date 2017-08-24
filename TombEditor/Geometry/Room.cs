@@ -512,7 +512,7 @@ namespace TombEditor.Geometry
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped)
+                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -547,7 +547,7 @@ namespace TombEditor.Geometry
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped)
+                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -581,7 +581,7 @@ namespace TombEditor.Geometry
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped)
+                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -615,7 +615,7 @@ namespace TombEditor.Geometry
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
-                                if (adjoiningRoom.Flipped)
+                                if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                     adjoiningRoom = adjoiningRoom.AlternateRoom;
                             }
 
@@ -1157,7 +1157,7 @@ namespace TombEditor.Geometry
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped)
+                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
@@ -1278,7 +1278,7 @@ namespace TombEditor.Geometry
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped)
+                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
@@ -1398,10 +1398,9 @@ namespace TombEditor.Geometry
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped)
+                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
-
 
                         int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
                         int qAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].QAFaces[2];
@@ -1718,7 +1717,7 @@ namespace TombEditor.Geometry
 
                         if (Flipped && AlternateBaseRoom != null)
                         {
-                            if (adjoiningRoom.Flipped)
+                            if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
