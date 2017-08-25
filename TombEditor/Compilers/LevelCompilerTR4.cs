@@ -1754,7 +1754,7 @@ namespace TombEditor.Compilers
                     ObjectID = (short)instance.WadObjectId,
                     Room = (short)_roomsRemappingDictionary[instance.Room],
                     Angle = unchecked((short)((ushort)(Math.Max(0, Math.Min(ushort.MaxValue, angle))))),
-                    Intensity1 = PackColorTo16Bit(instance.Color),
+                    Intensity1 = -1,
                     Ocb = instance.Ocb
                 };
 

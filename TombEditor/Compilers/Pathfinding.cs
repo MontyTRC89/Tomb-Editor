@@ -683,7 +683,10 @@ namespace TombEditor.Compilers
                     {
                         var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        if (water == isWater && step <= 256 && flipped == _tempBoxes[boxIndex].FlipMap) add = true;
+                        if (water == isWater && step <= 256 && 
+                            ((!flipped  && !_tempBoxes[boxIndex].FlipMap) || 
+                            (flipped))) 
+                            add = true;
                     }
 
                     // Enemies like skeletons. They can go only on land, and climb 1 click step. They can also jump 2 blocks.
@@ -696,7 +699,10 @@ namespace TombEditor.Compilers
                         var canJump = _tempBoxes[boxIndex].Jump;
                         var canClimb = Math.Abs(step) <= 256;
 
-                        if (water == isWater && (canJump || canClimb) && flipped == _tempBoxes[boxIndex].FlipMap) add = true;
+                        if (water == isWater && (canJump || canClimb) &&
+                            ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
+                            (flipped)))
+                            add = true;
                     }
 
                     // Enemies like crocodiles. They can go on land and inside water, and climb 1 click step. In water they act like flying enemies.
@@ -718,14 +724,20 @@ namespace TombEditor.Compilers
                         var canClimb = Math.Abs(step) <= 1024;
                         var canMonkey = _tempBoxes[boxIndex].Monkey;
 
-                        if (water == isWater && (canJump || canClimb || canMonkey) && flipped == _tempBoxes[boxIndex].FlipMap) add = true;
+                        if (water == isWater && (canJump || canClimb || canMonkey) &&
+                            ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
+                            (flipped)))
+                            add = true;
                     }
 
                     // Flying enemies. Here we just check if the water flag is the same.
                     if (zoneType == 5)
                     {
                         var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
-                        if (water == isWater) add = true;
+                        if (water == isWater &&
+                            ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
+                            (flipped)))
+                            add = true;
                     }
 
                     if (stack.Contains(boxIndex) || !add)
