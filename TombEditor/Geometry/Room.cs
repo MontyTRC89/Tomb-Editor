@@ -394,9 +394,9 @@ namespace TombEditor.Geometry
                 }
             }
 
-            for (int x = xMin + 1; x < xMax; x++)
+            for (int x = xMin + 1; x <= xMax; x++)
             {
-                for (int z = zMin + 1; z < zMax; z++)
+                for (int z = zMin + 1; z <= zMax; z++)
                 {
                     NumVerticesInGrid[x, z] = 0;
                 }
