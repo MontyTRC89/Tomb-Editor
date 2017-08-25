@@ -500,9 +500,9 @@ namespace TombEditor.Compilers
                         newLight.Out = (float)Math.Cos(MathUtil.DegreesToRadians(light.Out));
                         newLight.Length = light.Len * 1024.0f;
                         newLight.CutOff = light.Cutoff * 1024.0f;
-                        newLight.DirectionX = direction.X;
+                        newLight.DirectionX = -direction.X;
                         newLight.DirectionY = direction.Y;
-                        newLight.DirectionZ = direction.Z;
+                        newLight.DirectionZ = -direction.Z;
                         break;
                     case LightType.Sun:
                         newLight.LightType = 0;
@@ -510,9 +510,9 @@ namespace TombEditor.Compilers
                         newLight.Out = 0;
                         newLight.Length = 0;
                         newLight.CutOff = 0;
-                        newLight.DirectionX = direction.X;
+                        newLight.DirectionX = -direction.X;
                         newLight.DirectionY = direction.Y;
-                        newLight.DirectionZ = direction.Z;
+                        newLight.DirectionZ = -direction.Z;
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
