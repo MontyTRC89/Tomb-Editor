@@ -55,10 +55,16 @@ namespace TombEditor.Geometry.IO
 
         private struct PrjPortal
         {
-            public Room _room;
+            //public Room _room;
             public Rectangle _area;
             public PortalDirection _direction;
             public short _oppositePortalId;
+            public short _thisPortalId;
+            public bool _memberOfFlippedRoom;
+            public short _room;
+            public short _prjRealRoom;
+            public short _tempId;
+            public bool _adjusted;
         }
 
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
@@ -107,6 +113,8 @@ namespace TombEditor.Geometry.IO
                     var tempRooms = new Dictionary<int, PrjBlock[,]>();
                     var flipInfos = new List<PrjFlipInfo>();
                     var tempPortals = new Dictionary<int, PrjPortal>();
+                    var tempPortalsNew = new List<PrjPortal>();
+                    var tempRoomPortals = new Dictionary<int, List<int>>();
 
                     progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
                     
@@ -152,9 +160,12 @@ namespace TombEditor.Geometry.IO
                         short numPortals = reader.ReadInt16();
                         var portalThings = new short[numPortals];
 
+                        tempRoomPortals.Add(i, new List<int>());
+
                         for (int j = 0; j < numPortals; j++)
                         {
                             portalThings[j] = reader.ReadInt16();
+                            tempRoomPortals[i].Add(portalThings[j]);
                         }
 
                         logger.Debug("    Portals: " + numPortals);
@@ -167,7 +178,8 @@ namespace TombEditor.Geometry.IO
                             short portalXBlocks = reader.ReadInt16();
                             short portalZBlocks = reader.ReadInt16();
                             reader.ReadInt16();
-                            var thisPortalRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            short thisPortalRoomIndex = reader.ReadInt16();
+                            var thisPortalRoom = level.GetOrCreateDummyRoom(thisPortalRoomIndex);
                             short portalOppositeSlot = reader.ReadInt16();
 
                             reader.ReadBytes(26);
@@ -198,21 +210,17 @@ namespace TombEditor.Geometry.IO
                                     continue;
                             }
 
-                            // We don't know yet the adjoining room because it is only indirectly known through the 'portalOppositeSlot'
-                            // This means that here we only collect the portals and later, when all rooms are read, we can actually create the real portals.
-                            if (tempPortals.ContainsKey(portalThings[j]))
-                            {
-                                progressReporter.ReportWarn("The portal thing index  " + portalThings[j] + " is found twice! The second occurance will be ignored.");
-                                continue;
-                            }
+                            if (tempPortals.ContainsKey(portalThings[j])) continue;
 
                             tempPortals.Add(portalThings[j], new PrjPortal
-                                {
-                                    _room = room,
-                                    _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
-                                    _direction = directionEnum,
-                                    _oppositePortalId = portalOppositeSlot
-                                });
+                            {
+                                //_room = room,
+                                _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
+                                _direction = directionEnum,
+                                _oppositePortalId = portalOppositeSlot,
+                                _thisPortalId = portalThings[j],
+                                _prjRealRoom = thisPortalRoomIndex
+                            });
                         }
 
                         short numObjects = reader.ReadInt16();
@@ -738,9 +746,14 @@ namespace TombEditor.Geometry.IO
 
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
+
+
+
                     // Link portals
                     {
                         progressReporter.ReportProgress(31, "Link portals");
+
+                        Dictionary<int, Portal> newPortals = new Dictionary<int, Portal>();
 
                         foreach (PrjPortal prjPortal in tempPortals.Values)
                         {
@@ -750,8 +763,21 @@ namespace TombEditor.Geometry.IO
                                 continue;
                             }
 
-                            Room adjoiningRoom = tempPortals[prjPortal._oppositePortalId]._room;
-                            prjPortal._room.AddObject(level, new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom));
+                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._prjRealRoom];
+                            Portal p = new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom);
+                            newPortals.Add(prjPortal._thisPortalId, p);
+                        }
+
+                        foreach (var room in level.Rooms)
+                        {
+                            if (room == null) continue;
+
+                            List<int> portalsForThisRoom = tempRoomPortals[level.Rooms.ReferenceIndexOf(room)];
+
+                            foreach (var portalId in portalsForThisRoom)
+                            {
+                                room.AddObject(level, newPortals[portalId]);
+                            }
                         }
 
                         progressReporter.ReportProgress(32, "Portals linked");

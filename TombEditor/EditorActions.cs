@@ -1653,29 +1653,38 @@ namespace TombEditor
             int freeRoomIndex = _editor.Level.GetFreeRoomIndex();
 
             // Duplicate portals
-            var duplicatedPortals = new Dictionary<Portal, Portal>();
+            //var duplicatedPortals = new Dictionary<Portal, Portal>();
 
-            foreach (var p in room.Portals)
-                duplicatedPortals.Add(p, (Portal)p.Clone());
-            
+            // TODO: portals of flipped rooms must be the same of portals of original room. 
+            // Eventually new added portals between flipped rooms are owned only by flipped rooms. (MontyTRC)
+            /*foreach (var p in room.Portals)
+                duplicatedPortals.Add(p, (Portal)p.Clone());*/
+
             string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
             var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
-
+            
             for (int x = 0; x < room.NumXSectors; x++)
                 for (int z = 0; z < room.NumZSectors; z++)
                 {
                     newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
-                    newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != null
+                    /*newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != null
                         ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : null);
                     newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != null
                         ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : null);
                     newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != null
-                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : null);
+                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : null);*/
+
+                    // TODO: verify this and then remove above code (MontyTRC)
+                    newRoom.Blocks[x, z].FloorPortal = room.Blocks[x, z].FloorPortal;
+                    newRoom.Blocks[x, z].CeilingPortal = room.Blocks[x, z].CeilingPortal;
+                    newRoom.Blocks[x, z].WallPortal = room.Blocks[x, z].WallPortal;
                 }
 
             foreach (var instance in room.Objects)
                 if (instance.CopyToFlipRooms)
                     newRoom.Objects.Add((PositionBasedObjectInstance)instance.Clone());
+
+            newRoom.Position = new Vector3(room.Position.X, room.Position.Y, room.Position.Z);
 
             // Build the geometry of the new room
             newRoom.UpdateCompletely();

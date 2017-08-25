@@ -1717,6 +1717,7 @@ namespace TombEditor.Controls
                 if (theLimit > _editor.Configuration.Rendering3D_DrawRoomsMaxDepth)
                     continue;
 
+                /*
                 visitedRooms.Add(theRoom);
 
                 if (theRoom == room)
@@ -1733,6 +1734,33 @@ namespace TombEditor.Controls
                     {
                         _roomsToDraw.Add(theRoom);
                     }
+                }*/
+
+                if (isFlipped)
+                {
+                    if (!theRoom.Flipped)
+                    {
+                        visitedRooms.Add(theRoom);
+                        if (!_roomsToDraw.Contains(theRoom)) _roomsToDraw.Add(theRoom);
+                    }
+                    else
+                    {
+                        if (theRoom.AlternateRoom != null)
+                        {
+                            visitedRooms.Add(theRoom);
+                            if (!_roomsToDraw.Contains(theRoom.AlternateRoom)) _roomsToDraw.Add(theRoom.AlternateRoom);
+                        }
+                        else
+                        {
+                            visitedRooms.Add(theRoom);
+                            if (!_roomsToDraw.Contains(theRoom)) _roomsToDraw.Add(theRoom);
+                        }
+                    }
+                }
+                else
+                {
+                    visitedRooms.Add(theRoom);
+                    if (!_roomsToDraw.Contains(theRoom)) _roomsToDraw.Add(theRoom);
                 }
 
                 foreach (var portal in theRoom.Portals)
@@ -1761,7 +1789,7 @@ namespace TombEditor.Controls
                     if (Vector3.Dot(normal, cameraDirection) < -0.1f && theLimit > 1)
                         continue;
 
-                    if (portal.Room == theRoom && !visitedRooms.Contains(portal.AdjoiningRoom) &&
+                    if (/*portal.Room == theRoom &&*/ !visitedRooms.Contains(portal.AdjoiningRoom) &&
                         !stackRooms.Contains(portal.AdjoiningRoom))
                     {
                         stackRooms.Push(portal.AdjoiningRoom);
