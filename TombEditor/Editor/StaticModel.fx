@@ -43,7 +43,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 
 	pixel.xyz *= input.Shade.x;
 	float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
-	float3 colorMul = min(Color.xyz * 2.0f, 1.0f);
+	float3 colorMul = max(Color.xyz * 2.0f, 1.0f);
 	pixel.xyz = pixel.xyz * colorMul + colorAdd;
 
 	if (SelectionEnabled) 

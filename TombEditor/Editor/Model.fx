@@ -35,9 +35,9 @@ float4 PS(PixelInputType input) : SV_TARGET
 	float4 pixel = Texture.Sample(TextureSampler, input.UV);
 		
 	float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
-	float3 colorMul = min(Color.xyz * 2.0f, 1.0f);
+	float3 colorMul = max(Color.xyz * 2.0f, 1.0f);
 	pixel.xyz = pixel.xyz * colorMul + colorAdd;
-
+	
 	if (SelectionEnabled) 
 		pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
 
