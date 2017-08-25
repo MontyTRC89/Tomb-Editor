@@ -745,10 +745,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     progressReporter.ReportProgress(30, "Rooms loaded");
-
-
-
-
+                    
                     // Link portals
                     {
                         progressReporter.ReportProgress(31, "Link portals");
