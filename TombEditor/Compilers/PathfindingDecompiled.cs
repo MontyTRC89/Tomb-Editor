@@ -94,11 +94,11 @@ namespace TombEditor.Compilers
                                     }
 
                                     // Assign the box index to the sector
-                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)tempRoom.TextureSounds[x, z]);
+                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)GetTextureSound(room, x, z));
                                 }
                                 else
                                 {
-                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)tempRoom.TextureSounds[x, z]);
+                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)GetTextureSound(room, x, z));
                                 }
                             }
                         }
@@ -820,7 +820,7 @@ namespace TombEditor.Compilers
             }
 
             int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
-            int ceiling = room.GetHighestCeilingCorner(xInRoom, zInRoom) + (int)room.Position.Y;
+            int ceiling = block.CeilingMax + (int)room.Position.Y;
 
             if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
             {

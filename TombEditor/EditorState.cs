@@ -118,7 +118,7 @@ namespace TombEditor
     public struct TextureSelection
     {
         public int Index { get; set; }
-        public TextureTileType Triangle { get; set; }
+        public int Triangle { get; set; }
         public bool Invisible { get; set; }
         public bool DoubleSided { get; set; }
         public bool Transparent { get; set; }
@@ -147,6 +147,5 @@ namespace TombEditor
             return Index.GetHashCode() ^ (Triangle.GetHashCode() * unchecked((int)3062904283)) ^ 
                 (Invisible ? 0x5d5edef6 : 0) ^ (DoubleSided ? 0x07b4bc1e : 0) ^ (Transparent ? 0x1d5ff7db : 0);
         }
-
     }
 }

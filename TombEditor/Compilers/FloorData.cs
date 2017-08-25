@@ -23,7 +23,7 @@ namespace TombEditor.Compilers
                 var tempRoom = _tempRooms[room];
 
                 // Get all portals
-                var portals = new List<Portal>();
+                var ceilingPortals = new List<Portal>();
                 for (var z = 0; z < room.NumZSectors; z++)
                 {
                     for (var x = 0; x < room.NumXSectors; x++)
@@ -31,7 +31,7 @@ namespace TombEditor.Compilers
                         if (room.Blocks[x, z].CeilingPortal != null &&
                             room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1)
                         {
-                            portals.Add(room.Blocks[x, z].CeilingPortal);
+                            ceilingPortals.Add(room.Blocks[x, z].CeilingPortal);
                         }
                     }
                 }
@@ -48,36 +48,32 @@ namespace TombEditor.Compilers
                         var baseFloorData = (ushort)tempFloorData.Count;
 
                         // If a sector is a wall and this room is a water room, 
-                        // I must check before if on the neighbour sector there's a ceiling portal 
-                        // because eventually I must add a vertical portal
+                        // It must be checked before if on the neighbour sector if there's a ceiling portal 
+                        // because eventually a vertical portal will be added
                         Room isWallWithCeilingPortal = null;
-                        if (portals.Count != 0)
+                        foreach (var portal in ceilingPortals)
                         {
-                            // Find a suitable portal
-                            foreach (var portal in portals)
+                            if (x < portal.Area.X - 1 || x > portal.Area.Right + 2 || z < portal.Area.Y - 1 || z > portal.Area.Right + 2)
+                                continue;
+
+                            var adjoining = portal.AdjoiningRoom;
+                            var x2 = (int)(room.Position.X + x - adjoining.Position.X);
+                            var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
+
+                            if (x2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 < 0 ||
+                                z2 > adjoining.NumZSectors - 1)
+                                continue;
+
+                            var blockType = adjoining.Blocks[x2, z2].Type;
+                            var adjoiningSplit = adjoining.Blocks[x2, z2].FloorDiagonalSplit;
+
+                            if ((x2 > 1 || z2 > 1 || x2 < adjoining.NumXSectors - 1 ||
+                                    z2 < adjoining.NumZSectors - 1) &&
+                                !((blockType == BlockType.Wall && adjoiningSplit == DiagonalSplit.None)
+                                    || blockType == BlockType.BorderWall))
                             {
-                                if (x < portal.Area.X - 1 || x > portal.Area.Right + 2 || z < portal.Area.Y - 1 || z > portal.Area.Right + 2)
-                                    continue;
-
-                                var adjoining = portal.AdjoiningRoom;
-                                var x2 = (int)(room.Position.X + x - adjoining.Position.X);
-                                var z2 = (int)(room.Position.Z + z - adjoining.Position.Z);
-
-                                if (x2 < 0 || x2 > adjoining.NumXSectors - 1 || z2 < 0 ||
-                                    z2 > adjoining.NumZSectors - 1)
-                                    continue;
-
-                                var blockType = adjoining.Blocks[x2, z2].Type;
-                                var adjoiningSplit = adjoining.Blocks[x2, z2].FloorDiagonalSplit;
-
-                                if ((x2 > 1 || z2 > 1 || x2 < adjoining.NumXSectors - 1 ||
-                                     z2 < adjoining.NumZSectors - 1) &&
-                                    !((blockType == BlockType.Wall && adjoiningSplit == DiagonalSplit.None)
-                                      || blockType == BlockType.BorderWall))
-                                {
-                                    isWallWithCeilingPortal = portal.AdjoiningRoom;
-                                    break;
-                                }
+                                isWallWithCeilingPortal = portal.AdjoiningRoom;
+                                break;
                             }
                         }
 
@@ -115,12 +111,15 @@ namespace TombEditor.Compilers
                         // If sector is a floor portal
                         if (block.FloorPortal != null)
                         {
-                            // I must setup portal only if current sector is not solid and opacity if different from 1
+                            // Setup portal only if current sector is not solid and opacity if different from 1
                             if ((!isFloorSolid && block.FloorOpacity != PortalOpacity.Opacity1) ||
                                 (isFloorSolid && block.NoCollisionFloor))
                             {
                                 var portal = block.FloorPortal;
-                                sector.RoomBelow = (byte)_roomsRemappingDictionary[portal.AdjoiningRoom];
+                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                if (roomIndex >= 254)
+                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                sector.RoomBelow = checked((byte)roomIndex);
                             }
                             else
                             {
@@ -131,12 +130,15 @@ namespace TombEditor.Compilers
                         // If sector is a ceiling portal
                         if (block.CeilingPortal != null)
                         {
-                            // I must setup portal only if current sector is not solid and opacity if different from 1
+                            //  Setup portal only if current sector is not solid and opacity if different from 1
                             if ((!isCeilingSolid && block.CeilingOpacity != PortalOpacity.Opacity1) ||
                                 (isCeilingSolid && block.NoCollisionCeiling))
                             {
                                 var portal = block.CeilingPortal;
-                                sector.RoomAbove = (byte)_roomsRemappingDictionary[portal.AdjoiningRoom];
+                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                                if (roomIndex >= 254)
+                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                sector.RoomAbove = checked((byte)roomIndex);
                             }
                             else
                             {
@@ -178,7 +180,7 @@ namespace TombEditor.Compilers
                             continue;
                         }
 
-                        // From this point, I will never bypass the loop and something must be there so I surely add at least one
+                        // From this point, the loop will never be bypassed, so surely add at least one
                         // floordata value
                         sector.FloorDataIndex = baseFloorData;
                         var tempCodes = new List<ushort>();
@@ -192,25 +194,25 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector has a floor slope
-                        if (block.FloorSlopeX != 0 || block.FloorSlopeZ != 0)
+                        if (block.FloorIfQuadSlopeX != 0 || block.FloorIfQuadSlopeZ != 0)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x02);
 
-                            sector.Floor = (sbyte)(-room.Position.Y - room.GetHighestFloorCorner(x, z));
+                            sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
 
-                            var slope = (ushort)(((block.FloorSlopeZ) << 8) | ((block.FloorSlopeX) & 0xff));
+                            var slope = (ushort)(((block.FloorIfQuadSlopeZ) << 8) | ((block.FloorIfQuadSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
 
                         // If sector has a ceiling slope
-                        if (block.CeilingSlopeX != 0 || block.CeilingSlopeZ != 0)
+                        if (block.CeilingIfQuadSlopeX != 0 || block.CeilingIfQuadSlopeZ != 0)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x03);
 
-                            var slope = (ushort)(((block.CeilingSlopeZ) << 8) | ((block.CeilingSlopeX) & 0xff));
+                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
@@ -239,8 +241,7 @@ namespace TombEditor.Compilers
                             if (block.Type == BlockType.Wall)
                                 sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - 0x0f);
                             else
-                                sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f -
-                                                        room.GetHighestFloorCorner(x, z));
+                                sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.NE ||
                                 block.FloorDiagonalSplit == DiagonalSplit.SW)
@@ -388,7 +389,7 @@ namespace TombEditor.Compilers
                         }
                         else
                         {
-                            if (block.FloorSlopeX == 0 && block.FloorSlopeZ == 0)
+                            if (block.FloorIfQuadSlopeX == 0 && block.FloorIfQuadSlopeZ == 0)
                             {
                                 int q0 = block.QAFaces[0];
                                 int q1 = block.QAFaces[1];
@@ -396,15 +397,14 @@ namespace TombEditor.Compilers
                                 int q3 = block.QAFaces[3];
 
                                 // We have not a slope, so if this is not a horizontal square then we have triangulation
-                                if (!Room.IsQuad(x, z, q0, q1, q2, q3, true))
+                                if (!Block.IsQuad(q0, q1, q2, q3))
                                 {
                                     // First, we fix the sector height
                                     sector.Floor =
-                                        (sbyte)(tempRoom.Info.YBottom / 256.0f -
-                                                 room.GetHighestFloorCorner(x, z));
+                                        (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
 
                                     // Then we have to find the axis of the triangulation
-                                    var min = room.GetLowestFloorCorner(x, z);
+                                    var min = block.FloorMin;
 
                                     lastFloorDataFunction = (ushort)tempCodes.Count;
 
@@ -420,7 +420,7 @@ namespace TombEditor.Compilers
                                     // The real floor split of the sector
                                     int function;
 
-                                    if (!block.FloorSplitRealDirection)
+                                    if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
                                         if (block.FloorPortal != null && block.NoCollisionFloor)
                                         {
@@ -684,9 +684,7 @@ namespace TombEditor.Compilers
                                 if (block.Type == BlockType.Wall)
                                     sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - 0x0f);
                                 else
-                                    sector.Floor =
-                                        (sbyte)(tempRoom.Info.YBottom / 256.0f -
-                                                 room.GetHighestFloorCorner(x, z));
+                                    sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.NE ||
                                     block.CeilingDiagonalSplit == DiagonalSplit.SW)
@@ -781,7 +779,7 @@ namespace TombEditor.Compilers
                         }
                         else
                         {
-                            if (block.CeilingSlopeX == 0 && block.CeilingSlopeZ == 0)
+                            if (block.CeilingIfQuadSlopeX == 0 && block.CeilingIfQuadSlopeZ == 0)
                             {
                                 int w0 = block.WSFaces[0];
                                 int w1 = block.WSFaces[1];
@@ -789,10 +787,10 @@ namespace TombEditor.Compilers
                                 int w3 = block.WSFaces[3];
 
                                 // We have not a slope, so if this is not a horizontal square then we have triangulation
-                                if (!Room.IsQuad(x, z, w0, w1, w2, w3, true))
+                                if (!Block.IsQuad(w0, w1, w2, w3))
                                 {
                                     // We have to find the axis of the triangulation
-                                    var max = room.GetHighestCeilingCorner(x, z);
+                                    var max = block.CeilingMax;
 
                                     lastFloorDataFunction = (ushort)tempCodes.Count;
 
@@ -813,7 +811,7 @@ namespace TombEditor.Compilers
                                     // decide if apply the height correction to both triangles or just one of them.
                                     // Function must be decided looking at portals.
 
-                                    if (!block.CeilingSplitRealDirection)
+                                    if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
                                         if (block.CeilingPortal != null && block.NoCollisionCeiling)
                                         {

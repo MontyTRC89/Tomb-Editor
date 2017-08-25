@@ -144,22 +144,22 @@ namespace SharpDX.Toolkit.Graphics
 
                     // Four vertices per face.
                     EditorVertex v1 = new TombEditor.Geometry.EditorVertex();
-                    v1.Position = new Vector4((normal - side1 - side2) * size, 1);
+                    v1.Position = (normal - side1 - side2) * size;
                     v1.Normal = normal;
                     v1.UV = (normal.Y == 0 ? textureCoordinates[0] : textureCoordinates[0]);
 
                     EditorVertex v2 = new TombEditor.Geometry.EditorVertex();
-                    v2.Position = new Vector4((normal - side1 + side2) * size, 1);
+                    v2.Position = (normal - side1 + side2) * size;
                     v2.Normal = normal;
                     v2.UV = (normal.Y == 0 ? textureCoordinates[1] : textureCoordinates[0]);
 
                     EditorVertex v3 = new TombEditor.Geometry.EditorVertex();
-                    v3.Position = new Vector4((normal + side1 + side2) * size, 1);
+                    v3.Position = (normal + side1 + side2) * size;
                     v3.Normal = normal;
                     v3.UV = (normal.Y == 0 ? textureCoordinates[2] : textureCoordinates[0]);
 
                     EditorVertex v4 = new TombEditor.Geometry.EditorVertex();
-                    v4.Position = new Vector4((normal + side1 - side2) * size, 1);
+                    v4.Position = (normal + side1 - side2) * size;
                     v4.Normal = normal;
                     v4.UV = (normal.Y == 0 ? textureCoordinates[3] : textureCoordinates[0]);
 

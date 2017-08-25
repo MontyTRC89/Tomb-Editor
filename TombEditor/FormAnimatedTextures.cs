@@ -11,7 +11,9 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
-    public partial class FormAnimatedTextures : DarkForm
+    public class FormAnimatedTextures : DarkForm
+    {}
+    /*public partial class FormAnimatedTextures : DarkForm
     {
         private Editor _editor;
         private int _currentFrame = 0;
@@ -186,5 +188,5 @@ namespace TombEditor
                 lstTextures.RemoveObject(lstTextures.SelectedObject);
             }
         }
-    }
+    }*/
 }

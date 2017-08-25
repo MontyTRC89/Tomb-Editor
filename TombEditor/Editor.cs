@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using TombEditor.Geometry;
+using TombLib.Utils;
 
 namespace TombEditor
 {
@@ -70,7 +71,7 @@ namespace TombEditor
                 ChosenItem = null;
                 SelectedSectors = SectorSelection.None;
                 Action = EditorAction.None;
-                SelectedTexture = TextureSelection.None;
+                SelectedTexture = TextureArea.None;
 
                 // Delete old level after the new level is set
                 using (var previousLevel = Level)
@@ -205,11 +206,11 @@ namespace TombEditor
 
         public struct SelectedTexturesChangedEvent : IEditorProperyChangedEvent
         {
-            public TextureSelection Previous { get; set; }
-            public TextureSelection Current { get; set; }
+            public TextureArea Previous { get; set; }
+            public TextureArea Current { get; set; }
         }
-        private TextureSelection _selectedTexture = TextureSelection.None;
-        public TextureSelection SelectedTexture
+        private TextureArea _selectedTexture = TextureArea.None;
+        public TextureArea SelectedTexture
         {
             get { return _selectedTexture; }
             set
@@ -377,11 +378,7 @@ namespace TombEditor
             _level.Settings = settings;
 
             // Update state
-            if (settings.MakeAbsolute(settings.TextureFilePath) != oldSettings.MakeAbsolute(oldSettings.TextureFilePath))
-            {
-                _level.ReloadTextureTry();
-                LoadedTexturesChange();
-            }
+            LoadedTexturesChange();
 
             if (settings.MakeAbsolute(settings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
             {

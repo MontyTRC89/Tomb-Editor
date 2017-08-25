@@ -5,10 +5,10 @@ using System.Text;
 using TombLib.IO;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Drawing;
 using TombLib.Wad;
 using SharpDX;
 using TombLib.Graphics;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
@@ -400,23 +400,19 @@ namespace TombLib.Wad
             int numPages = old.TexturePages.Length / 196608;
             for (uint i = 0; i < numPages; i++)
             {
-                WadTexture page = new WadTexture();
-                page.Type = WadTexturePageType.Shared;
-                page.TexturePage = new byte[256, 1024];
-
+                WadTexture texture = new WadTexture();
+                texture.Type = WadTexturePageType.Shared;
+                texture.Image = ImageC.CreateNew(256, 256);
                 for (int y = 0; y < 256; y++)
-                {
                     for (int x = 0; x < 256; x++)
                     {
-                        page.TexturePage[y, x * 4 + 0] = old.TexturePages[i * 256 + y, x * 3 + 0];
-                        page.TexturePage[y, x * 4 + 1] = old.TexturePages[i * 256 + y, x * 3 + 1];
-                        page.TexturePage[y, x * 4 + 2] = old.TexturePages[i * 256 + y, x * 3 + 2];
-                        page.TexturePage[y, x * 4 + 3] = (byte)(old.TexturePages[i * 256 + y, x * 3 + 0] == 255 && old.TexturePages[i * 256 + y, x * 3 + 1] == 0 &&
-                            old.TexturePages[i * 256 + y, x * 3 + 2] == 0 ? 0 : 255); // alpha channel
+                        byte red = old.TexturePages[i * 256 + y, x * 3 + 0];
+                        byte green = old.TexturePages[i * 256 + y, x * 3 + 1];
+                        byte blue = old.TexturePages[i * 256 + y, x * 3 + 2];
+                        texture.Image.SetPixel(x, y, red, green, blue);
                     }
-                }
-
-                wad.TexturePages.Add(i, page);
+                texture.Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+                wad.TexturePages.Add(i, texture);
             }
 
             for (int i = 0; i < old.Textures.Count; i++)

@@ -117,6 +117,8 @@
     <Compile Include="Compilers\Rooms.cs" />
     <Compile Include="Compilers\Structs.cs" />
     <Compile Include="Compilers\Textures.cs" />
+    <Compile Include="Compilers\Util\ObjectTextureManager.cs" />
+    <Compile Include="Compilers\Util\TextureAllocator.cs" />
     <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\DarkDataGridViewControls.cs">
@@ -127,6 +129,9 @@
     </Compile>
     <Compile Include="Controls\DarkDataGridView.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DarkScrollBarC.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\LightParameterController.cs">
@@ -217,13 +222,12 @@
     <Compile Include="FormSink.Designer.cs">
       <DependentUpon>FormSink.cs</DependentUpon>
     </Compile>
-    <Compile Include="Geometry\AnimatedTexture.cs" />
-    <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\GeometryImporter.cs" />
     <Compile Include="Geometry\LevelSettings.cs" />
     <Compile Include="Geometry\RoomGeometryInstance.cs" />
+    <Compile Include="Geometry\TextureSounds.cs" />
     <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />
@@ -237,7 +241,6 @@
     <Compile Include="Geometry\Primitives\GeometricPrimitive.Sphere.cs" />
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
-    <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="Gizmo.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="RowAnimatedTexture.cs" />
@@ -271,6 +274,7 @@
     <Compile Include="Geometry\StaticInstance.cs" />
     <Compile Include="Geometry\TriggerInstance.cs" />
     <Compile Include="TexturePackerTest.cs" />
+    <Compile Include="ZLib.cs" />
     <None Include="Editor\font.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -278,8 +282,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Compile Include="Geometry\Block.cs" />
-    <Compile Include="Geometry\BlockFace.cs" />
-    <Compile Include="Geometry\Enumerations.cs" />
     <Compile Include="Geometry\Level.cs" />
     <Compile Include="Geometry\Portal.cs" />
     <Compile Include="Geometry\Room.cs" />

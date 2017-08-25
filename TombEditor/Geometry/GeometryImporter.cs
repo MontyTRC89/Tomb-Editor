@@ -16,14 +16,12 @@ namespace TombEditor.Geometry
     {
         public static Dictionary<string, Texture2D> Textures;
         public static Dictionary<string, RoomGeometryModel> Models;
-
-        private static Editor _editor;
+        
         private static DeviceManager _manager;
 
         public static void Initialize(DeviceManager manager)
         {
             _manager = manager;
-            _editor = Editor.Instance;
 
             Textures = new Dictionary<string, Texture2D>();
             Models = new Dictionary<string, RoomGeometryModel>();
@@ -103,16 +101,13 @@ namespace TombEditor.Geometry
                 {
                     RoomGeometryVertex v = new RoomGeometryVertex();
 
-                    v.Position = new Vector4(positions[i].X * scale, 
-                                             positions[i].Y * scale,
-                                             positions[i].Z * scale,
-                                             1.0f);
+                    v.Position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z) * scale;
 
                     if (v.Position.X <= minVertex.X && v.Position.Y <= minVertex.Y && v.Position.Z <= minVertex.Z)
-                        minVertex = new Vector3(v.Position.X, v.Position.Y, v.Position.Z);
+                        minVertex = v.Position;
 
                     if (v.Position.X >= maxVertex.X && v.Position.Y >= maxVertex.Y && v.Position.Z >= maxVertex.Z)
-                        maxVertex = new Vector3(v.Position.X, v.Position.Y, v.Position.Z);
+                        maxVertex = v.Position;
 
                     if (hasTexCoords)
                     {
@@ -168,15 +163,15 @@ namespace TombEditor.Geometry
 
         public static bool ExportRoomToObj(Room room, string fileName)
         {
-            if (File.Exists(fileName)) File.Delete(fileName);
+            var roomVertices = room.GetRoomVertices();
 
-            using (var writer = new StreamWriter(File.OpenWrite(fileName)))
+            using (var writer = new StreamWriter(new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Write)))
             {
                 writer.WriteLine("# Exported by Tomb Editor");
                 writer.WriteLine("o Room");
 
                 // Export positions
-                foreach (var vertex in room.Vertices)
+                foreach (var vertex in roomVertices)
                 {
                     writer.WriteLine("v " + vertex.Position.X + " " + vertex.Position.Y + " " + vertex.Position.Z + " 1.0");
                 }
@@ -185,7 +180,7 @@ namespace TombEditor.Geometry
                 Random r = new Random(new Random().Next());
 
                 // Export UVs
-                foreach (var vertex in room.Vertices)
+                foreach (var vertex in roomVertices)
                 {
                     // TODO: to remove when materials will be exported
                     float randX = r.NextFloat(0, 1);
@@ -197,33 +192,8 @@ namespace TombEditor.Geometry
                 writer.WriteLine("s 1");
 
                 // Export faces
-                for (int x = 0; x < room.NumXSectors; x++)
-                {
-                    for (int z = 0; z < room.NumZSectors; z++)
-                    {
-                        foreach (var face in room.Blocks[x, z].Faces)
-                        {
-                            if (!face.Defined) continue;
-
-                            writer.Write("f");
-
-                            for (int i = 0; i < face.IndicesForSolidBucketsRendering.Count;i++)
-                            {
-                                int index = face.IndicesForSolidBucketsRendering[i];
-
-                                if ((index % 3) == 0 && i != 0)
-                                {
-                                    writer.WriteLine();
-                                    writer.Write("f");
-                                }
-
-                                writer.Write(" " + (index + 1) + "/" + (index + 1));
-                            }
-
-                            writer.WriteLine();
-                        }
-                    }
-                }
+                for (int i = 0; i < roomVertices.Count; ++i)
+                    writer.WriteLine("f " + i + " " + (i + 1) + " " + (i + 2));
 
                 writer.Flush();
             }

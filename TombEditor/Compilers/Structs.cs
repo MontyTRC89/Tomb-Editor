@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using TombEditor.Geometry;
@@ -30,14 +31,41 @@ namespace TombEditor.Compilers
         public short X;
         public short Y;
         public short Z;
+
+        // Custom implementation of these because default implementation is *insanely* slow.
+        // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
+        public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
+        {
+            return (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
+        }
+
+        public static bool operator !=(tr_vertex first, tr_vertex second)
+        {
+            return !(first == second);
+        }
+
+        public bool Equals(tr_vertex other)
+        {
+            return this == other;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this == (tr_vertex)obj;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_face4
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
-        public short Texture;
-        public short LightingEffect;
+        public ushort Texture;
+        public ushort LightingEffect;
 
         public void Write(BinaryWriterEx writer)
         {
@@ -53,8 +81,8 @@ namespace TombEditor.Compilers
     public struct tr_face3
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
-        public short Texture;
-        public short LightingEffect;
+        public ushort Texture;
+        public ushort LightingEffect;
 
         public void Write(BinaryWriterEx writer)
         {
@@ -112,12 +140,39 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_vertex
+    public struct tr_room_vertex : IEquatable<tr_room_vertex>
     {
-        public tr_vertex Vertex;
-        public short Lighting1;
+        public tr_vertex Position;
+        public ushort Lighting1;
         public ushort Attributes;
-        public short Lighting2;
+        public ushort Lighting2;
+
+        // Custom implementation of these because default implementation is *insanely* slow.
+        // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
+        public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
+        {
+            return (*(ulong*)&first == *(ulong*)&second) && (*(uint*)&first.Attributes == *(uint*)&second.Attributes);
+        }
+
+        public static bool operator !=(tr_room_vertex first, tr_room_vertex second)
+        {
+            return !(first == second);
+        }
+
+        public bool Equals(tr_room_vertex other)
+        {
+            return this == other;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this == (tr_room_vertex)obj;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -131,18 +186,14 @@ namespace TombEditor.Compilers
         public ushort Intensity2;
         public ushort ObjectID;
     }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    
     public class tr_room
     {
         public tr_room_info Info;
         public uint NumDataWords;
-        public ushort NumVertices;
-        public tr_room_vertex[] Vertices;
-        public ushort NumRectangles;
-        public tr_face4[] Rectangles;
-        public ushort NumTriangles;
-        public tr_face3[] Triangles;
+        public List<tr_room_vertex> Vertices;
+        public List<tr_face4> Quads;
+        public List<tr_face3> Triangles;
         public ushort NumSprites;
         public ushort NumPortals;
         public tr_room_portal[] Portals;
@@ -164,8 +215,7 @@ namespace TombEditor.Compilers
 
         // Helper data
         public TrSectorAux[,] AuxSectors;
-
-        public TextureSounds[,] TextureSounds;
+        
         public List<Room> ReachableRooms;
         public bool Visited;
         public bool Flipped;
@@ -178,37 +228,22 @@ namespace TombEditor.Compilers
             writer.WriteBlock(Info);
 
             var offset = writer.BaseStream.Position;
-
-            const int numdw = 0;
-            writer.Write(numdw);
-
-            var tmp = (ushort) Vertices.Length;
-            writer.Write(tmp);
+            
+            writer.Write((int)0);
+            
+            writer.Write((ushort)Vertices.Count);
             writer.WriteBlockArray(Vertices);
-
-            tmp = (ushort) Rectangles.Length;
-            writer.Write(tmp);
-            if (tmp != 0)
-            {
-                for (var k = 0; k < Rectangles.Length; k++)
-                {
-                    Rectangles[k].Write(writer);
-                }
-            }
-
-            tmp = (ushort) Triangles.Length;
-            writer.Write(tmp);
-            if (tmp != 0)
-            {
-                for (var k = 0; k < Triangles.Length; k++)
-                {
-                    Triangles[k].Write(writer);
-                }
-            }
+            
+            writer.Write((ushort)Quads.Count);
+            for (var k = 0; k < Quads.Count; k++)
+                Quads[k].Write(writer);
+            
+            writer.Write((ushort)Triangles.Count);
+            for (var k = 0; k < Triangles.Count; k++)
+                Triangles[k].Write(writer);
 
             // For sprites, not used
-            tmp = 0;
-            writer.Write(tmp);
+            writer.Write((ushort)0);
 
             // Now save current offset and calculate the size of the geometry
             var offset2 = writer.BaseStream.Position;
@@ -221,9 +256,8 @@ namespace TombEditor.Compilers
             writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
             // Write portals
-            tmp = (ushort) Portals.Length;
-            writer.WriteBlock(tmp);
-            if (tmp != 0)
+            writer.WriteBlock((ushort)Portals.Length);
+            if (Portals.Length != 0)
                 writer.WriteBlockArray(Portals);
 
             // Write sectors
@@ -236,15 +270,13 @@ namespace TombEditor.Compilers
             writer.Write(AmbientIntensity2);
 
             // Write lights
-            tmp = (ushort) Lights.Length;
-            writer.WriteBlock(tmp);
-            if (tmp != 0)
+            writer.WriteBlock((ushort)Lights.Length);
+            if (Portals.Length != 0)
                 writer.WriteBlockArray(Lights);
 
             // Write static meshes
-            tmp = (ushort) StaticMeshes.Length;
-            writer.WriteBlock(tmp);
-            if (tmp != 0)
+            writer.WriteBlock((ushort)StaticMeshes.Length);
+            if (StaticMeshes.Length != 0)
                 writer.WriteBlockArray(StaticMeshes);
 
             // Write final data
@@ -266,8 +298,8 @@ namespace TombEditor.Compilers
         public short NumNormals;
         public tr_vertex[] Normals;
         public short[] Lights;
-        public short NumTexturedRectangles;
-        public tr_face4[] TexturedRectangles;
+        public short NumTexturedQuads;
+        public tr_face4[] TexturedQuads;
         public short NumTexturedTriangles;
         public tr_face3[] TexturedTriangles;
         public short NumColoredRectangles;
@@ -297,8 +329,8 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(Lights);
             }
 
-            writer.Write(NumTexturedRectangles);
-            writer.WriteBlockArray(TexturedRectangles);
+            writer.Write(NumTexturedQuads);
+            writer.WriteBlockArray(TexturedQuads);
 
             writer.Write(NumTexturedTriangles);
             writer.WriteBlockArray(TexturedTriangles);
@@ -335,10 +367,10 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(Lights);
             }
 
-            writer.Write(NumTexturedRectangles);
-            for (var k = 0; k < NumTexturedRectangles; k++)
+            writer.Write(NumTexturedQuads);
+            for (var k = 0; k < NumTexturedQuads; k++)
             {
-                TexturedRectangles[k].Write(writer);
+                TexturedQuads[k].Write(writer);
             }
             // writer.WriteBlockArray(Meshes[i].TexturedRectangles);
 
@@ -382,7 +414,6 @@ namespace TombEditor.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_animatedTextures_set
     {
-        public short NumTextures;
         public short[] Textures;
     }
 
@@ -595,29 +626,7 @@ namespace TombEditor.Compilers
         public short Unknown1;
         public short Unknown2;
     }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_object_texture_vert
-    {
-        public byte Xpixel;
-        public byte Xcoordinate;
-        public byte Ypixel;
-        public byte Ycoordinate;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_object_texture
-    {
-        public ushort Attributes;
-        public ushort Tile;
-        public ushort Flags;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public tr_object_texture_vert[] Vertices;
-        public uint Unknown1;
-        public uint Unknown2;
-        public uint Xsize;
-        public uint Ysize;
-    }
-
+    
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_camera
     {

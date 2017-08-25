@@ -7,8 +7,9 @@ namespace TombLib.Graphics
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct SkinnedVertex : IVertex
     {
-        [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0)]
-        public Vector4 Position;
+        [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
+        public Vector3 Position;
+        private float _unusedPadding;
         [VertexElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, 16)]
         public Vector2 UV;
         [VertexElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32_Float, 24)]
@@ -22,9 +23,6 @@ namespace TombLib.Graphics
         [VertexElement("BLENDINDICES", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 76)]
         public Vector4 BoneIndices;
 
-        Vector4 IVertex.Position
-        {
-            get { return Position; }
-        }
+        Vector3 IVertex.Position => Position;
     }
 }

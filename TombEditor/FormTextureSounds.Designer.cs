@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace TombEditor
 {
-    partial class FormTextureSounds
+    /*partial class FormTextureSounds
     {
         /// <summary>
         /// Required designer variable.
@@ -176,5 +176,5 @@ namespace TombEditor
         private DarkButton butCancel;
         private ImageList imgList;
         private Timer timerPreview;
-    }
+    }*/
 }

@@ -11,6 +11,17 @@ using TombEditor.Geometry;
 
 namespace TombEditor.Controls
 {
+    public enum LightParameter
+    {
+        Intensity,
+        In,
+        Out,
+        Len,
+        CutOff,
+        DirectionX,
+        DirectionY
+    }
+
     public partial class LightParameterController : UserControl
     {
         public LightParameter LightParameter { get; set; }
@@ -219,8 +230,7 @@ namespace TombEditor.Controls
                 newValue -= _fastStep;
 
             // Check for ranges
-            if ((light.Type == LightType.Spot || light.Type == LightType.Sun) &&
-                (LightParameter == LightParameter.DirectionX || LightParameter == LightParameter.DirectionY))
+            if ((light.Type == LightType.Spot || light.Type == LightType.Sun) && (LightParameter == LightParameter.DirectionY))
             {
                 if (newValue < 0.0f)
                     newValue = 360.0f + newValue;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 using TombEditor.Geometry;
+using TombLib.Utils;
 
 namespace TombEditor
 {
@@ -621,12 +622,10 @@ namespace TombEditor
                 (z < 0.0f) || (z > (room.NumZSectors - 1)))
                 return;
 
-            if (room.Blocks[(int)x, (int)z].IsAnyWall)
+            Block block = room.Blocks[(int)x, (int)z];
+            if (block.IsAnyWall)
                 return;
-
-            var lowest = room.GetLowestFloorCorner((int)x, (int)z);
-            var highest = room.GetHighestCeilingCorner((int)x, (int)z);
-                        
+    
             // Update position
             instance.Position = pos;
 
@@ -726,6 +725,8 @@ namespace TombEditor
         public static void DeleteObject(Room room, ObjectInstance instance)
         {
             room.RemoveObject(_editor.Level, instance);
+            if (instance is Light)
+                room.UpdateCompletely();
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
@@ -758,13 +759,95 @@ namespace TombEditor
             _editor.ObjectChange(null);
         }
         
-        public static void PlaceTexture(Room room, DrawingPoint pos, BlockFaces faceType)
+        public static void RotateTexture(Room room, DrawingPoint pos, BlockFace face)
         {
-            BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
+            Block blocks = room.GetBlock(pos);
+            TextureArea textureArea = blocks.GetFaceTexture(face);
+            if (room.GetFaceVertexRange(pos.X, pos.Y, face).Count == 3)
+            {
+                Vector2 tempTexCoord = textureArea.TexCoord2;
+                textureArea.TexCoord2 = textureArea.TexCoord1;
+                textureArea.TexCoord1 = textureArea.TexCoord0;
+                textureArea.TexCoord0 = tempTexCoord;
+                textureArea.TexCoord3 = textureArea.TexCoord2;
+            }
+            else
+            {
+                Vector2 tempTexCoord = textureArea.TexCoord3;
+                textureArea.TexCoord3 = textureArea.TexCoord2;
+                textureArea.TexCoord2 = textureArea.TexCoord1;
+                textureArea.TexCoord1 = textureArea.TexCoord0;
+                textureArea.TexCoord0 = tempTexCoord;
+            }
+            blocks.SetFaceTexture(face, textureArea);
 
-            ApplyTexture(room, pos, faceType);
+            // Update state
+            room.BuildGeometry();
+            room.CalculateLightingForThisRoom();
+            room.UpdateBuffers();
+            _editor.RoomTextureChange(room);
+        }
 
-            face.Flipped = false;
+        public static void MirrorTexture(Room room, DrawingPoint pos, BlockFace face)
+        {
+            Block blocks = room.GetBlock(pos);
+            TextureArea textureArea = blocks.GetFaceTexture(face);
+            if (room.GetFaceVertexRange(pos.X, pos.Y, face).Count == 3)
+            {
+                Utils.Swap(ref textureArea.TexCoord0, ref textureArea.TexCoord2);
+                textureArea.TexCoord3 = textureArea.TexCoord2;
+            }
+            else
+            {
+                Utils.Swap(ref textureArea.TexCoord0, ref textureArea.TexCoord1);
+                Utils.Swap(ref textureArea.TexCoord2, ref textureArea.TexCoord3);
+            }
+            blocks.SetFaceTexture(face, textureArea);
+
+            // Update state
+            room.BuildGeometry();
+            room.CalculateLightingForThisRoom();
+            room.UpdateBuffers();
+            _editor.RoomTextureChange(room);
+        }
+
+        public static void PickTexture(Room room, DrawingPoint pos, BlockFace face)
+        {
+            _editor.SelectedTexture = room.GetBlock(pos).GetFaceTexture(face);
+        }
+
+        public static void RotateSelectedTexture()
+        {
+            TextureArea textureArea = _editor.SelectedTexture;
+            Vector2 texCoordTemp = textureArea.TexCoord3;
+            textureArea.TexCoord3 = textureArea.TexCoord2;
+            textureArea.TexCoord2 = textureArea.TexCoord1;
+            textureArea.TexCoord1 = textureArea.TexCoord0;
+            textureArea.TexCoord0 = texCoordTemp;
+            _editor.SelectedTexture = textureArea;
+        }
+        
+        public static void PlaceNoCollision(Room room, DrawingPoint pos, BlockFace faceType)
+        {
+            if (faceType == BlockFace.Floor || faceType == BlockFace.FloorTriangle2)
+                room.GetBlock(pos).NoCollisionFloor = !room.GetBlock(pos).NoCollisionFloor;
+
+            if (faceType == BlockFace.Ceiling || faceType == BlockFace.CeilingTriangle2)
+                room.GetBlock(pos).NoCollisionCeiling = !room.GetBlock(pos).NoCollisionCeiling;
+
+            room.UpdateCompletely();
+            _editor.RoomSectorPropertiesChange(room);
+        }
+
+        private static void ApplyTextureAutomaticallyNoUpdated(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
+        {
+            Block block = room.GetBlock(pos);
+            block.SetFaceTexture(face, texture);
+        }
+
+        public static void ApplyTextureAutomatically(Room room, DrawingPoint pos, BlockFace face, TextureArea texture)
+        {
+            ApplyTextureAutomaticallyNoUpdated(room, pos, face, texture);
 
             room.BuildGeometry(new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
             room.CalculateLightingForThisRoom();
@@ -772,389 +855,56 @@ namespace TombEditor
             _editor.RoomTextureChange(room);
         }
 
-        public static void RotateTexture(Room room, DrawingPoint pos, BlockFaces faceType)
-        {
-            BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
-            if (_editor.SelectedTexture.Invisible || face.Invisible)
-                return;
-
-            if (face.Shape == BlockFaceShape.Triangle)
-            {
-                Vector2 temp3 = face.TriangleUV[2];
-                face.TriangleUV[2] = face.TriangleUV[1];
-                face.TriangleUV[1] = face.TriangleUV[0];
-                face.TriangleUV[0] = temp3;
-
-                if (faceType == BlockFaces.FloorTriangle2)
-                {
-                    Vector2 temp4 = face.TriangleUV2[2];
-                    face.TriangleUV2[2] = face.TriangleUV2[1];
-                    face.TriangleUV2[1] = face.TriangleUV2[0];
-                    face.TriangleUV2[0] = temp4;
-                }
-
-                face.Rotation += 1;
-                if (face.Rotation == 3)
-                    face.Rotation = 0;
-            }
-            else
-            {
-                Vector2 temp2 = face
-                    .RectangleUV[3];
-                face.RectangleUV[3] = face.RectangleUV[2];
-                face.RectangleUV[2] = face.RectangleUV[1];
-                face.RectangleUV[1] = face.RectangleUV[0];
-                face.RectangleUV[0] = temp2;
-
-                face.Rotation += 1;
-                if (face.Rotation == 4)
-                    face.Rotation = 0;
-            }
-
-            room.BuildGeometry();
-            room.UpdateBuffers();
-            _editor.RoomTextureChange(room);
-        }
-
-        public static void FlipTexture(Room room, DrawingPoint pos, BlockFaces faceType)
-        {
-            BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
-
-            if (_editor.SelectedTexture.Invisible || face.Invisible || face.Texture == -1)
-                return;
-
-            if (face.Shape == BlockFaceShape.Triangle)
-            {
-                Vector2[] UV = new Vector2[4];
-
-                // Calculate the new UV
-                LevelTexture texture = _editor.Level.TextureSamples[face.Texture];
-
-                UV[0] = new Vector2(texture.X / 256.0f, texture.Y / 256.0f);
-                UV[1] = new Vector2((texture.X + texture.Width) / 256.0f, texture.Y / 256.0f);
-                UV[2] = new Vector2((texture.X + texture.Width) / 256.0f, (texture.Y + texture.Height) / 256.0f);
-                UV[3] = new Vector2(texture.X / 256.0f, (texture.Y + texture.Height) / 256.0f);
-
-                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNW)
-                {
-                    face.TriangleUV[0] = UV[1];
-                    face.TriangleUV[1] = UV[0];
-                    face.TriangleUV[2] = UV[2];
-                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                    {
-                        face.TriangleUV2[0] = UV[1];
-                        face.TriangleUV2[1] = UV[0];
-                        face.TriangleUV2[2] = UV[2];
-                    }
-                }
-
-                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNE)
-                {
-                    face.TriangleUV[0] = UV[0];
-                    face.TriangleUV[1] = UV[3];
-                    face.TriangleUV[2] = UV[1];
-
-                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                    {
-                        face.TriangleUV2[0] = UV[0];
-                        face.TriangleUV2[1] = UV[3];
-                        face.TriangleUV2[2] = UV[1];
-                    }
-                }
-
-                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSE)
-                {
-                    face.TriangleUV[0] = UV[3];
-                    face.TriangleUV[1] = UV[2];
-                    face.TriangleUV[2] = UV[0];
-
-                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                    {
-                        face.TriangleUV2[0] = UV[3];
-                        face.TriangleUV2[1] = UV[2];
-                        face.TriangleUV2[2] = UV[0];
-                    }
-                }
-
-                if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSW)
-                {
-                    face.TriangleUV[0] = UV[2];
-                    face.TriangleUV[1] = UV[1];
-                    face.TriangleUV[2] = UV[3];
-
-                    if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                    {
-                        face.TriangleUV2[0] = UV[2];
-                        face.TriangleUV2[1] = UV[1];
-                        face.TriangleUV2[2] = UV[3];
-                    }
-                }
-
-                for (int k = 0; k < face.Rotation; k++)
-                {
-                    Vector2 temp3 = face
-                        .TriangleUV[2];
-                    face.TriangleUV[2] = face.TriangleUV[1];
-                    face.TriangleUV[1] = face.TriangleUV[0];
-                    face.TriangleUV[0] = temp3;
-
-                    if (faceType == BlockFaces.FloorTriangle2)
-                    {
-                        Vector2 temp4 = face.TriangleUV2[2];
-                        face.TriangleUV2[2] = face.TriangleUV2[1];
-                        face.TriangleUV2[1] = face.TriangleUV2[0];
-                        face.TriangleUV2[0] = temp4;
-                    }
-                }
-            }
-            else
-            {
-                Vector2 temp2 = face.RectangleUV[1];
-                face.RectangleUV[1] = face.RectangleUV[0];
-                face.RectangleUV[0] = temp2;
-
-                temp2 = face.RectangleUV[3];
-                face.RectangleUV[3] = face.RectangleUV[2];
-                face.RectangleUV[2] = temp2;
-            }
-
-            face.Flipped = !face.Flipped;
-
-            room.BuildGeometry();
-            room.UpdateBuffers();
-            _editor.RoomTextureChange(room);
-        }
-
-        public static void PlaceNoCollision(Room room, DrawingPoint pos, BlockFaces faceType)
-        {
-            if (faceType == BlockFaces.Floor || faceType == BlockFaces.FloorTriangle2)
-                room.GetBlock(pos).NoCollisionFloor = !room.GetBlock(pos).NoCollisionFloor;
-
-            if (faceType == BlockFaces.Ceiling || faceType == BlockFaces.CeilingTriangle2)
-                room.GetBlock(pos).NoCollisionCeiling = !room.GetBlock(pos).NoCollisionCeiling;
-
-            room.UpdateCompletely();
-            _editor.RoomSectorPropertiesChange(room);
-        }
-
-        private static void ApplyTextureNoUpdated(Room room, DrawingPoint pos, BlockFaces faceType)
-        {
-            if (_editor == null || (_editor.SelectedTexture.Index == -1 && !_editor.SelectedTexture.Invisible))
-                return;
-
-            BlockFace face = room.GetBlock(pos).Faces[(int)faceType];
-
-            if (_editor.SelectedTexture.Invisible)
-            {
-                room.GetBlock(pos).Faces[(int)faceType].Invisible = true;
-                room.GetBlock(pos).Faces[(int)faceType].Transparent = false;
-                room.GetBlock(pos).Faces[(int)faceType].DoubleSided = false;
-
-                int tid = room.GetBlock(pos).Faces[(int)faceType].Texture;
-
-                room.GetBlock(pos).Faces[(int)faceType].Texture = -1;
-            }
-            else
-            {
-                // if face was invisible, then reset flag
-                if (face.Invisible)
-                    room.GetBlock(pos).Faces[(int)faceType].Invisible = false;
-
-                // set trasparency of this face
-                if (_editor.SelectedTexture.Transparent)
-                    room.GetBlock(pos).Faces[(int)faceType].Transparent = true;
-                else
-                    room.GetBlock(pos).Faces[(int)faceType].Transparent = false;
-
-                // set double sided flag of this face
-                if (_editor.SelectedTexture.DoubleSided)
-                    room.GetBlock(pos).Faces[(int)faceType].DoubleSided = true;
-                else
-                    room.GetBlock(pos).Faces[(int)faceType].DoubleSided = false;
-
-                Vector2[] UV = new Vector2[4];
-
-                LevelTexture texture = _editor.Level.TextureSamples[_editor.SelectedTexture.Index];
-
-                int yBlock = (int)(texture.Page / 8);
-                int xBlock = (int)(texture.Page % 8);
-
-                UV[0] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
-                UV[1] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + 0.5f) / 2048.0f);
-                UV[2] = new Vector2((xBlock * 256.0f + texture.X + texture.Width - 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
-                UV[3] = new Vector2((xBlock * 256.0f + texture.X + 0.5f) / 2048.0f, (yBlock * 256.0f + texture.Y + texture.Height - 0.5f) / 2048.0f);
-
-                room.GetBlock(pos).Faces[(int)faceType].RectangleUV[0] = UV[0];
-                room.GetBlock(pos).Faces[(int)faceType].RectangleUV[1] = UV[1];
-                room.GetBlock(pos).Faces[(int)faceType].RectangleUV[2] = UV[2];
-                room.GetBlock(pos).Faces[(int)faceType].RectangleUV[3] = UV[3];
-
-                /*
-                *  1----2    Split 0: 231 413  
-                *  | \  |    Split 1: 124 342
-                *  |  \ |
-                *  4----3
-                */
-
-                if (face.Shape == BlockFaceShape.Triangle)
-                {
-                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNW)
-                    {
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[0];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[1];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[2] = UV[3];
-
-                        if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                        {
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[0] = UV[0];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[1] = UV[1];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[2] = UV[3];
-                        }
-                    }
-
-                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleNE)
-                    {
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[1];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[2];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[2] = UV[0];
-
-                        if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                        {
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[0] = UV[1];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[1] = UV[2];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[2] = UV[0];
-                        }
-                    }
-
-                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSE)
-                    {
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[2];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[3];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[2] = UV[1];
-
-                        if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                        {
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[0] = UV[2];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[1] = UV[3];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[2] = UV[1];
-                        }
-                    }
-
-                    if (_editor.SelectedTexture.Triangle == TextureTileType.TriangleSW)
-                    {
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[0] = UV[3];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[1] = UV[0];
-                        room.GetBlock(pos).Faces[(int)faceType].TriangleUV[2] = UV[2];
-
-                        if (faceType == BlockFaces.FloorTriangle2 || faceType == BlockFaces.CeilingTriangle2)
-                        {
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[0] = UV[3];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[1] = UV[0];
-                            room.GetBlock(pos).Faces[(int)faceType].TriangleUV2[2] = UV[2];
-                        }
-                    }
-                }
-
-                if (face.Shape == BlockFaceShape.Triangle)
-                {
-                    room.GetBlock(pos).Faces[(int)faceType].TextureTriangle = _editor.SelectedTexture.Triangle;
-                }
-
-                room.GetBlock(pos).Faces[(int)faceType].Texture = (short)_editor.SelectedTexture.Index;
-                room.GetBlock(pos).Faces[(int)faceType].Rotation = 0;
-            }
-        }
-
-        public static void ApplyTexture(Room room, DrawingPoint pos, BlockFaces faceType)
-        {
-            ApplyTextureNoUpdated(room, pos, faceType);
-            _editor.RoomTextureChange(room);
-        }
-
-        public static void TexturizeAllFloor(Room room)
+        public static void TexturizeAllFloor(Room room, TextureArea texture)
         {
             for (int x = 0; x < room.NumXSectors - 1; x++)
                 for (int z = 0; z < room.NumZSectors - 1; z++)
                 {
-                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.Floor);
-                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.FloorTriangle2);
+                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Floor, texture);
+                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.FloorTriangle2, texture);
                 }
 
             room.UpdateCompletely();
             _editor.RoomTextureChange(room);
         }
 
-        public static void TexturizeAllCeiling(Room room)
+        public static void TexturizeAllCeiling(Room room, TextureArea texture)
         {
             for (int x = 0; x < room.NumXSectors - 1; x++)
                 for (int z = 0; z < room.NumZSectors - 1; z++)
                 {
-                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.Ceiling);
-                    ApplyTextureNoUpdated(room, new DrawingPoint(x, z), BlockFaces.CeilingTriangle2);
+                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.Ceiling, texture);
+                    ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), BlockFace.CeilingTriangle2, texture);
                 }
 
             room.UpdateCompletely();
             _editor.RoomTextureChange(room);
         }
 
-        public static void TexturizeAllWalls(Room room)
+        public static void TexturizeAllWalls(Room room, TextureArea texture)
         {
             for (int x = 0; x < room.NumXSectors; x++)
                 for (int z = 0; z < room.NumZSectors; z++)
-                    for (int k = 10; k <= 13; k++)
-                        if (room.Blocks[x, z].Faces[k].Defined)
-                            ApplyTextureNoUpdated(room, new DrawingPoint(x, z), (BlockFaces)k);
+                    for (BlockFace face = BlockFace.NorthQA; face <= BlockFace.DiagonalRF; face++)
+                        if (room.IsFaceDefined(x, z, face))
+                            ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), face, texture);
 
             room.UpdateCompletely();
             _editor.RoomTextureChange(room);
         }
 
-        public static void PlaceLight(Room room, DrawingPoint pos, LightType lightType)
-        {
-            Block block = room.GetBlock(pos);
-            int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
-            Vector3 position = new Vector3(pos.X * 1024 + 512, y * 256 + 128.0f, pos.Y * 1024 + 512);
-
-            var instance = new Light(lightType) { Position = position };
-            room.AddObject(_editor.Level, instance);
-            _editor.ObjectChange(instance);
-        }
-        
-        private static void AddObject(Room room, DrawingPoint pos, PositionBasedObjectInstance instance)
+        public static void PlaceObject(Room room, DrawingPoint pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
             int y = (block.QAFaces[0] + block.QAFaces[1] + block.QAFaces[2] + block.QAFaces[3]) / 4;
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
+            if (instance is Light)
+                room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance);
         }
-
-        public static void PlaceItem(Room room, DrawingPoint pos, ItemType itemType)
-        {
-            AddObject(room, pos, ItemInstance.FromItemType(itemType));
-        }
-
-        public static void PlaceCamera(Room room, DrawingPoint pos)
-        {
-            AddObject(room, pos, new CameraInstance());
-        }
-
-        public static void PlaceFlyByCamera(Room room, DrawingPoint pos)
-        {
-            AddObject(room, pos, new FlybyCameraInstance());
-        }
-
-        public static void PlaceSoundSource(Room room, DrawingPoint pos)
-        {
-            AddObject(room, pos, new SoundSourceInstance());
-        }
-
-        public static void PlaceSink(Room room, DrawingPoint pos)
-        {
-            AddObject(room, pos, new SinkInstance());
-        }
-
+        
         public static void DeleteRoom(Room room)
         {
             // Check if is the last room
@@ -1444,7 +1194,6 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].FloorIsSplit = false;
                     room.Blocks[x, z].Type = BlockType.Floor;
                     room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.None;
                 }
@@ -1460,7 +1209,6 @@ namespace TombEditor
                 {
                     if (room.Blocks[x, z].Type == BlockType.BorderWall)
                         continue;
-                    room.Blocks[x, z].CeilingIsSplit = false;
                     room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.None;
                 }
 
@@ -1682,7 +1430,7 @@ namespace TombEditor
 
             foreach (var instance in room.Objects)
                 if (instance.CopyToFlipRooms)
-                    newRoom.Objects.Add((PositionBasedObjectInstance)instance.Clone());
+                    newRoom.AddObject(_editor.Level, (PositionBasedObjectInstance)instance.Clone());
 
             newRoom.Position = new Vector3(room.Position.X, room.Position.Y, room.Position.Z);
 

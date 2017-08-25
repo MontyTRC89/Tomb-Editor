@@ -6,6 +6,7 @@ using TombEditor.Geometry;
 using TombLib.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TombLib.Utils;
 
 namespace TombEditor.Compilers
 {
@@ -17,75 +18,41 @@ namespace TombEditor.Compilers
 
         private void PrepareTextures()
         {
+            List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
+            List<ImageC> spritePages = BuildSprites(packedTextures.Count);
+
             ReportProgress(10, "Building final texture map");
 
-            _numRoomTextureTiles = (ushort)_numRoomTexturePages;
-            _numObjectTextureTiles = (ushort)(_numobjectTexturePages + _numSpriteTexturePages);
+            // The room texture tile count currently also currently contains the wad textures
+            // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
+            _numRoomTextureTiles = (ushort)packedTextures.Count;
+            _numObjectTextureTiles = (ushort)(spritePages.Count);
+            
+            byte[] uncTexture32 = new byte[(spritePages.Count + packedTextures.Count) * (256 * 256 * 4)];
 
-            var uncTexture32 =
-                new byte[_roomTexturePages.Length + _objectTexturePages.Length + _spriteTexturePages.Length];
-
-            Array.Copy(_roomTexturePages, 0, uncTexture32, 0, _roomTexturePages.Length);
-            Array.Copy(_objectTexturePages, 0, uncTexture32, _roomTexturePages.Length, _objectTexturePages.Length);
-            Array.Copy(_spriteTexturePages, 0, uncTexture32, _roomTexturePages.Length + _objectTexturePages.Length,
-                _spriteTexturePages.Length);
+            for (int i = 0; i < packedTextures.Count; ++i)
+                packedTextures[i].RawCopyTo(uncTexture32, i * (256 * 256 * 4));
+            for (int i = 0; i < spritePages.Count; ++i)
+                spritePages[i].RawCopyTo(uncTexture32, (packedTextures.Count + i) * (256 * 256 * 4));
 
             ReportProgress(80, "Packing 32 bit textures to 16 bit");
-            var uncTexture16 = PackTextureMap32To16Bit(uncTexture32, 256,
-                (_numRoomTexturePages + _numobjectTexturePages + _numSpriteTexturePages) * 256);
+            byte[] uncTexture16 = PackTextureMap32To16Bit(uncTexture32, 256, uncTexture32.GetLength(0) / (256 * 4));
 
             ReportProgress(80, "Compressing 32 bit textures");
-            _texture32 = Utils.CompressDataZLIB(uncTexture32);
+            _texture32 = ZLib.CompressData(uncTexture32);
             _texture32UncompressedSize = (uint)uncTexture32.Length;
             _texture32CompressedSize = (uint)_texture32.Length;
 
             _textures16 = uncTexture16;
 
             ReportProgress(80, "Compressing 16 bit textures");
-            _texture16 = Utils.CompressDataZLIB(uncTexture16);
+            _texture16 = ZLib.CompressData(uncTexture16);
             _texture16UncompressedSize = (uint)uncTexture16.Length;
             _texture16CompressedSize = (uint)_texture16.Length;
         }
 
-        private void BuildWadTexturePages()
-        {
-            ReportProgress(7, "Building WAD textures pages");
-
-            var wad = _level.Wad.OriginalWad;
-
-            _objectTexturePages = new byte[256 * 256 * 4 * wad.NumTexturePages];
-            _numobjectTexturePages = wad.NumTexturePages;
-
-            for (var y = 0; y < wad.NumTexturePages * 256; y++)
-            {
-                for (var x = 0; x < 256; x++)
-                {
-                    var r = wad.TexturePages[y, 3 * x + 0];
-                    var g = wad.TexturePages[y, 3 * x + 1];
-                    var b = wad.TexturePages[y, 3 * x + 2];
-
-                    if (r == 255 && g == 0 && b == 255)
-                    {
-                        _objectTexturePages[y * 1024 + 4 * x + 0] = 0;
-                        _objectTexturePages[y * 1024 + 4 * x + 1] = 0;
-                        _objectTexturePages[y * 1024 + 4 * x + 2] = 0;
-                        _objectTexturePages[y * 1024 + 4 * x + 3] = 0;
-                    }
-                    else
-                    {
-                        _objectTexturePages[y * 1024 + 4 * x + 0] = b;
-                        _objectTexturePages[y * 1024 + 4 * x + 1] = g;
-                        _objectTexturePages[y * 1024 + 4 * x + 2] = r;
-                        _objectTexturePages[y * 1024 + 4 * x + 3] = 255;
-                    }
-                }
-            }
-
-            ReportProgress(8, "    WAD texture pages: " + wad.NumTexturePages);
-        }
-
-        private TextureSounds GetTextureSound(int texture)
-        {
+        private TextureSound GetTextureSound(Room room, int x, int z)
+        {/*
             var txt = _level.TextureSamples[texture];
 
             foreach (var txtSound in _level.TextureSounds)
@@ -97,8 +64,8 @@ namespace TombEditor.Compilers
                     return txtSound.Sound;
                 }
             }
-
-            return TextureSounds.Stone;
+            */
+            return TextureSound.Stone;
         }
 
         private bool PrepareFontAndSkyTexture()
@@ -107,33 +74,22 @@ namespace TombEditor.Compilers
             {
                 ReportProgress(18, "Building font & sky textures");
 
-                byte[] rawData = new byte[256 * 256 * 4 * 2];
-                using (Bitmap image = new Bitmap(256, 512, PixelFormat.Format32bppArgb))
-                {
-                    using (Graphics g = Graphics.FromImage(image))
-                    {
-                        // Read font texture
-                        string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
-                        ReportProgress(19, "Reading font texture: " + fontFileName);
-                        using (Bitmap fontTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName))
-                            g.DrawImageUnscaledAndClipped(fontTexture, new Rectangle(0, 0, 256, 256));
+                var image = ImageC.CreateNew(256, 512);
 
-                        // Read sky texture
-                        string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
-                        ReportProgress(18, "Reading sky texture: " + skyFileName);
-                        using (Bitmap skyTexture = Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName))
-                            g.DrawImageUnscaledAndClipped(skyTexture, new Rectangle(0, 256, 256, 256));
-                    }
+                // Read font texture
+                string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                ReportProgress(19, "Reading font texture: " + fontFileName);
+                image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName)); 
 
-                    // Extract raw texture data
-                    BitmapData lockData = image.LockBits(new Rectangle(0, 0, 256, 512), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                    System.Runtime.InteropServices.Marshal.Copy(lockData.Scan0, rawData, 0, rawData.Length);
-                    image.UnlockBits(lockData);
-                }
-
+                // Read sky texture
+                string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+                ReportProgress(18, "Reading sky texture: " + skyFileName);
+                image.CopyFrom(0, 256, Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName));
+                
                 ReportProgress(80, "Compressing font & sky textures");
-                _miscTexture = Utils.CompressDataZLIB(rawData);
-                _miscTextureUncompressedSize = (uint)rawData.Length;
+                var rawDataStream = image.ToRawStream();
+                _miscTexture = ZLib.CompressData(image.ToRawStream());
+                _miscTextureUncompressedSize = (uint)rawDataStream.Length;
                 _miscTextureCompressedSize = (uint)_miscTexture.Length;
             }
             catch (Exception exc)
@@ -143,6 +99,73 @@ namespace TombEditor.Compilers
             }
 
             return true;
+        }
+
+        private List<ImageC> BuildSprites(int pagesBeforeSprites)
+        {
+            ReportProgress(9, "Building sprites");
+            ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
+
+            List<ImageC> texturePages = new List<ImageC>();
+
+            using (var reader = new BinaryReaderEx(new FileStream(
+                _level.Wad.OriginalWad.BasePath + Path.DirectorySeparatorChar + _level.Wad.OriginalWad.BaseName + ".swd",
+                FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                // Version
+                reader.ReadUInt32();
+
+                //Sprite texture array
+                _spriteTextures = new tr_sprite_texture[reader.ReadUInt32()];
+                for (int i = 0; i < _spriteTextures.Length; i++)
+                {
+                    byte[] buffer;
+                    reader.ReadBlockArray(out buffer, 16);
+
+                    _spriteTextures[i] = new tr_sprite_texture
+                    {
+                        Tile = (ushort)(pagesBeforeSprites), // TODO use correct page offset here.
+                        X = buffer[0],
+                        Y = buffer[1],
+                        Width = (ushort)(buffer[5] * 256),
+                        Height = (ushort)(buffer[7] * 256),
+                        LeftSide = buffer[0],
+                        TopSide = buffer[1],
+                        RightSide = (short)(buffer[0] + buffer[5] + 1),
+                        BottomSide = (short)(buffer[1] + buffer[7] + 1)
+                    };
+                }
+
+                // Unknown value
+                int spriteDataSize = reader.ReadInt32();
+
+                // Load the real sprite texture data
+                int numSpriteTexturePages = spriteDataSize / (65536 * 3);
+                if ((spriteDataSize % (65536 * 3)) != 0)
+                    numSpriteTexturePages++;
+                
+                for (int i = 0; i < numSpriteTexturePages; ++i)
+                {
+                    var spritePage = ImageC.CreateNew(256, 256);
+                    for (int y = 0; y < 256; y++)
+                        for (int x = 0; x < 256; x++)
+                        {
+                            byte r = reader.ReadByte();
+                            byte g = reader.ReadByte();
+                            byte b = reader.ReadByte();
+
+                            if (r == 255 & g == 0 && b == 255)
+                                spritePage.SetPixel(x, y, 0, 0, 0, 0);
+                            else
+                                spritePage.SetPixel(x, y, b, g, r, 255);
+                        }
+                    texturePages.Add(spritePage);
+                }
+
+                // Sprite sequences
+                reader.ReadBlockArray(out _spriteSequences, reader.ReadUInt32());
+            }
+            return texturePages;
         }
 
         private static byte[] PackTextureMap32To16Bit(IReadOnlyList<byte> map, int width, int height)

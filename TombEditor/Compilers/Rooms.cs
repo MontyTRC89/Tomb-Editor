@@ -5,6 +5,8 @@ using SharpDX;
 using TombEditor.Geometry;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TombLib.Utils;
+using System.Threading.Tasks;
 
 namespace TombEditor.Compilers
 {
@@ -16,9 +18,6 @@ namespace TombEditor.Compilers
         private void BuildRooms()
         {
             ReportProgress(20, "Building rooms");
-
-            // Average lighting at the portals
-            MatchPortalShades();
             
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
@@ -26,203 +25,261 @@ namespace TombEditor.Compilers
                 _roomsUnmapping.Add(room);
             }
 
-            foreach (var room in _level.Rooms.Where(r => r != null))
+            // TODO Enable parallization
+            //Parallel.ForEach(_roomsRemappingDictionary.Keys, (Room room) =>
+            //{
+            //    tr_room trRoom = BuildRoom(room);
+            //    lock (_tempRooms)
+            //        _tempRooms.Add(room, trRoom);
+            //});
+
+            foreach (var room in _roomsRemappingDictionary.Keys)
             {
-                var newRoom = new tr_room
+                _tempRooms.Add(room, BuildRoom(room));
+            }
+
+
+
+            ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
+
+            MatchPortalVertexColors();
+
+            ReportProgress(28, "    Vertex colors on portals matched.");
+        }
+
+        private tr_room BuildRoom(Room room)
+        {
+            var newRoom = new tr_room
+            {
+                OriginalRoom = room,
+                Lights = new tr4_room_light[0],
+                StaticMeshes = new tr_room_staticmesh[0],
+                Portals = new tr_room_portal[0],
+                Info = new tr_room_info
                 {
-                    OriginalRoom = room,
-                    TextureSounds = new TextureSounds[room.NumXSectors, room.NumZSectors],
-                    Lights = new tr4_room_light[0],
-                    StaticMeshes = new tr_room_staticmesh[0],
-                    Portals = new tr_room_portal[0],
-                    Info = new tr_room_info
-                    {
-                        X = (int)(room.Position.X * 1024.0f),
-                        Z = (int)(room.Position.Z * 1024.0f),
-                        YTop = (int)(-room.Position.Y * 256.0f - room.GetHighestCorner() * 256.0f),
-                        YBottom = (int)(-room.Position.Y * 256.0f)
-                    },
-                    NumXSectors = room.NumXSectors,
-                    NumZSectors = room.NumZSectors,
-                    AlternateRoom = (room.Flipped && room.AlternateRoom != null) ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
-                    AlternateGroup = (byte)((room.Flipped && room.AlternateRoom != null) ? room.AlternateGroup : 0),
-                    Flipped = room.Flipped,
-                    FlippedRoom = room.AlternateRoom,
-                    BaseRoom = room.AlternateBaseRoom,
-                    AmbientIntensity2 = (ushort)(0x0000 + room.AmbientLight.R),
-                    AmbientIntensity1 = (ushort)((room.AmbientLight.G << 8) + room.AmbientLight.B),
-                    ReverbInfo = (byte)room.Reverberation,
-                    Flags = 0x40
-                };
+                    X = (int)(room.Position.X * 1024.0f),
+                    Z = (int)(room.Position.Z * 1024.0f),
+                    YTop = (int)(-room.Position.Y * 256.0f - room.GetHighestCorner() * 256.0f),
+                    YBottom = (int)(-room.Position.Y * 256.0f)
+                },
+                NumXSectors = room.NumXSectors,
+                NumZSectors = room.NumZSectors,
+                AlternateRoom = (room.Flipped && room.AlternateRoom != null) ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
+                AlternateGroup = (byte)((room.Flipped && room.AlternateRoom != null) ? room.AlternateGroup : 0),
+                Flipped = room.Flipped,
+                FlippedRoom = room.AlternateRoom,
+                BaseRoom = room.AlternateBaseRoom,
+                AmbientIntensity2 = (ushort)(0x0000 + room.AmbientLight.R),
+                AmbientIntensity1 = (ushort)((room.AmbientLight.G << 8) + room.AmbientLight.B),
+                ReverbInfo = (byte)room.Reverberation,
+                Flags = 0x40
+            };
 
-                // Room flags
+            // Room flags
 
-                if (room.FlagWater)
-                    newRoom.Flags += 0x01;
-                if (room.FlagOutside)
-                    newRoom.Flags += 0x20;
-                if (room.FlagHorizon)
-                    newRoom.Flags += 0x08;
-                if (room.FlagQuickSand)
-                    newRoom.Flags += 0x80;
-                if (room.FlagMist)
-                    newRoom.Flags += 0x100;
-                if (room.FlagReflection)
-                    newRoom.Flags += 0x200;
-                if (room.FlagSnow)
-                    newRoom.Flags += 0x400;
-                if (room.FlagRain)
-                    newRoom.Flags += 0x800;
-                if (room.FlagDamage)
-                    newRoom.Flags += 0x1000;
+            if (room.FlagWater)
+                newRoom.Flags |= 0x01;
+            if (room.FlagOutside)
+                newRoom.Flags |= 0x20;
+            if (room.FlagHorizon)
+                newRoom.Flags |= 0x08;
+            if (room.FlagQuickSand)
+                newRoom.Flags |= 0x80;
+            if (room.FlagMist)
+                newRoom.Flags |= 0x100;
+            if (room.FlagReflection)
+                newRoom.Flags |= 0x200;
+            if (room.FlagSnow)
+                newRoom.Flags |= 0x400;
+            if (room.FlagRain)
+                newRoom.Flags |= 0x800;
+            if (room.FlagDamage)
+                newRoom.Flags |= 0x1000;
 
-                // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of 
-                // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
-                var waterPortals = new List<Portal>();
+            // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of 
+            // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
+            var waterPortals = new List<Portal>();
 
-                if (!room.FlagWater)
-                {
-                    for (var x = 0; x < room.NumXSectors; x++)
-                    {
-                        for (var z = 0; z < room.NumZSectors; z++)
-                        {
-                            if (room.Blocks[x, z].FloorPortal == null)
-                                continue;
-
-                            if (!room.Blocks[x, z].FloorPortal.AdjoiningRoom.FlagWater)
-                                continue;
-
-                            if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
-                                waterPortals.Add(room.Blocks[x, z].FloorPortal);
-                        }
-                    }
-
-                    if (waterPortals.Count > 0)
-                    {
-                        var waterRoom = waterPortals[0].AdjoiningRoom;
-
-                        if (!room.FlagReflection && waterRoom.WaterLevel == 1)
-                            newRoom.WaterScheme = 0x06;
-                        if (!room.FlagReflection && waterRoom.WaterLevel == 2)
-                            newRoom.WaterScheme = 0x0a;
-                        if (!room.FlagReflection && waterRoom.WaterLevel == 3)
-                            newRoom.WaterScheme = 0x0e;
-                        if (!room.FlagReflection && waterRoom.WaterLevel == 4)
-                            newRoom.WaterScheme = 0x12;
-
-                        if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 1)
-                            newRoom.WaterScheme = 0x05;
-                        if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 1)
-                            newRoom.WaterScheme = 0x06;
-                        if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 1)
-                            newRoom.WaterScheme = 0x07;
-                        if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 1)
-                            newRoom.WaterScheme = 0x08;
-
-                        if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 2)
-                            newRoom.WaterScheme = 0x09;
-                        if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 2)
-                            newRoom.WaterScheme = 0x0a;
-                        if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 2)
-                            newRoom.WaterScheme = 0x0b;
-                        if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 2)
-                            newRoom.WaterScheme = 0x0c;
-
-                        if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 3)
-                            newRoom.WaterScheme = 0x0d;
-                        if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 3)
-                            newRoom.WaterScheme = 0x0e;
-                        if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 3)
-                            newRoom.WaterScheme = 0x0f;
-                        if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 3)
-                            newRoom.WaterScheme = 0x10;
-
-                        if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 4)
-                            newRoom.WaterScheme = 0x11;
-                        if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 4)
-                            newRoom.WaterScheme = 0x12;
-                        if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 4)
-                            newRoom.WaterScheme = 0x13;
-                        if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 4)
-                            newRoom.WaterScheme = 0x14;
-                    }
-                }
-
-                if (room.FlagMist)
-                    newRoom.WaterScheme += (byte)room.MistLevel;
-
-                var lowest = -room.GetLowestCorner() * 256 + newRoom.Info.YBottom;
-
-                // Prepare optimized vertices
-                var optimizedVertices = new List<EditorVertex>();
-                var indicesDictionary = new Dictionary<int, int>();
-
+            if (!room.FlagWater)
+            {
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
                     {
-                        var base1 = (short)((x << 9) + (z << 4));
+                        if (room.Blocks[x, z].FloorPortal == null)
+                            continue;
 
-                        for (var n = 0; n < room.NumVerticesInGrid[x, z]; n++)
-                        {
-                            indicesDictionary.Add(base1 + n, optimizedVertices.Count);
-                            optimizedVertices.Add(room.VerticesGrid[x, z, n]);
-                        }
+                        if (!room.Blocks[x, z].FloorPortal.AdjoiningRoom.FlagWater)
+                            continue;
+
+                        if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
+                            waterPortals.Add(room.Blocks[x, z].FloorPortal);
                     }
                 }
 
-                // Get the number of imported geometry vertices
-                int numImportedVertices = 0;
+                if (waterPortals.Count > 0)
+                {
+                    var waterRoom = waterPortals[0].AdjoiningRoom;
+
+                    if (!room.FlagReflection && waterRoom.WaterLevel == 1)
+                        newRoom.WaterScheme = 0x06;
+                    if (!room.FlagReflection && waterRoom.WaterLevel == 2)
+                        newRoom.WaterScheme = 0x0a;
+                    if (!room.FlagReflection && waterRoom.WaterLevel == 3)
+                        newRoom.WaterScheme = 0x0e;
+                    if (!room.FlagReflection && waterRoom.WaterLevel == 4)
+                        newRoom.WaterScheme = 0x12;
+
+                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 1)
+                        newRoom.WaterScheme = 0x05;
+                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 1)
+                        newRoom.WaterScheme = 0x06;
+                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 1)
+                        newRoom.WaterScheme = 0x07;
+                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 1)
+                        newRoom.WaterScheme = 0x08;
+
+                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 2)
+                        newRoom.WaterScheme = 0x09;
+                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 2)
+                        newRoom.WaterScheme = 0x0a;
+                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 2)
+                        newRoom.WaterScheme = 0x0b;
+                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 2)
+                        newRoom.WaterScheme = 0x0c;
+
+                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 3)
+                        newRoom.WaterScheme = 0x0d;
+                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 3)
+                        newRoom.WaterScheme = 0x0e;
+                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 3)
+                        newRoom.WaterScheme = 0x0f;
+                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 3)
+                        newRoom.WaterScheme = 0x10;
+
+                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 4)
+                        newRoom.WaterScheme = 0x11;
+                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 4)
+                        newRoom.WaterScheme = 0x12;
+                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 4)
+                        newRoom.WaterScheme = 0x13;
+                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 4)
+                        newRoom.WaterScheme = 0x14;
+                }
+            }
+
+            if (room.FlagMist)
+                newRoom.WaterScheme += (byte)room.MistLevel;
+
+            var lowest = -room.GetLowestCorner() * 256 + newRoom.Info.YBottom;
+
+            // Generate geometry
+            {
+                // Add room geometry
+                var roomVerticesDictionary = new Dictionary<tr_room_vertex, ushort>();
+                var roomVertices = new List<tr_room_vertex>();
+
+                var roomTriangles = new List<tr_face3>();
+                var roomQuads = new List<tr_face4>();
+
+                // Future code once vertex system of rooms is refactored
+                /*var editorRoomVertices = room.GetRoomVertices();
+                for (int i = 0; i < editorRoomVertices.Count; i += 3)
+                {
+                    ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
+                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 1].Position, editorRoomVertices[i].FaceColor);
+                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 2].Position, editorRoomVertices[i].FaceColor);
+                    Util.ObjectTextureManager.Result result = _objectTextureManager.AddTexture();
+
+                    roomTriangles.Add(new tr_face3 { Vertices = new ushort[3] { vertex0Index, vertex1Index, vertex2Index }, Texture = texture });
+                }*/
+
+                var editorRoomVertices = room.GetRoomVertices();
+                for (int z = 0; z < room.NumZSectors; ++z)
+                    for (int x = 0; x < room.NumXSectors; ++x)
+                        for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                        {
+                            var range = room.GetFaceVertexRange(x, z, face);
+                            if (range.Count == 0)
+                                continue;
+
+                            TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
+                            if (texture.TextureIsInvisble)
+                                continue;
+
+                            for (int i = range.Start; i < (range.Start + range.Count); i += 3)
+                            {
+                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
+                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
+                                ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                                texture.TexCoord0 = editorRoomVertices[i].UV;
+                                texture.TexCoord1 = editorRoomVertices[i + 1].UV;
+                                texture.TexCoord2 = editorRoomVertices[i + 2].UV;
+
+                                Util.ObjectTextureManager.Result result;
+                                lock (_objectTextureManager)
+                                    result = _objectTextureManager.AddTexture(texture, true, true);
+                                roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
+                            }
+                        }
+
+                // Add geometry imported objects
+                int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<RoomGeometryInstance>())
                     foreach (var mesh in geometry.Model.Meshes)
-                        numImportedVertices += mesh.VertexCount;
-                
-                newRoom.Vertices = new tr_room_vertex[optimizedVertices.Count + numImportedVertices];
-                for (var j = 0; j < optimizedVertices.Count; j++)
+                        for (int j = 0; j < mesh.VertexCount; j++)
+                        {
+                            var trVertex = new tr_room_vertex();
+                            trVertex.Position = new tr_vertex
+                            {
+                                X = (short)(mesh.Vertices[j].Position.X + geometry.Position.X),
+                                Y = (short)(-mesh.Vertices[j].Position.Y + newRoom.Info.YBottom - geometry.Position.Y),
+                                Z = (short)(mesh.Vertices[j].Position.Z + geometry.Position.Z)
+                            };
+                            trVertex.Lighting1 = 0;
+                            trVertex.Lighting2 = 0x4210; // TODO: apply light calculations also to imported geometry
+                            trVertex.Attributes = 0;
+
+                            roomVertices.Add(trVertex);
+                        }
+
+                // Assign water effects
+                if (room.FlagWater)
                 {
-                    var rv = new tr_room_vertex();
-
-                    var v = new tr_vertex
+                    for (int i = 0; i < roomVertices.Count; ++i)
                     {
-                        X = (short)optimizedVertices[j].Position.X,
-                        Y = (short)(-optimizedVertices[j].Position.Y + newRoom.Info.YBottom),
-                        Z = (short)optimizedVertices[j].Position.Z
-                    };
-
-                    rv.Vertex = v;
-                    rv.Lighting1 = 0;
-                    rv.Lighting2 = (short)PackColorTo16Bit(optimizedVertices[j].FaceColor);
-                    rv.Attributes = 0;
-
-                    // Water special effects
-                    if (room.FlagWater)
-                    {
-                        rv.Attributes = 0x4000;
+                        var trVertex = roomVertices[i];
+                        trVertex.Attributes = 0x4000;
+                        roomVertices[i] = trVertex;
                     }
-                    else
+                }
+                else if (waterPortals.Count > 0)
+                {
+                    for (int i = 0; i < roomVertices.Count; ++i)
                     {
+                        var trVertex = roomVertices[i];
                         foreach (var portal in waterPortals)
                         {
-                            if (v.X > portal.Area.X * 1024 && v.X <= portal.Area.Right * 1024 &&
-                                v.Z > portal.Area.Y * 1024 && v.Z <= portal.Area.Bottom * 1024 &&
-                                v.Y == lowest)
+                            if (trVertex.Position.X > portal.Area.X * 1024 && trVertex.Position.X <= portal.Area.Right * 1024 &&
+                                trVertex.Position.Z > portal.Area.Y * 1024 && trVertex.Position.Z <= portal.Area.Bottom * 1024 &&
+                                trVertex.Position.Y == lowest)
                             {
-                                var xv = v.X / 1024;
-                                var zv = v.Z / 1024;
+                                var xv = trVertex.Position.X / 1024;
+                                var zv = trVertex.Position.Z / 1024;
 
                                 if (!(room.IsFloorSolid(new DrawingPoint(xv, zv)) || room.Blocks[xv, zv].Type == BlockType.Wall ||
-                                      room.Blocks[xv, zv].Type == BlockType.BorderWall) &&
+                                        room.Blocks[xv, zv].Type == BlockType.BorderWall) &&
                                     !(room.IsFloorSolid(new DrawingPoint(xv - 1, zv)) ||
-                                      room.Blocks[xv - 1, zv].Type == BlockType.Wall ||
-                                      room.Blocks[xv - 1, zv].Type == BlockType.BorderWall) &&
+                                        room.Blocks[xv - 1, zv].Type == BlockType.Wall ||
+                                        room.Blocks[xv - 1, zv].Type == BlockType.BorderWall) &&
                                     !(room.IsFloorSolid(new DrawingPoint(xv, zv - 1)) ||
-                                      room.Blocks[xv, zv - 1].Type == BlockType.Wall ||
-                                      room.Blocks[xv, zv - 1].Type == BlockType.BorderWall) &&
+                                        room.Blocks[xv, zv - 1].Type == BlockType.Wall ||
+                                        room.Blocks[xv, zv - 1].Type == BlockType.BorderWall) &&
                                     !(room.IsFloorSolid(new DrawingPoint(xv - 1, zv - 1)) ||
-                                      room.Blocks[xv - 1, zv - 1].Type == BlockType.Wall ||
-                                      room.Blocks[xv - 1, zv - 1].Type == BlockType.BorderWall))
+                                        room.Blocks[xv - 1, zv - 1].Type == BlockType.Wall ||
+                                        room.Blocks[xv - 1, zv - 1].Type == BlockType.BorderWall))
                                 {
-                                    rv.Attributes = 0x6000;
+                                    trVertex.Attributes = 0x6000;
                                 }
                             }
                             else
@@ -230,232 +287,126 @@ namespace TombEditor.Compilers
                                 if (!room.FlagReflection)
                                     continue;
 
-                                if (v.X >= (portal.Area.X - 1) * 1024 && v.X <= (portal.Area.Right + 1) * 1024 &&
-                                    v.Z >= (portal.Area.Y - 1) * 1024 && v.Z <= (portal.Area.Bottom + 1) * 1024)
+                                if (trVertex.Position.X >= (portal.Area.X - 1) * 1024 && trVertex.Position.X <= (portal.Area.Right + 1) * 1024 &&
+                                    trVertex.Position.Z >= (portal.Area.Y - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Bottom + 1) * 1024)
                                 {
-                                    rv.Attributes = 0x4000;
+                                    trVertex.Attributes = 0x4000;
                                 }
                             }
                         }
+                        roomVertices[i] = trVertex;
                     }
-
-                    newRoom.Vertices[j] = rv;
                 }
 
-                // Now add imported geometry vertices
-                int lastVertex = optimizedVertices.Count;
 
+                // Add imported geometry faces
                 foreach (var geometry in room.Objects.OfType<RoomGeometryInstance>())
-                {
                     foreach (var mesh in geometry.Model.Meshes)
                     {
-                        for (int j = 0; j < mesh.VertexCount; j++)
-                        {
-                            var rv = new tr_room_vertex();
-
-                            var v = new tr_vertex
-                            {
-                                X = (short)(mesh.Vertices[j].Position.X + geometry.Position.X),
-                                Y = (short)(-mesh.Vertices[j].Position.Y + newRoom.Info.YBottom - geometry.Position.Y),
-                                Z = (short)(mesh.Vertices[j].Position.Z + geometry.Position.Z)
-                            };
-
-                            rv.Vertex = v;
-                            rv.Lighting1 = 0;
-                            rv.Lighting2 = (short)(0x4210); // TODO: apply light calculations also to imported geometry
-                            rv.Attributes = 0;
-
-                            newRoom.Vertices[lastVertex] = rv;
-                            lastVertex++;
-                        }
-                    }
-                }
-
-                ConvertGeometry(room, ref newRoom, indicesDictionary, optimizedVertices.Count);
-
-                // Build portals
-                var tempIdPortals = new List<Portal>();
-
-                for (var z = 0; z < room.NumZSectors; z++)
-                {
-                    for (var x = 0; x < room.NumXSectors; x++)
-                    {
-                        if (room.Blocks[x, z].WallPortal != null && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
-                            tempIdPortals.Add(room.Blocks[x, z].WallPortal);
-
-                        if (room.Blocks[x, z].FloorPortal != null &&
-                            !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal))
-                            tempIdPortals.Add(room.Blocks[x, z].FloorPortal);
-
-                        if (room.Blocks[x, z].CeilingPortal != null &&
-                            !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal))
-                            tempIdPortals.Add(room.Blocks[x, z].CeilingPortal);
-                    }
-                }
-
-                ConvertPortals(tempIdPortals, room, ref newRoom);
-
-                ConvertSectors(room, ref newRoom);
-
-                var tempStaticMeshes = room.Objects.OfType<StaticInstance>()
-                    .Select(instance => new tr_room_staticmesh
-                    {
-                        X = (uint)(newRoom.Info.X + instance.Position.X),
-                        Y = (uint)(newRoom.Info.YBottom - instance.Position.Y),
-                        Z = (uint)(newRoom.Info.Z + instance.Position.Z),
-                        Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
-                            Math.Round(instance.RotationY * (65536.0 / 360.0))))),
-                        ObjectID = (ushort)instance.WadObjectId,
-                        Intensity1 = PackColorTo16Bit(instance.Color),
-                        Intensity2 = 0
-                    })
-                    .ToArray();
-
-                newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.GetLength(0);
-                newRoom.StaticMeshes = tempStaticMeshes;
-
-                ConvertLights(room, ref newRoom);
-
-                _tempRooms.Add(room, newRoom);
-            }
-
-            ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
-        }
-
-        private void ConvertGeometry(Room room, ref tr_room newRoom, IReadOnlyDictionary<int, int> indicesDictionary,
-                                     int numOptimizedVertices)
-        {
-            var tempRectangles = new List<tr_face4>();
-            var tempTriangles = new List<tr_face3>();
-
-            for (var x = 0; x < room.NumXSectors; x++)
-            {
-                for (var z = 0; z < room.NumZSectors; z++)
-                {
-                    for (var f = 0; f < room.Blocks[x, z].Faces.Length; f++)
-                    {
-                        var face = room.Blocks[x, z].Faces[f];
-                        if (face == null || !face.Defined)
-                            continue;
-
-                        if ((f == 25 || f == 26) && (face.Invisible || face.Texture == -1))
-                        {
-                            newRoom.TextureSounds[x, z] = TextureSounds.Stone;
-                        }
-
-                        if (face.Invisible)
-                            continue;
-
-                        // Assign texture sound
-                        if ((f == (int)BlockFaces.Floor || f == (int)BlockFaces.FloorTriangle2))
-                        {
-                            newRoom.TextureSounds[x, z] = (face.Texture != -1
-                                ? GetTextureSound(face.Texture)
-                                : TextureSounds.Stone);
-                        }
-
-                        if (face.Shape == BlockFaceShape.Rectangle)
-                        {
-                            var rectangle = new tr_face4();
-
-                            var indices = new List<ushort>
-                            {
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[0]],
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[1]],
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[2]],
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[3]]
-                            };
-
-
-                            var rot = face.Rotation;
-                            if (rot != 0)
-                            {
-                                for (var n = 0; n < rot; n++)
-                                {
-                                    var tmp = indices[0];
-                                    indices.RemoveAt(0);
-                                    indices.Insert(3, tmp);
-                                }
-                            }
-
-                            rectangle.Vertices = new ushort[4];
-                            rectangle.Vertices[0] = indices[0];
-                            rectangle.Vertices[1] = indices[1];
-                            rectangle.Vertices[2] = indices[2];
-                            rectangle.Vertices[3] = indices[3];
-
-                            rectangle.Texture = face.NewTexture;
-
-                            tempRectangles.Add(rectangle);
-                        }
-                        else
+                        for (int j = 0; j < mesh.IndexCount; j += 3)
                         {
                             var triangle = new tr_face3();
 
-                            var indices = new List<ushort>
-                            {
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[0]],
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[1]],
-                                (ushort) indicesDictionary[face.IndicesForFinalLevel[2]]
-                            };
+                            ushort index0 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 0]);
+                            ushort index1 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 1]);
+                            ushort index2 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 2]);
 
+                            triangle.Texture = 20;
 
-                            var rot = face.Rotation;
-                            if (rot != 0)
-                            {
-                                for (var n = 0; n < rot; n++)
-                                {
-                                    var tmp = indices[0];
-                                    indices.RemoveAt(0);
-                                    indices.Insert(2, tmp);
-                                }
-                            }
+                            // TODO Move texture area into the mesh
+                            TextureArea texture;
+                            texture.DoubleSided = false;
+                            texture.BlendMode = BlendMode.Normal;
+                            texture.Texture = null; // TODO Give geometry objects real textures
+                            texture.TexCoord0 = mesh.Vertices[mesh.Indices[j + 0]].UV;
+                            texture.TexCoord1 = mesh.Vertices[mesh.Indices[j + 1]].UV;
+                            texture.TexCoord2 = mesh.Vertices[mesh.Indices[j + 2]].UV;
+                            texture.TexCoord3 = new Vector2();
 
-                            triangle.Vertices = new ushort[4];
-                            triangle.Vertices[0] = indices[0];
-                            triangle.Vertices[1] = indices[1];
-                            triangle.Vertices[2] = indices[2];
-
-                            triangle.Texture = face.NewTexture;
-
-                            tempTriangles.Add(triangle);
+                            Util.ObjectTextureManager.Result result;
+                            lock (_objectTextureManager)
+                                result = _objectTextureManager.AddTexture(texture, true, true);
+                            roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
                         }
+
+                        geometryVertexIndexBase += mesh.VertexCount;
                     }
-                }
+
+                newRoom.Vertices = roomVertices;
+                newRoom.Quads = roomQuads;
+                newRoom.Triangles = roomTriangles;
             }
 
-            // Now add imported geometry faces
-            int lastVertex = numOptimizedVertices;
+            // Build portals
+            var tempIdPortals = new List<Portal>();
 
-            foreach (var geometry in room.Objects.OfType<RoomGeometryInstance>())
+            for (var z = 0; z < room.NumZSectors; z++)
             {
-                foreach (var mesh in geometry.Model.Meshes)
+                for (var x = 0; x < room.NumXSectors; x++)
                 {
-                    for (int j = 0; j < mesh.IndexCount; j += 3)
-                    {
-                        var triangle = new tr_face3();
+                    if (room.Blocks[x, z].WallPortal != null && !tempIdPortals.Contains(room.Blocks[x, z].WallPortal))
+                        tempIdPortals.Add(room.Blocks[x, z].WallPortal);
 
-                        triangle.Vertices = new ushort[4];
-                        triangle.Vertices[0] = (ushort)(lastVertex + mesh.Indices[j + 0]);
-                        triangle.Vertices[1] = (ushort)(lastVertex + mesh.Indices[j + 1]);
-                        triangle.Vertices[2] = (ushort)(lastVertex + mesh.Indices[j + 2]);
+                    if (room.Blocks[x, z].FloorPortal != null &&
+                        !tempIdPortals.Contains(room.Blocks[x, z].FloorPortal))
+                        tempIdPortals.Add(room.Blocks[x, z].FloorPortal);
 
-                        triangle.Texture = BuildRoomGeometryTextureInfo(mesh.Vertices[mesh.Indices[j + 0]].UV,
-                                                                        mesh.Vertices[mesh.Indices[j + 1]].UV,
-                                                                        mesh.Vertices[mesh.Indices[j + 2]].UV,
-                                                                        _numRoomTexturePagesFromMap + _importedTexturesDictionary[mesh.TextureFileName]);
-                        tempTriangles.Add(triangle);
-                    }
-
-                    lastVertex += mesh.VertexCount;
+                    if (room.Blocks[x, z].CeilingPortal != null &&
+                        !tempIdPortals.Contains(room.Blocks[x, z].CeilingPortal))
+                        tempIdPortals.Add(room.Blocks[x, z].CeilingPortal);
                 }
             }
 
-            newRoom.Rectangles = tempRectangles.ToArray();
-            newRoom.Triangles = tempTriangles.ToArray();
+            ConvertPortals(tempIdPortals, room, ref newRoom);
 
-            newRoom.NumRectangles = (ushort)tempRectangles.Count;
-            newRoom.NumTriangles = (ushort)tempTriangles.Count;
+            ConvertSectors(room, ref newRoom);
+
+            var tempStaticMeshes = room.Objects.OfType<StaticInstance>()
+                .Select(instance => new tr_room_staticmesh
+                {
+                    X = (uint)(newRoom.Info.X + instance.Position.X),
+                    Y = (uint)(newRoom.Info.YBottom - instance.Position.Y),
+                    Z = (uint)(newRoom.Info.Z + instance.Position.Z),
+                    Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
+                        Math.Round(instance.RotationY * (65536.0 / 360.0))))),
+                    ObjectID = (ushort)instance.WadObjectId,
+                    Intensity1 = PackColorTo16Bit(instance.Color),
+                    Intensity2 = 0
+                })
+                .ToArray();
+
+            newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.GetLength(0);
+            newRoom.StaticMeshes = tempStaticMeshes;
+
+            ConvertLights(room, ref newRoom);
+
+            return newRoom;
+        }
+
+        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, 
+            List<tr_room_vertex> roomVertices, List<Portal> waterPortals, int lowest, Vector3 Position, Vector4 Color)
+        {
+            tr_room_vertex trVertex;
+            trVertex.Position = new tr_vertex
+            {
+                X = (short)(Position.X),
+                Y = (short)-(Position.Y + room.WorldPos.Y),
+                Z = (short)(Position.Z)
+            };
+            trVertex.Lighting1 = 0;
+            trVertex.Lighting2 = PackColorTo16Bit(Color);
+            trVertex.Attributes = 0;
+
+            // Do we need this vertex?
+            ushort vertexIndex;
+            if (roomVerticesDictionary.TryGetValue(trVertex, out vertexIndex))
+                return vertexIndex;
+
+            // Add vertex
+            vertexIndex = (ushort)roomVertices.Count;
+            roomVerticesDictionary.Add(trVertex, vertexIndex);
+            roomVertices.Add(trVertex);
+            return vertexIndex;
         }
 
         private static void ConvertLights(Room room, ref tr_room newRoom)
@@ -541,63 +492,64 @@ namespace TombEditor.Compilers
             {
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
+                    var block = room.Blocks[x, z];
                     var sector = new tr_room_sector();
                     var aux = new TrSectorAux();
 
                     sector.BoxIndex = 0x7ff6;
                     sector.FloorDataIndex = 0;
 
-                    if (room.Blocks[x, z].FloorPortal != null)
-                        sector.RoomBelow = (byte)_roomsRemappingDictionary[room.Blocks[x, z].FloorPortal.AdjoiningRoom];
+                    if (block.FloorPortal != null)
+                        sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                     else
                         sector.RoomBelow = 0xff;
 
-                    if (room.Blocks[x, z].CeilingPortal != null)
-                        sector.RoomAbove = (byte)_roomsRemappingDictionary[room.Blocks[x, z].CeilingPortal.AdjoiningRoom];
+                    if (block.CeilingPortal != null)
+                        sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
                     else
                         sector.RoomAbove = 0xff;
 
                     if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
-                        room.Blocks[x, z].Type == BlockType.BorderWall || room.Blocks[x, z].Type == BlockType.Wall)
+                        block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y - room.GetHighestFloorCorner(x, z));
-                        sector.Ceiling = (sbyte)(-room.Position.Y - room.GetLowestCeilingCorner(x, z));
+                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
+                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
                     }
                     else
                     {
-                        sector.Floor = (sbyte)(-room.Position.Y - room.GetHighestFloorCorner(x, z));
-                        sector.Ceiling = (sbyte)(-room.Position.Y - room.GetLowestCeilingCorner(x, z));
+                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
+                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
                     }
 
                     //Setup some aux data for box generation
-                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
+                    if (block.Type == BlockType.BorderWall)
                         aux.BorderWall = true;
-                    if ((room.Blocks[x, z].Flags & BlockFlags.Monkey) != 0)
+                    if ((block.Flags & BlockFlags.Monkey) != 0)
                         aux.Monkey = true;
-                    if ((room.Blocks[x, z].Flags & BlockFlags.Box) != 0)
+                    if ((block.Flags & BlockFlags.Box) != 0)
                         aux.Box = true;
-                    if ((room.Blocks[x, z].Flags & BlockFlags.NotWalkableFloor) != 0)
+                    if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (!room.FlagWater && (Math.Abs(room.Blocks[x, z].FloorSlopeX) == 1 ||
-                                            Math.Abs(room.Blocks[x, z].FloorSlopeX) == 2 ||
-                                            Math.Abs(room.Blocks[x, z].FloorSlopeZ) == 1 ||
-                                            Math.Abs(room.Blocks[x, z].FloorSlopeZ) == 2))
+                    if (!room.FlagWater && (Math.Abs(block.FloorIfQuadSlopeX) == 1 ||
+                                            Math.Abs(block.FloorIfQuadSlopeX) == 2 ||
+                                            Math.Abs(block.FloorIfQuadSlopeZ) == 1 ||
+                                            Math.Abs(block.FloorIfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (!room.FlagWater && (Math.Abs(room.Blocks[x, z].FloorSlopeX) > 2 ||
-                                            Math.Abs(room.Blocks[x, z].FloorSlopeZ) > 2))
+                    if (!room.FlagWater && (Math.Abs(block.FloorIfQuadSlopeX) > 2 ||
+                                            Math.Abs(block.FloorIfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
-                    if (room.Blocks[x, z].Type == BlockType.Wall)
+                    if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
                     // I must setup portal only if current sector is not solid and opacity if different from 1
-                    if (room.Blocks[x, z].FloorPortal != null)
+                    if (block.FloorPortal != null)
                     {
                         if ((!room.IsFloorSolid(new DrawingPoint(x, z)) &&
-                             room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1) ||
-                            (room.IsFloorSolid(new DrawingPoint(x, z)) && room.Blocks[x, z].NoCollisionFloor))
+                             block.FloorOpacity != PortalOpacity.Opacity1) ||
+                            (room.IsFloorSolid(new DrawingPoint(x, z)) && block.NoCollisionFloor))
                         {
-                            var portal = room.Blocks[x, z].FloorPortal;
-                            sector.RoomBelow = (byte)_roomsRemappingDictionary[room.Blocks[x, z].FloorPortal.AdjoiningRoom];
+                            var portal = block.FloorPortal;
+                            sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         }
                         else
                         {
@@ -609,12 +561,12 @@ namespace TombEditor.Compilers
                         sector.RoomBelow = 255;
                     }
 
-                    if ((room.Blocks[x, z].FloorPortal != null &&
-                         room.Blocks[x, z].FloorOpacity != PortalOpacity.Opacity1 &&
+                    if ((block.FloorPortal != null &&
+                         block.FloorOpacity != PortalOpacity.Opacity1 &&
                          !room.IsFloorSolid(new DrawingPoint(x, z))))
                     {
                         aux.Portal = true;
-                        aux.FloorPortal = room.Blocks[x, z].FloorPortal;
+                        aux.FloorPortal = block.FloorPortal;
                     }
                     else
                     {
@@ -623,37 +575,37 @@ namespace TombEditor.Compilers
 
                     aux.IsFloorSolid = room.IsFloorSolid(new DrawingPoint(x, z));
 
-                    if ((room.Blocks[x, z].CeilingPortal != null &&
-                         room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1))
+                    if ((block.CeilingPortal != null &&
+                         block.CeilingOpacity != PortalOpacity.Opacity1))
                     {
                     }
                     else
                     {
                     }
 
-                    if (room.Blocks[x, z].WallPortal != null && room.Blocks[x, z].WallOpacity != PortalOpacity.Opacity1)
-                        aux.WallPortal = room.Blocks[x, z].WallPortal.AdjoiningRoom;
+                    if (block.WallPortal != null && block.WallOpacity != PortalOpacity.Opacity1)
+                        aux.WallPortal = block.WallPortal.AdjoiningRoom;
                     else
                         aux.WallPortal = null;
 
-                    aux.LowestFloor = (sbyte)(-room.Position.Y - room.GetLowestFloorCorner(x, z));
-                    var q0 = room.Blocks[x, z].QAFaces[0];
-                    var q1 = room.Blocks[x, z].QAFaces[1];
-                    var q2 = room.Blocks[x, z].QAFaces[2];
-                    var q3 = room.Blocks[x, z].QAFaces[3];
+                    aux.LowestFloor = (sbyte)(-room.Position.Y - block.FloorMin);
+                    var q0 = block.QAFaces[0];
+                    var q1 = block.QAFaces[1];
+                    var q2 = block.QAFaces[2];
+                    var q3 = block.QAFaces[3];
 
-                    if (!Room.IsQuad(x, z, q0, q1, q2, q3, true) && room.Blocks[x, z].FloorSlopeX == 0 &&
-                        room.Blocks[x, z].FloorSlopeZ == 0)
+                    if (!Block.IsQuad(q0, q1, q2, q3) && block.FloorIfQuadSlopeX == 0 &&
+                        block.FloorIfQuadSlopeZ == 0)
                     {
-                        if (!room.Blocks[x, z].FloorSplitRealDirection)
+                        if (!block.FloorSplitDirectionIsXEqualsY)
                         {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(room.Blocks[x, z].QAFaces[0],
-                                                           room.Blocks[x, z].QAFaces[2]));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[0],
+                                                           block.QAFaces[2]));
                         }
                         else
                         {
-                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(room.Blocks[x, z].QAFaces[1],
-                                                           room.Blocks[x, z].QAFaces[3]));
+                            aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[1],
+                                                           block.QAFaces[3]));
                         }
                     }
 
@@ -1111,404 +1063,173 @@ namespace TombEditor.Compilers
             newRoom.NumPortals = (ushort)result.Count;
             newRoom.Portals = result.ToArray();
         }
-
-        private void PrepareRoomTextures()
+        
+        private void MatchPortalVertexColors()
         {
-            _animTexturesRooms = new List<int>();
-            _animTexturesGeneral = new List<int>();
+            // Match vertex colors on portal 
+            // Operate on final vertices here because:
+            //   - We don't want to change the lighting of rooms on output
+            //   - Geometry objects should also be make use of this.
 
-            ReportProgress(1, "Preparing room textures");
-
-            // Reset animated textures
-            foreach (var texture in _level.AnimatedTextures)
+            // Build lookup
+            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>();
+            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
-                texture.Variants = new List<AnimatedTextureSequenceVariant>();
-                foreach (var texture2 in texture.Textures)
+                var vertexLookup = new Dictionary<tr_vertex, ushort>();
+                var vertices = trRoom.Vertices;
+                for (int i = 0; i < vertices.Count; ++i)
                 {
-                    texture2.NewId = -1;
+                    tr_room_vertex vertex = vertices[i];
+                    if (!vertexLookup.ContainsKey(vertex.Position))
+                        vertexLookup.Add(vertex.Position, vertex.Lighting2);
                 }
-            }
+                lock (vertexColorLookups)
+                    vertexColorLookups.Add(trRoom.OriginalRoom, vertexLookup);
+            });
 
-            _tempObjectTextures = new List<tr_object_texture>();
-
-            // I start with a 128 pages texture map (32 MB in memory)
-            var roomTextureMap = new byte[1024, 32768];
-
-            // First, I have to filter only used textures and sort them (for now I use bubble sort, in the future a tree)
-            var tempTexturesList = new List<LevelTexture>();
-            _texturesIdTable = new Dictionary<int, int>();
-
-            for (var i = 0; i < _level.TextureSamples.Count; i++)
+            // Match portals in each room ...
+            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
-                var oldSample = _level.TextureSamples[i];
+                Vector3 roomWorldPos = trRoom.OriginalRoom.WorldPos;
 
-                // don't count for unused textures
-                // if (oldSample.UsageCount <= 0) continue;
-
-                oldSample.OldId = oldSample.Id;
-
-                tempTexturesList.Add(oldSample);
-            }
-
-            ReportProgress(2, "Sorting room textures");
-
-            for (var i = 0; i < _level.AnimatedTextures.Count; i++)
-            {
-                tempTexturesList.AddRange(_level.AnimatedTextures[i]
-                    .Textures.Select((t, k) => new LevelTexture
-                    {
-                        X = t.X,
-                        Y = t.Y,
-                        Width = 64,
-                        Height = 64,
-                        Page = t.Page,
-                        Animated = true,
-                        AnimatedSequence = i,
-                        AnimatedTexture = k
-                    }));
-            }
-
-            _tempTexturesArray = tempTexturesList.ToArray();
-
-            ReportProgress(3, "Building room texture map");
-
-            // I've sorted the textures by height, now I build the texture map
-            var numRoomTexturePages = _level.TextureMap.Height / 256 + GeometryImporterExporter.Textures.Count;
-            _numRoomTexturePagesFromMap = _level.TextureMap.Height / 256;
-
-            for (var x = 0; x < 256; x++)
-            {
-                for (var y = 0; y < _level.TextureMap.Height; y++)
+                // Altough the usage pattern is superficially more suited for Set/Dictionary,
+                // a List is used here since it will only have a few entries at max and linear search most likely beats everything else at that.
+                List<Room> roomsSharedByVertex = new List<Room>();
+                var vertices = trRoom.Vertices;
+                for (int i = 0; i < vertices.Count; ++i)
                 {
-                    var c = _level.TextureMap.GetPixel(x, y);
+                    tr_room_vertex vertex = vertices[i];
+                    Vector3 worldPos = new Vector3(vertex.Position.X + roomWorldPos.X, -vertex.Position.Y, vertex.Position.Z + roomWorldPos.Z);
 
-                    if (c.R == 255 & c.G == 0 && c.B == 255)
-                    {
-                        roomTextureMap[x * 4 + 0, y] = 0;
-                        roomTextureMap[x * 4 + 1, y] = 0;
-                        roomTextureMap[x * 4 + 2, y] = 0;
-                        roomTextureMap[x * 4 + 3, y] = 0;
-                    }
-                    else
-                    {
-                        roomTextureMap[x * 4 + 0, y] = c.B;
-                        roomTextureMap[x * 4 + 1, y] = c.G;
-                        roomTextureMap[x * 4 + 2, y] = c.R;
-                        roomTextureMap[x * 4 + 3, y] = 255;
-                    }
-                }
-            }
-
-            // Now add the textures of imported geometry
-            _importedTexturesDictionary = new Dictionary<string, int>();
-            for (int i = 0; i < GeometryImporterExporter.Textures.Count; i++)
-            {
-                _importedTexturesDictionary.Add(GeometryImporterExporter.Textures.ElementAt(i).Key, i);
-            }
-
-            int lastHeight = _level.TextureMap.Height;
-
-            for (int i = 0; i < GeometryImporterExporter.Textures.Count; i++)
-            {
-                // Load the texture as a bitmap
-                using (Bitmap sourceTexture = (Bitmap)Bitmap.FromFile(GeometryImporterExporter.Textures.ElementAt(i).Key))
-                {
-                    // Create the 256x256 destination texture
-                    using (Bitmap destTexture = new Bitmap(256, 256, PixelFormat.Format32bppArgb))
-                    {
-                        // Resize the source texture if needed
-                        using (Graphics g = Graphics.FromImage(destTexture))
-                        {
-
-                            int w = sourceTexture.Width;
-                            int h = sourceTexture.Height;
-
-                            if (w > 256 || h > 256)
-                            {
-                                if (sourceTexture.Width >= sourceTexture.Height)
-                                {
-                                    w = 256;
-                                    h = (int)(256 / (sourceTexture.Width / (float)sourceTexture.Height));
-                                }
-                                else
-                                {
-                                    h = 256;
-                                    w = (int)(256 / (sourceTexture.Height / (float)sourceTexture.Width));
-                                }
-                            }
-
-                            // Copy the source texture to the destination bitmap
-                            g.DrawImage(sourceTexture,
-                                        new System.Drawing.Rectangle(0, 0, w, h),
-                                        new System.Drawing.Rectangle(0, 0, sourceTexture.Width, sourceTexture.Height),
-                                        GraphicsUnit.Pixel);
-
-                            // Now copy the destination bitmap to the final level texture map
-                            for (var x = 0; x < 256; x++)
-                            {
-                                for (var y = 0; y < 256; y++)
-                                {
-                                    var c = destTexture.GetPixel(x, y);
-
-                                    if (c.R == 255 & c.G == 0 && c.B == 255)
-                                    {
-                                        roomTextureMap[x * 4 + 0, y + lastHeight] = 0;
-                                        roomTextureMap[x * 4 + 1, y + lastHeight] = 0;
-                                        roomTextureMap[x * 4 + 2, y + lastHeight] = 0;
-                                        roomTextureMap[x * 4 + 3, y + lastHeight] = 0;
-                                    }
-                                    else
-                                    {
-                                        roomTextureMap[x * 4 + 0, y + lastHeight] = c.B;
-                                        roomTextureMap[x * 4 + 1, y + lastHeight] = c.G;
-                                        roomTextureMap[x * 4 + 2, y + lastHeight] = c.R;
-                                        roomTextureMap[x * 4 + 3, y + lastHeight] = 255;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                lastHeight += 256;
-            }
-
-            // Rebuild the ID table
-            for (var i = 0; i < _tempTexturesArray.Length; i++)
-            {
-                var tex = _tempTexturesArray[i];
-                tex.AlphaTest = Utils.HasTrasparency(_level.TextureMap, tex.X, tex.Y + 256 * tex.Page, tex.Width, tex.Height);
-                tex.NewX = tex.X;
-                tex.NewY = tex.Y;
-                tex.NewPage = tex.Page;
-
-                if (!tex.Animated)
-                    _texturesIdTable.Add(tex.OldId, i);
-                else
-                    _level.AnimatedTextures[tex.AnimatedSequence].Textures[tex.AnimatedTexture].Texture = tex;
-            }
-
-            // Build the TR4 texture tiles
-            foreach (var room in _level.Rooms.Where(r => r != null))
-            {
-                for (var x = 0; x < room.NumXSectors; x++)
-                {
-                    for (var z = 0; z < room.NumZSectors; z++)
-                    {
-                        foreach (var face in room.Blocks[x, z].Faces.Where(f => f.Defined && f.Texture != -1))
-                        {
-                            // Build (or get) the texture info
-                            face.NewTexture = BuildRoomTextureInfo(face);
-                        }
-                    }
-                }
-            }
-
-            _roomTexturePages = new byte[numRoomTexturePages * 256 * 256 * 4];
-            for (var y = 0; y < 256 * numRoomTexturePages; y++)
-            {
-                for (var x = 0; x < 1024; x++)
-                {
-                    _roomTexturePages[y * 1024 + x] = roomTextureMap[x, y];
-                }
-            }
-
-            _numRoomTexturePages = numRoomTexturePages;
-
-            ReportProgress(5, "    Room texture pages: " + _numRoomTexturePages);
-
-            ReportProgress(6, "Building animated textures table");
-
-            // Prepare animated textures
-
-            // Build remaining tiles
-            foreach (var textureSet in _level.AnimatedTextures)
-            {
-                foreach (var texture in textureSet.Variants)
-                {
-                    for (var k = 0; k < texture.Tiles.Count; k++)
-                    {
-                        if (texture.Tiles[k].NewId == -1)
-                        {
-                            texture.Tiles[k].NewId = BuildAnimatedTextureInfo(texture,
-                                textureSet.Textures[k].Texture);
-                        }
-                    }
-                }
-            }
-
-            _numAnimatedTextures = 0;
-            var tempAnimatedTextures = new List<tr_animatedTextures_set>();
-            foreach (var textureSet in _level.AnimatedTextures)
-            {
-                foreach (var sequence in textureSet.Variants)
-                {
-                    var newSet = new tr_animatedTextures_set();
-
-                    var tempTextureIds = new List<short>();
-                    foreach (var tile in sequence.Tiles)
-                    {
-                        tempTextureIds.Add((short)tile.NewId);
-                        if (!_animTexturesGeneral.Contains(tile.NewId))
-                            _animTexturesGeneral.Add(tile.NewId);
-
-                        _numAnimatedTextures++;
-                    }
-
-                    if (tempTextureIds.Count <= 0)
+                    // Find connected rooms that might share this vertex
+                    roomsSharedByVertex.Clear();
+                    roomsSharedByVertex.Add(trRoom.OriginalRoom);
+                    FindConnectedRooms(roomsSharedByVertex, trRoom.OriginalRoom, worldPos, true);
+                    if (roomsSharedByVertex.Count == 0)
                         continue;
 
-                    newSet.Textures = tempTextureIds.ToArray();
-                    newSet.NumTextures = (short)(newSet.Textures.Length - 1);
-                    tempAnimatedTextures.Add(newSet);
-                    _numAnimatedTextures++;
+                    int R = (vertex.Lighting2 >> 10) & 0x1F;
+                    int G = (vertex.Lighting2 >> 5) & 0x1F;
+                    int B = vertex.Lighting2 & 0x1F;
+                    int Count = 1;
+
+                    foreach (Room connectedRoom in roomsSharedByVertex)
+                    {
+                        if (connectedRoom == trRoom.OriginalRoom)
+                            continue;
+
+                        // Find position in room local coordinates
+                        Vector3 connectedRoomWorldPos = connectedRoom.WorldPos;
+                        Vector3 trVertexPos = new Vector3(worldPos.X - connectedRoomWorldPos.X, -worldPos.Y, worldPos.Z - connectedRoomWorldPos.Z);
+                        float maxCoordinate = Math.Max(
+                            Math.Abs(trVertexPos.X),
+                            Math.Max(
+                                Math.Abs(trVertexPos.Y),
+                                Math.Abs(trVertexPos.Z)));
+                        if (maxCoordinate > short.MaxValue)
+                            continue;
+
+                        tr_vertex connectedRoomLocalPosUint = new tr_vertex
+                        {
+                            X = (short)(trVertexPos.X),
+                            Y = (short)(trVertexPos.Y),
+                            Z = (short)(trVertexPos.Z)
+                        };
+
+                        // Lookup vertex
+                        Dictionary<tr_vertex, ushort> connectedRoomColorLookup;
+                        if (!vertexColorLookups.TryGetValue(connectedRoom, out connectedRoomColorLookup))
+                            continue;
+                        ushort lighting;
+                        if (!connectedRoomColorLookup.TryGetValue(connectedRoomLocalPosUint, out lighting))
+                            continue;
+
+                        // Accumulate color for average
+                        R += (lighting >> 10) & 0x1F;
+                        G += (lighting >> 5) & 0x1F;
+                        B += lighting & 0x1F;
+                        ++Count;
+                    }
+
+                    // Set color
+                    if (Count > 1)
+                    {
+                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * new Vector4(8.0f / Count) + new Vector4(0.5f);
+                        vertex.Lighting2 = PackColorTo16Bit(averageColor);
+                        vertices[i] = vertex;
+                    }
                 }
-            }
-
-            // This because between NumAnimatedTextures and the array itself there's an extra short with the number of sets
-            _numAnimatedTextures++;
-
-            _animatedTextures = tempAnimatedTextures.ToArray();
-
-            _animTexturesGeneral.Sort();
-            _animTexturesRooms.Sort();
+            });
         }
 
-        private void MatchPortalShades()
+        private static void FindConnectedRooms(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos, bool checkFloorCeiling)
         {
-            foreach (var room in _level.Rooms.Where(room => room != null))
-                foreach (var currentPortal in room.Portals)
-                {
-                    // Get current portal and its paired portal
-                    // Get its paired portal
-                    var otherPortal = currentPortal.FindOppositePortal(room);
+            Vector3 localPos = worldPos - currentRoom.WorldPos;
+            int sectorPosX = (int)(localPos.X * (1.0f / 1024.0f) + 0.5f);
+            int sectorPosZ = (int)(localPos.Z * (1.0f / 1024.0f) + 0.5f);
+            int sectorPosX2 = sectorPosX - 1;
+            int sectorPosZ2 = sectorPosZ - 1;
 
-                    // Get the rooms
-                    var currentRoom = currentPortal.Room;
-                    var otherRoom = otherPortal.Room;
-
-                    if (currentRoom.FlagWater != otherRoom.FlagWater)
-                        continue;
-
-                    switch (currentPortal.Direction)
-                    {
-                        case PortalDirection.North:
-                            for (int x = currentPortal.Area.X; x <= currentPortal.Area.Right + 1; ++x)
-                                MatchPortalShades(currentRoom, otherRoom, x, currentRoom.NumZSectors - 1);
-                            break;
-                        case PortalDirection.South:
-                            for (int x = currentPortal.Area.X; x <= currentPortal.Area.Right + 1; ++x)
-                                MatchPortalShades(currentRoom, otherRoom, x, 1);
-                            break;
-                        case PortalDirection.East:
-                            for (int z = currentPortal.Area.Y; z <= currentPortal.Area.Bottom + 1; ++z)
-                                MatchPortalShades(currentRoom, otherRoom, currentRoom.NumXSectors - 1, z);
-                            break;
-                        case PortalDirection.West:
-                            for (int z = currentPortal.Area.Y; z <= currentPortal.Area.Bottom + 1; ++z)
-                                MatchPortalShades(currentRoom, otherRoom, 1, z);
-                            break;
-                        case PortalDirection.Floor:
-                        case PortalDirection.Ceiling:
-                            for (int z = currentPortal.Area.Y; z <= currentPortal.Area.Bottom + 1; ++z)
-                                for (int x = currentPortal.Area.X; x <= currentPortal.Area.Right + 1; ++x)
-                                    MatchPortalShades(currentRoom, otherRoom, x, z);
-                            break;
-                    }
-                }
+            // Check up to 4 sectors around the destination
+            if ((sectorPosX >= 0) && (sectorPosX < currentRoom.NumXSectors))
+            {
+                if ((sectorPosZ >= 0) && (sectorPosZ < currentRoom.NumZSectors))
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX, sectorPosZ);
+                if ((sectorPosZ2 >= 0) && (sectorPosZ2 < currentRoom.NumZSectors))
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX, sectorPosZ2);
+            }
+            if ((sectorPosX2 >= 0) && (sectorPosX2 < currentRoom.NumXSectors))
+            {
+                if ((sectorPosZ >= 0) && (sectorPosZ < currentRoom.NumZSectors))
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2, sectorPosZ);
+                if ((sectorPosZ2 >= 0) && (sectorPosZ2 < currentRoom.NumZSectors))
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2, sectorPosZ2);
+            }
         }
 
-        private void MatchPortalShades(Room currentRoom, Room otherRoom, int x, int z)
+        private static void FindConnectedRoomsCheckSector(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos, bool checkFloorCeiling, int x, int z)
         {
-            var otherX = x + (int)(currentRoom.Position.X - otherRoom.Position.X);
-            var otherZ = z + (int)(currentRoom.Position.Z - otherRoom.Position.Z);
+            Block block = currentRoom.Blocks[x, z];
 
-            for (var m = 0; m < currentRoom.NumVerticesInGrid[x, z]; m++)
+            if (checkFloorCeiling)
             {
-                var v1 = currentRoom.VerticesGrid[x, z, m];
-                for (var n = 0; n < otherRoom.NumVerticesInGrid[otherX, otherZ]; n++)
+                if ((block.FloorPortal != null) && !outSharedRooms.Contains(block.FloorPortal.AdjoiningRoom))
                 {
-                    var v2 = otherRoom.VerticesGrid[otherX, otherZ, n];
-                    if (v1.Position.Y != (v2.Position.Y + currentRoom.Position.Y * -256.0f - otherRoom.Position.Y * -256.0f))
-                        continue;
-
-                    Vector4 average = (v1.FaceColor + v2.FaceColor) * 0.5f;
-                    v1.FaceColor = average;
-                    v2.FaceColor = average;
-
-                    currentRoom.VerticesGrid[x, z, m] = v1;
-                    otherRoom.VerticesGrid[otherX, otherZ, n] = v2;
-                    break;
+                    outSharedRooms.Add(block.FloorPortal.AdjoiningRoom);
+                    FindConnectedRooms(outSharedRooms, block.FloorPortal.AdjoiningRoom, worldPos, false);
                 }
+                if ((block.CeilingPortal != null) && !outSharedRooms.Contains(block.CeilingPortal.AdjoiningRoom))
+                {
+                    outSharedRooms.Add(block.CeilingPortal.AdjoiningRoom);
+                    FindConnectedRooms(outSharedRooms, block.CeilingPortal.AdjoiningRoom, worldPos, false);
+                }
+            }
+
+            if ((block.WallPortal != null) && !outSharedRooms.Contains(block.WallPortal.AdjoiningRoom))
+            {
+                outSharedRooms.Add(block.WallPortal.AdjoiningRoom);
+                FindConnectedRooms(outSharedRooms, block.WallPortal.AdjoiningRoom, worldPos, checkFloorCeiling);
             }
         }
 
         private static ushort PackColorTo16Bit(Vector4 color)
         {
-            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
+            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color)) * new Vector4(0.125f);
             
             ushort tmp = 0;
-            tmp |= (ushort)((ushort)(color.X / 8.0) << 10);
-            tmp |= (ushort)((ushort)(color.Y / 8.0) << 5);
-            tmp |= (ushort)(color.Z / 8.0);
+            tmp |= (ushort)((ushort)(color.X) << 10);
+            tmp |= (ushort)((ushort)(color.Y) << 5);
+            tmp |= (ushort)(color.Z);
             return tmp;
         }
 
         private static ushort PackColorTo16Bit(System.Drawing.Color color)
         {
             ushort tmp = 0;
-            tmp |= (ushort)((ushort)(color.R / 8) << 10);
-            tmp |= (ushort)((ushort)(color.G / 8) << 5);
-            tmp |= (ushort)(color.B / 8);
+            tmp |= (ushort)((ushort)(color.R * 0.125f) << 10);
+            tmp |= (ushort)((ushort)(color.G * 0.125f) << 5);
+            tmp |= (ushort)(color.B * 0.125f);
             return tmp;
-        }
-
-        private short BuildRoomGeometryTextureInfo(Vector2 uv1, Vector2 uv2, Vector2 uv3, int textureTile)
-        {
-            var tile = new tr_object_texture();
-            
-            // Texture page
-            tile.Tile = (ushort)textureTile;
-            tile.Tile |= 0x8000; // It's always a triangle
-
-            // Attributes
-            // TODO: for now no alpha test or trasparency
-            tile.Attributes = 0;
-            
-            // Flags
-            tile.Flags = 0x8000;
-
-            // Create texture vertices
-            tile.Vertices = new tr_object_texture_vert[4];
-
-            tile.Vertices[0] = new tr_object_texture_vert
-            {
-                Xcoordinate = (byte)(uv1.X * 256.0f),
-                Xpixel = 0,
-                Ycoordinate = (byte)(uv1.Y * 256.0f),
-                Ypixel = 0
-            };
-
-            tile.Vertices[1] = new tr_object_texture_vert
-            {
-                Xcoordinate = (byte)(uv2.X * 256.0f),
-                Xpixel = 255,
-                Ycoordinate = (byte)(uv2.Y * 256.0f),
-                Ypixel = 0
-            };
-
-            tile.Vertices[2] = new tr_object_texture_vert
-            {
-                Xcoordinate = (byte)(uv3.X * 256.0f),
-                Xpixel = 0,
-                Ycoordinate = (byte)(uv3.Y * 256.0f),
-                Ypixel = 255
-            };
-
-            // Add the new tile to the list
-            _tempObjectTextures.Add(tile);
-
-            return (short)(_tempObjectTextures.Count - 1);
         }
     }
 }

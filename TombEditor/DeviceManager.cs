@@ -43,7 +43,7 @@ namespace TombEditor
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
-                Textures.Add(textureName, TombLib.Graphics.TextureLoad.LoadToTexture(Device, fileName));
+                Textures.Add(textureName, TombLib.Graphics.TextureLoad.Load(Device, fileName));
             }
 
             // Load default font

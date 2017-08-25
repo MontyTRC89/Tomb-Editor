@@ -80,13 +80,11 @@ namespace TombEditor.Geometry
         public override void AddToRoom(Level level, Room room)
         {
             base.AddToRoom(level, room);
-            room.UpdateCompletely();
         }
 
         public override void RemoveFromRoom(Level level, Room room)
         {
             base.RemoveFromRoom(level, room);
-            room.UpdateCompletely(); // Rebuild lighting!
         }
     }
 }

@@ -73,7 +73,7 @@ namespace TombEditor
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(646, 32);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
@@ -97,8 +97,9 @@ namespace TombEditor
             this.lstLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lstLog.Location = new System.Drawing.Point(7, 7);
             this.lstLog.Name = "lstLog";
+            this.lstLog.ReadOnly = true;
             this.lstLog.Size = new System.Drawing.Size(641, 325);
-            this.lstLog.TabIndex = 6;
+            this.lstLog.TabIndex = 0;
             this.lstLog.Text = "";
             // 
             // FormOperationDialog

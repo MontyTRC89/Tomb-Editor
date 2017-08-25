@@ -46,7 +46,6 @@ namespace TombEditor.Geometry
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
         public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.  
-        public string TextureFilePath { get; set; } = null; // Can be null if no texture file is loaded.
         public string WadFilePath { get; set; } = null; // Can be null if no object file is loaded.
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
@@ -60,12 +59,13 @@ namespace TombEditor.Geometry
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
         public bool IgnoreMissingSounds { get; set; } = false;
+        public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
 
-        
         public LevelSettings Clone()
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.SoundPaths = SoundPaths.ConvertAll((soundPath) => soundPath.Clone());
+            result.Textures = Textures.ConvertAll((texture) => (LevelTexture)(texture.Clone()));
             return result;
         }
 
@@ -134,6 +134,23 @@ namespace TombEditor.Geometry
             } while (true);
 
             return path;
+        }
+
+        public string TextureFilePath
+        {
+            get
+            {
+                return Textures.Count > 0 ? Textures[0].Path : "";
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                    Textures.Clear();
+                else if (Textures.Count > 0)
+                    Textures[0].SetPath(this, value);
+                else
+                    Textures.Add(new LevelTexture(this, value));
+            }
         }
 
         public string MakeAbsolute(string path, params VariableType[] excluded)

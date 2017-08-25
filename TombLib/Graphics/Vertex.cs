@@ -4,6 +4,6 @@ namespace TombLib.Graphics
 {
     public interface IVertex
     {
-        Vector4 Position { get; }
+        Vector3 Position { get; }
     }
 }

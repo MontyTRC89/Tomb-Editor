@@ -1,6 +1,6 @@
 ﻿struct VertexInputType
 {
-	float4 Position : POSITION0;
+	float3 Position : POSITION0;
 	float2 UV : TEXCOORD0;
 	float3 Normal : NORMAL0;
 	float2 Shade : TEXCOORD1;
@@ -27,7 +27,7 @@ sampler TextureSampler;
 PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
-	output.Position = mul(input.Position, ModelViewProjection);
+	output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
 	output.UV = input.UV;
 	output.Shade = input.Shade;
 	return output;

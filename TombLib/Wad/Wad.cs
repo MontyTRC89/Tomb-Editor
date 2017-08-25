@@ -7,8 +7,7 @@ using TombLib.IO;
 using SharpDX.Toolkit.Graphics;
 using SharpDX;
 using TombLib.Graphics;
-using System.Drawing;
-using System.Drawing.Imaging;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
@@ -64,9 +63,7 @@ namespace TombLib.Wad
                 {
                     WadTexture page = wad.TexturePages.ElementAt(i).Value;
                     writer.Write((byte)page.Type);
-                    for (int y = 0; y < 256; y++)
-                        for (int x = 0; x < 1024; x++)
-                            writer.Write(page.TexturePage[y, x]);
+                    page.Image.WriteToStreamRaw(writer.BaseStream);
                 }
 
                 // scrivo i sample
@@ -197,48 +194,22 @@ namespace TombLib.Wad
         {
             Dispose();
 
-            // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
-            using (Bitmap tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
             {
-                tempBitmap.MakeTransparent(System.Drawing.Color.FromArgb(255, 255, 0, 255));
-                ColorMap[] colorMap = new ColorMap[1];
-                colorMap[0] = new ColorMap();
-                colorMap[0].OldColor = System.Drawing.Color.FromArgb(255, 255, 0, 255);
-                colorMap[0].NewColor = System.Drawing.Color.Transparent;
-                ImageAttributes attr = new ImageAttributes();
-                attr.SetRemapTable(colorMap);
-
-                int currentXblock = 0;
-                int currentYblock = 0;
-                for (uint i = 0; i < TexturePages.Count; i++)
+                const int atlasSize = 8;
+                // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
+                var textureAtlas = Utils.ImageC.CreateNew(256 * atlasSize, 256 * atlasSize);
+            
+                for (int i = 0; i < TexturePages.Count; i++)
                 {
-                    WadTexture page = TexturePages[i];
+                    WadTexture page = TexturePages[(uint)i];
 
-                    for (int x = 0; x < 256; x++)
-                        for (int y = 0; y < 256; y++)
-                        {
-                            int x1 = currentXblock * 256 + x;
-                            int y1 = currentYblock * 256 + y;
-
-                            /*System.Drawing.Color c = System.Drawing.Color.FromArgb(page.TexturePage[y, x * 4 + 3],
-                                                                                   page.TexturePage[y, x * 4],
-                                                                                   page.TexturePage[y, x * 4 + 1],
-                                                                                   page.TexturePage[y, x * 4 + 2]);*/
-
-                            tempBitmap.SetPixel(x1, y1, System.Drawing.Color.FromArgb(255, page.TexturePage[y, x * 4],
-                                                                                           page.TexturePage[y, x * 4 + 1],
-                                                                                           page.TexturePage[y, x * 4 + 2]));
-                        }
-
-                    currentXblock++;
-                    if (currentXblock == 8)
-                    {
-                        currentXblock = 0;
-                        currentYblock++;
-                    }
+                    int currentXblock = i % atlasSize;
+                    int currentYblock = i / atlasSize;
+                    textureAtlas.CopyFrom(currentXblock * 256, currentYblock * 256, page.Image);
                 }
+                textureAtlas.ReplaceColor(new Utils.ColorC(255, 0, 255, 255), new Utils.ColorC(0, 0, 0, 0));
 
-                DirectXTexture = TextureLoad.LoadToTexture(GraphicsDevice, tempBitmap);
+                DirectXTexture = TextureLoad.Load(GraphicsDevice, textureAtlas);
             }
 
             // Create movable models
@@ -254,6 +225,111 @@ namespace TombLib.Wad
                 WadStatic static_ = WadStatics.ElementAt(i).Value;
                 DirectXStatics.Add(static_.ObjectID, StaticModel.FromWad(GraphicsDevice, static_, TexturePages, TextureSamples));
             }
+        }
+        
+        // Lets remove this methode once we use UVs internally in the Wad representation.
+        // Until then this converts the deprecated format to UVs that the new texture manager in the *.tr4 export understands.
+        public TextureArea GetTextureArea(ushort textureIndex, bool triangle, short attributes)
+        {
+            int original = textureIndex;
+            bool isFlipped = (original & 0x8000) != 0;
+            if (triangle)
+                textureIndex = (ushort)(original & 0xfff);
+
+            if (textureIndex > short.MaxValue)
+                textureIndex = unchecked((ushort)-textureIndex);
+            
+            var tex = OriginalWad.Textures[textureIndex];
+
+            // Texture page
+            TextureArea result = new TextureArea();
+            result.Texture = TexturePages[tex.Page];
+            result.BlendMode = (attributes & 1) != 0 ? BlendMode.Additive : BlendMode.Normal;
+            result.DoubleSided = false; // TODO isn't this flag also available in wads?
+
+            // Texture UV
+            Vector2 texCoord00 = new Vector2(tex.X + 0.5f, tex.Y + 0.5f);
+            Vector2 texCoord10 = new Vector2(tex.X + tex.Width + 0.5f, tex.Y + 0.5f);
+            Vector2 texCoord01 = new Vector2(tex.X + 0.5f, tex.Y + tex.Height + 0.5f);
+            Vector2 texCoord11 = new Vector2(tex.X + tex.Width + 0.5f, tex.Y + tex.Height + 0.5f);
+
+            if (triangle)
+            {
+                if (isFlipped)
+                {
+                    switch (original & 0x7000)
+                    {
+                        case 0x0000:
+                            result.TexCoord0 = texCoord01;
+                            result.TexCoord1 = texCoord00;
+                            result.TexCoord2 = texCoord11;
+                            break;
+
+                        case 0x2000:
+                            result.TexCoord0 = texCoord00;
+                            result.TexCoord1 = texCoord01;
+                            result.TexCoord2 = texCoord10;
+                            break;
+
+                        case 0x4000:
+                            result.TexCoord0 = texCoord01;
+                            result.TexCoord1 = texCoord11;
+                            result.TexCoord2 = texCoord00;
+                            break;
+                        case 0x6000:
+                            result.TexCoord0 = texCoord11;
+                            result.TexCoord1 = texCoord10;
+                            result.TexCoord2 = texCoord01;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (original & 0x7000)
+                    {
+                        case 0x0000:
+                            result.TexCoord0 = texCoord00;
+                            result.TexCoord1 = texCoord10;
+                            result.TexCoord2 = texCoord01;
+                            break;
+                        case 0x2000:
+                            result.TexCoord0 = texCoord10;
+                            result.TexCoord1 = texCoord11;
+                            result.TexCoord2 = texCoord00;
+                            break;
+                        case 0x4000:
+                            result.TexCoord0 = texCoord11;
+                            result.TexCoord1 = texCoord01;
+                            result.TexCoord2 = texCoord10;
+                            break;
+                        case 0x6000:
+                            result.TexCoord0 = texCoord01;
+                            result.TexCoord1 = texCoord00;
+                            result.TexCoord2 = texCoord11;
+                            break;
+                    }
+                }
+                result.TexCoord3 = result.TexCoord2;
+            }
+            else
+            {
+                if (isFlipped)
+                {
+                    result.TexCoord0 = texCoord10;
+                    result.TexCoord1 = texCoord00;
+                    result.TexCoord2 = texCoord01;
+                    result.TexCoord3 = texCoord11;
+                }
+                else
+                {
+                    result.TexCoord0 = texCoord00;
+                    result.TexCoord1 = texCoord10;
+                    result.TexCoord2 = texCoord11;
+                    result.TexCoord3 = texCoord01;
+                }
+            }
+
+            return result;
         }
     }
 }

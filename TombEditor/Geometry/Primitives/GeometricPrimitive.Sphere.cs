@@ -130,7 +130,7 @@ namespace SharpDX.Toolkit.Graphics
                         var textureCoordinate = new Vector2(u, v);
 
                         EditorVertex vertex = new TombEditor.Geometry.EditorVertex();
-                        vertex.Position = new Vector4(normal * radius, 1);
+                        vertex.Position = normal * radius;
                         vertex.Normal = normal;
                         vertex.UV = textureCoordinate;
 

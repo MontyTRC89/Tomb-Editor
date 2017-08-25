@@ -120,10 +120,7 @@ namespace TombEditor.Controls
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
-                mioEffect.Parameters["EditorTextureEnabled"].SetValue(false);
-                mioEffect.Parameters["TextureEnabled"].SetValue(true);
                 mioEffect.Parameters["SelectionEnabled"].SetValue(false);
-                mioEffect.Parameters["LightEnabled"].SetValue(false);
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);

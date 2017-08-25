@@ -54,10 +54,10 @@ namespace TombEditor
             _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
 
             // Initialize the gizmo geometry
-            var v0 = new EditorVertex {Position = new Vector4(0.0f, 0.0f, 0.0f, 1.0f)};
-            var vX = new EditorVertex {Position = new Vector4(1024.0f, 0.0f, 0.0f, 1.0f)};
-            var vY = new EditorVertex {Position = new Vector4(0.0f, 1024.0f, 0.0f, 1.0f)};
-            var vZ = new EditorVertex {Position = new Vector4(0.0f, 0.0f, -1024.0f, 1.0f)};
+            var v0 = new EditorVertex {Position = new Vector3(0.0f, 0.0f, 0.0f)};
+            var vX = new EditorVertex {Position = new Vector3(1024.0f, 0.0f, 0.0f)};
+            var vY = new EditorVertex {Position = new Vector3(0.0f, 1024.0f, 0.0f)};
+            var vZ = new EditorVertex {Position = new Vector3(0.0f, 0.0f, -1024.0f)};
             var vertices = new[] {v0, vX, v0, vY, v0, vZ};
 
             _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New
@@ -107,7 +107,7 @@ namespace TombEditor
 
             // First get the ray in 3D space from X, Y mouse coordinates
             Ray ray = Ray.GetPickRay(x, y, _device.Viewport,
-                Matrix.Translation(Utils.PositionInWorldCoordinates(room.Position)) * viewProjection);
+                Matrix.Translation(room.WorldPos) * viewProjection);
 
             Vector3 newPos = Position;
             switch (_axis)
@@ -177,7 +177,7 @@ namespace TombEditor
             var solidEffect = _deviceManager.Effects["Solid"];
 
             var model = Matrix.Translation(Position) *
-                        Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
+                        Matrix.Translation(_editor.SelectedRoom.WorldPos);
             var modelViewProjection = model * viewProjection;
 
             solidEffect.Parameters["ModelViewProjection"].SetValue(modelViewProjection);
@@ -208,7 +208,7 @@ namespace TombEditor
 
             // X axis sphere
             model = Matrix.Translation(Position + Vector3.UnitX * 1024.0f) *
-                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
+                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_red);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -217,7 +217,7 @@ namespace TombEditor
 
             // Y axis sphere
             model = Matrix.Translation(Position + Vector3.UnitY * 1024.0f) *
-                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
+                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_green);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -226,7 +226,7 @@ namespace TombEditor
 
             // Z axis sphere
             model = Matrix.Translation(Position - Vector3.UnitZ * 1024.0f) *
-                    Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.SelectedRoom.Position));
+                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_blue);
             solidEffect.CurrentTechnique.Passes[0].Apply();
