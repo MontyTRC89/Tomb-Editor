@@ -90,11 +90,11 @@ namespace TombEditor.Controls
             return new PointF((pos.X - ViewPosition.X) * ViewScale + Width * 0.5f, Height * 0.5f - (pos.Y - ViewPosition.Y) * ViewScale);
         }
 
-        private void MoveToFixedPoint(PointF VisualPoint, Vector2 WorldPoint)
+        private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint)
         {
             //Adjust ViewPosition in such a way, that the FixedPoint does not move visually
-            ViewPosition = -WorldPoint;
-            ViewPosition = -FromVisualCoord(VisualPoint);
+            ViewPosition = -worldPoint;
+            ViewPosition = -FromVisualCoord(visualPoint);
             Invalidate();
         }
 
@@ -106,67 +106,76 @@ namespace TombEditor.Controls
             if (!_depthBar.MouseDown(e, Size, _editor.Level, clickPos))
                 return;
 
-            if (e.Button == MouseButtons.Left)
+            switch (e.Button)
             {
-                // Try selecting or moving a room
-                _roomMouseClicked = DoPicking(clickPos);
-                if (_roomMouseClicked == null)
-                    return;
+                case MouseButtons.Left:
+                    // Try selecting or moving a room
+                    _roomMouseClicked = DoPicking(clickPos);
+                    if (_roomMouseClicked == null)
+                        return;
 
-                _editor.SelectedRoom = _roomMouseClicked;
-                _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
-                _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
+                    _editor.SelectedRoom = _roomMouseClicked;
+                    _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
+                    _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
 
-                // Update state
-                _editor.SelectedRoom = _editor.SelectedRoom;
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                // Move view with mouse curser
-                // Mouse curser is a fixed point
-                _viewMoveMouseWorldCoord = clickPos;
-            }
-            else if ((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton2))
-            {
-                _currentlyEditedDepthProbeIndex =  _depthBar.DepthProbes.FindIndex((depthProbe) => (
-                    (Math.Round(depthProbe.X) == Math.Round(clickPos.X)) &&
-                    (Math.Round(depthProbe.Y) == Math.Round(clickPos.Y))));
-                if (_currentlyEditedDepthProbeIndex == -1)
-                {
-                    _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
-                    _depthBar.DepthProbes.Add(new Vector2());
-                }
-                _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value] = clickPos;
-                Invalidate();
-            }
-            else if ((e.Button == MouseButtons.XButton1) && (_depthBar.DepthProbes.Count > 0))
-            {
-                // Remove depth probe closest to mouse pointer
-                int currentProbeIndex = 0;
-                for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
-                    if ((clickPos - _depthBar.DepthProbes[i]).LengthSquared() < (clickPos - _depthBar.DepthProbes[currentProbeIndex]).LengthSquared())
-                        currentProbeIndex = i;
-                if ((clickPos - _depthBar.DepthProbes[currentProbeIndex]).LengthSquared() <= 14.0f)
-                    _depthBar.DepthProbes.RemoveAt(currentProbeIndex);
-                Invalidate();
+                    // Update state
+                    _editor.SelectedRoom = _editor.SelectedRoom;
+                    break;
+
+                case MouseButtons.Right:
+                    // Move view with mouse curser
+                    // Mouse curser is a fixed point
+                    _viewMoveMouseWorldCoord = clickPos;
+                    break;
+
+                case MouseButtons.Middle:
+                case MouseButtons.XButton2:
+                    _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.FindIndex((depthProbe) => (
+                       (Math.Round(depthProbe.X) == Math.Round(clickPos.X)) &&
+                       (Math.Round(depthProbe.Y) == Math.Round(clickPos.Y))));
+                    if (_currentlyEditedDepthProbeIndex == -1)
+                    {
+                        _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
+                        _depthBar.DepthProbes.Add(new Vector2());
+                    }
+                    _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value] = clickPos;
+                    Invalidate();
+                    break;
+
+                case MouseButtons.XButton1:
+                    if (_depthBar.DepthProbes.Count > 0)
+                    {
+                        // Remove depth probe closest to mouse pointer
+                        int currentProbeIndex = 0;
+                        for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
+                            if ((clickPos - _depthBar.DepthProbes[i]).LengthSquared() < (clickPos - _depthBar.DepthProbes[currentProbeIndex]).LengthSquared())
+                                currentProbeIndex = i;
+                        if ((clickPos - _depthBar.DepthProbes[currentProbeIndex]).LengthSquared() <= 14.0f)
+                            _depthBar.DepthProbes.RemoveAt(currentProbeIndex);
+                        Invalidate();
+                    }
+                    break;
             }
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            
-            if ((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton2))
+
+            switch (e.Button)
             {
-                Vector2 clickPos = FromVisualCoord(e.Location);
-                int currentProbeIndex = _depthBar.DepthProbes.FindIndex((depthProbe) => (
-                   (Math.Round(depthProbe.X) == Math.Round(clickPos.X)) &&
-                   (Math.Round(depthProbe.Y) == Math.Round(clickPos.Y))));
-                if (currentProbeIndex != -1)
-                {
-                    _depthBar.DepthProbes.RemoveAt(currentProbeIndex);
-                    Invalidate();
-                }
+                case MouseButtons.Middle:
+                case MouseButtons.XButton2:
+                    Vector2 clickPos = FromVisualCoord(e.Location);
+                    int currentProbeIndex = _depthBar.DepthProbes.FindIndex((depthProbe) => (
+                       (Math.Round(depthProbe.X) == Math.Round(clickPos.X)) &&
+                       (Math.Round(depthProbe.Y) == Math.Round(clickPos.Y))));
+                    if (currentProbeIndex != -1)
+                    {
+                        _depthBar.DepthProbes.RemoveAt(currentProbeIndex);
+                        Invalidate();
+                    }
+                    break;
             }
         }
 
@@ -182,14 +191,26 @@ namespace TombEditor.Controls
             if (_editor.Action.RelocateCameraActive)
                 return;
 
-            if ((e.Button == MouseButtons.Left) && (_roomsToMove != null))
-                UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
-            else if ((e.Button == MouseButtons.Right) && (_viewMoveMouseWorldCoord != null))
-                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
-            else if (((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton2)) && _currentlyEditedDepthProbeIndex.HasValue)
+            switch (e.Button)
             {
-                _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value] = FromVisualCoord(e.Location);
-                Invalidate();
+                case MouseButtons.Left:
+                    if (_roomsToMove != null)
+                        UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+                    break;
+
+                case MouseButtons.Right:
+                    if (_viewMoveMouseWorldCoord != null)
+                        MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
+                    break;
+
+                case MouseButtons.Middle:
+                case MouseButtons.XButton2:
+                    if (_currentlyEditedDepthProbeIndex.HasValue)
+                    {
+                        _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value] = FromVisualCoord(e.Location);
+                        Invalidate();
+                    }
+                    break;
             }
         }
 
@@ -198,17 +219,28 @@ namespace TombEditor.Controls
             base.OnMouseUp(e);
             _depthBar.MouseUp(e, Size);
 
-            if (e.Button == MouseButtons.Left && (_roomsToMove != null))
+            switch (e.Button)
             {
-                _roomsToMove = null;
-                _roomMouseClicked = null;
-                Invalidate();
-            }
-            else if ((e.Button == MouseButtons.Right) && (_viewMoveMouseWorldCoord != null))
-            {
-                _viewMoveMouseWorldCoord = null;
+                case MouseButtons.Left:
+                    if (_roomsToMove != null)
+                    {
+                        _roomsToMove = null;
+                        _roomMouseClicked = null;
+                        Invalidate();
+                    }
+                    break;
+                case MouseButtons.Right:
+                    _viewMoveMouseWorldCoord = null;
+                    break;
             }
             _currentlyEditedDepthProbeIndex = null;
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            // Make this control able to receive scroll and key board events...
+            base.OnMouseEnter(e);
+            Focus();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -252,13 +284,6 @@ namespace TombEditor.Controls
                     break;
             }
             return base.ProcessCmdKey(ref msg, keyData);
-        }
-        
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            // Make this control able to receive scroll and key board events...
-            base.OnMouseEnter(e);
-            Focus();
         }
         
         protected override void OnPaint(PaintEventArgs e)

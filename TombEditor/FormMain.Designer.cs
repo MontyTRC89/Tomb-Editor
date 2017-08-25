@@ -72,6 +72,7 @@
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.findObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetFilterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveLaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.UnloadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -150,12 +151,11 @@
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panelTextureTools = new System.Windows.Forms.Panel();
             this.darkButton16 = new DarkUI.Controls.DarkButton();
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
-            this.panelTextureContainer = new System.Windows.Forms.Panel();
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panel4 = new System.Windows.Forms.Panel();
             this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.cbLightIsDynamicallyUsed = new DarkUI.Controls.DarkCheckBox();
@@ -223,7 +223,7 @@
             this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
             this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
-            this.butTransparent = new System.Windows.Forms.ToolStripButton();
+            this.butAdditiveBlending = new System.Windows.Forms.ToolStripButton();
             this.butDoubleSided = new System.Windows.Forms.ToolStripButton();
             this.butInvisible = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -246,13 +246,10 @@
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.moveLaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelTextureTools.SuspendLayout();
-            this.panelTextureContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.statusStrip.SuspendLayout();
@@ -411,7 +408,7 @@
             this.undoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.undoToolStripMenuItem.Image = global::TombEditor.Properties.Resources.undo_16;
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.undoToolStripMenuItem.Text = "Undo";
             this.undoToolStripMenuItem.Visible = false;
             // 
@@ -420,7 +417,7 @@
             this.redoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.redoToolStripMenuItem.Image = global::TombEditor.Properties.Resources.redo_16;
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.redoToolStripMenuItem.Text = "Redo";
             this.redoToolStripMenuItem.Visible = false;
             // 
@@ -429,7 +426,7 @@
             this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(105, 6);
             this.toolStripMenuItem4.Visible = false;
             // 
             // copyToolStripMenuItem
@@ -437,7 +434,7 @@
             this.copyToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.copyToolStripMenuItem.Image = global::TombEditor.Properties.Resources.copy_16;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
@@ -446,7 +443,7 @@
             this.pasteToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pasteToolStripMenuItem.Image = global::TombEditor.Properties.Resources.clipboard_16;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
@@ -455,7 +452,7 @@
             this.stampToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.stampToolStripMenuItem.Image = global::TombEditor.Properties.Resources.rubber_stamp_16;
             this.stampToolStripMenuItem.Name = "stampToolStripMenuItem";
-            this.stampToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.stampToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.stampToolStripMenuItem.Text = "Stamp";
             this.stampToolStripMenuItem.Click += new System.EventHandler(this.stampToolStripMenuItem_Click);
             // 
@@ -778,6 +775,14 @@
             this.resetFilterToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.resetFilterToolStripMenuItem.Text = "Reset filter";
             this.resetFilterToolStripMenuItem.Click += new System.EventHandler(this.resetFilterToolStripMenuItem_Click);
+            // 
+            // moveLaraToolStripMenuItem
+            // 
+            this.moveLaraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.moveLaraToolStripMenuItem.Name = "moveLaraToolStripMenuItem";
+            this.moveLaraToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.moveLaraToolStripMenuItem.Text = "Move Lara";
+            this.moveLaraToolStripMenuItem.Click += new System.EventHandler(this.moveLaraToolStripMenuItem_Click);
             // 
             // texturesToolStripMenuItem
             // 
@@ -1733,13 +1738,21 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.panelTextureMap);
             this.panel3.Controls.Add(this.panelTextureTools);
-            this.panel3.Controls.Add(this.panelTextureContainer);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel3.Location = new System.Drawing.Point(1588, 24);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(287, 836);
             this.panel3.TabIndex = 27;
+            // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTextureMap.Location = new System.Drawing.Point(0, 0);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(287, 805);
+            this.panelTextureMap.TabIndex = 0;
             // 
             // panelTextureTools
             // 
@@ -1784,28 +1797,6 @@
             this.butTextureSounds.TabIndex = 0;
             this.butTextureSounds.Text = "Texture sounds";
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
-            // 
-            // panelTextureContainer
-            // 
-            this.panelTextureContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelTextureContainer.AutoScroll = true;
-            this.panelTextureContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelTextureContainer.Controls.Add(this.panelTextureMap);
-            this.panelTextureContainer.Location = new System.Drawing.Point(2, 3);
-            this.panelTextureContainer.Name = "panelTextureContainer";
-            this.panelTextureContainer.Size = new System.Drawing.Size(286, 800);
-            this.panelTextureContainer.TabIndex = 7;
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Location = new System.Drawing.Point(-1, 0);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(259, 799);
-            this.panelTextureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.panelTextureMap.TabIndex = 0;
-            this.panelTextureMap.TabStop = false;
             // 
             // panel4
             // 
@@ -1909,7 +1900,7 @@
             // 
             this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
             this.numLightDirectionY.Enabled = false;
-            this.numLightDirectionY.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightDirectionY.Location = new System.Drawing.Point(525, 80);
             this.numLightDirectionY.Name = "numLightDirectionY";
             this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
@@ -1920,7 +1911,7 @@
             // 
             this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
             this.numLightDirectionX.Enabled = false;
-            this.numLightDirectionX.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightDirectionX.Location = new System.Drawing.Point(525, 55);
             this.numLightDirectionX.Name = "numLightDirectionX";
             this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
@@ -1931,7 +1922,7 @@
             // 
             this.numLightOut.BackColor = System.Drawing.Color.DimGray;
             this.numLightOut.Enabled = false;
-            this.numLightOut.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightOut.Location = new System.Drawing.Point(421, 80);
             this.numLightOut.Name = "numLightOut";
             this.numLightOut.Size = new System.Drawing.Size(60, 22);
@@ -1942,7 +1933,7 @@
             // 
             this.numLightIn.BackColor = System.Drawing.Color.DimGray;
             this.numLightIn.Enabled = false;
-            this.numLightIn.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightIn.Location = new System.Drawing.Point(421, 55);
             this.numLightIn.Name = "numLightIn";
             this.numLightIn.Size = new System.Drawing.Size(60, 22);
@@ -1953,7 +1944,7 @@
             // 
             this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
             this.numLightCutoff.Enabled = false;
-            this.numLightCutoff.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightCutoff.Location = new System.Drawing.Point(525, 30);
             this.numLightCutoff.Name = "numLightCutoff";
             this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
@@ -1964,7 +1955,7 @@
             // 
             this.numLightLen.BackColor = System.Drawing.Color.DimGray;
             this.numLightLen.Enabled = false;
-            this.numLightLen.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightLen.Location = new System.Drawing.Point(525, 5);
             this.numLightLen.Name = "numLightLen";
             this.numLightLen.Size = new System.Drawing.Size(60, 22);
@@ -1975,7 +1966,7 @@
             // 
             this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
             this.numLightIntensity.Enabled = false;
-            this.numLightIntensity.LightParameter = TombEditor.Geometry.LightParameter.Intensity;
+            this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightIntensity.Location = new System.Drawing.Point(421, 30);
             this.numLightIntensity.Name = "numLightIntensity";
             this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
@@ -2344,7 +2335,7 @@
             this.butTextureFloor,
             this.butTextureCeiling,
             this.butTextureWalls,
-            this.butTransparent,
+            this.butAdditiveBlending,
             this.butDoubleSided,
             this.butInvisible,
             this.toolStripSeparator2,
@@ -2620,17 +2611,17 @@
             this.butTextureWalls.ToolTipText = "Texture walls";
             this.butTextureWalls.Click += new System.EventHandler(this.butTextureWalls_Click);
             // 
-            // butTransparent
+            // butAdditiveBlending
             // 
-            this.butTransparent.CheckOnClick = true;
-            this.butTransparent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTransparent.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTransparent.Image = global::TombEditor.Properties.Resources.SemiTransparent_16;
-            this.butTransparent.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTransparent.Name = "butTransparent";
-            this.butTransparent.Size = new System.Drawing.Size(23, 25);
-            this.butTransparent.Text = "Transparent texture";
-            this.butTransparent.Click += new System.EventHandler(this.butTransparent_Click);
+            this.butAdditiveBlending.CheckOnClick = true;
+            this.butAdditiveBlending.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAdditiveBlending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAdditiveBlending.Image = global::TombEditor.Properties.Resources.SemiTransparent_16;
+            this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAdditiveBlending.Name = "butAdditiveBlending";
+            this.butAdditiveBlending.Size = new System.Drawing.Size(23, 25);
+            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending)";
+            this.butAdditiveBlending.Click += new System.EventHandler(this.butAdditiveBlending_Click);
             // 
             // butDoubleSided
             // 
@@ -2840,14 +2831,6 @@
             this.tabPage4.Text = "tabPage4";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // moveLaraToolStripMenuItem
-            // 
-            this.moveLaraToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.moveLaraToolStripMenuItem.Name = "moveLaraToolStripMenuItem";
-            this.moveLaraToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
-            this.moveLaraToolStripMenuItem.Text = "Move Lara";
-            this.moveLaraToolStripMenuItem.Click += new System.EventHandler(this.moveLaraToolStripMenuItem_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2875,9 +2858,6 @@
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panelTextureTools.ResumeLayout(false);
-            this.panelTextureContainer.ResumeLayout(false);
-            this.panelTextureContainer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelTextureMap)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
@@ -2940,7 +2920,6 @@
         private DarkUI.Controls.DarkButton darkButton16;
         private DarkUI.Controls.DarkButton butAnimationRanges;
         private DarkUI.Controls.DarkButton butTextureSounds;
-        private System.Windows.Forms.Panel panelTextureContainer;
         private DarkUI.Controls.DarkButton butAddFogBulb;
         private DarkUI.Controls.DarkButton butAddEffectLight;
         private DarkUI.Controls.DarkButton butAddSpotLight;
@@ -3025,7 +3004,7 @@
         private System.Windows.Forms.ToolStripButton butLightingMode;
         private System.Windows.Forms.ToolStripButton butCenterCamera;
         private System.Windows.Forms.ToolStripButton butDrawPortals;
-        private System.Windows.Forms.ToolStripButton butTransparent;
+        private System.Windows.Forms.ToolStripButton butAdditiveBlending;
         private System.Windows.Forms.ToolStripButton butDoubleSided;
         private System.Windows.Forms.ToolStripButton butInvisible;
         private System.Windows.Forms.ColorDialog colorDialog;

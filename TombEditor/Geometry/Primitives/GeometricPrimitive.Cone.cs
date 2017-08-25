@@ -107,7 +107,7 @@ namespace SharpDX.Toolkit.Graphics
 
                 // Vertex of the cone
                 EditorVertex coneVertex = new EditorVertex();
-                coneVertex.Position = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+                coneVertex.Position = new Vector3(0.0f, 0.0f, 0.0f);
                 float angle = (float)(2 * Math.PI / tessellation);
 
                 List<EditorVertex> tempVertices = new List<EditorVertex>();
@@ -120,7 +120,7 @@ namespace SharpDX.Toolkit.Graphics
                     float z = length;
 
                     EditorVertex v = new EditorVertex();
-                    v.Position = new Vector4(x, y, z, 1.0f);
+                    v.Position = new Vector3(x, y, z);
 
                     tempVertices.Add(v);
                 }

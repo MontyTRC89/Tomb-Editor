@@ -288,7 +288,7 @@ namespace TombEditor.Geometry.IO
                                     NoCollisionCeiling = reader.ReadBoolean()
                                 };
 
-                                foreach (var f in b.Faces)
+                                foreach (var f in b.FaceTextures)
                                 {
                                     f.Defined = reader.ReadBoolean();
                                     f.Flipped = reader.ReadBoolean();
@@ -505,7 +505,7 @@ namespace TombEditor.Geometry.IO
                 int uncompressedSize = reader.ReadInt32();
                 int compressedSize = reader.ReadInt32();
                 var projectData = reader.ReadBytes(compressedSize);
-                projectData = Utils.DecompressData(projectData);
+                projectData = ZLib.DecompressData(projectData);
 
                 var ms = new MemoryStream(projectData);
                 ms.Seek(0, SeekOrigin.Begin);

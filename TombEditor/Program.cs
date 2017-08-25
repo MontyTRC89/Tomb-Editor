@@ -38,6 +38,7 @@ namespace TombEditor
             
             logger.Info($"Tomb Editor {Application.ProductVersion} is starting");
 
+            //new TombEngine.TombRaider4Level(@"D:\Eigenes\Spiele\TR\Levelbau\Levels\Junglelevel\data\Level0000.tr4").Load("");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FormMain());

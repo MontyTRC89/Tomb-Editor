@@ -13,6 +13,8 @@ using NLog;
 using TombEditor.Geometry.IO;
 using TombLib.Graphics;
 using TombLib.Wad;
+using TombEditor.Controls;
+using TombLib.Utils;
 
 namespace TombEditor
 {
@@ -182,9 +184,9 @@ namespace TombEditor
             if (obj is Editor.SelectedTexturesChangedEvent)
             {
                 var e = (Editor.SelectedTexturesChangedEvent)obj;
-                butTransparent.Checked = e.Current.Transparent;
+                butAdditiveBlending.Checked = e.Current.BlendMode == BlendMode.Additive;
                 butDoubleSided.Checked = e.Current.DoubleSided;
-                butInvisible.Checked = e.Current.Invisible;
+                butInvisible.Checked = e.Current.Texture == TextureInvisible.Instance;
             }
 
             // Update room information on the status strip
@@ -588,27 +590,27 @@ namespace TombEditor
         {
             if (_editor.SelectedRoom == null)
                 return;
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom);
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedRoom == null)
                 return;
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom);
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedRoom == null)
                 return;
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom);
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
-        private void butTransparent_Click(object sender, EventArgs e)
+        private void butAdditiveBlending_Click(object sender, EventArgs e)
         {
             var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.Transparent = butTransparent.Checked;
+            selectedTexture.BlendMode = butAdditiveBlending.Checked ? BlendMode.Additive : BlendMode.Normal;
             _editor.SelectedTexture = selectedTexture;
         }
 
@@ -622,7 +624,7 @@ namespace TombEditor
         private void butInvisible_Click(object sender, EventArgs e)
         {
             var selectedTexture = _editor.SelectedTexture;
-            selectedTexture.Invisible = butInvisible.Checked;
+            selectedTexture.Texture = TextureInvisible.Instance;
             _editor.SelectedTexture = selectedTexture;
         }
 
@@ -855,6 +857,13 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 1, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
+
+                case Keys.OemMinus: // US keyboard key in documentation
+                case Keys.Oemplus:
+                case Keys.Oem3: // US keyboard key for a texture triangle rotation
+                case Keys.Oem5: // German keyboard key for a texture triangle rotation
+                    EditorActions.RotateSelectedTexture();
+                    break;
             }
 
             // Set camera relocation mode based on previous inputs
@@ -891,22 +900,25 @@ namespace TombEditor
         
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!ResourceLoader.BrowseTextureFile(_editor.Level.Settings, this))
+            var settings = _editor.Level.Settings;
+            string path = ResourceLoader.BrowseTextureFile(settings, settings.TextureFilePath, this);
+            if (settings.TextureFilePath == path)
                 return;
-            _editor.Level.ReloadTexture();
+
+            settings.TextureFilePath = path;
             _editor.LoadedTexturesChange();
         }
         
         private void unloadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.Settings.TextureFilePath = null;
-            _editor.Level.ReloadTexture();
+            foreach (var texture in _editor.Level.Settings.Textures)
+                texture.SetPath(_editor.Level.Settings, "");
             _editor.LoadedTexturesChange();
         }
 
         private void reloadTexturesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.ReloadTexture();
+            _editor.Level.ReloadLevelTextures();
             _editor.LoadedTexturesChange();
         }
 
@@ -927,18 +939,21 @@ namespace TombEditor
 
         private void importConvertTextureToPng_Click(object sender, EventArgs e)
         {
-            if (_editor.Level == null)
-                return;
-            if (_editor.Level.Settings.LevelFilePath == null)
+            if ((_editor.Level == null) || (_editor.Level.Settings.Textures.Count == 0))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Currently there is no texture loaded to convert it.",
-                    "No texture loaded");
+                DarkUI.Forms.DarkMessageBox.ShowError("Currently there is no texture loaded to convert it.", "No texture loaded");
                 return;
             }
 
-            string pngFilePath = Path.Combine(
-                Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath),
-                Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath) + ".png");
+            LevelTexture texture = _editor.Level.Settings.Textures[0];
+            if (texture.ImageLoadException != null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("The texture that should be converted to *.png could not be loaded. " + texture.ImageLoadException.Message, "Error");
+                return;
+            }
+            
+            string currentTexturePath = _editor.Level.Settings.MakeAbsolute(texture.Path);
+            string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
 
             if (File.Exists(pngFilePath))
             {
@@ -947,50 +962,21 @@ namespace TombEditor
                         "File exist already", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                     return;
             }
+            texture.Image.Save(pngFilePath);
 
-            logger.Debug("Converting texture map to PNG format");
-
-            {
-                Stopwatch watch = new Stopwatch();
-                watch.Start();
-
-                try
-                {
-                    //Convert...
-                    Bitmap bitmap = TombLib.Graphics.TextureLoad.LoadToBitmap(_editor.Level.Settings.LevelFilePath);
-                    try
-                    {
-                        Utils.ConvertTextureTo256Width(ref bitmap);
-                        bitmap.Save(pngFilePath, System.Drawing.Imaging.ImageFormat.Png);
-                    }
-                    finally
-                    {
-                        bitmap.Dispose();
-                    }
-                }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "There was an error while converting TGA in PNG format.");
-                    DarkUI.Forms.DarkMessageBox.ShowError("There was an error while converting TGA in PNG format. " + exc.Message, "Error");
-                    return;
-                }
-
-                watch.Stop();
-
-                logger.Info("Texture map converted");
-                logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
-            }
-
-            DarkUI.Forms.DarkMessageBox.ShowInformation(
-                "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
-            _editor.Level.Settings.TextureFilePath = pngFilePath;
+            DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
+            texture.SetPath(_editor.Level.Settings, pngFilePath);
             _editor.LoadedTexturesChange();
         }
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!ResourceLoader.BrowseObjectFile(_editor.Level.Settings, this))
+            var settings = _editor.Level.Settings;
+            string path = ResourceLoader.BrowseObjectFile(settings, settings.WadFilePath, this);
+            if (path == settings.WadFilePath)
                 return;
+
+            settings.WadFilePath = path;
             _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(_editor.Level.Wad);
         }
@@ -1485,8 +1471,8 @@ namespace TombEditor
             // Add lara to current sector
             {
                 var room = _editor.SelectedRoom;
-                int y = room.GetHighestFloorCorner(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.Start.Y);
-                lara.Position = new Vector3(_editor.SelectedSectors.Start.X * 1024 + 512, y * 256, _editor.SelectedSectors.Start.Y * 1024 + 512);
+                var block = room.GetBlock(_editor.SelectedSectors.Start);
+                lara.Position = new Vector3(_editor.SelectedSectors.Start.X * 1024 + 512, block.FloorMax * 256, _editor.SelectedSectors.Start.Y * 1024 + 512);
                 room.AddObject(_editor.Level, lara);
                 _editor.ObjectChange(lara);
             }
@@ -1826,7 +1812,7 @@ namespace TombEditor
         {
             var tempColors = new List<int>();
 
-            var bmp = (Bitmap)Image.FromFile("Editor\\Palette.png");
+            var bmp = (Bitmap)System.Drawing.Image.FromFile("Editor\\Palette.png");
             for (int y = 2; y < bmp.Height; y += 14)
             {
                 for (int x = 2; x < bmp.Width; x += 14)

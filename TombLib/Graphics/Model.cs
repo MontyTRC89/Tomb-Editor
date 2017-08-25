@@ -159,7 +159,7 @@ namespace TombLib.Graphics
         {
             SkinnedVertex newVertex = new SkinnedVertex();
 
-            newVertex.Position = new Vector4(v.X, -v.Y, v.Z, 1);
+            newVertex.Position = new Vector3(v.X, -v.Y, v.Z);
             newVertex.Normal = Vector3.Zero;
             newVertex.Tangent = Vector3.Zero;
             newVertex.Binormal = Vector3.Zero;
@@ -175,7 +175,7 @@ namespace TombLib.Graphics
         {
             StaticVertex newVertex = new StaticVertex();
 
-            newVertex.Position = new Vector4(v.X, -v.Y, v.Z, 1);
+            newVertex.Position = new Vector3(v.X, -v.Y, v.Z);
             newVertex.Normal = Vector3.Zero;
             newVertex.UV = uv;
 

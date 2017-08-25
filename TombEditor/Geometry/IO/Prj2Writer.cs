@@ -254,7 +254,7 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(b.NoCollisionFloor);
                                 writer.Write(b.NoCollisionCeiling);
 
-                                foreach (var f in b.Faces)
+                                foreach (var f in b.FaceTextures)
                                 {
                                     writer.Write(f.Defined);
                                     writer.Write(f.Flipped);

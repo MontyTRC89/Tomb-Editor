@@ -1,6 +1,6 @@
 ﻿struct VertexInputType
 {
-	float4 Position : POSITION0;
+	float3 Position : POSITION0;
 	float2 UV : TEXCOORD0;
 	float3 Normal : NORMAL0;
 	float2 Shade : TEXCOORD1;
@@ -17,12 +17,6 @@ float4x4 ModelViewProjection;
 
 float4 Color;
 bool TextureEnabled;
-bool SelectionEnabled;
-bool EditorTextureEnabled;
-bool LightEnabled;
-
-int Shape;
-int SplitMode;
 
 Texture2D Texture;
 sampler TextureSampler;
@@ -30,7 +24,7 @@ sampler TextureSampler;
 PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
-	output.Position = mul(input.Position, ModelViewProjection);
+	output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
 	output.UV = input.UV;
 	output.Shade = input.Shade;
 	return output;
@@ -43,7 +37,8 @@ float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel = float4(input.UV.x, input.UV.y, input.UV.x, 1.0f);
 	
-	if (TextureEnabled) pixel = Texture.Sample(TextureSampler, input.UV);
+	if (TextureEnabled)
+		pixel = Texture.Sample(TextureSampler, input.UV);
 
 	return pixel;
 }

@@ -188,7 +188,8 @@ namespace TombEditor
                 fontTextureFilePathPicPreviewCurrentPath = fontPath;
                 try
                 {
-                    fontTextureFilePathPicPreview.Image = Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontPath);
+                    fontTextureFilePathPicPreview.Image?.Dispose();
+                    fontTextureFilePathPicPreview.Image = ResourceLoader.LoadRawExtraTexture(fontPath).ToBitmap();
                     fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
@@ -210,7 +211,8 @@ namespace TombEditor
                 skyTextureFilePathPicPreviewCurrentPath = skyPath;
                 try
                 {
-                    skyTextureFilePathPicPreview.Image = Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyPath);
+                    skyTextureFilePathPicPreview.Image?.Dispose();
+                    skyTextureFilePathPicPreview.Image = ResourceLoader.LoadRawExtraTexture(skyPath).ToBitmap();
                     skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
@@ -298,8 +300,12 @@ namespace TombEditor
 
         private void textureFilePathBut_Click(object sender, EventArgs e)
         {
-            if (ResourceLoader.BrowseTextureFile(_levelSettings, this))
+            string path = ResourceLoader.BrowseTextureFile(_levelSettings, _levelSettings.TextureFilePath, this);
+            if (path != _levelSettings.TextureFilePath)
+            {
+                _levelSettings.TextureFilePath = path;
                 UpdateDialog();
+            }
         }
 
         // Object file (*.wad) path
@@ -314,8 +320,12 @@ namespace TombEditor
 
         private void wadFilePathBut_Click(object sender, EventArgs e)
         {
-            if (ResourceLoader.BrowseObjectFile(_levelSettings, this))
+            string path = ResourceLoader.BrowseObjectFile(_levelSettings, _levelSettings.WadFilePath, this);
+            if (path != _levelSettings.WadFilePath)
+            {
+                _levelSettings.WadFilePath = path;
                 UpdateDialog();
+            }
         }
 
         // Font Texture

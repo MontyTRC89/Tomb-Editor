@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry
 {
@@ -41,8 +42,20 @@ namespace TombEditor.Geometry
         SW = 4
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public enum BlockFace : byte
+    {
+        NorthQA = 0, SouthQA = 1, WestQA = 2, EastQA = 3, DiagonalQA = 4,
+        NorthED = 5, SouthED = 6, WestED = 7, EastED = 8, DiagonalED = 9,
+        NorthMiddle = 10, SouthMiddle = 11, WestMiddle = 12, EastMiddle = 13, DiagonalMiddle = 14,
+        NorthWS = 15, SouthWS = 16, WestWS = 17, EastWS = 18, DiagonalWS = 19,
+        NorthRF = 20, SouthRF = 21, WestRF = 22, EastRF = 23, DiagonalRF = 24,
+        Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
+    }
+
     public class Block
     {
+        public const BlockFace FaceCount = (BlockFace)29;
         /// <summary> Index of faces on the negative X and positive Z direction </summary>
         public const int FaceXnZp = 0;
         /// <summary> Index of faces on the positive X and positive Z direction </summary>
@@ -66,32 +79,26 @@ namespace TombEditor.Geometry
         public short[] WSFaces { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
         public short[] RFFaces { get; } = new short[4];
-        public BlockFace[] Faces { get; } = new BlockFace[29];
+        private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
         public bool FloorSplitDirectionToggled { get; set; } = false;
         public bool CeilingSplitDirectionToggled { get; set; } = false;
-        public bool FloorIsSplit { get; set; } = false;
-        public bool CeilingIsSplit { get; set; } = false;
-        public PortalOpacity FloorOpacity { get; set; }
-        public PortalOpacity CeilingOpacity { get; set; }
-        public PortalOpacity WallOpacity { get; set; }
-        public Portal FloorPortal { get; set; } = null; // This array is not supposed to be modified here.
-        public Portal WallPortal { get; set; } = null; // This array is not supposed to be modified here.
-        public Portal CeilingPortal { get; set; } = null; // This array is not supposed to be modified here.
-        public short FloorSlopeX { get; set; } // To remove since information is confusing and redundant
-        public short FloorSlopeZ { get; set; } // To remove since information is confusing and redundant
-        public short CeilingSlopeX { get; set; } // To remove since information is confusing and redundant
-        public short CeilingSlopeZ { get; set; } // To remove since information is confusing and redundant
-        public bool NoCollisionFloor { get; set; }
-        public bool NoCollisionCeiling { get; set; }
-        public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
+
         public DiagonalSplit FloorDiagonalSplit { get; set; }
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
 
+        public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
+
+        public PortalOpacity FloorOpacity { get; set; }
+        public PortalOpacity CeilingOpacity { get; set; }
+        public PortalOpacity WallOpacity { get; set; }
+        public Portal FloorPortal { get; set; } = null; // This is not supposed to be modified here.
+        public Portal WallPortal { get; set; } = null; // This is not supposed to be modified here.
+        public Portal CeilingPortal { get; set; } = null; // This is not supposed to be modified here.
+        public bool NoCollisionFloor { get; set; }
+        public bool NoCollisionCeiling { get; set; }
+        
         public Block(int floor, int ceiling)
         {
-            for (int i = 0; i < 29; i++)
-                Faces[i] = new BlockFace();
-
             for (int i = 0; i < 4; i++)
             {
                 QAFaces[i] = (short)floor;
@@ -100,7 +107,7 @@ namespace TombEditor.Geometry
                 RFFaces[i] = (short)ceiling;
             }
         }
-        
+
         public Block Clone()
         {
             var b = new Block(0, 0);
@@ -116,20 +123,20 @@ namespace TombEditor.Geometry
 
             b.Flags = Flags;
             b.Type = Type;
-            
-            b.FloorIsSplit = FloorIsSplit;
             b.FloorSplitDirectionToggled = FloorSplitDirectionToggled;
-            
-            b.CeilingIsSplit = CeilingIsSplit;
             b.CeilingSplitDirectionToggled = CeilingSplitDirectionToggled;
-
-            b.FloorSlopeX = FloorSlopeX;
-            b.FloorSlopeZ = FloorSlopeZ;
-
-            b.CeilingSlopeX = CeilingSlopeX;
-            b.CeilingSlopeZ = CeilingSlopeZ;
             
             return b;
+        }
+
+        public void SetFaceTexture(BlockFace face, TextureArea texture)
+        {
+            _faceTextures[(int)face] = texture;
+        }
+
+        public TextureArea GetFaceTexture(BlockFace face)
+        {
+            return _faceTextures[(int)face];
         }
 
         public bool IsFloor => Type == BlockType.Floor;
@@ -180,12 +187,10 @@ namespace TombEditor.Geometry
 
         private static int FindHorizontalTriangle(int h1, int h2, int h3, int h4)
         {
-            const int x = 0;
-            const int z = 0;
-            var p1 = new Vector3(x * 1024.0f, h1 * 256.0f, z * 1024.0f);
-            var p2 = new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f);
-            var p3 = new Vector3((x + 1) * 1024.0f, h3 * 256.0f, (z + 1) * 1024.0f);
-            var p4 = new Vector3(x * 1024.0f, h4 * 256.0f, (z + 1) * 1024.0f);
+            var p1 = new Vector3(0, h1, 0);
+            var p2 = new Vector3(1, h2, 0);
+            var p3 = new Vector3(1, h3, 1);
+            var p4 = new Vector3(0, h4, 1);
 
             var plane = new Plane(p1, p2, p4);
             if (plane.Normal == Vector3.UnitY || plane.Normal == -Vector3.UnitY)
@@ -206,7 +211,7 @@ namespace TombEditor.Geometry
             return -1;
         }
 
-        public bool FloorSplitRealDirection
+        public bool FloorSplitDirectionIsXEqualsY
         {
             get
             {
@@ -246,9 +251,14 @@ namespace TombEditor.Geometry
 
                 return FloorSplitDirectionToggled;
             }
+            set
+            {
+                if (value != FloorSplitDirectionIsXEqualsY)
+                    FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
+            }
         }
 
-        public bool CeilingSplitRealDirection
+        public bool CeilingSplitDirectionIsXEqualsY
         {
             get
             {
@@ -288,6 +298,28 @@ namespace TombEditor.Geometry
 
                 return CeilingSplitDirectionToggled;
             }
+            set
+            {
+                if (value != CeilingSplitDirectionIsXEqualsY)
+                    CeilingSplitDirectionToggled = !CeilingSplitDirectionToggled;
+            }
         }
+
+        public static bool IsQuad(int hXnZp, int hXpZp, int hXpZn, int hXnZn)
+        {
+            return (hXpZp - hXpZn) == (hXnZp - hXnZn) &&
+                (hXpZp - hXnZp) == (hXpZn - hXnZn);
+        }
+
+        public bool FloorIsQuad => IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
+        public bool CeilingIsQuad => IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
+        public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
+        public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
+        public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;
+        public int CeilingIfQuadSlopeZ => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXpZn] : 0;
+        public short FloorMax => Math.Max(Math.Max(QAFaces[0], QAFaces[1]), Math.Max(QAFaces[2], QAFaces[3]));
+        public short FloorMin => Math.Min(Math.Min(QAFaces[0], QAFaces[1]), Math.Min(QAFaces[2], QAFaces[3]));
+        public short CeilingMax => Math.Max(Math.Max(WSFaces[0], WSFaces[1]), Math.Max(WSFaces[2], WSFaces[3]));
+        public short CeilingMin => Math.Min(Math.Min(WSFaces[0], WSFaces[1]), Math.Min(WSFaces[2], WSFaces[3]));
     }
 }

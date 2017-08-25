@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Drawing;
+﻿using NLog;
 using SharpDX.Toolkit.Graphics;
-using TombLib.Wad;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using NLog;
-using System.Drawing.Imaging;
+using System.Linq;
+using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
@@ -19,12 +17,6 @@ namespace TombEditor.Geometry
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public Wad Wad { get; private set; }
         public LevelSettings Settings { get; set; } = new LevelSettings();
-
-        public Dictionary<int, LevelTexture> TextureSamples { get; } = new Dictionary<int, LevelTexture>(); //Texture tiles
-        public Dictionary<int, Texture2D> DirectXTextures { get; } = new Dictionary<int, Texture2D>(); //For now just one texture atlas 2048x2048 pixel
-        public Bitmap TextureMap { get; private set; } //The texture map on the CPU
-        public List<AnimatedTextureSet> AnimatedTextures { get; } = new List<AnimatedTextureSet>();
-        public List<TextureSound> TextureSounds { get; } = new List<TextureSound>();
         
         public static Level CreateSimpleLevel()
         {
@@ -71,183 +63,19 @@ namespace TombEditor.Geometry
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
         }
-
-        public int AddTexture(short x, short y, short w, short h, bool isDoubleSided, bool isTransparent)
-        {
-            short newX = x;
-            short newY = y;
-
-            // Step 1: check if there's another texture already in the list
-            foreach (var texture in TextureSamples.Values)
-            {
-                if (texture.X == newX && (texture.Y + 256 * texture.Page) == newY && texture.Width == w &&
-                    texture.Height == h
-                    && texture.DoubleSided == isDoubleSided && texture.Transparent == isTransparent)
-                    return texture.Id;
-            }
-
-            // Step 2: get the new texture ID
-            int id = -1;
-            for (int i = 0; i < TextureSamples.Count; i++)
-            {
-                if (!TextureSamples.ContainsKey(i) && id == -1)
-                    id = i;
-            }
-
-            if (id == -1)
-                id = TextureSamples.Count;
-
-            // Step 3: if no compatible texture is found, then add a new texture tile
-            short page = (short)Math.Floor(y / 256.0f);
-            var newTexture = new LevelTexture
-            {
-                X = newX,
-                Y = (short)(newY - page * 256),
-                Width = w,
-                Height = h,
-                Page = page,
-                Id = id,
-                Transparent = isTransparent,
-                DoubleSided = isDoubleSided,
-                AlphaTest = Utils.HasTrasparency(Editor.Instance.Level.TextureMap, newX, newY, w, h)
-            };
-
-            TextureSamples.Add(id, newTexture);
-
-            return id;
-        }
-
-        public void RebuildAllAlphaTests()
-        {
-            if (TextureMap == null)
-                return;
-
-            for (int i = 0; i < TextureSamples.Count; i++)
-            {
-                LevelTexture texture = TextureSamples.ElementAt(i).Value;
-
-                texture.AlphaTest = Utils.HasTrasparency(TextureMap,
-                                                         texture.X,
-                                                         texture.Y + 256 * texture.Page,
-                                                         texture.Width,
-                                                         texture.Height);
-
-                TextureSamples[TextureSamples.ElementAt(i).Key] = texture;
-            }
-        }
-
+        
         public void Dispose()
         {
-            UnloadTexture();
             UnloadWad();
         }
-
-        private void UnloadTexture()
-        {
-            logger.Info("Reseting texture");
-            TextureMap?.Dispose();
-            TextureMap = null;
-            foreach (var texture in DirectXTextures)
-                texture.Value.Dispose();
-            DirectXTextures.Clear();
-        }
-
+        
         private void UnloadWad()
         {
             logger.Info("Reseting wad");
             Wad?.Dispose();
             Wad = null;
         }
-
-        public void ReloadTexture()
-        {
-            string path = Settings.MakeAbsolute(Settings.TextureFilePath);
-            if (string.IsNullOrEmpty(path))
-            {
-                UnloadTexture();
-                return;
-            }
-
-            logger.Info("Loading texture");
-
-            var watch = new Stopwatch();
-            watch.Start();
-
-            using (var oldTexture = TextureMap) //Free old texture map afterwards...
-            {
-                var newTextureMap = TombLib.Graphics.TextureLoad.LoadToBitmap(path);
-                try
-                {
-                    Utils.ConvertTextureTo256Width(ref newTextureMap);
-
-                    // Calculate the number of pages
-                    int numPages = (int)Math.Floor(newTextureMap.Height / 256.0f);
-                    if (newTextureMap.Height % 256 != 0)
-                        numPages++;
-
-                    logger.Debug("Building 2048x2048 texture atlas for DirectX");
-
-                    // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel 
-                    // textures.
-                    using (var tempBitmap = new Bitmap(2048, 2048, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
-                    {
-                        tempBitmap.MakeTransparent(System.Drawing.Color.FromArgb(255, 255, 0, 255));
-                        ColorMap[] colorMap = new ColorMap[1];
-                        colorMap[0] = new ColorMap();
-                        colorMap[0].OldColor = Color.FromArgb(255, 255, 0, 255);
-                        colorMap[0].NewColor = Color.Transparent;
-                        ImageAttributes attr = new ImageAttributes();
-                        attr.SetRemapTable(colorMap);
-
-                        using (var g = Graphics.FromImage(tempBitmap))
-                        {
-                            int currentXblock = 0;
-                            int currentYblock = 0;
-                            for (int i = 0; i < numPages; i++)
-                            {
-                                var src = new System.Drawing.Rectangle(0, 256 * i, 256, 256);
-                                var dest = new System.Drawing.Rectangle(currentXblock * 256, currentYblock * 256, 256,
-                                    256);
-
-                                g.DrawImage(newTextureMap, dest, src.X, src.Y, src.Width, src.Height, GraphicsUnit.Pixel, attr);
-
-                                currentXblock++;
-                                if (currentXblock != 8)
-                                    continue;
-
-                                currentXblock = 0;
-                                currentYblock++;
-                            }
-                        }
-
-                        // Clean up DirectX texture
-                        if (DirectXTextures.ContainsKey(0))
-                        {
-                            logger.Debug("Cleaning memory used by a previous texture map");
-
-                            DirectXTextures[0].Dispose();
-                            DirectXTextures.Remove(0);
-                        }
-
-                        // Create DirectX texture
-
-                        DirectXTextures.Add(0, TombLib.Graphics.TextureLoad.LoadToTexture(DeviceManager.DefaultDeviceManager.Device, tempBitmap));
-                    }
-                }
-                catch (Exception)
-                {
-                    newTextureMap?.Dispose();
-                    throw;
-                }
-                TextureMap = newTextureMap;
-            }
-            
-            watch.Stop();
-
-            logger.Info("Texture map loaded");
-            logger.Info("    Elapsed time: " + watch.ElapsedMilliseconds + " ms");
-        }
-
+        
         public void ReloadWad()
         {
             string path = Settings.MakeAbsolute(Settings.WadFilePath);
@@ -273,20 +101,7 @@ namespace TombEditor.Geometry
                 Wad = newWad;
             }
         }
-
-        public void ReloadTextureTry()
-        {
-            try
-            {
-                ReloadTexture();
-            }
-            catch (Exception exc)
-            {
-                UnloadTexture();
-                logger.Warn(exc, "Unable to load texture from '" + Settings.MakeAbsolute(Settings.TextureFilePath) + "'");
-            }
-        }
-
+        
         public void ReloadObjectsTry()
         {
             try
@@ -299,7 +114,13 @@ namespace TombEditor.Geometry
                 logger.Warn(exc, "Unable to load objects from '" + Settings.MakeAbsolute(Settings.WadFilePath) + "'");
             }
         }
-        
+
+        public void ReloadLevelTextures()
+        {
+            foreach (var texture in Settings.Textures)
+                texture.Reload(Settings);
+        }
+
         public Room GetOrCreateDummyRoom(int index)
         {
             if (index < 0 || index >= Rooms.Length)

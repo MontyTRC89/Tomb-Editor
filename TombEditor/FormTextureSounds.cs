@@ -11,12 +11,15 @@ using TombEditor.Geometry;
 
 namespace TombEditor
 {
-    public partial class FormTextureSounds : DarkForm
+    public class FormTextureSounds : DarkForm
+    { }
+    /*public partial class FormTextureSounds : DarkForm
     {
-        private Editor _editor;
+        private LevelTexture _texture;
 
-        public FormTextureSounds()
+        public FormTextureSounds(LevelTexture texture)
         {
+            _texture = texture;
             InitializeComponent();
             picTextureMap.ContainerForm = this;
         }
@@ -29,10 +32,7 @@ namespace TombEditor
 
         private void FormTextureSounds_Load(object sender, EventArgs e)
         {
-            _editor = Editor.Instance;
-
             picTextureMap.Image = _editor.Level.TextureMap;
-
             comboSounds.SelectedIndex = 6;
         }
 
@@ -88,5 +88,5 @@ namespace TombEditor
                 picTextureMap.Refresh();
             }
         }
-    }
+    }*/
 }

@@ -112,35 +112,35 @@ namespace SharpDX.Toolkit.Graphics
             public static GeometricPrimitive New(GraphicsDevice device)
             {
                 EditorVertex v1 = new TombEditor.Geometry.EditorVertex();
-                v1.Position = new Vector4(-128.0f, -128.0f, -128.0f, 1.0f);
+                v1.Position = new Vector3(-128.0f, -128.0f, -128.0f);
                 v1.UV = Vector2.Zero;
 
                 EditorVertex v2 = new TombEditor.Geometry.EditorVertex();
-                v2.Position = new Vector4(128.0f, -128.0f, -128.0f, 1.0f);
+                v2.Position = new Vector3(128.0f, -128.0f, -128.0f);
                 v2.UV = Vector2.Zero;
 
                 EditorVertex v3 = new TombEditor.Geometry.EditorVertex();
-                v3.Position = new Vector4(128.0f, -128.0f, 128.0f, 1.0f);
+                v3.Position = new Vector3(128.0f, -128.0f, 128.0f);
                 v3.UV = Vector2.Zero;
 
                 EditorVertex v4 = new TombEditor.Geometry.EditorVertex();
-                v4.Position = new Vector4(-128.0f, -128.0f, 128.0f, 1.0f);
+                v4.Position = new Vector3(-128.0f, -128.0f, 128.0f);
                 v4.UV = Vector2.Zero;
 
                 EditorVertex v5 = new TombEditor.Geometry.EditorVertex();
-                v5.Position = new Vector4(-128.0f, 128.0f, -128.0f, 1.0f);
+                v5.Position = new Vector3(-128.0f, 128.0f, -128.0f);
                 v5.UV = Vector2.Zero;
 
                 EditorVertex v6 = new TombEditor.Geometry.EditorVertex();
-                v6.Position = new Vector4(128.0f, 128.0f, -128.0f, 1.0f);
+                v6.Position = new Vector3(128.0f, 128.0f, -128.0f);
                 v6.UV = Vector2.Zero;
 
                 EditorVertex v7 = new TombEditor.Geometry.EditorVertex();
-                v7.Position = new Vector4(128.0f, 128.0f, 128.0f, 1.0f);
+                v7.Position = new Vector3(128.0f, 128.0f, 128.0f);
                 v7.UV = Vector2.Zero;
 
                 EditorVertex v8 = new TombEditor.Geometry.EditorVertex();
-                v8.Position = new Vector4(-128.0f, 128.0f, 128.0f, 1.0f);
+                v8.Position = new Vector3(-128.0f, 128.0f, 128.0f);
                 v8.UV = Vector2.Zero;
 
                 var vertices = new EditorVertex[] { v1, v2, v3, v4, v5, v6, v7, v8 };

@@ -38,21 +38,21 @@ namespace TombEditor.Controls
 
             IsTextureSelected = true;
 
-            ContainerForm.SelectTexture();
+            //ContainerForm.SelectTexture();
 
             Invalidate();
         }
 
         private int GetTextureSound(int x, int y, int page)
         {
-            if (_editor == null || _editor.Level == null) return -1;
+            /*if (_editor == null || _editor.Level == null) return -1;
 
             for (int i = 0; i < _editor.Level.TextureSounds.Count; i++)
             {
                 TextureSound txtSound = _editor.Level.TextureSounds[i];
 
                 if (txtSound.X == x && txtSound.Y == y && txtSound.Page == page) return i;
-            }
+            }*/
 
             return -1;
         }
@@ -88,76 +88,77 @@ namespace TombEditor.Controls
                     }
                     else
                     {
-                        TextureSounds sound = _editor.Level.TextureSounds[txtId].Sound;
+                        //TextureSounds sound = _editor.Level.TextureSounds[txtId].Sound;
+                        TextureSound sound = TextureSound.Gravel;
 
                         switch (sound)
                         {
-                            case TextureSounds.Concrete:
+                            case TextureSound.Concrete:
                                 soundName = "Concrete";
                                 color = Brushes.Brown;
                                 break;
 
-                            case TextureSounds.Grass:
+                            case TextureSound.Grass:
                                 color = Brushes.Green;
                                 soundName = "Grass";
                                 break;
 
-                            case TextureSounds.Gravel:
+                            case TextureSound.Gravel:
                                 color = Brushes.Gray;
                                 soundName = "Gravel";
                                 break;
 
-                            case TextureSounds.Ice:
+                            case TextureSound.Ice:
                                 color = Brushes.Blue;
                                 soundName = "Ice";
                                 break;
 
-                            case TextureSounds.Marble:
+                            case TextureSound.Marble:
                                 color = Brushes.Brown;
                                 soundName = "Marble";
                                 break;
 
-                            case TextureSounds.Metal:
+                            case TextureSound.Metal:
                                 color = Brushes.Gray;
                                 soundName = "Metal";
                                 break;
 
-                            case TextureSounds.Mud:
+                            case TextureSound.Mud:
                                 color = Brushes.Brown;
                                 soundName = "Mud";
                                 break;
 
-                            case TextureSounds.OldMetal:
+                            case TextureSound.OldMetal:
                                 color = Brushes.LightCoral;
                                 soundName = "OldMetal";
                                 break;
 
-                            case TextureSounds.OldWood:
+                            case TextureSound.OldWood:
                                 color = Brushes.BurlyWood;
                                 soundName = "OldWood";
                                 break;
 
-                            case TextureSounds.Sand:
+                            case TextureSound.Sand:
                                 color = Brushes.SandyBrown;
                                 soundName = "Sand";
                                 break;
 
-                            case TextureSounds.Snow:
+                            case TextureSound.Snow:
                                 color = Brushes.Blue;
                                 soundName = "Snow";
                                 break;
 
-                            case TextureSounds.Stone:
+                            case TextureSound.Stone:
                                 color = Brushes.Brown;
                                 soundName = "Stone";
                                 break;
 
-                            case TextureSounds.Water:
+                            case TextureSound.Water:
                                 color = Brushes.Blue;
                                 soundName = "Water";
                                 break;
 
-                            case TextureSounds.Wood:
+                            case TextureSound.Wood:
                                 color = Brushes.BurlyWood;
                                 soundName = "Wood";
                                 break;

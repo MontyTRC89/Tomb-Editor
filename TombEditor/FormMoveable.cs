@@ -44,7 +44,8 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (!Utils.IsIntegerNumber(tbOCB.Text))
+            short ocb;
+            if (!short.TryParse(tbOCB.Text, out ocb))
             {
                 MessageBox.Show("The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -61,7 +62,7 @@ namespace TombEditor
             _movable.Invisible = cbInvisible.Checked;
             _movable.ClearBody = cbClearBody.Checked;
 
-            _movable.Ocb = Int16.Parse(tbOCB.Text);
+            _movable.Ocb = ocb;
 
             DialogResult = DialogResult.OK;
             this.Close();

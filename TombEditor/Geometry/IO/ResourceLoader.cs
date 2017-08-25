@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {
@@ -12,14 +13,14 @@ namespace TombEditor.Geometry.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static bool BrowseTextureFile(LevelSettings settings, IWin32Window owner)
+        public static string BrowseTextureFile(LevelSettings settings, string texturePath, IWin32Window owner)
         {
-            string path = settings.MakeAbsolute(settings.TextureFilePath);
+            string path = settings.MakeAbsolute(texturePath);
             using (var dialog = new OpenFileDialog())
             {
                 dialog.CheckFileExists = true;
                 dialog.CheckPathExists = true;
-                if (!string.IsNullOrEmpty(settings.TextureFilePath))
+                if (!string.IsNullOrEmpty(texturePath))
                 {
                     dialog.InitialDirectory = Path.GetDirectoryName(path);
                     dialog.FileName = Path.GetFileName(path);
@@ -36,20 +37,19 @@ namespace TombEditor.Geometry.IO
                 dialog.Title = "Load texture map";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
-                    return false;
-                settings.TextureFilePath = settings.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
+                    return texturePath;
+                return settings.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
             }
-            return true;
         }
 
-        public static bool BrowseObjectFile(LevelSettings settings, IWin32Window owner)
+        public static string BrowseObjectFile(LevelSettings settings, string wadPath, IWin32Window owner)
         {
-            string path = settings.MakeAbsolute(settings.WadFilePath);
+            string path = settings.MakeAbsolute(wadPath);
             using (var dialog = new OpenFileDialog())
             {
                 dialog.CheckFileExists = true;
                 dialog.CheckPathExists = true;
-                if (!string.IsNullOrEmpty(settings.WadFilePath))
+                if (!string.IsNullOrEmpty(wadPath))
                 {
                     dialog.InitialDirectory = Path.GetDirectoryName(path);
                     dialog.FileName = Path.GetFileName(path);
@@ -61,72 +61,51 @@ namespace TombEditor.Geometry.IO
                 dialog.Title = "Load object file (WAD)";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
-                    return false;
-                settings.WadFilePath = settings.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
+                    return wadPath;
+                return settings.MakeRelative(dialog.FileName, VariableType.LevelDirectory);
             }
-            return true;
         }
 
-        public static void TryLoadingTexture(Level level, IProgressReporter progressReporter)
+        public static void CheckLoadedTexture(LevelSettings settings, LevelTexture texture, IProgressReporter progressReporter)
         {
-            if (string.IsNullOrEmpty(level.Settings.TextureFilePath))
-                return;
-
-            bool retry;
-            do
-            {
-                retry = false;
-
-                // Try loading the file
-                try
-                {
-                    level.ReloadTexture();
-                }
-                catch (Exception exc)
-                {
-                    string path = level.Settings.MakeAbsolute(level.Settings.TextureFilePath);
-                    logger.Warn(exc, "Unable to load texture file \"" + path + "\".");
-
-                    progressReporter.InvokeGui(delegate (IWin32Window owner)
+            while (texture.ImageLoadException != null)
+                progressReporter.InvokeGui(delegate (IWin32Window owner)
+                    {
+                        switch (MessageBox.Show(owner, "The texture file '" + settings.MakeAbsolute(texture.Path) +
+                            " could not be loaded: " + texture.ImageLoadException.Message + ". \n" +
+                            "Do you want to load a substituting file now?", "Open project",
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                         {
-                            switch (MessageBox.Show(owner, "The texture file '" + path + " could not be loaded. " +
-                                "Do you want to load a substituting file now?", "Open project",
-                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
-                            {
-                                case DialogResult.Yes:
-                                    if (BrowseTextureFile(level.Settings, owner))
-                                        retry = true;
-                                    break;
-                                case DialogResult.No:
-                                    break;
-                                case DialogResult.Cancel:
-                                    throw new OperationCanceledException("Canceled because texture was not loadable");
-                            }
-                        });
-                }
-            } while (retry);
+                            case DialogResult.Yes:
+                                texture.SetPath(settings, BrowseTextureFile(settings, texture.Path, owner));
+                                break;
+                            case DialogResult.No:
+                                break;
+                            case DialogResult.Cancel:
+                                throw new OperationCanceledException("Canceled because texture was not loadable");
+                        }
+                    });
         }
 
         public static void TryLoadingObjects(Level level, IProgressReporter progressReporter)
         {
             if (string.IsNullOrEmpty(level.Settings.WadFilePath))
                 return;
-
-            bool retry;
+            
             do
             {
-                retry = false;
-
                 // Try loading the file
                 try
                 {
                     level.ReloadWad();
+                    return;
                 }
                 catch (Exception exc)
                 {
                     string path = level.Settings.MakeAbsolute(level.Settings.WadFilePath);
                     logger.Warn(exc, "Unable to load object file \"" + path + "\".");
 
+                    bool retry = false;
                     progressReporter.InvokeGui(delegate (IWin32Window owner)
                         {
                             switch (MessageBox.Show(owner, "The *.wad file '" + path + " could not be loaded. " +
@@ -134,8 +113,8 @@ namespace TombEditor.Geometry.IO
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                             {
                                 case DialogResult.Yes:
-                                    if (BrowseObjectFile(level.Settings, owner))
-                                        retry = true;
+                                    string browsedPath = BrowseObjectFile(level.Settings, level.Settings.WadFilePath, owner);
+                                    retry = browsedPath != level.Settings.WadFilePath;
                                     break;
                                 case DialogResult.No:
                                     break;
@@ -143,52 +122,45 @@ namespace TombEditor.Geometry.IO
                                     throw new OperationCanceledException("Canceled because *.wad was not loadable");
                             }
                         });
+                    if (!retry)
+                        return;
                 }
-            } while (retry);
+            } while (true);
         }
 
-        public static Bitmap LoadRawExtraTexture(string path)
+        public static ImageC LoadRawExtraTexture(string path)
         {
             using (FileStream reader = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                Bitmap bmp = null;
-                try
-                {
-                    if (path.EndsWith(".raw"))
-                    {
-                        // Raw file: 256² pixels with 24 bpp
-                        byte[] data = new byte[256 * 256 * 3];
-                        reader.Read(data, 0, data.Length);
+                ImageC image;
 
-                        bmp = new Bitmap(256, 256, PixelFormat.Format24bppRgb);
-                        BitmapData lockData = bmp.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-                        System.Runtime.InteropServices.Marshal.Copy(data, 0, lockData.Scan0, data.Length);
-                        bmp.UnlockBits(lockData);
-                    }
-                    else if (path.EndsWith(".pc"))
-                    {
-                        // Raw file: 256² pixels with 32 bpp
-                        byte[] data = new byte[256 * 256 * 4];
-                        reader.Read(data, 0, data.Length);
-                        
-                        bmp = new Bitmap(256, 256, PixelFormat.Format32bppArgb);
-                        BitmapData lockData = bmp.LockBits(new Rectangle(0, 0, 256, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-                        System.Runtime.InteropServices.Marshal.Copy(data, 0, lockData.Scan0, data.Length);
-                        bmp.UnlockBits(lockData);
-                    }
-                    else
-                        bmp = TombLib.Graphics.TextureLoad.LoadToBitmap(reader);
-
-                    if ((bmp.Width != 256) || (bmp.Height != 256))
-                        throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
-                            "(The current texture '" + path + "' is " + bmp.Width + " by " + bmp.Height + " pixels)");
-                }
-                catch
+                if (path.EndsWith(".raw"))
                 {
-                    bmp?.Dispose();
-                    throw;
+                    // Raw file: 256² pixels with 24 bpp
+                    byte[] data = new byte[256 * 256 * 3];
+                    reader.Read(data, 0, data.Length);
+
+                    image = ImageC.CreateNew(256, 256);
+                    for (int i = 0; i < 256 * 256; ++i)
+                        image.Set(i, data[i * 3 + 2], data[i * 3 + 1], data[i * 3]);
                 }
-                return bmp;
+                else if (path.EndsWith(".pc"))
+                {
+                    // Raw file: 256² pixels with 32 bpp
+                    byte[] data = new byte[256 * 256 * 4];
+                    reader.Read(data, 0, data.Length);
+
+                    image = ImageC.CreateNew(256, 256);
+                    for (int i = 0; i < 256 * 256; ++i)
+                        image.Set(i, data[i * 4 + 2], data[i * 4 + 1], data[i * 4], data[i * 4 + 3]);
+                }
+                else
+                    image = ImageC.FromStream(reader);
+
+                if ((image.Width != 256) || (image.Height != 256))
+                    throw new NotSupportedException("The texture's size must be 256 by 256 pixels. " +
+                        "(The current texture '" + path + "' is " + image.Width + " by " + image.Height + " pixels)");
+                return image;
             }
         }
     }

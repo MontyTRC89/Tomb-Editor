@@ -1,6 +1,6 @@
 ﻿struct VertexInputType
 {
-    float4 Position : POSITION0;
+    float3 Position : POSITION0;
     float2 UV : TEXCOORD0;
 	float3 Normal : NORMAL0;
 	float4 Color : COLOR0;
@@ -11,30 +11,23 @@ struct PixelInputType
 {
     float4 Position : SV_POSITION;
 	float2 UV : TEXCOORD0;
-	float2 EditorUV : TEXCOORD1;
 	float4 Color : COLOR0;
 	float4 WorldPosition : TEXCOORD2;
 };
 
 float4x4 ModelViewProjection;
 float4x4 Model;
+float LineWidth;
 
 float4 Color;
-float3 CameraPosition;
 
+bool DrawSectorOutlinesAndUseEditorUV;
 bool TextureEnabled;
-bool SelectionEnabled;
-bool EditorTextureEnabled;
-bool InvisibleFaceEnabled;
-bool LightingEnabled;
-
-int Shape;
-int SplitMode;
-
-bool Saved;
+bool UseVertexColors;
 
 Texture2D Texture;
 sampler TextureSampler;
+float2 TextureCoordinateFactor;
 
 bool FogBulbEnabled;
 float4 FogBulbPosition;
@@ -44,12 +37,19 @@ float FogBulbIntensity;
 PixelInputType VS(VertexInputType input)
 {
     PixelInputType output;
-    output.Position = mul(input.Position, ModelViewProjection);
-	output.WorldPosition = mul(input.Position, Model);
-	output.UV = input.UV;
-	output.EditorUV = input.EditorUV;
-	output.Color = input.Color * (1.0f / 255.0f);
+    output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
+	output.WorldPosition = mul(float4(input.Position, 1.0f), Model);
+	output.UV = DrawSectorOutlinesAndUseEditorUV ? input.EditorUV : (input.UV * TextureCoordinateFactor);
+	if (UseVertexColors)
+		output.Color = input.Color * (1.0f / 128.0f);
+	else 
+		output.Color = Color;
     return output;
+}
+
+float ddAny(float value) 
+{
+	return length(float2(ddx(value), ddy(value)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -57,74 +57,54 @@ PixelInputType VS(VertexInputType input)
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS(PixelInputType input) : SV_TARGET
 {
-	if (Saved)
-	{
-		return float4(0, 1, 0, 1);
-	}
+	// Gather texture data
+	float4 result;
+	if (TextureEnabled)
+		result = Texture.Sample(TextureSampler, abs(input.UV));
 	else
+		result = float4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// Apply color
+	float3 colorAdd = clamp(input.Color.xyz - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
+	float3 colorMul = min(input.Color.xyz, 1.0f);
+	result.xyz = result.xyz * colorMul + colorAdd;
+	result.w *= input.Color.w;
+
+	// Draw outline
+	if (DrawSectorOutlinesAndUseEditorUV)
 	{
-		float2 uv = EditorTextureEnabled ? input.EditorUV : input.UV;
+		float2 absUV = abs(input.UV);
 		
-		float4 pixel;
-		if (TextureEnabled)
-		{
-			pixel = Texture.Sample(TextureSampler, uv);
-			if (SelectionEnabled) pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
-			if (LightingEnabled)
-			{
-				float3 colorAdd = clamp(input.Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
-				float3 colorMul = min(input.Color.xyz * 2.0f, 1.0f);
-				pixel.xyz = pixel.xyz * colorMul + colorAdd;
+		float lineWidth = (LineWidth * 1024) / input.Position.w - 0.5f;
+		float resolutionX = ddAny(input.UV.x);
+		float resolutionY = ddAny(input.UV.y);
+		float resolutionDiagonal = ddAny(input.UV.x + input.UV.y);
 
-				if (FogBulbEnabled)
-				{
-					float distance = length(FogBulbPosition - input.WorldPosition);
+		float distanceX = min(absUV.x, 1.0f - absUV.x);
+		float distanceY = min(absUV.y, 1.0f - absUV.y);
+		float distanceDiagonal = min(abs(input.UV.x + input.UV.y + 1.0f), abs(input.UV.x + input.UV.y));
 
-					if (distance < FogBulbRadius)
-					{
-						pixel = lerp(pixel, float4(float3(1.0f, 1.0f, 1.0f) * FogBulbIntensity, 1.0f), 1.0f - distance / FogBulbRadius);
-					}
-				}   
-			}
-		}
-		else
-		{
-			float distance = length(float4(CameraPosition, 1.0f) - input.Position);
-			float LINE_SIZE = 0.025f * (1024000 - distance) / 1024000;
+		float lineX = distanceX / resolutionX - lineWidth;
+		float lineY = distanceY / resolutionY - lineWidth;
+		float lineDiagonal = distanceDiagonal / resolutionDiagonal - lineWidth;
 
-			pixel = float4(0.0f, 0.0f, 0.0f, 1.0f);
+		float sectorAreaStrength = clamp(min(min(lineX, lineY), lineDiagonal), 0.0F, 1.0f);
 
-			if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) &&
-				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) && Shape == 0)
-			{
-				pixel = Color;
-				if (SelectionEnabled) 
-					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-			}
-
-			if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) &&
-				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) &&
-				(input.EditorUV.y < 1.0f - LINE_SIZE - input.EditorUV.x ||
-					input.EditorUV.y > 1.0f + LINE_SIZE - input.EditorUV.x) && Shape == 1 && SplitMode == 1)
-			{
-				pixel = Color;
-				if (SelectionEnabled)
-					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-			}
-
-			if (input.EditorUV.x > LINE_SIZE && input.EditorUV.x < (1.0f - LINE_SIZE) &&
-				input.EditorUV.y > LINE_SIZE && input.EditorUV.y < (1.0f - LINE_SIZE) &&
-				(input.EditorUV.y < -LINE_SIZE + input.EditorUV.x ||
-					input.EditorUV.y > +LINE_SIZE + input.EditorUV.x) && Shape == 1 && SplitMode == 0)
-			{
-				pixel = Color;
-				if (SelectionEnabled) 
-					pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-			}
-		}
-
-		return pixel;
+		result.xyz *= sectorAreaStrength;
+		result.w = 1.0f - (sectorAreaStrength - result.w * sectorAreaStrength);
 	}
+	
+	// Render Fog Bulb
+	if (FogBulbEnabled)
+	{
+		float distance = length(FogBulbPosition - input.WorldPosition);
+
+		if (distance < FogBulbRadius)
+		{
+			result = lerp(result, float4(float3(1.0f, 1.0f, 1.0f) * FogBulbIntensity, 1.0f), 1.0f - distance / FogBulbRadius);
+		}
+	}
+	return result;
 }
 
 technique10 Textured
