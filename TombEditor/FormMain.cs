@@ -1419,7 +1419,7 @@ namespace TombEditor
 
             // Search for matching objects after the previous one
             ObjectInstance previousFind = _editor.SelectedObject;
-            ObjectInstance instance = _editor.Level.Rooms.SelectMany(room => room.Objects).FindFirstAfterWithWrapAround(
+            ObjectInstance instance = _editor.Level.Rooms.SelectMany(room => room?.Objects).FindFirstAfterWithWrapAround(
                 (obj) => previousFind == obj,
                 (obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == currentItem.Value);
             
