@@ -96,7 +96,9 @@ namespace TombEditor.Geometry
                 case VariableType.LevelName:
                     if (!string.IsNullOrEmpty(LevelFilePath))
                         return Path.GetFileNameWithoutExtension(LevelFilePath);
-                    return "";
+                    if (!string.IsNullOrEmpty(WadFilePath))
+                        return Path.GetFileNameWithoutExtension(WadFilePath);
+                    return "Default";
                 default:
                     throw new ArgumentException();
             }
