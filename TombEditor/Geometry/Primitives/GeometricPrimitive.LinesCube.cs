@@ -143,7 +143,7 @@ namespace SharpDX.Toolkit.Graphics
                 v8.Position = new Vector4(-128.0f, 128.0f, 128.0f, 1.0f);
                 v8.UV = Vector2.Zero;
 
-                var vertices = new EditorVertex[] { v1, v2, v3, v4, v5, v6, v7 };
+                var vertices = new EditorVertex[] { v1, v2, v3, v4, v5, v6, v7, v8 };
                 var indices = new short[]
                 {
                     4, 5, 5, 1, 1, 0, 0, 4,
