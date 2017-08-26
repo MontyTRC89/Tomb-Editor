@@ -198,6 +198,7 @@ namespace TombEditor.Controls
         private RasterizerState _rasterizerWireframe;
         private GeometricPrimitive _sphere;
         private GeometricPrimitive _cone;
+        private GeometricPrimitive _linesCube;
         private GeometricPrimitive _littleCube;
         private GeometricPrimitive _littleSphere;
         private const float _littleCubeRadius = 128.0f;
@@ -229,6 +230,7 @@ namespace TombEditor.Controls
 
         private Buffer<EditorVertex> _flybyPathVertexBuffer;
         private bool _drawFlybyPath = false;
+        private bool _drawRoomBoundingBox = false;
 
         private Effect _roomEffect;
 
@@ -359,8 +361,7 @@ namespace TombEditor.Controls
             CenterCamera();
 
             // Maybe I could use this as bounding box, scaling it properly before drawing
-            GeometricPrimitive.Cube.New(_device, 1024);
-            GeometricPrimitive.LinesCube.New(_device);
+            _linesCube = GeometricPrimitive.LinesCube.New(_device);
 
             // This sphere will be scaled up and down multiple times for using as In & Out of lights
             _sphere = GeometricPrimitive.Sphere.New(_device, 1024, 6);
@@ -865,7 +866,7 @@ namespace TombEditor.Controls
 
         private void DrawDebugLines(Matrix viewProjection)
         {
-            if (!_drawFlybyPath && !_drawHeightLine) return;
+            if (!_drawFlybyPath && !_drawHeightLine && !_drawRoomBoundingBox) return;
 
             _device.SetRasterizerState(_rasterizerWireframe);
             
@@ -898,6 +899,31 @@ namespace TombEditor.Controls
                 solidEffect.CurrentTechnique.Passes[0].Apply();
 
                 _device.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
+            }
+
+            if (_drawRoomBoundingBox)
+            {
+                _device.SetVertexBuffer(_linesCube.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesCube.VertexBuffer));
+                _device.SetIndexBuffer(_linesCube.IndexBuffer, false);
+
+                float height = (_editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner());
+
+                Matrix scaleMatrix = Matrix.Scaling(_editor.SelectedRoom.NumXSectors * 1024.0f / 256.0f,
+                                                    height,
+                                                    _editor.SelectedRoom.NumZSectors * 1024.0f / 256.0f);
+
+                Matrix translateMatrix = Matrix.Translation(_editor.SelectedRoom.NumXSectors * 1024.0f / 2.0f,
+                                                            height * 256.0f / 2.0f,
+                                                            _editor.SelectedRoom.NumZSectors * 1024.0f / 2.0f);
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(scaleMatrix * 
+                                                                       _editor.SelectedRoom.Transform * 
+                                                                       translateMatrix * 
+                                                                       viewProjection);
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _device.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
             }
         }
 
@@ -1995,6 +2021,7 @@ namespace TombEditor.Controls
             Debug.Reset();
             _drawHeightLine = false;
             _drawFlybyPath = false;
+            _drawRoomBoundingBox = ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && DrawPortals);
 
             // Don't draw anything if device is not ready
             if (_device == null || _editor.SelectedRoom == null)
@@ -2304,7 +2331,7 @@ namespace TombEditor.Controls
                 // Draw the face
                 _device.Draw(PrimitiveType.TriangleList, face.Vertices.Length, face.StartVertex);
 
-                Debug.NumVertices += face.Vertices.Length;
+                Debug.NumVertices += face.IndicesForSolidBucketsRendering.Count;
                 Debug.NumTriangles += face.Vertices.Length / 3;
 
                 _lastBucket = bucket;
@@ -2390,7 +2417,7 @@ namespace TombEditor.Controls
                 // Draw the face
                 _device.Draw(PrimitiveType.TriangleList, face.Vertices.Length, face.StartVertex);
 
-                Debug.NumVertices += face.Vertices.Length;
+                Debug.NumVertices += face.IndicesForSolidBucketsRendering.Count;
                 Debug.NumTriangles += face.Vertices.Length / 3;
 
                 _lastBucket = bucket;
@@ -3041,7 +3068,7 @@ namespace TombEditor.Controls
                 _device.Draw(PrimitiveType.TriangleList, bucket.Face.Vertices.Length,
                     bucket.Face.StartVertex);
 
-                Debug.NumVertices += bucket.Face.Vertices.Length;
+                Debug.NumVertices += bucket.Face.IndicesForSolidBucketsRendering.Count;
                 Debug.NumTriangles += bucket.Face.Vertices.Length / 3;
 
                 _lastBucket = bucket;
