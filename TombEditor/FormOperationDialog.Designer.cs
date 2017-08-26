@@ -31,10 +31,10 @@ namespace TombEditor
         private void InitializeComponent()
         {
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.lstLog = new System.Windows.Forms.ListBox();
             this.pbStato = new System.Windows.Forms.ProgressBar();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.lstLog = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,19 +50,6 @@ namespace TombEditor
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // lstLog
-            // 
-            this.lstLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lstLog.FormattingEnabled = true;
-            this.lstLog.IntegralHeight = false;
-            this.lstLog.Location = new System.Drawing.Point(7, 7);
-            this.lstLog.Name = "lstLog";
-            this.lstLog.Size = new System.Drawing.Size(641, 325);
-            this.lstLog.TabIndex = 2;
             // 
             // pbStato
             // 
@@ -102,6 +89,18 @@ namespace TombEditor
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
+            // lstLog
+            // 
+            this.lstLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lstLog.Location = new System.Drawing.Point(7, 7);
+            this.lstLog.Name = "lstLog";
+            this.lstLog.Size = new System.Drawing.Size(641, 325);
+            this.lstLog.TabIndex = 6;
+            this.lstLog.Text = "";
+            // 
             // FormOperationDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,9 +128,9 @@ namespace TombEditor
         #endregion
 
         private DarkButton butOk;
-        private System.Windows.Forms.ListBox lstLog;
         private System.Windows.Forms.ProgressBar pbStato;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private DarkButton butCancel;
+        private System.Windows.Forms.RichTextBox lstLog;
     }
 }
