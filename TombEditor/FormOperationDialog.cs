@@ -23,6 +23,7 @@ namespace TombEditor
             InitializeComponent();
 
             Text = operationName;
+            lstLog.SelectionHangingIndent = 50;
         }
         
         private void FormBuildLevel_Shown(object sender, EventArgs e)
@@ -59,10 +60,14 @@ namespace TombEditor
                             DialogResult = DialogResult.OK;
                             Close();
                         }
+                        lstLog.BackColor = Color.LightGreen;
                     });
             }
             catch (Exception ex)
             {
+                while (ex is AggregateException) // Improve error messages from exceptions of Task.* threads
+                    ex = ex.InnerException;
+
                 logger.Error(ex, "PRJ loading failed");
 
                 string message = "There was an error. Message: " + ex.Message;
@@ -72,9 +77,8 @@ namespace TombEditor
 
                         if (!string.IsNullOrEmpty(message))
                         {
-                            lstLog.Items.Add(message);
-                            lstLog.SelectedIndex = lstLog.Items.Count - 1;
-                            lstLog.TopIndex = lstLog.Items.Count - 1;
+                            lstLog.SelectionBackColor = Color.Tomato;
+                            lstLog.AppendText(message + "\n");
                         }
 
                         lstLog.BackColor = Color.LightPink;
@@ -83,7 +87,7 @@ namespace TombEditor
             }
         }
 
-        void AddMessage(float? progress, string message)
+        void AddMessage(float? progress, string message, bool isWarning)
         {
             if (!(bool)this?.Invoke((Func<bool>)delegate
             {
@@ -92,9 +96,8 @@ namespace TombEditor
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    lstLog.Items.Add(message);
-                    lstLog.SelectedIndex = lstLog.Items.Count - 1;
-                    lstLog.TopIndex = lstLog.Items.Count - 1;
+                    lstLog.SelectionBackColor = isWarning ? Color.Yellow : Color.Empty;
+                    lstLog.AppendText(message + "\n");
                 }
 
                 return !_threadShouldAbort;
@@ -105,20 +108,20 @@ namespace TombEditor
         void IProgressReporter.ReportWarn(string message)
         {
             logger.Warn(message);
-            AddMessage(null, message);
+            AddMessage(null, message, true);
 
         }
 
         void IProgressReporter.ReportInfo(string message)
         {
             logger.Info(message);
-            AddMessage(null, message);
+            AddMessage(null, message, false);
         }
 
         void IProgressReporter.ReportProgress(float progress, string message)
         {
             logger.Info(progress.ToString() + " - " + message);
-            AddMessage(null, message);
+            AddMessage(null, message, false);
         }
 
         void IProgressReporter.InvokeGui(Action<IWin32Window> action)
@@ -154,7 +157,8 @@ namespace TombEditor
                 return;
 
             // Try shutting down the thread softly
-            lstLog.Items.Add("Trying to stop the *.prj import...");
+            lstLog.SelectionBackColor = Color.Tomato;
+            lstLog.AppendText("Trying to stop the process...\n");
             for (int i = 0; i < 23; ++i)
             {
                 if (_thread.Join(40))
@@ -163,7 +167,8 @@ namespace TombEditor
             }
 
             // Shut the thread down forcefully
-            lstLog.Items.Add("Forcefully stopping *.prj import.");
+            lstLog.SelectionBackColor = Color.Tomato;
+            lstLog.AppendText("Forcefully stopping process.\n");
             _thread.Abort();
             _thread.Join();
         }

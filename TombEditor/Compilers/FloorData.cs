@@ -1221,6 +1221,10 @@ namespace TombEditor.Compilers
                                         trigger2 = (ushort)(trigger.TargetData & 0x3ff | (10 << 10));
                                         tempCodes.Add(trigger2);
                                         break;
+                                    case TriggerTargetType.ActionNg:
+                                        // Trigger for secret found
+                                        _progressReporter.ReportWarn("Level uses action trigger which is not yet supported.");
+                                        break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by
                                         var flyByCamera = trigger.CastTargetType<FlybyCameraInstance>(room);
