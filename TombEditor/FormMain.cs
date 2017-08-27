@@ -1803,8 +1803,8 @@ namespace TombEditor
             var level = new TombRaider4Level("e:\\trle\\data\\settomb.tr4");
             level.Load("originale");
 
-           // level = new TombRaider4Level("Game\\Data\\karnak.tr4");
-           // level.Load("editor");
+            level = new TombRaider4Level("E:\\Vecchi\\Tomb-Editor\\Build\\Game\\Data\\settomb.tr4");
+            level.Load("editor");
 
             //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
             //level.Load("originale");

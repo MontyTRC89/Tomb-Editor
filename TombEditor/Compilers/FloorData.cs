@@ -158,6 +158,12 @@ namespace TombEditor.Compilers
                                 tempFloorData.Add(data1);
                                 tempFloorData.Add(data2);
 
+                                if (block.WallOpacity == PortalOpacity.Opacity2)
+                                {
+                                    sector.Floor = -127;
+                                    sector.Ceiling = -127;
+                                }
+
                                 // Update current sector
                                 sector.FloorDataIndex = baseFloorData;
                                 SaveSector(tempRoom, x, z, sector);
