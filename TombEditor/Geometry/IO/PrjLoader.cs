@@ -154,7 +154,7 @@ namespace TombEditor.Geometry.IO
                         reader.ReadInt16();
 
                         var room = new Room(level, numXBlocks, numZBlocks, roomName);
-                        room.Position = new Vector3(128 - posXBlocks - numXBlocks, yPos / -256.0f, posZBlocks);
+                        room.Position = new Vector3(99 - posXBlocks - numXBlocks, yPos / -256.0f, posZBlocks);
                         level.Rooms[i] = room;
 
                         short numPortals = reader.ReadInt16();

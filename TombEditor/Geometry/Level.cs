@@ -14,7 +14,7 @@ namespace TombEditor.Geometry
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public const short MaxSectorCoord = 255;
+        public const short MaxSectorCoord = 100;
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public Wad Wad { get; private set; }
