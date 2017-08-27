@@ -76,6 +76,21 @@ namespace TombEditor.Controls
                 Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000);
             }
         }
+        
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            // Make this control able to receive scroll and key board events...
+            base.OnMouseEnter(e);
+            Focus();
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            Camera.Zoom(-e.Delta * _editor.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
+            Invalidate();
+        }
 
         // Do NOT call this method to redraw the scene!
         // Call Invalidate() instead to schedule a redraw in the message loop.
