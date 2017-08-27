@@ -206,7 +206,7 @@ namespace TombEditor.Controls
         private int _lastX;
         private int _lastY;
         private bool _doSectorSelection = false;
-
+    
         // Gizmo
         private Gizmo _gizmo;
 
@@ -457,6 +457,15 @@ namespace TombEditor.Controls
             // Make this control able to receive scroll and key board events...
             base.OnMouseEnter(e);
             Focus();
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            base.OnMouseWheel(e);
+
+            // TODO: maybe put the constant 0.0005f in configuration?
+            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom * 0.0005f);
+            Invalidate();
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
