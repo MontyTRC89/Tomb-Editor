@@ -462,9 +462,8 @@ namespace TombEditor.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-
-            // TODO: maybe put the constant 0.0005f in configuration?
-            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom * 0.0005f);
+            
+            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
             Invalidate();
         }
 

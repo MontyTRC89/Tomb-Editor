@@ -12,6 +12,7 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
@@ -19,11 +20,12 @@ namespace TombEditor
         public int Rendering3D_DrawRoomsMaxDepth { get; set; } = 6;
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.17f;
         public float Rendering3D_NavigationSpeedKeyZoom { get; set; } = 3000.0f;
+        public float Rendering3D_NavigationSpeedMouseWheelZoom { get; set; } = 25.0f;
         public float Rendering3D_NavigationSpeedMouseZoom { get; set; } = 46000.0f;
         public float Rendering3D_NavigationSpeedMouseTranslate { get; set; } = 22000.0f;
         public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 2.2f;
 
-        public float Map2D_NavigationSpeedMouseZoom { get; set; } = 0.001f;
+        public float Map2D_NavigationSpeedMouseWheelZoom { get; set; } = 0.001f;
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
 

@@ -216,7 +216,7 @@ namespace TombEditor.Controls
             base.OnMouseWheel(e);
 
             Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.Map2D_NavigationSpeedMouseZoom);
+            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.Map2D_NavigationSpeedMouseWheelZoom);
             MoveToFixedPoint(e.Location, FixedPointInWorld);
         }
 
