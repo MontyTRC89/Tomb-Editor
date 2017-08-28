@@ -1731,7 +1731,6 @@ namespace TombEditor.Controls
         private void CollectRoomsToDraw(Room room)
         {
             // New iterative version of the function 
-
             Vector3 cameraPosition = Camera.GetPosition();
 
             Stack<Room> stackRooms = new Stack<Room>();
@@ -1750,25 +1749,6 @@ namespace TombEditor.Controls
 
                 if (theLimit > _editor.Configuration.Rendering3D_DrawRoomsMaxDepth)
                     continue;
-
-                /*
-                visitedRooms.Add(theRoom);
-
-                if (theRoom == room)
-                {
-                    _roomsToDraw.Add(theRoom);
-                }
-                else
-                {
-                    if (isFlipped && theRoom.Flipped && theRoom.AlternateRoom != null)
-                    {
-                        _roomsToDraw.Add(theRoom.AlternateRoom);
-                    }
-                    else
-                    {
-                        _roomsToDraw.Add(theRoom);
-                    }
-                }*/
 
                 if (isFlipped)
                 {

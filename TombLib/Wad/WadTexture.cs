@@ -5,15 +5,12 @@ using System.Text;
 
 namespace TombLib.Wad
 {
-    public class WadTexturePage
+    public class WadTexture
     {
         public WadTexturePageType Type;
+        public string Hash;
+        public short Width;
+        public short Height;
         public byte[,] TexturePage;
-    }
-
-    public enum WadTexturePageType : byte
-    {
-        Shared = 0,
-        Private = 1
-    }
+    }    
 }

@@ -27,7 +27,7 @@ namespace TombLib.Graphics
         {}
 
         public static SkinnedModel FromWad(GraphicsDevice device, WadMoveable mov,
-            Dictionary<uint, WadTexturePage> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
+            Dictionary<uint, WadTexture> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
         {
             SkinnedModel model = new SkinnedModel(device);
             model.Offset = mov.Offset;
