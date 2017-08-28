@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TombLib</RootNamespace>
     <AssemblyName>TombLib</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,10 +36,14 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AssimpNet, Version=3.3.2.0, Culture=neutral, PublicKeyToken=3edc10cb77b1bca2, processorArchitecture=MSIL">
       <HintPath>..\packages\AssimpNet.3.3.2\lib\net20\AssimpNet.dll</HintPath>
+    </Reference>
+    <Reference Include="BrandonHaynes.Security.SipHash">
+      <HintPath>..\Libs\BrandonHaynes.Security.SipHash.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -96,12 +102,16 @@
     <Compile Include="Graphics\TextureLoad.cs" />
     <Compile Include="Utils\Collision.cs" />
     <Compile Include="Utils\MathUtilsEx.cs" />
+    <Compile Include="Wad\WadSoundInfo.cs" />
+    <Compile Include="Wad\WadUtils.cs" />
+    <Compile Include="Wad\Enumerations.cs" />
     <Compile Include="Wad\ModelType.cs" />
     <Compile Include="Wad\ObjectNames.cs" />
     <Compile Include="Wad\TR4Wad.cs" />
+    <Compile Include="Wad\Wad2.cs" />
     <Compile Include="Wad\WadObject.cs" />
     <Compile Include="Wad\WadShape.cs" />
-    <Compile Include="Wad\WadTexturePage.cs" />
+    <Compile Include="Wad\WadTexture.cs" />
     <Compile Include="Wad\WadTextureSample.cs" />
     <Compile Include="Wad\Wad.cs" />
     <Compile Include="Wad\WadAnimation.cs" />
@@ -115,6 +125,8 @@
     <Compile Include="Wad\WadStateChange.cs" />
     <Compile Include="Wad\WadStatic.cs" />
     <Compile Include="Wad\WadVector.cs" />
+    <Compile Include="Wad\WadVector2.cs" />
+    <Compile Include="Wad\WadVector3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

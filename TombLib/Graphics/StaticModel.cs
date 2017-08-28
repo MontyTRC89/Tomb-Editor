@@ -48,7 +48,7 @@ namespace TombLib.Graphics
         }
 
         public static StaticModel FromWad(GraphicsDevice device, WadStatic static_, 
-            Dictionary<uint, WadTexturePage> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
+            Dictionary<uint, WadTexture> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
         {
             StaticModel model = new StaticModel(device);
 

@@ -19,7 +19,7 @@ namespace TombLib.Wad
         // Data of the wad
         public Dictionary<uint, WadMoveable> WadMoveables { get; } = new Dictionary<uint, WadMoveable>();
         public Dictionary<uint, WadStatic> WadStatics { get; } = new Dictionary<uint, WadStatic>();
-        public Dictionary<uint, WadTexturePage> TexturePages { get; } = new Dictionary<uint, WadTexturePage>();
+        public Dictionary<uint, WadTexture> TexturePages { get; } = new Dictionary<uint, WadTexture>();
         public Dictionary<uint, WadTextureSample> TextureSamples { get; } = new Dictionary<uint, WadTextureSample>();
         
         // DirectX 11 data
@@ -62,7 +62,7 @@ namespace TombLib.Wad
                 writer.Write(numTextures);
                 for (int i = 0; i < wad.TexturePages.Count; i++)
                 {
-                    WadTexturePage page = wad.TexturePages.ElementAt(i).Value;
+                    WadTexture page = wad.TexturePages.ElementAt(i).Value;
                     writer.Write((byte)page.Type);
                     for (int y = 0; y < 256; y++)
                         for (int x = 0; x < 1024; x++)
@@ -212,7 +212,7 @@ namespace TombLib.Wad
                 int currentYblock = 0;
                 for (uint i = 0; i < TexturePages.Count; i++)
                 {
-                    WadTexturePage page = TexturePages[i];
+                    WadTexture page = TexturePages[i];
 
                     for (int x = 0; x < 256; x++)
                         for (int y = 0; y < 256; y++)

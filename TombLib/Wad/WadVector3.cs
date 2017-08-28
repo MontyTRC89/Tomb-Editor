@@ -7,11 +7,10 @@ using System.Text;
 namespace TombLib.Wad
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct WadLink
+    public struct WadVector3
     {
-        public WadLinkOpcode Opcode;
-        public int X;
-        public int Y;
-        public int Z;
+        public float X;
+        public float Y;
+        public float Z;
     }
 }

@@ -139,8 +139,6 @@ namespace TombEditor.Compilers
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
-                //   writer.WriteBlockArray(Zones);
-
                 // Write animated textures
                 writer.Write(_numAnimatedTextures);
 
@@ -196,7 +194,9 @@ namespace TombEditor.Compilers
                 writer.Write(_numSoundDetails);
                 writer.Write(soundDetails);
                 writer.Write(numSampleIndices);
-                writer.Write(sampleIndices);
+                // writer.Write(sampleIndices);
+                int filler3 = 0;
+                for (int i = 0; i < numSampleIndices; i++) writer.Write(filler3);
                 // writer.WriteBlockArray(sfxBuffer);
 
                 writer.Write(numDemo);

@@ -400,7 +400,7 @@ namespace TombLib.Wad
             int numPages = old.TexturePages.Length / 196608;
             for (uint i = 0; i < numPages; i++)
             {
-                WadTexturePage page = new WadTexturePage();
+                WadTexture page = new WadTexture();
                 page.Type = WadTexturePageType.Shared;
                 page.TexturePage = new byte[256, 1024];
 
@@ -423,7 +423,6 @@ namespace TombLib.Wad
             {
                 WadTextureSample sample = new WadTextureSample();
 
-                sample.Type = WadTextureSampleType.CoreWad;
                 sample.X = old.Textures[i].X;
                 sample.Y = old.Textures[i].Y;
                 sample.FlipX = old.Textures[i].FlipX;
