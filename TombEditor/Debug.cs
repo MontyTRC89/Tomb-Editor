@@ -15,8 +15,10 @@ namespace TombEditor
     {
         public static float Fps { get; set; }
         public static long NumRooms { get; set; }
-        public static long NumVertices { get; set; }
-        public static long NumTriangles { get; set; }
+        public static long NumVerticesRooms { get; set; }
+        public static long NumTrianglesRooms { get; set; }
+        public static long NumVerticesObjects { get; set; }
+        public static long NumTrianglesObjects { get; set; }
         public static long NumMoveables { get; set; }
         public static long NumStaticMeshes { get; set; }
         public static List<DebugString> Strings { get; set; }
@@ -24,8 +26,10 @@ namespace TombEditor
         public static void Reset()
         {
             NumRooms = 0;
-            NumVertices = 0;
-            NumTriangles = 0;
+            NumVerticesRooms = 0;
+            NumTrianglesRooms = 0;
+            NumVerticesObjects = 0;
+            NumTrianglesObjects = 0;
             NumMoveables = 0;
             NumStaticMeshes = 0;
             //SelectedItem = "";
@@ -45,7 +49,7 @@ namespace TombEditor
             SpriteBatch batch = new SpriteBatch(deviceManager.Device);
             batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
 
-            batch.DrawString(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Vertices: " + NumVertices + ", Triangles: " + NumTriangles, new Vector2(0, 0), Color.White);
+            batch.DrawString(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), Color.White);
             batch.DrawString(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
             if (!string.IsNullOrEmpty(selectedItem))
                 batch.DrawString(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), Color.White);
