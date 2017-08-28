@@ -14,12 +14,4 @@ namespace TombLib.Wad
         public double Y;
         public double Z;
     }
-
-    public enum WadKeyFrameRotationAxis : byte
-    {
-        ThreeAxes = 0,
-        AxisX = 1,
-        AxisY = 2,
-        AxisZ = 3
-    }
 }

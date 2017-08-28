@@ -25,7 +25,7 @@ namespace TombLib.Wad
         // Correct fields
         public Shape Shape;
         public List<int> Indices;
-        public int Texture; // Bit 31 will tell if this is an index in tex infos or in textures
+        public int Texture;  
         public byte ShineStrength;
         public bool Transparent;
     }
