@@ -40,8 +40,11 @@ namespace TombLib.Wad
         Read = 3
     }
 
-    public enum WadChunks : short
+    public enum WadKeyFrameRotationAxis : byte
     {
-
+        ThreeAxes = 0,
+        AxisX = 1,
+        AxisY = 2,
+        AxisZ = 3
     }
 }
