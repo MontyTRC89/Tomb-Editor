@@ -1451,8 +1451,8 @@ namespace TombEditor.Controls
                     skinnedModelEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                    Debug.NumVertices += mesh.NumIndices;
-                    Debug.NumTriangles += mesh.NumIndices / 3;
+                    Debug.NumVerticesObjects += mesh.NumIndices;
+                    Debug.NumTrianglesObjects += mesh.NumIndices / 3;
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -1540,8 +1540,8 @@ namespace TombEditor.Controls
                     geometryEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.IndexCount, mesh.BaseIndex);
 
-                    Debug.NumVertices += mesh.NumIndices;
-                    Debug.NumTriangles += mesh.NumIndices / 3;
+                    Debug.NumVerticesRooms += mesh.NumIndices;
+                    Debug.NumTrianglesRooms += mesh.NumIndices / 3;
                 }
 
                 if (_editor.SelectedObject == modelInfo)
@@ -1622,8 +1622,8 @@ namespace TombEditor.Controls
                     staticMeshEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                    Debug.NumVertices += mesh.NumIndices;
-                    Debug.NumTriangles += mesh.NumIndices / 3;
+                    Debug.NumVerticesObjects += mesh.NumIndices;
+                    Debug.NumTrianglesObjects += mesh.NumIndices / 3;
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -1686,8 +1686,8 @@ namespace TombEditor.Controls
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
                 _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                Debug.NumVertices += mesh.NumIndices;
-                Debug.NumTriangles += mesh.NumIndices / 3;
+                Debug.NumVerticesObjects += mesh.NumIndices;
+                Debug.NumTrianglesObjects += mesh.NumIndices / 3;
             }
         }
 
@@ -2265,8 +2265,8 @@ namespace TombEditor.Controls
                 _device.DrawIndexed(PrimitiveType.TriangleList,
                     bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
 
-                Debug.NumVertices += bucket.IndexBuffer.ElementCount;
-                Debug.NumTriangles += bucket.IndexBuffer.ElementCount / 3;
+                Debug.NumVerticesRooms += bucket.IndexBuffer.ElementCount;
+                Debug.NumTrianglesRooms += bucket.IndexBuffer.ElementCount / 3;
 
                 _lastBucket = bucket;
             }
@@ -2319,8 +2319,8 @@ namespace TombEditor.Controls
                 // Draw the face
                 _device.Draw(PrimitiveType.TriangleList, face.Vertices.Length, face.StartVertex);
 
-                Debug.NumVertices += face.IndicesForSolidBucketsRendering.Count;
-                Debug.NumTriangles += face.Vertices.Length / 3;
+                Debug.NumVerticesRooms += face.IndicesForSolidBucketsRendering.Count;
+                Debug.NumTrianglesRooms += face.Vertices.Length / 3;
 
                 _lastBucket = bucket;
             }
@@ -2405,8 +2405,8 @@ namespace TombEditor.Controls
                 // Draw the face
                 _device.Draw(PrimitiveType.TriangleList, face.Vertices.Length, face.StartVertex);
 
-                Debug.NumVertices += face.IndicesForSolidBucketsRendering.Count;
-                Debug.NumTriangles += face.Vertices.Length / 3;
+                Debug.NumVerticesRooms += face.IndicesForSolidBucketsRendering.Count;
+                Debug.NumTrianglesRooms += face.Vertices.Length / 3;
 
                 _lastBucket = bucket;
             }
@@ -3056,8 +3056,8 @@ namespace TombEditor.Controls
                 _device.Draw(PrimitiveType.TriangleList, bucket.Face.Vertices.Length,
                     bucket.Face.StartVertex);
 
-                Debug.NumVertices += bucket.Face.IndicesForSolidBucketsRendering.Count;
-                Debug.NumTriangles += bucket.Face.Vertices.Length / 3;
+                Debug.NumVerticesRooms += bucket.Face.IndicesForSolidBucketsRendering.Count;
+                Debug.NumTrianglesRooms += bucket.Face.Vertices.Length / 3;
 
                 _lastBucket = bucket;
             }
