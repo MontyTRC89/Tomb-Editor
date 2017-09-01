@@ -27,10 +27,12 @@ namespace TombEditor
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
 
         public float Map2D_NavigationSpeedMouseWheelZoom { get; set; } = 0.001f;
+        public float Map2D_NavigationSpeedMouseZoom { get; set; } = 5.0f;
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
 
         public float TextureMap_NavigationSpeedMouseWheelZoom { get; set; } = 0.0015f;
+        public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 5.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
 
 

@@ -28,6 +28,7 @@ namespace TombEditor.Controls
         private Vector2 _roomMouseOffset; // Relative vector to the position of the room for where it was clicked.
         private Vector2? _viewMoveMouseWorldCoord;
         private int? _currentlyEditedDepthProbeIndex;
+        private Point _lastMousePosition;
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Color.FromArgb(180, 20, 200, 200));
         private static readonly Brush _roomsNormalAboveBrush = new SolidBrush(Color.FromArgb(120, 50, 50, 200));
         private static readonly Brush _roomsNormalBelowBrush = new SolidBrush(Color.FromArgb(180, 85, 85, 85));
@@ -105,6 +106,8 @@ namespace TombEditor.Controls
             Vector2 clickPos = FromVisualCoord(e.Location);
             if (!_depthBar.MouseDown(e, Size, _editor.Level, clickPos))
                 return;
+
+            _lastMousePosition = e.Location;
 
             switch (e.Button)
             {
@@ -188,30 +191,39 @@ namespace TombEditor.Controls
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the curser. 
             Invalidate(new Rectangle((int)area.X, (int)area.Y, (int)area.Width, (int)area.Height));
 
-            if (_editor.Action.RelocateCameraActive)
-                return;
+            if (!_editor.Action.RelocateCameraActive)
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
+                        if (_roomsToMove != null)
+                            UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
+                        break;
 
-            switch (e.Button)
-            {
-                case MouseButtons.Left:
-                    if (_roomsToMove != null)
-                        UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
-                    break;
+                    case MouseButtons.Right:
+                        if (_viewMoveMouseWorldCoord != null)
+                            if (ModifierKeys.HasFlag(Keys.Control))
+                            { // Zoom
+                                float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
+                                ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedMouseZoom * relativeDeltaY);
+                                Invalidate();
+                            }
+                            else
+                            { // Movement
+                                MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
+                            }
+                        break;
 
-                case MouseButtons.Right:
-                    if (_viewMoveMouseWorldCoord != null)
-                        MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
-                    break;
+                    case MouseButtons.Middle:
+                    case MouseButtons.XButton2:
+                        if (_currentlyEditedDepthProbeIndex.HasValue)
+                        {
+                            _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value] = FromVisualCoord(e.Location);
+                            Invalidate();
+                        }
+                        break;
+                }
 
-                case MouseButtons.Middle:
-                case MouseButtons.XButton2:
-                    if (_currentlyEditedDepthProbeIndex.HasValue)
-                    {
-                        _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value] = FromVisualCoord(e.Location);
-                        Invalidate();
-                    }
-                    break;
-            }
+            _lastMousePosition = e.Location;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)

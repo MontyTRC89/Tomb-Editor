@@ -28,6 +28,7 @@ namespace TombEditor.Controls
         private Vector2? _startPos;
         private int? _selectedTexCoordIndex;
         private Vector2? _viewMoveMouseTexCoord;
+        private Point _lastMousePosition;
 
         private static readonly Pen textureSelectionPen = new Pen(Brushes.Yellow, 2.0f) { LineJoin = LineJoin.Round };
         private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 1.0f) { LineJoin = LineJoin.Round };
@@ -194,6 +195,7 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            _lastMousePosition = e.Location;
 
             _startPos = null;
             switch (e.Button)
@@ -290,12 +292,19 @@ namespace TombEditor.Controls
                     // Move view with mouse curser
                     // Mouse curser is a fixed point
                     if (_viewMoveMouseTexCoord.HasValue)
-                    {
-                        MoveToFixedPoint(e.Location, _viewMoveMouseTexCoord.Value);
-                        LimitPosition();
-                    }
+                        if (ModifierKeys.HasFlag(Keys.Control))
+                        { // Zoom
+                            float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
+                            ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
+                        }
+                        else
+                        { // Movement
+                            MoveToFixedPoint(e.Location, _viewMoveMouseTexCoord.Value);
+                            LimitPosition();
+                        }
                     break;
             }
+            _lastMousePosition = e.Location;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
