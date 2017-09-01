@@ -154,8 +154,7 @@ namespace TombEditor.Controls
         private GeometricPrimitive _littleSphere;
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
-        private int _lastX;
-        private int _lastY;
+        private System.Drawing.Point _lastMousePosition;
         private bool _doSectorSelection = false;
     
         // Gizmo
@@ -465,8 +464,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseDown(e);
 
-            _lastX = e.X;
-            _lastY = e.Y;
+            _lastMousePosition = e.Location;
             _doSectorSelection = false;
 
             if (e.Button == MouseButtons.Left)
@@ -648,67 +646,54 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if (!this.ClientRectangle.Contains(this.PointToClient(Control.MousePosition)))
-                return;
+            if (ClientRectangle.Contains(PointToClient(MousePosition)))
+                switch (e.Button)
+                {
+                    case MouseButtons.Right:
+                        // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                        float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
+                        float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
+                        if ((ModifierKeys & Keys.Control) == Keys.Control)
+                            Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                        else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
+                            Camera.MoveCameraPlane(new Vector3(-relativeDeltaX, -relativeDeltaY, 0) *
+                                _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
+                        else
+                            Camera.Rotate(
+                                relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                                -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
-            int deltaX = e.X - _lastX;
-            int deltaY = e.Y - _lastY;
+                        Invalidate();
+                        break;
 
-            _lastX = e.X;
-            _lastY = e.Y;
-
-            // Right click is for camera motion
-            switch (e.Button)
-            {
-                case MouseButtons.Right:
-                    // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                    float relativeDeltaX = deltaX / (float)Height;
-                    float relativeDeltaY = deltaY / (float)Height;
-                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
-                    else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                        Camera.MoveCameraPlane(new Vector3(-relativeDeltaX, -relativeDeltaY, 0) *
-                            _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
-                    else
-                        Camera.Rotate(
-                            relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
-                            -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
-
-                    Invalidate();
-                    break;
-
-                case MouseButtons.Left:
-                    // Process gizmo
-                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys))
-                        return;
-
-                    // Calculate block selection
-                    if (_doSectorSelection)
-                    {
-                        PickingResult newPicking = DoPicking(e.X, e.Y);
-                        if (newPicking is PickingResultBlock)
-                        {
-                            _editor.SelectedSectors = new SectorSelection
+                    case MouseButtons.Left:
+                        if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys))
+                        { } // Process gizmo
+                        else if (_doSectorSelection)
+                        { // Calculate block selection
+                            PickingResult newPicking = DoPicking(e.X, e.Y);
+                            if (newPicking is PickingResultBlock)
                             {
-                                Start = _editor.SelectedSectors.Start,
-                                End = new SharpDX.DrawingPoint(
-                                        ((PickingResultBlock)newPicking).Pos.X,
-                                        ((PickingResultBlock)newPicking).Pos.Y)
-                            };
+                                _editor.SelectedSectors = new SectorSelection
+                                {
+                                    Start = _editor.SelectedSectors.Start,
+                                    End = new SharpDX.DrawingPoint(
+                                            ((PickingResultBlock)newPicking).Pos.X,
+                                            ((PickingResultBlock)newPicking).Pos.Y)
+                                };
+                            }
                         }
-                        return;
-                    }
+                        else  if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
+                        { // Texture editing
+                            PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
 
-                    // Texture editing
-                    if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
-                    {
-                        PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
+                            if (newPicking != null)
+                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                        }
+                        break;
+                }
 
-                        if (newPicking != null)
-                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
-                    }
-                    break;
-            }
+            _lastMousePosition = e.Location;
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
