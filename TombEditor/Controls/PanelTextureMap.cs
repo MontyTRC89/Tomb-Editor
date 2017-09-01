@@ -86,10 +86,7 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {
             if (obj is Editor.SelectedTexturesChangedEvent)
-            {
-                // TODO Update the selected texture on the texture map
                 Invalidate();
-            }
 
             if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
             {
@@ -101,6 +98,9 @@ namespace TombEditor.Controls
 
                 Invalidate();
             }
+
+            if (obj is Editor.SelectTextureAndCenterViewEvent)
+                ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
         }
         
         private void UpdateScrollBars()
@@ -329,9 +329,19 @@ namespace TombEditor.Controls
             MoveToFixedPoint(e.Location, FixedPointInWorld);
         }
 
-        private static void DrawImageUnshifted(Graphics g, RectangleF destinationArea, Image image)
+        public void ShowTexture(TextureArea area)
         {
+            _editor.SelectedTexture = area;
 
+            Vector2 min = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), Vector2.Min(area.TexCoord2, area.TexCoord3));
+            Vector2 max = Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), Vector2.Max(area.TexCoord2, area.TexCoord3));
+
+            ViewPosition = (min + max) * 0.5f;
+            float requiredScaleX = Width / (max.X - min.X);
+            float requiredScaleY = Height / (max.Y - min.Y);
+            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * _editor.Configuration.TextureMap_TextureAreaToViewRelativeSize;
+
+            LimitPosition();
         }
 
         protected override void OnPaint(PaintEventArgs e)
