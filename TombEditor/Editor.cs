@@ -347,6 +347,16 @@ namespace TombEditor
             RaiseEvent(new CenterCameraEvent { });
         }
 
+        // Select a texture and center the view
+        public struct SelectTextureAndCenterViewEvent : IEditorEvent
+        {
+            public TextureArea Texture { get; set; }
+        }
+        public void SelectTextureAndCenterView(TextureArea texture)
+        {
+            RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
+        }
+
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {

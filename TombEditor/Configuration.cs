@@ -31,6 +31,7 @@ namespace TombEditor
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
 
         public float TextureMap_NavigationSpeedMouseWheelZoom { get; set; } = 0.0015f;
+        public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
 
 
         public static string GetDefaultPath()

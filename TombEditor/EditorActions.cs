@@ -813,7 +813,7 @@ namespace TombEditor
 
         public static void PickTexture(Room room, DrawingPoint pos, BlockFace face)
         {
-            _editor.SelectedTexture = room.GetBlock(pos).GetFaceTexture(face);
+            _editor.SelectTextureAndCenterView(room.GetBlock(pos).GetFaceTexture(face));
         }
 
         public static void RotateSelectedTexture()
