@@ -867,6 +867,7 @@ namespace TombEditor.Geometry.IO
                     reader.ReadBytes(512 * 4);
 
                     // Read texture
+                    bool isTextureNA;
                     LevelTexture texture;
                     {
                         var stringBuffer = new byte[255];
@@ -883,7 +884,8 @@ namespace TombEditor.Geometry.IO
                         }
 
                         string textureFilename = _encodingCodepageWindows.GetString(stringBuffer);
-                        if (string.IsNullOrEmpty(textureFilename) || textureFilename.StartsWith("NA"))
+                        isTextureNA = textureFilename.StartsWith("NA");
+                        if (string.IsNullOrEmpty(textureFilename) || isTextureNA)
                             texture = new LevelTexture();
                         else
                             texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(TryFindAbsolutePath(
@@ -896,26 +898,29 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Read textures
-                    int numTextures = reader.ReadInt32();
-
-                    progressReporter.ReportProgress(52, "Loading textures");
-                    progressReporter.ReportProgress(52, "    Number of textures: " + numTextures);
-
                     var tempTextures = new List<PrjTexInfo>();
-                    for (int t = 0; t < numTextures; t++)
+                    if (!isTextureNA)
                     {
-                        var tmpTxt = new PrjTexInfo
+                        int numTextures = reader.ReadInt32();
+
+                        progressReporter.ReportProgress(52, "Loading textures");
+                        progressReporter.ReportProgress(52, "    Number of textures: " + numTextures);
+
+                        for (int t = 0; t < numTextures; t++)
                         {
-                            _x = reader.ReadByte(),
-                            _y = reader.ReadInt16()
-                        };
+                            var tmpTxt = new PrjTexInfo
+                            {
+                                _x = reader.ReadByte(),
+                                _y = reader.ReadInt16()
+                            };
 
-                        reader.ReadInt16();
-                        tmpTxt._width = reader.ReadByte();
-                        reader.ReadByte();
-                        tmpTxt._height = reader.ReadByte();
+                            reader.ReadInt16();
+                            tmpTxt._width = reader.ReadByte();
+                            reader.ReadByte();
+                            tmpTxt._height = reader.ReadByte();
 
-                        tempTextures.Add(tmpTxt);
+                            tempTextures.Add(tmpTxt);
+                        }
                     }
 
                     // Read WAD file

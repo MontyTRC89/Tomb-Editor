@@ -12,7 +12,7 @@ namespace TombLib.Utils
         public static ImageC UnloadedPlaceholder { get; } = ImageC.Black;
 
         // Do not change the image with this methode
-        public ImageC Image { get; protected set; }
+        public ImageC Image { get; protected set; } = UnloadedPlaceholder;
 
         public virtual bool ReplaceMagentaWithTransparency => false;
 
