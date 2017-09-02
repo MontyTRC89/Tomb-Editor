@@ -49,6 +49,8 @@ namespace TombEditor.Compilers
 
         private tr_room BuildRoom(Room room)
         {
+            tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
+
             var newRoom = new tr_room
             {
                 OriginalRoom = room,
@@ -69,8 +71,7 @@ namespace TombEditor.Compilers
                 Flipped = room.Flipped,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
-                AmbientIntensity2 = (ushort)(0x0000 + room.AmbientLight.R),
-                AmbientIntensity1 = (ushort)((room.AmbientLight.G << 8) + room.AmbientLight.B),
+                AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | (uint)roomAmbientColor.Blue,
                 ReverbInfo = (byte)room.Reverberation,
                 Flags = 0x40
             };
@@ -187,8 +188,8 @@ namespace TombEditor.Compilers
                 for (int i = 0; i < editorRoomVertices.Count; i += 3)
                 {
                     ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
-                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 1].Position, editorRoomVertices[i].FaceColor);
-                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 2].Position, editorRoomVertices[i].FaceColor);
+                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
+                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
                     Util.ObjectTextureManager.Result result = _objectTextureManager.AddTexture();
 
                     roomTriangles.Add(new tr_face3 { Vertices = new ushort[3] { vertex0Index, vertex1Index, vertex2Index }, Texture = texture });
@@ -364,9 +365,9 @@ namespace TombEditor.Compilers
             var tempStaticMeshes = room.Objects.OfType<StaticInstance>()
                 .Select(instance => new tr_room_staticmesh
                 {
-                    X = (uint)(newRoom.Info.X + instance.Position.X),
-                    Y = (uint)(newRoom.Info.YBottom - instance.Position.Y),
-                    Z = (uint)(newRoom.Info.Z + instance.Position.Z),
+                    X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
+                    Y = (int)Math.Round(newRoom.Info.YBottom - instance.Position.Y),
+                    Z = (int)Math.Round(newRoom.Info.Z + instance.Position.Z),
                     Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0))))),
                     ObjectID = (ushort)instance.WadObjectId,
@@ -419,12 +420,7 @@ namespace TombEditor.Compilers
                     X = (int)Math.Round(newRoom.Info.X + light.Position.X),
                     Y = (int)Math.Round(-light.Position.Y + newRoom.Info.YBottom),
                     Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
-                    Color = new tr_color
-                    {
-                        Red = light.Color.R,
-                        Green = light.Color.G,
-                        Blue = light.Color.B
-                    },
+                    Color = PackColorTo24Bit(new Vector4(light.Color, 1.0f)),
                     Intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f))
                 };
 
@@ -1214,7 +1210,9 @@ namespace TombEditor.Compilers
 
         private static ushort PackColorTo16Bit(Vector4 color)
         {
-            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color)) * new Vector4(0.125f);
+            color *= 16.0f;
+            color += new Vector4(0.5f); // Round correctly
+            color = Vector4.Min(new Vector4(31), Vector4.Max(new Vector4(0), color));
             
             ushort tmp = 0;
             tmp |= (ushort)((ushort)(color.X) << 10);
@@ -1223,13 +1221,17 @@ namespace TombEditor.Compilers
             return tmp;
         }
 
-        private static ushort PackColorTo16Bit(System.Drawing.Color color)
+        private static tr_color PackColorTo24Bit(Vector4 color)
         {
-            ushort tmp = 0;
-            tmp |= (ushort)((ushort)(color.R * 0.125f) << 10);
-            tmp |= (ushort)((ushort)(color.G * 0.125f) << 5);
-            tmp |= (ushort)(color.B * 0.125f);
-            return tmp;
+            color *= 128.0f;
+            color += new Vector4(0.5f); // Round correctly
+            color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
+
+            tr_color result;
+            result.Red = (byte)color.X;
+            result.Green = (byte)color.Y;
+            result.Blue = (byte)color.Z;
+            return result;
         }
     }
 }

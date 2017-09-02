@@ -181,7 +181,6 @@ namespace TombEditor
             var modelViewProjection = model * viewProjection;
 
             solidEffect.Parameters["ModelViewProjection"].SetValue(modelViewProjection);
-            solidEffect.Parameters["SelectionEnabled"].SetValue(false);
 
             // X axis
             solidEffect.Parameters["Color"].SetValue(_red);

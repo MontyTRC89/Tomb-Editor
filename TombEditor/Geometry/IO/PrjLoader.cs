@@ -265,6 +265,10 @@ namespace TombEditor.Geometry.IO
                                     int red = objTint & 0x001f;
                                     int green = (objTint & 0x03e0) >> 5;
                                     int blue = (objTint & 0x7c00) >> 10;
+                                    Vector4 color = new Vector4(
+                                        (red + (red == 0 ? 0.0f : 0.875f)) / 16.0f, 
+                                        (green + (green == 0 ? 0.0f : 0.875f)) / 16.0f,
+                                        (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f, 1.0f);
 
                                     if (objSlot < (ngle ? 520 : 465)) // TODO: a more flexible way to define this
                                     {
@@ -278,7 +282,7 @@ namespace TombEditor.Geometry.IO
                                             Position = position,
                                             Ocb = objTimer,
                                             RotationY = objFacing * (360.0f / 65535.0f) - 90.0f,
-                                            Color = Color.FromArgb(255, red * 8, green * 8, blue * 8)
+                                            Color = color
                                         };
                                         room.AddObject(level, instance);
                                     }
@@ -290,7 +294,7 @@ namespace TombEditor.Geometry.IO
                                             WadObjectId = unchecked((uint)(objSlot - (ngle ? 520 : 465))),
                                             Position = position,
                                             RotationY = objFacing * (360.0f / 65535.0f) - 90.0f,
-                                            Color = Color.FromArgb(255, red * 8, green * 8, blue * 8)
+                                            Color = color
                                         };
 
                                         room.AddObject(level, instance);
@@ -426,7 +430,7 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        room.AmbientLight = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                        room.AmbientLight = new Vector4(reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, reader.ReadByte() / 128.0f, 1.0f);
                         reader.ReadByte();
 
                         short numObjects2 = reader.ReadInt16();
@@ -521,7 +525,7 @@ namespace TombEditor.Geometry.IO
                                     var light = new Light(lightType)
                                     {
                                         Position = position,
-                                        Color = Color.FromArgb(255, lightR, lightG, lightB),
+                                        Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
                                         Cutoff = lightCut,
                                         Len = lightLen,
                                         Enabled = lightOn == 0x01,

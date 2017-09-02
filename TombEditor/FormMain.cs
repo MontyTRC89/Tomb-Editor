@@ -34,7 +34,7 @@ namespace TombEditor
                     Light light = _editor.SelectedObject as Light;
                     if (light == null)
                         return;
-                    light.Color = lightPalette.SelectedColor;
+                    light.Color = lightPalette.SelectedColor.ToFloatColor3();
                     _editor.SelectedRoom.UpdateCompletely();
                     _editor.ObjectChange(light);
                 };
@@ -130,7 +130,7 @@ namespace TombEditor
                 else
                     comboRoomType.SelectedIndex = 0;
 
-                panelRoomAmbientLight.BackColor = room.AmbientLight;
+                panelRoomAmbientLight.BackColor = room.AmbientLight.ToWinFormsColor();
 
                 comboMist.SelectedIndex = room.MistLevel;
                 comboReflection.SelectedIndex = room.ReflectionLevel;
@@ -252,7 +252,7 @@ namespace TombEditor
             if (obj is Editor.SelectedObjectChangedEvent)
             {
                 ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
-                panelStaticMeshColor.BackColor = itemInstance?.Color ?? System.Drawing.Color.Black;
+                panelStaticMeshColor.BackColor = itemInstance == null ? System.Drawing.Color.Black : itemInstance.Color.ToWinFormsColor();
             }
 
             // Update application title
@@ -312,7 +312,7 @@ namespace TombEditor
                             break;
                     }
                     
-                    panelLightColor.BackColor = light.Color;
+                    panelLightColor.BackColor = new Vector4(light.Color, 1.0f).ToWinFormsColor();
                     numLightIntensity.Value = light.Intensity;
                     cbLightEnabled.Checked = light.Enabled;
                     cbLightCastsShadows.Checked = light.CastsShadows;
@@ -524,13 +524,13 @@ namespace TombEditor
         {
             Room room = _editor.SelectedRoom;
 
-            colorDialog.Color = room.AmbientLight;
+            colorDialog.Color = room.AmbientLight.ToWinFormsColor();
             if (colorDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             panelRoomAmbientLight.BackColor = colorDialog.Color;
 
-            _editor.SelectedRoom.AmbientLight = colorDialog.Color;
+            _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor();
             _editor.SelectedRoom.UpdateCompletely();
             _editor.RoomPropertiesChange(room);
         }
@@ -681,10 +681,10 @@ namespace TombEditor
             UpdateLight((light) => light.Color, (light, value) => light.Color = value,
                 (value) =>
                 {
-                    colorDialog.Color = value;
+                    colorDialog.Color = new Vector4(value, 1.0f).ToWinFormsColor();
                     if (colorDialog.ShowDialog(this) != DialogResult.OK)
                         return null;
-                    return colorDialog.Color;
+                    return colorDialog.Color.ToFloatColor3();
                 });
         }
 
@@ -1388,12 +1388,12 @@ namespace TombEditor
             if (instance == null)
                 return;
 
-            colorDialog.Color = instance.Color;
+            colorDialog.Color = instance.Color.ToWinFormsColor();
             if (colorDialog.ShowDialog(this) != DialogResult.OK)
                 return;
 
             panelStaticMeshColor.BackColor = colorDialog.Color;
-            instance.Color = colorDialog.Color;
+            instance.Color = colorDialog.Color.ToFloatColor();
             _editor.ObjectChange(instance);
         }
         

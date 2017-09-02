@@ -246,5 +246,24 @@ namespace TombEditor
             first = second;
             second = temp;
         }
+
+        public static System.Drawing.Color ToWinFormsColor(this Vector4 color)
+        {
+            return System.Drawing.Color.FromArgb(
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 128.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 128.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 128.0f))),
+                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 128.0f))));
+        }
+
+        public static Vector4 ToFloatColor(this System.Drawing.Color color)
+        {
+            return new Vector4(color.R, color.G, color.B, color.A) / 128.0f;
+        }
+
+        public static Vector3 ToFloatColor3(this System.Drawing.Color color)
+        {
+            return new Vector3(color.R, color.G, color.B) / 128.0f;
+        }
     }
 }

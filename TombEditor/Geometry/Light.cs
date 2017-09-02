@@ -11,7 +11,7 @@ namespace TombEditor.Geometry
     public class Light : PositionBasedObjectInstance, IRotateableYX
     {
         public LightType Type { get; }
-        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.White;
+        public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         public float Intensity { get; set; } = 0.5f;
         public float In { get; set; } = 1.0f;
         public float Out { get; set; } = 5.0f;

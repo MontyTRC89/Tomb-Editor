@@ -156,7 +156,8 @@ namespace TombEditor.Controls
         private const float _littleSphereRadius = 128.0f;
         private System.Drawing.Point _lastMousePosition;
         private bool _doSectorSelection = false;
-    
+        private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
+
         // Gizmo
         private Gizmo _gizmo;
 
@@ -855,7 +856,6 @@ namespace TombEditor.Controls
             Matrix model = Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-            solidEffect.Parameters["SelectionEnabled"].SetValue(false);
 
             if (_drawHeightLine)
             {
@@ -972,16 +972,12 @@ namespace TombEditor.Controls
                     solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
 
                 if (_editor.SelectedObject == light)
-                    solidEffect.Parameters["SelectionEnabled"].SetValue(true);
-                else
-                    solidEffect.Parameters["SelectionEnabled"].SetValue(false);
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.2f, 0.2f, 1.0f));
 
                 solidEffect.CurrentTechnique.Passes[0].Apply();
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
             }
-
-            solidEffect.Parameters["SelectionEnabled"].SetValue(false);
-
+            
             if (_editor.SelectedObject is Light)
             {
                 Light light = (Light)_editor.SelectedObject;
@@ -1274,10 +1270,10 @@ namespace TombEditor.Controls
                         continue;
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-                    Vector4 color = new Vector4(0.2f, 0.2f, 0.5f, 1.0f);
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
-                        color = new Vector4(0.5f, 0.2f, 0.2f, 1.0f);
+                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _device.SetRasterizerState(_rasterizerWireframe);
 
                         string message = instance.ToString();
@@ -1317,10 +1313,10 @@ namespace TombEditor.Controls
 
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
-                    Vector4 color = new Vector4(0.2f, 0.2f, 0.5f, 1.0f);
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
-                        color = new Vector4(0.5f, 0.2f, 0.2f, 1.0f);
+                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
                         _device.SetRasterizerState(_rasterizerWireframe);
 
                         string message = instance.ToString();
@@ -1396,12 +1392,10 @@ namespace TombEditor.Controls
                     _device.SetVertexInputLayout(
                         VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
                 }
-
-                if (_editor.SelectedObject == instance)
-                    skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(true);
-                else
-                    skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
-                skinnedModelEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.Mode == EditorMode.Lighting ? instance.Color : System.Drawing.Color.Gray));
+                
+                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
+                if (_editor.SelectedObject == instance) // Selection
+                    skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
 
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
@@ -1568,10 +1562,10 @@ namespace TombEditor.Controls
                 }
 
                 Debug.NumStaticMeshes++;
-
-                bool SelectionEnabled = _editor.SelectedObject == instance;
-                staticMeshEffect.Parameters["SelectionEnabled"].SetValue(SelectionEnabled);
-                staticMeshEffect.Parameters["Color"].SetValue(GetSharpdDXColor(_editor.Mode == EditorMode.Lighting ? instance.Color : System.Drawing.Color.Gray));
+                
+                staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
+                if (_editor.SelectedObject == instance)
+                    staticMeshEffect.Parameters["Color"].SetValue(_selectionColor);
                 
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
@@ -1635,7 +1629,6 @@ namespace TombEditor.Controls
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
 
             skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
-            skinnedModelEffect.Parameters["SelectionEnabled"].SetValue(false);
 
             SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[459];
             skinnedModel.BuildAnimationPose(skinnedModel.Animations[0].KeyFrames[0]);

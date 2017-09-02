@@ -18,13 +18,11 @@ float4x4 ModelViewProjection;
 float4 Color;
 float3 CameraPosition;
 
-bool SelectionEnabled;
-
 PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
 	output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
-	output.Color = input.Color;
+	output.Color = Color;
 	return output;
 }
 
@@ -33,14 +31,7 @@ PixelInputType VS(VertexInputType input)
 ////////////////////////////////////////////////////////////////////////////////
 float4 PS(PixelInputType input) : SV_TARGET
 {
-	float4 pixel;
-	
-	if (SelectionEnabled)
-		pixel = float4(0.988f, 0.0f, 0.0f, 1.0f);
-	else
-		pixel = Color;
-
-	return pixel;
+	return input.Color;
 }
 
 technique10 Textured

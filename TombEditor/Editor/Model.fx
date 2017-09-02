@@ -8,13 +8,13 @@
 struct PixelInputType
 {
     float4 Position : SV_POSITION;
+    float4 Color : COLOR;
 	float2 UV : TEXCOORD0;
 };
 
 float4x4 ModelViewProjection;
 
 float4 Color;
-bool SelectionEnabled;
 
 Texture2D Texture;
 sampler TextureSampler;
@@ -24,6 +24,7 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
 	output.UV = input.UV;
+	output.Color = Color;
     return output;
 }
 
@@ -34,13 +35,11 @@ float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel = Texture.Sample(TextureSampler, input.UV);
 		
-	float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
-	float3 colorMul = max(Color.xyz * 2.0f, 1.0f);
+	float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
+	float3 colorMul = min(input.Color.xyz, 1.0f);
 	pixel.xyz = pixel.xyz * colorMul + colorAdd;
+	pixel.w *= input.Color.w;
 	
-	if (SelectionEnabled) 
-		pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);
-
 	return pixel;
 }
 

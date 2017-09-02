@@ -41,7 +41,7 @@ PixelInputType VS(VertexInputType input)
 	output.WorldPosition = mul(float4(input.Position, 1.0f), Model);
 	output.UV = DrawSectorOutlinesAndUseEditorUV ? input.EditorUV : (input.UV * TextureCoordinateFactor);
 	if (UseVertexColors)
-		output.Color = input.Color * (1.0f / 128.0f);
+		output.Color = input.Color;
 	else 
 		output.Color = Color;
     return output;
@@ -65,7 +65,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 		result = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Apply color
-	float3 colorAdd = clamp(input.Color.xyz - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
+	float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
 	float3 colorMul = min(input.Color.xyz, 1.0f);
 	result.xyz = result.xyz * colorMul + colorAdd;
 	result.w *= input.Color.w;

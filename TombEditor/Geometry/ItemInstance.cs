@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using TombLib.Wad;
 
@@ -27,7 +28,7 @@ namespace TombEditor.Geometry
             set { RotationY = value * (float)(180 / Math.PI); }
         }
 
-        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
+        public Vector4 Color { get; set; } = new Vector4(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
 
         public abstract ItemType ItemType { get; }
         
