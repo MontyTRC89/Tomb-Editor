@@ -351,8 +351,7 @@ namespace TombEditor.Compilers
                     writer.WriteBlockArray(tempRoom.Sectors);
 
                     // Write room color
-                    writer.Write(tempRoom.AmbientIntensity1);
-                    writer.Write(tempRoom.AmbientIntensity2);
+                    writer.Write(tempRoom.AmbientIntensity);
 
                     // Write lights
                     writer.WriteBlock((ushort)tempRoom.Lights.Length);

@@ -120,7 +120,6 @@ namespace TombEditor.Controls
 
                 Effect mioEffect = _deviceManager.Effects["StaticModel"];
                 mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
-                mioEffect.Parameters["SelectionEnabled"].SetValue(false);
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
@@ -151,7 +150,6 @@ namespace TombEditor.Controls
                 SkinnedModel skin = model;
                 
                 Effect mioEffect = _deviceManager.Effects["Model"];
-                mioEffect.Parameters["SelectionEnabled"].SetValue(false);
 
                 _device.SetVertexBuffer(0, model.VertexBuffer);
                 _device.SetIndexBuffer(model.IndexBuffer, true);

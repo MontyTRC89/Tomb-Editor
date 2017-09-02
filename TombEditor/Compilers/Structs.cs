@@ -14,17 +14,7 @@ namespace TombEditor.Compilers
         public byte Green;
         public byte Blue;
     }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_color4
-    {
-        public byte Red;
-        public byte Green;
-        public byte Blue;
-        public byte Alpha;
-    }
-
-
+    
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_vertex
     {
@@ -178,9 +168,9 @@ namespace TombEditor.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_room_staticmesh
     {
-        public uint X;
-        public uint Y;
-        public uint Z;
+        public int X;
+        public int Y;
+        public int Z;
         public ushort Rotation;
         public ushort Intensity1;
         public ushort Intensity2;
@@ -200,8 +190,7 @@ namespace TombEditor.Compilers
         public ushort NumZSectors;
         public ushort NumXSectors;
         public tr_room_sector[] Sectors;
-        public ushort AmbientIntensity1;
-        public ushort AmbientIntensity2;
+        public uint AmbientIntensity;
         public short LightMode;
         public ushort NumLights;
         public tr4_room_light[] Lights;
@@ -266,8 +255,7 @@ namespace TombEditor.Compilers
             writer.WriteBlockArray(Sectors);
 
             // Write room color
-            writer.Write(AmbientIntensity1);
-            writer.Write(AmbientIntensity2);
+            writer.Write(AmbientIntensity);
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Length);

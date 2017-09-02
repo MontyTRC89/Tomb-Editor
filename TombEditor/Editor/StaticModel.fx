@@ -10,13 +10,12 @@ struct PixelInputType
 {
 	float4 Position : SV_POSITION;
 	float2 UV : TEXCOORD0;
-	float2 Shade : TEXCOORD1;
+	float4 Color : COLOR;
 };
 
 float4x4 ModelViewProjection;
 
 float4 Color;
-bool SelectionEnabled;
 
 int Shape;
 int SplitMode;
@@ -29,7 +28,7 @@ PixelInputType VS(VertexInputType input)
 	PixelInputType output;
 	output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
 	output.UV = input.UV;
-	output.Shade = input.Shade;
+	output.Color = Color * input.Shade.x;
 	return output;
 }
 
@@ -39,15 +38,12 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel = Texture.Sample(TextureSampler, input.UV);
-	//if (pixel.x == 1.0f && pixel.y == 0.0f && pixel.z == 1.0f) return float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	pixel.xyz *= input.Shade.x;
-	float3 colorAdd = clamp(Color.xyz * 2.0f - 1.0f, 0.0f, 1.0f) * (1.0f / 3.0f);
-	float3 colorMul = max(Color.xyz * 2.0f, 1.0f);
+	float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
+	float3 colorMul = min(input.Color.xyz, 1.0f);
 	pixel.xyz = pixel.xyz * colorMul + colorAdd;
+	pixel.w *= input.Color.w;
 
-	if (SelectionEnabled) 
-		pixel += float4(1.0f, -0.5f, -0.5f, 0.0f);	
 	return pixel;
 }
 

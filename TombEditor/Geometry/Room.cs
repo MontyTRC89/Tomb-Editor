@@ -33,7 +33,7 @@ namespace TombEditor.Geometry
         public Room AlternateRoom { get; set; } = null;
         public short AlternateGroup { get; set; } = -1;
 
-        public System.Drawing.Color AmbientLight { get; set; } = System.Drawing.Color.FromArgb(255, 32, 32, 32);
+        public Vector4 AmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         public short WaterLevel { get; set; }
         public short MistLevel { get; set; }
         public short ReflectionLevel { get; set; }
@@ -2118,7 +2118,7 @@ namespace TombEditor.Geometry
             for (int i = 0; i < _allVertices.Count; ++i)
             {
                 var vertex = _allVertices[i];
-                vertex.FaceColor = new Vector4(AmbientLight.R, AmbientLight.G, AmbientLight.B, 1.0f);
+                vertex.FaceColor = AmbientLight;
                 _allVertices[i] = vertex;
             }
 
@@ -2181,9 +2181,9 @@ namespace TombEditor.Geometry
             {
                 var position = _allVertices[range.Start + i].Position;
 
-                int r = AmbientLight.R;
-                int g = AmbientLight.G;
-                int b = AmbientLight.B;
+                int r = (int)(AmbientLight.X * 128);
+                int g = (int)(AmbientLight.Y * 128);
+                int b = (int)(AmbientLight.Z * 128);
 
                 foreach (var light in lights) // No Linq here because it's slow
                 {
@@ -2229,9 +2229,9 @@ namespace TombEditor.Geometry
                                 // Calculate final light color
                                 int finalIntensity = (int)(dotN * attenuaton * diffuse);
 
-                                r += finalIntensity * light.Color.R / 8192;
-                                g += finalIntensity * light.Color.G / 8192;
-                                b += finalIntensity * light.Color.B / 8192;
+                                r += (int)(finalIntensity * light.Color.X / 64.0f);
+                                g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                                b += (int)(finalIntensity * light.Color.Z / 64.0f);
                             }
                             break;
                         case LightType.Effect:
@@ -2249,9 +2249,9 @@ namespace TombEditor.Geometry
                                 {
                                     int finalIntensity = (int)(light.Intensity * 8192 * 0.25f);
 
-                                    r += finalIntensity * light.Color.R / 8192;
-                                    g += finalIntensity * light.Color.G / 8192;
-                                    b += finalIntensity * light.Color.B / 8192;
+                                    r += (int)(finalIntensity * light.Color.X / 64.0f);
+                                    g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                                    b += (int)(finalIntensity * light.Color.Z / 64.0f);
                                 }
                                 // ReSharper restore CompareOfFloatsByEqualityOperator
                             }
@@ -2290,9 +2290,9 @@ namespace TombEditor.Geometry
                                 if (finalIntensity < 0)
                                     continue;
 
-                                r += finalIntensity * light.Color.R / 8192;
-                                g += finalIntensity * light.Color.G / 8192;
-                                b += finalIntensity * light.Color.B / 8192;
+                                r += (int)(finalIntensity * light.Color.X / 64.0f);
+                                g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                                b += (int)(finalIntensity * light.Color.Z / 64.0f);
                             }
                             break;
                         case LightType.Spot:
@@ -2362,9 +2362,9 @@ namespace TombEditor.Geometry
 
                                 int finalIntensity = (int)(attenuation * dot1 * factor * light.Intensity * 8192);
 
-                                r += finalIntensity * light.Color.R / 8192;
-                                g += finalIntensity * light.Color.G / 8192;
-                                b += finalIntensity * light.Color.B / 8192;
+                                r += (int)(finalIntensity * light.Color.X / 64.0f);
+                                g += (int)(finalIntensity * light.Color.Y / 64.0f);
+                                b += (int)(finalIntensity * light.Color.Z / 64.0f);
                             }
                             break;
                     }
@@ -2380,9 +2380,9 @@ namespace TombEditor.Geometry
                 // Apply color
                 EditorVertex vertex = _allVertices[range.Start + i];
 
-                vertex.FaceColor.X = r;
-                vertex.FaceColor.Y = g;
-                vertex.FaceColor.Z = b;
+                vertex.FaceColor.X = r * (1.0f / 128.0f);
+                vertex.FaceColor.Y = g * (1.0f / 128.0f);
+                vertex.FaceColor.Z = b * (1.0f / 128.0f);
                 vertex.FaceColor.W = 255.0f;
 
                 _allVertices[range.Start + i] = vertex;

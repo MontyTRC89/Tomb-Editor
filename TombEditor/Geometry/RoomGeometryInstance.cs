@@ -1,11 +1,13 @@
-﻿using System;
+﻿using SharpDX;
+using System;
+using System.Collections.Generic;
 using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
     public class RoomGeometryInstance : PositionBasedObjectInstance
     {
-        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.FromArgb(255, 128, 128, 128);
+        public Vector4 Color { get; set; } = new Vector4(1.0f);
 
         private RoomGeometryModel _model;
         
