@@ -152,23 +152,30 @@ namespace TombEditor.Controls
             ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
         }
 
-        private static Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, Keys keyModifiers)
+        private static Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, Keys modifierKeys)
         {
-            if (keyModifiers.HasFlag(Keys.Alt))
+            if (modifierKeys.HasFlag(Keys.Alt))
                 return texCoord;
             else
             {
                 float RoundingPrecision;
-                if (keyModifiers.HasFlag(Keys.Shift))
-                    RoundingPrecision = 64.0f;
-                else if (keyModifiers.HasFlag(Keys.Control))
+                if (modifierKeys.HasFlag(Keys.Control))
                     RoundingPrecision = 1.0f;
+                else if (modifierKeys.HasFlag(Keys.Shift))
+                    RoundingPrecision = 64.0f;
                 else
                     RoundingPrecision = 16.0f;
                 
                 texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
                 texCoord /= RoundingPrecision;
-                texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
+                if (RoundingPrecision >= 64.0f)
+                {
+                    texCoord = new Vector2(
+                        endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
+                        endY ? (float)Math.Ceiling(texCoord.Y) : (float)Math.Floor(texCoord.Y));
+                }
+                else
+                    texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
                 texCoord *= RoundingPrecision;
                 texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
                 
@@ -178,8 +185,10 @@ namespace TombEditor.Controls
 
         private void SetRectangularTextureWithMouse(Vector2 texCoordStart, Vector2 texCoordEnd)
         {
-            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, ModifierKeys);
-            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), ModifierKeys);
+            Keys modifierKeys = ModifierKeys;
+            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, modifierKeys);
+            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), modifierKeys);
+            
             texCoordEndQuantized = Vector2.Min(texCoordStartQuantized + new Vector2(maxTextureSize),
                 Vector2.Max(texCoordStartQuantized - new Vector2(maxTextureSize), texCoordEndQuantized));
 
