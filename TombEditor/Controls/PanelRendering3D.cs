@@ -10,7 +10,6 @@ using TombLib.Graphics;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
-using TombLib.Wad;
 using TombLib.Utils;
 
 namespace TombEditor.Controls

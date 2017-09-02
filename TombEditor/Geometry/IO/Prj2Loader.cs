@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 using NLog;
-using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using Color = System.Drawing.Color;
 using TombLib.IO;
 
 namespace TombEditor.Geometry.IO

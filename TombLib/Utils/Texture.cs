@@ -1,20 +1,16 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace TombLib.Utils
 {
     public abstract class Texture : ICloneable
     {
-        public static ImageC UnloadedPlaceholder { get; } = ImageC.Black;
+        protected static ImageC UnloadedPlaceholder { get; } = ImageC.Black;
 
         // Do not change the image with this methode
         public ImageC Image { get; protected set; } = UnloadedPlaceholder;
-
-        public virtual bool ReplaceMagentaWithTransparency => false;
 
         public abstract Texture Clone();
 
@@ -54,6 +50,7 @@ namespace TombLib.Utils
 
     public struct TextureArea
     {
+        // ReSharper disable once UnassignedReadonlyField
         public static readonly TextureArea None;
 
         public Texture Texture;
@@ -83,6 +80,7 @@ namespace TombLib.Utils
 
         public override bool Equals(object obj)
         {
+            Debug.Assert(obj != null);
             return this == (TextureArea)obj;
         }
 
@@ -149,25 +147,13 @@ namespace TombLib.Utils
             return (texCoord1.X - texCoord0.X) * (texCoord1.Y + texCoord0.Y);
         }
 
-        public float TriangleArea
-        {
-            get
-            {
-                return (CalculateArea(TexCoord0, TexCoord1) +
-                    CalculateArea(TexCoord1, TexCoord2) +
-                    CalculateArea(TexCoord2, TexCoord0)) * 0.5f;
-            }
-        }
-        
-        public float QuadArea
-        {
-            get
-            {
-                return (CalculateArea(TexCoord0, TexCoord1) +
-                    CalculateArea(TexCoord1, TexCoord2) +
-                    CalculateArea(TexCoord2, TexCoord3) +
-                    CalculateArea(TexCoord3, TexCoord0)) * 0.5f;
-            }
-        }
+        public float TriangleArea => (CalculateArea(TexCoord0, TexCoord1) +
+                                      CalculateArea(TexCoord1, TexCoord2) +
+                                      CalculateArea(TexCoord2, TexCoord0)) * 0.5f;
+
+        public float QuadArea => (CalculateArea(TexCoord0, TexCoord1) +
+                                  CalculateArea(TexCoord1, TexCoord2) +
+                                  CalculateArea(TexCoord2, TexCoord3) +
+                                  CalculateArea(TexCoord3, TexCoord0)) * 0.5f;
     }
 }

@@ -6,7 +6,7 @@ namespace TombEditor.Geometry
     public abstract class ObjectInstance : ICloneable
     {
         public Room Room { get; private set; }
-        
+
         public abstract ObjectInstance Clone();
 
         object ICloneable.Clone()
@@ -20,7 +20,8 @@ namespace TombEditor.Geometry
         }
 
         public virtual void RemoveFromRoom(Level level, Room room)
-        { }
+        {
+        }
 
         public virtual bool CopyToFlipRooms => true;
     }
@@ -29,7 +30,7 @@ namespace TombEditor.Geometry
     {
         public Rectangle Area { get; }
 
-        public SectorBasedObjectInstance(Rectangle area)
+        protected SectorBasedObjectInstance(Rectangle area)
         {
             Area = area;
         }
@@ -49,7 +50,7 @@ namespace TombEditor.Geometry
         }
     }
 
-    public interface IHasScriptID
+    public interface IHasScriptId
     {
         ushort? ScriptId { get; set; }
     };
@@ -59,12 +60,12 @@ namespace TombEditor.Geometry
         float RotationY { get; set; }
     };
 
-    public interface IRotateableYX : IRotateableY
+    public interface IRotateableYx : IRotateableY
     {
         float RotationX { get; set; }
     };
 
-    public interface IRotateableYXRoll : IRotateableYX
+    public interface IRotateableYxRoll : IRotateableYx
     {
         float Roll { get; set; }
     };
@@ -75,40 +76,43 @@ namespace TombEditor.Geometry
         {
             return obj.RotationY * (float)(Math.PI / 180.0);
         }
+
         public static void SetRotationYRadians(this IRotateableY obj, float value)
         {
             obj.RotationY = value * (float)(180.0 / Math.PI);
         }
 
-        public static float GetRotationXRadians(this IRotateableYX obj)
+        public static float GetRotationXRadians(this IRotateableYx obj)
         {
             return obj.RotationX * (float)(Math.PI / 180.0);
         }
-        public static void SetRotationXRadians(this IRotateableYX obj, float value)
+
+        public static void SetRotationXRadians(this IRotateableYx obj, float value)
         {
             obj.RotationX = value * (float)(180.0 / Math.PI);
         }
 
-        public static float GetRotationRollRadians(this IRotateableYXRoll obj)
+        public static float GetRotationRollRadians(this IRotateableYxRoll obj)
         {
             return obj.Roll * (float)(Math.PI / 180.0);
         }
-        public static void SetRotationRollRadians(this IRotateableYXRoll obj, float value)
+
+        public static void SetRotationRollRadians(this IRotateableYxRoll obj, float value)
         {
             obj.Roll = value * (float)(180.0 / Math.PI);
         }
 
-        public static Vector3 GetDirection(this IRotateableYX obj)
+        public static Vector3 GetDirection(this IRotateableYx obj)
         {
-            float RadiansX = GetRotationXRadians(obj);
-            float RadiansY = GetRotationYRadians(obj);
+            float radiansX = GetRotationXRadians(obj);
+            float radiansY = GetRotationYRadians(obj);
             return new Vector3(
-                (float)(Math.Cos(RadiansX) * Math.Sin(RadiansY)),
-                (float)Math.Sin(RadiansX),
-                (float)(Math.Cos(RadiansX) * Math.Cos(RadiansY)));
+                (float)(Math.Cos(radiansX) * Math.Sin(radiansY)),
+                (float)Math.Sin(radiansX),
+                (float)(Math.Cos(radiansX) * Math.Cos(radiansY)));
         }
 
-        public static void SetArbitaryRotationsYX(this IRotateableYX obj, float rotationY, float rotationX)
+        public static void SetArbitaryRotationsYx(this IRotateableYx obj, float rotationY, float rotationX)
         {
             rotationX -= (float)(360 * Math.Floor(rotationX / 360));
             if (rotationX > 270)
@@ -118,7 +122,7 @@ namespace TombEditor.Geometry
                 rotationX = rotationX - 360;
                 rotationY += 180;
             }
-            
+
             obj.RotationX = rotationX;
             obj.RotationY = rotationY;
         }

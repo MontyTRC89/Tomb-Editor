@@ -22,7 +22,7 @@ namespace TombEditor
         public static long NumMoveables { get; set; }
         public static long NumStaticMeshes { get; set; }
         public static List<DebugString> Strings { get; set; }
-        
+
         public static void Reset()
         {
             NumRooms = 0;
@@ -38,9 +38,11 @@ namespace TombEditor
 
         public static void AddString(string content, Vector3 position)
         {
-            DebugString str = new DebugString();
-            str.Content = content;
-            str.Position = new Vector2(position.X, position.Y);
+            var str = new DebugString
+            {
+                Content = content,
+                Position = new Vector2(position.X, position.Y)
+            };
             Strings.Add(str);
         }
 
@@ -49,10 +51,14 @@ namespace TombEditor
             SpriteBatch batch = new SpriteBatch(deviceManager.Device);
             batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
 
-            batch.DrawString(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), Color.White);
-            batch.DrawString(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
+            batch.DrawString(deviceManager.Font,
+                $"FPS: {Math.Round(Fps, 2)}, Rooms vertices: {NumVerticesRooms}, Objects vertices: {NumVerticesObjects}", new Vector2(0, 0), Color.White);
+            batch.DrawString(deviceManager.Font,
+                $"Rooms: {NumRooms}, Moveables: {NumMoveables}, Static Meshes: {NumStaticMeshes}",
+                new Vector2(0, 18), Color.White);
             if (!string.IsNullOrEmpty(selectedItem))
-                batch.DrawString(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), Color.White);
+                batch.DrawString(deviceManager.Font, $"Selected Object: {selectedItem}", new Vector2(0, 36),
+                    Color.White);
 
             for (int i = 0; i < Strings.Count; i++)
             {

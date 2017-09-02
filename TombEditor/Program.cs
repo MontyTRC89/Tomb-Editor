@@ -10,7 +10,7 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static void InitLogging()
+        private static void InitLogging()
         {
             var config = new LoggingConfiguration();
 

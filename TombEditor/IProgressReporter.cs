@@ -1,6 +1,5 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace TombEditor
@@ -33,7 +32,7 @@ namespace TombEditor
         }
         public void ReportProgress(float progress, string message)
         {
-            logger.Info(progress.ToString() + " - " + message);
+            logger.Info($"{progress} - {message}");
         }
         public void InvokeGui(Action<IWin32Window> action)
         {

@@ -1,8 +1,6 @@
 ﻿using NLog;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using TombLib.Wad;
 
@@ -85,7 +83,7 @@ namespace TombEditor.Geometry
                 return;
             }
 
-            using (var wad = Wad)
+            using (var unused = Wad)
             {
                 var newWad = Wad.LoadWad(path);
                 try
@@ -135,7 +133,7 @@ namespace TombEditor.Geometry
             for (int i = 0; i < Rooms.Length; i++)
                 if (Rooms[i] == null)
                     return i;
-            throw new Exception("A maximum number of " + Level.MaxNumberOfRooms + " rooms has been reached. Unable to add room.");
+            throw new Exception($"A maximum number of {MaxNumberOfRooms} rooms has been reached. Unable to add room.");
         }
 
         public void AssignRoomToFree(Room room)

@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using TombLib.IO;
 using System.IO;
 using System.Runtime.InteropServices;
-using TombLib.Wad;
 using SharpDX;
-using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class TR4Wad
+    public class Tr4Wad
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_object_texture
+        [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
+        public struct WadObjectTexture
         {
             public byte X;
             public byte Y;
@@ -27,7 +26,8 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_vertex
+        [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
+        public struct WadVertex
         {
             public short X;
             public short Y;
@@ -35,7 +35,7 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_polygon
+        public struct WadPolygon
         {
             public ushort Shape;
             public ushort V1;
@@ -48,7 +48,7 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_mesh
+        public struct WadMesh
         {
             public short SphereX;
             public short SphereY;
@@ -56,19 +56,20 @@ namespace TombLib.Wad
             public ushort Radius;
             public ushort Unknown;
             public ushort NumVertices;
-            public List<wad_vertex> Vertices;
+            public List<WadVertex> Vertices;
             public short NumNormals;
-            public List<wad_vertex> Normals;
+            public List<WadVertex> Normals;
             public List<short> Shades;
             public ushort NumPolygons;
-            public List<wad_polygon> Polygons;
+            public List<WadPolygon> Polygons;
 
             public Vector3 Minimum;
             public Vector3 Maximum;
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_animation
+        [SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Global")]
+        public struct WadAnimation
         {
             public uint KeyFrameOffset;
             public byte FrameDuration;
@@ -89,7 +90,7 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_state_change
+        public struct WadStateChange
         {
             public ushort StateId;
             public ushort NumDispatches;
@@ -97,7 +98,7 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_anim_dispatch
+        public struct WadAnimDispatch
         {
             public short Low;
             public short High;
@@ -106,7 +107,7 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_moveable
+        public struct WadMoveable
         {
             public uint ObjectID;
             public ushort NumPointers;
@@ -117,7 +118,7 @@ namespace TombLib.Wad
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct wad_static_mesh
+        public struct WadStaticMesh
         {
             public uint ObjectId;
             public ushort PointersIndex;
@@ -136,28 +137,21 @@ namespace TombLib.Wad
             public ushort Flags;
         }
 
-        public struct texture_piece
-        {
-            public byte Width;
-            public byte Height;
-            public byte[] Data;
-        }
-
-        public List<wad_object_texture> Textures = new List<wad_object_texture>();
+        public List<WadObjectTexture> Textures = new List<WadObjectTexture>();
         public byte[,] TexturePages;
         public int NumTexturePages;
         public List<uint> Pointers = new List<uint>();
         public List<uint> RealPointers = new List<uint>();
         public List<uint> HelperPointers = new List<uint>();
-        public List<wad_mesh> Meshes = new List<wad_mesh>();
-        public List<wad_animation> Animations = new List<wad_animation>();
-        public List<wad_state_change> Changes = new List<wad_state_change>();
-        public List<wad_anim_dispatch> Dispatches = new List<wad_anim_dispatch>();
+        public List<WadMesh> Meshes = new List<WadMesh>();
+        public List<WadAnimation> Animations = new List<WadAnimation>();
+        public List<WadStateChange> Changes = new List<WadStateChange>();
+        public List<WadAnimDispatch> Dispatches = new List<WadAnimDispatch>();
         public List<short> Commands = new List<short>();
         public List<int> Links = new List<int>();
         public List<short> KeyFrames = new List<short>();
-        public List<wad_moveable> Moveables = new List<wad_moveable>();
-        public List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
+        public List<WadMoveable> Moveables = new List<WadMoveable>();
+        public List<WadStaticMesh> StaticMeshes = new List<WadStaticMesh>();
 
         public List<string> Sounds { get; set; } = new List<string>();
         public string BaseName { get; set; }
@@ -169,7 +163,8 @@ namespace TombLib.Wad
             BasePath = Path.GetDirectoryName(fileName);
 
             // inizializzo lo stream
-            using (BinaryReaderEx reader = new BinaryReaderEx(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (BinaryReaderEx reader =
+                new BinaryReaderEx(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // leggo la versione
                 int version = reader.ReadInt32();
@@ -180,8 +175,8 @@ namespace TombLib.Wad
                 uint numTextures = reader.ReadUInt32();
                 for (int i = 0; i < numTextures; i++)
                 {
-                    wad_object_texture text;
-                    reader.ReadBlock<wad_object_texture>(out text);
+                    WadObjectTexture text;
+                    reader.ReadBlock(out text);
                     Textures.Add(text);
                 }
 
@@ -209,32 +204,33 @@ namespace TombLib.Wad
                 {
                     uint startOfMesh = (uint)reader.BaseStream.Position;
 
-                    wad_mesh mesh = new wad_mesh();
-                    mesh.Polygons = new List<wad_polygon>();
-                    mesh.Vertices = new List<wad_vertex>();
-                    mesh.Normals = new List<wad_vertex>();
-                    mesh.Shades = new List<short>();
-
-                    mesh.SphereX = reader.ReadInt16();
-                    mesh.SphereY = reader.ReadInt16();
-                    mesh.SphereZ = reader.ReadInt16();
-                    mesh.Radius = reader.ReadUInt16();
-                    mesh.Unknown = reader.ReadUInt16();
+                    WadMesh mesh = new WadMesh
+                    {
+                        Polygons = new List<WadPolygon>(),
+                        Vertices = new List<WadVertex>(),
+                        Normals = new List<WadVertex>(),
+                        Shades = new List<short>(),
+                        SphereX = reader.ReadInt16(),
+                        SphereY = reader.ReadInt16(),
+                        SphereZ = reader.ReadInt16(),
+                        Radius = reader.ReadUInt16(),
+                        Unknown = reader.ReadUInt16()
+                    };
 
                     ushort numVertices = reader.ReadUInt16();
                     mesh.NumVertices = numVertices;
 
-                    int xMin = Int32.MaxValue;
-                    int yMin = Int32.MaxValue;
-                    int zMin = Int32.MaxValue;
-                    int xMax = Int32.MinValue;
-                    int yMax = Int32.MinValue;
-                    int zMax = Int32.MinValue;
+                    int xMin = int.MaxValue;
+                    int yMin = int.MaxValue;
+                    int zMin = int.MaxValue;
+                    int xMax = int.MinValue;
+                    int yMax = int.MinValue;
+                    int zMax = int.MinValue;
 
                     for (int i = 0; i < numVertices; i++)
                     {
-                        wad_vertex v;
-                        reader.ReadBlock<wad_vertex>(out v);
+                        WadVertex v;
+                        reader.ReadBlock(out v);
 
                         if (v.X < xMin)
                             xMin = v.X;
@@ -262,8 +258,8 @@ namespace TombLib.Wad
                     {
                         for (int i = 0; i < numNormals; i++)
                         {
-                            wad_vertex v;
-                            reader.ReadBlock<wad_vertex>(out v);
+                            WadVertex v;
+                            reader.ReadBlock(out v);
                             mesh.Normals.Add(v);
                         }
                     }
@@ -280,11 +276,13 @@ namespace TombLib.Wad
                     ushort numQuads = 0;
                     for (int i = 0; i < numPolygons; i++)
                     {
-                        wad_polygon poly = new wad_polygon();
-                        poly.Shape = reader.ReadUInt16();
-                        poly.V1 = reader.ReadUInt16();
-                        poly.V2 = reader.ReadUInt16();
-                        poly.V3 = reader.ReadUInt16();
+                        WadPolygon poly = new WadPolygon
+                        {
+                            Shape = reader.ReadUInt16(),
+                            V1 = reader.ReadUInt16(),
+                            V2 = reader.ReadUInt16(),
+                            V3 = reader.ReadUInt16()
+                        };
                         if (poly.Shape == 9)
                             poly.V4 = reader.ReadUInt16();
                         poly.Texture = reader.ReadUInt16();
@@ -311,7 +309,6 @@ namespace TombLib.Wad
                             RealPointers[k] = (uint)Meshes.Count;
                             HelperPointers[k] = (uint)Meshes.Count;
                         }
-
                     }
                 }
 
@@ -319,24 +316,24 @@ namespace TombLib.Wad
                 uint numAnimations = reader.ReadUInt32();
                 for (int i = 0; i < numAnimations; i++)
                 {
-                    wad_animation anim;
-                    reader.ReadBlock<wad_animation>(out anim);
+                    WadAnimation anim;
+                    reader.ReadBlock(out anim);
                     Animations.Add(anim);
                 }
 
                 uint numChanges = reader.ReadUInt32();
                 for (int i = 0; i < numChanges; i++)
                 {
-                    wad_state_change change;
-                    reader.ReadBlock<wad_state_change>(out change);
+                    WadStateChange change;
+                    reader.ReadBlock(out change);
                     Changes.Add(change);
                 }
 
                 uint numDispatches = reader.ReadUInt32();
                 for (int i = 0; i < numDispatches; i++)
                 {
-                    wad_anim_dispatch anim;
-                    reader.ReadBlock<wad_anim_dispatch>(out anim);
+                    WadAnimDispatch anim;
+                    reader.ReadBlock(out anim);
                     Dispatches.Add(anim);
                 }
 
@@ -344,7 +341,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < numCommands; i++)
                 {
                     short anim;
-                    reader.ReadBlock<short>(out anim);
+                    reader.ReadBlock(out anim);
                     Commands.Add(anim);
                 }
 
@@ -352,7 +349,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < numLinks; i++)
                 {
                     int link;
-                    reader.ReadBlock<int>(out link);
+                    reader.ReadBlock(out link);
                     Links.Add(link);
                 }
 
@@ -360,7 +357,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < numFrames; i++)
                 {
                     short frame;
-                    reader.ReadBlock<short>(out frame);
+                    reader.ReadBlock(out frame);
                     KeyFrames.Add(frame);
                 }
 
@@ -368,23 +365,23 @@ namespace TombLib.Wad
                 uint numMoveables = reader.ReadUInt32();
                 for (int i = 0; i < numMoveables; i++)
                 {
-                    long pos = reader.BaseStream.Position;
-                    wad_moveable moveable;
-                    reader.ReadBlock<wad_moveable>(out moveable);
+                    WadMoveable moveable;
+                    reader.ReadBlock(out moveable);
                     Moveables.Add(moveable);
                 }
 
                 uint numStaticMeshes = reader.ReadUInt32();
                 for (int i = 0; i < numStaticMeshes; i++)
                 {
-                    wad_static_mesh staticMesh;
-                    reader.ReadBlock<wad_static_mesh>(out staticMesh);
+                    WadStaticMesh staticMesh;
+                    reader.ReadBlock(out staticMesh);
                     StaticMeshes.Add(staticMesh);
                 }
 
                 reader.Close();
 
-                using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
+                using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam",
+                    FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());
             }
@@ -392,17 +389,18 @@ namespace TombLib.Wad
 
         public Wad GetTheWad()
         {
-            TR4Wad old = this;
-            Wad wad = new Wad();
-            wad.OriginalWad = this;
+            Tr4Wad old = this;
+            Wad wad = new Wad {OriginalWad = this};
 
             // converto le texture
             int numPages = old.TexturePages.Length / 196608;
             for (uint i = 0; i < numPages; i++)
             {
-                WadTexture texture = new WadTexture();
-                texture.Type = WadTexturePageType.Shared;
-                texture.Image = ImageC.CreateNew(256, 256);
+                WadTexture texture = new WadTexture
+                {
+                    Type = WadTexturePageType.Shared,
+                    Image = ImageC.CreateNew(256, 256)
+                };
                 for (int y = 0; y < 256; y++)
                     for (int x = 0; x < 256; x++)
                     {
@@ -411,21 +409,22 @@ namespace TombLib.Wad
                         byte blue = old.TexturePages[i * 256 + y, x * 3 + 2];
                         texture.Image.SetPixel(x, y, red, green, blue);
                     }
-                texture.Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+                texture.Image.ReplaceColor(new ColorC(255, 0, 255), new ColorC(0, 0, 0, 0));
                 wad.TexturePages.Add(i, texture);
             }
 
             for (int i = 0; i < old.Textures.Count; i++)
             {
-                WadTextureSample sample = new WadTextureSample();
-
-                sample.X = old.Textures[i].X;
-                sample.Y = old.Textures[i].Y;
-                sample.FlipX = old.Textures[i].FlipX;
-                sample.FlipY = old.Textures[i].FlipY;
-                sample.Width = old.Textures[i].Width;
-                sample.Height = old.Textures[i].Height;
-                sample.Page = (short)old.Textures[i].Page;
+                WadTextureSample sample = new WadTextureSample
+                {
+                    X = old.Textures[i].X,
+                    Y = old.Textures[i].Y,
+                    FlipX = old.Textures[i].FlipX,
+                    FlipY = old.Textures[i].FlipY,
+                    Width = old.Textures[i].Width,
+                    Height = old.Textures[i].Height,
+                    Page = (short)old.Textures[i].Page
+                };
 
                 wad.TextureSamples.Add((uint)i, sample);
             }
@@ -433,36 +432,34 @@ namespace TombLib.Wad
             // ora converto i moveables
             for (int i = 0; i < Moveables.Count; i++)
             {
-                WadMoveable moveable = new WadMoveable();
-                wad_moveable m = Moveables[i];
+                TombLib.Wad.WadMoveable moveable = new TombLib.Wad.WadMoveable();
+                WadMoveable m = Moveables[i];
 
-                moveable.ObjectID = m.ObjectID;
+                moveable.ObjectId = m.ObjectID;
 
                 // costruisco la lista delle mesh di questo moveable
-                List<wad_mesh> meshes = new List<wad_mesh>();
+                List<WadMesh> meshes = new List<WadMesh>();
                 for (int j = 0; j < m.NumPointers; j++)
-                    meshes.Add(Meshes[(int)RealPointers[(int)(m.PointerIndex + j)]]);
+                    meshes.Add(Meshes[(int)RealPointers[m.PointerIndex + j]]);
 
                 // converto le mesh
-                for (int j = 0; j < meshes.Count; j++)
-                    moveable.Meshes.Add(GetNewMesh(meshes[j]));
+                foreach (WadMesh mesh in meshes)
+                    moveable.Meshes.Add(GetNewMesh(mesh));
 
                 int currentLink = (int)m.LinksIndex;
 
-                if (currentLink >= Links.Count)
-                    moveable.Offset = Vector3.Zero;
-                else
-                    moveable.Offset = Vector3.Zero;  //new Vector3(_links[currentLink + 1], -_links[currentLink + 2], _links[currentLink + 3]);
+                moveable.Offset = Vector3.Zero;
 
                 // converto lo scheletro
                 for (int j = 0; j < meshes.Count - 1; j++)
                 {
-                    WadLink link = new WadLink();
-
-                    link.Opcode = (WadLinkOpcode)Links[currentLink];
-                    link.X = Links[currentLink + 1];
-                    link.Y = Links[currentLink + 2];
-                    link.Z = Links[currentLink + 3];
+                    WadLink link = new WadLink
+                    {
+                        Opcode = (WadLinkOpcode)Links[currentLink],
+                        X = Links[currentLink + 1],
+                        Y = Links[currentLink + 2],
+                        Z = Links[currentLink + 3]
+                    };
 
                     currentLink += 4;
 
@@ -470,9 +467,9 @@ namespace TombLib.Wad
                 }
 
                 // converto le animazioni
-                int numAnimations = 0;
                 int nextMoveable = GetNextMoveableWithAnimations(i);
 
+                int numAnimations;
                 if (nextMoveable == -1)
                     numAnimations = Animations.Count - m.AnimationIndex;
                 else
@@ -483,30 +480,30 @@ namespace TombLib.Wad
                     if (m.AnimationIndex == -1)
                         break;
 
-                    WadAnimation animation = new WadAnimation();
-                    wad_animation anim = Animations[j + m.AnimationIndex];
+                    TombLib.Wad.WadAnimation animation = new TombLib.Wad.WadAnimation();
+                    WadAnimation anim = Animations[j + m.AnimationIndex];
                     //animation.Acceleration = anim.Accel;
                     //animation.Speed = anim.Speed;
                     animation.FrameDuration = anim.FrameDuration;
                     animation.NextAnimation = (ushort)(anim.NextAnimation - m.AnimationIndex);
-                    animation.NextFrame = 0;// GetNextFrame(anim.NextAnimation, anim.NextFrame);
-                    animation.StateId = (ushort)anim.StateId;
+                    animation.NextFrame = 0; // GetNextFrame(anim.NextAnimation, anim.NextFrame);
+                    animation.StateId = anim.StateId;
 
                     for (int k = 0; k < anim.NumStateChanges; k++)
                     {
-                        WadStateChange sc = new WadStateChange();
-                        wad_state_change wadSc = Changes[(int)anim.ChangesIndex + k];
-                        sc.StateId = (ushort)wadSc.StateId;
-                        sc.Dispatches = new WadAnimDispatch[wadSc.NumDispatches];
+                        TombLib.Wad.WadStateChange sc = new TombLib.Wad.WadStateChange();
+                        WadStateChange wadSc = Changes[anim.ChangesIndex + k];
+                        sc.StateId = wadSc.StateId;
+                        sc.Dispatches = new TombLib.Wad.WadAnimDispatch[wadSc.NumDispatches];
 
                         for (int n = 0; n < wadSc.NumDispatches; n++)
                         {
-                            WadAnimDispatch ad = new WadAnimDispatch();
-                            wad_anim_dispatch wadAd = Dispatches[(int)wadSc.DispatchesIndex + n];
+                            TombLib.Wad.WadAnimDispatch ad = new TombLib.Wad.WadAnimDispatch();
+                            WadAnimDispatch wadAd = Dispatches[wadSc.DispatchesIndex + n];
                             ad.InFrame = (ushort)wadAd.Low;
                             ad.OutFrame = (ushort)wadAd.High;
                             ad.NextAnimation = (ushort)(wadAd.NextAnimation - m.AnimationIndex);
-                            ad.NextFrame = 0;// GetNextFrame(wadAd.NextAnimation, wadAd.NextFrame);
+                            ad.NextFrame = 0; // GetNextFrame(wadAd.NextAnimation, wadAd.NextFrame);
                             sc.Dispatches[n] = ad;
                         }
 
@@ -518,7 +515,7 @@ namespace TombLib.Wad
                     {
                         for (int k = 0; k < anim.NumCommands; k++)
                         {
-                            animation.AnimCommands.Add((short)Commands[(int)anim.CommandOffset + k]);
+                            animation.AnimCommands.Add(Commands[anim.CommandOffset + k]);
                         }
                     }
 
@@ -537,7 +534,8 @@ namespace TombLib.Wad
                         }
                         else
                         {
-                            numFrames = (Animations[m.AnimationIndex + j + 1].KeyFrameOffset - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
+                            numFrames = (Animations[m.AnimationIndex + j + 1].KeyFrameOffset - anim.KeyFrameOffset) /
+                                        (uint)(2 * anim.KeyFrameSize);
                         }
                     }
 
@@ -560,10 +558,12 @@ namespace TombLib.Wad
 
                         frames += 6;
 
-                        frame.Offset = new WadVector();
-                        frame.Offset.X = KeyFrames[frames];
-                        frame.Offset.Y = KeyFrames[frames + 1];
-                        frame.Offset.Z = KeyFrames[frames + 2];
+                        frame.Offset = new WadVector
+                        {
+                            X = KeyFrames[frames],
+                            Y = KeyFrames[frames + 1],
+                            Z = KeyFrames[frames + 2]
+                        };
 
                         frames += 3;
 
@@ -571,14 +571,13 @@ namespace TombLib.Wad
 
                         for (int n = 0; n < frame.Angles.Length; n++)
                         {
-
                             short rot = KeyFrames[frames];
                             WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
 
                             switch (rot & 0xc000)
                             {
                                 case 0:
-                                    int rotation = rot;//( rot <<16) + _keyFrames[frames + 1];
+                                    int rotation = rot; //( rot <<16) + _keyFrames[frames + 1];
                                     int rotation2 = KeyFrames[frames + 1];
                                     frames += 2;
                                     float rotZ = rotation2 & 0x3ff;
@@ -632,7 +631,7 @@ namespace TombLib.Wad
                         }
 
                         if ((frames - startOfFrame) < anim.KeyFrameSize)
-                            frames += ((int)anim.KeyFrameSize - (frames - startOfFrame));
+                            frames += anim.KeyFrameSize - (frames - startOfFrame);
 
                         animation.KeyFrames.Add(frame);
                     }
@@ -646,8 +645,9 @@ namespace TombLib.Wad
                     Vector3 offset = new Vector3(kf.Offset.X, -kf.Offset.Y, kf.Offset.Z);
                     //offset = Vector3.Zero;
 
-                    moveable.BoundingBox = new BoundingBox(new Vector3(kf.BoundingBox1.X, -kf.BoundingBox2.Y, kf.BoundingBox1.Z) + offset,
-                                                          new Vector3(kf.BoundingBox2.X, -kf.BoundingBox1.Y, kf.BoundingBox2.Z) + offset);
+                    moveable.BoundingBox = new BoundingBox(
+                        new Vector3(kf.BoundingBox1.X, -kf.BoundingBox2.Y, kf.BoundingBox1.Z) + offset,
+                        new Vector3(kf.BoundingBox2.X, -kf.BoundingBox1.Y, kf.BoundingBox2.Z) + offset);
                 }
                 else
                 {
@@ -657,30 +657,42 @@ namespace TombLib.Wad
                 wad.WadMoveables.Add(m.ObjectID, moveable);
             }
 
-            for (int i = 0; i < StaticMeshes.Count; i++)
+            foreach (WadStaticMesh oldStaticMesh in StaticMeshes)
             {
-                WadStatic staticMesh = new WadStatic();
-                wad_static_mesh oldStaticMesh = StaticMeshes[i];
+                WadStatic staticMesh = new WadStatic
+                {
+                    ObjectId = oldStaticMesh.ObjectId,
+                    Mesh = GetNewMesh(Meshes[(int)RealPointers[oldStaticMesh.PointersIndex]]),
+                    Flags = (short)oldStaticMesh.Flags,
+                    VisibilityBox1 = new WadVector
+                    {
+                        X = oldStaticMesh.VisibilityX1,
+                        Y = oldStaticMesh.VisibilityY1,
+                        Z = oldStaticMesh.VisibilityZ1
+                    },
+                    VisibilityBox2 =
+                    {
+                        X = oldStaticMesh.VisibilityX2,
+                        Y = oldStaticMesh.VisibilityY2,
+                        Z = oldStaticMesh.VisibilityZ2
+                    },
+                    CollisionBox1 =
+                    {
+                        X = oldStaticMesh.CollisionX1,
+                        Y = oldStaticMesh.CollisionY1,
+                        Z = oldStaticMesh.CollisionZ1
+                    },
+                    CollisionBox2 =
+                    {
+                        X = oldStaticMesh.CollisionX2,
+                        Y = oldStaticMesh.CollisionY2,
+                        Z = oldStaticMesh.CollisionZ2
+                    },
+                    BoundingBox = new BoundingBox(
+                        new Vector3(oldStaticMesh.VisibilityX1, oldStaticMesh.VisibilityY1, oldStaticMesh.VisibilityZ1),
+                        new Vector3(oldStaticMesh.VisibilityX2, oldStaticMesh.VisibilityY2, oldStaticMesh.VisibilityZ2))
+                };
 
-                staticMesh.ObjectID = oldStaticMesh.ObjectId;
-                staticMesh.Mesh = GetNewMesh(Meshes[(int)RealPointers[(int)oldStaticMesh.PointersIndex]]);
-                staticMesh.Flags = (short)oldStaticMesh.Flags;
-                staticMesh.VisibilityBox1 = new WadVector();
-                staticMesh.VisibilityBox1.X = (short)oldStaticMesh.VisibilityX1;
-                staticMesh.VisibilityBox1.Y = (short)oldStaticMesh.VisibilityY1;
-                staticMesh.VisibilityBox1.Z = (short)oldStaticMesh.VisibilityZ1;
-                staticMesh.VisibilityBox2.X = (short)oldStaticMesh.VisibilityX2;
-                staticMesh.VisibilityBox2.Y = (short)oldStaticMesh.VisibilityY2;
-                staticMesh.VisibilityBox2.Z = (short)oldStaticMesh.VisibilityZ2;
-                staticMesh.CollisionBox1.X = (short)oldStaticMesh.CollisionX1;
-                staticMesh.CollisionBox1.Y = (short)oldStaticMesh.CollisionY1;
-                staticMesh.CollisionBox1.Z = (short)oldStaticMesh.CollisionZ1;
-                staticMesh.CollisionBox2.X = (short)oldStaticMesh.CollisionX2;
-                staticMesh.CollisionBox2.Y = (short)oldStaticMesh.CollisionY2;
-                staticMesh.CollisionBox2.Z = (short)oldStaticMesh.CollisionZ2;
-
-                staticMesh.BoundingBox = new BoundingBox(new Vector3(oldStaticMesh.VisibilityX1, oldStaticMesh.VisibilityY1, oldStaticMesh.VisibilityZ1),
-                                                         new Vector3(oldStaticMesh.VisibilityX2, oldStaticMesh.VisibilityY2, oldStaticMesh.VisibilityZ2));
 
                 // HACK: WTF the WAD sometimes has multiple static meshes with same Object ID? I think it's WadMerger issue.
                 if (wad.WadStatics.ContainsKey(oldStaticMesh.ObjectId)) continue;
@@ -691,26 +703,28 @@ namespace TombLib.Wad
             return wad;
         }
 
-        private WadMesh GetNewMesh(wad_mesh oldMesh)
+        private TombLib.Wad.WadMesh GetNewMesh(WadMesh oldMesh)
         {
             //wad_mesh oldMesh = _meshes[index];
-            WadMesh mesh = new WadMesh();
+            TombLib.Wad.WadMesh mesh = new TombLib.Wad.WadMesh
+            {
+                SphereX = oldMesh.SphereX,
+                SphereY = oldMesh.SphereY,
+                SphereZ = oldMesh.SphereZ,
+                Radius = oldMesh.Radius,
+                Unknown = oldMesh.Unknown,
+                NumVertices = (ushort)oldMesh.Vertices.Count,
+                Vertices = new WadVector[oldMesh.Vertices.Count]
+            };
 
-            mesh.SphereX = oldMesh.SphereX;
-            mesh.SphereY = oldMesh.SphereY;
-            mesh.SphereZ = oldMesh.SphereZ;
-            mesh.Radius = oldMesh.Radius;
-            mesh.Unknown = oldMesh.Unknown;
-
-            mesh.NumVertices = (ushort)oldMesh.Vertices.Count;
-            mesh.Vertices = new WadVector[oldMesh.Vertices.Count];
             for (int i = 0; i < oldMesh.Vertices.Count; i++)
             {
-                WadVector vertex = new WadVector();
-
-                vertex.X = oldMesh.Vertices[i].X;
-                vertex.Y = oldMesh.Vertices[i].Y;
-                vertex.Z = oldMesh.Vertices[i].Z;
+                WadVector vertex = new WadVector
+                {
+                    X = oldMesh.Vertices[i].X,
+                    Y = oldMesh.Vertices[i].Y,
+                    Z = oldMesh.Vertices[i].Z
+                };
 
                 mesh.Vertices[i] = vertex;
             }
@@ -724,13 +738,15 @@ namespace TombLib.Wad
             if (mesh.NumNormals > 0)
             {
                 mesh.Normals = new WadVector[oldMesh.Vertices.Count];
+                Debug.Assert(oldMesh.Normals != null);
                 for (int i = 0; i < oldMesh.Normals.Count; i++)
                 {
-                    WadVector vertex = new WadVector();
-
-                    vertex.X = oldMesh.Vertices[i].X;
-                    vertex.Y = oldMesh.Vertices[i].Y;
-                    vertex.Z = oldMesh.Vertices[i].Z;
+                    WadVector vertex = new WadVector
+                    {
+                        X = oldMesh.Vertices[i].X,
+                        Y = oldMesh.Vertices[i].Y,
+                        Z = oldMesh.Vertices[i].Z
+                    };
 
                     mesh.Normals[i] = vertex;
                 }
@@ -738,19 +754,22 @@ namespace TombLib.Wad
             else
             {
                 mesh.Shades = new short[-mesh.NumNormals];
+                Debug.Assert(oldMesh.Shades != null);
                 for (int i = 0; i < oldMesh.Shades.Count; i++)
                     mesh.Shades[i] = oldMesh.Shades[i];
             }
 
             mesh.NumPolygons = (ushort)oldMesh.Polygons.Count;
-            mesh.Polygons = new WadPolygon[mesh.NumPolygons];
+            mesh.Polygons = new TombLib.Wad.WadPolygon[mesh.NumPolygons];
             for (int i = 0; i < mesh.NumPolygons; i++)
             {
-                WadPolygon poly = new WadPolygon();
+                TombLib.Wad.WadPolygon poly = new TombLib.Wad.WadPolygon
+                {
+                    V1 = oldMesh.Polygons[i].V1,
+                    V2 = oldMesh.Polygons[i].V2,
+                    V3 = oldMesh.Polygons[i].V3
+                };
 
-                poly.V1 = oldMesh.Polygons[i].V1;
-                poly.V2 = oldMesh.Polygons[i].V2;
-                poly.V3 = oldMesh.Polygons[i].V3;
 
                 if (oldMesh.Polygons[i].Shape == 9)
                 {
@@ -779,22 +798,6 @@ namespace TombLib.Wad
                 if (Moveables[i].AnimationIndex != -1)
                     return i;
             return -1;
-        }
-
-        private short GetNextFrame(int animation, int frame)
-        {
-            short output = 0;
-
-            if (animation > Animations.Count - 1)
-                return 0;
-
-            for (int i = 0; i < animation; i++)
-            {
-                output += (short)(Animations[i].FrameEnd - Animations[i].FrameStart + 1);
-            }
-
-            output = (short)(frame - output);
-            return output;
         }
     }
 }

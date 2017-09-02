@@ -1,15 +1,11 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using NLog;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
-using TombEditor.Controls;
 using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
 

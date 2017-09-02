@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpDX.Toolkit.Graphics;
-using SharpDX.Toolkit;
 using SharpDX;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombLib.Wad;
@@ -15,7 +11,8 @@ namespace TombLib.Graphics
     {
         public StaticModel(GraphicsDevice device)
             : base(device, ModelType.Static)
-        { }
+        {
+        }
 
         public override void BuildBuffers()
         {
@@ -25,83 +22,93 @@ namespace TombLib.Graphics
             Vertices = new List<StaticVertex>();
             Indices = new List<int>();
 
-            for (int i = 0; i < Meshes.Count; i++)
+            foreach (var mesh in Meshes)
             {
-                Vertices.AddRange(Meshes[i].Vertices);
+                Vertices.AddRange(mesh.Vertices);
 
-                Meshes[i].BaseIndex = lastBaseIndex;
-                Meshes[i].NumIndices = Meshes[i].Indices.Count;
+                mesh.BaseIndex = lastBaseIndex;
+                mesh.NumIndices = mesh.Indices.Count;
 
-                for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                foreach (int index in mesh.Indices)
                 {
-                    Indices.Add((ushort)(lastBaseVertex + Meshes[i].Indices[j]));
+                    Indices.Add((ushort)(lastBaseVertex + index));
                 }
 
-                lastBaseIndex += Meshes[i].Indices.Count;
-                lastBaseVertex += Meshes[i].Vertices.Count;
+                lastBaseIndex += mesh.Indices.Count;
+                lastBaseVertex += mesh.Vertices.Count;
             }
 
             if (Vertices.Count == 0) return;
 
-            VertexBuffer = Buffer.Vertex.New<StaticVertex>(GraphicsDevice, Vertices.ToArray<StaticVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<StaticVertex>(),
+                SharpDX.Direct3D11.ResourceUsage.Dynamic);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
-        public static StaticModel FromWad(GraphicsDevice device, WadStatic static_, 
+        public static StaticModel FromWad(GraphicsDevice device, WadStatic @static,
             Dictionary<uint, WadTexture> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
         {
-            StaticModel model = new StaticModel(device);
+            var model = new StaticModel(device);
 
             // Initialize the mesh
-            WadMesh msh = static_.Mesh;
-            StaticMesh mesh = new StaticMesh(device, static_.ToString() + "_mesh");
-            mesh.BoundingBox = msh.BoundingBox;
+            var msh = @static.Mesh;
+            var mesh = new StaticMesh(device, $"{@static}_mesh") {BoundingBox = msh.BoundingBox};
 
             for (int j = 0; j < texturePages.Count; j++)
             {
-                Submesh submesh = new Submesh();
-                submesh.Material = new Material();
-                submesh.Material.Type = MaterialType.Flat;
-                submesh.Material.Name = "material_" + j.ToString();
-                submesh.Material.DiffuseMap = (uint)j;
+                var submesh = new Submesh
+                {
+                    Material = new Material
+                    {
+                        Type = MaterialType.Flat,
+                        Name = $"material_{j}",
+                        DiffuseMap = (uint)j
+                    }
+                };
                 mesh.SubMeshes.Add(submesh);
             }
 
-            for (int j = 0; j < msh.Polygons.Length; j++)
+            foreach (var poly in msh.Polygons)
             {
-                WadPolygon poly = msh.Polygons[j];
                 int textureId = poly.Texture & 0xfff;
                 if (textureId > 2047)
                     textureId = -(textureId - 4096);
                 short submeshIndex = textureSamples[(uint)textureId].Page;
 
-                List<Vector2> uv = CalculateUVCoordinates(poly, textureSamples);
+                var uv = CalculateUvCoordinates(poly, textureSamples);
 
                 if (poly.Shape == Shape.Triangle)
                 {
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
                 }
                 else
                 {
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
 
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
-
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
+                    AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex,
+                        (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
                 }
             }
 
-            for (int j = 0; j < mesh.SubMeshes.Count; j++)
+            foreach (var current in mesh.SubMeshes)
             {
-                Submesh current = mesh.SubMeshes[j];
                 current.StartIndex = (ushort)mesh.Indices.Count;
-                for (int k = 0; k < current.Indices.Count; k++)
-                    mesh.Indices.Add(current.Indices[k]);
+                foreach (ushort index in current.Indices)
+                    mesh.Indices.Add(index);
                 current.NumIndices = (ushort)current.Indices.Count;
             }
 
@@ -114,6 +121,5 @@ namespace TombLib.Graphics
 
             return model;
         }
-
     }
 }

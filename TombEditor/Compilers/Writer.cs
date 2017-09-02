@@ -9,7 +9,7 @@ namespace TombEditor.Compilers
     {
         private void WriteLevelTr4()
         {
-            var wad = _level.Wad.OriginalWad;
+            var wad = Level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
             using (var geometryData = new MemoryStream())
@@ -21,10 +21,10 @@ namespace TombEditor.Compilers
                     const int filler = 0;
                     writer.Write(filler);
 
-                    var numRooms = (ushort)_level.Rooms.Count(r => r != null);
+                    var numRooms = (ushort)Level.Rooms.Count(r => r != null);
                     writer.Write(numRooms);
 
-                    foreach (var r in _level.Rooms.Where(r => r != null))
+                    foreach (var r in Level.Rooms.Where(r => r != null))
                     {
                         _tempRooms[r].Write(writer);
                     }
@@ -180,7 +180,7 @@ namespace TombEditor.Compilers
                     byte[] soundMap;
                     uint numSampleIndices;
                     using (var readerSounds = new BinaryReaderEx(new FileStream(
-                        _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
+                        Level.Wad.OriginalWad.BasePath + "\\" + Level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     {
                         soundMap = readerSounds.ReadBytes(370 * 2);
                         _numSoundDetails = (uint)readerSounds.ReadInt32();
@@ -208,7 +208,7 @@ namespace TombEditor.Compilers
                 }
                 geometryData.Seek(0, SeekOrigin.Begin);
 
-                using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
+                using (var writer = new BinaryWriterEx(new FileStream(Dest, FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     ReportProgress(90, "Writing final level");
 
@@ -247,7 +247,7 @@ namespace TombEditor.Compilers
                     writer.WriteBlockArray(buffer);
 
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    int numSamples = _level.Wad.OriginalWad.Sounds.Count;
+                    int numSamples = Level.Wad.OriginalWad.Sounds.Count;
                     writer.WriteBlock(numSamples);
 
                     ReportProgress(80, "Writing WAVE sounds");
@@ -263,10 +263,10 @@ namespace TombEditor.Compilers
 
         private bool WriteLevelTr3()
         {
-            var wad = _level.Wad.OriginalWad;
+            var wad = Level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
-            using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
+            using (var writer = new BinaryWriterEx(new FileStream(Dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
@@ -302,12 +302,12 @@ namespace TombEditor.Compilers
                 const int filler = 0;
                 writer.Write(filler);
 
-                var numRooms = (ushort)_level.Rooms.Count(r => r != null);
+                var numRooms = (ushort)Level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
                 long offset;
                 long offset2;
-                foreach (var room in _level.Rooms.Where(r => r != null))
+                foreach (var room in Level.Rooms.Where(r => r != null))
                 {
                     var tempRoom = _tempRooms[room];
                     writer.WriteBlock(tempRoom.Info);
@@ -542,7 +542,7 @@ namespace TombEditor.Compilers
                 // Write sound data
                 byte[] sfxBuffer;
                 using (var readerSounds = new BinaryReaderEx(new FileStream(
-                        @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
+                        @"Graphics\Wads\" + Level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);

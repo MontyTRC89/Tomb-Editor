@@ -5,13 +5,22 @@ namespace TombEditor.Geometry
 {
     public enum LightType : byte
     {
-        Light, Shadow, Spot, Effect, Sun, FogBulb
+        Light,
+        Shadow,
+        Spot,
+        Effect,
+        Sun,
+        FogBulb
     }
 
-    public class Light : PositionBasedObjectInstance, IRotateableYX
+    public class Light : PositionBasedObjectInstance, IRotateableYx
     {
         public LightType Type { get; }
-        public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
+
+        public Vector3 Color { get; set; } =
+            new Vector3(1.0f, 1.0f,
+                1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
+
         public float Intensity { get; set; } = 0.5f;
         public float In { get; set; } = 1.0f;
         public float Out { get; set; } = 5.0f;
@@ -22,21 +31,21 @@ namespace TombEditor.Geometry
         public bool IsDynamicallyUsed { get; set; } = true;
         public bool IsStaticallyUsed { get; set; } = true;
 
-        private float _rotationX = 0.0f;
-        private float _rotationY = 0.0f;
+        private float _rotationX;
+        private float _rotationY;
 
         /// <summary> Degrees in the range [-90, 90] </summary>
         public float RotationX
         {
-            get { return _rotationX; }
-            set { _rotationX = Math.Max(-90, Math.Min(90, value)); }
+            get => _rotationX;
+            set => _rotationX = Math.Max(-90, Math.Min(90, value));
         }
-        
+
         /// <summary> Degrees in the range [0, 360) </summary>
         public float RotationY
         {
-            get { return _rotationY; }
-            set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+            get => _rotationY;
+            set => _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0);
         }
 
         public Light(LightType type)
@@ -63,28 +72,15 @@ namespace TombEditor.Geometry
                     break;
             }
         }
-        
+
         public override ObjectInstance Clone()
         {
-            return (ObjectInstance)(this.MemberwiseClone());
+            return (ObjectInstance)MemberwiseClone();
         }
 
         public override string ToString()
         {
-            return "Light " + Type.ToString() +
-                ", X = " + Position.X +
-                ", Y = " + Position.Y +
-                ", Z = " + Position.Z;
-        }
-
-        public override void AddToRoom(Level level, Room room)
-        {
-            base.AddToRoom(level, room);
-        }
-
-        public override void RemoveFromRoom(Level level, Room room)
-        {
-            base.RemoveFromRoom(level, room);
+            return $"Light {Type}, X = {Position.X}, Y = {Position.Y}, Z = {Position.Z}";
         }
     }
 }

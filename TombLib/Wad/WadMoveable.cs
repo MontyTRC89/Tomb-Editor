@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SharpDX;
 
 namespace TombLib.Wad
@@ -16,7 +13,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            return "(" + ObjectID + ") " + ObjectNames.GetMoveableName(ObjectID);
+            return "(" + ObjectId + ") " + ObjectNames.GetMoveableName(ObjectId);
         }
     }
 }

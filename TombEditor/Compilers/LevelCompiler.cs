@@ -1,24 +1,23 @@
-﻿using System.IO;
-using TombEditor.Geometry;
+﻿using TombEditor.Geometry;
 
 namespace TombEditor.Compilers
 {
     public abstract class LevelCompiler
     {
-        protected readonly Level _level;
-        protected readonly string _dest;
-        protected readonly IProgressReporter _progressReporter;
+        protected readonly Level Level;
+        protected readonly string Dest;
+        protected readonly IProgressReporter ProgressReporter;
 
-        protected LevelCompiler(Level level, string dest, IProgressReporter progressReporter)
+        protected LevelCompiler(Level level, IProgressReporter progressReporter)
         {
-            _level = level;
-            _dest = _level.Settings.MakeAbsolute(_level.Settings.GameLevelFilePath);
-            _progressReporter = progressReporter;
+            Level = level;
+            Dest = Level.Settings.MakeAbsolute(Level.Settings.GameLevelFilePath);
+            ProgressReporter = progressReporter;
         }
 
         protected void ReportProgress(float percentage, string message)
         {
-            _progressReporter.ReportProgress(percentage, message);
+            ProgressReporter.ReportProgress(percentage, message);
         }
     }
 }

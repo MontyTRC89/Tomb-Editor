@@ -4,8 +4,6 @@ using System.IO;
 using NLog;
 using TombEditor.Geometry;
 using TombLib.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
 using TombLib.Utils;
 
 namespace TombEditor.Compilers
@@ -18,7 +16,7 @@ namespace TombEditor.Compilers
 
         private void PrepareTextures()
         {
-            List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
+            List<ImageC> packedTextures = _objectTextureManager.PackTextures(ProgressReporter);
             List<ImageC> spritePages = BuildSprites(packedTextures.Count);
 
             ReportProgress(10, "Building final texture map");
@@ -27,7 +25,7 @@ namespace TombEditor.Compilers
             // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
             _numRoomTextureTiles = (ushort)packedTextures.Count;
             _numObjectTextureTiles = (ushort)(spritePages.Count);
-            
+
             byte[] uncTexture32 = new byte[(spritePages.Count + packedTextures.Count) * (256 * 256 * 4)];
 
             for (int i = 0; i < packedTextures.Count; ++i)
@@ -52,7 +50,8 @@ namespace TombEditor.Compilers
         }
 
         private TextureSound GetTextureSound(Room room, int x, int z)
-        {/*
+        {
+/*
             var txt = _level.TextureSamples[texture];
 
             foreach (var txtSound in _level.TextureSounds)
@@ -68,7 +67,7 @@ namespace TombEditor.Compilers
             return TextureSound.Stone;
         }
 
-        private bool PrepareFontAndSkyTexture()
+        private void PrepareFontAndSkyTexture()
         {
             try
             {
@@ -77,15 +76,15 @@ namespace TombEditor.Compilers
                 var image = ImageC.CreateNew(256, 512);
 
                 // Read font texture
-                string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+                string fontFileName = Level.Settings.FontTextureFileNameAbsoluteOrDefault;
                 ReportProgress(19, "Reading font texture: " + fontFileName);
-                image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName)); 
+                image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName));
 
                 // Read sky texture
-                string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+                string skyFileName = Level.Settings.SkyTextureFileNameAbsoluteOrDefault;
                 ReportProgress(18, "Reading sky texture: " + skyFileName);
                 image.CopyFrom(0, 256, Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName));
-                
+
                 ReportProgress(80, "Compressing font & sky textures");
                 var rawDataStream = image.ToRawStream();
                 _miscTexture = ZLib.CompressData(image.ToRawStream());
@@ -95,34 +94,32 @@ namespace TombEditor.Compilers
             catch (Exception exc)
             {
                 logger.Error(exc, "An exception occured while loading font and sky.");
-                return false;
+                return;
             }
-
-            return true;
         }
 
         private List<ImageC> BuildSprites(int pagesBeforeSprites)
         {
             ReportProgress(9, "Building sprites");
-            ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
+            ReportProgress(9, "Reading " + Level.Wad.OriginalWad.BaseName + ".swd");
 
             List<ImageC> texturePages = new List<ImageC>();
 
             using (var reader = new BinaryReaderEx(new FileStream(
-                _level.Wad.OriginalWad.BasePath + Path.DirectorySeparatorChar + _level.Wad.OriginalWad.BaseName + ".swd",
+                Level.Wad.OriginalWad.BasePath + Path.DirectorySeparatorChar + Level.Wad.OriginalWad.BaseName + ".swd",
                 FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
                 // Version
                 reader.ReadUInt32();
 
                 //Sprite texture array
-                _spriteTextures = new tr_sprite_texture[reader.ReadUInt32()];
+                _spriteTextures = new TrSpriteTexture[reader.ReadUInt32()];
                 for (int i = 0; i < _spriteTextures.Length; i++)
                 {
                     byte[] buffer;
                     reader.ReadBlockArray(out buffer, 16);
 
-                    _spriteTextures[i] = new tr_sprite_texture
+                    _spriteTextures[i] = new TrSpriteTexture
                     {
                         Tile = (ushort)(pagesBeforeSprites), // TODO use correct page offset here.
                         X = buffer[0],
@@ -143,7 +140,7 @@ namespace TombEditor.Compilers
                 int numSpriteTexturePages = spriteDataSize / (65536 * 3);
                 if ((spriteDataSize % (65536 * 3)) != 0)
                     numSpriteTexturePages++;
-                
+
                 for (int i = 0; i < numSpriteTexturePages; ++i)
                 {
                     var spritePage = ImageC.CreateNew(256, 256);
@@ -157,7 +154,7 @@ namespace TombEditor.Compilers
                             if (r == 255 & g == 0 && b == 255)
                                 spritePage.SetPixel(x, y, 0, 0, 0, 0);
                             else
-                                spritePage.SetPixel(x, y, b, g, r, 255);
+                                spritePage.SetPixel(x, y, b, g, r);
                         }
                     texturePages.Add(spritePage);
                 }

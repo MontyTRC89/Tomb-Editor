@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataGridView;
 using System.Collections;
@@ -12,7 +10,6 @@ using DarkUI.Controls;
 
 // See also:
 //https://github.com/RobinPerris/DarkUI/blob/master/DarkUI/Controls/DarkScrollBase.cs
-using static DarkUI.Controls.DarkScrollBase;
 using System.Reflection;
 using System.Drawing.Drawing2D;
 

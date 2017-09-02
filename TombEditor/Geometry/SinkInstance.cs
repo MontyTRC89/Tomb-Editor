@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
-    public class SinkInstance : PositionBasedObjectInstance, IHasScriptID
+    public class SinkInstance : PositionBasedObjectInstance, IHasScriptId
     {
         public ushort? ScriptId { get; set; }
         public short Strength { get; set; }

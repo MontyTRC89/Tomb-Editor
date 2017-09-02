@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
     public enum TextureSound : byte
     {

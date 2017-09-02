@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using System.IO;
-using NLog;
 using System.Drawing;
 
 namespace TombEditor
 {
     public static class Utils
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
         public static string GetDirectoryNameTry(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -40,13 +37,15 @@ namespace TombEditor
             baseDir = Path.GetFullPath(baseDir);
             fileName = Path.GetFullPath(Path.Combine(baseDir, fileName));
 
-            var dictionarySeperators = new string[] { Path.DirectorySeparatorChar.ToString(), Path.AltDirectorySeparatorChar.ToString() };
+            var dictionarySeperators = new[]
+                {Path.DirectorySeparatorChar.ToString(), Path.AltDirectorySeparatorChar.ToString()};
             string[] baseDirArr = baseDir.Split(dictionarySeperators, StringSplitOptions.RemoveEmptyEntries);
             string[] fileNameArr = fileName.Split(dictionarySeperators, StringSplitOptions.RemoveEmptyEntries);
 
             int i = 0;
             for (; i < baseDirArr.Length && i < fileNameArr.Length; i++)
-                if (string.Compare(baseDirArr[i], fileNameArr[i], true) != 0) // Case insensitive match
+                if (String.Compare(baseDirArr[i], fileNameArr[i], StringComparison.OrdinalIgnoreCase) != 0
+                ) // Case insensitive match
                     break;
             if (i == 0) // Cannot make relative path, for example if resides on different drive
                 return null;
@@ -107,13 +106,13 @@ namespace TombEditor
         public static bool Contains(this SharpDX.Rectangle area, SharpDX.Rectangle other)
         {
             return ((area.X <= other.X) && (area.Right >= other.Right)) &&
-                ((area.Y <= other.Y) && (area.Bottom >= other.Bottom));
+                   ((area.Y <= other.Y) && (area.Bottom >= other.Bottom));
         }
 
         public static bool Intersects(this SharpDX.Rectangle area, SharpDX.Rectangle other)
         {
             return (area.X <= other.Right) && (area.Right >= other.X) &&
-                (area.Y <= other.Bottom) && (area.Bottom >= other.Y);
+                   (area.Y <= other.Bottom) && (area.Bottom >= other.Y);
         }
 
         public static DrawingPoint Offset(this DrawingPoint basePoint, DrawingPoint point)
@@ -123,7 +122,8 @@ namespace TombEditor
 
         public static SharpDX.Rectangle Offset(this SharpDX.Rectangle area, DrawingPoint point)
         {
-            return new SharpDX.Rectangle(area.Left + point.X, area.Top + point.Y, area.Right + point.X, area.Bottom + point.Y);
+            return new SharpDX.Rectangle(area.Left + point.X, area.Top + point.Y, area.Right + point.X,
+                area.Bottom + point.Y);
         }
 
         public static DrawingPoint OffsetNeg(this DrawingPoint basePoint, DrawingPoint point)
@@ -133,7 +133,8 @@ namespace TombEditor
 
         public static SharpDX.Rectangle OffsetNeg(this SharpDX.Rectangle area, DrawingPoint point)
         {
-            return new SharpDX.Rectangle(area.Left - point.X, area.Top - point.Y, area.Right - point.X, area.Bottom - point.Y);
+            return new SharpDX.Rectangle(area.Left - point.X, area.Top - point.Y, area.Right - point.X,
+                area.Bottom - point.Y);
         }
 
         public static Vector2 ToVec2(this DrawingPoint basePoint)
@@ -200,34 +201,34 @@ namespace TombEditor
             return array[index0, index1, index2];
         }
 
-        public static T FindFirstAfterWithWrapAround<T>(this IEnumerable<T> list, Func<T, bool> IsPrevious, Func<T, bool> Matches) where T : class
+        public static T FindFirstAfterWithWrapAround<T>(this IEnumerable<T> list, Func<T, bool> isPrevious,
+            Func<T, bool> matches) where T : class
         {
             bool ignoreMatches = true;
 
             // Search for matching objects after the previous one
+            // ReSharper disable once PossibleMultipleEnumeration
             foreach (T obj in list)
             {
                 if (ignoreMatches)
                 {
-                    if (IsPrevious(obj))
+                    if (isPrevious(obj))
                         ignoreMatches = false;
                     continue;
                 }
 
                 // Does it match
-                if (Matches(obj))
+                if (matches(obj))
                     return obj;
             }
 
             // Search for any matching objects
-            foreach (T obj in list)
-                if (Matches(obj))
-                    return obj;
-
-            return null;
+            // ReSharper disable once PossibleMultipleEnumeration
+            return list.FirstOrDefault(matches);
         }
 
-        public static System.Drawing.Color MixWith(this System.Drawing.Color firstColor, System.Drawing.Color secondColor, double mixFactor)
+        public static System.Drawing.Color MixWith(this System.Drawing.Color firstColor,
+            System.Drawing.Color secondColor, double mixFactor)
         {
             if (mixFactor > 1)
                 mixFactor = 1;
@@ -250,10 +251,10 @@ namespace TombEditor
         public static System.Drawing.Color ToWinFormsColor(this Vector4 color)
         {
             return System.Drawing.Color.FromArgb(
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 128.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 128.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 128.0f))),
-                    (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 128.0f))));
+                (int)Math.Max(0, Math.Min(255, Math.Round(color.W * 128.0f))),
+                (int)Math.Max(0, Math.Min(255, Math.Round(color.X * 128.0f))),
+                (int)Math.Max(0, Math.Min(255, Math.Round(color.Y * 128.0f))),
+                (int)Math.Max(0, Math.Min(255, Math.Round(color.Z * 128.0f))));
         }
 
         public static Vector4 ToFloatColor(this System.Drawing.Color color)

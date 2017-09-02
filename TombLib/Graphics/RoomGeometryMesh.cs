@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using SharpDX.Toolkit.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
@@ -18,7 +15,8 @@ namespace TombLib.Graphics
 
         public RoomGeometryMesh(GraphicsDevice device, string name)
             : base(device, name)
-        { }
+        {
+        }
 
         public override void BuildBuffers()
         {
@@ -28,7 +26,8 @@ namespace TombLib.Graphics
             if (Vertices.Count == 0)
                 return;
 
-            VertexBuffer = Buffer.Vertex.New<RoomGeometryVertex>(GraphicsDevice, Vertices.ToArray<RoomGeometryVertex>(), SharpDX.Direct3D11.ResourceUsage.Default);
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<RoomGeometryVertex>(),
+                SharpDX.Direct3D11.ResourceUsage.Default);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
         }
     }

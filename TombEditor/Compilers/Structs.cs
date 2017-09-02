@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.InteropServices;
 using TombEditor.Geometry;
@@ -8,7 +9,7 @@ using TombLib.IO;
 namespace TombEditor.Compilers
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_color
+    public struct TrColor
     {
         public byte Red;
         public byte Green;
@@ -16,7 +17,7 @@ namespace TombEditor.Compilers
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_vertex
+    public struct TrVertex
     {
         public short X;
         public short Y;
@@ -24,24 +25,20 @@ namespace TombEditor.Compilers
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
+        public static bool operator ==(TrVertex first, TrVertex second)
         {
             return (first.X == second.X) && (first.Y == second.Y) && (first.Z == second.Z);
         }
 
-        public static bool operator !=(tr_vertex first, tr_vertex second)
+        public static bool operator !=(TrVertex first, TrVertex second)
         {
             return !(first == second);
         }
 
-        public bool Equals(tr_vertex other)
-        {
-            return this == other;
-        }
-
         public override bool Equals(object obj)
         {
-            return this == (tr_vertex)obj;
+            System.Diagnostics.Debug.Assert(obj != null);
+            return this == (TrVertex)obj;
         }
 
         public override int GetHashCode()
@@ -51,7 +48,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_face4
+    public struct TrFace4
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
         public ushort Texture;
@@ -68,7 +65,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_face3
+    public struct TrFace3
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
         public ushort Texture;
@@ -84,7 +81,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_info
+    public struct TrRoomInfo
     {
         public int X;
         public int Z;
@@ -93,15 +90,15 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_portal
+    public struct TrRoomPortal
     {
         public ushort AdjoiningRoom;
-        public tr_vertex Normal;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public tr_vertex[] Vertices;
+        public TrVertex Normal;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public TrVertex[] Vertices;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_sector
+    public struct TrRoomSector
     {
         public ushort FloorDataIndex;
         public short BoxIndex;
@@ -112,12 +109,12 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr4_room_light
+    public struct Tr4RoomLight
     {
         public int X;
         public int Y;
         public int Z;
-        public tr_color Color;
+        public TrColor Color;
         public byte LightType;
         public ushort Intensity;
         public float In;
@@ -130,33 +127,34 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_vertex : IEquatable<tr_room_vertex>
+    public struct TrRoomVertex : IEquatable<TrRoomVertex>
     {
-        public tr_vertex Position;
+        public TrVertex Position;
         public ushort Lighting1;
         public ushort Attributes;
         public ushort Lighting2;
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
+        public static unsafe bool operator ==(TrRoomVertex first, TrRoomVertex second)
         {
             return (*(ulong*)&first == *(ulong*)&second) && (*(uint*)&first.Attributes == *(uint*)&second.Attributes);
         }
 
-        public static bool operator !=(tr_room_vertex first, tr_room_vertex second)
+        public static bool operator !=(TrRoomVertex first, TrRoomVertex second)
         {
             return !(first == second);
         }
 
-        public bool Equals(tr_room_vertex other)
+        public bool Equals(TrRoomVertex other)
         {
             return this == other;
         }
 
         public override bool Equals(object obj)
         {
-            return this == (tr_room_vertex)obj;
+            System.Diagnostics.Debug.Assert(obj != null);
+            return this == (TrRoomVertex)obj;
         }
 
         public override int GetHashCode()
@@ -166,7 +164,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_staticmesh
+    public struct TrRoomStaticmesh
     {
         public int X;
         public int Y;
@@ -177,25 +175,19 @@ namespace TombEditor.Compilers
         public ushort ObjectID;
     }
     
-    public class tr_room
+    public class TrRoom
     {
-        public tr_room_info Info;
-        public uint NumDataWords;
-        public List<tr_room_vertex> Vertices;
-        public List<tr_face4> Quads;
-        public List<tr_face3> Triangles;
-        public ushort NumSprites;
-        public ushort NumPortals;
-        public tr_room_portal[] Portals;
+        public TrRoomInfo Info;
+        public List<TrRoomVertex> Vertices;
+        public List<TrFace4> Quads;
+        public List<TrFace3> Triangles;
+        public TrRoomPortal[] Portals;
         public ushort NumZSectors;
         public ushort NumXSectors;
-        public tr_room_sector[] Sectors;
+        public TrRoomSector[] Sectors;
         public uint AmbientIntensity;
-        public short LightMode;
-        public ushort NumLights;
-        public tr4_room_light[] Lights;
-        public ushort NumStaticMeshes;
-        public tr_room_staticmesh[] StaticMeshes;
+        public Tr4RoomLight[] Lights;
+        public TrRoomStaticmesh[] StaticMeshes;
         public short AlternateRoom;
         public short Flags;
         public byte WaterScheme;
@@ -206,10 +198,6 @@ namespace TombEditor.Compilers
         public TrSectorAux[,] AuxSectors;
         
         public List<Room> ReachableRooms;
-        public bool Visited;
-        public bool Flipped;
-        public Room FlippedRoom;
-        public Room BaseRoom;
         public Room OriginalRoom;
 
         public void Write(BinaryWriterEx writer)
@@ -218,7 +206,7 @@ namespace TombEditor.Compilers
 
             var offset = writer.BaseStream.Position;
             
-            writer.Write((int)0);
+            writer.Write(0);
             
             writer.Write((ushort)Vertices.Count);
             writer.WriteBlockArray(Vertices);
@@ -277,25 +265,25 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_mesh
+    public struct TrMesh
     {
-        public tr_vertex Center;
+        public TrVertex Center;
         public int Radius;
         public short NumVertices;
-        public tr_vertex[] Vertices;
+        public TrVertex[] Vertices;
         public short NumNormals;
-        public tr_vertex[] Normals;
+        public TrVertex[] Normals;
         public short[] Lights;
         public short NumTexturedQuads;
-        public tr_face4[] TexturedQuads;
+        public TrFace4[] TexturedQuads;
         public short NumTexturedTriangles;
-        public tr_face3[] TexturedTriangles;
-        public short NumColoredRectangles;
-        public tr_face4[] ColoredRectangles;
-        public short NumColoredTriangles;
-        public tr_face3[] ColoredTriangles;
-        public int MeshSize;
-        public int MeshPointer;
+        public TrFace3[] TexturedTriangles;
+        private readonly short NumColoredRectangles;
+        private readonly TrFace4[] ColoredRectangles;
+        private readonly short NumColoredTriangles;
+        private readonly TrFace3[] ColoredTriangles;
+        private readonly int MeshSize;
+        private readonly int MeshPointer;
 
         public long WriteTr4(BinaryWriterEx writer)
         {
@@ -325,12 +313,12 @@ namespace TombEditor.Compilers
 
             var meshOffset2 = writer.BaseStream.Position;
             var meshSize = (meshOffset2 - meshOffset1);
-            if (meshSize % 4 != 0)
-            {
-                const ushort tempFiller = 0;
-                writer.Write(tempFiller);
-                meshSize += 2;
-            }
+            if (meshSize % 4 == 0)
+                return meshSize;
+            
+            const ushort tempFiller = 0;
+            writer.Write(tempFiller);
+            meshSize += 2;
 
             return meshSize;
         }
@@ -390,23 +378,23 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_staticmesh
+    public struct TrStaticmesh
     {
         public uint ObjectID;
         public ushort Mesh;
-        public tr_bounding_box VisibilityBox;
-        public tr_bounding_box CollisionBox;
+        public TrBoundingBox VisibilityBox;
+        public TrBoundingBox CollisionBox;
         public ushort Flags;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animatedTextures_set
+    public struct TrAnimatedTexturesSet
     {
         public short[] Textures;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_bounding_box
+    public struct TrBoundingBox
     {
         public short X1;
         public short X2;
@@ -417,7 +405,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_moveable
+    public struct TrMoveable
     {
         public uint ObjectID;
         public ushort NumMeshes;
@@ -428,7 +416,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_item
+    public struct TrItem
     {
         public short ObjectID;
         public short Room;
@@ -442,7 +430,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sprite_texture
+    public struct TrSpriteTexture
     {
         public ushort Tile;
         public byte X;
@@ -456,7 +444,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sprite_sequence
+    public struct TrSpriteSequence
     {
         public int ObjectID;
         public short NegativeLength;
@@ -464,7 +452,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animation
+    public struct TrAnimation
     {
         public uint FrameOffset;
         public byte FrameRate;
@@ -503,7 +491,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_state_change
+    public struct TrStateChange
     {
         public ushort StateID;
         public ushort NumAnimDispatches;
@@ -511,7 +499,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_anim_dispatch
+    public struct TrAnimDispatch
     {
         public short Low;
         public short High;
@@ -520,7 +508,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_box
+    public struct TrBox
     {
         public byte Zmin;
         public byte Zmax;
@@ -530,7 +518,7 @@ namespace TombEditor.Compilers
         public short OverlapIndex;
     }
 
-    public struct tr_box_aux
+    public struct TrBoxAux
     {
         public byte Zmin;
         public byte Zmax;
@@ -540,7 +528,7 @@ namespace TombEditor.Compilers
         public short Clicks;
         public byte RoomBelow;
         public short OverlapIndex;
-        public int ZoneID;
+        public int ZoneId;
         public bool Border;
         public byte NumXSectors;
         public byte NumZSectors;
@@ -555,7 +543,7 @@ namespace TombEditor.Compilers
         public bool Water;
     }
 
-    public struct tr_overlap_aux
+    public struct TrOverlapAux
     {
         public int MainBox;
         public int Box;
@@ -582,7 +570,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_zone
+    public struct TrZone
     {
         public ushort GroundZone1_Normal;
         public ushort GroundZone2_Normal;
@@ -597,7 +585,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sound_source
+    public struct TrSoundSource
     {
         public int X;
         public int Y;
@@ -607,7 +595,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sound_details
+    public struct TrSoundDetails
     {
         public short Sample;
         public short Volume;
@@ -616,7 +604,7 @@ namespace TombEditor.Compilers
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_camera
+    public struct TrCamera
     {
         public int X;
         public int Y;
@@ -626,14 +614,14 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animatedTextures
+    public struct TrAnimatedTextures
     {
         public short NumTextureID;
         public short[] TextureID;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_ai_item
+    public struct TrAiItem
     {
         public ushort ObjectID;
         public ushort Room;
@@ -646,7 +634,7 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr4_flyby_camera
+    public struct Tr4FlybyCamera
     {
         public int X;
         public int Y;

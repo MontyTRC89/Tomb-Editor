@@ -1,6 +1,4 @@
-﻿using TombLib.Wad;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
     public class MoveableInstance : ItemInstance
     {
