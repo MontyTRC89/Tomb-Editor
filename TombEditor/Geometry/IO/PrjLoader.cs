@@ -3,66 +3,67 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using NLog;
 using SharpDX;
-using SharpDX.Toolkit.Graphics;
 using TombLib.IO;
-using Color = System.Drawing.Color;
 using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {
     public class PrjLoader
     {
-        private static readonly Encoding _encodingCodepageWindows = Encoding.GetEncoding(1252);
+        private static readonly Encoding encodingCodepageWindows = Encoding.GetEncoding(1252);
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private struct PrjFlipInfo
         {
-            public short _baseRoom;
-            public short _flipRoom;
-            public short _group;
+            public short BaseRoom;
+            public short FlipRoom;
+            public short Group;
         }
 
         private struct PrjFace
         {
-            public short _txtType;
-            public short _txtIndex;
-            public byte _txtFlags;
-            public byte _txtRotation;
-            public byte _txtTriangle;
+            public short TxtType;
+            public short TxtIndex;
+            public byte TxtFlags;
+            public byte TxtRotation;
+            public byte TxtTriangle;
         }
 
         private struct PrjBlock
         {
-            public PrjFace[] _faces;
-            public PortalOpacity _floorOpacity;
-            public PortalOpacity _ceilingOpacity;
-            public PortalOpacity _wallOpacity;
+            public PrjFace[] Faces;
+            public PortalOpacity FloorOpacity;
+            public PortalOpacity CeilingOpacity;
+            public PortalOpacity WallOpacity;
         }
 
         private struct PrjTexInfo
         {
-            public byte _x;
-            public short _y;
-            public byte _width;
-            public byte _height;
+            public byte X;
+            public short Y;
+            public byte Width;
+            public byte Height;
         }
 
+#pragma warning disable 169
+#pragma warning disable 649
         private struct PrjPortal
         {
             //public Room _room;
-            public Rectangle _area;
-            public PortalDirection _direction;
-            public short _oppositePortalId;
-            public short _thisPortalId;
-            public bool _memberOfFlippedRoom;
-            public short _room;
-            public short _prjRealRoom;
-            public short _tempId;
-            public bool _adjusted;
+            public Rectangle Area;
+            public PortalDirection Direction;
+            public short OppositePortalId;
+            public short ThisPortalId;
+            public bool MemberOfFlippedRoom;
+            public short Room;
+            public short PrjRealRoom;
+            public short TempId;
+            public bool Adjusted;
         }
+#pragma warning restore 649
+#pragma warning restore 169
 
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
         {
@@ -110,7 +111,6 @@ namespace TombEditor.Geometry.IO
                     var tempRooms = new Dictionary<int, PrjBlock[,]>();
                     var flipInfos = new List<PrjFlipInfo>();
                     var tempPortals = new Dictionary<int, PrjPortal>();
-                    var tempPortalsNew = new List<PrjPortal>();
                     var tempRoomPortals = new Dictionary<int, List<int>>();
 
                     progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
@@ -128,7 +128,7 @@ namespace TombEditor.Geometry.IO
                         for (; roomNameLength < 80; ++roomNameLength)
                             if (roomNameBytes[roomNameLength] == 0)
                                 break;
-                        string roomName = _encodingCodepageWindows.GetString(roomNameBytes, 0, roomNameLength);
+                        string roomName = encodingCodepageWindows.GetString(roomNameBytes, 0, roomNameLength);
 
                         logger.Debug("Room #" + i);
                         logger.Debug("    Name: " + roomName);
@@ -213,11 +213,11 @@ namespace TombEditor.Geometry.IO
                             tempPortals.Add(portalThings[j], new PrjPortal
                             {
                                 //_room = room,
-                                _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
-                                _direction = directionEnum,
-                                _oppositePortalId = portalOppositeSlot,
-                                _thisPortalId = portalThings[j],
-                                _prjRealRoom = thisPortalRoomIndex
+                                Area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
+                                Direction = directionEnum,
+                                OppositePortalId = portalOppositeSlot,
+                                ThisPortalId = portalThings[j],
+                                PrjRealRoom = thisPortalRoomIndex
                             });
                         }
 
@@ -533,7 +533,7 @@ namespace TombEditor.Geometry.IO
                                         Out = lightOut,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
-                                    light.SetArbitaryRotationsYX(lightY, lightX);
+                                    light.SetArbitaryRotationsYx(lightY, lightX);
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
@@ -606,9 +606,9 @@ namespace TombEditor.Geometry.IO
                         {
                             var info = new PrjFlipInfo
                             {
-                                _baseRoom = (short)i,
-                                _flipRoom = flipRoom,
-                                _group = (short)(flags2 & 0xff)
+                                BaseRoom = (short)i,
+                                FlipRoom = flipRoom,
+                                Group = (short)(flags2 & 0xff)
                             };
 
                             flipInfos.Add(info);
@@ -695,16 +695,16 @@ namespace TombEditor.Geometry.IO
                                     block.Flags |= BlockFlags.ClimbNegativeZ;
 
                                 // Read temp blocks that contain texturing informations that will be needed later
-                                var tempBlock = new PrjBlock { _faces = new PrjFace[14] };
+                                var tempBlock = new PrjBlock { Faces = new PrjFace[14] };
                                 for (int j = 0; j < 14; j++)
                                 {
-                                    tempBlock._faces[j] = new PrjFace
+                                    tempBlock.Faces[j] = new PrjFace
                                     {
-                                        _txtType = reader.ReadInt16(),
-                                        _txtIndex = reader.ReadByte(),
-                                        _txtFlags = reader.ReadByte(),
-                                        _txtRotation = reader.ReadByte(),
-                                        _txtTriangle = reader.ReadByte()
+                                        TxtType = reader.ReadInt16(),
+                                        TxtIndex = reader.ReadByte(),
+                                        TxtFlags = reader.ReadByte(),
+                                        TxtRotation = reader.ReadByte(),
+                                        TxtTriangle = reader.ReadByte()
                                     };
                                     reader.ReadInt16();
                                 }
@@ -712,23 +712,23 @@ namespace TombEditor.Geometry.IO
                                 if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
                                 {
                                     if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0)
-                                        tempBlock._wallOpacity = PortalOpacity.Opacity1;
+                                        tempBlock.WallOpacity = PortalOpacity.Opacity1;
                                     if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0x1000)
-                                        tempBlock._wallOpacity = PortalOpacity.Opacity2;
+                                        tempBlock.WallOpacity = PortalOpacity.Opacity2;
                                 }
                                 else
                                 {
                                     if ((blockFlags1 & 0x0002) == 0x0002)
-                                        tempBlock._floorOpacity = PortalOpacity.Opacity1;
+                                        tempBlock.FloorOpacity = PortalOpacity.Opacity1;
 
                                     if ((blockFlags1 & 0x0004) == 0x0004)
-                                        tempBlock._ceilingOpacity = PortalOpacity.Opacity1;
+                                        tempBlock.CeilingOpacity = PortalOpacity.Opacity1;
 
                                     if ((blockFlags1 & 0x0800) == 0x0800)
-                                        tempBlock._floorOpacity = PortalOpacity.Opacity2;
+                                        tempBlock.FloorOpacity = PortalOpacity.Opacity2;
 
                                     if ((blockFlags1 & 0x0400) == 0x0400)
-                                        tempBlock._ceilingOpacity = PortalOpacity.Opacity2;
+                                        tempBlock.CeilingOpacity = PortalOpacity.Opacity2;
                                 }
 
                                 // Read more flags
@@ -765,15 +765,15 @@ namespace TombEditor.Geometry.IO
 
                         foreach (PrjPortal prjPortal in tempPortals.Values)
                         {
-                            if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
+                            if (!tempPortals.ContainsKey(prjPortal.OppositePortalId))
                             {
-                                progressReporter.ReportWarn("A portal in room '" + prjPortal._room + "' refers to an invalid opposite portal.");
+                                progressReporter.ReportWarn("A portal in room '" + prjPortal.Room + "' refers to an invalid opposite portal.");
                                 continue;
                             }
 
-                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._prjRealRoom];
-                            Portal p = new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom);
-                            newPortals.Add(prjPortal._thisPortalId, p);
+                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal.OppositePortalId].PrjRealRoom];
+                            Portal p = new Portal(prjPortal.Area, prjPortal.Direction, adjoiningRoom);
+                            newPortals.Add(prjPortal.ThisPortalId, p);
                         }
 
                         foreach (var room in level.Rooms)
@@ -805,9 +805,9 @@ namespace TombEditor.Geometry.IO
                             {
                                 for (int z = 0; z < level.Rooms[i].NumZSectors; z++)
                                 {
-                                    level.Rooms[i].Blocks[x, z].FloorOpacity = blocks[x, z]._floorOpacity;
-                                    level.Rooms[i].Blocks[x, z].CeilingOpacity = blocks[x, z]._ceilingOpacity;
-                                    level.Rooms[i].Blocks[x, z].WallOpacity = blocks[x, z]._wallOpacity;
+                                    level.Rooms[i].Blocks[x, z].FloorOpacity = blocks[x, z].FloorOpacity;
+                                    level.Rooms[i].Blocks[x, z].CeilingOpacity = blocks[x, z].CeilingOpacity;
+                                    level.Rooms[i].Blocks[x, z].WallOpacity = blocks[x, z].WallOpacity;
                                 }
                             }
                         }
@@ -821,8 +821,8 @@ namespace TombEditor.Geometry.IO
                         Dictionary<ushort, PositionBasedObjectInstance> objectLookup =
                             level.Rooms.Where(room => room != null)
                             .SelectMany(room => room.Objects)
-                            .Where(instance => instance is IHasScriptID)
-                            .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
+                            .Where(instance => instance is IHasScriptId)
+                            .ToDictionary(instance => ((IHasScriptId)instance).ScriptId.Value);
 
                         // Lookup objects from IDs for all triggers
                         foreach (Room room in level.Rooms.Where(room => room != null))
@@ -871,7 +871,7 @@ namespace TombEditor.Geometry.IO
                     reader.ReadBytes(512 * 4);
 
                     // Read texture
-                    bool isTextureNA;
+                    bool isTextureNa;
                     LevelTexture texture;
                     {
                         var stringBuffer = new byte[255];
@@ -887,9 +887,9 @@ namespace TombEditor.Geometry.IO
                             sb++;
                         }
 
-                        string textureFilename = _encodingCodepageWindows.GetString(stringBuffer);
-                        isTextureNA = textureFilename.StartsWith("NA");
-                        if (string.IsNullOrEmpty(textureFilename) || isTextureNA)
+                        string textureFilename = encodingCodepageWindows.GetString(stringBuffer);
+                        isTextureNa = textureFilename.StartsWith("NA");
+                        if (string.IsNullOrEmpty(textureFilename) || isTextureNa)
                             texture = new LevelTexture();
                         else
                             texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(TryFindAbsolutePath(
@@ -903,7 +903,7 @@ namespace TombEditor.Geometry.IO
 
                     // Read textures
                     var tempTextures = new List<PrjTexInfo>();
-                    if (!isTextureNA)
+                    if (!isTextureNa)
                     {
                         int numTextures = reader.ReadInt32();
 
@@ -914,14 +914,14 @@ namespace TombEditor.Geometry.IO
                         {
                             var tmpTxt = new PrjTexInfo
                             {
-                                _x = reader.ReadByte(),
-                                _y = reader.ReadInt16()
+                                X = reader.ReadByte(),
+                                Y = reader.ReadInt16()
                             };
 
                             reader.ReadInt16();
-                            tmpTxt._width = reader.ReadByte();
+                            tmpTxt.Width = reader.ReadByte();
                             reader.ReadByte();
-                            tmpTxt._height = reader.ReadByte();
+                            tmpTxt.Height = reader.ReadByte();
 
                             tempTextures.Add(tmpTxt);
                         }
@@ -941,7 +941,7 @@ namespace TombEditor.Geometry.IO
                             stringBuffer[sb] = s;
                             sb++;
                         }
-                        string wadName = _encodingCodepageWindows.GetString(stringBuffer);
+                        string wadName = encodingCodepageWindows.GetString(stringBuffer);
                         if (string.IsNullOrEmpty(wadName) || wadName.StartsWith("NA"))
                             level.Settings.WadFilePath = "";
                         else
@@ -999,7 +999,7 @@ namespace TombEditor.Geometry.IO
                                 sb++;
                             }
 
-                            string slotName = _encodingCodepageWindows.GetString(stringBuffer);
+                            string slotName = encodingCodepageWindows.GetString(stringBuffer);
                             slotName = slotName.Replace('\0', ' ').Trim();
 
                             int objectId = reader.ReadInt32();
@@ -1017,7 +1017,7 @@ namespace TombEditor.Geometry.IO
                     for (int i = 0; i < 256; i++)
                         reader.ReadInt32();
 
-                    int TODO_ANIMATED_TEXTURE_IMPORT;
+                    // TODO: int todoAnimatedTextureImport;
                     /*for (int i = 0; i < 40; i++)
                     {
                         int defined = reader.ReadInt32();
@@ -1048,7 +1048,7 @@ namespace TombEditor.Geometry.IO
                         level.AnimatedTextures.Add(aSet);
                     }*/
 
-                    int TODO_SOUND_TEXTURE_IMPORT;
+                    // TODO: int todoSoundTextureImport;
                     /*for (int i = 0; i < 256; i++)
                     {
                         int relative = i % 16;
@@ -1081,20 +1081,20 @@ namespace TombEditor.Geometry.IO
 
                         foreach (var info in flipInfos)
                         {
-                            if (info._baseRoom == i)
+                            if (info.BaseRoom == i)
                             {
-                                room.AlternateRoom = level.Rooms[info._flipRoom];
-                                room.AlternateGroup = info._group;
+                                room.AlternateRoom = level.Rooms[info.FlipRoom];
+                                room.AlternateGroup = info.Group;
                             }
 
-                            if (info._flipRoom != i)
+                            if (info.FlipRoom != i)
                                 continue;
 
-                            room.AlternateBaseRoom = level.Rooms[info._baseRoom];
-                            room.AlternateGroup = info._group;
-                            room.Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
-                                level.Rooms[info._baseRoom].Position.Y,
-                                level.Rooms[info._baseRoom].Position.Z);
+                            room.AlternateBaseRoom = level.Rooms[info.BaseRoom];
+                            room.AlternateGroup = info.Group;
+                            room.Position = new Vector3(level.Rooms[info.BaseRoom].Position.X,
+                                level.Rooms[info.BaseRoom].Position.Y,
+                                level.Rooms[info.BaseRoom].Position.Z);
                         }
                     }
 
@@ -1117,20 +1117,20 @@ namespace TombEditor.Geometry.IO
                                 var prjBlock = tempRooms[i][x, z];
 
                                 // 0: BLOCK_TEX_FLOOR
-                                LoadTextureArea(room, x, z, BlockFace.Floor, texture, tempTextures, prjBlock._faces[0], 0);
+                                LoadTextureArea(room, x, z, BlockFace.Floor, texture, tempTextures, prjBlock.Faces[0], 0);
 
                                 // 1: BLOCK_TEX_CEILING
-                                LoadTextureArea(room, x, z, BlockFace.Ceiling, texture, tempTextures, prjBlock._faces[1], 0);
+                                LoadTextureArea(room, x, z, BlockFace.Ceiling, texture, tempTextures, prjBlock.Faces[1], 0);
 
                                 // 2: BLOCK_TEX_N4 (North QA)
                                 if (room.IsFaceDefined(x, z, BlockFace.SouthQA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.SouthQA, texture, tempTextures, prjBlock._faces[2], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.SouthQA, texture, tempTextures, prjBlock.Faces[2], -1);
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthQA, texture, tempTextures, prjBlock._faces[2], -1);
+                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthQA, texture, tempTextures, prjBlock.Faces[2], -1);
                                 }
 
                                 // 3: BLOCK_TEX_N1 (North RF)
@@ -1140,16 +1140,16 @@ namespace TombEditor.Geometry.IO
                                     if (room.IsFaceDefined(x, z, BlockFace.SouthRF) &&
                                         !room.IsFaceDefined(x, z, BlockFace.SouthWS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.SouthRF, texture, tempTextures, prjBlock.Faces[3], -1);
                                     }
                                     else if (!room.IsFaceDefined(x, z, BlockFace.SouthRF) &&
                                         room.IsFaceDefined(x, z, BlockFace.SouthWS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthWS, texture, tempTextures, prjBlock._faces[3], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.SouthWS, texture, tempTextures, prjBlock.Faces[3], -1);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.SouthRF, texture, tempTextures, prjBlock.Faces[3], -1);
                                     }
                                 }
                                 else
@@ -1158,39 +1158,39 @@ namespace TombEditor.Geometry.IO
                                         if (room.IsFaceDefined(x, z - 1, BlockFace.NorthRF) &&
                                             !room.IsFaceDefined(x, z - 1, BlockFace.NorthWS))
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthRF, texture, tempTextures, prjBlock.Faces[3], -1);
                                         }
                                         else if (!room.IsFaceDefined(x, z - 1, BlockFace.NorthRF) &&
                                             room.IsFaceDefined(x, z - 1, BlockFace.NorthWS))
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthWS, texture, tempTextures, prjBlock._faces[3], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthWS, texture, tempTextures, prjBlock.Faces[3], -1);
                                         }
                                         else
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthRF, texture, tempTextures, prjBlock.Faces[3], -1);
                                         }
                                 }
 
                                 // 4: BLOCK_TEX_N3 (North middle)
                                 if (room.IsFaceDefined(x, z, BlockFace.SouthMiddle))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.SouthMiddle, texture, tempTextures, prjBlock._faces[4], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.SouthMiddle, texture, tempTextures, prjBlock.Faces[4], -1);
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthMiddle, texture, tempTextures, prjBlock._faces[4], -1);
+                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthMiddle, texture, tempTextures, prjBlock.Faces[4], -1);
                                 }
 
                                 // 5: BLOCK_TEX_W4 (West QA)
                                 if (room.IsFaceDefined(x, z, BlockFace.EastQA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.EastQA, texture, tempTextures, prjBlock._faces[5], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.EastQA, texture, tempTextures, prjBlock.Faces[5], -1);
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        LoadTextureArea(room, x + 1, z, BlockFace.WestQA, texture, tempTextures, prjBlock._faces[5], -1);
+                                        LoadTextureArea(room, x + 1, z, BlockFace.WestQA, texture, tempTextures, prjBlock.Faces[5], -1);
                                 }
 
                                 // 6: BLOCK_TEX_W1 (West RF)
@@ -1200,16 +1200,16 @@ namespace TombEditor.Geometry.IO
                                     if (room.IsFaceDefined(x, z, BlockFace.EastRF) &&
                                         !room.IsFaceDefined(x, z, BlockFace.EastWS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.EastRF, texture, tempTextures, prjBlock.Faces[6], -1);
                                     }
                                     else if (!room.IsFaceDefined(x, z, BlockFace.EastRF) &&
                                          room.IsFaceDefined(x, z, BlockFace.EastWS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastWS, texture, tempTextures, prjBlock._faces[6], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.EastWS, texture, tempTextures, prjBlock.Faces[6], -1);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.EastRF, texture, tempTextures, prjBlock.Faces[6], -1);
                                     }
                                 }
                                 else
@@ -1218,45 +1218,45 @@ namespace TombEditor.Geometry.IO
                                         if (room.IsFaceDefined(x + 1, z, BlockFace.WestRF) &&
                                             !room.IsFaceDefined(x + 1, z, BlockFace.WestWS))
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.WestRF, texture, tempTextures, prjBlock.Faces[6], -1);
                                         }
                                         else if (!room.IsFaceDefined(x + 1, z, BlockFace.WestRF) &&
                                              room.IsFaceDefined(x + 1, z, BlockFace.WestWS))
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestWS, texture, tempTextures, prjBlock._faces[6], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.WestWS, texture, tempTextures, prjBlock.Faces[6], -1);
                                         }
                                         else
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.WestRF, texture, tempTextures, prjBlock.Faces[6], -1);
                                         }
                                 }
 
                                 // 7: BLOCK_TEX_W3 (West middle)
                                 if (room.IsFaceDefined(x, z, BlockFace.EastMiddle))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.EastMiddle, texture, tempTextures, prjBlock._faces[7], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.EastMiddle, texture, tempTextures, prjBlock.Faces[7], -1);
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        LoadTextureArea(room, x + 1, z, BlockFace.WestMiddle, texture, tempTextures, prjBlock._faces[7], -1);
+                                        LoadTextureArea(room, x + 1, z, BlockFace.WestMiddle, texture, tempTextures, prjBlock.Faces[7], -1);
                                 }
 
                                 // 8: BLOCK_TEX_F_NENW (Floor Triangle 2)
-                                LoadTextureArea(room, x, z, BlockFace.FloorTriangle2, texture, tempTextures, prjBlock._faces[8], 0);
+                                LoadTextureArea(room, x, z, BlockFace.FloorTriangle2, texture, tempTextures, prjBlock.Faces[8], 0);
 
                                 // 9: BLOCK_TEX_C_NENW (Ceiling Triangle 2)
-                                LoadTextureArea(room, x, z, BlockFace.CeilingTriangle2, texture, tempTextures, prjBlock._faces[9], 0);
+                                LoadTextureArea(room, x, z, BlockFace.CeilingTriangle2, texture, tempTextures, prjBlock.Faces[9], 0);
 
                                 // 10: BLOCK_TEX_N5 (North ED)
                                 if (room.IsFaceDefined(x, z, BlockFace.SouthED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.SouthED, texture, tempTextures, prjBlock._faces[10], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.SouthED, texture, tempTextures, prjBlock.Faces[10], -1);
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthED, texture, tempTextures, prjBlock._faces[10], -1);
+                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthED, texture, tempTextures, prjBlock.Faces[10], -1);
                                 }
 
                                 // 11: BLOCK_TEX_N2 (North WS)
@@ -1266,7 +1266,7 @@ namespace TombEditor.Geometry.IO
                                     if (room.IsFaceDefined(x, z, BlockFace.SouthRF) &&
                                         room.IsFaceDefined(x, z, BlockFace.SouthWS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthWS, texture, tempTextures, prjBlock._faces[11], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.SouthWS, texture, tempTextures, prjBlock.Faces[11], -1);
                                     }
                                 }
                                 else
@@ -1275,19 +1275,19 @@ namespace TombEditor.Geometry.IO
                                         if (room.IsFaceDefined(x, z - 1, BlockFace.NorthRF) &&
                                             room.IsFaceDefined(x, z - 1, BlockFace.NorthWS))
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthWS, texture, tempTextures, prjBlock._faces[11], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthWS, texture, tempTextures, prjBlock.Faces[11], -1);
                                         }
                                 }
 
                                 // 12: BLOCK_TEX_W5
                                 if (room.IsFaceDefined(x, z, BlockFace.EastED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.EastED, texture, tempTextures, prjBlock._faces[12], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.EastED, texture, tempTextures, prjBlock.Faces[12], -1);
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        LoadTextureArea(room, x + 1, z, BlockFace.WestED, texture, tempTextures, prjBlock._faces[12], -1);
+                                        LoadTextureArea(room, x + 1, z, BlockFace.WestED, texture, tempTextures, prjBlock.Faces[12], -1);
                                 }
 
                                 // 13: BLOCK_TEX_W2 (West WS)
@@ -1297,7 +1297,7 @@ namespace TombEditor.Geometry.IO
                                     if (room.IsFaceDefined(x, z, BlockFace.EastRF) &&
                                         room.IsFaceDefined(x, z, BlockFace.EastWS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastWS, texture, tempTextures, prjBlock._faces[13], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.EastWS, texture, tempTextures, prjBlock.Faces[13], -1);
                                     }
                                 }
                                 else
@@ -1306,7 +1306,7 @@ namespace TombEditor.Geometry.IO
                                         if (room.IsFaceDefined(x + 1, z, BlockFace.WestRF) &&
                                             room.IsFaceDefined(x + 1, z, BlockFace.WestWS))
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestWS, texture, tempTextures, prjBlock._faces[13], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.WestWS, texture, tempTextures, prjBlock.Faces[13], -1);
                                         }
                                 }
                             }
@@ -1346,51 +1346,51 @@ namespace TombEditor.Geometry.IO
             bool isFloor = face == BlockFace.Floor || face == BlockFace.FloorTriangle2;
             bool isCeiling = face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2;
 
-            switch (levelTexture == null ? 0 : prjFace._txtType)
+            switch (levelTexture == null ? 0 : prjFace.TxtType)
             {
                 case 0x0000: // TYPE_TEXTURE_NONE
                 default:
-                    block.SetFaceTexture(face, new TextureArea { });
+                    block.SetFaceTexture(face, new TextureArea());
                     return;
                 case 0x0003: // TYPE_TEXTURE_COLOR
                     block.SetFaceTexture(face, new TextureArea { Texture = TextureInvisible.Instance });
                     return;
                 case 0x0007: // TYPE_TEXTURE_TILE
-                    int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
+                    int texIndex = ((prjFace.TxtFlags & 0x03) << 8) | prjFace.TxtIndex;
                     PrjTexInfo texInfo = tempTextures[texIndex];
                     
-                    var uv = new Vector2[]
+                    var uv = new[]
                     {
                         new Vector2(
-                            texInfo._x + 0.5f,
-                            texInfo._y + 0.5f),
+                            texInfo.X + 0.5f,
+                            texInfo.Y + 0.5f),
                         new Vector2(
-                            texInfo._x + texInfo._width + 0.5f,
-                            texInfo._y + 0.5f),
+                            texInfo.X + texInfo.Width + 0.5f,
+                            texInfo.Y + 0.5f),
                         new Vector2(
-                            texInfo._x + texInfo._width + 0.5f,
-                            texInfo._y + texInfo._height + 0.5f),
+                            texInfo.X + texInfo.Width + 0.5f,
+                            texInfo.Y + texInfo.Height + 0.5f),
                         new Vector2(
-                            texInfo._x + 0.5f,
-                            texInfo._y + texInfo._height + 0.5f)
+                            texInfo.X + 0.5f,
+                            texInfo.Y + texInfo.Height + 0.5f)
                     };
 
                     TextureArea texture;
                     texture.Texture = levelTexture;
-                    texture.DoubleSided = (prjFace._txtFlags & 0x04) != 0;
-                    texture.BlendMode = (prjFace._txtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;
+                    texture.DoubleSided = (prjFace.TxtFlags & 0x04) != 0;
+                    texture.BlendMode = (prjFace.TxtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;
                     texture.TexCoord0 = new Vector2(0);
                     texture.TexCoord1 = new Vector2(0);
                     texture.TexCoord2 = new Vector2(0);
                     texture.TexCoord3 = new Vector2(0);
 
-                    int txtRot = prjFace._txtRotation + 1;
+                    int txtRot = prjFace.TxtRotation + 1;
                     if (room.GetFaceVertexRange(x, z, face).Count == 3)
                     {
                         txtRot = txtRot % 3;
-                        if ((prjFace._txtFlags & 0x80) != 0) // is flipped
+                        if ((prjFace.TxtFlags & 0x80) != 0) // is flipped
                         {
-                            if (prjFace._txtTriangle == 0)
+                            if (prjFace.TxtTriangle == 0)
                             {
                                 if (isFloor)
                                 {
@@ -1484,7 +1484,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            if (prjFace._txtTriangle == 1)
+                            if (prjFace.TxtTriangle == 1)
                             {
                                 if (isFloor)
                                 {
@@ -1578,7 +1578,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            if (prjFace._txtTriangle == 3)
+                            if (prjFace.TxtTriangle == 3)
                             {
                                 if (isFloor)
                                 {
@@ -1672,7 +1672,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            if (prjFace._txtTriangle == 2)
+                            if (prjFace.TxtTriangle == 2)
                             {
                                 if (isFloor)
                                 {
@@ -1768,7 +1768,7 @@ namespace TombEditor.Geometry.IO
                         }
                         else // ===========================================================================================
                         {
-                            if (prjFace._txtTriangle == 0)
+                            if (prjFace.TxtTriangle == 0)
                             {
                                 if (isFloor)
                                 {
@@ -1862,7 +1862,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            if (prjFace._txtTriangle == 1)
+                            if (prjFace.TxtTriangle == 1)
                             {
                                 if (isFloor)
                                 {
@@ -1956,7 +1956,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            if (prjFace._txtTriangle == 3)
+                            if (prjFace.TxtTriangle == 3)
                             {
                                 if (isFloor)
                                 {
@@ -2052,7 +2052,7 @@ namespace TombEditor.Geometry.IO
                                 }
                             }
 
-                            if (prjFace._txtTriangle == 2)
+                            if (prjFace.TxtTriangle == 2)
                             {
                                 if (isFloor)
                                 {
@@ -2163,7 +2163,7 @@ namespace TombEditor.Geometry.IO
                     else
                     {
                         txtRot = txtRot % 4;
-                        if ((prjFace._txtFlags & 0x80) != 0) // is flipped
+                        if ((prjFace.TxtFlags & 0x80) != 0) // is flipped
                         {
                             var temp = uv[0];
                             uv[0] = uv[1];

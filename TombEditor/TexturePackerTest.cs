@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -39,7 +36,8 @@ namespace TombEditor
             for (int i = 0; i < Textures.Count; i++)
             {
                 PngInfo info = new PngInfo();
-                BinaryReader reader = new BinaryReader(new FileStream("Textures\\" + Textures[i], FileMode.Open, FileAccess.Read, FileShare.Read));
+                BinaryReader reader = new BinaryReader(new FileStream("Textures\\" + Textures[i], FileMode.Open,
+                    FileAccess.Read, FileShare.Read));
                 reader.BaseStream.Seek(16, SeekOrigin.Begin);
                 info.Name = Textures[i];
                 info.Width = ReadInt32(reader);
@@ -48,13 +46,12 @@ namespace TombEditor
                 reader.Close();
                 infos[i] = info;
             }
-            PngInfo temp;
 
             for (int j = 0; j < (Textures.Count - 1); j++)
                 for (int i = 0; i < (Textures.Count - 1); i++)
                     if (infos[i].Height < infos[i + 1].Height)
                     {
-                        temp = infos[i];
+                        var temp = infos[i];
                         infos[i] = infos[i + 1];
                         infos[i + 1] = temp;
                     }
@@ -78,7 +75,7 @@ namespace TombEditor
                 info.NewHeight = info.Height / 2;
 
 
-                Bitmap bmp = (Bitmap)Bitmap.FromFile("textures\\" + info.Name);
+                Bitmap bmp = (Bitmap)Image.FromFile("textures\\" + info.Name);
                 for (int x = 0; x < bmp.Width; x += 2)
                 {
                     for (int y = 0; y < bmp.Height; y += 2)
@@ -92,7 +89,6 @@ namespace TombEditor
                 xcurr += info.Width / 2;
 
                 infos[i] = info;
-
             }
             using (Graphics g = Graphics.FromImage(dest))
             {
@@ -100,18 +96,16 @@ namespace TombEditor
 
                 for (int i = 0; i < Textures.Count; i++)
                 {
-
-                    g.DrawRectangle(new Pen(Color.White, 1), new Rectangle(infos[i].X, infos[i].Y, infos[i].NewWidth, infos[i].NewHeight));
+                    g.DrawRectangle(new Pen(Color.White, 1),
+                        new Rectangle(infos[i].X, infos[i].Y, infos[i].NewWidth, infos[i].NewHeight));
                 }
             }
             return dest;
-
         }
 
         private int ReadInt32(BinaryReader reader)
         {
-            byte[] buffer = new byte[4];
-            buffer = reader.ReadBytes(4);
+            var buffer = reader.ReadBytes(4);
             int result = buffer[3] + 256 * buffer[2];
             return result;
         }

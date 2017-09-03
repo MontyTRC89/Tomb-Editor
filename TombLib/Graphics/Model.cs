@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpDX;
-using SharpDX.Toolkit;
 using SharpDX.Toolkit.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombLib.Wad;
@@ -18,23 +14,23 @@ namespace TombLib.Graphics
         RoomGeometry
     }
 
-    public abstract class Model<T, U> : IDisposable where U : struct
+    public abstract class Model<TMesh, TVertex> : IDisposable where TVertex : struct
     {
-        public Buffer<U> VertexBuffer { get; protected set; }
+        public Buffer<TVertex> VertexBuffer { get; protected set; }
         public Buffer IndexBuffer { get; protected set; }
         public BoundingBox BoundingBox { get; set; }
-        public List<T> Meshes { get; set; }
+        public List<TMesh> Meshes { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
         public ModelType Type { get; set; }
-        public List<U> Vertices { get; set; }
+        public List<TVertex> Vertices { get; set; }
         public List<int> Indices { get; set; }
         public string Name { get; set; }
 
-        public Model(GraphicsDevice device, ModelType type)
+        protected Model(GraphicsDevice device, ModelType type)
         {
             GraphicsDevice = device;
             Type = type;
-            Meshes = new List<T>();
+            Meshes = new List<TMesh>();
         }
 
         public virtual void Dispose()
@@ -45,9 +41,10 @@ namespace TombLib.Graphics
 
         public abstract void BuildBuffers();
 
-        protected static List<Vector2> CalculateUVCoordinates(WadPolygon poly, Dictionary<uint, WadTextureSample> textureSamples)
+        protected static List<Vector2> CalculateUvCoordinates(WadPolygon poly,
+            Dictionary<uint, WadTextureSample> textureSamples)
         {
-            List<Vector2> uv = new List<Vector2>();
+            var uv = new List<Vector2>();
 
             // recupero le informazioni necessarie
             int shape = (poly.Texture & 0x7000) >> 12;
@@ -58,15 +55,18 @@ namespace TombLib.Graphics
 
 
             // calcolo i quattro angoli della texture
-            WadTextureSample texture = textureSamples[(uint)textureId];
+            var texture = textureSamples[(uint)textureId];
 
-            int yBlock = (int)(texture.Page / 8);
-            int xBlock = (int)(texture.Page % 8);
+            int yBlock = texture.Page / 8;
+            int xBlock = texture.Page % 8;
 
-            Vector2 nw = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
-            Vector2 ne = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
-            Vector2 se = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
-            Vector2 sw = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
+            var nw = new Vector2((xBlock * 256 + texture.X) / 2048.0f, (yBlock * 256 + texture.Y) / 2048.0f);
+            var ne = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f,
+                (yBlock * 256 + texture.Y) / 2048.0f);
+            var se = new Vector2((xBlock * 256 + texture.X + texture.Width) / 2048.0f,
+                (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
+            var sw = new Vector2((xBlock * 256 + texture.X) / 2048.0f,
+                (yBlock * 256 + texture.Y + texture.Height) / 2048.0f);
 
             // in base alla forma assegno nel giusto ordine le coordinate
             if (poly.Shape == Shape.Rectangle)
@@ -155,29 +155,33 @@ namespace TombLib.Graphics
             return uv;
         }
 
-        protected static void AddSkinnedVertexAndIndex(WadVector v, SkinnedMesh mesh, Vector2 uv, int submeshIndex, int boneIndex)
+        protected static void AddSkinnedVertexAndIndex(WadVector v, SkinnedMesh mesh, Vector2 uv, int submeshIndex,
+            int boneIndex)
         {
-            SkinnedVertex newVertex = new SkinnedVertex();
-
-            newVertex.Position = new Vector3(v.X, -v.Y, v.Z);
-            newVertex.Normal = Vector3.Zero;
-            newVertex.Tangent = Vector3.Zero;
-            newVertex.Binormal = Vector3.Zero;
-            newVertex.BoneWeigths = new Vector4(1, 0, 0, 0);
-            newVertex.BoneIndices = new Vector4(boneIndex, 0, 0, 0);
-            newVertex.UV = uv;
+            var newVertex = new SkinnedVertex
+            {
+                Position = new Vector3(v.X, -v.Y, v.Z),
+                Normal = Vector3.Zero,
+                Tangent = Vector3.Zero,
+                Binormal = Vector3.Zero,
+                BoneWeigths = new Vector4(1, 0, 0, 0),
+                BoneIndices = new Vector4(boneIndex, 0, 0, 0),
+                UV = uv
+            };
 
             mesh.Vertices.Add(newVertex);
             mesh.SubMeshes[submeshIndex].Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
 
-        protected static void AddStaticVertexAndIndex(WadVector v, StaticMesh mesh, Vector2 uv, int submeshIndex, short color)
+        protected static void AddStaticVertexAndIndex(WadVector v, StaticMesh mesh, Vector2 uv, int submeshIndex,
+            short color)
         {
-            StaticVertex newVertex = new StaticVertex();
-
-            newVertex.Position = new Vector3(v.X, -v.Y, v.Z);
-            newVertex.Normal = Vector3.Zero;
-            newVertex.UV = uv;
+            var newVertex = new StaticVertex
+            {
+                Position = new Vector3(v.X, -v.Y, v.Z),
+                Normal = Vector3.Zero,
+                UV = uv
+            };
 
             var shade = 1.0f - color / 8191.0f;
             newVertex.Shade = new Vector2(shade, 0.0f);

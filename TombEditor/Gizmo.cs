@@ -2,7 +2,6 @@
 using SharpDX.Toolkit.Graphics;
 using TombEditor.Geometry;
 using System.Windows.Forms;
-using System;
 
 namespace TombEditor
 {

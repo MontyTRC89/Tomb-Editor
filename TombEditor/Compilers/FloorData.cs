@@ -15,9 +15,9 @@ namespace TombEditor.Compilers
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
             var tempFloorData = new List<ushort> { 0 | 0x8000 };
 
-            for (var i = 0; i < _level.Rooms.Length; i++)
+            for (var i = 0; i < Level.Rooms.Length; i++)
             {
-                var room = _level.Rooms[i];
+                var room = Level.Rooms[i];
                 if (room == null)
                     continue;
                 var tempRoom = _tempRooms[room];
@@ -1227,7 +1227,7 @@ namespace TombEditor.Compilers
                                         break;
                                     case TriggerTargetType.ActionNg:
                                         // Trigger for secret found
-                                        _progressReporter.ReportWarn("Level uses action trigger which is not yet supported.");
+                                        ProgressReporter.ReportWarn("Level uses action trigger which is not yet supported.");
                                         break;
                                     case TriggerTargetType.FlyByCamera:
                                         // Trigger for fly by

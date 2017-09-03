@@ -110,18 +110,18 @@ namespace TombEditor.Geometry
             do
             {
                 // Find variable
-                startIndex = path.IndexOf(VariableBegin, startIndex);
+                startIndex = path.IndexOf(VariableBegin, startIndex, StringComparison.Ordinal);
                 if (startIndex == -1)
                     break;
                 int afterStartIndex = startIndex + VariableBegin.Length;
-                int endIndex = path.IndexOf(VariableEnd, afterStartIndex);
+                int endIndex = path.IndexOf(VariableEnd, afterStartIndex, StringComparison.Ordinal);
                 if (endIndex == -1)
                     break;
                 string variableName = path.Substring(afterStartIndex, endIndex - afterStartIndex);
 
                 // Parse variable
                 VariableType variableType;
-                if ((!Enum.TryParse<VariableType>(variableName, out variableType)) ||
+                if ((!Enum.TryParse(variableName, out variableType)) ||
                     excluded.Contains(variableType))
                 {
                     startIndex = endIndex + VariableEnd.Length;
@@ -138,10 +138,7 @@ namespace TombEditor.Geometry
 
         public string TextureFilePath
         {
-            get
-            {
-                return Textures.Count > 0 ? Textures[0].Path : "";
-            }
+            get => Textures.Count > 0 ? Textures[0].Path : "";
             set
             {
                 if (string.IsNullOrEmpty(value))

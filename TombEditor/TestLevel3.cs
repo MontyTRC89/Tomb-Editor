@@ -1,50 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.IO;
+using System.Runtime.InteropServices;
 using NLog;
 using TombLib.IO;
 
-namespace TombEngine
+namespace TombEditor
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr3_face4
+    public struct Tr3Face4
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public ushort[] Vertices;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
         public ushort Texture;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr3_face3
+    public struct Tr3Face3
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-        public ushort[] Vertices;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
         public ushort Texture;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr3_mesh
+    public struct Tr3Mesh
     {
-        public tr_vertex Center;
+        public TrVertex Center;
         public int Radius;
         public short NumVertices;
-        public tr_vertex[] Vertices;
+        public TrVertex[] Vertices;
         public short NumNormals;
-        public tr_vertex[] Normals;
+        public TrVertex[] Normals;
         public short[] Lights;
         public short NumTexturedRectangles;
-        public tr3_face4[] TexturedRectangles;
+        public Tr3Face4[] TexturedRectangles;
         public short NumTexturedTriangles;
-        public tr3_face3[] TexturedTriangles;
+        public Tr3Face3[] TexturedTriangles;
         public short NumColoredRectangles;
-        public tr3_face4[] ColoredRectangles;
+        public Tr3Face4[] ColoredRectangles;
         public short NumColoredTriangles;
-        public tr3_face3[] ColoredTriangles;
+        public Tr3Face3[] ColoredTriangles;
         public int MeshSize;
         public int MeshPointer;
     }
@@ -78,23 +72,26 @@ namespace TombEngine
         public int Unused;
 
         public ushort NumRooms;
-        public tr_room[] Rooms;
+        public TrRoom[] Rooms;
 
         public uint NumFloorData;
         public short[] FloorData;
 
         public uint NumMeshData;
         public uint NumMeshes;
-        public tr3_mesh[] Meshes;
+        public Tr3Mesh[] Meshes;
 
         public uint NumMeshPointers;
         public uint[] MeshPointers;
+
         public uint NumAnimations;
+
         //public tr_animation[] Animations;
         public uint NumStateChanges;
-        public tr_state_change[] StateChanges;
+
+        public TrStateChange[] StateChanges;
         public uint NumAnimDispatches;
-        public tr_anim_dispatch[] AnimDispatches;
+        public TrAnimDispatch[] AnimDispatches;
         public uint NumAnimCommands;
         public short[] AnimCommands;
         public uint NumMeshTrees;
@@ -102,57 +99,62 @@ namespace TombEngine
         public uint NumFrames;
         public ushort[] Frames;
         public uint NumMoveables;
-        public tr_moveable[] Moveables;
+        public TrMoveable[] Moveables;
         public uint NumStaticMeshes;
-        public tr_staticmesh[] StaticMeshes;
+        public TrStaticmesh[] StaticMeshes;
 
         //public byte[] SPR;
 
         public uint NumSpriteTextures;
-        public tr_sprite_texture[] SpriteTextures;
+        public TrSpriteTexture[] SpriteTextures;
         public uint NumSpriteSequences;
-        public tr_sprite_sequence[] SpriteSequences;
+        public TrSpriteSequence[] SpriteSequences;
         public uint NumCameras;
-        public tr_camera[] Cameras;
+
+        public TrCamera[] Cameras;
+
         //public uint NumFlyByCameras;
         //public byte[] FlyByCameras;
         public uint NumSoundSources;
-        public tr_sound_source[] SoundSources;
+
+        public TrSoundSource[] SoundSources;
         public uint NumBoxes;
-        public tr_box[] Boxes;
+        public TrBox[] Boxes;
         public uint NumOverlaps;
         public ushort[] Overlaps;
         public short[] Zones;
+
         public uint NumAnimatedTextures;
         //public ushort[] AnimatedTextures;
 
         //public byte[] TEX;
 
         public uint NumObjectTextures;
+
         //public tr_object_texture[] ObjectTextures;
         public uint NumItems;
-        public tr_item[] Items;
-        public uint NumAiItems;
-        public tr_ai_item[] AiItems;
 
-        string fileName;
+        public TrItem[] Items;
+        public uint NumAiItems;
+        public TrAiItem[] AiItems;
+
+        string _fileName;
         byte[,] _texture16;
 
         public TombRaider3Level(string fileName)
         {
-            this.fileName = fileName;
+            _fileName = fileName;
         }
 
         public void Load(string ind)
         {
-            FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            FileStream fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReaderEx reader = new BinaryReaderEx(fileStream);
-            MemoryStream stream = new MemoryStream();
-            Inflater inflater = new Inflater(false);
 
             reader.ReadBlock(out Version);
             byte[] palette = reader.ReadBytes(768);
-            BinaryWriterEx wrPalette = new BinaryWriterEx(new FileStream("Palette.bin", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriterEx wrPalette =
+                new BinaryWriterEx(new FileStream("Palette.bin", FileMode.Create, FileAccess.Write, FileShare.None));
             for (int jj = 0; jj < palette.Length; jj++)
             {
                 byte col = (byte)(palette[jj] * 4);
@@ -161,11 +163,11 @@ namespace TombEngine
 
             wrPalette.Flush();
             wrPalette.Close();
-            
+
 
             reader.ReadBytes(1024);
 
-            int numTextureTiles = 0;
+            int numTextureTiles;
             reader.ReadBlock(out numTextureTiles);
 
             reader.ReadBytes(256 * 256 * numTextureTiles);
@@ -190,9 +192,10 @@ namespace TombEngine
 
             int max = 0;
 
-            StreamWriter wp = new StreamWriter(new FileStream("portals" + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+            StreamWriter wp = new StreamWriter(new FileStream("portals" + ind + ".txt", FileMode.Create,
+                FileAccess.Write, FileShare.None));
 
-            Rooms = new tr_room[NumRooms];
+            Rooms = new TrRoom[NumRooms];
             for (int i = 0; i < NumRooms; i++)
             {
                 wp.WriteLine("=====================================================================");
@@ -207,7 +210,7 @@ namespace TombEngine
                 if (Rooms[i].NumVertices > max)
                     max = Rooms[i].NumVertices;
                 reader.ReadBlock(out Rooms[i].NumRectangles);
-                Rooms[i].Rectangles = new tr_face4[Rooms[i].NumRectangles];
+                Rooms[i].Rectangles = new TrFace4[Rooms[i].NumRectangles];
                 for (int j = 0; j < Rooms[i].NumRectangles; j++)
                 {
                     // Rooms[i].Rectangles[j].Vertices = new ushort[4];
@@ -216,7 +219,7 @@ namespace TombEngine
                 }
 
                 reader.ReadBlock(out Rooms[i].NumTriangles);
-                Rooms[i].Triangles = new tr_face3[Rooms[i].NumTriangles];
+                Rooms[i].Triangles = new TrFace3[Rooms[i].NumTriangles];
                 for (int j = 0; j < Rooms[i].NumTriangles; j++)
                 {
                     // Rooms[i].Triangles[j].Vertices = new ushort[3];
@@ -232,12 +235,13 @@ namespace TombEngine
 
                 for (int nn = 0; nn < Rooms[i].Portals.Length; nn++)
                 {
-                    tr_room_portal pt = Rooms[i].Portals[nn];
+                    TrRoomPortal pt = Rooms[i].Portals[nn];
                     wp.WriteLine(nn + ": ");
                     wp.WriteLine("Room: " + pt.AdjoiningRoom);
                     for (int vv = 0; vv < 4; vv++)
                     {
-                        wp.Write("V" + vv + " = " + pt.Vertices[vv].X + ", " + pt.Vertices[vv].Y + ", " + pt.Vertices[vv].Z);
+                        wp.Write("V" + vv + " = " + pt.Vertices[vv].X + ", " + pt.Vertices[vv].Y + ", " +
+                                 pt.Vertices[vv].Z);
                         wp.WriteLine("");
                     }
                     wp.WriteLine("");
@@ -277,9 +281,8 @@ namespace TombEngine
             int numBytes = 0;
             int totalBytes = 0;
             int l = 0;
-            short temp = 0;
 
-            Meshes = new tr3_mesh[2048];
+            Meshes = new Tr3Mesh[2048];
             while (totalBytes < (NumMeshData * 2))
             {
                 long offset1 = reader.BaseStream.Position;
@@ -323,12 +326,16 @@ namespace TombEngine
                 long offset2 = reader.BaseStream.Position;
                 int diff = (int)(offset2 - offset1);
                 if (diff % 4 != 0)
-                { reader.ReadBlock(out temp); diff += 2; }
+                {
+                    short temp;
+                    reader.ReadBlock(out temp);
+                    diff += 2;
+                }
                 Meshes[l].MeshSize = numBytes;
                 Meshes[l].MeshPointer = totalBytes;
 
 
-                totalBytes += diff;// numBytes;
+                totalBytes += diff; // numBytes;
                 numBytes = 0;
                 l++;
             }
@@ -367,7 +374,6 @@ namespace TombEngine
             reader.ReadBlockArray(out StaticMeshes, NumStaticMeshes);
 
 
-
             reader.ReadBlock(out NumSpriteTextures);
             reader.ReadBlockArray(out SpriteTextures, NumSpriteTextures);
 
@@ -401,17 +407,18 @@ namespace TombEngine
             short[] animTextures;
             reader.ReadBlockArray(out animTextures, NumAnimatedTextures);
 
-            string fn = Path.GetFileNameWithoutExtension(fileName);
+            string fn = Path.GetFileNameWithoutExtension(_fileName);
             if (File.Exists("pathfinding." + fn + "." + ind + ".txt"))
                 File.Delete("pathfinding." + fn + "." + ind + ".txt");
-            StreamWriter writer = new StreamWriter(new FileStream("pathfinding." + fn + "." + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+            StreamWriter writer = new StreamWriter(new FileStream("pathfinding." + fn + "." + ind + ".txt",
+                FileMode.Create, FileAccess.Write, FileShare.None));
 
             writer.WriteLine("BOXES");
 
             for (int n = 0; n < Boxes.Length; n++)
             {
                 writer.WriteLine("[" + n + "] " + "Xmin: " + Boxes[n].Xmin + ", " + "Xmax: " + Boxes[n].Xmax + ", " +
-                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " + 
+                                 "Zmin: " + Boxes[n].Zmin + ", " + "Zmax: " + Boxes[n].Zmax + ", " +
                                  "Floor: " + Boxes[n].TrueFloor + ", Overlap Index: " + Boxes[n].OverlapIndex);
             }
 
@@ -435,11 +442,15 @@ namespace TombEngine
                                  "Fly: " + Zones[n * 10 + 4] + ", A_Ground1: " + Zones[n * 10 + 5] + ", " + "A_Ground2: " + Zones[n * 10 + 6] + ", " +
                                  "A_Ground3: " + Zones[n * 10 + 7] + ", " + "A_Ground4: " + Zones[n * 10 + 8] + ", " +
                                  "A_Fly: " + Zones[n * 10 + 9]);*/
-                writer.WriteLine("[" + n + "] " + "Ground1: " + Zones[n] + ", " + "Ground2: " + Zones[1 * NumBoxes + n] + ", " +
-                                "Ground3: " + Zones[2 * NumBoxes + n] + ", " + "Ground4: " + Zones[3 * NumBoxes + n] + ", " +
-                                "Fly: " + Zones[4 * NumBoxes + n] + ", A_Ground1: " + Zones[5 * NumBoxes + n] + ", " + "A_Ground2: " + Zones[6 * NumBoxes + n] + ", " +
-                                "A_Ground3: " + Zones[7 * NumBoxes + n] + ", " + "A_Ground4: " + Zones[8 * NumBoxes + n] + ", " +
-                                "A_Fly: " + Zones[9 * NumBoxes + n]);
+                writer.WriteLine("[" + n + "] " + "Ground1: " + Zones[n] + ", " + "Ground2: " +
+                                 Zones[1 * NumBoxes + n] + ", " +
+                                 "Ground3: " + Zones[2 * NumBoxes + n] + ", " + "Ground4: " + Zones[3 * NumBoxes + n] +
+                                 ", " +
+                                 "Fly: " + Zones[4 * NumBoxes + n] + ", A_Ground1: " + Zones[5 * NumBoxes + n] + ", " +
+                                 "A_Ground2: " + Zones[6 * NumBoxes + n] + ", " +
+                                 "A_Ground3: " + Zones[7 * NumBoxes + n] + ", " + "A_Ground4: " +
+                                 Zones[8 * NumBoxes + n] + ", " +
+                                 "A_Fly: " + Zones[9 * NumBoxes + n]);
             }
 
             writer.Flush();
@@ -469,7 +480,8 @@ namespace TombEngine
             reader.ReadBlock(out NumAiItems);
             reader.ReadBlockArray(out AiItems, NumItems);
 
-            StreamWriter aiw = new StreamWriter(new FileStream("AI" + ind + ".txt", FileMode.Create, FileAccess.Write, FileShare.None));
+            StreamWriter aiw = new StreamWriter(new FileStream("AI" + ind + ".txt", FileMode.Create, FileAccess.Write,
+                FileShare.None));
 
             for (int n = 0; n < NumAiItems; n++)
             {
@@ -480,22 +492,20 @@ namespace TombEngine
                 aiw.WriteLine("    Z: " + AiItems[n].Z);
                 aiw.WriteLine("    Room: " + AiItems[n].Room);
                 aiw.WriteLine("    Angle: " + AiItems[n].Angle);
-
-
             }
 
             aiw.Flush();
             aiw.Close();
         }
 
-        struct tr_temp_sprite
+        struct TrTempSprite
         {
-            public int x;
-            public int y;
-            public int width;
-            public int height;
-            public int page;
-            public int originalID;
+            public int X;
+            public int Y;
+            public int Width;
+            public int Height;
+            public int Page;
+            public int OriginalId;
             public int NewX;
             public int NewY;
             public int NewPage;
@@ -503,53 +513,53 @@ namespace TombEngine
 
         private void ExportSprites()
         {
-            List<tr_temp_sprite> _tempTexturesArray = new List<tr_temp_sprite>();
+            List<TrTempSprite> tempTexturesArray = new List<TrTempSprite>();
 
             for (int i = 0; i < NumSpriteTextures; i++)
             {
-                tr_temp_sprite txt = new tr_temp_sprite();
+                TrTempSprite txt = new TrTempSprite();
 
-                txt.width = (SpriteTextures[i].Width - 255) / 256;
-                txt.height = (SpriteTextures[i].Width - 255) / 256;
-                txt.x = SpriteTextures[i].X;
-                txt.y = SpriteTextures[i].Y;
-                txt.page = SpriteTextures[i].Tile;
-                txt.originalID = i;
+                txt.Width = (SpriteTextures[i].Width - 255) / 256;
+                txt.Height = (SpriteTextures[i].Width - 255) / 256;
+                txt.X = SpriteTextures[i].X;
+                txt.Y = SpriteTextures[i].Y;
+                txt.Page = SpriteTextures[i].Tile;
+                txt.OriginalId = i;
 
-                _tempTexturesArray.Add(txt);
+                tempTexturesArray.Add(txt);
             }
 
-            for (int i = 0; i < _tempTexturesArray.Count - 1; i++)
+            for (int i = 0; i < tempTexturesArray.Count - 1; i++)
             {
-                for (int k = 0; k < _tempTexturesArray.Count - 1 - i; k++)
+                for (int k = 0; k < tempTexturesArray.Count - 1 - i; k++)
                 {
-                    if (_tempTexturesArray[k].height < _tempTexturesArray[k + 1].height)
+                    if (tempTexturesArray[k].Height < tempTexturesArray[k + 1].Height)
                     {
-                        tr_temp_sprite temp = _tempTexturesArray[k];
-                        _tempTexturesArray[k] = _tempTexturesArray[k + 1];
-                        _tempTexturesArray[k + 1] = temp;
+                        TrTempSprite temp = tempTexturesArray[k];
+                        tempTexturesArray[k] = tempTexturesArray[k + 1];
+                        tempTexturesArray[k + 1] = temp;
                     }
                 }
             }
 
-    
+
             // I've sorted the textures by height, now I build the texture map
-            bool newLine = false;
             int numRoomTexturePages = 1;
             int maxHeight = 0;
 
             byte[,] raw = new byte[512, 512];
 
-            for (int i = 0; i < _tempTexturesArray.Count; i++)
+            for (int i = 0; i < tempTexturesArray.Count; i++)
             {
-                tr_temp_sprite tex = _tempTexturesArray[i];
+                TrTempSprite tex = tempTexturesArray[i];
 
                 int currX = 0;
                 int currY = 0;
-                if (256 - (currX + tex.width) < 0)
+                bool newLine;
+                if (256 - (currX + tex.Width) < 0)
                 {
                     newLine = true;
-                    if (256 * numRoomTexturePages - (currY + maxHeight + tex.height) < 0)
+                    if (256 * numRoomTexturePages - (currY + maxHeight + tex.Height) < 0)
                     {
                         numRoomTexturePages++;
                         currY = 256 * (numRoomTexturePages - 1);
@@ -566,10 +576,10 @@ namespace TombEngine
                     newLine = false;
                 }
 
-                if (tex.height > maxHeight)
-                    maxHeight = tex.height;
+                if (tex.Height > maxHeight)
+                    maxHeight = tex.Height;
                 if (newLine)
-                    maxHeight = tex.height;
+                    maxHeight = tex.Height;
 
                 if (256 * numRoomTexturePages - (currY + maxHeight) < 0)
                 {
@@ -582,22 +592,22 @@ namespace TombEngine
                 tex.NewY = currY;
                 tex.NewPage = 0;
 
-                for (int x = 0; x < tex.width; x++)
+                for (int x = 0; x < tex.Width; x++)
                 {
-                    for (int y = 0; y < tex.height; y++)
+                    for (int y = 0; y < tex.Height; y++)
                     {
-                        byte b1 = _texture16[tex.x * 2 + 2 * x + 0, tex.page * 256 + tex.y + y];
-                        byte b2 = _texture16[tex.x * 2 + 2 * x + 1, tex.page * 256 + tex.y + y];
+                        byte b1 = _texture16[tex.X * 2 + 2 * x + 0, tex.Page * 256 + tex.Y + y];
+                        byte b2 = _texture16[tex.X * 2 + 2 * x + 1, tex.Page * 256 + tex.Y + y];
 
                         raw[currX * 2 + x * 2 + 0, currY + y] = b1;
                         raw[currX * 2 + x * 2 + 1, currY + y] = b2;
-
                     }
                 }
-                currX += tex.width;
+                currX += tex.Width;
             }
 
-            BinaryWriterEx writer = new BinaryWriterEx(new FileStream("sprites3.raw", FileMode.Create, FileAccess.Write, FileShare.None));
+            BinaryWriterEx writer =
+                new BinaryWriterEx(new FileStream("sprites3.raw", FileMode.Create, FileAccess.Write, FileShare.None));
 
             for (int z2 = 0; z2 < 256; z2++)
             {
@@ -610,7 +620,8 @@ namespace TombEngine
             writer.Flush();
             writer.Close();
 
-            writer = new BinaryWriterEx(new FileStream("sprites3.bin", FileMode.Create, FileAccess.Write, FileShare.None));
+            writer = new BinaryWriterEx(new FileStream("sprites3.bin", FileMode.Create, FileAccess.Write,
+                FileShare.None));
 
             writer.WriteBlock(NumSpriteTextures);
 
@@ -618,11 +629,11 @@ namespace TombEngine
             {
                 for (int j = 0; j < NumSpriteTextures; j++)
                 {
-                    if (_tempTexturesArray[j].originalID == i)
+                    if (tempTexturesArray[j].OriginalId == i)
                     {
                         short page = 0;
-                        byte w = (byte)((_tempTexturesArray[j].NewX));
-                        byte h = (byte)((_tempTexturesArray[j].NewY));
+                        byte w = (byte)((tempTexturesArray[j].NewX));
+                        byte h = (byte)((tempTexturesArray[j].NewY));
 
                         writer.Write(page);
                         writer.Write(w);
@@ -633,12 +644,12 @@ namespace TombEngine
                         writer.Write(SpriteTextures[i].TopSide);
                         writer.Write(SpriteTextures[i].RightSide);
                         writer.Write(SpriteTextures[i].BottomSide);
-                        
+
                         break;
                     }
                 }
             }
-            
+
             writer.WriteBlock(NumSpriteSequences);
             writer.WriteBlockArray(SpriteSequences);
 

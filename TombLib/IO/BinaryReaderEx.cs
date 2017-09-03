@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.IO;
 using SharpDX;
-using SharpDX.Toolkit.Graphics;
 using System.Runtime.InteropServices;
 
 namespace TombLib.IO
@@ -32,7 +28,7 @@ namespace TombLib.IO
 
         public Matrix ReadMatrix()
         {
-            float[] values = new float[16];
+            var values = new float[16];
             for (int i = 0; i < 16; i++)
                 values[i] = ReadSingle();
             return new Matrix(values);
@@ -50,13 +46,9 @@ namespace TombLib.IO
 
         public void ReadBlock<T>(out T output)
         {
-            int sizeOfT;
-            IntPtr unmanaged;
-            byte[] buffer;
-
-            sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT);
-            buffer = new byte[sizeOfT];
+            int sizeOfT = Marshal.SizeOf(typeof(T));
+            var unmanaged = Marshal.AllocHGlobal(sizeOfT);
+            var buffer = new byte[sizeOfT];
 
             Read(buffer, 0, sizeOfT);
             Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
@@ -67,18 +59,13 @@ namespace TombLib.IO
 
         public void ReadBlockArray<T>(out T[] output, uint count)
         {
-            int sizeOfT;
-            IntPtr unmanaged;
-            byte[] buffer;
-            int i;
-
-            sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
-            buffer = new byte[sizeOfT];
+            int sizeOfT = Marshal.SizeOf(typeof(T));
+            var unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
+            var buffer = new byte[sizeOfT];
 
             output = new T[count];
 
-            for (i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 Read(buffer, 0, sizeOfT);
                 Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
@@ -89,18 +76,13 @@ namespace TombLib.IO
 
         public void ReadBlockArray<T>(out T[] output, int count)
         {
-            int sizeOfT;
-            IntPtr unmanaged;
-            byte[] buffer;
-            int i;
-
-            sizeOfT = Marshal.SizeOf(typeof(T));
-            unmanaged = Marshal.AllocHGlobal(sizeOfT * (int)count);
-            buffer = new byte[sizeOfT];
+            int sizeOfT = Marshal.SizeOf(typeof(T));
+            var unmanaged = Marshal.AllocHGlobal(sizeOfT * count);
+            var buffer = new byte[sizeOfT];
 
             output = new T[count];
 
-            for (i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 Read(buffer, 0, sizeOfT);
                 Marshal.Copy(buffer, 0, unmanaged, sizeOfT);
@@ -109,10 +91,10 @@ namespace TombLib.IO
             Marshal.FreeHGlobal(unmanaged);
         }
 
-        public string ReadStringUTF8()
+        public string ReadStringUtf8()
         {
             int stringLength = ReadInt32();
-            byte[] stringData = ReadBytes(stringLength);
+            var stringData = ReadBytes(stringLength);
             string result = Encoding.UTF8.GetString(stringData);
             return result;
         }

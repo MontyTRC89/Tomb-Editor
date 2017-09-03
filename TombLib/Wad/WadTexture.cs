@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TombLib.Utils;
+﻿using TombLib.Utils;
 
 namespace TombLib.Wad
 {
@@ -11,12 +7,12 @@ namespace TombLib.Wad
         public WadTexturePageType Type;
         public string Hash;
         
-        public override bool ReplaceMagentaWithTransparency => true;
+        public bool ReplaceMagentaWithTransparency => true;
 
         public new ImageC Image
         {
-            get { return base.Image; }
-            set { base.Image = value; }
+            get => base.Image;
+            set => base.Image = value;
         }
 
         public override Texture Clone()

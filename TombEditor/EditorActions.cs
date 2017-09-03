@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 using TombEditor.Geometry;
@@ -656,7 +654,7 @@ namespace TombEditor
                     rotateableY.RotationY += angleInDegrees;
                     break;
                 case RotationAxis.X:
-                    IRotateableYX rotateableX = instance as IRotateableYX;
+                    IRotateableYx rotateableX = instance as IRotateableYx;
                     if (rotateableX == null)
                         return;
                     rotateableX.RotationY += angleInDegrees;
@@ -715,7 +713,7 @@ namespace TombEditor
                 return;
             }
 
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete " + instance.ToString() + "?",
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning($"Do you really want to delete {instance}?",
                     "Confirm delete", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                 return;
 
@@ -1395,7 +1393,7 @@ namespace TombEditor
             _editor.RoomListChange();
         }
 
-        public static void AlternateRoomEnable(Room room, short AlternateGroup)
+        public static void AlternateRoomEnable(Room room, short alternateGroup)
         {
             // Search the first free room
             int freeRoomIndex = _editor.Level.GetFreeRoomIndex();
@@ -1408,7 +1406,7 @@ namespace TombEditor
             /*foreach (var p in room.Portals)
                 duplicatedPortals.Add(p, (Portal)p.Clone());*/
 
-            string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
+            string name = $"(Flipped of {room}) Room {freeRoomIndex}";
             var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
             
             for (int x = 0; x < room.NumXSectors; x++)
@@ -1440,11 +1438,11 @@ namespace TombEditor
             _editor.Level.Rooms[freeRoomIndex] = newRoom;
             _editor.RoomListChange();
             
-            room.AlternateGroup = AlternateGroup;
+            room.AlternateGroup = alternateGroup;
             room.AlternateRoom = newRoom;
             _editor.RoomPropertiesChange(room);
             
-            newRoom.AlternateGroup = AlternateGroup;
+            newRoom.AlternateGroup = alternateGroup;
             newRoom.AlternateBaseRoom = room;
             _editor.RoomPropertiesChange(newRoom);
         }
@@ -1568,10 +1566,10 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void GridWalls3(Room room, Rectangle Area)
+        public static void GridWalls3(Room room, Rectangle area)
         {
-            for (int x = Area.X; x <= Area.Right; x++)
-                for (int z = Area.Y; z <= Area.Bottom; z++)
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     Block block = room.Blocks[x, z];
                     if (block.IsAnyWall)
@@ -1592,13 +1590,13 @@ namespace TombEditor
                     }
                 }
 
-            SmartBuildGeometry(room, Area);
+            SmartBuildGeometry(room, area);
         }
 
-        public static void GridWalls5(Room room, Rectangle Area)
+        public static void GridWalls5(Room room, Rectangle area)
         {
-            for (int x = Area.X; x <= Area.Right; x++)
-                for (int z = Area.Y; z <= Area.Bottom; z++)
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     Block block = room.Blocks[x, z];
                     if (block.IsAnyWall)
@@ -1619,14 +1617,14 @@ namespace TombEditor
                     }
                 }
 
-            SmartBuildGeometry(room, Area);
+            SmartBuildGeometry(room, area);
         }
 
-        public static void CreateRoomAboveOrBelow(Room room, Func<Room, float> GetYOffset, short newRoomHeight)
+        public static void CreateRoomAboveOrBelow(Room room, Func<Room, float> getYOffset, short newRoomHeight)
         {
             // Create room
             var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "room next to " + room.Name, newRoomHeight);
-            newRoom.Position = room.Position + new Vector3(0, GetYOffset(newRoom), 0);
+            newRoom.Position = room.Position + new Vector3(0, getYOffset(newRoom), 0);
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
 

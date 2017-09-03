@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using SharpDX.Toolkit.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
-using Texture2D = SharpDX.Toolkit.Graphics.Texture2D;
 using SharpDX;
 
 namespace TombLib.Graphics
@@ -22,9 +17,9 @@ namespace TombLib.Graphics
         public List<Submesh> SubMeshes { get; set; }
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
-        
-        protected Buffer<T> _vb;
-        protected Buffer _ib;
+
+        protected Buffer<T> Vb;
+        protected Buffer Ib;
 
         public Mesh(GraphicsDevice device, string name)
             : base(device, name)

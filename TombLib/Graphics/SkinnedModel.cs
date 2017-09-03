@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpDX.Toolkit.Graphics;
-using SharpDX.Toolkit;
 using SharpDX;
-using TombLib.Graphics;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombLib.Wad;
 
@@ -24,41 +19,43 @@ namespace TombLib.Graphics
 
         public SkinnedModel(GraphicsDevice device)
             : base(device, ModelType.Skinned)
-        {}
+        {
+        }
 
         public static SkinnedModel FromWad(GraphicsDevice device, WadMoveable mov,
             Dictionary<uint, WadTexture> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
         {
-            SkinnedModel model = new SkinnedModel(device);
-            model.Offset = mov.Offset;
+            var model = new SkinnedModel(device) {Offset = mov.Offset};
 
             // Initialize the mesh
             for (int m = 0; m < mov.Meshes.Count; m++)
             {
-                WadMesh msh = mov.Meshes[m];
-                SkinnedMesh mesh = new SkinnedMesh(device, mov.ToString() + "_mesh_" + m.ToString());
+                var msh = mov.Meshes[m];
+                var mesh = new SkinnedMesh(device, $"{mov}_mesh_{m}") {BoundingBox = msh.BoundingBox};
 
-                mesh.BoundingBox = msh.BoundingBox;
 
                 for (int j = 0; j < texturePages.Count; j++)
                 {
-                    Submesh submesh = new Submesh();
-                    submesh.Material = new TombLib.Graphics.Material();
-                    submesh.Material.Type = MaterialType.Flat;
-                    submesh.Material.Name = "material_" + j.ToString();
-                    submesh.Material.DiffuseMap = (uint)j;
+                    var submesh = new Submesh
+                    {
+                        Material = new Material
+                        {
+                            Type = MaterialType.Flat,
+                            Name = "material_" + j.ToString(),
+                            DiffuseMap = (uint)j
+                        }
+                    };
                     mesh.SubMeshes.Add(submesh);
                 }
 
-                for (int j = 0; j < msh.Polygons.Length; j++)
+                foreach (var poly in msh.Polygons)
                 {
-                    WadPolygon poly = msh.Polygons[j];
                     int textureId = poly.Texture & 0xfff;
                     if (textureId > 2047)
                         textureId = -(textureId - 4096);
                     short submeshIndex = textureSamples[(uint)textureId].Page;
 
-                    List<Vector2> uv = CalculateUVCoordinates(poly, textureSamples);
+                    var uv = CalculateUvCoordinates(poly, textureSamples);
 
                     if (poly.Shape == Shape.Triangle)
                     {
@@ -78,26 +75,28 @@ namespace TombLib.Graphics
                     }
                 }
 
-                for (int j = 0; j < mesh.SubMeshes.Count; j++)
+                foreach (var current in mesh.SubMeshes)
                 {
-                    Submesh current = mesh.SubMeshes[j];
                     current.StartIndex = (ushort)mesh.Indices.Count;
-                    for (int k = 0; k < current.Indices.Count; k++)
-                        mesh.Indices.Add(current.Indices[k]);
+                    foreach (ushort index in current.Indices)
+                        mesh.Indices.Add(index);
                     current.NumIndices = (ushort)current.Indices.Count;
                 }
 
-                mesh.BoundingSphere = new BoundingSphere(new Vector3(msh.SphereX, msh.SphereY, msh.SphereZ), msh.Radius);
+                mesh.BoundingSphere =
+                    new BoundingSphere(new Vector3(msh.SphereX, msh.SphereY, msh.SphereZ), msh.Radius);
 
                 model.Meshes.Add(mesh);
             }
 
             // Initialize bones
-            Bone root = new Bone();
-            root.Name = "root_bone";
-            root.Parent = null;
-            root.Transform = Matrix.Identity;
-            root.Index = 0;
+            var root = new Bone
+            {
+                Name = "root_bone",
+                Parent = null,
+                Transform = Matrix.Identity,
+                Index = 0
+            };
             model.Bones.Add(root);
             model.Root = root;
             model.Transforms.Add(Matrix.Translation(Vector3.Zero));
@@ -106,25 +105,26 @@ namespace TombLib.Graphics
 
             for (int j = 0; j < mov.Meshes.Count - 1; j++)
             {
-                Bone bone = new Bone();
-                bone.Name = "bone_" + (j + 1).ToString();
-                bone.Parent = null;
-                bone.Transform = Matrix.Translation(Vector3.Zero);
-                bone.Index = (short)(j + 1);
+                var bone = new Bone
+                {
+                    Name = "bone_" + (j + 1).ToString(),
+                    Parent = null,
+                    Transform = Matrix.Translation(Vector3.Zero),
+                    Index = (short)(j + 1)
+                };
                 model.Transforms.Add(Matrix.Translation(Vector3.Zero));
                 model.InverseTransforms.Add(Matrix.Translation(Vector3.Zero));
                 model.AnimationTransforms.Add(Matrix.Translation(Vector3.Zero));
                 model.Bones.Add(bone);
             }
 
-            Bone currentBone = root;
-            Bone stackBone = root;
-            Stack<Bone> stack = new Stack<Bone>();
+            var currentBone = root;
+            var stack = new Stack<Bone>();
 
             for (int m = 0; m < (mov.Meshes.Count - 1); m++)
             {
                 int j = m + 1;
-                WadLink link = mov.Links[m];
+                var link = mov.Links[m];
 
                 switch (link.Opcode)
                 {
@@ -158,7 +158,7 @@ namespace TombLib.Graphics
                     case WadLinkOpcode.Read:
                         if (stack.Count <= 0)
                             continue;
-                        Bone bone = stack.Pop();
+                        var bone = stack.Pop();
                         model.Bones[j].Transform = Matrix.Translation(new Vector3(link.X, -link.Y, link.Z));
                         model.Bones[j].Parent = bone;
                         bone.Children.Add(model.Bones[j]);
@@ -170,17 +170,13 @@ namespace TombLib.Graphics
             }
 
             // Prepare animations
-            for (int j = 0; j < mov.Animations.Count; j++)
+            foreach (var wadAnim in mov.Animations)
             {
-                Animation animation = new Animation();
-                WadAnimation wadAnim = mov.Animations[j];
+                var animation = new Animation {KeyFrames = new List<KeyFrame>()};
 
-                animation.KeyFrames = new List<KeyFrame>();
-
-                for (int f = 0; f < wadAnim.KeyFrames.Count; f++)
+                foreach (var wadFrame in wadAnim.KeyFrames)
                 {
-                    KeyFrame frame = new KeyFrame();
-                    WadKeyFrame wadFrame = wadAnim.KeyFrames[f];
+                    var frame = new KeyFrame();
 
                     for (int k = 0; k < mov.Meshes.Count; k++)
                     {
@@ -188,18 +184,20 @@ namespace TombLib.Graphics
                         frame.Translations.Add(Matrix.Identity);
                     }
 
-                    frame.Translations[0] = Matrix.Translation(new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z));
+                    frame.Translations[0] =
+                        Matrix.Translation(new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z));
 
                     for (int k = 1; k < frame.Translations.Count; k++)
                         frame.Translations[k] = Matrix.Translation(Vector3.Zero);
 
                     for (int n = 0; n < frame.Rotations.Count; n++)
                     {
-                        WadKeyFrameRotation rot = wadFrame.Angles[n];
+                        var rot = wadFrame.Angles[n];
                         switch (rot.Axis)
                         {
                             case WadKeyFrameRotationAxis.ThreeAxes:
-                                frame.Rotations[n] = Matrix.RotationYawPitchRoll((float)rot.Y, (float)-rot.X, (float)-rot.Z);
+                                frame.Rotations[n] =
+                                    Matrix.RotationYawPitchRoll((float)rot.Y, (float)-rot.X, (float)-rot.Z);
                                 break;
 
                             case WadKeyFrameRotationAxis.AxisX:
@@ -231,22 +229,23 @@ namespace TombLib.Graphics
         }
 
         public void ApplyTransforms()
-        { }
+        {
+        }
 
         public void BuildHierarchy()
         {
-            this.Root.GlobalTransform = Root.Transform;
+            Root.GlobalTransform = Root.Transform;
             Transforms[Root.Index] = Root.GlobalTransform;
             InverseTransforms[Root.Index] = new Matrix(Root.GlobalTransform.ToArray());
             InverseTransforms[Root.Index].Invert();
 
-            foreach (var node in this.Root.Children)
+            foreach (var node in Root.Children)
             {
-                BuildHierarchy(node, this.Root.GlobalTransform, 0);
+                BuildHierarchy(node, Root.GlobalTransform);
             }
         }
 
-        private void BuildHierarchy(Bone node, Matrix parentTransform, int level)
+        private void BuildHierarchy(Bone node, Matrix parentTransform)
         {
             node.GlobalTransform = node.Transform * parentTransform;
             Transforms[node.Index] = node.GlobalTransform;
@@ -255,7 +254,7 @@ namespace TombLib.Graphics
 
             foreach (var child in node.Children)
             {
-                BuildHierarchy(child, node.GlobalTransform, level + 1);
+                BuildHierarchy(child, node.GlobalTransform);
             }
         }
 
@@ -278,21 +277,22 @@ namespace TombLib.Graphics
 
             return;*/
             var globalScale = Matrix.Translation(Offset) * frame.Translations[0];
-            AnimationTransforms[0] = frame.Rotations[0] * globalScale;//*Transforms[0];
+            AnimationTransforms[0] = frame.Rotations[0] * globalScale; //*Transforms[0];
 
-            foreach (var node in this.Root.Children)
+            foreach (var node in Root.Children)
             {
-                BuildAnimationPose(node, AnimationTransforms[0], 0, frame);
+                BuildAnimationPose(node, AnimationTransforms[0], frame);
             }
         }
 
-        private void BuildAnimationPose(Bone node, Matrix parentTransform, int level, KeyFrame frame)
+        private void BuildAnimationPose(Bone node, Matrix parentTransform, KeyFrame frame)
         {
-            AnimationTransforms[node.Index] = (frame.Rotations[node.Index] * node.Transform) * parentTransform;// *Transforms[node.Index];
+            AnimationTransforms[node.Index] =
+                (frame.Rotations[node.Index] * node.Transform) * parentTransform; // *Transforms[node.Index];
 
             foreach (Bone child in node.Children)
             {
-                BuildAnimationPose(child, AnimationTransforms[node.Index], level + 1, frame);
+                BuildAnimationPose(child, AnimationTransforms[node.Index], frame);
             }
         }
 
@@ -318,25 +318,26 @@ namespace TombLib.Graphics
             Vertices = new List<SkinnedVertex>();
             Indices = new List<int>();
 
-            for (int i = 0; i < Meshes.Count; i++)
+            foreach (var mesh in Meshes)
             {
-                Vertices.AddRange(Meshes[i].Vertices);
+                Vertices.AddRange(mesh.Vertices);
 
-                Meshes[i].BaseIndex = lastBaseIndex;
-                Meshes[i].NumIndices = Meshes[i].Indices.Count;
+                mesh.BaseIndex = lastBaseIndex;
+                mesh.NumIndices = mesh.Indices.Count;
 
-                for (int j = 0; j < Meshes[i].Indices.Count; j++)
+                foreach (int index in mesh.Indices)
                 {
-                    Indices.Add((ushort)(lastBaseIndex + Meshes[i].Indices[j]));
+                    Indices.Add((ushort)(lastBaseIndex + index));
                 }
 
-                lastBaseIndex += Meshes[i].Vertices.Count;
+                lastBaseIndex += mesh.Vertices.Count;
             }
 
             if (Vertices.Count == 0)
                 return;
 
-            VertexBuffer = Buffer.Vertex.New<SkinnedVertex>(GraphicsDevice, Vertices.ToArray<SkinnedVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<SkinnedVertex>(),
+                SharpDX.Direct3D11.ResourceUsage.Dynamic);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
     }

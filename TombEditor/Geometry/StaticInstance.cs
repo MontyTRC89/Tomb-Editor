@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TombEditor.Geometry
+﻿namespace TombEditor.Geometry
 {
     public class StaticInstance : ItemInstance
     {

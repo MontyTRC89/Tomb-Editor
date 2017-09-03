@@ -1,7 +1,5 @@
 ﻿using NLog;
-using SharpDX;
 using System;
-using System.Collections.Generic;
 using TombLib.Utils;
 
 namespace TombEditor.Geometry
@@ -9,21 +7,22 @@ namespace TombEditor.Geometry
     public class LevelTexture : Texture
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         public string Path { get; private set; }
         public Exception ImageLoadException { get; private set; }
-        public bool Convert512PixelsToDoubleRows { get; private set; } = false;
+        public bool Convert512PixelsToDoubleRows { get; private set; }
 
-        private bool _replaceMagentaWithTransparency = true;
-        public override bool ReplaceMagentaWithTransparency => _replaceMagentaWithTransparency;
+        public bool ReplaceMagentaWithTransparency { get; private set; } = true;
 
         public LevelTexture()
-        { }
+        {
+        }
 
-        public LevelTexture(LevelSettings settings, string path, bool convert512PixelsToDoubleRows = false, bool replaceWithTransparency = true)
+        public LevelTexture(LevelSettings settings, string path, bool convert512PixelsToDoubleRows = false,
+            bool replaceWithTransparency = true)
         {
             Convert512PixelsToDoubleRows = convert512PixelsToDoubleRows;
-            _replaceMagentaWithTransparency = replaceWithTransparency;
+            ReplaceMagentaWithTransparency = replaceWithTransparency;
             SetPath(settings, path);
         }
 
@@ -53,7 +52,7 @@ namespace TombEditor.Geometry
                 }
 
                 if (ReplaceMagentaWithTransparency)
-                    image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+                    image.ReplaceColor(new ColorC(255, 0, 255), new ColorC(0, 0, 0, 0));
 
                 Image = image;
             }
@@ -64,7 +63,7 @@ namespace TombEditor.Geometry
                 ImageLoadException = exc;
             }
         }
-        
+
         public void SetPath(LevelSettings settings, string path)
         {
             Path = path;
@@ -82,9 +81,9 @@ namespace TombEditor.Geometry
 
         public void SetReplaceWithTransparency(LevelSettings settings, bool value)
         {
-            if (_replaceMagentaWithTransparency == value)
+            if (ReplaceMagentaWithTransparency == value)
                 return;
-            _replaceMagentaWithTransparency = value;
+            ReplaceMagentaWithTransparency = value;
             Reload(settings);
         }
 
@@ -95,7 +94,7 @@ namespace TombEditor.Geometry
                 Image = Image,
                 Path = Path,
                 ImageLoadException = ImageLoadException,
-                _replaceMagentaWithTransparency = _replaceMagentaWithTransparency
+                ReplaceMagentaWithTransparency = ReplaceMagentaWithTransparency
             };
         }
     }

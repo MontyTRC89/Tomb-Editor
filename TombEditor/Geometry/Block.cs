@@ -2,17 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
 using TombLib.Utils;
 
 namespace TombEditor.Geometry
 {
     public enum BlockType : byte
     {
-        Floor, Wall, BorderWall
+        Floor,
+        Wall,
+        BorderWall
     }
-    
+
     [Flags]
     public enum BlockFlags : short
     {
@@ -29,7 +29,7 @@ namespace TombEditor.Geometry
         ClimbNegativeX = 512,
         ClimbPositiveZ = 1024,
         ClimbNegativeZ = 2048,
-        ClimbAny = ClimbPositiveX  | ClimbNegativeX | ClimbPositiveZ | ClimbNegativeZ
+        ClimbAny = ClimbPositiveX | ClimbNegativeX | ClimbPositiveZ | ClimbNegativeZ
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -45,58 +45,93 @@ namespace TombEditor.Geometry
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BlockFace : byte
     {
-        NorthQA = 0, SouthQA = 1, WestQA = 2, EastQA = 3, DiagonalQA = 4,
-        NorthED = 5, SouthED = 6, WestED = 7, EastED = 8, DiagonalED = 9,
-        NorthMiddle = 10, SouthMiddle = 11, WestMiddle = 12, EastMiddle = 13, DiagonalMiddle = 14,
-        NorthWS = 15, SouthWS = 16, WestWS = 17, EastWS = 18, DiagonalWS = 19,
-        NorthRF = 20, SouthRF = 21, WestRF = 22, EastRF = 23, DiagonalRF = 24,
-        Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
+        NorthQA = 0,
+        SouthQA = 1,
+        WestQA = 2,
+        EastQA = 3,
+        DiagonalQA = 4,
+        NorthED = 5,
+        SouthED = 6,
+        WestED = 7,
+        EastED = 8,
+        DiagonalED = 9,
+        NorthMiddle = 10,
+        SouthMiddle = 11,
+        WestMiddle = 12,
+        EastMiddle = 13,
+        DiagonalMiddle = 14,
+        NorthWS = 15,
+        SouthWS = 16,
+        WestWS = 17,
+        EastWS = 18,
+        DiagonalWS = 19,
+        NorthRF = 20,
+        SouthRF = 21,
+        WestRF = 22,
+        EastRF = 23,
+        DiagonalRF = 24,
+        Floor = 25,
+        FloorTriangle2 = 26,
+        Ceiling = 27,
+        CeilingTriangle2 = 28
     }
 
     public class Block
     {
         public const BlockFace FaceCount = (BlockFace)29;
+
         /// <summary> Index of faces on the negative X and positive Z direction </summary>
         public const int FaceXnZp = 0;
+
         /// <summary> Index of faces on the positive X and positive Z direction </summary>
         public const int FaceXpZp = 1;
+
         /// <summary> Index of faces on the positive X and negative Z direction </summary>
         public const int FaceXpZn = 2;
+
         /// <summary> Index of faces on the negative X and negative Z direction </summary>
         public const int FaceXnZn = 3;
+
         /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceX = new int[] { 0, 1, 1, 0 };
+        public static readonly int[] FaceX = new int[] {0, 1, 1, 0};
+
         /// <summary> The x offset of each face index in [0, 4). </summary>
-        public static readonly int[] FaceZ = new int[] { 1, 1, 0, 0 };
+        public static readonly int[] FaceZ = new int[] {1, 1, 0, 0};
 
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
+
         // ReSharper disable once InconsistentNaming
         public short[] EDFaces { get; } = new short[4];
+
         // ReSharper disable once InconsistentNaming
         public short[] QAFaces { get; } = new short[4];
+
         // ReSharper disable once InconsistentNaming
         public short[] WSFaces { get; } = new short[4];
+
         // ReSharper disable once InconsistentNaming
         public short[] RFFaces { get; } = new short[4];
-        private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
-        public bool FloorSplitDirectionToggled { get; set; } = false;
-        public bool CeilingSplitDirectionToggled { get; set; } = false;
+
+        private TextureArea[] FaceTextures { get; } = new TextureArea[(int)FaceCount];
+        public bool FloorSplitDirectionToggled { get; set; }
+        public bool CeilingSplitDirectionToggled { get; set; }
 
         public DiagonalSplit FloorDiagonalSplit { get; set; }
         public DiagonalSplit CeilingDiagonalSplit { get; set; }
 
-        public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
+        public List<TriggerInstance> Triggers { get; } =
+            new List<TriggerInstance>(); // This array is not supposed to be modified here.
 
         public PortalOpacity FloorOpacity { get; set; }
         public PortalOpacity CeilingOpacity { get; set; }
         public PortalOpacity WallOpacity { get; set; }
-        public Portal FloorPortal { get; set; } = null; // This is not supposed to be modified here.
-        public Portal WallPortal { get; set; } = null; // This is not supposed to be modified here.
-        public Portal CeilingPortal { get; set; } = null; // This is not supposed to be modified here.
+        public Portal FloorPortal { get; set; } // This is not supposed to be modified here.
+        public Portal WallPortal { get; set; } // This is not supposed to be modified here.
+        public Portal CeilingPortal { get; set; } // This is not supposed to be modified here.
         public bool NoCollisionFloor { get; set; }
         public bool NoCollisionCeiling { get; set; }
-        
+
         public Block(int floor, int ceiling)
         {
             for (int i = 0; i < 4; i++)
@@ -125,18 +160,18 @@ namespace TombEditor.Geometry
             b.Type = Type;
             b.FloorSplitDirectionToggled = FloorSplitDirectionToggled;
             b.CeilingSplitDirectionToggled = CeilingSplitDirectionToggled;
-            
+
             return b;
         }
 
         public void SetFaceTexture(BlockFace face, TextureArea texture)
         {
-            _faceTextures[(int)face] = texture;
+            FaceTextures[(int)face] = texture;
         }
 
         public TextureArea GetFaceTexture(BlockFace face)
         {
-            return _faceTextures[(int)face];
+            return FaceTextures[(int)face];
         }
 
         public bool IsFloor => Type == BlockType.Floor;
@@ -153,7 +188,7 @@ namespace TombEditor.Geometry
             }
         }
 
-        public short[] GetVerticalSubdivision(int verticalSubdivision)
+        private short[] GetVerticalSubdivision(int verticalSubdivision)
         {
             switch (verticalSubdivision)
             {
@@ -168,16 +203,6 @@ namespace TombEditor.Geometry
                 default:
                     throw new NotSupportedException();
             }
-        }
-
-        public short GetEdge(int verticalSubdivision, int edge)
-        {
-            return GetVerticalSubdivision(verticalSubdivision)[edge];
-        }
-
-        public void SetEdge(int verticalSubdivision, int edge, short newValue)
-        {
-            GetVerticalSubdivision(verticalSubdivision)[edge] = newValue;
         }
 
         public void ChangeEdge(int verticalSubdivision, int edge, short increment)
@@ -215,7 +240,7 @@ namespace TombEditor.Geometry
         {
             get
             {
-                int h1 = QAFaces[0],h2 = QAFaces[1], h3 = QAFaces[2], h4 = QAFaces[3];
+                int h1 = QAFaces[0], h2 = QAFaces[1], h3 = QAFaces[2], h4 = QAFaces[3];
                 int horizontalTriangle = FindHorizontalTriangle(h1, h2, h3, h4);
 
                 switch (horizontalTriangle)
@@ -250,11 +275,6 @@ namespace TombEditor.Geometry
                 }
 
                 return FloorSplitDirectionToggled;
-            }
-            set
-            {
-                if (value != FloorSplitDirectionIsXEqualsY)
-                    FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
             }
         }
 
@@ -298,21 +318,19 @@ namespace TombEditor.Geometry
 
                 return CeilingSplitDirectionToggled;
             }
-            set
-            {
-                if (value != CeilingSplitDirectionIsXEqualsY)
-                    CeilingSplitDirectionToggled = !CeilingSplitDirectionToggled;
-            }
         }
 
         public static bool IsQuad(int hXnZp, int hXpZp, int hXpZn, int hXnZn)
         {
             return (hXpZp - hXpZn) == (hXnZp - hXnZn) &&
-                (hXpZp - hXnZp) == (hXpZn - hXnZn);
+                   (hXpZp - hXnZp) == (hXpZn - hXnZn);
         }
 
-        public bool FloorIsQuad => IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
-        public bool CeilingIsQuad => IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
+        private bool FloorIsQuad => IsQuad(QAFaces[FaceXnZp], QAFaces[FaceXpZp], QAFaces[FaceXpZn], QAFaces[FaceXnZn]);
+
+        private bool CeilingIsQuad =>
+            IsQuad(WSFaces[FaceXnZp], WSFaces[FaceXpZp], WSFaces[FaceXpZn], WSFaces[FaceXnZn]);
+
         public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
         public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
         public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;

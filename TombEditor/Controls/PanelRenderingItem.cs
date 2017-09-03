@@ -1,10 +1,7 @@
 ﻿using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TombEditor.Geometry;
 using TombLib.Graphics;

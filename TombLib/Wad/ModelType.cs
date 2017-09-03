@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TombLib.Wad
+﻿namespace TombLib.Wad
 {
+    // ReSharper disable once EnumUnderlyingTypeIsInt
     public enum ModelType : int
     {
         Skinned = 0,

@@ -1,8 +1,6 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using TombEditor.Geometry;
 using TombLib.Utils;
 
 namespace TombEditor.Compilers.Util
@@ -51,6 +49,7 @@ namespace TombEditor.Compilers.Util
 
             public override bool Equals(object obj)
             {
+                System.Diagnostics.Debug.Assert(obj != null);
                 return this == (TextureView)obj;
             }
 
@@ -62,22 +61,22 @@ namespace TombEditor.Compilers.Util
 
         public struct Result
         {
-            public ushort OutputTextureID;
+            public ushort OutputTextureId;
             public RectPacker.Point Pos;
-            public void TransformTexCoord(ref ushort TexCoordX, ref ushort TexCoordY)
+            public void TransformTexCoord(ref ushort texCoordX, ref ushort texCoordY)
             {
-                TexCoordX += (ushort)(256 * Pos.X);
-                TexCoordY += (ushort)(256 * Pos.Y);
+                texCoordX += (ushort)(256 * Pos.X);
+                texCoordY += (ushort)(256 * Pos.Y);
             }
         }
 
         private struct TextureComparer : IComparer<int>
         {
-            public List<TextureView> usedTextures;
+            public List<TextureView> UsedTextures;
             public int Compare(int firstIndex, int secondIndex)
             {
-                TextureView first = usedTextures[firstIndex];
-                TextureView second = usedTextures[secondIndex];
+                TextureView first = UsedTextures[firstIndex];
+                TextureView second = UsedTextures[secondIndex];
 
                 // Compare height
                 int firstMaxHeight = Math.Max(first.Width, first.Height); //Because of flipping, the bigger dimension is the height.
@@ -99,27 +98,27 @@ namespace TombEditor.Compilers.Util
         private readonly Dictionary<TextureView, int> _usedTexturesLookup = new Dictionary<TextureView, int>();
         private Result[] _usedTexturePackInfos;
 
-        public int GetOrAllocateTextureID(TextureView texture)
+        public int GetOrAllocateTextureId(TextureView texture)
         {
             if ((texture.Width > 256) || (texture.Height > 256))
                 throw new NotSupportedException("Texture page too big!");
 
-            int textureID;
-            if (_usedTexturesLookup.TryGetValue(texture, out textureID))
-                return textureID;
+            int textureId;
+            if (_usedTexturesLookup.TryGetValue(texture, out textureId))
+                return textureId;
 
-            textureID = _usedTextures.Count;
+            textureId = _usedTextures.Count;
             _usedTextures.Add(texture);
-            _usedTexturesLookup.Add(texture, textureID);
-            return textureID;
+            _usedTexturesLookup.Add(texture, textureId);
+            return textureId;
         }
 
-        public int GetTextureID(TextureView texture)
+        public int GetTextureId(TextureView texture)
         {
             return _usedTexturesLookup[texture];
         }
 
-        public TextureView GetTextureFromID(int id)
+        public TextureView GetTextureFromId(int id)
         {
             return _usedTextures[id];
         }
@@ -130,15 +129,15 @@ namespace TombEditor.Compilers.Util
             int[] usedTexturesProcessingOrder = new int[_usedTextures.Count];
             for (int i = 0; i < _usedTextures.Count; ++i)
                 usedTexturesProcessingOrder[i] = i;
-            Array.Sort(usedTexturesProcessingOrder, new TextureComparer { usedTextures = _usedTextures });
+            Array.Sort(usedTexturesProcessingOrder, new TextureComparer { UsedTextures = _usedTextures });
 
             //Pack the textures...
             List<ImageC> resultingTextures = new List<ImageC>();
             List<RectPacker> resultingTexturesPacker = new List<RectPacker>();
             _usedTexturePackInfos = new Result[_usedTextures.Count];
-            foreach (int UsedTextureIndex in usedTexturesProcessingOrder)
+            foreach (int usedTextureIndex in usedTexturesProcessingOrder)
             {
-                TextureView usedTexture = _usedTextures[UsedTextureIndex];
+                TextureView usedTexture = _usedTextures[usedTextureIndex];
 
                 Result usedTexturePackInfo;
                 for (ushort i = 0; i < resultingTextures.Count; ++i)
@@ -146,7 +145,7 @@ namespace TombEditor.Compilers.Util
                     RectPacker.Point? packingPosition = resultingTexturesPacker[i].TryAdd(usedTexture.Width, usedTexture.Height);
                     if (packingPosition.HasValue)
                     {
-                        usedTexturePackInfo = new Result { OutputTextureID = i, Pos = packingPosition.Value };
+                        usedTexturePackInfo = new Result { OutputTextureId = i, Pos = packingPosition.Value };
                         goto PackNextUsedTexture;
                     }
                 }
@@ -154,21 +153,21 @@ namespace TombEditor.Compilers.Util
                 if (resultingTextures.Count >= 65535)
                     throw new NotSupportedException("More then 65536 textures are not supported. That is A LOT (exactly 16GB of texture data), so its probably some other bug if you see this message.");
                 var packer = new RectPackerSimpleStack(OutputTextureWidth, OutputTextureHeight);
-                usedTexturePackInfo = new Result { OutputTextureID = (ushort)resultingTextures.Count, Pos = packer.TryAdd(usedTexture.Width, usedTexture.Height).Value };
+                usedTexturePackInfo = new Result { OutputTextureId = (ushort)resultingTextures.Count, Pos = packer.TryAdd(usedTexture.Width, usedTexture.Height).Value };
                 resultingTextures.Add(ImageC.CreateNew(OutputTextureWidth, OutputTextureHeight));
                 resultingTexturesPacker.Add(packer);
 
                 //Write texture data...
                 PackNextUsedTexture:
-                resultingTextures[usedTexturePackInfo.OutputTextureID].CopyFrom(usedTexturePackInfo.Pos.X, usedTexturePackInfo.Pos.Y, 
+                resultingTextures[usedTexturePackInfo.OutputTextureId].CopyFrom(usedTexturePackInfo.Pos.X, usedTexturePackInfo.Pos.Y, 
                     usedTexture.Texture.Image, usedTexture.PosX, usedTexture.PosY, usedTexture.Width, usedTexture.Height);
-                _usedTexturePackInfos[UsedTextureIndex] = usedTexturePackInfo;
+                _usedTexturePackInfos[usedTextureIndex] = usedTexturePackInfo;
             }
 
             return resultingTextures;
         }
 
-        private int GetOrAllocateTextureIDForPageAt(ref TextureArea texture, int pageX, int pageY, int pageWidth, int pageHeight)
+        private int GetOrAllocateTextureIdForPageAt(ref TextureArea texture, int pageX, int pageY, int pageWidth, int pageHeight)
         {
             Vector2 pageOffset = new Vector2(pageX, pageY);
             texture.TexCoord0 -= pageOffset;
@@ -179,10 +178,10 @@ namespace TombEditor.Compilers.Util
             pageWidth = Math.Min(texture.Texture.Image.Width - pageX, pageWidth);
             pageHeight = Math.Min(texture.Texture.Image.Height - pageY, pageHeight);
 
-            return GetOrAllocateTextureID(new TextureView(texture.Texture, pageX, pageY, pageWidth, pageHeight));
+            return GetOrAllocateTextureId(new TextureView(texture.Texture, pageX, pageY, pageWidth, pageHeight));
         }
 
-        public int GetOrAllocateTextureID(ref TextureArea texture, bool isTriangle)
+        public int GetOrAllocateTextureId(ref TextureArea texture, bool isTriangle)
         {
             // Textures bigger than 256² must be split into pieces of 256 max each
             Vector2 minTexCoord = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), isTriangle ? texture.TexCoord2 : Vector2.Min(texture.TexCoord2, texture.TexCoord3));
@@ -203,13 +202,13 @@ namespace TombEditor.Compilers.Util
             { // Try to pack into a page that is at multiple of 256 on X
                 if ((startY / pageHeight) == (endY / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y
-                    return GetOrAllocateTextureIDForPageAt(ref texture,
+                    return GetOrAllocateTextureIdForPageAt(ref texture,
                         (startX / pageWidth) * pageWidth,
                         (startY / pageHeight) * pageHeight, pageWidth, pageHeight);
                 }
                 else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y + 128
-                    return GetOrAllocateTextureIDForPageAt(ref texture, 
+                    return GetOrAllocateTextureIdForPageAt(ref texture, 
                         (startX / pageWidth) * pageWidth, 
                         ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight);
                 }
@@ -218,20 +217,20 @@ namespace TombEditor.Compilers.Util
             { // Try to pack into a page that is at multiple of 256 on X + 128
                 if ((startY / pageHeight) == (endY / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y
-                    return GetOrAllocateTextureIDForPageAt(ref texture, 
+                    return GetOrAllocateTextureIdForPageAt(ref texture, 
                         ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
                         (startY / pageHeight) * pageHeight, pageWidth, pageHeight);
                 }
                 else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y + 128
-                    return GetOrAllocateTextureIDForPageAt(ref texture, 
+                    return GetOrAllocateTextureIdForPageAt(ref texture, 
                         ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2, 
                         ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight);
                 }
             }
 
             // Include the new texture specifically from whatever region it needs
-            return GetOrAllocateTextureIDForPageAt(ref texture, startX, startY, endX - startX + 1, endY - startY + 1);
+            return GetOrAllocateTextureIdForPageAt(ref texture, startX, startY, endX - startX + 1, endY - startY + 1);
         }
 
         public Result GetPackInfo(int id)
@@ -241,7 +240,7 @@ namespace TombEditor.Compilers.Util
 
         public Result GetPackInfo(TextureView texture)
         {
-            return _usedTexturePackInfos[GetTextureID(texture)];
+            return _usedTexturePackInfos[GetTextureId(texture)];
         }
     }
 }

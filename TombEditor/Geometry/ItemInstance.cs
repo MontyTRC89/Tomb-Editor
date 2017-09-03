@@ -1,11 +1,10 @@
 ﻿using SharpDX;
 using System;
-using System.Collections.Generic;
 using TombLib.Wad;
 
 namespace TombEditor.Geometry
 {
-    public abstract class ItemInstance : PositionBasedObjectInstance, IRotateableY, IHasScriptID
+    public abstract class ItemInstance : PositionBasedObjectInstance, IRotateableY, IHasScriptId
     {
         public ushort? ScriptId { get; set; }
 
@@ -18,14 +17,14 @@ namespace TombEditor.Geometry
         /// <summary> Rotation in radians in the interval [0, 360). The value is range reduced. </summary>
         public float RotationY
         {
-            get { return _rotation; }
-            set { _rotation = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+            get => _rotation;
+            set => _rotation = (float)(value - Math.Floor(value / 360.0) * 360.0);
         }
         /// <summary> Rotation in radians in the interval [0, 2*Pi). The value is range reduced. </summary>
         public float RotationYRadians
         {
-            get { return RotationY * (float)(Math.PI / 180); }
-            set { RotationY = value * (float)(180 / Math.PI); }
+            get => RotationY * (float)(Math.PI / 180);
+            set => RotationY = value * (float)(180 / Math.PI);
         }
 
         public Vector4 Color { get; set; } = new Vector4(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
@@ -34,26 +33,23 @@ namespace TombEditor.Geometry
         
         public override string ToString()
         {
-            return ItemType.ToString() +
-                ", Room = " + (Room?.ToString() ?? "NULL") +
-                ", X = " + SectorPosition.X +
-                ", Y = " + SectorPosition.Y +
-                ", Z = " + SectorPosition.Z;
+            return
+                $"{ItemType}, Room = {Room?.ToString() ?? "NULL"}, X = {SectorPosition.X}, Y = {SectorPosition.Y}, Z = {SectorPosition.Z}";
         }
 
         public static ItemInstance FromItemType(ItemType item)
         {
             if (item.IsStatic)
-                return new StaticInstance() { WadObjectId = item.Id };
+                return new StaticInstance { WadObjectId = item.Id };
             else
-                return new MoveableInstance() { WadObjectId = item.Id };
+                return new MoveableInstance { WadObjectId = item.Id };
         }
     }
 
     public struct ItemType
     {
-        public bool IsStatic { get; set; }
-        public uint Id { get; set; }
+        public bool IsStatic { get; }
+        public uint Id { get; }
 
         public ItemType(bool isStatic, uint id)
         {
@@ -73,6 +69,7 @@ namespace TombEditor.Geometry
 
         public override bool Equals(object obj)
         {
+            System.Diagnostics.Debug.Assert(obj != null);
             return this == (ItemType)obj;
         }
 
@@ -84,9 +81,9 @@ namespace TombEditor.Geometry
         public override string ToString()
         {
             if (IsStatic)
-                return "Static (" + Id + ") " + ObjectNames.GetStaticName(Id);
+                return $"Static ({Id}) {ObjectNames.GetStaticName(Id)}";
             else
-                return "Moveable (" + Id + ") " + ObjectNames.GetMoveableName(Id);
+                return $"Moveable ({Id}) {ObjectNames.GetMoveableName(Id)}";
         }
     };
 

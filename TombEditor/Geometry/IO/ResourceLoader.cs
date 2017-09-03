@@ -1,10 +1,7 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Imaging;
 using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO

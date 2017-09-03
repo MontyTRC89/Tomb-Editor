@@ -8,10 +8,8 @@ using SharpDX;
 using TombEditor.Compilers;
 using System.IO;
 using System.Diagnostics;
-using TombEngine;
 using NLog;
 using TombEditor.Geometry.IO;
-using TombLib.Graphics;
 using TombLib.Wad;
 using TombEditor.Controls;
 using TombLib.Utils;
@@ -999,9 +997,9 @@ namespace TombEditor
             if ((comboItems.SelectedItem == null) || (_editor?.Level?.Wad == null))
                 _editor.ChosenItem = null;
             if (comboItems.SelectedItem is WadMoveable)
-                _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
+                _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectId);
             else if (comboItems.SelectedItem is WadStatic)
-                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
+                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectId);
         }
         
         private ItemType? GetCurrentItemWithMessage()
@@ -1170,7 +1168,7 @@ namespace TombEditor
             string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
             
             using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
-                new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
+                new LevelCompilerTr4(level, progressReporter).CompileLevel()))
             {
                 form.ShowDialog(this);
                 return form.DialogResult != DialogResult.Cancel;

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpDX.Toolkit.Graphics;
 using SharpDX.Direct3D;
 using System.IO;
@@ -19,18 +16,20 @@ namespace TombEditor
         public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public SpriteFont Font { get; set; }
-        
+
         public DeviceManager()
         {
-            Device = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None, FeatureLevel.Level_10_0);
+            Device = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None,
+                FeatureLevel.Level_10_0);
 
-            string resourcePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-            
+            string resourcePath = Path.GetDirectoryName(Application.ExecutablePath);
+
             // Load effects
             IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor", "*.fx");
             foreach (string fileName in effectFiles)
             {
                 string effectName = Path.GetFileNameWithoutExtension(fileName);
+                System.Diagnostics.Debug.Assert(effectName != null);
                 Effects.Add(effectName, LoadEffect(fileName));
             }
 
@@ -43,6 +42,7 @@ namespace TombEditor
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
+                System.Diagnostics.Debug.Assert(textureName != null);
                 Textures.Add(textureName, TombLib.Graphics.TextureLoad.Load(Device, fileName));
             }
 

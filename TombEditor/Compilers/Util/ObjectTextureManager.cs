@@ -1,12 +1,8 @@
-﻿using NLog;
-using SharpDX;
+﻿using SharpDX;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TombEditor.Geometry;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -14,93 +10,91 @@ namespace TombEditor.Compilers.Util
 {
     public class ObjectTextureManager
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         public struct Result
 		{
 			public ushort ObjectTextureIndex;
 			public byte FirstVertexIndexToEmit;
 
-            public tr_face3 CreateFace3(ushort index0, ushort index1, ushort index2, ushort lightingEffect)
+            public TrFace3 CreateFace3(ushort index0, ushort index1, ushort index2, ushort lightingEffect)
             {
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
-                        return new tr_face3 { Vertices = new ushort[3] { index0, index1, index2 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace3 { Vertices = new[] { index0, index1, index2 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     case 1:
-                        return new tr_face3 { Vertices = new ushort[3] { index1, index2, index0 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace3 { Vertices = new[] { index1, index2, index0 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     case 2:
-                        return new tr_face3 { Vertices = new ushort[3] { index2, index0, index1 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace3 { Vertices = new[] { index2, index0, index1 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     default:
-                        throw new ArgumentOutOfRangeException("firstIndexToEmit");
+                        throw new ArgumentOutOfRangeException(nameof(FirstVertexIndexToEmit));
                 }
             }
 
-            public tr_face4 CreateFace4(ushort index0, ushort index1, ushort index2, ushort index3, ushort lightingEffect)
+            public TrFace4 CreateFace4(ushort index0, ushort index1, ushort index2, ushort index3, ushort lightingEffect)
             {
                 switch (FirstVertexIndexToEmit)
                 {
                     case 0:
-                        return new tr_face4 { Vertices = new ushort[4] { index0, index1, index2, index3 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace4 { Vertices = new[] { index0, index1, index2, index3 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     case 1:
-                        return new tr_face4 { Vertices = new ushort[4] { index1, index2, index3, index0 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace4 { Vertices = new[] { index1, index2, index3, index0 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     case 2:
-                        return new tr_face4 { Vertices = new ushort[4] { index2, index3, index0, index1 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace4 { Vertices = new[] { index2, index3, index0, index1 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     case 3:
-                        return new tr_face4 { Vertices = new ushort[4] { index3, index0, index1, index2 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
+                        return new TrFace4 { Vertices = new[] { index3, index0, index1, index2 }, Texture = ObjectTextureIndex, LightingEffect = lightingEffect };
                     default:
-                        throw new ArgumentOutOfRangeException("firstIndexToEmit");
+                        throw new ArgumentOutOfRangeException(nameof(FirstVertexIndexToEmit));
                 }
             }
         }
 
-        private static readonly Vector2[] _quad0 = new Vector2[4] { new Vector2(0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, -0.5f) };
-        private static readonly Vector2[] _quad1 = new Vector2[4] { new Vector2(-0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f) };
-        private static readonly Vector2[] _zero = new Vector2[4] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
-        private static readonly Vector2[] _triangle0 = new Vector2[3] { new Vector2(0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(0.5f, -0.5f) };
-        private static readonly Vector2[] _triangle1 = new Vector2[3] { new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, 0.5f) };
-        private static readonly Vector2[] _triangle2 = new Vector2[3] { new Vector2(-0.5f, -0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
-        private static readonly Vector2[] _triangle3 = new Vector2[3] { new Vector2(0.5f, -0.5f), new Vector2(0.5f, 0.5f), new Vector2(-0.5f, -0.5f) };
-        private static readonly Vector2[] _triangle4 = new Vector2[3] { new Vector2(-0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-0.5f, -0.5f) };
-        private static readonly Vector2[] _triangle5 = new Vector2[3] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
-        private static readonly Vector2[] _triangle6 = new Vector2[3] { new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, 0.5f) };
-        private static readonly Vector2[] _triangle7 = new Vector2[3] { new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f), new Vector2(0.5f, -0.5f) };
+        private static readonly Vector2[] quad0 = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, -0.5f) };
+        private static readonly Vector2[] quad1 = new Vector2[] { new Vector2(-0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f) };
+        private static readonly Vector2[] zero = new Vector2[] { new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 0.0f) };
+        private static readonly Vector2[] triangle0 = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(-0.5f, 0.5f), new Vector2(0.5f, -0.5f) };
+        private static readonly Vector2[] triangle1 = new Vector2[] { new Vector2(-0.5f, 0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, 0.5f) };
+        private static readonly Vector2[] triangle2 = new Vector2[] { new Vector2(-0.5f, -0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
+        private static readonly Vector2[] triangle3 = new Vector2[] { new Vector2(0.5f, -0.5f), new Vector2(0.5f, 0.5f), new Vector2(-0.5f, -0.5f) };
+        private static readonly Vector2[] triangle4 = new Vector2[] { new Vector2(-0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(-0.5f, -0.5f) };
+        private static readonly Vector2[] triangle5 = new Vector2[] { new Vector2(0.5f, 0.5f), new Vector2(0.5f, -0.5f), new Vector2(-0.5f, 0.5f) };
+        private static readonly Vector2[] triangle6 = new Vector2[] { new Vector2(0.5f, -0.5f), new Vector2(-0.5f, -0.5f), new Vector2(0.5f, 0.5f) };
+        private static readonly Vector2[] triangle7 = new Vector2[] { new Vector2(-0.5f, -0.5f), new Vector2(-0.5f, 0.5f), new Vector2(0.5f, -0.5f) };
 
-        private static Vector2[] GetTexCoordModificationFromNewFlags(ushort NewFlags, bool isTriangular)
+        private static Vector2[] GetTexCoordModificationFromNewFlags(ushort newFlags, bool isTriangular)
         {
             if (isTriangular)
             {
-                switch (NewFlags & 0x7)
+                switch (newFlags & 0x7)
                 {
                     case 0x0:
-                        return _triangle0;
+                        return triangle0;
                     case 0x1:
-                        return _triangle1;
+                        return triangle1;
                     case 0x2:
-                        return _triangle2;
+                        return triangle2;
                     case 0x3:
-                        return _triangle3;
+                        return triangle3;
                     case 0x4:
-                        return _triangle4;
+                        return triangle4;
                     case 0x5:
-                        return _triangle5;
+                        return triangle5;
                     case 0x6:
-                        return _triangle6;
+                        return triangle6;
                     case 0x7:
-                        return _triangle7;
+                        return triangle7;
                 }
                 throw new NotImplementedException();
             }
             else
             {
-                switch (NewFlags & 0x7)
+                switch (newFlags & 0x7)
                 {
                     case 0x0:
-                        return _quad0;
+                        return quad0;
                     case 0x1:
-                        return _quad1;
+                        return quad1;
                     default:
-                        return _zero; //Remaining cases do not do anything...
+                        return zero; //Remaining cases do not do anything...
                 }
             }
         }
@@ -250,9 +244,9 @@ namespace TombEditor.Compilers.Util
             public ushort TexCoord3X;
             public ushort TexCoord3Y;
 
-            public SavedObjectTexture(ushort textureID, TextureArea texture, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
+            public SavedObjectTexture(ushort textureId, TextureArea texture, TextureAllocator.TextureView view, bool isTriangular, bool isUsedInRoomMesh, bool canRotate, out byte firstTexCoordToEmit)
 			{
-				TextureID = textureID;
+				TextureID = textureId;
                 IsTriangularAndPadding = isTriangular ? (ushort)1 : (ushort)0;
                 BlendMode = (ushort)(texture.BlendMode);
                 NewFlags = GetNewFlag(texture, isTriangular, isUsedInRoomMesh, canRotate, out firstTexCoordToEmit);
@@ -325,7 +319,7 @@ namespace TombEditor.Compilers.Util
 
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-            public static unsafe bool operator ==(SavedObjectTexture first, SavedObjectTexture second)
+            public static bool operator ==(SavedObjectTexture first, SavedObjectTexture second)
             {
                 ulong* firstPtr = (ulong*)&first;
                 ulong* secondPtr = (ulong*)&second;
@@ -337,15 +331,11 @@ namespace TombEditor.Compilers.Util
                 return !(first == second);
             }
 
-            public bool Equals(SavedObjectTexture other)
-            {
-                return this == other;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return this == (SavedObjectTexture)obj;
-            }
+		    public override bool Equals(object obj)
+		    {
+		        System.Diagnostics.Debug.Assert(obj != null);
+		        return this == (SavedObjectTexture)obj;
+		    }
 
             public override int GetHashCode()
             {
@@ -364,19 +354,19 @@ namespace TombEditor.Compilers.Util
 
         private ushort AddObjectTextureWithoutLookup(SavedObjectTexture newEntry, bool onlyUsedForAnimatedTextureRange = false)
 		{
-			int newID = _objectTextures.Count;
+			int newId = _objectTextures.Count;
 			if (onlyUsedForAnimatedTextureRange)
 			{
-				if (newID > 0xffff)
+				if (newId > 0xffff)
 					throw new ApplicationException("More than 0xffff object textures are not possible for animated textures.");
 			}
 			else
 			{
-				if (newID > 0x7fff)
+				if (newId > 0x7fff)
                     throw new ApplicationException("More than 0x7fff object textures that are used for meshes in rooms/movables/statics are not possible.");
 			}
 			_objectTextures.Add(newEntry);
-			return (ushort)(newID);
+			return (ushort)(newId);
 		}
 
         private ushort AddOrGetObjectTexture(SavedObjectTexture newEntry)
@@ -390,7 +380,7 @@ namespace TombEditor.Compilers.Util
 		}
 
 
-        public Result AddTexture(TextureArea texture, bool isTriangle, bool IsUsedInRoomMesh)
+        public Result AddTexture(TextureArea texture, bool isTriangle, bool isUsedInRoomMesh)
 		{
             /*if (Texture.IsAnimation())
 			{
@@ -417,10 +407,10 @@ namespace TombEditor.Compilers.Util
             }*/
 
             // Add object textures
-            int textureID = _textureAllocator.GetOrAllocateTextureID(ref texture, isTriangle);
+            int textureId = _textureAllocator.GetOrAllocateTextureId(ref texture, isTriangle);
             byte firstTexCoordToEmit;
-            ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureID, texture, 
-                _textureAllocator.GetTextureFromID(textureID), isTriangle, IsUsedInRoomMesh, true, out firstTexCoordToEmit));
+            ushort objTexIndex = AddOrGetObjectTexture(new SavedObjectTexture((ushort)textureId, texture, 
+                _textureAllocator.GetTextureFromId(textureId), isTriangle, isUsedInRoomMesh, true, out firstTexCoordToEmit));
             objTexIndex |= (ushort)(texture.DoubleSided ? 0x8000 : 0);
             return new Result { ObjectTextureIndex = objTexIndex, FirstVertexIndexToEmit = firstTexCoordToEmit };
         }
@@ -446,8 +436,7 @@ namespace TombEditor.Compilers.Util
                 if (objectTexture.BlendMode != (ushort)BlendMode.Normal) // Only consider alpha blending when blend mode is 0.
                     return;
 
-                bool isTriangle = objectTexture.IsTriangularAndPadding != 0;
-                TextureAllocator.TextureView textureView = _textureAllocator.GetTextureFromID(objectTexture.TextureID);
+                TextureAllocator.TextureView textureView = _textureAllocator.GetTextureFromId(objectTexture.TextureID);
 
                 // To simplify the test just use the rectangular region around. (We could do a polygonal thing but I am not sure its worth it)
                 Vector2 minTexCoord, maxTexCoord;
@@ -634,18 +623,18 @@ namespace TombEditor.Compilers.Util
 			for (int i = 0; i < _objectTextures.Count; ++i)
 			{
                 SavedObjectTexture objectTexture = _objectTextures[i];
-				TextureAllocator.Result UsedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
-				ushort Tile = UsedTexturePackInfo.OutputTextureID;
-				Tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
+				TextureAllocator.Result usedTexturePackInfo = _textureAllocator.GetPackInfo(objectTexture.TextureID);
+				ushort tile = usedTexturePackInfo.OutputTextureId;
+				tile |= (objectTexture.IsTriangularAndPadding != 0) ? (ushort)0x8000 : (ushort)0;
 
                 stream.Write((ushort)objectTexture.BlendMode);
-                stream.Write((ushort)Tile);
+                stream.Write((ushort)tile);
                 stream.Write((ushort)objectTexture.NewFlags);
 
-                UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord0X, ref objectTexture.TexCoord0Y);
-                UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord1X, ref objectTexture.TexCoord1Y);
-                UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord2X, ref objectTexture.TexCoord2Y);
-                UsedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord3X, ref objectTexture.TexCoord3Y);
+                usedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord0X, ref objectTexture.TexCoord0Y);
+                usedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord1X, ref objectTexture.TexCoord1Y);
+                usedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord2X, ref objectTexture.TexCoord2Y);
+                usedTexturePackInfo.TransformTexCoord(ref objectTexture.TexCoord3X, ref objectTexture.TexCoord3Y);
 
                 stream.Write((ushort)objectTexture.TexCoord0X);
                 stream.Write((ushort)objectTexture.TexCoord0Y);

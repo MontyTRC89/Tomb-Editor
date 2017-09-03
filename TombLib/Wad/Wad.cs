@@ -13,16 +13,18 @@ namespace TombLib.Wad
 {
     public class Wad : IDisposable
     {
-        public TR4Wad OriginalWad { get; set; }
+        public Tr4Wad OriginalWad { get; set; }
 
         // Data of the wad
         public Dictionary<uint, WadMoveable> WadMoveables { get; } = new Dictionary<uint, WadMoveable>();
+
         public Dictionary<uint, WadStatic> WadStatics { get; } = new Dictionary<uint, WadStatic>();
         public Dictionary<uint, WadTexture> TexturePages { get; } = new Dictionary<uint, WadTexture>();
         public Dictionary<uint, WadTextureSample> TextureSamples { get; } = new Dictionary<uint, WadTextureSample>();
-        
+
         // DirectX 11 data
         public GraphicsDevice GraphicsDevice { get; set; }
+
         public Texture2D DirectXTexture { get; private set; }
         public Dictionary<uint, SkinnedModel> DirectXMoveables { get; } = new Dictionary<uint, SkinnedModel>();
         public Dictionary<uint, StaticModel> DirectXStatics { get; } = new Dictionary<uint, StaticModel>();
@@ -43,7 +45,7 @@ namespace TombLib.Wad
 
         public static Wad LoadWad(string filename)
         {
-            TR4Wad original = new TR4Wad();
+            Tr4Wad original = new Tr4Wad();
             original.LoadWad(filename);
             return original.GetTheWad();
         }
@@ -51,10 +53,11 @@ namespace TombLib.Wad
         public static void SaveWad(string fileName, Wad wad)
         {
             // Apro uno stream in scrittura
-            using (var writer = new BinaryWriterEx(new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None)))
+            using (var writer =
+                new BinaryWriterEx(new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
                 // Scrivo la parola magica
-                writer.Write(ASCIIEncoding.ASCII.GetBytes("WAD2"), 0, 4);
+                writer.Write(Encoding.ASCII.GetBytes("WAD2"), 0, 4);
 
                 // scrivo le texture
                 short numTextures = (short)wad.TexturePages.Count;
@@ -71,7 +74,7 @@ namespace TombLib.Wad
                 writer.Write(numTextureSamples);
                 for (int i = 0; i < numTextureSamples; i++)
                 {
-                    writer.WriteBlock<WadTextureSample>(wad.TextureSamples.ElementAt(i).Value);
+                    writer.WriteBlock(wad.TextureSamples.ElementAt(i).Value);
                 }
 
                 // scrivo i moveable
@@ -81,13 +84,11 @@ namespace TombLib.Wad
                 {
                     WadMoveable moveable = wad.WadMoveables.ElementAt(i).Value;
 
-                    writer.Write(moveable.ObjectID);
+                    writer.Write(moveable.ObjectId);
 
                     writer.Write((short)moveable.Meshes.Count);
-                    for (int k = 0; k < moveable.Meshes.Count; k++)
+                    foreach (WadMesh mesh in moveable.Meshes)
                     {
-                        WadMesh mesh = moveable.Meshes[k];
-
                         writer.Write(mesh.SphereX);
                         writer.Write(mesh.SphereY);
                         writer.Write(mesh.SphereZ);
@@ -95,26 +96,24 @@ namespace TombLib.Wad
                         writer.Write(mesh.Unknown);
 
                         writer.Write(mesh.NumVertices);
-                        writer.WriteBlockArray<WadVector>(mesh.Vertices);
+                        writer.WriteBlockArray(mesh.Vertices);
 
                         writer.Write(mesh.NumNormals);
                         if (mesh.NumNormals > 0)
-                            writer.WriteBlockArray<WadVector>(mesh.Normals);
+                            writer.WriteBlockArray(mesh.Normals);
                         else
-                            writer.WriteBlockArray<short>(mesh.Shades);
+                            writer.WriteBlockArray(mesh.Shades);
 
                         writer.Write(mesh.NumPolygons);
                         writer.WriteBlockArray(mesh.Polygons);
                     }
 
                     for (int k = 0; k < moveable.Meshes.Count - 1; k++)
-                        writer.WriteBlock<WadLink>(moveable.Links[k]);
+                        writer.WriteBlock(moveable.Links[k]);
 
                     writer.Write((short)moveable.Animations.Count);
-                    for (int k = 0; k < moveable.Animations.Count; k++)
+                    foreach (WadAnimation anim in moveable.Animations)
                     {
-                        WadAnimation anim = moveable.Animations[k];
-
                         writer.Write(anim.FrameDuration);
                         writer.Write(anim.StateId);
                         writer.Write(anim.Unknown1);
@@ -126,10 +125,8 @@ namespace TombLib.Wad
                         writer.Write(anim.NextFrame);
 
                         writer.Write((ushort)anim.KeyFrames.Count);
-                        for (int f = 0; f < anim.KeyFrames.Count; f++)
+                        foreach (WadKeyFrame keyframe in anim.KeyFrames)
                         {
-                            WadKeyFrame keyframe = anim.KeyFrames[f];
-
                             writer.WriteBlock(keyframe.BoundingBox1);
                             writer.WriteBlock(keyframe.BoundingBox2);
                             writer.WriteBlock(keyframe.Offset);
@@ -138,10 +135,8 @@ namespace TombLib.Wad
                         }
 
                         writer.Write((ushort)anim.StateChanges.Count);
-                        for (int f = 0; f < anim.StateChanges.Count; f++)
+                        foreach (WadStateChange sc in anim.StateChanges)
                         {
-                            WadStateChange sc = anim.StateChanges[f];
-
                             writer.Write(sc.StateId);
                             writer.Write((ushort)sc.Dispatches.Length);
                             writer.WriteBlockArray(sc.Dispatches);
@@ -158,7 +153,7 @@ namespace TombLib.Wad
                 {
                     WadStatic staticMesh = wad.WadStatics.ElementAt(i).Value;
 
-                    writer.Write(staticMesh.ObjectID);
+                    writer.Write(staticMesh.ObjectId);
 
                     WadMesh mesh = staticMesh.Mesh;
 
@@ -169,13 +164,13 @@ namespace TombLib.Wad
                     writer.Write(mesh.Unknown);
 
                     writer.Write(mesh.NumVertices);
-                    writer.WriteBlockArray<WadVector>(mesh.Vertices);
+                    writer.WriteBlockArray(mesh.Vertices);
 
                     writer.Write(mesh.NumNormals);
                     if (mesh.NumNormals > 0)
-                        writer.WriteBlockArray<WadVector>(mesh.Normals);
+                        writer.WriteBlockArray(mesh.Normals);
                     else
-                        writer.WriteBlockArray<short>(mesh.Shades);
+                        writer.WriteBlockArray(mesh.Shades);
 
                     writer.Write(mesh.NumPolygons);
                     writer.WriteBlockArray(mesh.Polygons);
@@ -197,8 +192,8 @@ namespace TombLib.Wad
             {
                 const int atlasSize = 8;
                 // Copy the page in a temp bitmap. I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
-                var textureAtlas = Utils.ImageC.CreateNew(256 * atlasSize, 256 * atlasSize);
-            
+                var textureAtlas = ImageC.CreateNew(256 * atlasSize, 256 * atlasSize);
+
                 for (int i = 0; i < TexturePages.Count; i++)
                 {
                     WadTexture page = TexturePages[(uint)i];
@@ -207,7 +202,7 @@ namespace TombLib.Wad
                     int currentYblock = i / atlasSize;
                     textureAtlas.CopyFrom(currentXblock * 256, currentYblock * 256, page.Image);
                 }
-                textureAtlas.ReplaceColor(new Utils.ColorC(255, 0, 255, 255), new Utils.ColorC(0, 0, 0, 0));
+                textureAtlas.ReplaceColor(new ColorC(255, 0, 255), new ColorC(0, 0, 0, 0));
 
                 DirectXTexture = TextureLoad.Load(GraphicsDevice, textureAtlas);
             }
@@ -216,17 +211,19 @@ namespace TombLib.Wad
             for (int i = 0; i < WadMoveables.Count; i++)
             {
                 WadMoveable mov = WadMoveables.ElementAt(i).Value;
-                DirectXMoveables.Add(mov.ObjectID, SkinnedModel.FromWad(GraphicsDevice, mov, TexturePages, TextureSamples));
+                DirectXMoveables.Add(mov.ObjectId,
+                    SkinnedModel.FromWad(GraphicsDevice, mov, TexturePages, TextureSamples));
             }
 
             // Create static meshes
             for (int i = 0; i < WadStatics.Count; i++)
             {
                 WadStatic static_ = WadStatics.ElementAt(i).Value;
-                DirectXStatics.Add(static_.ObjectID, StaticModel.FromWad(GraphicsDevice, static_, TexturePages, TextureSamples));
+                DirectXStatics.Add(static_.ObjectId,
+                    StaticModel.FromWad(GraphicsDevice, static_, TexturePages, TextureSamples));
             }
         }
-        
+
         // Lets remove this methode once we use UVs internally in the Wad representation.
         // Until then this converts the deprecated format to UVs that the new texture manager in the *.tr4 export understands.
         public TextureArea GetTextureArea(ushort textureIndex, bool triangle, short attributes)
@@ -238,14 +235,17 @@ namespace TombLib.Wad
 
             if (textureIndex > short.MaxValue)
                 textureIndex = unchecked((ushort)-textureIndex);
-            
+
             var tex = OriginalWad.Textures[textureIndex];
 
             // Texture page
-            TextureArea result = new TextureArea();
-            result.Texture = TexturePages[tex.Page];
-            result.BlendMode = (attributes & 1) != 0 ? BlendMode.Additive : BlendMode.Normal;
-            result.DoubleSided = false; // TODO isn't this flag also available in wads?
+            TextureArea result = new TextureArea
+            {
+                Texture = TexturePages[tex.Page],
+                BlendMode = (attributes & 1) != 0 ? BlendMode.Additive : BlendMode.Normal,
+                DoubleSided = false
+            };
+            // TODO isn't this flag also available in wads?
 
             // Texture UV
             Vector2 texCoord00 = new Vector2(tex.X + 0.5f, tex.Y + 0.5f);

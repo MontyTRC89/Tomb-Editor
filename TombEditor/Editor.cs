@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using TombEditor.Geometry;
@@ -7,16 +6,23 @@ using TombLib.Utils;
 
 namespace TombEditor
 {
-    public interface IEditorEvent { };
+    public interface IEditorEvent
+    {
+    };
 
-    public interface IEditorProperyChangedEvent : IEditorEvent { }
+    public interface IEditorProperyChangedEvent : IEditorEvent
+    {
+    }
 
-    public interface IEditorCameraEvent : IEditorEvent { }
+    public interface IEditorCameraEvent : IEditorEvent
+    {
+    }
 
     public interface IEditorRoomChangedEvent : IEditorEvent
     {
         Room Room { get; }
     }
+
     public interface IEditorObjectChangedEvent : IEditorEvent
     {
         object Object { get; }
@@ -52,10 +58,12 @@ namespace TombEditor
             public Level Previous { get; set; }
             public Level Current { get; set; }
         }
+
         private Level _level;
+
         public Level Level
         {
-            get { return _level; }
+            get => _level;
             set
             {
                 if (value == _level)
@@ -64,20 +72,20 @@ namespace TombEditor
                 // Validate level
                 int roomCount = value.Rooms.Count((room) => room != null);
                 if (roomCount <= 0)
-                    throw new NotSupportedException("A level must currently have at least one room to be used inside the editor.");
+                    throw new NotSupportedException(
+                        "A level must currently have at least one room to be used inside the editor.");
 
                 // Reset state that was related to the old level
                 SelectedObject = null;
                 ChosenItem = null;
                 SelectedSectors = SectorSelection.None;
                 Action = EditorAction.None;
-                SelectedTexture = TextureArea.None;
 
                 // Delete old level after the new level is set
                 using (var previousLevel = Level)
                 {
                     _level = value;
-                    EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
+                    EditorEventRaised?.Invoke(new LevelChangedEvent {Previous = previousLevel, Current = value});
                 }
                 RoomListChange();
                 SelectedRoom = _level.Rooms.First((room) => room != null);
@@ -87,23 +95,25 @@ namespace TombEditor
                 LevelFileNameChange();
             }
         }
-        
+
         public struct ActionChangedEvent : IEditorProperyChangedEvent
         {
             public EditorAction Previous { get; set; }
             public EditorAction Current { get; set; }
         }
+
         private EditorAction _action;
+
         public EditorAction Action
         {
-            get { return _action; }
+            get => _action;
             set
             {
                 if (value == _action)
                     return;
                 var previous = _action;
                 _action = value;
-                RaiseEvent(new ActionChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new ActionChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -112,17 +122,19 @@ namespace TombEditor
             public ItemType? Previous { get; set; }
             public ItemType? Current { get; set; }
         }
+
         private ItemType? _chosenItem;
+
         public ItemType? ChosenItem
         {
-            get { return _chosenItem; }
+            get => _chosenItem;
             set
             {
                 if (value == _chosenItem)
                     return;
                 var previous = _chosenItem;
                 _chosenItem = value;
-                RaiseEvent(new ChosenItemChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new ChosenItemChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -131,17 +143,19 @@ namespace TombEditor
             public EditorMode Previous { get; set; }
             public EditorMode Current { get; set; }
         }
+
         private EditorMode _mode;
+
         public EditorMode Mode
         {
-            get { return _mode; }
+            get => _mode;
             set
             {
                 if (value == _mode)
                     return;
                 var previous = _mode;
                 _mode = value;
-                RaiseEvent(new ModeChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new ModeChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -151,10 +165,12 @@ namespace TombEditor
             public Room Current { get; set; }
             Room IEditorRoomChangedEvent.Room => Current;
         }
+
         private Room _selectedRoom;
+
         public Room SelectedRoom
         {
-            get { return _selectedRoom; }
+            get => _selectedRoom;
             set
             {
                 if (value == _selectedRoom)
@@ -162,7 +178,7 @@ namespace TombEditor
                 SelectedSectors = SectorSelection.None;
                 var previous = _selectedRoom;
                 _selectedRoom = value;
-                RaiseEvent(new SelectedRoomChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new SelectedRoomChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -171,17 +187,19 @@ namespace TombEditor
             public ObjectInstance Previous { get; set; }
             public ObjectInstance Current { get; set; }
         }
+
         private ObjectInstance _selectedObject;
+
         public ObjectInstance SelectedObject
         {
-            get { return _selectedObject; }
+            get => _selectedObject;
             set
             {
                 if (value == _selectedObject)
                     return;
                 var previous = _selectedObject;
                 _selectedObject = value;
-                RaiseEvent(new SelectedObjectChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new SelectedObjectChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -190,17 +208,19 @@ namespace TombEditor
             public SectorSelection Previous { get; set; }
             public SectorSelection Current { get; set; }
         }
+
         private SectorSelection _selectedSectors = SectorSelection.None;
+
         public SectorSelection SelectedSectors
         {
-            get { return _selectedSectors; }
+            get => _selectedSectors;
             set
             {
                 if (value == _selectedSectors)
                     return;
                 var previous = _selectedSectors;
                 _selectedSectors = value;
-                RaiseEvent(new SelectedSectorsChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new SelectedSectorsChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -209,17 +229,19 @@ namespace TombEditor
             public TextureArea Previous { get; set; }
             public TextureArea Current { get; set; }
         }
+
         private TextureArea _selectedTexture = TextureArea.None;
+
         public TextureArea SelectedTexture
         {
-            get { return _selectedTexture; }
+            get => _selectedTexture;
             set
             {
                 if (value == _selectedTexture)
                     return;
                 var previous = _selectedTexture;
                 _selectedTexture = value;
-                RaiseEvent(new SelectedTexturesChangedEvent { Previous = previous, Current = value });
+                RaiseEvent(new SelectedTexturesChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -228,17 +250,19 @@ namespace TombEditor
             public Configuration Previous { get; set; }
             public Configuration Current { get; set; }
         }
-        private Configuration _Configuration = Configuration.LoadOrUseDefault();
+
+        private Configuration _configuration = Configuration.LoadOrUseDefault();
+
         public Configuration Configuration
         {
-            get { return _Configuration; }
+            get => _configuration;
             set
             {
-                if (value == _Configuration)
+                if (value == _configuration)
                     return;
-                var previous = _Configuration;
-                _Configuration = value;
-                RaiseEvent(new ConfigurationChangedEvent { Previous = previous, Current = value });
+                var previous = _configuration;
+                _configuration = value;
+                RaiseEvent(new ConfigurationChangedEvent {Previous = previous, Current = value});
             }
         }
 
@@ -247,27 +271,32 @@ namespace TombEditor
         {
             public TombLib.Wad.Wad Current { get; set; }
         }
+
         public void LoadedWadsChange(TombLib.Wad.Wad wad)
         {
-            RaiseEvent(new LoadedWadsChangedEvent { Current = wad });
+            RaiseEvent(new LoadedWadsChangedEvent {Current = wad});
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public struct LoadedTexturesChangedEvent : IEditorEvent { }
+        public struct LoadedTexturesChangedEvent : IEditorEvent
+        {
+        }
+
         public void LoadedTexturesChange()
         {
-            RaiseEvent(new LoadedTexturesChangedEvent { });
+            RaiseEvent(new LoadedTexturesChangedEvent());
         }
-        
+
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
         public struct RoomTextureChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; set; }
         }
+
         public void RoomTextureChange(Room room)
         {
-            RaiseEvent(new RoomTextureChangedEvent { Room = room });
+            RaiseEvent(new RoomTextureChangedEvent {Room = room});
         }
 
         // This is invoked when ever the geometry of the room changed. (eg the room is moved, individual sectors are moved up or down, ...)
@@ -277,24 +306,31 @@ namespace TombEditor
         {
             public Room Room { get; set; }
         }
+
         public void RoomGeometryChange(Room room)
         {
-            RaiseEvent(new RoomGeometryChangedEvent { Room = room });
+            RaiseEvent(new RoomGeometryChangedEvent {Room = room});
         }
 
         // This is invoked when the level is saved an the file name changed.
-        public struct LevelFileNameChanged : IEditorEvent { }
+        public struct LevelFileNameChanged : IEditorEvent
+        {
+        }
+
         public void LevelFileNameChange()
         {
-            RaiseEvent(new LevelFileNameChanged { });
+            RaiseEvent(new LevelFileNameChanged());
         }
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
         // "null" can be passed, if it is not determinable what room changed.
-        public struct RoomListChangedEvent : IEditorEvent { } 
+        public struct RoomListChangedEvent : IEditorEvent
+        {
+        }
+
         public void RoomListChange()
         {
-            RaiseEvent(new RoomListChangedEvent { });
+            RaiseEvent(new RoomListChangedEvent());
         }
 
         // This is invoked for all changes to room flags, "Reverbration", ...
@@ -303,9 +339,10 @@ namespace TombEditor
         {
             public Room Room { get; set; }
         }
+
         public void RoomPropertiesChange(Room room)
         {
-            RaiseEvent(new RoomPropertiesChangedEvent { Room = room });
+            RaiseEvent(new RoomPropertiesChangedEvent {Room = room});
         }
 
         // This is invoked for all changes to sectors. (eg setting a trigger, adding a portal, setting a sector to monkey, ...)
@@ -314,9 +351,10 @@ namespace TombEditor
         {
             public Room Room { get; set; }
         }
+
         public void RoomSectorPropertiesChange(Room room)
         {
-            RaiseEvent(new RoomSectorPropertiesChangedEvent { Room = room });
+            RaiseEvent(new RoomSectorPropertiesChangedEvent {Room = room});
         }
 
         // This is invoked for all changes to objects. (eg changing a light, changing a movable, moving a static, ...)
@@ -325,9 +363,10 @@ namespace TombEditor
         {
             public object Object { get; set; }
         }
+
         public void ObjectChange(object object_)
         {
-            RaiseEvent(new ObjectChangedEvent { Object = object_ });
+            RaiseEvent(new ObjectChangedEvent {Object = object_});
         }
 
         // Move the camera to the center of a specific sector.
@@ -335,16 +374,20 @@ namespace TombEditor
         {
             public DrawingPoint Sector { get; set; }
         }
+
         public void MoveCameraToSector(DrawingPoint sector)
         {
-            RaiseEvent(new MoveCameraToSectorEvent { Sector = sector });
+            RaiseEvent(new MoveCameraToSectorEvent {Sector = sector});
         }
 
         // Center the camera inside the current room.
-        public struct CenterCameraEvent : IEditorCameraEvent {}
+        public struct CenterCameraEvent : IEditorCameraEvent
+        {
+        }
+
         public void CenterCamera()
         {
-            RaiseEvent(new CenterCameraEvent { });
+            RaiseEvent(new CenterCameraEvent());
         }
 
         // Select a texture and center the view
@@ -352,15 +395,16 @@ namespace TombEditor
         {
             public TextureArea Texture { get; set; }
         }
+
         public void SelectTextureAndCenterView(TextureArea texture)
         {
-            RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
+            RaiseEvent(new SelectTextureAndCenterViewEvent {Texture = texture});
         }
 
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {
-            RaiseEvent(new ConfigurationChangedEvent { Previous = _Configuration, Current = _Configuration });
+            RaiseEvent(new ConfigurationChangedEvent {Previous = _configuration, Current = _configuration});
         }
 
         // Select a room and center the camera

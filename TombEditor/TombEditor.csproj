@@ -242,7 +242,6 @@
     <Compile Include="Geometry\SinkInstance.cs" />
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Gizmo.cs" />
-    <Compile Include="ListExtensions.cs" />
     <Compile Include="RowAnimatedTexture.cs" />
     <Compile Include="TestLevel3.cs" />
     <Compile Include="TestLevel.cs" />

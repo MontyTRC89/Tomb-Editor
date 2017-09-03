@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TombLib.Wad
+﻿namespace TombLib.Wad
 {
     public class WadObject
     {
-        public uint ObjectID;
+        public uint ObjectId;
     }
 }

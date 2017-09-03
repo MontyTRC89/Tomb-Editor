@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using SharpDX;
@@ -99,9 +97,9 @@ namespace TombLib.IO
             }
         }
 
-        public void WriteStringUTF8(string str)
+        public void WriteStringUtf8(string str)
         {
-            byte[] stringData = Encoding.UTF8.GetBytes(str);
+            var stringData = Encoding.UTF8.GetBytes(str);
             Write(stringData.GetLength(0));
             Write(stringData);
         }

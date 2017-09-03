@@ -1,8 +1,5 @@
 ﻿using SharpDX;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace TombEditor.Geometry
 {
@@ -48,7 +45,14 @@ namespace TombEditor.Geometry
     {
         public TriggerType TriggerType { get; set; }
         public TriggerTargetType TargetType { get; set; }
-        public ObjectInstance TargetObj { get; set; } //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+
+        public ObjectInstance
+            TargetObj
+        {
+            get;
+            set;
+        } //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+
         public short TargetData { get; set; }
         public short Timer { get; set; }
         public bool OneShot { get; set; }
@@ -56,7 +60,8 @@ namespace TombEditor.Geometry
 
         public TriggerInstance(Rectangle area)
             : base(area)
-        { }
+        {
+        }
 
         public override ObjectInstance Clone()
         {
@@ -125,8 +130,9 @@ namespace TombEditor.Geometry
         {
             var castedObject = TargetObj as T;
             if (castedObject == null)
-                throw new Exception("Object trigger target of trigger does mistakenly point to '" + TargetObjString + 
-                    "' instead of an " + typeof(T).ToString().Replace("Instance", "") + ". Trigger (Room: " + room + ") information: '" + this + "'");
+                throw new Exception("Object trigger target of trigger does mistakenly point to '" + TargetObjString +
+                                    "' instead of an " + typeof(T).ToString().Replace("Instance", "") +
+                                    ". Trigger (Room: " + room + ") information: '" + this + "'");
             return castedObject;
         }
     }

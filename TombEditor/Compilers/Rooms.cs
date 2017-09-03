@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpDX;
 using TombEditor.Geometry;
-using System.Drawing;
-using System.Drawing.Imaging;
 using TombLib.Utils;
 using System.Threading.Tasks;
 
@@ -18,8 +16,8 @@ namespace TombEditor.Compilers
         private void BuildRooms()
         {
             ReportProgress(20, "Building rooms");
-            
-            foreach (var room in _level.Rooms.Where(r => r != null))
+
+            foreach (var room in Level.Rooms.Where(r => r != null))
             {
                 _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
                 _roomsUnmapping.Add(room);
@@ -39,7 +37,6 @@ namespace TombEditor.Compilers
             }
 
 
-
             ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
 
             MatchPortalVertexColors();
@@ -47,17 +44,17 @@ namespace TombEditor.Compilers
             ReportProgress(28, "    Vertex colors on portals matched.");
         }
 
-        private tr_room BuildRoom(Room room)
+        private TrRoom BuildRoom(Room room)
         {
-            tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
+            var roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
 
-            var newRoom = new tr_room
+            var newRoom = new TrRoom
             {
                 OriginalRoom = room,
-                Lights = new tr4_room_light[0],
-                StaticMeshes = new tr_room_staticmesh[0],
-                Portals = new tr_room_portal[0],
-                Info = new tr_room_info
+                Lights = new Tr4RoomLight[0],
+                StaticMeshes = new TrRoomStaticmesh[0],
+                Portals = new TrRoomPortal[0],
+                Info = new TrRoomInfo
                 {
                     X = (int)(room.Position.X * 1024.0f),
                     Z = (int)(room.Position.Z * 1024.0f),
@@ -66,12 +63,12 @@ namespace TombEditor.Compilers
                 },
                 NumXSectors = room.NumXSectors,
                 NumZSectors = room.NumZSectors,
-                AlternateRoom = (room.Flipped && room.AlternateRoom != null) ? (short)_roomsRemappingDictionary[room.AlternateRoom] : (short)-1,
+                AlternateRoom = (room.Flipped && room.AlternateRoom != null)
+                    ? (short)_roomsRemappingDictionary[room.AlternateRoom]
+                    : (short)-1,
                 AlternateGroup = (byte)((room.Flipped && room.AlternateRoom != null) ? room.AlternateGroup : 0),
-                Flipped = room.Flipped,
-                FlippedRoom = room.AlternateRoom,
-                BaseRoom = room.AlternateBaseRoom,
-                AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | (uint)roomAmbientColor.Blue,
+                AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) |
+                                   roomAmbientColor.Blue,
                 ReverbInfo = (byte)room.Reverberation,
                 Flags = 0x40
             };
@@ -177,11 +174,11 @@ namespace TombEditor.Compilers
             // Generate geometry
             {
                 // Add room geometry
-                var roomVerticesDictionary = new Dictionary<tr_room_vertex, ushort>();
-                var roomVertices = new List<tr_room_vertex>();
+                var roomVerticesDictionary = new Dictionary<TrRoomVertex, ushort>();
+                var roomVertices = new List<TrRoomVertex>();
 
-                var roomTriangles = new List<tr_face3>();
-                var roomQuads = new List<tr_face4>();
+                var roomTriangles = new List<TrFace3>();
+                var roomQuads = new List<TrFace4>();
 
                 // Future code once vertex system of rooms is refactored
                 /*var editorRoomVertices = room.GetRoomVertices();
@@ -210,9 +207,12 @@ namespace TombEditor.Compilers
 
                             for (int i = range.Start; i < (range.Start + range.Count); i += 3)
                             {
-                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
-                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
-                                ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, lowest, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices,
+                                    editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
+                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices,
+                                    editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
+                                ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices,
+                                    editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
                                 texture.TexCoord0 = editorRoomVertices[i].UV;
                                 texture.TexCoord1 = editorRoomVertices[i + 1].UV;
                                 texture.TexCoord2 = editorRoomVertices[i + 2].UV;
@@ -230,16 +230,20 @@ namespace TombEditor.Compilers
                     foreach (var mesh in geometry.Model.Meshes)
                         for (int j = 0; j < mesh.VertexCount; j++)
                         {
-                            var trVertex = new tr_room_vertex();
-                            trVertex.Position = new tr_vertex
+                            var trVertex = new TrRoomVertex
                             {
-                                X = (short)(mesh.Vertices[j].Position.X + geometry.Position.X),
-                                Y = (short)(-mesh.Vertices[j].Position.Y + newRoom.Info.YBottom - geometry.Position.Y),
-                                Z = (short)(mesh.Vertices[j].Position.Z + geometry.Position.Z)
+                                Position = new TrVertex
+                                {
+                                    X = (short)(mesh.Vertices[j].Position.X + geometry.Position.X),
+                                    Y = (short)(-mesh.Vertices[j].Position.Y + newRoom.Info.YBottom -
+                                                geometry.Position.Y),
+                                    Z = (short)(mesh.Vertices[j].Position.Z + geometry.Position.Z)
+                                },
+                                Lighting1 = 0,
+                                Lighting2 = 0x4210,
+                                Attributes = 0
                             };
-                            trVertex.Lighting1 = 0;
-                            trVertex.Lighting2 = 0x4210; // TODO: apply light calculations also to imported geometry
-                            trVertex.Attributes = 0;
+                            // TODO: apply light calculations also to imported geometry
 
                             roomVertices.Add(trVertex);
                         }
@@ -261,24 +265,27 @@ namespace TombEditor.Compilers
                         var trVertex = roomVertices[i];
                         foreach (var portal in waterPortals)
                         {
-                            if (trVertex.Position.X > portal.Area.X * 1024 && trVertex.Position.X <= portal.Area.Right * 1024 &&
-                                trVertex.Position.Z > portal.Area.Y * 1024 && trVertex.Position.Z <= portal.Area.Bottom * 1024 &&
+                            if (trVertex.Position.X > portal.Area.X * 1024 &&
+                                trVertex.Position.X <= portal.Area.Right * 1024 &&
+                                trVertex.Position.Z > portal.Area.Y * 1024 &&
+                                trVertex.Position.Z <= portal.Area.Bottom * 1024 &&
                                 trVertex.Position.Y == lowest)
                             {
                                 var xv = trVertex.Position.X / 1024;
                                 var zv = trVertex.Position.Z / 1024;
 
-                                if (!(room.IsFloorSolid(new DrawingPoint(xv, zv)) || room.Blocks[xv, zv].Type == BlockType.Wall ||
-                                        room.Blocks[xv, zv].Type == BlockType.BorderWall) &&
+                                if (!(room.IsFloorSolid(new DrawingPoint(xv, zv)) ||
+                                      room.Blocks[xv, zv].Type == BlockType.Wall ||
+                                      room.Blocks[xv, zv].Type == BlockType.BorderWall) &&
                                     !(room.IsFloorSolid(new DrawingPoint(xv - 1, zv)) ||
-                                        room.Blocks[xv - 1, zv].Type == BlockType.Wall ||
-                                        room.Blocks[xv - 1, zv].Type == BlockType.BorderWall) &&
+                                      room.Blocks[xv - 1, zv].Type == BlockType.Wall ||
+                                      room.Blocks[xv - 1, zv].Type == BlockType.BorderWall) &&
                                     !(room.IsFloorSolid(new DrawingPoint(xv, zv - 1)) ||
-                                        room.Blocks[xv, zv - 1].Type == BlockType.Wall ||
-                                        room.Blocks[xv, zv - 1].Type == BlockType.BorderWall) &&
+                                      room.Blocks[xv, zv - 1].Type == BlockType.Wall ||
+                                      room.Blocks[xv, zv - 1].Type == BlockType.BorderWall) &&
                                     !(room.IsFloorSolid(new DrawingPoint(xv - 1, zv - 1)) ||
-                                        room.Blocks[xv - 1, zv - 1].Type == BlockType.Wall ||
-                                        room.Blocks[xv - 1, zv - 1].Type == BlockType.BorderWall))
+                                      room.Blocks[xv - 1, zv - 1].Type == BlockType.Wall ||
+                                      room.Blocks[xv - 1, zv - 1].Type == BlockType.BorderWall))
                                 {
                                     trVertex.Attributes = 0x6000;
                                 }
@@ -288,8 +295,10 @@ namespace TombEditor.Compilers
                                 if (!room.FlagReflection)
                                     continue;
 
-                                if (trVertex.Position.X >= (portal.Area.X - 1) * 1024 && trVertex.Position.X <= (portal.Area.Right + 1) * 1024 &&
-                                    trVertex.Position.Z >= (portal.Area.Y - 1) * 1024 && trVertex.Position.Z <= (portal.Area.Bottom + 1) * 1024)
+                                if (trVertex.Position.X >= (portal.Area.X - 1) * 1024 &&
+                                    trVertex.Position.X <= (portal.Area.Right + 1) * 1024 &&
+                                    trVertex.Position.Z >= (portal.Area.Y - 1) * 1024 &&
+                                    trVertex.Position.Z <= (portal.Area.Bottom + 1) * 1024)
                                 {
                                     trVertex.Attributes = 0x4000;
                                 }
@@ -306,13 +315,9 @@ namespace TombEditor.Compilers
                     {
                         for (int j = 0; j < mesh.IndexCount; j += 3)
                         {
-                            var triangle = new tr_face3();
-
                             ushort index0 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 0]);
                             ushort index1 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 1]);
                             ushort index2 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 2]);
-
-                            triangle.Texture = 20;
 
                             // TODO Move texture area into the mesh
                             TextureArea texture;
@@ -363,7 +368,7 @@ namespace TombEditor.Compilers
             ConvertSectors(room, ref newRoom);
 
             var tempStaticMeshes = room.Objects.OfType<StaticInstance>()
-                .Select(instance => new tr_room_staticmesh
+                .Select(instance => new TrRoomStaticmesh
                 {
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)Math.Round(newRoom.Info.YBottom - instance.Position.Y),
@@ -376,7 +381,6 @@ namespace TombEditor.Compilers
                 })
                 .ToArray();
 
-            newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.GetLength(0);
             newRoom.StaticMeshes = tempStaticMeshes;
 
             ConvertLights(room, ref newRoom);
@@ -384,18 +388,18 @@ namespace TombEditor.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, 
-            List<tr_room_vertex> roomVertices, List<Portal> waterPortals, int lowest, Vector3 Position, Vector4 Color)
+        private static ushort GetOrAddVertex(Room room, Dictionary<TrRoomVertex, ushort> roomVerticesDictionary,
+            List<TrRoomVertex> roomVertices, Vector3 position, Vector4 color)
         {
-            tr_room_vertex trVertex;
-            trVertex.Position = new tr_vertex
+            TrRoomVertex trVertex;
+            trVertex.Position = new TrVertex
             {
-                X = (short)(Position.X),
-                Y = (short)-(Position.Y + room.WorldPos.Y),
-                Z = (short)(Position.Z)
+                X = (short)(position.X),
+                Y = (short)-(position.Y + room.WorldPos.Y),
+                Z = (short)(position.Z)
             };
             trVertex.Lighting1 = 0;
-            trVertex.Lighting2 = PackColorTo16Bit(Color);
+            trVertex.Lighting2 = PackColorTo16Bit(color);
             trVertex.Attributes = 0;
 
             // Do we need this vertex?
@@ -410,12 +414,12 @@ namespace TombEditor.Compilers
             return vertexIndex;
         }
 
-        private static void ConvertLights(Room room, ref tr_room newRoom)
+        private static void ConvertLights(Room room, ref TrRoom newRoom)
         {
-            var result = new List<tr4_room_light>();
+            var result = new List<Tr4RoomLight>();
             foreach (var light in room.Objects.OfType<Light>().Where(l => l.IsDynamicallyUsed))
             {
-                var newLight = new tr4_room_light
+                var newLight = new Tr4RoomLight
                 {
                     X = (int)Math.Round(newRoom.Info.X + light.Position.X),
                     Y = (int)Math.Round(-light.Position.Y + newRoom.Info.YBottom),
@@ -427,7 +431,7 @@ namespace TombEditor.Compilers
                 if (newLight.Intensity == 0)
                     continue;
 
-                Vector3 direction = light.GetDirection();
+                var direction = light.GetDirection();
 
                 switch (light.Type)
                 {
@@ -475,13 +479,12 @@ namespace TombEditor.Compilers
                 result.Add(newLight);
             }
 
-            newRoom.NumLights = (ushort)result.Count;
             newRoom.Lights = result.ToArray();
         }
 
-        private void ConvertSectors(Room room, ref tr_room newRoom)
+        private void ConvertSectors(Room room, ref TrRoom newRoom)
         {
-            newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
+            newRoom.Sectors = new TrRoomSector[room.NumXSectors * room.NumZSectors];
             newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
 
             for (var z = 0; z < room.NumZSectors; z++)
@@ -489,7 +492,7 @@ namespace TombEditor.Compilers
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     var block = room.Blocks[x, z];
-                    var sector = new tr_room_sector();
+                    var sector = new TrRoomSector();
                     var aux = new TrSectorAux();
 
                     sector.BoxIndex = 0x7ff6;
@@ -544,7 +547,6 @@ namespace TombEditor.Compilers
                              block.FloorOpacity != PortalOpacity.Opacity1) ||
                             (room.IsFloorSolid(new DrawingPoint(x, z)) && block.NoCollisionFloor))
                         {
-                            var portal = block.FloorPortal;
                             sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         }
                         else
@@ -571,14 +573,6 @@ namespace TombEditor.Compilers
 
                     aux.IsFloorSolid = room.IsFloorSolid(new DrawingPoint(x, z));
 
-                    if ((block.CeilingPortal != null &&
-                         block.CeilingOpacity != PortalOpacity.Opacity1))
-                    {
-                    }
-                    else
-                    {
-                    }
-
                     if (block.WallPortal != null && block.WallOpacity != PortalOpacity.Opacity1)
                         aux.WallPortal = block.WallPortal.AdjoiningRoom;
                     else
@@ -596,12 +590,12 @@ namespace TombEditor.Compilers
                         if (!block.FloorSplitDirectionIsXEqualsY)
                         {
                             aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[0],
-                                                           block.QAFaces[2]));
+                                                          block.QAFaces[2]));
                         }
                         else
                         {
                             aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[1],
-                                                           block.QAFaces[3]));
+                                                          block.QAFaces[3]));
                         }
                     }
 
@@ -611,9 +605,9 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(IEnumerable<Portal> tempIdPortals, Room room, ref tr_room newRoom)
+        private void ConvertPortals(IEnumerable<Portal> tempIdPortals, Room room, ref TrRoom newRoom)
         {
-            var result = new List<tr_room_portal>();
+            var result = new List<TrRoomPortal>();
 
             foreach (var portal in tempIdPortals)
             {
@@ -622,444 +616,468 @@ namespace TombEditor.Compilers
                 int zMin;
                 int zMax;
 
-                var newPortal = new tr_room_portal
+                var newPortal = new TrRoomPortal
                 {
                     AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
-                    Vertices = new tr_vertex[4]
+                    Vertices = new TrVertex[4]
                 };
 
                 // Normal and vertices
                 switch (portal.Direction)
                 {
                     case PortalDirection.North:
+                    {
+                        newPortal.Normal = new TrVertex
                         {
-                            newPortal.Normal = new tr_vertex
-                            {
-                                X = 0,
-                                Y = 0,
-                                Z = -1
-                            };
+                            X = 0,
+                            Y = 0,
+                            Z = -1
+                        };
 
-                            xMin = portal.Area.Left;
-                            xMax = portal.Area.Right + 1;
-                            zMin = room.NumZSectors - 1;
-                            zMax = room.NumZSectors - 1;
+                        xMin = portal.Area.Left;
+                        xMax = portal.Area.Right + 1;
+                        zMin = room.NumZSectors - 1;
+                        zMax = room.NumZSectors - 1;
 
-                            var yMin = 32768;
-                            var yMax = -32768;
+                        var yMin = 32768;
+                        var yMax = -32768;
 
-                            int y1;
-                            int y2;
+                        int y1;
+                        int y2;
 
-                            Room adjoiningRoom = portal.AdjoiningRoom;
-                            int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
-                            int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
+                        Room adjoiningRoom = portal.AdjoiningRoom;
+                        int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
+                        int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
 
-                            for (var x = xMin; x < xMax; x++)
-                            {
-                                var currentBlock = room.Blocks[x, room.NumZSectors - 2];
-                                // var facingBlock = room.Blocks[x, room.NumZSectors - 1];
-                                var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X), 1];
+                        for (var x = xMin; x < xMax; x++)
+                        {
+                            var currentBlock = room.Blocks[x, room.NumZSectors - 2];
+                            // var facingBlock = room.Blocks[x, room.NumZSectors - 1];
+                            var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X),
+                                1];
 
-                                y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[3], minFloorCurrentRoom + currentBlock.QAFaces[0]);
-                                y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[3], minFloorCurrentRoom + currentBlock.WSFaces[0]);
-
-                                if (y1 < yMin)
-                                    yMin = y1;
-                                if (y2 > yMax)
-                                    yMax = y2;
-                            }
-
-                            var lastBlock = room.Blocks[xMax - 1, room.NumZSectors - 2];
-                            //  var lastFacingBlock = room.Blocks[xMax - 1, room.NumZSectors - 1];
-                            var lastOtherBlock = adjoiningRoom.Blocks[xMax - 1 + (int)(room.Position.X - adjoiningRoom.Position.X), 1];
-
-                            y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[2], minFloorCurrentRoom + lastBlock.QAFaces[1]);
-                            y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[2], minFloorCurrentRoom + lastBlock.WSFaces[1]);
+                            y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[3],
+                                minFloorCurrentRoom + currentBlock.QAFaces[0]);
+                            y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[3],
+                                minFloorCurrentRoom + currentBlock.WSFaces[0]);
 
                             if (y1 < yMin)
                                 yMin = y1;
                             if (y2 > yMax)
                                 yMax = y2;
-
-                            yMin -= minFloorCurrentRoom;
-                            yMax -= minFloorCurrentRoom;
-
-                            newPortal.Vertices[0] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
-
-                            newPortal.Vertices[1] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
-
-                            newPortal.Vertices[2] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
-
-                            newPortal.Vertices[3] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
                         }
+
+                        var lastBlock = room.Blocks[xMax - 1, room.NumZSectors - 2];
+                        //  var lastFacingBlock = room.Blocks[xMax - 1, room.NumZSectors - 1];
+                        var lastOtherBlock =
+                            adjoiningRoom.Blocks[xMax - 1 + (int)(room.Position.X - adjoiningRoom.Position.X), 1];
+
+                        y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[2],
+                            minFloorCurrentRoom + lastBlock.QAFaces[1]);
+                        y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[2],
+                            minFloorCurrentRoom + lastBlock.WSFaces[1]);
+
+                        if (y1 < yMin)
+                            yMin = y1;
+                        if (y2 > yMax)
+                            yMax = y2;
+
+                        yMin -= minFloorCurrentRoom;
+                        yMax -= minFloorCurrentRoom;
+
+                        newPortal.Vertices[0] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+
+                        newPortal.Vertices[1] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+
+                        newPortal.Vertices[2] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
+
+                        newPortal.Vertices[3] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
+                    }
                         break;
                     case PortalDirection.East:
+                    {
+                        newPortal.Normal = new TrVertex
                         {
-                            newPortal.Normal = new tr_vertex
-                            {
-                                X = -1,
-                                Y = 0,
-                                Z = 0
-                            };
+                            X = -1,
+                            Y = 0,
+                            Z = 0
+                        };
 
-                            xMin = room.NumXSectors - 1;
-                            xMax = room.NumXSectors - 1;
-                            zMin = portal.Area.Bottom + 1;
-                            zMax = portal.Area.Y;
+                        xMin = room.NumXSectors - 1;
+                        xMax = room.NumXSectors - 1;
+                        zMin = portal.Area.Bottom + 1;
+                        zMax = portal.Area.Y;
 
-                            var yMin = 32768;
-                            var yMax = -32768;
+                        var yMin = 32768;
+                        var yMax = -32768;
 
-                            int y1;
-                            int y2;
+                        int y1;
+                        int y2;
 
-                            Room adjoiningRoom = portal.AdjoiningRoom;
-                            int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
-                            int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
+                        Room adjoiningRoom = portal.AdjoiningRoom;
+                        int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
+                        int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
 
-                            for (var z = zMax; z < zMin; z++)
-                            {
-                                var currentBlock = room.Blocks[room.NumXSectors - 2, z];
-                                //var facingBlock = room.Blocks[room.NumXSectors - 1, z];
-                                var otherBlock = adjoiningRoom.Blocks[1, z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
+                        for (var z = zMax; z < zMin; z++)
+                        {
+                            var currentBlock = room.Blocks[room.NumXSectors - 2, z];
+                            //var facingBlock = room.Blocks[room.NumXSectors - 1, z];
+                            var otherBlock =
+                                adjoiningRoom.Blocks[1, z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
 
-                                y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[0], minFloorCurrentRoom + currentBlock.QAFaces[1]);
-                                y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[0], minFloorCurrentRoom + currentBlock.WSFaces[1]);
-
-                                if (y1 < yMin)
-                                    yMin = y1;
-                                if (y2 > yMax)
-                                    yMax = y2;
-                            }
-
-                            var lastBlock = room.Blocks[room.NumXSectors - 2, zMin - 1];
-                            //  var lastFacingBlock = room.Blocks[room.NumXSectors - 1, zMin - 1];
-                            var lastOtherBlock = adjoiningRoom.Blocks[1, zMin - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
-
-                            y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[3], minFloorCurrentRoom + lastBlock.QAFaces[2]);
-                            y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[3], minFloorCurrentRoom + lastBlock.WSFaces[2]);
+                            y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[0],
+                                minFloorCurrentRoom + currentBlock.QAFaces[1]);
+                            y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[0],
+                                minFloorCurrentRoom + currentBlock.WSFaces[1]);
 
                             if (y1 < yMin)
                                 yMin = y1;
                             if (y2 > yMax)
                                 yMax = y2;
-
-                            yMin -= minFloorCurrentRoom;
-                            yMax -= minFloorCurrentRoom;
-
-                            newPortal.Vertices[1] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
-
-                            newPortal.Vertices[2] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
-
-                            newPortal.Vertices[3] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
-
-                            newPortal.Vertices[0] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
                         }
+
+                        var lastBlock = room.Blocks[room.NumXSectors - 2, zMin - 1];
+                        //  var lastFacingBlock = room.Blocks[room.NumXSectors - 1, zMin - 1];
+                        var lastOtherBlock = adjoiningRoom.Blocks[1,
+                            zMin - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
+
+                        y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[3],
+                            minFloorCurrentRoom + lastBlock.QAFaces[2]);
+                        y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[3],
+                            minFloorCurrentRoom + lastBlock.WSFaces[2]);
+
+                        if (y1 < yMin)
+                            yMin = y1;
+                        if (y2 > yMax)
+                            yMax = y2;
+
+                        yMin -= minFloorCurrentRoom;
+                        yMax -= minFloorCurrentRoom;
+
+                        newPortal.Vertices[1] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+
+                        newPortal.Vertices[2] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
+
+                        newPortal.Vertices[3] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
+
+                        newPortal.Vertices[0] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+                    }
                         break;
                     case PortalDirection.South:
+                    {
+                        newPortal.Normal = new TrVertex
                         {
-                            newPortal.Normal = new tr_vertex
-                            {
-                                X = 0,
-                                Y = 0,
-                                Z = 1
-                            };
+                            X = 0,
+                            Y = 0,
+                            Z = 1
+                        };
 
-                            xMin = portal.Area.Right + 1;
-                            xMax = portal.Area.Left;
-                            zMin = 1;
-                            zMax = 1;
+                        xMin = portal.Area.Right + 1;
+                        xMax = portal.Area.Left;
+                        zMin = 1;
+                        zMax = 1;
 
-                            var yMin = 32768;
-                            var yMax = -32768;
+                        var yMin = 32768;
+                        var yMax = -32768;
 
-                            int y1;
-                            int y2;
+                        int y1;
+                        int y2;
 
-                            Room adjoiningRoom = portal.AdjoiningRoom;
-                            int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
-                            int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
+                        var adjoiningRoom = portal.AdjoiningRoom;
+                        int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
+                        int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
 
-                            for (var x = xMax; x < xMin; x++)
-                            {
-                                var currentBlock = room.Blocks[x, 1];
-                                // var facingBlock = room.Blocks[x, 0];
-                                var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X), adjoiningRoom.NumZSectors - 1];
+                        for (var x = xMax; x < xMin; x++)
+                        {
+                            var currentBlock = room.Blocks[x, 1];
+                            // var facingBlock = room.Blocks[x, 0];
+                            var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X),
+                                adjoiningRoom.NumZSectors - 1];
 
-                                y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[1], minFloorCurrentRoom + currentBlock.QAFaces[2]);
-                                y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[1], minFloorCurrentRoom + currentBlock.WSFaces[2]);
-
-                                if (y1 < yMin)
-                                    yMin = y1;
-                                if (y2 > yMax)
-                                    yMax = y2;
-                            }
-
-                            var lastBlock = room.Blocks[xMin - 1, 1];
-                            //  var lastFacingBlock = room.Blocks[xMin - 1, 0];
-                            var lastOtherBlock = adjoiningRoom.Blocks[xMin - 1 + (int)(room.Position.X - adjoiningRoom.Position.X), adjoiningRoom.NumZSectors - 1];
-
-                            y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[0], minFloorCurrentRoom + lastBlock.QAFaces[3]);
-                            y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[0], minFloorCurrentRoom + lastBlock.WSFaces[3]);
+                            y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[1],
+                                minFloorCurrentRoom + currentBlock.QAFaces[2]);
+                            y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[1],
+                                minFloorCurrentRoom + currentBlock.WSFaces[2]);
 
                             if (y1 < yMin)
                                 yMin = y1;
                             if (y2 > yMax)
                                 yMax = y2;
-
-                            yMin -= minFloorCurrentRoom;
-                            yMax -= minFloorCurrentRoom;
-
-                            newPortal.Vertices[0] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f - 1.0f)
-                            };
-
-                            newPortal.Vertices[1] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f - 1.0f)
-                            };
-
-                            newPortal.Vertices[2] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f - 1.0f)
-                            };
-
-                            newPortal.Vertices[3] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f - 1.0f)
-                            };
                         }
+
+                        var lastBlock = room.Blocks[xMin - 1, 1];
+                        //  var lastFacingBlock = room.Blocks[xMin - 1, 0];
+                        var lastOtherBlock = adjoiningRoom.Blocks[
+                            xMin - 1 + (int)(room.Position.X - adjoiningRoom.Position.X),
+                            adjoiningRoom.NumZSectors - 1];
+
+                        y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[0],
+                            minFloorCurrentRoom + lastBlock.QAFaces[3]);
+                        y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[0],
+                            minFloorCurrentRoom + lastBlock.WSFaces[3]);
+
+                        if (y1 < yMin)
+                            yMin = y1;
+                        if (y2 > yMax)
+                            yMax = y2;
+
+                        yMin -= minFloorCurrentRoom;
+                        yMax -= minFloorCurrentRoom;
+
+                        newPortal.Vertices[0] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f - 1.0f)
+                        };
+
+                        newPortal.Vertices[1] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f - 1.0f)
+                        };
+
+                        newPortal.Vertices[2] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f - 1.0f)
+                        };
+
+                        newPortal.Vertices[3] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f - 1.0f)
+                        };
+                    }
                         break;
                     case PortalDirection.West:
+                    {
+                        newPortal.Normal = new TrVertex
                         {
-                            newPortal.Normal = new tr_vertex
-                            {
-                                X = 1,
-                                Y = 0,
-                                Z = 0
-                            };
+                            X = 1,
+                            Y = 0,
+                            Z = 0
+                        };
 
-                            xMin = 1;
-                            xMax = 1;
-                            zMin = portal.Area.Y;
-                            zMax = portal.Area.Bottom + 1;
+                        xMin = 1;
+                        xMax = 1;
+                        zMin = portal.Area.Y;
+                        zMax = portal.Area.Bottom + 1;
 
-                            var yMin = 32768;
-                            var yMax = -32768;
+                        var yMin = 32768;
+                        var yMax = -32768;
 
-                            int y1;
-                            int y2;
+                        int y1;
+                        int y2;
 
-                            Room adjoiningRoom = portal.AdjoiningRoom;
-                            int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
-                            int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
+                        Room adjoiningRoom = portal.AdjoiningRoom;
+                        int minFloorCurrentRoom = room.GetLowestCorner() + (int)room.Position.Y;
+                        int minFloorOtherRoom = adjoiningRoom.GetLowestCorner() + (int)adjoiningRoom.Position.Y;
 
-                            for (var z = zMin; z < zMax; z++)
-                            {
-                                var currentBlock = room.Blocks[1, z];
-                                //  var facingBlock = room.Blocks[0, z];
-                                var otherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 1, z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
+                        for (var z = zMin; z < zMax; z++)
+                        {
+                            var currentBlock = room.Blocks[1, z];
+                            //  var facingBlock = room.Blocks[0, z];
+                            var otherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 1,
+                                z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
 
-                                y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[2], minFloorCurrentRoom + currentBlock.QAFaces[3]);
-                                y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[2], minFloorCurrentRoom + currentBlock.WSFaces[3]);
-
-                                if (y1 < yMin)
-                                    yMin = y1;
-                                if (y2 > yMax)
-                                    yMax = y2;
-                            }
-
-                            var lastBlock = room.Blocks[1, zMax - 1];
-                            //var lastFacingBlock = room.Blocks[0, zMax - 1];
-                            var lastOtherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 1, zMax - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
-
-                            y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[1], minFloorCurrentRoom + lastBlock.QAFaces[0]);
-                            y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[1], minFloorCurrentRoom + lastBlock.WSFaces[0]);
+                            y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[2],
+                                minFloorCurrentRoom + currentBlock.QAFaces[3]);
+                            y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[2],
+                                minFloorCurrentRoom + currentBlock.WSFaces[3]);
 
                             if (y1 < yMin)
                                 yMin = y1;
                             if (y2 > yMax)
                                 yMax = y2;
-
-                            yMin -= minFloorCurrentRoom;
-                            yMax -= minFloorCurrentRoom;
-
-                            newPortal.Vertices[1] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f - 1.0f),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
-
-                            newPortal.Vertices[2] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f - 1.0f),
-                                Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
-
-                            newPortal.Vertices[3] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f - 1.0f),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
-
-                            newPortal.Vertices[0] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f - 1.0f),
-                                Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
                         }
+
+                        var lastBlock = room.Blocks[1, zMax - 1];
+                        //var lastFacingBlock = room.Blocks[0, zMax - 1];
+                        var lastOtherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 1,
+                            zMax - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
+
+                        y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[1],
+                            minFloorCurrentRoom + lastBlock.QAFaces[0]);
+                        y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[1],
+                            minFloorCurrentRoom + lastBlock.WSFaces[0]);
+
+                        if (y1 < yMin)
+                            yMin = y1;
+                        if (y2 > yMax)
+                            yMax = y2;
+
+                        yMin -= minFloorCurrentRoom;
+                        yMax -= minFloorCurrentRoom;
+
+                        newPortal.Vertices[1] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f - 1.0f),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+
+                        newPortal.Vertices[2] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f - 1.0f),
+                            Y = (short)(-yMax * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
+
+                        newPortal.Vertices[3] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f - 1.0f),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
+
+                        newPortal.Vertices[0] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f - 1.0f),
+                            Y = (short)(-yMin * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+                    }
                         break;
                     case PortalDirection.Floor:
+                    {
+                        newPortal.Normal = new TrVertex
                         {
-                            newPortal.Normal = new tr_vertex
-                            {
-                                X = 0,
-                                Y = -1,
-                                Z = 0
-                            };
+                            X = 0,
+                            Y = -1,
+                            Z = 0
+                        };
 
-                            xMin = portal.Area.Left;
-                            xMax = portal.Area.Right + 1;
-                            var y = room.GetLowestCorner();
-                            zMin = portal.Area.Y;
-                            zMax = portal.Area.Bottom + 1;
+                        xMin = portal.Area.Left;
+                        xMax = portal.Area.Right + 1;
+                        var y = room.GetLowestCorner();
+                        zMin = portal.Area.Y;
+                        zMax = portal.Area.Bottom + 1;
 
-                            newPortal.Vertices[1] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
+                        newPortal.Vertices[1] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
 
-                            newPortal.Vertices[2] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
+                        newPortal.Vertices[2] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
 
-                            newPortal.Vertices[3] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
+                        newPortal.Vertices[3] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
 
-                            newPortal.Vertices[0] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
-                        }
+                        newPortal.Vertices[0] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+                    }
                         break;
                     case PortalDirection.Ceiling:
+                    {
+                        newPortal.Normal = new TrVertex
                         {
-                            newPortal.Normal = new tr_vertex
-                            {
-                                X = 0,
-                                Y = 1,
-                                Z = 0
-                            };
+                            X = 0,
+                            Y = 1,
+                            Z = 0
+                        };
 
-                            xMin = portal.Area.Left;
-                            xMax = portal.Area.Right + 1;
-                            var y = room.GetHighestCorner();
-                            zMin = portal.Area.Bottom + 1;
-                            zMax = portal.Area.Y;
+                        xMin = portal.Area.Left;
+                        xMax = portal.Area.Right + 1;
+                        var y = room.GetHighestCorner();
+                        zMin = portal.Area.Bottom + 1;
+                        zMax = portal.Area.Y;
 
-                            newPortal.Vertices[1] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
+                        newPortal.Vertices[1] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
 
-                            newPortal.Vertices[2] = new tr_vertex
-                            {
-                                X = (short)(xMin * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
+                        newPortal.Vertices[2] = new TrVertex
+                        {
+                            X = (short)(xMin * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
 
-                            newPortal.Vertices[3] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMax * 1024.0f)
-                            };
+                        newPortal.Vertices[3] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMax * 1024.0f)
+                        };
 
-                            newPortal.Vertices[0] = new tr_vertex
-                            {
-                                X = (short)(xMax * 1024.0f),
-                                Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
-                                Z = (short)(zMin * 1024.0f)
-                            };
-                        }
+                        newPortal.Vertices[0] = new TrVertex
+                        {
+                            X = (short)(xMax * 1024.0f),
+                            Y = (short)(-y * 256.0f + newRoom.Info.YBottom),
+                            Z = (short)(zMin * 1024.0f)
+                        };
+                    }
                         break;
                 }
 
                 result.Add(newPortal);
             }
 
-            newRoom.NumPortals = (ushort)result.Count;
             newRoom.Portals = result.ToArray();
         }
-        
+
         private void MatchPortalVertexColors()
         {
             // Match vertex colors on portal 
@@ -1068,14 +1086,13 @@ namespace TombEditor.Compilers
             //   - Geometry objects should also be make use of this.
 
             // Build lookup
-            var vertexColorLookups = new Dictionary<Room, Dictionary<tr_vertex, ushort>>();
-            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
+            var vertexColorLookups = new Dictionary<Room, Dictionary<TrVertex, ushort>>();
+            Parallel.ForEach(_tempRooms.Values, trRoom =>
             {
-                var vertexLookup = new Dictionary<tr_vertex, ushort>();
+                var vertexLookup = new Dictionary<TrVertex, ushort>();
                 var vertices = trRoom.Vertices;
-                for (int i = 0; i < vertices.Count; ++i)
+                foreach (var vertex in vertices)
                 {
-                    tr_room_vertex vertex = vertices[i];
                     if (!vertexLookup.ContainsKey(vertex.Position))
                         vertexLookup.Add(vertex.Position, vertex.Lighting2);
                 }
@@ -1084,18 +1101,19 @@ namespace TombEditor.Compilers
             });
 
             // Match portals in each room ...
-            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, trRoom =>
             {
-                Vector3 roomWorldPos = trRoom.OriginalRoom.WorldPos;
+                var roomWorldPos = trRoom.OriginalRoom.WorldPos;
 
                 // Altough the usage pattern is superficially more suited for Set/Dictionary,
                 // a List is used here since it will only have a few entries at max and linear search most likely beats everything else at that.
-                List<Room> roomsSharedByVertex = new List<Room>();
+                var roomsSharedByVertex = new List<Room>();
                 var vertices = trRoom.Vertices;
                 for (int i = 0; i < vertices.Count; ++i)
                 {
-                    tr_room_vertex vertex = vertices[i];
-                    Vector3 worldPos = new Vector3(vertex.Position.X + roomWorldPos.X, -vertex.Position.Y, vertex.Position.Z + roomWorldPos.Z);
+                    var vertex = vertices[i];
+                    var worldPos = new Vector3(vertex.Position.X + roomWorldPos.X, -vertex.Position.Y,
+                        vertex.Position.Z + roomWorldPos.Z);
 
                     // Find connected rooms that might share this vertex
                     roomsSharedByVertex.Clear();
@@ -1104,19 +1122,20 @@ namespace TombEditor.Compilers
                     if (roomsSharedByVertex.Count == 0)
                         continue;
 
-                    int R = (vertex.Lighting2 >> 10) & 0x1F;
-                    int G = (vertex.Lighting2 >> 5) & 0x1F;
-                    int B = vertex.Lighting2 & 0x1F;
-                    int Count = 1;
+                    int r = (vertex.Lighting2 >> 10) & 0x1F;
+                    int g = (vertex.Lighting2 >> 5) & 0x1F;
+                    int b = vertex.Lighting2 & 0x1F;
+                    int count = 1;
 
-                    foreach (Room connectedRoom in roomsSharedByVertex)
+                    foreach (var connectedRoom in roomsSharedByVertex)
                     {
                         if (connectedRoom == trRoom.OriginalRoom)
                             continue;
 
                         // Find position in room local coordinates
-                        Vector3 connectedRoomWorldPos = connectedRoom.WorldPos;
-                        Vector3 trVertexPos = new Vector3(worldPos.X - connectedRoomWorldPos.X, -worldPos.Y, worldPos.Z - connectedRoomWorldPos.Z);
+                        var connectedRoomWorldPos = connectedRoom.WorldPos;
+                        var trVertexPos = new Vector3(worldPos.X - connectedRoomWorldPos.X, -worldPos.Y,
+                            worldPos.Z - connectedRoomWorldPos.Z);
                         float maxCoordinate = Math.Max(
                             Math.Abs(trVertexPos.X),
                             Math.Max(
@@ -1125,7 +1144,7 @@ namespace TombEditor.Compilers
                         if (maxCoordinate > short.MaxValue)
                             continue;
 
-                        tr_vertex connectedRoomLocalPosUint = new tr_vertex
+                        var connectedRoomLocalPosUint = new TrVertex
                         {
                             X = (short)(trVertexPos.X),
                             Y = (short)(trVertexPos.Y),
@@ -1133,7 +1152,7 @@ namespace TombEditor.Compilers
                         };
 
                         // Lookup vertex
-                        Dictionary<tr_vertex, ushort> connectedRoomColorLookup;
+                        Dictionary<TrVertex, ushort> connectedRoomColorLookup;
                         if (!vertexColorLookups.TryGetValue(connectedRoom, out connectedRoomColorLookup))
                             continue;
                         ushort lighting;
@@ -1141,26 +1160,27 @@ namespace TombEditor.Compilers
                             continue;
 
                         // Accumulate color for average
-                        R += (lighting >> 10) & 0x1F;
-                        G += (lighting >> 5) & 0x1F;
-                        B += lighting & 0x1F;
-                        ++Count;
+                        r += (lighting >> 10) & 0x1F;
+                        g += (lighting >> 5) & 0x1F;
+                        b += lighting & 0x1F;
+                        ++count;
                     }
 
                     // Set color
-                    if (Count > 1)
-                    {
-                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * new Vector4(8.0f / Count) + new Vector4(0.5f);
-                        vertex.Lighting2 = PackColorTo16Bit(averageColor);
-                        vertices[i] = vertex;
-                    }
+                    if (count <= 1)
+                        continue;
+
+                    var averageColor = new Vector4(r, g, b, 0.0f) * new Vector4(8.0f / count) + new Vector4(0.5f);
+                    vertex.Lighting2 = PackColorTo16Bit(averageColor);
+                    vertices[i] = vertex;
                 }
             });
         }
 
-        private static void FindConnectedRooms(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos, bool checkFloorCeiling)
+        private static void FindConnectedRooms(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos,
+            bool checkFloorCeiling)
         {
-            Vector3 localPos = worldPos - currentRoom.WorldPos;
+            var localPos = worldPos - currentRoom.WorldPos;
             int sectorPosX = (int)(localPos.X * (1.0f / 1024.0f) + 0.5f);
             int sectorPosZ = (int)(localPos.Z * (1.0f / 1024.0f) + 0.5f);
             int sectorPosX2 = sectorPosX - 1;
@@ -1170,22 +1190,27 @@ namespace TombEditor.Compilers
             if ((sectorPosX >= 0) && (sectorPosX < currentRoom.NumXSectors))
             {
                 if ((sectorPosZ >= 0) && (sectorPosZ < currentRoom.NumZSectors))
-                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX, sectorPosZ);
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX,
+                        sectorPosZ);
                 if ((sectorPosZ2 >= 0) && (sectorPosZ2 < currentRoom.NumZSectors))
-                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX, sectorPosZ2);
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX,
+                        sectorPosZ2);
             }
             if ((sectorPosX2 >= 0) && (sectorPosX2 < currentRoom.NumXSectors))
             {
                 if ((sectorPosZ >= 0) && (sectorPosZ < currentRoom.NumZSectors))
-                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2, sectorPosZ);
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2,
+                        sectorPosZ);
                 if ((sectorPosZ2 >= 0) && (sectorPosZ2 < currentRoom.NumZSectors))
-                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2, sectorPosZ2);
+                    FindConnectedRoomsCheckSector(outSharedRooms, currentRoom, worldPos, checkFloorCeiling, sectorPosX2,
+                        sectorPosZ2);
             }
         }
 
-        private static void FindConnectedRoomsCheckSector(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos, bool checkFloorCeiling, int x, int z)
+        private static void FindConnectedRoomsCheckSector(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos,
+            bool checkFloorCeiling, int x, int z)
         {
-            Block block = currentRoom.Blocks[x, z];
+            var block = currentRoom.Blocks[x, z];
 
             if (checkFloorCeiling)
             {
@@ -1213,7 +1238,7 @@ namespace TombEditor.Compilers
             color *= 16.0f;
             color += new Vector4(0.5f); // Round correctly
             color = Vector4.Min(new Vector4(31), Vector4.Max(new Vector4(0), color));
-            
+
             ushort tmp = 0;
             tmp |= (ushort)((ushort)(color.X) << 10);
             tmp |= (ushort)((ushort)(color.Y) << 5);
@@ -1221,13 +1246,13 @@ namespace TombEditor.Compilers
             return tmp;
         }
 
-        private static tr_color PackColorTo24Bit(Vector4 color)
+        private static TrColor PackColorTo24Bit(Vector4 color)
         {
             color *= 128.0f;
             color += new Vector4(0.5f); // Round correctly
             color = Vector4.Min(new Vector4(255), Vector4.Max(new Vector4(0), color));
 
-            tr_color result;
+            TrColor result;
             result.Red = (byte)color.X;
             result.Green = (byte)color.Y;
             result.Blue = (byte)color.Z;
