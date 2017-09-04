@@ -104,7 +104,7 @@ namespace TombEditor.Compilers
     public struct tr_room_sector
     {
         public ushort FloorDataIndex;
-        public short BoxIndex;
+        public ushort BoxIndex;
         public byte RoomBelow;
         public sbyte Floor;
         public byte RoomAbove;

@@ -54,8 +54,6 @@ namespace TombEditor.Compilers
             dec_currentRoom = _level.Rooms[0];
             dec_boxes = new dec_tr_box_aux[2040];
 
-            int boxIndex = 0x7ff;
-
             Stopwatch watch = new Stopwatch();
             watch.Start();
                        
@@ -73,6 +71,7 @@ namespace TombEditor.Compilers
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
+                                int boxIndex = 0x7ff;
                                 if (!room.ExcludeFromPathFinding)
                                 {
                                     dec_tr_box_aux box = new dec_tr_box_aux();
@@ -88,18 +87,10 @@ namespace TombEditor.Compilers
                                         boxIndex = Dec_AddBox(ref box);
                                         if (boxIndex < 0) return;
                                     }
-                                    else
-                                    {
-                                        boxIndex = 0x7ff;
-                                    }
+                                }
 
-                                    // Assign the box index to the sector
-                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((boxIndex << 4) | (int)GetTextureSound(room, x, z));
-                                }
-                                else
-                                {
-                                    tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = (short)((0x7ff << 4) | (int)GetTextureSound(room, x, z));
-                                }
+                                // Assign the box index to the sector
+                                tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex |= (ushort)(boxIndex << 4);
                             }
                         }
                     }

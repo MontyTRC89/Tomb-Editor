@@ -93,13 +93,13 @@ namespace TombEditor.Controls
                 _gridStep * currentRoom.NumZSectors);
         }
 
-        private PointF toVisualCoord(SharpDX.DrawingPoint point)
+        public PointF toVisualCoord(SharpDX.DrawingPoint point)
         {
             RectangleF roomArea = getVisualRoomArea();
             return new PointF(point.X * _gridStep + roomArea.X, roomArea.Bottom - (point.Y + 1) * _gridStep);
         }
 
-        private RectangleF toVisualCoord(SharpDX.Rectangle area)
+        public RectangleF ToVisualCoord(SharpDX.Rectangle area)
         {
             RectangleF roomArea = getVisualRoomArea();
             PointF convertedPoint0 = toVisualCoord(new SharpDX.DrawingPoint(area.Left, area.Top));
@@ -109,7 +109,7 @@ namespace TombEditor.Controls
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
         }
 
-        private SharpDX.DrawingPoint fromVisualCoord(PointF point)
+        public SharpDX.DrawingPoint FromVisualCoord(PointF point)
         {
             RectangleF roomArea = getVisualRoomArea();
             return new SharpDX.DrawingPoint(
@@ -127,10 +127,10 @@ namespace TombEditor.Controls
             // Move camera to selected sector
             if (_editor.Action.RelocateCameraActive)
             {
-                _editor.MoveCameraToSector(fromVisualCoord(e.Location));
+                _editor.MoveCameraToSector(FromVisualCoord(e.Location));
                 return;
             }
-            SharpDX.DrawingPoint sectorPos = fromVisualCoord(e.Location);
+            SharpDX.DrawingPoint sectorPos = FromVisualCoord(e.Location);
 
             // Find existing sector based object (eg portal or trigger)
             SectorBasedObjectInstance selectedSectorObject = _editor.SelectedObject as SectorBasedObjectInstance;
@@ -180,7 +180,7 @@ namespace TombEditor.Controls
                 return;
 
             if ((e.Button == MouseButtons.Left) && _doSectorSelection)
-                _editor.SelectedSectors = new SectorSelection { Start = _editor.SelectedSectors.Start, End = fromVisualCoord(e.Location) };
+                _editor.SelectedSectors = new SectorSelection { Start = _editor.SelectedSectors.Start, End = FromVisualCoord(e.Location) };
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -257,13 +257,13 @@ namespace TombEditor.Controls
 
                 // Draw selection
                 if (_editor.SelectedSectors.Valid)
-                    e.Graphics.DrawRectangle(_selectionPen, toVisualCoord(_editor.SelectedSectors.Area));
+                    e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
 
                 var instance = _editor.SelectedObject as SectorBasedObjectInstance;
                 if (instance != null)
                 {
                     Pen pen = instance is Portal ? _selectedPortalPen : _selectedTriggerPen;
-                    RectangleF visualArea = toVisualCoord(instance.Area);
+                    RectangleF visualArea = ToVisualCoord(instance.Area);
                     e.Graphics.DrawRectangle(pen, visualArea);
                     DrawMessage(e, instance.ToString(), visualArea);
                 }

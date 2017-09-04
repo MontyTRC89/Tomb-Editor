@@ -14,13 +14,21 @@ using System.Windows.Forms;
 using TombEditor.Geometry;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
+using Color = System.Drawing.Color;
 
 namespace TombEditor.Controls
 {
     public partial class PanelTextureMap : Panel
     {
-        private Editor _editor;
-        private LevelTexture _texture;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Configuration Configuration { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
+        public float MaxTextureSize { get; set; } = 255;
+
+        private LevelTexture _visibleTexture;
+        private TextureArea _selectedTexture;
 
         private Vector2 _viewPosition;
         private float _viewScale = 1.0f;
@@ -32,10 +40,11 @@ namespace TombEditor.Controls
 
         private static readonly Pen textureSelectionPen = new Pen(Brushes.Yellow, 2.0f) { LineJoin = LineJoin.Round };
         private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 1.0f) { LineJoin = LineJoin.Round };
+        private static readonly Brush textureSelectionBrush = new SolidBrush(Color.FromArgb(25, textureSelectionPen.Color.R, textureSelectionPen.Color.G, textureSelectionPen.Color.B));
+        private static readonly Brush textureSelectionBrushTriangle = new SolidBrush(Color.FromArgb(25, textureSelectionPenTriangle.Color.R, textureSelectionPenTriangle.Color.G, textureSelectionPenTriangle.Color.B));
         private static readonly Brush textureSelectionBrushSelection = Brushes.DeepSkyBlue;
         private const float textureSelectionPointWidth = 6.0f;
         private const float textureSelectionPointSelectionRadius = 13.0f;
-        private const float maxTextureSize = 255;
         private const float viewMargin = 10;
 
         private DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
@@ -46,8 +55,6 @@ namespace TombEditor.Controls
 
         public PanelTextureMap()
         {
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
             BorderStyle = BorderStyle.FixedSingle;
 
             DoubleBuffered = true;
@@ -71,7 +78,6 @@ namespace TombEditor.Controls
         {
             if (disposing)
             {
-                _editor.EditorEventRaised -= EditorEventRaised;
                 _hScrollBar.Dispose();
                 _vScrollBar.Dispose();
             }
@@ -82,55 +88,55 @@ namespace TombEditor.Controls
         {
             base.OnResize(eventargs);
             UpdateScrollBars();
-        }
-
-        private void EditorEventRaised(IEditorEvent obj)
-        {
-            if (obj is Editor.SelectedTexturesChangedEvent)
-                Invalidate();
-
-            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
-            {
-                _texture = _editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null;
-                Height = _texture == null ? 0 : _texture.Image.Height;
-
-                ViewPosition = new Vector2(128, Height / 2);
-                ViewScale = 1.0f;
-
-                Invalidate();
-            }
-
-            if (obj is Editor.SelectTextureAndCenterViewEvent)
-                ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
+            Invalidate();
         }
         
+        public void ShowTexture(TextureArea area)
+        {
+            if (!(area.Texture is LevelTexture))
+                return;
+            
+            VisibleTexture = (LevelTexture)(area.Texture);
+            SelectedTexture = area;
+
+            Vector2 min = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), Vector2.Min(area.TexCoord2, area.TexCoord3));
+            Vector2 max = Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), Vector2.Max(area.TexCoord2, area.TexCoord3));
+
+            ViewPosition = (min + max) * 0.5f;
+            float requiredScaleX = Width / (max.X - min.X);
+            float requiredScaleY = Height / (max.Y - min.Y);
+            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * Configuration.TextureMap_TextureAreaToViewRelativeSize;
+
+            LimitPosition();
+        }
+
         private void UpdateScrollBars()
         {
-            bool hasTexture = _texture?.IsAvailable ?? false;
-            
+            bool hasTexture = VisibleTexture?.IsAvailable ?? false;
+
             _vScrollBar.SetViewCentered(
-                -viewMargin, 
-                (hasTexture ? _texture.Image.Height : 1) + viewMargin * 2,
+                -viewMargin,
+                (hasTexture ? VisibleTexture.Image.Height : 1) + viewMargin * 2,
                 (Height - _scrollSizeTotal) / ViewScale,
                 ViewPosition.Y, hasTexture);
             _hScrollBar.SetViewCentered(
                 -viewMargin,
-                (hasTexture ? _texture.Image.Width : 1) + viewMargin * 2,
+                (hasTexture ? VisibleTexture.Image.Width : 1) + viewMargin * 2,
                 (Width - _scrollSizeTotal) / ViewScale,
                 ViewPosition.X, hasTexture);
         }
 
-        private Vector2 FromVisualCoord(PointF pos, bool limited = true)
+        public Vector2 FromVisualCoord(PointF pos, bool limited = true)
         {
-             Vector2 textureCoord = new Vector2(
-                (pos.X - Width * 0.5f) / ViewScale + ViewPosition.X,
-                (pos.Y - Height * 0.5f) / ViewScale + ViewPosition.Y);
+            Vector2 textureCoord = new Vector2(
+               (pos.X - Width * 0.5f) / ViewScale + ViewPosition.X,
+               (pos.Y - Height * 0.5f) / ViewScale + ViewPosition.Y);
             if (limited)
-                textureCoord = Vector2.Min(_texture.Image.Size - new Vector2(0.5f), Vector2.Max(new Vector2(0.5f), textureCoord));
+                textureCoord = Vector2.Min(VisibleTexture.Image.Size - new Vector2(0.5f), Vector2.Max(new Vector2(0.5f), textureCoord));
             return textureCoord;
         }
 
-        private PointF ToVisualCoord(Vector2 texCoord)
+        public PointF ToVisualCoord(Vector2 texCoord)
         {
             return new PointF(
                 (texCoord.X - ViewPosition.X) * ViewScale + Width * 0.5f,
@@ -146,77 +152,81 @@ namespace TombEditor.Controls
 
         private void LimitPosition()
         {
-            bool hasTexture = _texture?.IsAvailable ?? false;
+            bool hasTexture = VisibleTexture?.IsAvailable ?? false;
             Vector2 minimum = new Vector2(-viewMargin);
-            Vector2 maximum = (hasTexture ? _texture.Image.Size : new Vector2(1)) + new Vector2(viewMargin);
+            Vector2 maximum = (hasTexture ? VisibleTexture.Image.Size : new Vector2(1)) + new Vector2(viewMargin);
             ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
         }
 
-        private static Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, Keys modifierKeys)
+        protected virtual float GetRoundingPrecision()
         {
-            if (modifierKeys.HasFlag(Keys.Alt))
-                return texCoord;
+            if (ModifierKeys.HasFlag(Keys.Alt))
+                return 0.0f;
+            else if (ModifierKeys.HasFlag(Keys.Control))
+                return 1.0f;
+            else if (ModifierKeys.HasFlag(Keys.Shift))
+                return 64.0f;
             else
-            {
-                float RoundingPrecision;
-                if (modifierKeys.HasFlag(Keys.Control))
-                    RoundingPrecision = 1.0f;
-                else if (modifierKeys.HasFlag(Keys.Shift))
-                    RoundingPrecision = 64.0f;
-                else
-                    RoundingPrecision = 16.0f;
-                
-                texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
-                texCoord /= RoundingPrecision;
-                if (RoundingPrecision >= 64.0f)
-                {
-                    texCoord = new Vector2(
-                        endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
-                        endY ? (float)Math.Ceiling(texCoord.Y) : (float)Math.Floor(texCoord.Y));
-                }
-                else
-                    texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
-                texCoord *= RoundingPrecision;
-                texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
-                
+                return 16.0f;
+        }
+
+        protected virtual Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
+        {
+            float RoundingPrecision = GetRoundingPrecision();
+            if (RoundingPrecision == 0.0f)
                 return texCoord;
+
+            texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
+            texCoord /= RoundingPrecision;
+            if ((RoundingPrecision >= 64.0f) && rectangularSelection) 
+            {
+                texCoord = new Vector2(
+                    endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
+                    endY ? (float)Math.Ceiling(texCoord.Y) : (float)Math.Floor(texCoord.Y));
             }
+            else
+                texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
+            texCoord *= RoundingPrecision;
+            texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
+                
+            return texCoord;
         }
 
         private void SetRectangularTextureWithMouse(Vector2 texCoordStart, Vector2 texCoordEnd)
         {
-            Keys modifierKeys = ModifierKeys;
-            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, modifierKeys);
-            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), modifierKeys);
+            Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, true);
+            Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), true);
             
-            texCoordEndQuantized = Vector2.Min(texCoordStartQuantized + new Vector2(maxTextureSize),
-                Vector2.Max(texCoordStartQuantized - new Vector2(maxTextureSize), texCoordEndQuantized));
+            texCoordEndQuantized = Vector2.Min(texCoordStartQuantized + new Vector2(MaxTextureSize),
+                Vector2.Max(texCoordStartQuantized - new Vector2(MaxTextureSize), texCoordEndQuantized));
 
-            TextureArea selectedTexture = _editor.SelectedTexture;
+            var selectedTexture = SelectedTexture;
             selectedTexture.TexCoord0 = new Vector2(texCoordStartQuantized.X, texCoordEndQuantized.Y);
             selectedTexture.TexCoord1 = texCoordStartQuantized;
             selectedTexture.TexCoord2 = new Vector2(texCoordEndQuantized.X, texCoordStartQuantized.Y);
             selectedTexture.TexCoord3 = texCoordEndQuantized;
-            selectedTexture.Texture = _texture;
-            _editor.SelectedTexture = selectedTexture;
+            selectedTexture.Texture = VisibleTexture;
+            SelectedTexture = selectedTexture;
         }
         
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             _lastMousePosition = e.Location;
-
             _startPos = null;
+
+            if (!(VisibleTexture?.IsAvailable ?? false))
+                return;
+
             switch (e.Button)
             {
                 case MouseButtons.Left:
                     var mousePos = FromVisualCoord(e.Location);
 
                     // Check if mouse was on existing texture
-                    var selectedTexture = _editor.SelectedTexture;
-                    if (selectedTexture.Texture == _texture)
+                    if (SelectedTexture.Texture == VisibleTexture)
                     {
-                        var texCoords = selectedTexture.TexCoords
+                        var texCoords = SelectedTexture.TexCoords
                             .Where(texCoordPair => Vector2.Distance(texCoordPair.Value, mousePos) < textureSelectionPointSelectionRadius)
                             .OrderBy(texCoordPair => Vector2.Distance(texCoordPair.Value, mousePos))
                             .ToList();
@@ -250,12 +260,15 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
+            if (!(VisibleTexture?.IsAvailable ?? false))
+                return;
+
             switch (e.Button)
             {
                 case MouseButtons.Left:
                     if (_selectedTexCoordIndex.HasValue)
                     {
-                        TextureArea currentTexture = _editor.SelectedTexture;
+                        TextureArea currentTexture = SelectedTexture;
 
                         // Determine bounds
                         Vector2 texCoordMin = new Vector2(float.PositiveInfinity);
@@ -267,8 +280,8 @@ namespace TombEditor.Controls
                             texCoordMin = Vector2.Min(texCoordMin, currentTexture.GetTexCoord(i));
                             texCoordMax = Vector2.Max(texCoordMax, currentTexture.GetTexCoord(i));
                         }
-                        Vector2 texCoordMinBounds = texCoordMax - new Vector2(maxTextureSize);
-                        Vector2 texCoordMaxBounds = texCoordMin + new Vector2(maxTextureSize);
+                        Vector2 texCoordMinBounds = texCoordMax - new Vector2(MaxTextureSize);
+                        Vector2 texCoordMaxBounds = texCoordMin + new Vector2(MaxTextureSize);
                         
                         //Move texture coord
                         Vector2 newTextureCoord = FromVisualCoord(e.Location);
@@ -279,7 +292,7 @@ namespace TombEditor.Controls
                         {
                             currentTexture.SetTexCoord(_selectedTexCoordIndex.Value,
                                 Vector2.Min(texCoordMaxBounds, Vector2.Max(texCoordMinBounds,
-                                    Quantize(newTextureCoord, (i & 1) != 0, (i & 2) != 0, ModifierKeys))));
+                                    Quantize(newTextureCoord, (i & 1) != 0, (i & 2) != 0, false))));
 
                             float area = Math.Abs(currentTexture.QuadArea);
                             if (area < minArea)
@@ -290,7 +303,7 @@ namespace TombEditor.Controls
                         }
 
                         // Use the configuration that covers the most area
-                        _editor.SelectedTexture = minAreaTextureArea;
+                        SelectedTexture = minAreaTextureArea;
                     }
 
                     if (_startPos.HasValue)
@@ -304,7 +317,7 @@ namespace TombEditor.Controls
                         if (ModifierKeys.HasFlag(Keys.Control))
                         { // Zoom
                             float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
-                            ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
+                            ViewScale *= (float)Math.Exp(Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
                         }
                         else
                         { // Movement
@@ -319,6 +332,9 @@ namespace TombEditor.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            if (!(VisibleTexture?.IsAvailable ?? false))
+                return;
 
             switch (e.Button)
             {
@@ -343,38 +359,20 @@ namespace TombEditor.Controls
             base.OnMouseWheel(e);
 
             Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+            ViewScale *= (float)Math.Exp(e.Delta * Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
             MoveToFixedPoint(e.Location, FixedPointInWorld);
-        }
-
-        public void ShowTexture(TextureArea area)
-        {
-            _editor.SelectedTexture = area;
-
-            Vector2 min = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), Vector2.Min(area.TexCoord2, area.TexCoord3));
-            Vector2 max = Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), Vector2.Max(area.TexCoord2, area.TexCoord3));
-
-            ViewPosition = (min + max) * 0.5f;
-            float requiredScaleX = Width / (max.X - min.X);
-            float requiredScaleY = Height / (max.Y - min.Y);
-            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * _editor.Configuration.TextureMap_TextureAreaToViewRelativeSize;
-
-            LimitPosition();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (_editor == null)
-                return;
-
             e.Graphics.IntersectClip(new RectangleF(0, 0, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
 
             // Only proceed if texture is actually available
-            if (_texture?.IsAvailable ?? false)
+            if (VisibleTexture?.IsAvailable ?? false)
             {
                 PointF drawStart = ToVisualCoord(new Vector2(0.0f, 0.0f));
-                PointF drawEnd = ToVisualCoord(new Vector2(_texture.Image.Width, _texture.Image.Height));
+                PointF drawEnd = ToVisualCoord(new Vector2(VisibleTexture.Image.Width, VisibleTexture.Image.Height));
                 RectangleF drawArea = RectangleF.FromLTRB(drawStart.X, drawStart.Y, drawEnd.X, drawEnd.Y);
 
                 // Draw background
@@ -383,7 +381,7 @@ namespace TombEditor.Controls
 
                 // Draw image
                 e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-                _texture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
+                VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
                     {
                         // System.Drawing being silly, it draws the first row of pixels only half, so everything would be shifted
                         // To work around it, we have to do some silly coodinate changes :/
@@ -392,36 +390,46 @@ namespace TombEditor.Controls
                             new RectangleF(-0.5f, -0.5f, tempBitmap.Width + 0.5f, tempBitmap.Height + 0.5f),
                             GraphicsUnit.Pixel);
                     });
-            
-                // Draw selection
-                var selectedTexture = _editor.SelectedTexture;
-                if (selectedTexture.Texture == _texture)
-                {
-                    // This texture is currently selected ...
-                    PointF[] points = new PointF[]
-                        {
-                            ToVisualCoord(selectedTexture.TexCoord0),
-                            ToVisualCoord(selectedTexture.TexCoord1),
-                            ToVisualCoord(selectedTexture.TexCoord2),
-                            ToVisualCoord(selectedTexture.TexCoord3)
-                        };
 
-                    e.Graphics.DrawPolygon(textureSelectionPen, points);
-                    e.Graphics.DrawPolygon(textureSelectionPenTriangle, new PointF[] { points[0], points[1], points[2] });
-
-                    for (int i = 0; i < 4; ++i)
-                    {
-                        Brush brush = _selectedTexCoordIndex == i ? textureSelectionBrushSelection : textureSelectionPen.Brush;
-                        e.Graphics.FillRectangle(brush,
-                            points[i].X - textureSelectionPointWidth * 0.5f, points[i].Y - textureSelectionPointWidth * 0.5f,
-                            textureSelectionPointWidth, textureSelectionPointWidth);
-                    }
-                }
+                OnPaintSelection(e);
             }
 
             // Draw border next to scroll bars
             using (Pen pen = new Pen(DarkUI.Config.Colors.LighterBackground, 1.0f))
                 e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
+        }
+
+        protected virtual void OnPaintSelection(PaintEventArgs e)
+        {
+            // Draw selection
+            var selectedTexture = SelectedTexture;
+            if (selectedTexture.Texture == VisibleTexture)
+            {
+                // This texture is currently selected
+                PointF[] points = new PointF[]
+                    {
+                            ToVisualCoord(selectedTexture.TexCoord0),
+                            ToVisualCoord(selectedTexture.TexCoord1),
+                            ToVisualCoord(selectedTexture.TexCoord2),
+                            ToVisualCoord(selectedTexture.TexCoord3)
+                    };
+
+                // Draw fill color
+                e.Graphics.FillPolygon(textureSelectionBrush, new PointF[] { points[0], points[2], points[3] });
+                e.Graphics.FillPolygon(textureSelectionBrushTriangle, new PointF[] { points[0], points[1], points[2] });
+
+                // Draw outlines
+                e.Graphics.DrawPolygon(textureSelectionPen, points);
+                e.Graphics.DrawPolygon(textureSelectionPenTriangle, new PointF[] { points[0], points[1], points[2] });
+
+                for (int i = 0; i < 4; ++i)
+                {
+                    Brush brush = _selectedTexCoordIndex == i ? textureSelectionBrushSelection : textureSelectionPen.Brush;
+                    e.Graphics.FillRectangle(brush,
+                        points[i].X - textureSelectionPointWidth * 0.5f, points[i].Y - textureSelectionPointWidth * 0.5f,
+                        textureSelectionPointWidth, textureSelectionPointWidth);
+                }
+            }
         }
 
         [DefaultValue(BorderStyle.FixedSingle)]
@@ -432,6 +440,7 @@ namespace TombEditor.Controls
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
         public Vector2 ViewPosition
         {
             get { return _viewPosition; }
@@ -444,7 +453,9 @@ namespace TombEditor.Controls
                 Invalidate();
             }
         }
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
         public float ViewScale
         {
             get { return _viewScale; }
@@ -457,5 +468,43 @@ namespace TombEditor.Controls
                 Invalidate();
             }
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
+        public LevelTexture VisibleTexture
+        {
+            get { return _visibleTexture; }
+            set
+            {
+                if (_visibleTexture == value)
+                    return;
+                ResetVisibleTexture(value);
+            }
+        }
+
+        public void ResetVisibleTexture(LevelTexture texture)
+        {
+            _visibleTexture = texture;
+            ViewPosition = new Vector2((VisibleTexture?.IsAvailable ?? false) ? VisibleTexture.Image.Width * 0.5f : 128, (Height - _scrollSizeTotal) * 0.5f);
+            ViewScale = 1.0f;
+            Invalidate();
+        }
+        
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
+        public TextureArea SelectedTexture
+        {
+            get { return _selectedTexture; }
+            set
+            {
+                if (_selectedTexture == value)
+                    return;
+                _selectedTexture = value;
+                SelectedTextureChanged?.Invoke(this, EventArgs.Empty);
+                Invalidate();
+            }
+        }
+
+        public event EventHandler<EventArgs> SelectedTextureChanged;
     }
 }

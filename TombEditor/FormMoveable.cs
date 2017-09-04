@@ -13,7 +13,6 @@ namespace TombEditor
 {
     public partial class FormMoveable : DarkForm
     {
-        private Editor _editor = Editor.Instance;
         private MoveableInstance _movable;
         
         public FormMoveable(MoveableInstance movable)

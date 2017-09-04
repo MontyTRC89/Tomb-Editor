@@ -9,13 +9,16 @@ namespace TombEditor.Geometry
     public class LevelTexture : Texture
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+        public const float TextureSoundGranularity = 64.0f;
+
         public string Path { get; private set; }
         public Exception ImageLoadException { get; private set; }
         public bool Convert512PixelsToDoubleRows { get; private set; } = false;
 
         private bool _replaceMagentaWithTransparency = true;
         public override bool ReplaceMagentaWithTransparency => _replaceMagentaWithTransparency;
+
+        private TextureSound[,] _textureSounds = new TextureSound[0, 0];
 
         public LevelTexture()
         { }
@@ -56,6 +59,11 @@ namespace TombEditor.Geometry
                     image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
                 Image = image;
+
+                // Resize sound array
+                ResizeTextureSounds(
+                    (int)Math.Ceiling(Image.Width / TextureSoundGranularity),
+                    (int)Math.Ceiling(Image.Height / TextureSoundGranularity));
             }
             catch (Exception exc)
             {
@@ -97,6 +105,45 @@ namespace TombEditor.Geometry
                 ImageLoadException = ImageLoadException,
                 _replaceMagentaWithTransparency = _replaceMagentaWithTransparency
             };
+        }
+
+        public TextureSound GetTextureSound(int x, int y)
+        {
+            return _textureSounds[x, y];
+        }
+
+        public void SetTextureSound(int x, int y, TextureSound value)
+        {
+            _textureSounds[x, y] = value;
+        }
+
+        public TextureSound? GetTextureSoundFromTexCoord(Vector2 coord)
+        {
+            coord /= TextureSoundGranularity;
+            if (!((coord.X >= 0) && (coord.Y >= 0) && (coord.X < TextureSoundWidth) && (coord.Y < TextureSoundHeight)))
+                return null;
+            return _textureSounds[(int)(coord.X), (int)(coord.Y)];
+        }
+
+        public int TextureSoundWidth => _textureSounds.GetLength(0);
+        public int TextureSoundHeight => _textureSounds.GetLength(1);
+
+        public void ResizeTextureSounds(int width, int height)
+        {
+            int requiredTextureSoundWidth = Math.Max(TextureSoundWidth, width);
+            int requiredTextureSoundHeight = Math.Max(TextureSoundHeight, height);
+            if ((TextureSoundWidth < requiredTextureSoundWidth) ||
+                (TextureSoundHeight < requiredTextureSoundHeight))
+            {
+                var newTextureSounds = new TextureSound[requiredTextureSoundWidth, requiredTextureSoundHeight];
+                for (int y = 0; y < requiredTextureSoundHeight; ++y)
+                    for (int x = 0; x < requiredTextureSoundWidth; ++x)
+                        newTextureSounds[x, y] = TextureSound.Stone;
+                for (int y = 0; y < TextureSoundHeight; ++y)
+                    for (int x = 0; x < TextureSoundWidth; ++x)
+                        newTextureSounds[x, y] = _textureSounds[x, y];
+                _textureSounds = newTextureSounds;
+            }
         }
     }
 }

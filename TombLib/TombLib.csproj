@@ -103,6 +103,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Collision.cs" />
     <Compile Include="Utils\MathUtilsEx.cs" />
+    <Compile Include="Utils\ConservativeRasterizer.cs" />
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
