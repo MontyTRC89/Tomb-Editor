@@ -1016,9 +1016,8 @@ namespace TombEditor.Geometry.IO
                         reader.ReadInt32();
                     for (int i = 0; i < 256; i++)
                         reader.ReadInt32();
-
-                    int TODO_ANIMATED_TEXTURE_IMPORT;
-                    /*for (int i = 0; i < 40; i++)
+                    
+                    for (int i = 0; i < 40; i++)
                     {
                         int defined = reader.ReadInt32();
                         int firstTexture = reader.ReadInt32();
@@ -1027,47 +1026,28 @@ namespace TombEditor.Geometry.IO
                         if (defined != 1)
                             continue;
 
-                        var aSet = new AnimatedTextureSet();
+                        int TODO_ANIMATED_TEXTURE_IMPORT;
+                        /*var aSet = new AnimatedTextureSet();
 
                         for (int j = firstTexture; j <= lastTexture; j++)
                         {
-                            int relative = j % 16;
-
-                            int txtY = (int)Math.Floor(relative / 4.0f);
-                            int txtX = relative - 4 * txtY;
-
-                            txtX *= 64;
-                            txtY *= 64;
-
-                            int tile = (int)Math.Floor(j / 16.0f);
-
-                            AnimatedTexture aTexture = new AnimatedTexture((short)txtX, (short)txtY, (short)tile);
+                            int txtY = j / 4;
+                            int txtX = j % 4;
+                            
+                            AnimatedTexture aTexture = new AnimatedTexture(txtX, txtY, 64, 64);
                             aSet.Textures.Add(aTexture);
                         }
 
-                        level.AnimatedTextures.Add(aSet);
-                    }*/
+                        level.AnimatedTextures.Add(aSet);*/
+                    }
 
-                    int TODO_SOUND_TEXTURE_IMPORT;
-                    /*for (int i = 0; i < 256; i++)
+                    // Read texture sounds
+                    texture.ResizeTextureSounds(4, 64);
+                    for (int i = 0; i < 256; i++)
                     {
-                        int relative = i % 16;
-
-                        int txtY = (int)Math.Floor(relative / 4.0f);
-                        int txtX = relative - 4 * txtY;
-
-                        txtX *= 64;
-                        txtY *= 64;
-
-                        int tile = (int)Math.Floor(i / 16.0f);
-
-                        var txtSound = new TextureSound((short)txtX, (short)txtY, (short)tile)
-                        {
-                            Sound = (TextureSounds)(reader.ReadByte())
-                        };
-
-                        level.TextureSounds.Add(txtSound);
-                    }*/
+                        TextureSound textureSound = (TextureSound)(reader.ReadByte() & 0xf);
+                        texture.SetTextureSound(i % 4, i / 4, textureSound);
+                    }
 
                     // Connect flip rooms
                     progressReporter.ReportProgress(67, "Prcessing flip rooms table");

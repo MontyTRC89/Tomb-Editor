@@ -7,6 +7,7 @@ using TombLib.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using TombLib.Utils;
+using SharpDX;
 
 namespace TombEditor.Compilers
 {
@@ -51,20 +52,29 @@ namespace TombEditor.Compilers
             _texture16CompressedSize = (uint)_texture16.Length;
         }
 
-        private TextureSound GetTextureSound(Room room, int x, int z)
-        {/*
-            var txt = _level.TextureSamples[texture];
+        private TextureSound? GetTextureSound(bool isTriangle, TextureArea area)
+        {
+            LevelTexture texture = area.Texture as LevelTexture;
+            if (texture == null)
+                return null;
 
-            foreach (var txtSound in _level.TextureSounds)
-            {
-                if (txt.X >= txtSound.X && txt.Y >= txtSound.Y && txt.X < txtSound.X + 64 &&
-                    txt.Y < txtSound.Y + 64 &&
-                    txt.Page == txtSound.Page)
-                {
-                    return txtSound.Sound;
-                }
-            }
-            */
+            // Top right position for now
+            Vector2 topRight = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), isTriangle ? area.TexCoord2 : Vector2.Min(area.TexCoord2, area.TexCoord3));
+            return texture.GetTextureSoundFromTexCoord(topRight);
+        }
+
+        private TextureSound GetTextureSound(Room room, int x, int z)
+        {
+            Block sector = room.Blocks[x, z];
+
+            TextureSound? result0 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.Floor));
+            if (result0.HasValue)
+                return result0.Value;
+
+            TextureSound? result1 = GetTextureSound(!sector.FloorIsQuad, sector.GetFaceTexture(BlockFace.FloorTriangle2));
+            if (result1.HasValue)
+                return result1.Value;
+
             return TextureSound.Stone;
         }
 

@@ -492,7 +492,7 @@ namespace TombEditor.Compilers
                     var sector = new tr_room_sector();
                     var aux = new TrSectorAux();
 
-                    sector.BoxIndex = 0x7ff6;
+                    sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (int)GetTextureSound(room, x, z)));
                     sector.FloorDataIndex = 0;
 
                     if (block.FloorPortal != null)

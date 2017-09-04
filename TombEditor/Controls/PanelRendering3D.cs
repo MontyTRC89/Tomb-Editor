@@ -353,7 +353,7 @@ namespace TombEditor.Controls
                 };
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-            _gizmo = new Gizmo(deviceManager);
+            _gizmo = new Gizmo(_editor, deviceManager);
 
             logger.Info("Graphic Device ready");
         }

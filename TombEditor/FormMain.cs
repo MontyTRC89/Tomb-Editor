@@ -59,6 +59,8 @@ namespace TombEditor
             // Initialize panels
             panel3D.InitializePanel(_deviceManager);
             panelItem.InitializePanel(_deviceManager);
+            panelTextureMap.Configuration = _editor.Configuration;
+            panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
             // Initialize the geometry importer class
             GeometryImporterExporter.Initialize(_deviceManager);
@@ -342,6 +344,18 @@ namespace TombEditor
                 numLightDirectionX.Enabled = HasDirection;
                 numLightDirectionY.Enabled = HasDirection;
             }
+
+            // Update texture map
+            if (obj is Editor.SelectedTexturesChangedEvent)
+                panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
+
+            // Reset texture map
+            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
+                panelTextureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
+
+            // Center texture on texture map
+            if (obj is Editor.SelectTextureAndCenterViewEvent)
+                panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -1220,7 +1234,7 @@ namespace TombEditor
 
         private void butTextureSounds_Click(object sender, EventArgs e)
         {
-            using (var form = new FormTextureSounds())
+            using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
                 form.ShowDialog(this);
         }
 

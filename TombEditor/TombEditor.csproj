@@ -143,9 +143,6 @@
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\PanelTextureSounds.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\PanelAnimatedTextures.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -227,7 +224,7 @@
     <Compile Include="Geometry\GeometryImporter.cs" />
     <Compile Include="Geometry\LevelSettings.cs" />
     <Compile Include="Geometry\RoomGeometryInstance.cs" />
-    <Compile Include="Geometry\TextureSounds.cs" />
+    <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
     <Compile Include="Geometry\IO\Prj2Loader.cs" />

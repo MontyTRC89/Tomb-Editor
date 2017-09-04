@@ -27,8 +27,8 @@ namespace TombEditor
     public class Gizmo
     {
         private GizmoAxis _axis;
-
         private readonly Editor _editor;
+
         private readonly RasterizerState _rasterizerWireframe;
         private readonly DepthStencilState _depthStencilState;
         private readonly DepthStencilState _depthStencilStateDefault;
@@ -43,11 +43,11 @@ namespace TombEditor
         private readonly Color4 _green;
         private readonly Color4 _blue;
 
-        public Gizmo(DeviceManager deviceManager)
+        public Gizmo(Editor editor, DeviceManager deviceManager)
         {
             _deviceManager = deviceManager;
             _device = deviceManager.Device;
-            _editor = Editor.Instance;
+            _editor = editor;
 
             _red = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
             _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);

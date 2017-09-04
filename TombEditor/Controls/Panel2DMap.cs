@@ -80,13 +80,13 @@ namespace TombEditor.Controls
         {
             ViewPosition = (new Vector2(Width, Height) * 0.5f - new Vector2(16.0f)) / ViewScale;
         }
-        
-        private Vector2 FromVisualCoord(PointF pos)
+
+        public Vector2 FromVisualCoord(PointF pos)
         {
             return new Vector2((pos.X - Width * 0.5f) / ViewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / ViewScale + ViewPosition.Y);
         }
 
-        private PointF ToVisualCoord(Vector2 pos)
+        public PointF ToVisualCoord(Vector2 pos)
         {
             return new PointF((pos.X - ViewPosition.X) * ViewScale + Width * 0.5f, Height * 0.5f - (pos.Y - ViewPosition.Y) * ViewScale);
         }
