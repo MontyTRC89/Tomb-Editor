@@ -68,7 +68,8 @@ namespace TombEditor.Geometry.IO
 
         public static void CheckLoadedTexture(LevelSettings settings, LevelTexture texture, IProgressReporter progressReporter)
         {
-            while (texture.ImageLoadException != null)
+            bool ignoreError = false;
+            while ((texture.ImageLoadException != null) && !ignoreError)
                 progressReporter.InvokeGui(delegate (IWin32Window owner)
                     {
                         switch (MessageBox.Show(owner, "The texture file '" + settings.MakeAbsolute(texture.Path) +
@@ -80,6 +81,7 @@ namespace TombEditor.Geometry.IO
                                 texture.SetPath(settings, BrowseTextureFile(settings, texture.Path, owner));
                                 break;
                             case DialogResult.No:
+                                ignoreError = true;
                                 break;
                             case DialogResult.Cancel:
                                 throw new OperationCanceledException("Canceled because texture was not loadable");
