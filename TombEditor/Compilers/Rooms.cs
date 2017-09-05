@@ -1150,7 +1150,7 @@ namespace TombEditor.Compilers
                     // Set color
                     if (Count > 1)
                     {
-                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * new Vector4(8.0f / Count) + new Vector4(0.5f);
+                        Vector4 averageColor = new Vector4(R, G, B, 0.0f) * ((1.0f / 16.0f) / Count);
                         vertex.Lighting2 = PackColorTo16Bit(averageColor);
                         vertices[i] = vertex;
                     }
