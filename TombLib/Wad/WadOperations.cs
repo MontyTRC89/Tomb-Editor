@@ -213,7 +213,8 @@ namespace TombLib.Wad
 
                 var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
                 var newInfo = new WadSoundInfo();
-
+                
+                // Fill the new sound info
                 newInfo.Volume = oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = oldInfo.Chance;
@@ -221,12 +222,17 @@ namespace TombLib.Wad
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
                 newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
+                newInfo.Loop = (byte)(oldInfo.Characteristics & 0x03);
 
                 int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
 
+                // Read all samples linked to this sound info (for example footstep has 4 samples)
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
+                    // TODO: use the configured path in editor
                     string fileName = "Sounds\\Samples\\" + oldWad.Sounds[j];
+
+                    // If wave sound exists, then load it in memory
                     if (File.Exists(fileName))
                     {
                         using (var reader = new BinaryReader(File.OpenRead(fileName)))
