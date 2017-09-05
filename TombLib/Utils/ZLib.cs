@@ -2,28 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace TombEditor
+namespace TombLib.Utils
 {
     public static class ZLib
     {
-        private static void CopyStream(Stream input, Stream output)
-        {
-            byte[] buffer = new byte[2048];
-            do
-            {
-                int len = input.Read(buffer, 0, buffer.GetLength(0));
-                if (len <= 0)
-                    break;
-                output.Write(buffer, 0, len);
-            } while (true);
-        }
-
         public static byte[] CompressData(Stream inStream)
         {
             using (var outStream = new MemoryStream())
             {
-                using (var outZStream = new zlib.ZOutputStream(outStream, zlib.zlibConst.Z_BEST_COMPRESSION))
-                    CopyStream(inStream, outZStream);
+                MiniZ.Functions.Compress(inStream, outStream, int.MaxValue);
                 return outStream.ToArray();
             }
         }
@@ -31,12 +18,10 @@ namespace TombEditor
         public static byte[] DecompressData(Stream inStream)
         {
             using (var outStream = new MemoryStream())
-                using (var outZStream = new zlib.ZOutputStream(inStream))
-                {
-                    CopyStream(inStream, outZStream);
-                    outZStream.finish();
-                    return outStream.ToArray();
-                }
+            {
+                MiniZ.Functions.Decompress(inStream, outStream);
+                return outStream.ToArray();
+            }
         }
 
         public static byte[] CompressData(byte[] inData)

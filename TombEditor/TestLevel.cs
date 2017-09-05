@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.IO;
 using NLog;
 using TombLib.IO;
+using TombEditor;
+using TombLib.Utils;
 
 namespace TombEngine
 {   
@@ -451,9 +451,6 @@ namespace TombEngine
             FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReaderEx reader = new BinaryReaderEx(fileStream);
             byte[] buffer;
-            MemoryStream stream = new MemoryStream();
-            Inflater inflater = new Inflater(false);
-            InflaterInputStream input;
 
             reader.ReadBlock(out Version);
             reader.ReadBlock(out NumRoomTextureTiles);
@@ -462,55 +459,35 @@ namespace TombEngine
 
             reader.ReadBlock(out Texture32UncompressedSize);
             reader.ReadBlock(out Texture32CompressedSize);
+
             Texture32 = new byte[Texture32CompressedSize];
             reader.ReadBlockArray(out Texture32, Texture32CompressedSize);
-            stream.Write(Texture32, 0, (int)Texture32CompressedSize);
-            Texture32 = new byte[Texture32UncompressedSize];
-            stream.Seek(0, SeekOrigin.Begin);
-            input = new InflaterInputStream(stream, new Inflater(false));
-            input.Read(Texture32, 0, (int)Texture32UncompressedSize);
-
+            Texture32 = ZLib.DecompressData(Texture32);
+            
             BinaryWriterEx wrttext = new BinaryWriterEx(new FileStream("textures.raw", FileMode.Create, FileAccess.Write, FileShare.None));
             wrttext.WriteBlockArray(Texture32);
             wrttext.Flush();
             wrttext.Close();
-
-            stream = new MemoryStream();
+            
             reader.ReadBlock(out Texture16UncompressedSize);
             reader.ReadBlock(out Texture16CompressedSize);
             Texture16 = new byte[Texture16CompressedSize];
             reader.ReadBlockArray(out Texture16, Texture16CompressedSize);
-            stream.Write(Texture16, 0, (int)Texture16CompressedSize);
-            Texture16 = new byte[Texture16UncompressedSize];
-            stream.Seek(0, SeekOrigin.Begin);
-            input = new InflaterInputStream(stream, new Inflater(false));
-            input.Read(Texture16, 0, (int)Texture16UncompressedSize);
-
-
-            stream = new MemoryStream();
+            Texture16 = ZLib.DecompressData(Texture16);
+            
             reader.ReadBlock(out MiscTextureUncompressedSize);
             reader.ReadBlock(out MiscTextureCompressedSize);
             MiscTexture = new byte[MiscTextureCompressedSize];
             reader.ReadBlockArray(out MiscTexture, MiscTextureCompressedSize);
-            stream.Write(MiscTexture, 0, (int)MiscTextureCompressedSize);
-            MiscTexture = new byte[MiscTextureUncompressedSize];
-            stream.Seek(0, SeekOrigin.Begin);
-            input = new InflaterInputStream(stream, new Inflater(false));
-            input.Read(MiscTexture, 0, (int)MiscTextureUncompressedSize);
-
-
-            stream = new MemoryStream();
+            MiscTexture = ZLib.DecompressData(MiscTexture);
+            
             reader.ReadBlock(out LevelUncompressedSize);
             reader.ReadBlock(out LevelCompressedSize);
             buffer = new byte[LevelCompressedSize];
             reader.ReadBlockArray(out buffer, LevelCompressedSize);
-            stream.Write(buffer, 0, (int)LevelCompressedSize);
-            buffer = new byte[LevelUncompressedSize];
-            stream.Seek(0, SeekOrigin.Begin);
-            input = new InflaterInputStream(stream, new Inflater(false));
-            input.Read(buffer, 0, (int)LevelUncompressedSize);
-
-            stream = new MemoryStream();
+            buffer = ZLib.DecompressData(buffer);
+            
+            var stream = new MemoryStream();
             stream.Write(buffer, 0, (int)LevelUncompressedSize);
             stream.Seek(0, SeekOrigin.Begin);
 

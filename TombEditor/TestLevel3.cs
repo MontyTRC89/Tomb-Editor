@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using ICSharpCode.SharpZipLib.Zip.Compression;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using System.IO;
 using NLog;
 using TombLib.IO;
@@ -148,7 +146,6 @@ namespace TombEngine
             FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReaderEx reader = new BinaryReaderEx(fileStream);
             MemoryStream stream = new MemoryStream();
-            Inflater inflater = new Inflater(false);
 
             reader.ReadBlock(out Version);
             byte[] palette = reader.ReadBytes(768);

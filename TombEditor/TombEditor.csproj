@@ -53,9 +53,6 @@
     <Reference Include="DarkUI">
       <HintPath>..\Libs\DarkUI.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\Libs\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
       <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -103,9 +100,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="zlib.net">
-      <HintPath>..\Libs\zlib.net.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Clipboard.cs" />
@@ -272,7 +266,6 @@
     <Compile Include="Geometry\StaticInstance.cs" />
     <Compile Include="Geometry\TriggerInstance.cs" />
     <Compile Include="TexturePackerTest.cs" />
-    <Compile Include="ZLib.cs" />
     <None Include="Editor\font.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
