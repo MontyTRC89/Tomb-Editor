@@ -30,21 +30,15 @@ namespace TombLib.Wad
 
         public byte[] ToByteArray()
         {
-            byte[] buffer;
-
             using (var ms = new MemoryStream())
             {
-                using (var writer = new BinaryWriter(ms))
-                {
-                    writer.Write(Width);
-                    writer.Write(Height);
-                    writer.Write(Image.ToByteArray());
+                var writer = new BinaryWriter(ms);
+                writer.Write(Width);
+                writer.Write(Height);
 
-                    buffer = ms.ToArray();
-                }
+                Image.WriteToStreamRaw(ms);
+                return ms.ToArray();
             }
-
-            return buffer;
         }
 
         public Hash UpdateHash()

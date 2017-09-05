@@ -40,64 +40,59 @@ namespace TombLib.Wad
 
         public byte[] ToByteArray()
         {
-            byte[] buffer;
-
             using (var ms = new MemoryStream())
             {
-                using (var writer = new BinaryWriter(ms))
+                var writer = new BinaryWriter(ms);
+                writer.Write(_boundingSphere.Center.X);
+                writer.Write(_boundingSphere.Center.Y);
+                writer.Write(_boundingSphere.Center.Z);
+                writer.Write(_boundingSphere.Radius);
+
+                int numVertices = _verticesPositions.Count;
+                writer.Write(numVertices);
+
+                for (int i = 0; i < _verticesPositions.Count; i++)
                 {
-                    writer.Write(_boundingSphere.Center.X);
-                    writer.Write(_boundingSphere.Center.Y);
-                    writer.Write(_boundingSphere.Center.Z);
-                    writer.Write(_boundingSphere.Radius);
-
-                    int numVertices = _verticesPositions.Count;
-                    writer.Write(numVertices);
-
-                    for (int i = 0; i < _verticesPositions.Count; i++)
-                    {
-                        writer.Write(_verticesPositions[i].X);
-                        writer.Write(_verticesPositions[i].Y);
-                        writer.Write(_verticesPositions[i].Z);
-                    }
-
-                    if (_verticesNormals.Count > 0)
-                    {
-                        for (int i = 0; i < _verticesNormals.Count; i++)
-                        {
-                            writer.Write(_verticesNormals[i].X);
-                            writer.Write(_verticesNormals[i].Y);
-                            writer.Write(_verticesNormals[i].Z);
-                        }
-                    }
-
-                    if (_verticesShades.Count > 0)
-                    {
-                        for (int i = 0; i < _verticesShades.Count; i++)
-                        {
-                            writer.Write(_verticesShades[i]);
-                        }
-                    }
-
-                    int numPolygons = _polygons.Count;
-
-                    for (int i = 0; i < _polygons.Count; i++)
-                    {
-                        writer.Write((short)_polygons[i].Shape);
-                        writer.Write(_polygons[i].Indices[0]);
-                        writer.Write(_polygons[i].Indices[1]);
-                        writer.Write(_polygons[i].Indices[2]);
-                        if (_polygons[i].Shape == WadPolygonShape.Rectangle) writer.Write(_polygons[i].Indices[3]);
-                        writer.Write(_polygons[i].Texture.Hash.Hash1);
-                        writer.Write(_polygons[i].Transparent);
-                        writer.Write(_polygons[i].ShineStrength);
-                    }
-
-                    buffer = ms.ToArray();
+                    writer.Write(_verticesPositions[i].X);
+                    writer.Write(_verticesPositions[i].Y);
+                    writer.Write(_verticesPositions[i].Z);
                 }
-            }
 
-            return buffer;
+                if (_verticesNormals.Count > 0)
+                {
+                    for (int i = 0; i < _verticesNormals.Count; i++)
+                    {
+                        writer.Write(_verticesNormals[i].X);
+                        writer.Write(_verticesNormals[i].Y);
+                        writer.Write(_verticesNormals[i].Z);
+                    }
+                }
+
+                if (_verticesShades.Count > 0)
+                {
+                    for (int i = 0; i < _verticesShades.Count; i++)
+                    {
+                        writer.Write(_verticesShades[i]);
+                    }
+                }
+
+                int numPolygons = _polygons.Count;
+
+                for (int i = 0; i < _polygons.Count; i++)
+                {
+                    writer.Write((short)_polygons[i].Shape);
+                    writer.Write(_polygons[i].Indices[0]);
+                    writer.Write(_polygons[i].Indices[1]);
+                    writer.Write(_polygons[i].Indices[2]);
+                    if (_polygons[i].Shape == WadPolygonShape.Rectangle)
+                        writer.Write(_polygons[i].Indices[3]);
+                    writer.Write(_polygons[i].Texture.Hash.Hash1);
+                    writer.Write(_polygons[i].Transparent);
+                    writer.Write(_polygons[i].ShineStrength);
+                }
+
+                return ms.ToArray();
+            }
         }
 
         public Hash UpdateHash()
