@@ -114,6 +114,7 @@
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\WadOperations.cs" />
+    <Compile Include="Wad\WadSound.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
     <Compile Include="Wad\WadSprite.cs" />
     <Compile Include="Wad\WadSpriteSequence.cs" />
