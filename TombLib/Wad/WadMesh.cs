@@ -9,7 +9,7 @@ using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadMesh
+    public class WadMesh : IEquatable<WadMesh>
     {
         private BoundingSphere _boundingSphere;
         private List<Vector3> _verticesPositions;
@@ -104,6 +104,11 @@ namespace TombLib.Wad
         {
             _hash = Hash.FromByteArray(this.ToByteArray());
             return _hash;
+        }
+
+        public bool Equals(WadMesh other)
+        {
+            return (Hash == other.Hash);
         }
     }
 }

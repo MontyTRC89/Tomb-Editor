@@ -212,9 +212,9 @@ namespace TombEditor.Compilers
             int totalKeyFrameSize = 0;
             int mmm = 0;
 
-            for (int i = 0; i < wad.WadMoveables.Count; i++)
+            for (int i = 0; i < wad.Moveables.Count; i++)
             {
-                foreach (var animation in wad.WadMoveables.ElementAt(i).Value.Animations)
+                foreach (var animation in wad.Moveables.ElementAt(i).Value.Animations)
                 {
                     animation.KeyFramesOffset = totalKeyFrameSize * 2;
 
@@ -344,9 +344,9 @@ namespace TombEditor.Compilers
                 }
             }
 
-            for (int i=0;i<wad.WadMoveables.Count;i++)
+            for (int i=0;i<wad.Moveables.Count;i++)
             {
-                var oldMoveable = wad.WadMoveables.ElementAt(i).Value;
+                var oldMoveable = wad.Moveables.ElementAt(i).Value;
                 var newMoveable = new tr_moveable();
 
                 newMoveable.Animation = (ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
@@ -520,9 +520,9 @@ namespace TombEditor.Compilers
             }
 
             // Convert static meshes
-            for (int i=0;i<wad.WadStatics.Count;i++)
+            for (int i=0;i<wad.Statics.Count;i++)
             {
-                var oldStaticMesh = wad.WadStatics.ElementAt(i).Value;
+                var oldStaticMesh = wad.Statics.ElementAt(i).Value;
                 var newStaticMesh = new tr_staticmesh();
 
                 newStaticMesh.ObjectID = oldStaticMesh.ObjectID;

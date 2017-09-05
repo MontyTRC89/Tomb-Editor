@@ -1429,7 +1429,7 @@ namespace TombEditor.Controls
                         _device.Viewport.MaxDepth, modelViewProjection);
 
                     string message = instance.ToString();
-                    message += "\n" + _editor.Level.Wad.WadMoveables[instance.WadObjectId].ToString();
+                    message += "\n" + _editor.Level.Wad.Moveables[instance.WadObjectId].ToString();
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance.Position);
@@ -1600,7 +1600,7 @@ namespace TombEditor.Controls
                         _device.Viewport.MaxDepth, modelViewProjection);
 
                     string message = instance.ToString();
-                    message += "\n" + _editor.Level.Wad.WadStatics[instance.WadObjectId].ToString();
+                    message += "\n" + _editor.Level.Wad.Statics[instance.WadObjectId].ToString();
 
                     // Object position
                     message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance.Position);
@@ -1621,7 +1621,7 @@ namespace TombEditor.Controls
         {
             if (_editor?.Level?.Wad == null)
                 return;
-            if (!_editor.Level.Wad.WadMoveables.ContainsKey(459))
+            if (!_editor.Level.Wad.Moveables.ContainsKey(459))
                 return;
 
             _device.SetBlendState(_device.BlendStates.Opaque);

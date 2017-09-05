@@ -230,9 +230,9 @@ namespace TombEditor
 
                 if (_editor.Level?.Wad != null)
                 {
-                    foreach (var movable in _editor.Level.Wad.WadMoveables.Values)
+                    foreach (var movable in _editor.Level.Wad.Moveables.Values)
                         comboItems.Items.Add(movable);
-                    foreach (var staticMesh in _editor.Level.Wad.WadStatics.Values)
+                    foreach (var staticMesh in _editor.Level.Wad.Statics.Values)
                         comboItems.Items.Add(staticMesh);
                     comboItems.SelectedIndex = 0;
                 }
@@ -245,9 +245,9 @@ namespace TombEditor
                 if (!e.Current.HasValue)
                     comboItems.SelectedIndex = -1;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.Items.Add(_editor.Level.Wad.WadStatics[e.Current.Value.Id]);
+                    comboItems.Items.Add(_editor.Level.Wad.Statics[e.Current.Value.Id]);
                 else
-                    comboItems.Items.Add(_editor.Level.Wad.WadMoveables[e.Current.Value.Id]);
+                    comboItems.Items.Add(_editor.Level.Wad.Moveables[e.Current.Value.Id]);
             }
 
             // Update item color control
