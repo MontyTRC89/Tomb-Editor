@@ -29,29 +29,9 @@ namespace TombEditor.Compilers
             }
         }
 
-        private ushort _numRoomTextureTiles;
-        private ushort _numObjectTextureTiles;
-        private const ushort NumBumpTextureTiles = 0;
-
-        private uint _texture32UncompressedSize;
-        private uint _texture32CompressedSize;
-        private byte[] _texture32;
-
-        private uint _texture16UncompressedSize;
-        private uint _texture16CompressedSize;
-        private byte[] _texture16;
-
-        private uint _miscTextureUncompressedSize;
-        private uint _miscTextureCompressedSize;
-        private byte[] _miscTexture;
-
-        private uint _levelUncompressedSize;
-        private uint _levelCompressedSize;
-
+        private byte[] _texture32Data;
         private ushort[] _floorData;
-
         private tr_mesh[] _meshes;
-
         private uint[] _meshPointers;
         private tr_animation[] _animations;
         private tr_state_change[] _stateChanges;
@@ -94,7 +74,7 @@ namespace TombEditor.Compilers
             : base(level, dest, progressReporter)
         {}
 
-        private void CompileLevelTask1()
+        private void PrepareLevelData()
         {
             ConvertWadMeshes();
             ConvertWad2DataToTr4();
@@ -105,9 +85,12 @@ namespace TombEditor.Compilers
             GetAllReachableRooms();
             BuildPathFindingData();
             BuildFloorData();
+
+            // Combine all texture data in the final texture map
+            PrepareTextures();
         }
 
-        private void CompileLevelTask2()
+        private void PrepareSound()
         {
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
@@ -132,16 +115,11 @@ namespace TombEditor.Compilers
             if (_level.Wad == null)
                 throw new NotSupportedException("A wad must be loaded to compile to *.tr4.");
             
-            PrepareFontAndSkyTexture();
-
-            // Build level data in multiple threads
-            using (Task task1 = Task.Factory.StartNew(CompileLevelTask1))
-                using (Task task2 = Task.Factory.StartNew(CompileLevelTask2))
+            // Prepare level data in parallel to the sounds
+            using (Task task1 = Task.Factory.StartNew(PrepareLevelData))
+                using (Task task2 = Task.Factory.StartNew(PrepareSound))
                     Task.WaitAll(task1, task2);
-
-            // Now combine all texture data in the final texture map
-            PrepareTextures();
-
+            
             //Write the final level
             WriteLevelTr4();
 

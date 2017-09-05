@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -13,10 +14,10 @@ namespace TombEditor.Compilers
             var wad = _level.Wad.OriginalWad;
 
             // Now begin to compile the geometry block in a MemoryStream
-            using (var geometryData = new MemoryStream())
+            using (var geometryDataBuffer = new MemoryStream())
             {
                 {
-                    var writer = new BinaryWriterEx(geometryData); // Don't dispose
+                    var writer = new BinaryWriterEx(geometryDataBuffer); // Don't dispose
                     ReportProgress(85, "Writing geometry data to memory buffer");
 
                     const int filler = 0;
@@ -198,51 +199,80 @@ namespace TombEditor.Compilers
 
                     writer.Flush();
                 }
-                geometryData.Seek(0, SeekOrigin.Begin);
+                geometryDataBuffer.Seek(0, SeekOrigin.Begin);
 
                 using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     ReportProgress(90, "Writing final level");
-
-                    var version = new byte[] { 0x54, 0x52, 0x34, 0x00 };
-                    writer.WriteBlockArray(version);
+                    writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
 
                     ReportProgress(95, "Writing textures");
 
-                    writer.Write(_numRoomTextureTiles);
-                    writer.Write(_numObjectTextureTiles);
-                    writer.Write(NumBumpTextureTiles);
+                    // The room texture tile count currently also currently contains the wad textures
+                    // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
+                    writer.Write((ushort)(_texture32Data.GetLength(0) / (256 * 256 * 4)));
+                    writer.Write((ushort)0);
+                    writer.Write((ushort)0);
 
-                    writer.Write(_texture32UncompressedSize);
-                    writer.Write(_texture32CompressedSize);
-                    writer.WriteBlockArray(_texture32);
+                    // Compress data
+                    ReportProgress(96, "Compressing data");
 
-                    writer.Write(_texture16UncompressedSize);
-                    writer.Write(_texture16CompressedSize);
-                    writer.WriteBlockArray(_texture16);
+                    byte[] texture32 = null;
+                    int texture32UncompressedSize = -1;
+                    byte[] texture16 = null;
+                    int texture16UncompressedSize = -1;
+                    byte[] textureMisc = null;
+                    int textureMiscUncompressedSize = -1;
+                    byte[] geometryData = null;
+                    int geometryDataUncompressedSize = -1;
+                        
+                    using (Task Texture32task = Task.Factory.StartNew(() =>
+                    {
+                        texture32 = ZLib.CompressData(_texture32Data);
+                        texture32UncompressedSize = _texture32Data.Length;
+                    }))
+                    using (Task Texture16task = Task.Factory.StartNew(() =>
+                    {
+                        byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, 256, _texture32Data.GetLength(0) / (256 * 4));
+                        texture16 = ZLib.CompressData(texture16Data);
+                        texture16UncompressedSize = texture16Data.Length;
+                    }))
+                    using (Task textureMiscTask = Task.Factory.StartNew(() =>
+                    {
+                        Stream textureMiscData = PrepareFontAndSkyTexture();
+                        textureMisc = ZLib.CompressData(textureMiscData);
+                        textureMiscUncompressedSize = (int)(textureMiscData.Length);
+                    }))
+                    using (Task GeometryDataTask = Task.Factory.StartNew(() =>
+                    {
+                        geometryData = ZLib.CompressData(geometryDataBuffer);
+                        geometryDataUncompressedSize = (int)(geometryDataBuffer.Length);
+                    }))
+                        Task.WaitAll(Texture32task, Texture16task, textureMiscTask, GeometryDataTask);
+                    
+                    // Write data
+                    ReportProgress(97, "Writing compressed data to file.");
 
-                    writer.Write(_miscTextureUncompressedSize);
-                    writer.Write(_miscTextureCompressedSize);
-                    writer.WriteBlockArray(_miscTexture);
+                    writer.Write(texture32UncompressedSize);
+                    writer.Write(texture32.Length);
+                    writer.Write(texture32);
 
-                    ReportProgress(95, "Compressing geometry data");
+                    writer.Write(texture16UncompressedSize);
+                    writer.Write(texture16.Length);
+                    writer.Write(texture16);
 
-                    var geometrySize = (int)geometryData.Length;
-                    var buffer = ZLib.CompressData(geometryData);
-                    _levelUncompressedSize = (uint)geometrySize;
-                    _levelCompressedSize = (uint)buffer.Length;
+                    writer.Write(textureMiscUncompressedSize);
+                    writer.Write(textureMisc.Length);
+                    writer.Write(textureMisc);
 
-                    ReportProgress(80, "Writing goemetry data");
-
-                    writer.Write(_levelUncompressedSize);
-                    writer.Write(_levelCompressedSize);
-                    writer.WriteBlockArray(buffer);
+                    writer.Write(geometryDataUncompressedSize);
+                    writer.Write(geometryData.Length);
+                    writer.Write(geometryData);
 
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    int numSamples = _level.Wad.OriginalWad.Sounds.Count;
-                    writer.WriteBlock(numSamples);
+                    writer.Write(_level.Wad.OriginalWad.Sounds.Count);
 
-                    ReportProgress(80, "Writing WAVE sounds");
+                    ReportProgress(98, "Writing WAVE sounds");
 
                     writer.Write(_bufferSamples);
 
@@ -263,8 +293,7 @@ namespace TombEditor.Compilers
                 ReportProgress(85, "Writing geometry data to memory buffer");
 
                 // Write version
-                var version = new byte[] { 0x38, 0x00, 0x18, 0xFF };
-                writer.WriteBlockArray(version);
+                writer.WriteBlockArray(new byte[] { 0x38, 0x00, 0x18, 0xFF });
 
                 using (var readerPalette = new BinaryReader(new FileStream("Editor\\palette.bin", FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
@@ -275,7 +304,7 @@ namespace TombEditor.Compilers
 
                 // Write textures
                 // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                int numTextureTiles = _numRoomTextureTiles + _numObjectTextureTiles + 1;
+                int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4) + 1;
                 writer.Write(numTextureTiles);
 
                 // Fake 8 bit textures
@@ -283,7 +312,8 @@ namespace TombEditor.Compilers
                 writer.Write(fakeTextures);
 
                 // 16 bit textures
-                writer.Write(_textures16);
+                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, 256, _texture32Data.GetLength(0) / (256 * 4));
+                writer.Write(texture16Data);
 
                 using (var readerRaw = new BinaryReader(new FileStream("sprites3.raw", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
