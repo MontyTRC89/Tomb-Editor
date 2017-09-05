@@ -34,8 +34,7 @@ namespace TombLib.Wad
         private Dictionary<uint, WadStatic> _staticMeshes;
 
         // Sounds
-        private List<short> _soundMap;
-        private List<WadSoundInfo> _soundInfos;
+        private Dictionary<ushort, WadSoundInfo> _soundInfos;
 
         // Sprites
         private List<WadSpriteSequence> _spriteSequences;
@@ -72,14 +71,8 @@ namespace TombLib.Wad
             _meshes = new Dictionary<Hash, WadMesh>();
             _moveables = new Dictionary<uint, WadMoveable>();
             _staticMeshes = new Dictionary<uint, WadStatic>();
-            _soundMap = new List<short>();
-            _soundInfos = new List<WadSoundInfo>();
+            _soundInfos = new Dictionary<ushort, WadSoundInfo>();
             _spriteSequences = new List<WadSpriteSequence>();
-
-            for (int i = 0; i < 370; i++)
-            {
-                _soundMap.Add(-1);
-            }
         }
 
         public Wad2(GraphicsDevice device) : this()
@@ -91,8 +84,7 @@ namespace TombLib.Wad
         public Dictionary<Hash, WadMesh> Meshes { get { return _meshes; } }
         public Dictionary<uint, WadMoveable> Moveables { get { return _moveables; } }
         public Dictionary<uint, WadStatic> Statics { get { return _staticMeshes; } }
-        public List<short> SoundMap { get { return _soundMap; } }
-        public List<WadSoundInfo> SoundInfo { get { return _soundInfos; } }
+        public Dictionary<ushort, WadSoundInfo> SoundInfo { get { return _soundInfos; } }
         public List<WadSpriteSequence> SpriteSequences { get { return _spriteSequences; } }
 
         public void PrepareDataForDirectX()
