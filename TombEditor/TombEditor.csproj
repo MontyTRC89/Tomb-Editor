@@ -148,6 +148,12 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
+    <Compile Include="FormChooseRoom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormChooseRoom.Designer.cs">
+      <DependentUpon>FormChooseRoom.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormLevelSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -282,6 +288,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormChooseRoom.resx">
+      <DependentUpon>FormChooseRoom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLevelSettings.resx">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>

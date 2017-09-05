@@ -397,7 +397,7 @@ namespace TombEditor
 
             try
             {
-                EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+                EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
             }
             catch (Exception exc)
             {

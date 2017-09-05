@@ -1224,7 +1224,7 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(room);
         }
         
-        public static void AddPortal(Room room, Rectangle area)
+        public static void AddPortal(Room room, Rectangle area, IWin32Window owner)
         {
             // Check if fliproom
             if (room.Flipped)
@@ -1287,8 +1287,16 @@ namespace TombEditor
             }
 
             if (candidates.Count > 1)
-                throw new NotSupportedException("There is more than 1 valid way to connect to a room here! An option dialog is not yet implemented, sorry. :(");
-            if (candidates.Count < 1)
+            {
+                using (var form = new FormChooseRoom("More than one possible room found that can be connected. " +
+                    "Please choose one:", candidates.Select(candidate => candidate.Item2), (selectedRoom) => _editor.SelectedRoom = selectedRoom))
+                {
+                    if ((form.ShowDialog(owner) != DialogResult.OK) || (form.SelectedRoom == null))
+                        return;
+                    candidates.RemoveAll(candidate => candidate.Item2 != form.SelectedRoom);
+                }
+            }
+            if (candidates.Count != 1)
                 throw new ApplicationException("No room candidate found to connect to.");
 
             PortalDirection destinationDirection = candidates[0].Item1;
