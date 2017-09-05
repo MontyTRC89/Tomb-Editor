@@ -119,6 +119,7 @@
     <Compile Include="Compilers\Textures.cs" />
     <Compile Include="Compilers\Util\ObjectTextureManager.cs" />
     <Compile Include="Compilers\Util\TextureAllocator.cs" />
+    <Compile Include="Compilers\Wad.cs" />
     <Compile Include="Compilers\Writer.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\DarkDataGridViewControls.cs">

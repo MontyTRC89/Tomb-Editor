@@ -26,12 +26,6 @@ namespace TombLib.Wad
         Sprite
     }
 
-    public enum WadTexturePageType : byte
-    {
-        Shared = 0,
-        Private = 1
-    }
-
     public enum WadLinkOpcode
     {
         NotUseStack = 0,
@@ -46,5 +40,21 @@ namespace TombLib.Wad
         AxisX = 1,
         AxisY = 2,
         AxisZ = 3
+    }
+
+    public enum WadAnimCommandType : short
+    {
+        PositionReference = 1,
+        JumpReference = 2,
+        EmptyHands = 3,
+        KillEntity = 4,
+        PlaySound = 5,
+        FlipEffect = 6
+    }
+
+    public enum WadPolygonShape : short
+    {
+        Rectangle = 0,
+        Triangle = 1
     }
 }

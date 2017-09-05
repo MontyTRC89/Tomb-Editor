@@ -1,32 +1,36 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct WadPolygon
+    public class WadPolygon
     {
-        // TODO: this structure will be refactored in the future (MontyTRC)
-        public ushort V1;
-        public ushort V2;
-        public ushort V3;
-        public ushort V4;
-        //public ushort Texture;
-        public byte Attributes;
-        public byte Unknown;
-        public int Unused1;
-        public int Unused2;
-        public int Unused3;
-        public int Unused4;
+        public WadPolygonShape Shape { get { return _shape; } }
+        public List<int> Indices { get { return _indices; } }
+        public List<Vector2> UV { get { return _uv; } }
+        public WadTexture Texture { get { return _texture; } set { _texture = value; } }
+        public byte ShineStrength { get { return _shineStrength; } set { _shineStrength = value; } }
+        public bool Transparent { get { return _transparent; } set { _transparent = value; } }
+        public byte Attributes { get { return _attributes; } set { _attributes = value; } }
 
-        // Correct fields
-        public Shape Shape;
-        public List<int> Indices;
-        public int Texture;  
-        public byte ShineStrength;
-        public bool Transparent;
+        private WadPolygonShape _shape;
+        private List<int> _indices;
+        private List<Vector2> _uv;
+        private WadTexture _texture;
+        private byte _shineStrength;
+        private bool _transparent;
+        private byte _attributes;
+
+        public WadPolygon(WadPolygonShape shape)
+        {
+            _shape = shape;
+            _indices = new List<int>();
+            _uv = new List<Vector2>();
+        }
     }
 }

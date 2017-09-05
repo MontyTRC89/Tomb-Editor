@@ -375,5 +375,10 @@ namespace TombLib.Utils
         {
             Array.Copy(_data, 0, destination, offset, _data.GetLength(0));
         }
+
+        public byte[] ToByteArray()
+        {
+            return _data;
+        }
     }
 }

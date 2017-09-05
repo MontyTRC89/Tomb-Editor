@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TombLib.Wad
 {
-    public struct WadSoundInfo
+    public class WadSoundInfo
     {
         public string WaveSound;
         public byte Volume;

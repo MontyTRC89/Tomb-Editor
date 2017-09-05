@@ -78,6 +78,7 @@
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Bone.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\ImageC.cs" />
     <Compile Include="Graphics\TextureLoad.cs" />
     <Compile Include="Graphics\InputLayouts.cs" />
@@ -106,18 +107,17 @@
     <Compile Include="Utils\ConservativeRasterizer.cs" />
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\Texture.cs" />
+    <Compile Include="Wad\WadAnimCommand.cs" />
+    <Compile Include="Wad\WadOperations.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
-    <Compile Include="Wad\WadUtils.cs" />
+    <Compile Include="Wad\WadSprite.cs" />
+    <Compile Include="Wad\WadSpriteSequence.cs" />
     <Compile Include="Wad\Enumerations.cs" />
-    <Compile Include="Wad\ModelType.cs" />
     <Compile Include="Wad\ObjectNames.cs" />
     <Compile Include="Wad\TR4Wad.cs" />
     <Compile Include="Wad\Wad2.cs" />
     <Compile Include="Wad\WadObject.cs" />
-    <Compile Include="Wad\WadShape.cs" />
     <Compile Include="Wad\WadTexture.cs" />
-    <Compile Include="Wad\WadTextureSample.cs" />
-    <Compile Include="Wad\Wad.cs" />
     <Compile Include="Wad\WadAnimation.cs" />
     <Compile Include="Wad\WadAnimDispatch.cs" />
     <Compile Include="Wad\WadKeyFrame.cs" />
@@ -128,12 +128,6 @@
     <Compile Include="Wad\WadPolygon.cs" />
     <Compile Include="Wad\WadStateChange.cs" />
     <Compile Include="Wad\WadStatic.cs" />
-    <Compile Include="Wad\WadVector.cs" />
-    <Compile Include="Wad\WadVector2.cs" />
-    <Compile Include="Wad\WadVector3.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />

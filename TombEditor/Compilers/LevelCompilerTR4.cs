@@ -56,7 +56,7 @@ namespace TombEditor.Compilers
         private tr_animation[] _animations;
         private tr_state_change[] _stateChanges;
         private tr_anim_dispatch[] _animDispatches;
-        private short[] _animCommands;
+        private ushort[] _animCommands;
         private int[] _meshTrees;
         private short[] _frames;
         private tr_moveable[] _moveables;
@@ -97,6 +97,7 @@ namespace TombEditor.Compilers
         private void CompileLevelTask1()
         {
             ConvertWadMeshes();
+            ConvertWad2DataToTr4();
             BuildRooms();
             PrepareItems();
             PrepareSounds();
@@ -104,7 +105,6 @@ namespace TombEditor.Compilers
             GetAllReachableRooms();
             BuildPathFindingData();
             BuildFloorData();
-            CopyWadData();
         }
 
         private void CompileLevelTask2()
@@ -285,142 +285,7 @@ namespace TombEditor.Compilers
             ReportProgress(45, "    Number of flyby cameras: " + tempFlyby.Count);
             ReportProgress(45, "    Number of sinks: " + _sinkTable.Count);
         }
-
-        private void CopyWadData()
-        {
-            ReportProgress(11, "Converting WAD data to TR4 format");
-
-            var wad = _level.Wad.OriginalWad;
-
-            ReportProgress(12, "    Number of animations: " + wad.Animations.Count);
-
-            _animations = new tr_animation[wad.Animations.Count];
-            for (int i = 0; i < _animations.Length; i++)
-            {
-                _animations[i] = new tr_animation
-                {
-                    AnimCommand = wad.Animations[i].CommandOffset,
-                    FrameEnd = wad.Animations[i].FrameEnd,
-                    FrameStart = wad.Animations[i].FrameStart,
-                    FrameOffset = wad.Animations[i].KeyFrameOffset,
-                    FrameSize = wad.Animations[i].KeyFrameSize,
-                    FrameRate = wad.Animations[i].FrameDuration,
-                    NextAnimation = wad.Animations[i].NextAnimation,
-                    NextFrame = wad.Animations[i].NextFrame,
-                    NumAnimCommands = wad.Animations[i].NumCommands,
-                    NumStateChanges = wad.Animations[i].NumStateChanges,
-                    StateChangeOffset = wad.Animations[i].ChangesIndex,
-                    StateID = wad.Animations[i].StateId,
-                    Speed = wad.Animations[i].Speed,
-                    Accel = wad.Animations[i].Accel,
-                    SpeedLateral = wad.Animations[i].SpeedLateral,
-                    AccelLateral = wad.Animations[i].AccelLateral
-                };
-            }
-
-            ReportProgress(13, "    Number of state changes: " + wad.Changes.Count);
-
-            _stateChanges = new tr_state_change[wad.Changes.Count];
-            for (int i = 0; i < _stateChanges.Length; i++)
-            {
-                _stateChanges[i] = new tr_state_change
-                {
-                    AnimDispatch = wad.Changes[i].DispatchesIndex,
-                    NumAnimDispatches = wad.Changes[i].NumDispatches,
-                    StateID = wad.Changes[i].StateId
-                };
-            }
-
-            ReportProgress(14, "    Number of animation dispatches: " + wad.Dispatches.Count);
-
-            _animDispatches = new tr_anim_dispatch[wad.Dispatches.Count];
-            for (int i = 0; i < _animDispatches.Length; i++)
-            {
-                _animDispatches[i] = new tr_anim_dispatch
-                {
-                    High = wad.Dispatches[i].High,
-                    Low = wad.Dispatches[i].Low,
-                    NextAnimation = wad.Dispatches[i].NextAnimation,
-                    NextFrame = wad.Dispatches[i].NextFrame
-                };
-            }
-
-            ReportProgress(15, "    Number of animation commands: " + wad.Commands.Count);
-
-            _animCommands = new short[wad.Commands.Count];
-            for (int i = 0; i < _animCommands.Length; i++)
-            {
-                _animCommands[i] = wad.Commands[i];
-            }
-
-            _meshTrees = new int[wad.Links.Count];
-            for (int i = 0; i < _meshTrees.Length; i++)
-            {
-                _meshTrees[i] = wad.Links[i];
-            }
-
-            ReportProgress(16, "    Number of keyframes: " + wad.KeyFrames.Count);
-
-            _frames = new short[wad.KeyFrames.Count];
-            for (int i = 0; i < _frames.Length; i++)
-            {
-                _frames[i] = wad.KeyFrames[i];
-            }
-
-            _meshPointers = new uint[wad.Pointers.Count];
-            for (int i = 0; i < _meshPointers.Length; i++)
-            {
-                _meshPointers[i] = wad.Pointers[i];
-            }
-
-            ReportProgress(17, "    Number of moveables: " + wad.Moveables.Count);
-
-            _moveables = new tr_moveable[wad.Moveables.Count];
-            for (int i = 0; i < _moveables.Length; i++)
-            {
-                _moveables[i] = new tr_moveable
-                {
-                    Animation = (ushort)wad.Moveables[i].AnimationIndex,
-                    FrameOffset = wad.Moveables[i].KeyFrameOffset,
-                    MeshTree = wad.Moveables[i].LinksIndex,
-                    NumMeshes = wad.Moveables[i].NumPointers,
-                    ObjectID = wad.Moveables[i].ObjectID,
-                    StartingMesh = wad.Moveables[i].PointerIndex
-                };
-            }
-
-            ReportProgress(18, "    Number of static meshes: " + wad.StaticMeshes.Count);
-
-            _staticMeshes = new tr_staticmesh[wad.StaticMeshes.Count];
-            for (int i = 0; i < _staticMeshes.Length; i++)
-            {
-                _staticMeshes[i] = new tr_staticmesh
-                {
-                    CollisionBox = new tr_bounding_box
-                    {
-                        X1 = wad.StaticMeshes[i].CollisionX1,
-                        Y1 = wad.StaticMeshes[i].CollisionY1,
-                        Z1 = wad.StaticMeshes[i].CollisionZ1,
-                        X2 = wad.StaticMeshes[i].CollisionX2,
-                        Y2 = wad.StaticMeshes[i].CollisionY2,
-                        Z2 = wad.StaticMeshes[i].CollisionZ2
-                    },
-                    VisibilityBox = new tr_bounding_box
-                    {
-                        X1 = wad.StaticMeshes[i].VisibilityX1,
-                        Y1 = wad.StaticMeshes[i].VisibilityY1,
-                        Z1 = wad.StaticMeshes[i].VisibilityZ1,
-                        X2 = wad.StaticMeshes[i].VisibilityX2,
-                        Y2 = wad.StaticMeshes[i].VisibilityY2,
-                        Z2 = wad.StaticMeshes[i].VisibilityZ2
-                    },
-                    Flags = wad.StaticMeshes[i].Flags,
-                    Mesh = wad.StaticMeshes[i].PointersIndex,
-                    ObjectID = wad.StaticMeshes[i].ObjectId
-                };
-            }
-        }
-        
+  
         private static tr_room_sector GetSector(tr_room room, int x, int z)
         {
             return room.Sectors[room.NumZSectors * x + z];
@@ -661,111 +526,6 @@ namespace TombEditor.Compilers
                 z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
                 room = sector.FloorPortal.AdjoiningRoom;
             } while (true);
-        }
-
-        private void ConvertWadMeshes()
-        {
-            ReportProgress(11, "Converting WAD meshes to TR4 format");
-
-            var wad = _level.Wad.OriginalWad;
-
-            ReportProgress(12, "    Number of meshes: " + wad.Meshes.Count);
-
-            var tempMeshes = new List<tr_mesh>();
-
-            foreach (var oldMesh in wad.Meshes)
-            {
-                var newMesh = new tr_mesh
-                {
-                    Center = new tr_vertex
-                    {
-                        X = oldMesh.SphereX,
-                        Y = oldMesh.SphereY,
-                        Z = oldMesh.SphereZ
-                    },
-                    Radius = oldMesh.Radius,
-                    NumNormals = oldMesh.NumNormals
-                };
-
-                if (newMesh.NumNormals > 0)
-                {
-                    newMesh.Normals = new tr_vertex[newMesh.NumNormals];
-                    for (int k = 0; k < newMesh.NumNormals; k++)
-                    {
-                        newMesh.Normals[k] = new tr_vertex
-                        {
-                            X = oldMesh.Normals[k].X,
-                            Y = oldMesh.Normals[k].Y,
-                            Z = oldMesh.Normals[k].Z
-                        };
-                    }
-                }
-                else
-                {
-                    newMesh.Lights = new short[-newMesh.NumNormals];
-                    for (int k = 0; k < -newMesh.NumNormals; k++)
-                    {
-                        newMesh.Lights[k] = oldMesh.Shades[k];
-                    }
-                }
-
-                newMesh.NumVertices = (short)oldMesh.NumVertices;
-                newMesh.Vertices = new tr_vertex[newMesh.NumVertices];
-
-                for (int j = 0; j < newMesh.NumVertices; j++)
-                {
-                    newMesh.Vertices[j] = new tr_vertex
-                    {
-                        X = oldMesh.Vertices[j].X,
-                        Y = oldMesh.Vertices[j].Y,
-                        Z = oldMesh.Vertices[j].Z
-                    };
-                }
-
-                var tempQuads = new List<tr_face4>();
-                var tempTriangles = new List<tr_face3>();
-
-                for (int j = 0; j < oldMesh.NumPolygons; j++)
-                {
-                    var poly = oldMesh.Polygons[j];
-
-                    ushort lightingEffect = 0;
-                    if ((poly.Attributes & 0x02) == 0x02)
-                    {
-                        // Shine effect
-                        short shine = (short)((poly.Attributes & 0x7c) >> 2);
-                        lightingEffect |= (ushort)(shine << 1);
-                    }
-
-                    if ((poly.Attributes & 0x01) == 0x01)
-                    {
-                        // Alpha trasparency
-                        lightingEffect |= 0x01;
-                    }
-
-                    if (poly.Shape == 9)
-                    {
-                        newMesh.NumTexturedQuads++;
-                        
-                        var result = _objectTextureManager.AddTexture(_level.Wad.GetTextureArea(poly.Texture, false, poly.Attributes), false, false);
-                        tempQuads.Add(result.CreateFace4(poly.V1, poly.V2, poly.V3, poly.V4, lightingEffect));
-                    }
-                    else
-                    {
-                        newMesh.NumTexturedTriangles++;
-
-                        var result = _objectTextureManager.AddTexture(_level.Wad.GetTextureArea(poly.Texture, true, poly.Attributes), true, false);
-                        tempTriangles.Add(result.CreateFace3(poly.V1, poly.V2, poly.V3, lightingEffect));
-                    }
-                }
-
-                newMesh.TexturedQuads = tempQuads.ToArray();
-                newMesh.TexturedTriangles = tempTriangles.ToArray();
-
-                tempMeshes.Add(newMesh);
-            }
-
-            _meshes = tempMeshes.ToArray();
         }
 
         private void PrepareItems()

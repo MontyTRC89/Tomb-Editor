@@ -93,6 +93,8 @@ namespace TombEditor.Compilers
                                 tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex |= (ushort)(boxIndex << 4);
                             }
                         }
+
+                        _tempRooms[room] = tempRoom;
                     }
                 }
 

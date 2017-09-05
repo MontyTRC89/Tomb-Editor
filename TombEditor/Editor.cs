@@ -245,9 +245,9 @@ namespace TombEditor
         // This is invoked if the loaded wads changed for the level.
         public struct LoadedWadsChangedEvent : IEditorEvent
         {
-            public TombLib.Wad.Wad Current { get; set; }
+            public TombLib.Wad.Wad2 Current { get; set; }
         }
-        public void LoadedWadsChange(TombLib.Wad.Wad wad)
+        public void LoadedWadsChange(TombLib.Wad.Wad2 wad)
         {
             RaiseEvent(new LoadedWadsChangedEvent { Current = wad });
         }
