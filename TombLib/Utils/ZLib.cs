@@ -10,7 +10,7 @@ namespace TombLib.Utils
         {
             using (var outStream = new MemoryStream())
             {
-                MiniZ.Functions.Compress(inStream, outStream, int.MaxValue);
+                MiniZ.Functions.Compress(inStream, outStream, -1);
                 return outStream.ToArray();
             }
         }

@@ -14,9 +14,7 @@ namespace TombEditor.Compilers
     public sealed partial class LevelCompilerTr4
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private byte[] _textures16;
-
+        
         private void PrepareTextures()
         {
             List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
@@ -24,32 +22,14 @@ namespace TombEditor.Compilers
 
             ReportProgress(10, "Building final texture map");
 
-            // The room texture tile count currently also currently contains the wad textures
-            // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
-            _numRoomTextureTiles = (ushort)packedTextures.Count;
-            _numObjectTextureTiles = (ushort)(spritePages.Count);
-            
-            byte[] uncTexture32 = new byte[(spritePages.Count + packedTextures.Count) * (256 * 256 * 4)];
+            byte[] texture32Data = new byte[(spritePages.Count + packedTextures.Count) * (256 * 256 * 4)];
 
             for (int i = 0; i < packedTextures.Count; ++i)
-                packedTextures[i].RawCopyTo(uncTexture32, i * (256 * 256 * 4));
+                packedTextures[i].RawCopyTo(texture32Data, i * (256 * 256 * 4));
             for (int i = 0; i < spritePages.Count; ++i)
-                spritePages[i].RawCopyTo(uncTexture32, (packedTextures.Count + i) * (256 * 256 * 4));
+                spritePages[i].RawCopyTo(texture32Data, (packedTextures.Count + i) * (256 * 256 * 4));
 
-            ReportProgress(80, "Packing 32 bit textures to 16 bit");
-            byte[] uncTexture16 = PackTextureMap32To16Bit(uncTexture32, 256, uncTexture32.GetLength(0) / (256 * 4));
-
-            ReportProgress(80, "Compressing 32 bit textures");
-            _texture32 = ZLib.CompressData(uncTexture32);
-            _texture32UncompressedSize = (uint)uncTexture32.Length;
-            _texture32CompressedSize = (uint)_texture32.Length;
-
-            _textures16 = uncTexture16;
-
-            ReportProgress(80, "Compressing 16 bit textures");
-            _texture16 = ZLib.CompressData(uncTexture16);
-            _texture16UncompressedSize = (uint)uncTexture16.Length;
-            _texture16CompressedSize = (uint)_texture16.Length;
+            _texture32Data = texture32Data;
         }
 
         private TextureSound? GetTextureSound(bool isTriangle, TextureArea area)
@@ -78,37 +58,23 @@ namespace TombEditor.Compilers
             return TextureSound.Stone;
         }
 
-        private bool PrepareFontAndSkyTexture()
+        private Stream PrepareFontAndSkyTexture()
         {
-            try
-            {
-                ReportProgress(18, "Building font & sky textures");
+            ReportProgress(18, "Building font & sky textures");
 
-                var image = ImageC.CreateNew(256, 512);
+            var image = ImageC.CreateNew(256, 512);
 
-                // Read font texture
-                string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
-                ReportProgress(19, "Reading font texture: " + fontFileName);
-                image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName)); 
+            // Read font texture
+            string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
+            ReportProgress(19, "Reading font texture: " + fontFileName);
+            image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName)); 
 
-                // Read sky texture
-                string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
-                ReportProgress(18, "Reading sky texture: " + skyFileName);
-                image.CopyFrom(0, 256, Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName));
+            // Read sky texture
+            string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
+            ReportProgress(18, "Reading sky texture: " + skyFileName);
+            image.CopyFrom(0, 256, Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName));
                 
-                ReportProgress(80, "Compressing font & sky textures");
-                var rawDataStream = image.ToRawStream();
-                _miscTexture = ZLib.CompressData(image.ToRawStream());
-                _miscTextureUncompressedSize = (uint)rawDataStream.Length;
-                _miscTextureCompressedSize = (uint)_miscTexture.Length;
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "An exception occured while loading font and sky.");
-                return false;
-            }
-
-            return true;
+            return image.ToRawStream();
         }
 
         private List<ImageC> BuildSprites(int pagesBeforeSprites)
