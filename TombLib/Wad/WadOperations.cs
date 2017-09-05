@@ -35,12 +35,13 @@ namespace TombLib.Wad
                         byte b = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 2];
                         byte a = 255;
 
-                        if (r == 255 && g == 0 && b == 255) a = 0;
-
                         var color = new ColorC(r, g, b, a);
                         textureData.SetPixel(x, y, color);
                     }
                 }
+
+                // Replace magenta color with alpha transparent black
+                textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
                 texture.Image = textureData;
 

@@ -13,11 +13,9 @@ namespace TombLib.Wad
         public short Flags { get { return _flags; } set { _flags = value; } }
         public BoundingBox VisibilityBox { get { return _visibilityBox; } set { _visibilityBox = value; } }
         public BoundingBox CollisionBox { get { return _collisionBox; } set { _collisionBox = value; } }
-        public BoundingBox BoundingBox { get { return _boundingBox; } set { _boundingBox = value; } }
-
+        
         private BoundingBox _visibilityBox;
         private BoundingBox _collisionBox;
-        private BoundingBox _boundingBox;
         private short _flags;
         private WadMesh _mesh;
 
