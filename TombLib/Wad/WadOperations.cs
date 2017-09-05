@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -197,7 +198,47 @@ namespace TombLib.Wad
                 ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, textures);
             }
 
+            // Convert sounds
+            ConvertTr4Sounds(wad, oldWad);
+
             return wad;
+        }
+
+        private static void ConvertTr4Sounds(Wad2 wad, TR4Wad oldWad)
+        {
+            for (int i = 0; i < 370; i++)
+            {
+                // Check if sound was used
+                if (oldWad.SoundMap[i] == -1) continue;
+
+                var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
+                var newInfo = new WadSoundInfo();
+
+                newInfo.Volume = oldInfo.Volume;
+                newInfo.Range = oldInfo.Range;
+                newInfo.Chance = oldInfo.Chance;
+                newInfo.Pitch = oldInfo.Pitch;
+                newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
+                newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
+                newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
+
+                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
+
+                for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
+                {
+                    string fileName = "Sounds\\Samples\\" + oldWad.Sounds[j];
+                    if (File.Exists(fileName))
+                    {
+                        using (var reader = new BinaryReader(File.OpenRead(fileName)))
+                        {
+                            var sound = new WadSound(reader.ReadBytes((int)reader.BaseStream.Length));
+                            newInfo.WaveSounds.Add(sound);
+                        }
+                    }
+                }
+
+                wad.SoundInfo.Add((ushort)i, newInfo);
+            }
         }
 
         public static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, TR4Wad oldWad, int moveableIndex,

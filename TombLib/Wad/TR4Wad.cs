@@ -134,6 +134,17 @@ namespace TombLib.Wad
         public ushort Flags;
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct wad_sound_info
+    {
+        public ushort Sample;  
+        public byte Volume;
+        public byte Range;
+        public byte Chance;
+        public byte Pitch;
+        public ushort Characteristics;
+    }
+
     public class TR4Wad
     {
         public struct texture_piece
@@ -158,6 +169,8 @@ namespace TombLib.Wad
         public List<short> KeyFrames = new List<short>();
         public List<wad_moveable> Moveables = new List<wad_moveable>();
         public List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
+        public short[] SoundMap = new short[370];
+        public List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
 
         public List<string> Sounds { get; set; } = new List<string>();
         public string BaseName { get; set; }
@@ -385,6 +398,23 @@ namespace TombLib.Wad
                 using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());
+
+                using (var readerSfx = new BinaryReaderEx(new FileStream(BasePath + "\\" + BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
+                {
+                    for (int i = 0; i < 370; i++)
+                    {
+                        SoundMap[i] = readerSfx.ReadInt16();
+                    }
+
+                    uint numSounds = readerSfx.ReadUInt32();
+                    for (int i = 0; i < numSounds; i++)
+                    {
+                        wad_sound_info info;
+                        readerSfx.ReadBlock<wad_sound_info>(out info);
+
+                        SoundInfo.Add(info);
+                    }
+                }
             }
         }
         

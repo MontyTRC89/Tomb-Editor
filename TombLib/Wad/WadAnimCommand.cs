@@ -17,7 +17,7 @@ namespace TombLib.Wad
         private ushort _parameter1;
         private ushort _parameter2;
         private ushort _parameter3;
-
+        
         public WadAnimCommand(WadAnimCommandType type)
         {
             _type = type;
