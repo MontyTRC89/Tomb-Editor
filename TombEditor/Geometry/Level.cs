@@ -15,7 +15,7 @@ namespace TombEditor.Geometry
         public const short MaxSectorCoord = 100;
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
-        public Wad Wad { get; private set; }
+        public Wad2 Wad { get; private set; }
         public LevelSettings Settings { get; set; } = new LevelSettings();
         
         public static Level CreateSimpleLevel()
@@ -87,9 +87,16 @@ namespace TombEditor.Geometry
 
             using (var wad = Wad)
             {
-                var newWad = Wad.LoadWad(path);
+                var newWad = new Wad2();
+
                 try
                 {
+                    var oldWad = new TR4Wad();
+                    oldWad.LoadWad(path);
+
+                    newWad = WadOperations.ConvertTr4Wad(oldWad);
+
+                    newWad.OriginalWad = oldWad;
                     newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
                     newWad.PrepareDataForDirectX();
                 }

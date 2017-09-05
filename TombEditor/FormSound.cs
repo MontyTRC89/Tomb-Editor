@@ -19,7 +19,7 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
         private SoundSourceInstance _soundSource;
-        private Wad _wad;
+        private Wad2 _wad;
 
         private static string[] officialSoundNames = new string[] { "LARA_FEET", "LARA_CLIMB2", "LARA_NO", "LARA_SLIPPING", "LARA_LAND",
             "LARA_CLIMB1", "LARA_DRAW", "LARA_HOLSTER", "LARA_FIRE", "LARA_RELOAD", "LARA_RICOCHET", "PUSH_BLOCK_END", "METAL_SCRAPE_LOOP",
@@ -73,7 +73,7 @@ namespace TombEditor
             "STEAM", "JOBY_GARAGE_DOOR", "JOBY_WIND", "SANDHAM_IN_THE_HOUSE", "SANDHAM_CONVEYS", "CRANKY_GRAPE_CRUSH", "BIKE_HIT_OBJECTS",
             "BIKE_HIT_ENEMIES", "FLAME_EMITTER", "LARA_CLICK_SWITCH" };
 
-        public FormSound(SoundSourceInstance soundSource, Wad wad)
+        public FormSound(SoundSourceInstance soundSource, Wad2 wad)
         {
             _soundSource = soundSource;
             _wad = wad;

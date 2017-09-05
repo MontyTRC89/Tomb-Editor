@@ -9,14 +9,17 @@ namespace TombLib.Wad
 {
     public class WadStatic : WadObject
     {
-        public WadMesh Mesh;
-        public short Flags;
-        public WadVector VisibilityBox1;
-        public WadVector VisibilityBox2;
-        public WadVector CollisionBox1;
-        public WadVector CollisionBox2;
+        public WadMesh Mesh { get { return _mesh; } set { _mesh = value; } }
+        public short Flags { get { return _flags; } set { _flags = value; } }
+        public BoundingBox VisibilityBox { get { return _visibilityBox; } set { _visibilityBox = value; } }
+        public BoundingBox CollisionBox { get { return _collisionBox; } set { _collisionBox = value; } }
+        public BoundingBox BoundingBox { get { return _boundingBox; } set { _boundingBox = value; } }
 
-        public BoundingBox BoundingBox;
+        private BoundingBox _visibilityBox;
+        private BoundingBox _collisionBox;
+        private BoundingBox _boundingBox;
+        private short _flags;
+        private WadMesh _mesh;
 
         public override string ToString()
         {

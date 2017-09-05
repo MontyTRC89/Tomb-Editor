@@ -513,10 +513,10 @@ namespace TombEditor.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_anim_dispatch
     {
-        public short Low;
-        public short High;
-        public short NextAnimation;
-        public short NextFrame;
+        public ushort Low;
+        public ushort High;
+        public ushort NextAnimation;
+        public ushort NextFrame;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

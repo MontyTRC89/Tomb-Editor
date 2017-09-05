@@ -44,15 +44,6 @@ namespace TombEditor.Compilers
                     for (var i = 0; i < _meshes.Length; i++)
                     {
                         var meshSize = _meshes[i].WriteTr4(writer);
-
-                        for (var n = 0; n < _meshPointers.Length; n++)
-                        {
-                            if (wad.HelperPointers[n] == i)
-                            {
-                                _meshPointers[n] = (uint)totalMeshSize;
-                            }
-                        }
-
                         totalMeshSize += (int)meshSize;
                     }
 
@@ -399,18 +390,7 @@ namespace TombEditor.Compilers
                 for (var i = 0; i < _meshes.Length; i++)
                 {
                     var meshSize = _meshes[i].WriteTr3(writer);
-
-                    for (var n = 0; n < _meshPointers.Length; n++)
-                    {
-                        if (wad.HelperPointers[n] == i)
-                        {
-                            _meshPointers[n] = (uint)totalMeshSize;
-                        }
-                    }
-
                     totalMeshSize += (int)meshSize;
-
-                    //if (i < NumMeshes - 1) MeshPointers[i + 1] = MeshPointers[i] + (uint)meshSize;
                 }
 
                 offset2 = writer.BaseStream.Position;

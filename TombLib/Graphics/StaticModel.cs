@@ -47,65 +47,48 @@ namespace TombLib.Graphics
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
-        public static StaticModel FromWad(GraphicsDevice device, WadStatic static_, 
-            Dictionary<uint, WadTexture> texturePages, Dictionary<uint, WadTextureSample> textureSamples)
+        public static StaticModel FromWad2(GraphicsDevice device, Wad2 wad, WadStatic staticMesh, List<WadTexture> reallocatedTextures)
         {
             StaticModel model = new StaticModel(device);
 
             // Initialize the mesh
-            WadMesh msh = static_.Mesh;
-            StaticMesh mesh = new StaticMesh(device, static_.ToString() + "_mesh");
+            WadMesh msh = staticMesh.Mesh;
+            StaticMesh mesh = new StaticMesh(device, staticMesh.ToString() + "_mesh");
+
             mesh.BoundingBox = msh.BoundingBox;
+            mesh.BoundingSphere = msh.BoundingSphere;
 
-            for (int j = 0; j < texturePages.Count; j++)
+            for (int j = 0; j < msh.Polys.Count; j++)
             {
-                Submesh submesh = new Submesh();
-                submesh.Material = new Material();
-                submesh.Material.Type = MaterialType.Flat;
-                submesh.Material.Name = "material_" + j.ToString();
-                submesh.Material.DiffuseMap = (uint)j;
-                mesh.SubMeshes.Add(submesh);
-            }
-
-            for (int j = 0; j < msh.Polygons.Length; j++)
-            {
-                WadPolygon poly = msh.Polygons[j];
-                int textureId = poly.Texture & 0xfff;
-                if (textureId > 2047)
-                    textureId = -(textureId - 4096);
-                short submeshIndex = textureSamples[(uint)textureId].Page;
-
-                List<Vector2> uv = CalculateUVCoordinates(poly, textureSamples);
-
-                if (poly.Shape == Shape.Triangle)
+                WadPolygon poly = msh.Polys[j];
+                
+                if (poly.Shape == WadPolygonShape.Triangle)
                 {
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
+                    int v1 = poly.Indices[0];
+                    int v2 = poly.Indices[1];
+                    int v3 = poly.Indices[2];
+
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInAtlas);
                 }
                 else
                 {
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V1], mesh, uv[0], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V1] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
+                    int v1 = poly.Indices[0];
+                    int v2 = poly.Indices[1];
+                    int v3 = poly.Indices[2];
+                    int v4 = poly.Indices[3];
 
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V4], mesh, uv[3], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V4] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V2], mesh, uv[1], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V2] : 0));
-                    AddStaticVertexAndIndex(msh.Vertices[poly.V3], mesh, uv[2], submeshIndex, (short)(msh.Shades != null ? msh.Shades[poly.V3] : 0));
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInAtlas);
+
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInAtlas);
 
                 }
             }
-
-            for (int j = 0; j < mesh.SubMeshes.Count; j++)
-            {
-                Submesh current = mesh.SubMeshes[j];
-                current.StartIndex = (ushort)mesh.Indices.Count;
-                for (int k = 0; k < current.Indices.Count; k++)
-                    mesh.Indices.Add(current.Indices[k]);
-                current.NumIndices = (ushort)current.Indices.Count;
-            }
-
-            mesh.BoundingSphere = new BoundingSphere(new Vector3(msh.SphereX, msh.SphereY, msh.SphereZ), msh.Radius);
 
             model.Meshes.Add(mesh);
 
