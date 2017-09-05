@@ -139,6 +139,7 @@ namespace TombEditor
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
             soundsIgnoreMissingSounds.Checked = _levelSettings.IgnoreMissingSounds;
+            gameExecutableSuppressAskingForOptionsCheckBox.Checked = _levelSettings.GameExecutableSuppressAskingForOptions;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -486,21 +487,11 @@ namespace TombEditor
                 UpdateDialog();
             }
         }
-
-        private void butApply_Click(object sender, EventArgs e)
+        
+        private void gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            _editor.UpdateLevelSettings(_levelSettings.Clone());
-        }
-
-        private void butOk_Click(object sender, EventArgs e)
-        {
-            _editor.UpdateLevelSettings(_levelSettings.Clone());
-            Close();
-        }
-
-        private void butCancel_Click(object sender, EventArgs e)
-        {
-            Close();
+            _levelSettings.GameExecutableSuppressAskingForOptions = gameExecutableSuppressAskingForOptionsCheckBox.Checked;
+            UpdateDialog();
         }
 
         // Path variable list
@@ -520,6 +511,22 @@ namespace TombEditor
             System.Windows.Forms.Clipboard.SetText(text);
         }
 
+        // Dialog buttons
+        private void butApply_Click(object sender, EventArgs e)
+        {
+            _editor.UpdateLevelSettings(_levelSettings.Clone());
+        }
+
+        private void butOk_Click(object sender, EventArgs e)
+        {
+            _editor.UpdateLevelSettings(_levelSettings.Clone());
+            Close();
+        }
+
+        private void butCancel_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
 
 
 
