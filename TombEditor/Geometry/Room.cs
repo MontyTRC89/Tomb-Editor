@@ -2686,7 +2686,8 @@ namespace TombEditor.Geometry
 
         public void SmartBuildGeometry(Rectangle area)
         {
-            BuildGeometry(area.Inflate(1));
+            area = area.Inflate(1); // Add margin
+            BuildGeometry(area);
             CalculateLightingForThisRoom();
             UpdateBuffers();
 
