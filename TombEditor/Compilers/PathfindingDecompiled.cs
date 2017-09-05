@@ -89,8 +89,11 @@ namespace TombEditor.Compilers
                                     }
                                 }
 
+                                ushort sectorBoxIndex = tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex;
+                                sectorBoxIndex = (ushort)((sectorBoxIndex & 0x0f) | (boxIndex << 4));
+
                                 // Assign the box index to the sector
-                                tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex |= (ushort)(boxIndex << 4);
+                                tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = sectorBoxIndex;
                             }
                         }
 
