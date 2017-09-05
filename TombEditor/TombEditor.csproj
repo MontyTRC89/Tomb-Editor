@@ -238,6 +238,7 @@
     <Compile Include="RowAnimatedTexture.cs" />
     <Compile Include="TestLevel3.cs" />
     <Compile Include="TestLevel.cs" />
+    <Compile Include="TombLauncher.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Controls\MultiPage.cs">
       <SubType>Component</SubType>

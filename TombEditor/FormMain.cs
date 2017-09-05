@@ -7,11 +7,9 @@ using TombEditor.Geometry;
 using SharpDX;
 using TombEditor.Compilers;
 using System.IO;
-using System.Diagnostics;
 using TombEngine;
 using NLog;
 using TombEditor.Geometry.IO;
-using TombLib.Graphics;
 using TombLib.Wad;
 using TombEditor.Controls;
 using TombLib.Utils;
@@ -1201,14 +1199,7 @@ namespace TombEditor
             if (!BuildLevel(true))
                 return;
 
-            string executablePath = _editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.GameExecutableFilePath);
-            var info = new ProcessStartInfo
-            {
-                WorkingDirectory = Path.GetDirectoryName(executablePath),
-                FileName = executablePath
-            };
-
-            Process.Start(info);
+            TombLauncher.Launch(_editor.Level.Settings);
         }
 
         private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
