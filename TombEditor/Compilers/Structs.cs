@@ -610,9 +610,11 @@ namespace TombEditor.Compilers
     public struct tr_sound_details
     {
         public short Sample;
-        public short Volume;
-        public short Unknown1;
-        public short Unknown2;
+        public byte Volume;
+        public byte Range;
+        public byte Chance;
+        public byte Pitch;
+        public ushort Characteristics;
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

@@ -18,6 +18,7 @@ namespace TombLib.Wad
         public bool FlagN { get; set; }
         public bool RandomizePitch { get; set; }
         public bool RandomizeGain { get; set; }
+        public byte Loop { get; set; }
 
         public WadSoundInfo()
         {

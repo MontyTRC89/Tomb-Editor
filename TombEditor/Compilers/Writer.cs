@@ -168,30 +168,56 @@ namespace TombEditor.Compilers
                     writer.Write(numDemo);
 
                     // Write sound data
-                    byte[] sampleIndices;
-                    byte[] soundDetails;
-                    byte[] soundMap;
-                    uint numSampleIndices;
-                    using (var readerSounds = new BinaryReaderEx(new FileStream(
-                        _level.Wad.OriginalWad.BasePath + "\\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
+
+                    // Write sound map
+                    int lastSound = 0;
+                    for (int i = 0; i < 370; i++)
                     {
-                        soundMap = readerSounds.ReadBytes(370 * 2);
-                        _numSoundDetails = (uint)readerSounds.ReadInt32();
-                        soundDetails = readerSounds.ReadBytes((int)_numSoundDetails * 8);
-                        // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                        numSampleIndices = (uint)readerSounds.ReadInt32();
-                        sampleIndices = readerSounds.ReadBytes((int)numSampleIndices * 4);
+                        short soundMapValue = -1;
+                        if (_level.Wad.SoundInfo.ContainsKey((ushort)i))
+                        {
+                            soundMapValue = (short)lastSound;
+                            lastSound++;
+                        }
+
+                        writer.Write(soundMapValue);
                     }
 
-                    writer.Write(soundMap);
+                    // Write sound details
+                    _numSoundDetails = (uint)_level.Wad.SoundInfo.Count;
                     writer.Write(_numSoundDetails);
-                    writer.Write(soundDetails);
+
+                    short lastSample = 0;
+
+                    for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
+                    {
+                        var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
+                        var soundInfo = new tr_sound_details();
+
+                        soundInfo.Sample = lastSample;
+                        soundInfo.Volume = wadInfo.Volume;
+                        soundInfo.Range = wadInfo.Range;
+                        soundInfo.Pitch = wadInfo.Pitch;
+                        soundInfo.Chance = wadInfo.Chance;
+
+                        ushort characteristics = (ushort)(wadInfo.WaveSounds.Count << 2);
+                        if (wadInfo.FlagN) characteristics |= 0x1000;
+                        if (wadInfo.RandomizePitch) characteristics |= 0x2000;
+                        if (wadInfo.RandomizeGain) characteristics |= 0x4000;
+                        characteristics |= wadInfo.Loop;
+
+                        soundInfo.Characteristics = characteristics;
+
+                        writer.WriteBlock<tr_sound_details>(soundInfo);
+
+                        lastSample += (short)wadInfo.WaveSounds.Count;
+                    }
+
+                    int numSampleIndices = lastSample;
                     writer.Write(numSampleIndices);
-                    // writer.Write(sampleIndices);
                     int filler3 = 0;
                     for (int i = 0; i < numSampleIndices; i++)
                         writer.Write(filler3);
-                    // writer.WriteBlockArray(sfxBuffer);
 
                     writer.Write((short)0);
                     writer.Write((short)0);

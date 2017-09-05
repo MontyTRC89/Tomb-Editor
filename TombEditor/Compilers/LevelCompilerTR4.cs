@@ -94,12 +94,18 @@ namespace TombEditor.Compilers
         {
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
-                foreach (var sound in _level.Wad.OriginalWad.Sounds)
+                for (int i = 0; i < 370; i++)
                 {
-                    byte[] soundData = _level.Settings.ReadSound(sound, _level.Settings.IgnoreMissingSounds);
-                    writer.Write(soundData.GetLength(0));
-                    writer.Write(soundData.GetLength(0));
-                    writer.Write(soundData);
+                    if (!_level.Wad.SoundInfo.ContainsKey((ushort)i)) continue;
+
+                    var soundInfo = _level.Wad.SoundInfo[(ushort)i];
+
+                    foreach (var sound in soundInfo.WaveSounds)
+                    {
+                        writer.Write(sound.WaveData.GetLength(0));
+                        writer.Write(sound.WaveData.GetLength(0));
+                        writer.Write(sound.WaveData);
+                    }
                 }
 
             _bufferSamples = stream.ToArray();
