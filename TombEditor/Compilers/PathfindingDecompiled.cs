@@ -135,6 +135,8 @@ namespace TombEditor.Compilers
                 dec_tr_box_aux box1 = dec_boxes[i];
                 dec_boxes[i].OverlapIndex = 0x7ff;
 
+                int numOverlapsAdded = 0;
+
                 if (!box1.Flipped)
                 {
                     if (dec_flipped)
@@ -163,6 +165,7 @@ namespace TombEditor.Compilers
                                     if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
 
                                     dec_numOverlaps++;
+                                    numOverlapsAdded++;
                                 }
                             }
                         }
@@ -194,11 +197,12 @@ namespace TombEditor.Compilers
                                     if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                     dec_overlaps[dec_numOverlaps] = (ushort)j;
-                                    
+
                                     if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
                                     if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
 
                                     dec_numOverlaps++;
+                                    numOverlapsAdded++;
                                 }
                             }
                         }
@@ -210,7 +214,7 @@ namespace TombEditor.Compilers
 
                 i++;
 
-                dec_overlaps[dec_numOverlaps - 1] |= 0x8000;
+                if (numOverlapsAdded != 0) dec_overlaps[dec_numOverlaps - 1] |= 0x8000;
             }
             while (i < dec_numBoxes);
 
