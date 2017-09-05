@@ -8,7 +8,7 @@ using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadTexture : Texture
+    public class WadTexture : Texture, IEquatable<WadTexture>
     {
         private Hash _hash;
         
@@ -53,8 +53,12 @@ namespace TombLib.Wad
             return _hash;
         }
 
-        public Hash Hash { get { return _hash; } }
+        public bool Equals(WadTexture other)
+        {
+            return (Hash == other.Hash);
+        }
 
+        public Hash Hash { get { return _hash; } }
         public int Width { get { return Image.Width; } }
         public int Height { get { return Image.Height; } }
         public Vector2 PositionInAtlas { get; set; }

@@ -503,7 +503,7 @@ namespace TombLib.Wad
                 moveable.Animations[i] = animation;
             }
 
-            wad.WadMoveables.Add(m.ObjectID, moveable);
+            wad.Moveables.Add(m.ObjectID, moveable);
 
             return moveable;
         }
@@ -537,7 +537,7 @@ namespace TombLib.Wad
 
             staticMesh.ObjectID = oldStaticMesh.ObjectId;
 
-            wad.WadStatics.Add(staticMesh.ObjectID, staticMesh);
+            wad.Statics.Add(staticMesh.ObjectID, staticMesh);
 
             return staticMesh;
         }
@@ -646,10 +646,133 @@ namespace TombLib.Wad
             return uv;
         }
 
-        private static void CollectTexturesAndMeshesForCancellation(out List<WadTexture> textures,
+        private static void CollectTexturesAndMeshesForCancellation(Wad2 wad,
+                                                                    WadObject obj,
+                                                                    out List<WadTexture> textures,
                                                                     out List<WadMesh> meshes)
         {
-            throw new NotImplementedException();
+            textures = new List<WadTexture>();
+            meshes = new List<WadMesh>();
+
+            var meshesToCheck = new List<WadMesh>();
+            var texturesToCheck = new List<WadTexture>();
+
+            // Collect all meshes
+            if (obj.GetType() == typeof(WadMoveable))
+            {
+                WadMoveable moveable = (WadMoveable)obj;
+
+                foreach (var mesh in moveable.Meshes)
+                {
+                    if (!meshesToCheck.Contains(mesh)) meshesToCheck.Add(mesh);
+                }
+            }
+            else
+            {
+                WadStatic staticMesh = (WadStatic)obj;
+                meshesToCheck.Add(staticMesh.Mesh);
+            }
+
+            // Now check if some of selected meshes are used elsewhere
+            foreach (var mesh in meshesToCheck)
+            {
+                bool found = false;
+
+                for (int i = 0; i < wad.Moveables.Count; i++)
+                {
+                    var moveable = wad.Moveables.ElementAt(i).Value;
+                    if (obj.GetType() == typeof(WadMoveable) && moveable.ObjectID == obj.ObjectID) continue;
+
+                    foreach (var moveableMesh in moveable.Meshes)
+                    {
+                        if (moveableMesh == mesh)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found) break;
+                }
+
+                if (!found) meshes.Add(mesh);
+
+                found = false;
+
+                for (int i = 0; i < wad.Statics.Count; i++)
+                {
+                    var staticMesh = wad.Statics.ElementAt(i).Value;
+                    if (obj.GetType() == typeof(WadStatic) && staticMesh.ObjectID == obj.ObjectID) continue;
+
+                    if (staticMesh.Mesh == mesh)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) meshes.Add(mesh);
+            }
+
+            // At this point, I have only the meshes to remove and from them I collect all textures
+            foreach (var mesh in meshes)
+            {
+                foreach (var poly in mesh.Polys)
+                {
+                    if (!texturesToCheck.Contains(poly.Texture) && poly.Texture != null) texturesToCheck.Add(poly.Texture); 
+                }
+            }
+
+            // Like for meshes, search inside other objects
+            foreach (var texture in texturesToCheck)
+            {
+                bool found = false;
+
+                for (int i = 0; i < wad.Moveables.Count; i++)
+                {
+                    var moveable = wad.Moveables.ElementAt(i).Value;
+                    if (obj.GetType() == typeof(WadMoveable) && moveable.ObjectID == obj.ObjectID) continue;
+
+                    foreach (var moveableMesh in moveable.Meshes)
+                    {
+                        foreach (var poly in moveableMesh.Polys)
+                        {
+                            if (poly.Texture == texture)
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found) break;
+                    }
+
+                    if (found) break;
+                }
+
+                if (!found) textures.Add(texture);
+
+                found = false;
+
+                for (int i = 0; i < wad.Statics.Count; i++)
+                {
+                    var staticMesh = wad.Statics.ElementAt(i).Value;
+                    if (obj.GetType() == typeof(WadStatic) && staticMesh.ObjectID == obj.ObjectID) continue;
+
+                    foreach (var poly in staticMesh.Mesh.Polys)
+                    {
+                        if (poly.Texture == texture)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (found) break;
+                }
+
+                if (!found) textures.Add(texture);
+            }
         }
 
         public static void DeleteMoveableFromWad2(Wad2 wad, WadMoveable moveable)

@@ -89,8 +89,8 @@ namespace TombLib.Wad
 
         public Dictionary<Hash, WadTexture> Textures { get { return _textures; } }
         public Dictionary<Hash, WadMesh> Meshes { get { return _meshes; } }
-        public Dictionary<uint, WadMoveable> WadMoveables { get { return _moveables; } }
-        public Dictionary<uint, WadStatic> WadStatics { get { return _staticMeshes; } }
+        public Dictionary<uint, WadMoveable> Moveables { get { return _moveables; } }
+        public Dictionary<uint, WadStatic> Statics { get { return _staticMeshes; } }
         public List<short> SoundMap { get { return _soundMap; } }
         public List<WadSoundInfo> SoundInfo { get { return _soundInfos; } }
         public List<WadSpriteSequence> SpriteSequences { get { return _spriteSequences; } }
@@ -140,16 +140,16 @@ namespace TombLib.Wad
             DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
             
             // Create movable models
-            for (int i = 0; i < WadMoveables.Count; i++)
+            for (int i = 0; i < Moveables.Count; i++)
             {
-                WadMoveable mov = WadMoveables.ElementAt(i).Value;
+                WadMoveable mov = Moveables.ElementAt(i).Value;
                 DirectXMoveables.Add(mov.ObjectID, SkinnedModel.FromWad2(GraphicsDevice, this, mov, packedTextures));
             }
 
             // Create static meshes
-            for (int i = 0; i < WadStatics.Count; i++)
+            for (int i = 0; i < Statics.Count; i++)
             {
-                WadStatic staticMesh = WadStatics.ElementAt(i).Value;
+                WadStatic staticMesh = Statics.ElementAt(i).Value;
                 DirectXStatics.Add(staticMesh.ObjectID, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, packedTextures));
             }
         }
