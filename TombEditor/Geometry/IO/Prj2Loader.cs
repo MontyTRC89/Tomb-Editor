@@ -8,6 +8,7 @@ using SharpDX;
 using SharpDX.Toolkit.Graphics;
 using Color = System.Drawing.Color;
 using TombLib.IO;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {

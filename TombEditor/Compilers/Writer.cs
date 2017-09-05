@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using TombLib.IO;
+using TombLib.Utils;
 
 namespace TombEditor.Compilers
 {
