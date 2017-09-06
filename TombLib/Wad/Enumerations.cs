@@ -17,16 +17,7 @@ namespace TombLib.Wad
         OpenTomb
     }
 
-    public enum WadObjectType : short
-    {
-        OldMoveable,
-        OldStaticMesh,
-        Moveable,
-        StaticMesh,
-        Sprite
-    }
-
-    public enum WadLinkOpcode
+    public enum WadLinkOpcode : short
     {
         NotUseStack = 0,
         Push = 1,
@@ -34,7 +25,7 @@ namespace TombLib.Wad
         Read = 3
     }
 
-    public enum WadKeyFrameRotationAxis : byte
+    public enum WadKeyFrameRotationAxis : short
     {
         ThreeAxes = 0,
         AxisX = 1,
