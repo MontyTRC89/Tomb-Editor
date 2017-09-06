@@ -371,7 +371,7 @@ namespace TombEditor.Compilers
                     Rotation = (ushort)(Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0))))),
                     ObjectID = (ushort)instance.WadObjectId,
-                    Intensity1 = PackColorTo16Bit(instance.Color),
+                    Intensity1 = PackColorTo16Bit(new Vector4(instance.Color.Z, instance.Color.Y, instance.Color.X, instance.Color.W)),
                     Intensity2 = 0
                 })
                 .ToArray();
