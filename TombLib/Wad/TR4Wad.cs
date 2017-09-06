@@ -145,6 +145,28 @@ namespace TombLib.Wad
         public ushort Characteristics;
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct wad_sprite_texture
+    {
+        public ushort Tile;
+        public byte X;
+        public byte Y;
+        public ushort Width;
+        public ushort Height;
+        public short LeftSide;
+        public short TopSide;
+        public short RightSide;
+        public short BottomSide;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct wad_sprite_sequence
+    {
+        public int ObjectID;
+        public short NegativeLength;
+        public short Offset;
+    }
+
     public class TR4Wad
     {
         public struct texture_piece
@@ -171,6 +193,9 @@ namespace TombLib.Wad
         public List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
         public short[] SoundMap = new short[370];
         public List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
+        public List<wad_sprite_sequence> SpriteSequences = new List<wad_sprite_sequence>();
+        public List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();
+        public byte[] SpriteData;
 
         public List<string> Sounds { get; set; } = new List<string>();
         public string BaseName { get; set; }
@@ -395,6 +420,7 @@ namespace TombLib.Wad
 
                 reader.Close();
 
+                // Read sounds
                 using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());
@@ -414,6 +440,53 @@ namespace TombLib.Wad
 
                         SoundInfo.Add(info);
                     }
+                }
+
+                // Read sprites
+                using (var readerSprites = new BinaryReaderEx(new FileStream(
+                                            BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
+                FileMode.Open, FileAccess.Read, FileShare.Read)))
+                {
+                    // Version
+                    readerSprites.ReadUInt32();
+
+                    uint numSpritesTextures = readerSprites.ReadUInt32();
+
+                    //Sprite texture array
+                    for (int i = 0; i < numSpritesTextures; i++)
+                    {
+                        byte[] buffer;
+                        readerSprites.ReadBlockArray(out buffer, 16);
+
+                        var spriteTexture = new wad_sprite_texture
+                        {
+                            Tile = buffer[2], 
+                            X = buffer[0],
+                            Y = buffer[1],
+                            Width = (ushort)(buffer[5]),
+                            Height = (ushort)(buffer[7]),
+                            LeftSide = buffer[0],
+                            TopSide = buffer[1],
+                            RightSide = (short)(buffer[0] + buffer[5] + 1),
+                            BottomSide = (short)(buffer[1] + buffer[7] + 1)
+                        };
+
+                        SpriteTextures.Add(spriteTexture);
+                    }
+
+                    // Sprites size
+                    int spriteDataSize = readerSprites.ReadInt32();
+                    SpriteData = readerSprites.ReadBytes(spriteDataSize);    
+
+                    uint numSequences = readerSprites.ReadUInt32();
+
+                    // Sprite sequences
+                    for (int i = 0; i < numSequences; i++)
+                    {
+                        wad_sprite_sequence sequence;
+                        readerSprites.ReadBlock(out sequence);
+                        SpriteSequences.Add(sequence);
+                    }                   
                 }
             }
         }

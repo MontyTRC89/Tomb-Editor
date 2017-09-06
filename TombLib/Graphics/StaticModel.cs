@@ -68,9 +68,9 @@ namespace TombLib.Graphics
                     int v2 = poly.Indices[1];
                     int v3 = poly.Indices[2];
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInAtlas);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInAtlas);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInPackedTexture);
                 }
                 else
                 {
@@ -79,13 +79,13 @@ namespace TombLib.Graphics
                     int v3 = poly.Indices[2];
                     int v4 = poly.Indices[3];
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInAtlas);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInAtlas);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInPackedTexture);
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInAtlas);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInAtlas);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInAtlas);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInPackedTexture);
 
                 }
             }

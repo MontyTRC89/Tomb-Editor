@@ -10,19 +10,19 @@ using System.Drawing;
 
 namespace TombLib.Wad
 {
+    public class ComparerWadTextures : IComparer<WadTexture>
+    {
+        public int Compare(WadTexture x, WadTexture y)
+        {
+            if (x == null || y == null)
+                return 0;
+
+            return -x.Height.CompareTo(y.Height);
+        }
+    }
+
     public class Wad2 : IDisposable
     {
-        private class ComparerWadTextures : IComparer<WadTexture>
-        {
-            public int Compare(WadTexture x, WadTexture y)
-            {
-                if (x == null || y == null)
-                    return 0;
-
-                return -x.Height.CompareTo(y.Height);
-            }
-        }
-
         // Textures
         private Dictionary<Hash, WadTexture> _textures;
 
@@ -38,6 +38,7 @@ namespace TombLib.Wad
 
         // Sprites
         private List<WadSpriteSequence> _spriteSequences;
+        private Dictionary<Hash, WadTexture> _spriteTextures;
 
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
@@ -73,6 +74,7 @@ namespace TombLib.Wad
             _staticMeshes = new Dictionary<uint, WadStatic>();
             _soundInfos = new Dictionary<ushort, WadSoundInfo>();
             _spriteSequences = new List<WadSpriteSequence>();
+            _spriteTextures = new Dictionary<Hash, WadTexture>();
         }
 
         public Wad2(GraphicsDevice device) : this()
@@ -86,6 +88,7 @@ namespace TombLib.Wad
         public Dictionary<uint, WadStatic> Statics { get { return _staticMeshes; } }
         public Dictionary<ushort, WadSoundInfo> SoundInfo { get { return _soundInfos; } }
         public List<WadSpriteSequence> SpriteSequences { get { return _spriteSequences; } }
+        public Dictionary<Hash, WadTexture> SpriteTextures { get { return _spriteTextures; } }
 
         public void PrepareDataForDirectX()
         {
@@ -106,7 +109,7 @@ namespace TombLib.Wad
             foreach (var texture in packedTextures)
             {
                 var point = packer.TryAdd(texture.Width, texture.Height);
-                texture.PositionInAtlas = new Vector2(point.Value.X, point.Value.Y);
+                texture.PositionInPackedTexture = new Vector2(point.Value.X, point.Value.Y);
             }
 
             // Copy the page in a temp bitmap. 
@@ -115,8 +118,8 @@ namespace TombLib.Wad
 
             foreach (var texture in packedTextures)
             {
-                int startX = (int)texture.PositionInAtlas.X;
-                int startY = (int)texture.PositionInAtlas.Y;
+                int startX = (int)texture.PositionInPackedTexture.X;
+                int startY = (int)texture.PositionInPackedTexture.Y;
 
                 for (int y = 0; y < texture.Height; y++)
                 {

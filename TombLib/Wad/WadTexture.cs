@@ -55,6 +55,9 @@ namespace TombLib.Wad
         public Hash Hash { get { return _hash; } }
         public int Width { get { return Image.Width; } }
         public int Height { get { return Image.Height; } }
-        public Vector2 PositionInAtlas { get; set; }
+
+        // Helper data
+        public Vector2 PositionInPackedTexture { get; set; }
+        public ushort Tile { get; set; }
     }
 }

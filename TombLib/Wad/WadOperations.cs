@@ -201,7 +201,71 @@ namespace TombLib.Wad
             // Convert sounds
             ConvertTr4Sounds(wad, oldWad);
 
+            // Convert sprites
+            ConvertTr4Sprites(wad, oldWad);
+
             return wad;
+        }
+
+        private static void ConvertTr4Sprites(Wad2 wad, TR4Wad oldWad)
+        {
+            int spriteDataSize = oldWad.SpriteData.Length;
+
+            // Load the real sprite texture data
+            int numSpriteTexturePages = spriteDataSize / 196608;
+            if ((spriteDataSize % 196608) != 0)
+                numSpriteTexturePages++;
+
+            foreach (var oldSequence in oldWad.SpriteSequences)
+            {
+                int lengthOfSequence = -oldSequence.NegativeLength;
+                int startIndex = oldSequence.Offset;
+
+                var newSequence = new WadSpriteSequence();
+                newSequence.ObjectID = (uint)oldSequence.ObjectID;
+
+                for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
+                {
+                    var oldSpriteTexture = oldWad.SpriteTextures[i];
+
+                    var spriteWidth = oldSpriteTexture.Width + 1;
+                    var spriteHeight = oldSpriteTexture.Height + 1;
+                    var spriteX = oldSpriteTexture.X;
+                    var spriteY = oldSpriteTexture.Y;
+                    var spritePage = ImageC.CreateNew(spriteWidth, spriteHeight);
+
+                    for (int y = 0; y < spriteHeight; y++)
+                        for (int x = 0; x < spriteWidth; x++)
+                        {
+                            int baseIndex = oldSpriteTexture.Tile * 196608 + 768 * (y + spriteY) + 3 * (x + spriteX);
+
+                            byte b = oldWad.SpriteData[baseIndex + 0];
+                            byte g = oldWad.SpriteData[baseIndex + 1];
+                            byte r = oldWad.SpriteData[baseIndex + 2];
+
+                            if (r == 255 & g == 0 && b == 255)
+                                spritePage.SetPixel(x, y, 0, 0, 0, 0);
+                            else
+                                spritePage.SetPixel(x, y, b, g, r, 255);
+                        }
+
+                    // Create the texture
+                    var texture = new WadTexture();
+                    texture.Image = spritePage;
+                    texture.UpdateHash();
+
+                    // Check if texture already exists in Wad2 and eventually add it
+                    if (wad.SpriteTextures.ContainsKey(texture.Hash))
+                        texture = wad.SpriteTextures[texture.Hash];
+                    else
+                        wad.SpriteTextures.Add(texture.Hash, texture);
+
+                    // Add current sprite to the sequence
+                    newSequence.Sprites.Add(texture);
+                }
+
+                wad.SpriteSequences.Add(newSequence);
+            }
         }
 
         private static void ConvertTr4Sounds(Wad2 wad, TR4Wad oldWad)
