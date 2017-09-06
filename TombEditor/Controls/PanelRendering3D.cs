@@ -1628,8 +1628,6 @@ namespace TombEditor.Controls
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
 
-            skinnedModelEffect.Parameters["TextureEnabled"].SetValue(true);
-
             SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[459];
             skinnedModel.BuildAnimationPose(skinnedModel.Animations[0].KeyFrames[0]);
 
@@ -1645,7 +1643,7 @@ namespace TombEditor.Controls
             {
                 SkinnedMesh mesh = skinnedModel.Meshes[i];
 
-                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] * Matrix.Translation(viewProjection.TranslationVector - new Vector3(0, -5120, 0));
+                Matrix modelMatrix = Matrix.Scaling(16.0f) * skinnedModel.AnimationTransforms[i] * _editor.SelectedRoom.Transform;
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(modelMatrix * viewProjection);
 
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
