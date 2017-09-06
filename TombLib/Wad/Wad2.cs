@@ -21,7 +21,7 @@ namespace TombLib.Wad
         }
     }
 
-    public class Wad2 : IDisposable
+    public partial class Wad2 : IDisposable
     {
         // Textures
         private Dictionary<Hash, WadTexture> _textures;
