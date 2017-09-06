@@ -129,9 +129,9 @@ namespace TombLib.Graphics
                         int v2 = poly.Indices[1];
                         int v3 = poly.Indices[2];
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, m, poly.Texture.PositionInAtlas);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInAtlas);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, m, poly.Texture.PositionInAtlas);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, m, poly.Texture.PositionInPackedTexture);
                     }
                     else
                     {
@@ -140,13 +140,13 @@ namespace TombLib.Graphics
                         int v3 = poly.Indices[2];
                         int v4 = poly.Indices[3];
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, m, poly.Texture.PositionInAtlas);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInAtlas);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, m, poly.Texture.PositionInAtlas);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, m, poly.Texture.PositionInPackedTexture);
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, m, poly.Texture.PositionInAtlas);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInAtlas);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, m, poly.Texture.PositionInAtlas);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, m, poly.Texture.PositionInPackedTexture);
                     }
                 }
                 

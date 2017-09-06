@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace TombLib.Wad
 {
-    public struct WadSpriteSequence
+    public class WadSpriteSequence
     {
-        public List<WadSprite> Sprites;
+        public uint ObjectID { get; set; }
+        public List<WadTexture> Sprites { get; private set; }
+
+        public WadSpriteSequence()
+        {
+            Sprites = new List<WadTexture>();
+        }
     }
 }
