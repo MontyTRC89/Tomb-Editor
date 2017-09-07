@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,15 +7,135 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
     public partial class Wad2
     {
         private static byte[] _magicWord = new byte[] { 0x57, 0x41, 0x44, 0x32 };
-        
+        private static byte[] _soundsMagicWord = new byte[] { 0x53, 0x4F, 0x55, 0x4E, 0x44, 0x53 };
+        private static byte[] spritesMagicWord = new byte[] { 0x53, 0x50, 0x52, 0x49, 0x54, 0x45, 0x53 };
+
         public static Wad2 LoadFromStream(Stream stream)
         {
+            Wad2 wad = new Wad2();
+            WadChunkType chunkType;
+
+            using (var reader = new BinaryReaderEx(stream))
+            {
+                byte[] version = reader.ReadBytes(_magicWord.Length);
+
+                // Read textures
+                uint numTextures = reader.ReadUInt32();
+                for (int i=0;i<numTextures;i++)
+                {
+                    var texture = new WadTexture();
+
+                    var image = ImageC.CreateNew(reader.ReadInt32(), reader.ReadInt32());
+                    var buffer = reader.ReadBytes(4 * image.Width * image.Height);
+                    image.SetData(buffer);
+
+                    texture.Image = image;
+                    texture.UpdateHash();
+
+                    wad.Textures.Add(texture.Hash, texture);
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        /* TODO: logic for reading in the future other chunks
+                           Example:
+
+                           if (chunkType == WadChunkType.AdditionalTextureAttributes)
+                           {
+                                // Read new fields
+                           }
+                           else
+                           {
+                                // Unknown chunk (probably Wad2 newer than TombLib)
+                                long chunkSize = reader.ReadUInt64();
+                                reader.Seek(reader.BaseStream.Position + chunkSize, SeekOrigin.Begin);
+                           }
+                        */
+                    }
+                }
+
+                // Read meshes
+                uint numMeshes = reader.ReadUInt32();
+                for (int i=0;i<numMeshes;i++)
+                {
+                    var mesh = new WadMesh();
+
+                    mesh.BoundingSphere = new BoundingSphere(reader.ReadVector3(), reader.ReadSingle());
+
+                    uint numVertices = reader.ReadUInt32();
+                    for (int j=0;j<numVertices;j++)
+                    {
+                        mesh.VerticesPositions.Add(reader.ReadVector3());
+                    }
+
+                    WadMeshLightingType normalsOrShades = (WadMeshLightingType)reader.ReadUInt16();
+                    if (normalsOrShades == WadMeshLightingType.Normals)
+                    {
+                        for (int j = 0; j < numVertices; j++)
+                        {
+                            mesh.VerticesNormals.Add(reader.ReadVector3());
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < numVertices; j++)
+                        {
+                            mesh.VerticesShades.Add(reader.ReadInt16());
+                        }
+                    }
+
+                    uint numPolygons = reader.ReadUInt32();
+                    for (int j=0;j<numPolygons;j++)
+                    {
+                        var poly = new WadPolygon((WadPolygonShape)reader.ReadUInt16());
+
+                        poly.Indices.Add(reader.ReadInt32());
+                        poly.Indices.Add(reader.ReadInt32());
+                        poly.Indices.Add(reader.ReadInt32());
+                        if (poly.Shape == WadPolygonShape.Rectangle) poly.Indices.Add(reader.ReadInt32());
+
+                        poly.UV.Add(reader.ReadVector2());
+                        poly.UV.Add(reader.ReadVector2());
+                        poly.UV.Add(reader.ReadVector2());
+                        if (poly.Shape == WadPolygonShape.Rectangle) poly.UV.Add(reader.ReadVector2());
+
+                        uint textureIndex = reader.ReadUInt32();
+                        poly.Texture = wad.Textures.ElementAt((int)textureIndex).Value;
+
+                        poly.ShineStrength = reader.ReadByte();
+                        poly.Transparent = reader.ReadBoolean();
+                        poly.Attributes = reader.ReadByte();
+
+                        // Check for other chunks
+                        chunkType = (WadChunkType)reader.ReadUInt16();
+                        if (chunkType != WadChunkType.NoExtraChunk)
+                        {
+                            // TODO: logic for reading in the future other chunks
+                        }
+
+                        mesh.Polys.Add(poly);
+                    }
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    mesh.UpdateHash();
+                    wad.Meshes.Add(mesh.Hash, mesh);
+                }
+            }
+
             throw new NotImplementedException();
         }
 
@@ -73,17 +194,18 @@ namespace TombLib.Wad
                     writer.Write(mesh.BoundingSphere.Radius);
 
                     uint numVertices = (uint)mesh.VerticesPositions.Count;
+                    writer.Write(numVertices);
                     foreach (var position in mesh.VerticesPositions)
                     {
                         writer.Write(position);
                     }
 
                     // Has normals or shades?
-                    var hasNormalsOrShades = (mesh.VerticesNormals.Count != 0 ? WadMeshNormalsOrShades.Normals :
-                                                                                WadMeshNormalsOrShades.Shades);
+                    var hasNormalsOrShades = (mesh.VerticesNormals.Count != 0 ? WadMeshLightingType.Normals :
+                                                                                WadMeshLightingType.PrecalculatedGrayShades);
                     writer.Write((ushort)hasNormalsOrShades);
 
-                    if (hasNormalsOrShades == WadMeshNormalsOrShades.Normals)
+                    if (hasNormalsOrShades == WadMeshLightingType.Normals)
                     {
                         foreach (var normal in mesh.VerticesNormals)
                         {
@@ -100,6 +222,7 @@ namespace TombLib.Wad
 
                     // Store number of polygons
                     uint numPolygons = (uint)mesh.Polys.Count;
+                    writer.Write(numPolygons);
                     foreach (var poly in mesh.Polys)
                     {
                         writer.Write((ushort)poly.Shape);
@@ -118,6 +241,7 @@ namespace TombLib.Wad
 
                         // Store index of texture
                         uint textureIndex = (uint)texturesList.IndexOf(poly.Texture);
+                        writer.Write(textureIndex);
 
                         // Attributes
                         writer.Write(poly.ShineStrength);
@@ -275,8 +399,7 @@ namespace TombLib.Wad
                     writer.Write(chunkMagicWord);
                 }
 
-                byte[] soundsMagicWord = new byte[] { 0x53, 0x4F, 0x55, 0x4E, 0x44, 0x53 };
-                writer.Write(soundsMagicWord);
+                writer.Write(_soundsMagicWord);
 
                 // Write sounds
                 uint numSounds = (uint)wad.SoundInfo.Count;
@@ -311,7 +434,6 @@ namespace TombLib.Wad
                     writer.Write(chunkMagicWord);
                 }
 
-                byte[] spritesMagicWord = new byte[] { 0x53, 0x50, 0x52, 0x49, 0x54, 0x45, 0x53 };
                 writer.Write(spritesMagicWord);
 
                 // Write sprites

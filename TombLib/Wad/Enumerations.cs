@@ -54,9 +54,9 @@ namespace TombLib.Wad
         NoExtraChunk = 0xcdcd
     }
 
-    public enum WadMeshNormalsOrShades : ushort
+    public enum WadMeshLightingType : ushort
     {
         Normals,
-        Shades
+        PrecalculatedGrayShades
     }
 }

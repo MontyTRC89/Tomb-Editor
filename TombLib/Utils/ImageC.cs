@@ -102,6 +102,12 @@ namespace TombLib.Utils
             Set(i, color.R, color.G, color.B, color.A);
         }
 
+        public void SetData(byte[] data)
+        {
+            if (data.Length != 4 * Width * Height) return;
+            Array.Copy(data, _data, data.Length);
+        }
+
         public ColorC GetPixel(int x, int y)
         {
             int index = (y * Width + x) * PixelSize;
