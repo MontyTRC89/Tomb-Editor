@@ -43,9 +43,20 @@ namespace TombLib.Wad
         FlipEffect = 6
     }
 
-    public enum WadPolygonShape : short
+    public enum WadPolygonShape : ushort
     {
         Rectangle = 0,
         Triangle = 1
+    }
+
+    public enum WadChunkType : ushort
+    {
+        NoExtraChunk = 0xcdcd
+    }
+
+    public enum WadMeshNormalsOrShades : ushort
+    {
+        Normals,
+        Shades
     }
 }

@@ -13,7 +13,6 @@ namespace TombLib.Wad
     {
         private BoundingSphere _boundingSphere;
         private List<Vector3> _verticesPositions;
-        private List<Vector2> _verticesUV;
         private List<Vector3> _verticesNormals;
         private List<short> _verticesShades;
         private List<WadPolygon> _polygons;
@@ -22,7 +21,6 @@ namespace TombLib.Wad
 
         public BoundingSphere BoundingSphere { get { return _boundingSphere; } set { _boundingSphere = value; } }
         public List<Vector3> VerticesPositions { get { return _verticesPositions; } }
-        public List<Vector2> VerticesUV { get { return _verticesUV; } }
         public List<Vector3> VerticesNormals { get { return _verticesNormals; } }
         public List<short> VerticesShades { get { return _verticesShades; } }
         public List<WadPolygon> Polys { get { return _polygons; } }
@@ -34,7 +32,6 @@ namespace TombLib.Wad
             _verticesPositions = new List<Vector3>();
             _verticesNormals = new List<Vector3>();
             _verticesShades = new List<short>();
-            _verticesUV = new List<Vector2>();
             _polygons = new List<WadPolygon>();
         }
 
