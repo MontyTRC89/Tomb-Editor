@@ -358,6 +358,13 @@ namespace TombLib.Utils
             return new MemoryStream(_data);
         }
 
+        public byte[] ToByteArray()
+        {
+            byte[] buffer = new byte[_data.Length];
+            Array.Copy(_data, buffer, _data.Length);
+            return buffer;
+        }
+
         public Stream ToRawStream(int yStart, int Height)
         {
             return new MemoryStream(_data, yStart * (Width * PixelSize), Height * (Width * PixelSize));
