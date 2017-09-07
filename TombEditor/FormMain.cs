@@ -1845,6 +1845,7 @@ namespace TombEditor
         private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Wad2.SaveToStream(_editor.Level.Wad, File.OpenWrite("E:\\test.wad2"));
+            Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
             //GeometryImporterExporter.ExportRoomToObj(_editor.SelectedRoom, "room.obj");
         }
 
