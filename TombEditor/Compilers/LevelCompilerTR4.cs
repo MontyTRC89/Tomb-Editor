@@ -92,8 +92,18 @@ namespace TombEditor.Compilers
 
         private void PrepareSound()
         {
+            uint numSamples = 0;
+            for (int i=0;i<_level.Wad.SoundInfo.Count;i++)
+            {
+                var soundInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
+                numSamples += (uint)soundInfo.WaveSounds.Count;
+            }
+
             var stream = new MemoryStream();
             using (var writer = new BinaryWriterEx(stream))
+            {
+                writer.Write(numSamples);
+
                 for (int i = 0; i < 370; i++)
                 {
                     if (!_level.Wad.SoundInfo.ContainsKey((ushort)i)) continue;
@@ -107,6 +117,7 @@ namespace TombEditor.Compilers
                         writer.Write(sound.WaveData);
                     }
                 }
+            }
 
             _bufferSamples = stream.ToArray();
         }

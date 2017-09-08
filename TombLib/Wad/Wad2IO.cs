@@ -15,7 +15,7 @@ namespace TombLib.Wad
     {
         private static byte[] _magicWord = new byte[] { 0x57, 0x41, 0x44, 0x32 };
         private static byte[] _soundsMagicWord = new byte[] { 0x53, 0x4F, 0x55, 0x4E, 0x44, 0x53 };
-        private static byte[] spritesMagicWord = new byte[] { 0x53, 0x50, 0x52, 0x49, 0x54, 0x45, 0x53 };
+        private static byte[] _spritesMagicWord = new byte[] { 0x53, 0x50, 0x52, 0x49, 0x54, 0x45, 0x53 };
 
         public static Wad2 LoadFromStream(Stream stream)
         {
@@ -28,7 +28,7 @@ namespace TombLib.Wad
 
                 // Read textures
                 uint numTextures = reader.ReadUInt32();
-                for (int i=0;i<numTextures;i++)
+                for (int i = 0; i < numTextures; i++)
                 {
                     var texture = new WadTexture();
 
@@ -37,9 +37,6 @@ namespace TombLib.Wad
                     image.SetData(buffer);
 
                     texture.Image = image;
-                    texture.UpdateHash();
-
-                    wad.Textures.Add(texture.Hash, texture);
 
                     // Check for other chunks
                     chunkType = (WadChunkType)reader.ReadUInt16();
@@ -60,20 +57,47 @@ namespace TombLib.Wad
                            }
                         */
                     }
+
+                    texture.UpdateHash();
+
+                    wad.Textures.Add(texture.Hash, texture);
                 }
 
                 // Read meshes
                 uint numMeshes = reader.ReadUInt32();
-                for (int i=0;i<numMeshes;i++)
+                for (int i = 0; i < numMeshes; i++)
                 {
                     var mesh = new WadMesh();
+
+                    int xMin = Int32.MaxValue;
+                    int yMin = Int32.MaxValue;
+                    int zMin = Int32.MaxValue;
+                    int xMax = Int32.MinValue;
+                    int yMax = Int32.MinValue;
+                    int zMax = Int32.MinValue;
 
                     mesh.BoundingSphere = new BoundingSphere(reader.ReadVector3(), reader.ReadSingle());
 
                     uint numVertices = reader.ReadUInt32();
-                    for (int j=0;j<numVertices;j++)
+                    for (int j = 0; j < numVertices; j++)
                     {
-                        mesh.VerticesPositions.Add(reader.ReadVector3());
+                        var position = reader.ReadVector3();
+
+                        if (position.X < xMin)
+                            xMin = (int)position.X;
+                        if (position.Y < yMin)
+                            yMin = (int)position.Y;
+                        if (position.Z < zMin)
+                            zMin = (int)position.Z;
+
+                        if (position.X > xMax)
+                            xMax = (int)position.X;
+                        if (position.Y > yMax)
+                            yMax = (int)position.Y;
+                        if (position.Z > zMax)
+                            zMax = (int)position.Z;
+
+                        mesh.VerticesPositions.Add(position);
                     }
 
                     WadMeshLightingType normalsOrShades = (WadMeshLightingType)reader.ReadUInt16();
@@ -93,7 +117,7 @@ namespace TombLib.Wad
                     }
 
                     uint numPolygons = reader.ReadUInt32();
-                    for (int j=0;j<numPolygons;j++)
+                    for (int j = 0; j < numPolygons; j++)
                     {
                         var poly = new WadPolygon((WadPolygonShape)reader.ReadUInt16());
 
@@ -131,12 +155,283 @@ namespace TombLib.Wad
                         // TODO: logic for reading in the future other chunks
                     }
 
+                    mesh.BoundingBox = new BoundingBox(new Vector3(xMin, yMin, zMin), new Vector3(xMax, yMax, zMax));
+
                     mesh.UpdateHash();
                     wad.Meshes.Add(mesh.Hash, mesh);
                 }
+
+                // Read moveables
+                uint numMoveables = reader.ReadUInt32();
+                for (int i = 0; i < numMoveables; i++)
+                {
+                    var moveable = new WadMoveable();
+
+                    moveable.ObjectID = reader.ReadUInt32();
+
+                    uint numMeshesInThisMoveable = reader.ReadUInt32();
+                    for (int j = 0; j < numMeshesInThisMoveable; j++)
+                    {
+                        moveable.Meshes.Add(wad.Meshes.ElementAt((int)reader.ReadUInt32()).Value);
+                    }
+
+                    uint numLinks = reader.ReadUInt32();
+                    for (int j = 0; j < numLinks; j++)
+                    {
+                        var link = new WadLink((WadLinkOpcode)reader.ReadUInt16(),
+                                               reader.ReadVector3());
+
+                        // Check for other chunks
+                        chunkType = (WadChunkType)reader.ReadUInt16();
+                        if (chunkType != WadChunkType.NoExtraChunk)
+                        {
+                            // TODO: logic for reading in the future other chunks
+                        }
+
+                        moveable.Links.Add(link);
+                    }
+
+                    moveable.Offset = reader.ReadVector3();
+
+                    uint numAnimations = reader.ReadUInt32();
+                    for (int j = 0; j < numAnimations; j++)
+                    {
+                        var animation = new WadAnimation();
+
+                        animation.FrameDuration = reader.ReadByte();
+                        animation.StateId = reader.ReadUInt16();
+                        animation.Speed = reader.ReadInt32();
+                        animation.Acceleration = reader.ReadInt32();
+                        animation.LateralSpeed = reader.ReadInt32();
+                        animation.LateralAcceleration = reader.ReadInt32();
+                        animation.NextAnimation = reader.ReadUInt16();
+                        animation.NextFrame = reader.ReadUInt16();
+                        animation.FrameStart = reader.ReadUInt16();
+                        animation.FrameEnd = reader.ReadUInt16();
+                        animation.RealNumberOfFrames = reader.ReadUInt16();
+
+                        uint numKeyframes = reader.ReadUInt32();
+                        for (int k = 0; k < numKeyframes; k++)
+                        {
+                            var keyFrame = new WadKeyFrame();
+
+                            keyFrame.BoundingBox = reader.ReadBoundingBox();
+                            keyFrame.Offset = reader.ReadVector3();
+
+                            for (int l = 0; l < numMeshesInThisMoveable; l++)
+                            {
+                                var angle = new WadKeyFrameRotation();
+
+                                angle.Axis = (WadKeyFrameRotationAxis)reader.ReadUInt16();
+                                angle.X = reader.ReadInt32();
+                                angle.Y = reader.ReadInt32();
+                                angle.Z = reader.ReadInt32();
+
+                                keyFrame.Angles.Add(angle);
+                            }
+
+                            // Check for other chunks
+                            chunkType = (WadChunkType)reader.ReadUInt16();
+                            if (chunkType != WadChunkType.NoExtraChunk)
+                            {
+                                // TODO: logic for reading in the future other chunks
+                            }
+
+                            animation.KeyFrames.Add(keyFrame);
+                        }
+
+                        uint numStateChanges = reader.ReadUInt32();
+                        for (int k = 0; k < numStateChanges; k++)
+                        {
+                            var stateChange = new WadStateChange();
+
+                            stateChange.StateId = reader.ReadUInt16();
+                            stateChange.NumDispatches = reader.ReadUInt32();
+
+                            for (int l = 0; l < stateChange.NumDispatches; l++)
+                            {
+                                var dispatch = new WadAnimDispatch();
+
+                                dispatch.InFrame = reader.ReadUInt16();
+                                dispatch.OutFrame = reader.ReadUInt16();
+                                dispatch.NextAnimation = reader.ReadUInt16();
+                                dispatch.NextFrame = reader.ReadUInt16();
+
+                                // Check for other chunks
+                                chunkType = (WadChunkType)reader.ReadUInt16();
+                                if (chunkType != WadChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                stateChange.Dispatches.Add(dispatch);
+                            }
+
+                            // Check for other chunks
+                            chunkType = (WadChunkType)reader.ReadUInt16();
+                            if (chunkType != WadChunkType.NoExtraChunk)
+                            {
+                                // TODO: logic for reading in the future other chunks
+                            }
+
+                            animation.StateChanges.Add(stateChange);
+                        }
+
+                        uint numAnimCommands = reader.ReadUInt32();
+                        for (int k = 0; k < numAnimCommands; k++)
+                        {
+                            var animCommand = new WadAnimCommand((WadAnimCommandType)reader.ReadUInt16());
+
+                            animCommand.Parameter1 = reader.ReadUInt16();
+                            animCommand.Parameter2 = reader.ReadUInt16();
+                            animCommand.Parameter3 = reader.ReadUInt16();
+
+                            // Check for other chunks
+                            chunkType = (WadChunkType)reader.ReadUInt16();
+                            if (chunkType != WadChunkType.NoExtraChunk)
+                            {
+                                // TODO: logic for reading in the future other chunks
+                            }
+
+                            animation.AnimCommands.Add(animCommand);
+                        }
+
+                        // Check for other chunks
+                        chunkType = (WadChunkType)reader.ReadUInt16();
+                        if (chunkType != WadChunkType.NoExtraChunk)
+                        {
+                            // TODO: logic for reading in the future other chunks
+                        }
+
+                        moveable.Animations.Add(animation);
+                    }
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    wad.Moveables.Add(moveable.ObjectID, moveable);
+                }
+
+                // Read static meshes
+                uint numStaticMeshes = reader.ReadUInt32();
+                for (int i = 0; i < numStaticMeshes; i++)
+                {
+                    var staticMesh = new WadStatic();
+
+                    staticMesh.ObjectID = reader.ReadUInt32();
+                    staticMesh.VisibilityBox = reader.ReadBoundingBox();
+                    staticMesh.CollisionBox = reader.ReadBoundingBox();
+                    staticMesh.Flags = reader.ReadInt16();
+                    staticMesh.Mesh = wad.Meshes.ElementAt((int)reader.ReadUInt32()).Value;
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    wad.Statics.Add(staticMesh.ObjectID, staticMesh);
+                }
+
+                // Read sounds
+                byte[] soundMagicWord = reader.ReadBytes(_soundsMagicWord.Length);
+
+                uint numSounds = reader.ReadUInt32();
+                for (int i = 0; i < numSounds; i++)
+                {
+                    var sound = new WadSoundInfo();
+
+                    ushort soundId = reader.ReadUInt16();
+
+                    sound.Volume = reader.ReadByte();
+                    sound.Range = reader.ReadByte();
+                    sound.Pitch = reader.ReadByte();
+                    sound.Loop = reader.ReadByte();
+                    sound.FlagN = reader.ReadBoolean();
+                    sound.RandomizeGain = reader.ReadBoolean();
+                    sound.RandomizePitch = reader.ReadBoolean();
+
+                    uint numWaves = reader.ReadUInt32();
+                    for (int j = 0; j < numWaves; j++)
+                    {
+                        uint waveSize = reader.ReadUInt32();
+                        var wave = new WadSound(reader.ReadBytes((int)waveSize));
+                        sound.WaveSounds.Add(wave);
+                    }
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    wad.SoundInfo.Add(soundId, sound);
+                }
+
+                // Read sprites
+                byte[] spritesMagicWord = reader.ReadBytes(_spritesMagicWord.Length);
+
+                uint numSprites = reader.ReadUInt32();
+                for (int i = 0; i < numSprites; i++)
+                {
+                    var texture = new WadTexture();
+
+                    var image = ImageC.CreateNew(reader.ReadInt32(), reader.ReadInt32());
+                    var buffer = reader.ReadBytes(4 * image.Width * image.Height);
+                    image.SetData(buffer);
+
+                    texture.Image = image;
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    texture.UpdateHash();
+
+                    wad.SpriteTextures.Add(texture.Hash, texture);
+                }
+
+                uint numSequences = reader.ReadUInt32();
+                for (int i = 0; i < numSequences; i++)
+                {
+                    var sequence = new WadSpriteSequence();
+
+                    sequence.ObjectID = reader.ReadUInt32();
+
+                    uint numSpritesInSequence = reader.ReadUInt32();
+                    for (int j = 0; j < numSpritesInSequence; j++)
+                    {
+                        sequence.Sprites.Add(wad.SpriteTextures.ElementAt((int)reader.ReadUInt32()).Value);
+                    }
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    wad.SpriteSequences.Add(sequence);
+                }
+
+                // Check for other chunks
+                chunkType = (WadChunkType)reader.ReadUInt16();
+                if (chunkType != WadChunkType.NoExtraChunk)
+                {
+                    // TODO: logic for reading in the future other chunks
+                }
             }
 
-            throw new NotImplementedException();
+            return wad;
         }
 
         public static bool SaveToStream(Wad2 wad, Stream stream)
@@ -266,6 +561,8 @@ namespace TombLib.Wad
                 {
                     var moveable = wad.Moveables.ElementAt(i).Value;
 
+                    writer.Write(moveable.ObjectID);
+
                     // Store meshes
                     uint numMeshesInThisMoveable = (uint)moveable.Meshes.Count;
                     writer.Write(numMeshesInThisMoveable);
@@ -275,6 +572,9 @@ namespace TombLib.Wad
                         uint meshIndex = (uint)meshesList.IndexOf(mesh);
                         writer.Write(meshIndex);
                     }
+
+                    uint numLinks = (uint)moveable.Links.Count;
+                    writer.Write(numLinks);
 
                     // Store links
                     foreach (var link in moveable.Links)
@@ -306,6 +606,7 @@ namespace TombLib.Wad
                         writer.Write(animation.NextFrame);
                         writer.Write(animation.FrameStart);
                         writer.Write(animation.FrameEnd);
+                        writer.Write(animation.RealNumberOfFrames);
 
                         // Write keyframes
                         uint numKeyframes = (uint)animation.KeyFrames.Count;
@@ -319,9 +620,9 @@ namespace TombLib.Wad
                             foreach (var angle in keyframe.Angles)
                             {
                                 writer.Write((ushort)angle.Axis);
-                                writer.Write((ushort)angle.X);
-                                writer.Write((ushort)angle.Y);
-                                writer.Write((ushort)angle.Z);
+                                writer.Write(angle.X);
+                                writer.Write(angle.Y);
+                                writer.Write(angle.Z);
                             }
 
                             // No more data, in future we can expand the structure using chunks
@@ -336,7 +637,9 @@ namespace TombLib.Wad
                         foreach (var stateChange in animation.StateChanges)
                         {
                             writer.Write(stateChange.StateId);
-                            writer.Write(stateChange.NumDispatches);
+
+                            uint numDispatches = (uint)stateChange.Dispatches.Count;
+                            writer.Write(numDispatches);
 
                             // Write dispatches
                             foreach (var dispatch in stateChange.Dispatches)
@@ -376,6 +679,10 @@ namespace TombLib.Wad
                         chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
                         writer.Write(chunkMagicWord);
                     }
+
+                    // No more data, in future we can expand the structure using chunks
+                    chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
+                    writer.Write(chunkMagicWord);
                 }
 
                 // Store number of static meshes
@@ -408,7 +715,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < wad.SoundInfo.Count; i++)
                 {
                     var sound = wad.SoundInfo.ElementAt(i).Value;
-                    uint soundId = wad.SoundInfo.ElementAt(i).Key;
+                    ushort soundId = (ushort)wad.SoundInfo.ElementAt(i).Key;
 
                     writer.Write(soundId);
                     writer.Write(sound.Volume);
@@ -434,7 +741,7 @@ namespace TombLib.Wad
                     writer.Write(chunkMagicWord);
                 }
 
-                writer.Write(spritesMagicWord);
+                writer.Write(_spritesMagicWord);
 
                 // Write sprites
                 var spritesList = new List<WadTexture>();

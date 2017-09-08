@@ -381,7 +381,6 @@ namespace TombLib.Wad
                     WadStateChange sc = new WadStateChange();
                     wad_state_change wadSc = oldWad.Changes[(int)anim.ChangesIndex + k];
                     sc.StateId = (ushort)wadSc.StateId;
-                    sc.Dispatches = new List<WadAnimDispatch>();
 
                     for (int n = 0; n < wadSc.NumDispatches; n++)
                     {
@@ -399,7 +398,6 @@ namespace TombLib.Wad
                     animation.StateChanges.Add(sc);
                 }
 
-                animation.AnimCommands = new List<WadAnimCommand>();
                 if (anim.NumCommands < oldWad.Commands.Count)
                 {
                     int lastCommand = anim.CommandOffset;
@@ -494,9 +492,7 @@ namespace TombLib.Wad
 
                     frames += 3;
 
-                    frame.Angles = new WadKeyFrameRotation[m.NumPointers];
-
-                    for (int n = 0; n < frame.Angles.Length; n++)
+                    for (int n = 0; n < m.NumPointers; n++)
                     {
                         short rot = oldWad.KeyFrames[frames];
                         WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
@@ -548,7 +544,7 @@ namespace TombLib.Wad
                                 break;
                         }
 
-                        frame.Angles[n] = kfAngle;
+                        frame.Angles.Add(kfAngle);
                     }
 
                     if ((frames - startOfFrame) < anim.KeyFrameSize)
