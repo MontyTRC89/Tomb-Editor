@@ -9,8 +9,13 @@ namespace TombLib.Wad
 
     public class WadStateChange
     {
-        public ushort StateId;
-        public uint NumDispatches;
-        public List<WadAnimDispatch> Dispatches;
+        public ushort StateId { get; set; }
+        public uint NumDispatches { get; set; }
+        public List<WadAnimDispatch> Dispatches { get; private set; }
+
+        public WadStateChange()
+        {
+            Dispatches = new List<WadAnimDispatch>();
+        }
     }
 }

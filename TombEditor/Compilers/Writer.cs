@@ -296,7 +296,7 @@ namespace TombEditor.Compilers
                     writer.Write(geometryData);
 
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    writer.Write(_level.Wad.OriginalWad.Sounds.Count);
+                    //writer.Write(_level.Wad.Sounds.Count);
 
                     ReportProgress(98, "Writing WAVE sounds");
 

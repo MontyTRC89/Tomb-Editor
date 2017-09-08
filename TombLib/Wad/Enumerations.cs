@@ -17,7 +17,7 @@ namespace TombLib.Wad
         OpenTomb
     }
 
-    public enum WadLinkOpcode : short
+    public enum WadLinkOpcode : ushort
     {
         NotUseStack = 0,
         Push = 1,

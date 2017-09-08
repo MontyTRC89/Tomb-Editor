@@ -3,6 +3,7 @@ using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using TombLib.Wad;
 
@@ -75,7 +76,7 @@ namespace TombEditor.Geometry
             Wad?.Dispose();
             Wad = null;
         }
-        
+
         public void ReloadWad()
         {
             string path = Settings.MakeAbsolute(Settings.WadFilePath);
@@ -87,25 +88,47 @@ namespace TombEditor.Geometry
 
             using (var wad = Wad)
             {
-                var newWad = new Wad2();
-
-                try
+                if (path.ToLower().EndsWith("wad"))
                 {
-                    var oldWad = new TR4Wad();
-                    oldWad.LoadWad(path);
+                    var newWad = new Wad2();
 
-                    newWad = WadOperations.ConvertTr4Wad(oldWad);
+                    try
+                    {
+                        var oldWad = new TR4Wad();
+                        oldWad.LoadWad(path);
 
-                    newWad.OriginalWad = oldWad;
-                    newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
-                    newWad.PrepareDataForDirectX();
+                        newWad = WadOperations.ConvertTr4Wad(oldWad);
+
+                        newWad.OriginalWad = oldWad;
+                        newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
+                        newWad.PrepareDataForDirectX();
+                    }
+                    catch (Exception)
+                    {
+                        newWad?.Dispose();
+                        throw;
+                    }
+
+                    Wad = newWad;
                 }
-                catch (Exception)
+                else
                 {
-                    newWad?.Dispose();
-                    throw;
+                    var newWad = new Wad2();
+
+                    try
+                    {
+                        newWad = Wad2.LoadFromStream(File.OpenRead(path));
+                        newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
+                        newWad.PrepareDataForDirectX();
+                    }
+                    catch (Exception)
+                    {
+                        newWad?.Dispose();
+                        throw;
+                    }
+
+                    Wad = newWad;
                 }
-                Wad = newWad;
             }
         }
         

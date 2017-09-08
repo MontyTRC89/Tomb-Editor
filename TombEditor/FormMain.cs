@@ -1845,23 +1845,24 @@ namespace TombEditor
         private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Wad2.SaveToStream(_editor.Level.Wad, File.OpenWrite("E:\\test.wad2"));
-            Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
+         Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
             //GeometryImporterExporter.ExportRoomToObj(_editor.SelectedRoom, "room.obj");
         }
 
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+         //   _editor.Level.)
             /*  GeometryImporter.LoadModel("low-poly-wooden-door.obj");
               RoomGeometryInstance instance = new RoomGeometryInstance(0, _editor.SelectedRoom);
               instance.Model = GeometryImporter.Models["low-poly-wooden-door.obj"];
               instance.Position = new Vector3(4096, 512, 4096);
               _editor.SelectedRoom.RoomGeometryObjects.Add(instance);*/
 
-            GeometryImporterExporter.LoadModel("room.obj", 1.0f);
+          /*  GeometryImporterExporter.LoadModel("room.obj", 1.0f);
             RoomGeometryInstance instance = new RoomGeometryInstance();
             instance.Model = GeometryImporterExporter.Models["room.obj"];
             instance.Position = new Vector3(4096, 512, 4096);
-            _editor.SelectedRoom.AddObject(_editor.Level, instance);
+            _editor.SelectedRoom.AddObject(_editor.Level, instance);*/
         }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)

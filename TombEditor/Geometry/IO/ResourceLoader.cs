@@ -57,7 +57,7 @@ namespace TombEditor.Geometry.IO
                 else
                     dialog.InitialDirectory = path;
 
-                dialog.Filter = "Tomb Raider WAD (*.wad)|*.wad|All files (*.*)|*.*";
+                dialog.Filter = "Tomb Raider WAD (*.wad)|*.wad|Tomb Editor Wad2 (*.wad2)|*.wad2|All files (*.*)|*.*";
                 dialog.Title = "Load object file (WAD)";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
