@@ -36,8 +36,6 @@ namespace TombEditor.Geometry.IO
 
             ushort chunkMagicWord;
 
-            var PortalSaveIDs = new IdResolver<Portal>();
-
             // First collect all shared lists so we can save references as indices
             var portalsList = new List<Portal>();
             var triggersList = new List<TriggerInstance>();
@@ -56,7 +54,7 @@ namespace TombEditor.Geometry.IO
                         portalsList.Add(portal);
 
                 foreach (var obj in room.Objects)
-                    if (!objectsList.Contains(obj))
+                    if (!objectsList.Contains(obj) && obj.GetType() != typeof(Light))
                         objectsList.Add(obj);
             }
 
@@ -86,10 +84,7 @@ namespace TombEditor.Geometry.IO
                         writer.WriteStringUTF8(path.Path ?? "");
                     writer.Write(level.Settings.IgnoreMissingSounds);
 
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
-                    writer.Write(filler32);
+                    writer.WriteFiller(0x00, 16);
                     
                     // Write portals
                     writer.Write(portalsList.Count);
@@ -97,13 +92,9 @@ namespace TombEditor.Geometry.IO
                     {
                         writer.Write((ushort)level.Rooms.ReferenceIndexOf(p.Room));
                         writer.Write((ushort)level.Rooms.ReferenceIndexOf(p.AdjoiningRoom));
-                        writer.Write((byte)p.Direction);
-                        writer.Write(p.Area.X);
-                        writer.Write(p.Area.Y);
-                        writer.Write(p.Area.Width);
-                        writer.Write(p.Area.Height);
-                        writer.Write(p.Area.Top);
+                        writer.Write((ushort)p.Direction);
                         writer.Write(p.Area.Left);
+                        writer.Write(p.Area.Top);
                         writer.Write(p.Area.Right);
                         writer.Write(p.Area.Bottom);
 
@@ -115,7 +106,11 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Write objects: moveables, static meshes, cameras, sinks, sound sources
-                    int numObjects = objectsList.Count;
+                    int numObjects = 0;
+                    foreach (var o in objectsList)
+                        if (o.GetType() != typeof(Light))
+                            numObjects++;
+
                     writer.Write(numObjects);
                     foreach (var o in objectsList)
                     {
@@ -127,7 +122,6 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
                             writer.Write(instance.ItemType.Id);
                             writer.Write(instance.Position);
-                            writer.Write(instance.SectorPosition);
                             writer.Write(instance.RotationY);
                             writer.Write(instance.RotationYRadians);
                             writer.Write(instance.Ocb);
@@ -140,7 +134,7 @@ namespace TombEditor.Geometry.IO
 
                             // No more data, in future we can expand the structure using chunks
                             chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
+                            writer.Write(chunkMagicWord); 
                         }
                         else if (o.GetType() == typeof(StaticInstance))
                         {
@@ -150,7 +144,6 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
                             writer.Write(instance.ItemType.Id);
                             writer.Write(instance.Position);
-                            writer.Write(instance.SectorPosition);
                             writer.Write(instance.RotationY);
                             writer.Write(instance.RotationYRadians);
                             writer.Write(instance.Ocb);
@@ -169,7 +162,6 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)Prj2ObjectType.Camera);
                             writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
                             writer.Write(instance.Position);
-                            writer.Write(instance.SectorPosition);
                             writer.Write(instance.Flags);
                             writer.Write(instance.Number);
                             writer.Write(instance.Sequence);
@@ -192,7 +184,6 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)Prj2ObjectType.FlybyCamera);
                             writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
                             writer.Write(instance.Position);
-                            writer.Write(instance.SectorPosition);
                             writer.Write(instance.Flags);
                             writer.Write(instance.Number);
                             writer.Write(instance.Sequence);
@@ -216,7 +207,6 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)Prj2ObjectType.Sink);
                             writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
                             writer.Write(instance.Position);
-                            writer.Write(instance.SectorPosition);
                             writer.Write(instance.Strength);
 
                             writer.WriteFiller(0x00, 8);
@@ -232,11 +222,24 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)Prj2ObjectType.SoundSource);
                             writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
                             writer.Write(instance.Position);
-                            writer.Write(instance.SectorPosition);
                             writer.Write(instance.SoundId);
                             writer.Write(instance.Flags);
                             writer.Write(instance.CodeBits);
 
+                            writer.WriteFiller(0x00, 8);
+
+                            // No more data, in future we can expand the structure using chunks
+                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
+                            writer.Write(chunkMagicWord);
+                        }
+                        else if (o.GetType() == typeof(RoomGeometryInstance))
+                        {
+                            RoomGeometryInstance instance = (RoomGeometryInstance)o;
+
+                            writer.Write((ushort)Prj2ObjectType.RoomGeometry);
+                            writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
+                            writer.Write(instance.Position);
+                            
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
@@ -251,17 +254,13 @@ namespace TombEditor.Geometry.IO
                     foreach (var t in triggersList)
                     {
                         writer.Write((ushort)level.Rooms.ReferenceIndexOf(t.Room));
-                        writer.Write(t.Area.X);
-                        writer.Write(t.Area.Y);
-                        writer.Write(t.Area.Width);
-                        writer.Write(t.Area.Height);
-                        writer.Write(t.Area.Top);
                         writer.Write(t.Area.Left);
+                        writer.Write(t.Area.Top);
                         writer.Write(t.Area.Right);
                         writer.Write(t.Area.Bottom);
                         writer.Write((ushort)t.TriggerType);
                         writer.Write((ushort)t.TargetType);
-                        writer.Write((ushort)t.TargetData);
+                        writer.Write(t.TargetData);
                         writer.Write((t.TargetObj != null ? (int)objectsList.IndexOf(t.TargetObj) : (int)-1));
                         writer.Write(t.Timer);
                         writer.Write(t.CodeBits);
@@ -307,11 +306,11 @@ namespace TombEditor.Geometry.IO
                                 for (int n = 0; n < 4; n++)
                                     writer.Write(b.RFFaces[n]);
 
-                                writer.Write((ushort)portalsList.IndexOf(b.FloorPortal));
+                                writer.Write((b.FloorPortal!=null ? (int)portalsList.IndexOf(b.FloorPortal) : (int)-1));
                                 writer.Write((ushort)b.FloorOpacity);
-                                writer.Write((ushort)portalsList.IndexOf(b.CeilingPortal));
+                                writer.Write((b.CeilingPortal != null ? (int)portalsList.IndexOf(b.CeilingPortal) : (int)-1));
                                 writer.Write((ushort)b.CeilingOpacity);
-                                writer.Write((ushort)portalsList.IndexOf(b.WallPortal));
+                                writer.Write((b.WallPortal != null ? (int)portalsList.IndexOf(b.WallPortal) : (int)-1));
                                 writer.Write((ushort)b.WallOpacity);
                                 writer.Write(b.NoCollisionFloor);
                                 writer.Write(b.NoCollisionCeiling);
@@ -334,10 +333,6 @@ namespace TombEditor.Geometry.IO
                                         writer.Write(texture.TexCoord3);
                                         writer.Write((ushort)texture.BlendMode);
                                         writer.Write(texture.DoubleSided);
-                                        writer.Write(texture.Texture.AreaInTextureMap.X);
-                                        writer.Write(texture.Texture.AreaInTextureMap.Y);
-                                        writer.Write(texture.Texture.AreaInTextureMap.Width);
-                                        writer.Write(texture.Texture.AreaInTextureMap.Height);
 
                                         writer.WriteFiller(0x00, 8);
 
@@ -347,7 +342,7 @@ namespace TombEditor.Geometry.IO
                                     }
                                 }
 
-                                writer.WriteFiller(0x00, 8);
+                                writer.WriteFiller(0x00, 32);
 
                                 // No more data, in future we can expand the structure using chunks
                                 chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
@@ -355,51 +350,20 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        int numObjectsInRoom = r.Objects.Count;
-                        writer.Write(numObjectsInRoom);
+                        // Write lights
+                        uint numLights = 0;
+                        foreach (var o in r.Objects)
+                            if (o.GetType() == typeof(Light))
+                                numLights++;
+                        writer.Write(numLights);
+
                         foreach (var o in r.Objects)
                         {
-                            if (o.GetType() == typeof(MoveableInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.Moveable);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(StaticInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.Static);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(CameraInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.Camera);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(FlybyCameraInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.FlybyCamera);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(SinkInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.Sink);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(SoundSourceInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.SoundSource);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(RoomGeometryInstance))
-                            {
-                                writer.Write((ushort)Prj2ObjectType.RoomGeometry);
-                                writer.Write(objectsList.IndexOf(o));
-                            }
-                            else if (o.GetType() == typeof(Light))
+                            if (o.GetType() == typeof(Light))
                             {
                                 var l = (Light)o;
 
-                                writer.Write((ushort)Prj2ObjectType.Light);
-                                writer.Write((byte)l.Type);
+                                writer.Write((ushort)l.Type);
                                 writer.Write(l.Position);
                                 writer.Write(l.Intensity);
                                 writer.Write(l.Color);
@@ -407,7 +371,8 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(l.Out);
                                 writer.Write(l.Len);
                                 writer.Write(l.Cutoff);
-                                writer.Write(l.GetDirection());
+                                writer.Write(l.RotationX);
+                                writer.Write(l.RotationY);
                                 writer.Write(l.Enabled);
                                 writer.Write(l.CastsShadows);
                                 writer.Write(l.IsDynamicallyUsed);
@@ -422,10 +387,9 @@ namespace TombEditor.Geometry.IO
                         }
 
                         writer.Write(r.AmbientLight);
-                        writer.Write(r.Flipped);
                         writer.Write(r.AlternateGroup);
-                        writer.Write((r.AlternateRoom != null ? (short)level.Rooms.ReferenceIndexOf(r.AlternateRoom) : (short)-1));
-                        writer.Write((r.AlternateBaseRoom != null ? (short)level.Rooms.ReferenceIndexOf(r.AlternateBaseRoom) : (short)-1));
+                        writer.Write((r.AlternateRoom != null ? (int)level.Rooms.ReferenceIndexOf(r.AlternateRoom) : (int)-1));
+                        writer.Write((r.AlternateBaseRoom != null ? (int)level.Rooms.ReferenceIndexOf(r.AlternateBaseRoom) : (int)-1));
                         writer.Write(r.FlagCold);
                         writer.Write(r.FlagDamage);
                         writer.Write(r.FlagHorizon);

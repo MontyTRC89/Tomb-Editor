@@ -571,7 +571,7 @@ namespace TombEditor.Geometry.IO
                                     var flybyCamera = new FlybyCameraInstance()
                                     {
                                         ScriptId = unchecked((ushort)(objectsThings2[j])),
-                                        Timer = unchecked((ushort)objTimer),
+                                        Timer = unchecked((short)objTimer),
                                         Sequence = (byte)((objSlot & 0xe000) >> 13),
                                         Number = (byte)((objSlot & 0x1f00) >> 8),
                                         Fov = (short)(objSlot & 0x00ff),

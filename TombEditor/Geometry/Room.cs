@@ -62,7 +62,9 @@ namespace TombEditor.Geometry
         private int[,] _sectorAllVerticesOffset;
         private readonly List<EditorVertex> _allVertices = new List<EditorVertex>();
 
-
+        // Helper data for Prj2 loading
+        public int AlternateRoomIndex { get; set; }
+        public int AlternateBaseRoomIndex { get; set; }
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {

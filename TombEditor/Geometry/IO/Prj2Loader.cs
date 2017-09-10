@@ -18,12 +18,16 @@ namespace TombEditor.Geometry.IO
         
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
-            throw new NotSupportedException();
-            /*
+          //  throw new NotSupportedException();
+            
             var level = new Level();
 
-            IdResolver<Portal> portalIdResolver = new IdResolver<Portal>(() => new Portal(null));
-            
+            var portalsList = new List<Portal>();
+            var triggersList = new List<TriggerInstance>();
+            var objectsList = new List<ObjectInstance>();
+
+            Prj2ChunkType chunkType;
+
             try
             {
                 using (var reader = CreatePrjReader(filename))
@@ -47,323 +51,358 @@ namespace TombEditor.Geometry.IO
                         level.Settings.SoundPaths.Add(new SoundPath(reader.ReadStringUTF8()));
                     level.Settings.IgnoreMissingSounds = reader.ReadBoolean();
 
-                    ResourceLoader.TryLoadingTexture(level, progressReporter);
+                   // ResourceLoader.TryLoadingTexture(level, progressReporter);
                     ResourceLoader.TryLoadingObjects(level, progressReporter);
-                    
+
                     // Read fillers
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-
-                    // Read textures
-                    int numTextures = reader.ReadInt32();
-                    for (int i = 0; i < numTextures; i++)
-                    {
-                        var texture = new LevelTexture
-                        {
-                            Id = reader.ReadInt32(),
-                            X = reader.ReadInt16(),
-                            Y = reader.ReadInt16(),
-                            Width = reader.ReadInt16(),
-                            Height = reader.ReadInt16(),
-                            Page = reader.ReadInt16()
-                        };
-                        
-                        reader.ReadInt32();
-                        texture.Transparent = reader.ReadBoolean();
-                        texture.DoubleSided = reader.ReadBoolean();
-
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-
-                        level.TextureSamples.Add(texture.Id, texture);
-                    }
+                    reader.ReadBytes(16);
 
                     // Read portals
-                    int numPortals = reader.ReadInt32();
+                    uint numPortals = reader.ReadUInt32();
                     for (int i = 0; i < numPortals; i++)
                     {
-                        var portal = portalIdResolver[reader.ReadInt32()];
-                        portal.Other = portalIdResolver[reader.ReadInt32()];
-                        portal.Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
-                        portal.AdjoiningRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
-                        portal.Direction = (PortalDirection) reader.ReadByte();
-                        portal.Area.X = reader.ReadByte();
-                        portal.Area.Y = reader.ReadByte();
-                        portal.NumXBlocks = reader.ReadByte();
-                        portal.NumZBlocks = reader.ReadByte();
-                        portal.MemberOfFlippedRoom = reader.ReadBoolean();
-                        portal.Flipped = reader.ReadBoolean();
-                        
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
+                        var roomIndex = reader.ReadUInt16();
+                        var adjoiningRoomIndex = reader.ReadUInt16();
+
+                        var direction = (PortalDirection)reader.ReadUInt16();
+
+                        var left = reader.ReadInt32();
+                        var top = reader.ReadInt32();
+                        var right = reader.ReadInt32();
+                        var bottom = reader.ReadInt32();
+                        var area = new Rectangle(left, top, right, bottom);
+
+                        reader.ReadBytes(16);
+
+                        // Check for other chunks
+                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                        if (chunkType != Prj2ChunkType.NoExtraChunk)
+                        {
+                            // TODO: logic for reading in the future other chunks
+                        }
+
+                        var portal = new Portal(area, direction, null);
+                        portal.RoomIndex = roomIndex;
+                        portal.AdjoiningRoomIndex = adjoiningRoomIndex;
+
+                        portalsList.Add(portal);
                     }
 
                     // Read objects
-                    int numObjects = reader.ReadInt32();
+                    uint numObjects = reader.ReadUInt32();
                     for (int i = 0; i < numObjects; i++)
                     {
-                        int objectId = reader.ReadInt32();
-                        var objectType = (ObjectInstanceType)reader.ReadByte();
-                        var Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        var Room = level.GetOrCreateDummyRoom(reader.ReadInt16());
-                        
-                        PositionBasedObjectInstance o;
-                        switch (objectType)
-                        {
-                            case ObjectInstanceType.Moveable:
-                                var m = new MoveableInstance();
-                                m.WadObjectId = reader.ReadUInt32();
-                                m.Ocb = reader.ReadInt16();
-                                m.Invisible = reader.ReadBoolean();
-                                m.ClearBody = reader.ReadBoolean();
-                                m.CodeBits = (byte)(reader.ReadByte() & 0x1f);
-                                m.Rotation = reader.ReadSingle();
-                                o = m;
-                                break;
-                            case ObjectInstanceType.Static:
-                                var s = new StaticInstance();
-                                s.WadObjectId = reader.ReadUInt32();
-                                s.Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                                s.Rotation = reader.ReadSingle();
-                                o = s;
-                                break;
-                            case ObjectInstanceType.Camera:
-                                var c = new CameraInstance();
-                                c.Fixed = reader.ReadBoolean();
-                                o = c;
-                                break;
-                            case ObjectInstanceType.Sink:
-                                var si = new SinkInstance();
-                                si.Strength = reader.ReadInt16();
-                                o = si;
-                                break;
-                            case ObjectInstanceType.SoundSource:
-                                var ss = new SoundSourceInstance();
-                                ss.SoundId = reader.ReadInt16();
-                                ss.CodeBits = (byte)(reader.ReadByte() & 0x1f);
-                                o = ss;
-                                break;
-                            case ObjectInstanceType.FlyByCamera:
-                                var ffc = new FlybyCameraInstance();
-                                ffc.Sequence = reader.ReadByte();
-                                ffc.Number = reader.ReadByte();
-                                ffc.Timer = reader.ReadUInt16();
-                                ffc.Flags = reader.ReadUInt16();
-                                ffc.Speed = reader.ReadSingle();
-                                ffc.Fov = reader.ReadSingle();
-                                ffc.Roll = reader.ReadSingle();
-                                ffc.RotationX = reader.ReadSingle();
-                                ffc.RotationY = reader.ReadSingle();
-                                o = ffc;
-                                break;
-                            default:
-                                logger.Warn("Unknown object type " + objectType + " encountered that can't be loaded.");
-                                continue;
-                        }
-                        
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
+                        var objType = (Prj2ObjectType)reader.ReadUInt16();
+                        var roomIndex = reader.ReadUInt16();
 
-                        level.Objects.Add(o.Id, o);
+                        switch (objType)
+                        {
+                            case Prj2ObjectType.Moveable:
+                                var moveable = new MoveableInstance();
+
+                                moveable.RoomIndex = roomIndex;
+                                moveable.WadObjectId = reader.ReadUInt32();
+                                moveable.Position = reader.ReadVector3();
+                                moveable.RotationY = reader.ReadSingle();
+                                moveable.RotationYRadians = reader.ReadSingle();
+                                moveable.Ocb = reader.ReadInt16();
+                                moveable.Invisible = reader.ReadBoolean();
+                                moveable.ClearBody = reader.ReadBoolean();
+                                moveable.CodeBits = reader.ReadByte();
+                                moveable.Color = reader.ReadVector4();
+
+                                 reader.ReadBytes(8);
+
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                objectsList.Add(moveable);
+
+                                break;
+
+                            case Prj2ObjectType.Static:
+                                var staticMesh = new StaticInstance();
+
+                                staticMesh.RoomIndex = roomIndex;
+                                staticMesh.WadObjectId = reader.ReadUInt32();
+                                staticMesh.Position = reader.ReadVector3();
+                                staticMesh.RotationY = reader.ReadSingle();
+                                staticMesh.RotationYRadians = reader.ReadSingle();
+                                staticMesh.Ocb = reader.ReadInt16();
+                                staticMesh.Color = reader.ReadVector4();
+
+                                reader.ReadBytes(8);
+
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                objectsList.Add(staticMesh);
+
+                                break;
+
+                            case Prj2ObjectType.Camera:
+                                var camera = new CameraInstance();
+
+                                camera.RoomIndex = roomIndex;
+                                camera.Position = reader.ReadVector3();
+                                camera.Flags = reader.ReadUInt16();
+                                camera.Number = reader.ReadUInt16();
+                                camera.Sequence = reader.ReadUInt16();
+                                camera.Roll = reader.ReadSingle();
+                                camera.Speed = reader.ReadSingle();
+                                camera.Timer = reader.ReadInt16();
+                                camera.Fov = reader.ReadSingle();
+                                camera.Fixed = reader.ReadBoolean();
+
+                                reader.ReadBytes(8);
+
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                objectsList.Add(camera);
+
+                                break;
+
+                            case Prj2ObjectType.FlybyCamera:
+                                var flybyCamera = new FlybyCameraInstance();
+
+                                flybyCamera.RoomIndex = roomIndex;
+                                flybyCamera.Position = reader.ReadVector3();
+                                flybyCamera.Flags = reader.ReadUInt16();
+                                flybyCamera.Number = reader.ReadUInt16();
+                                flybyCamera.Sequence = reader.ReadUInt16();
+                                flybyCamera.Roll = reader.ReadSingle();
+                                flybyCamera.Speed = reader.ReadSingle();
+                                flybyCamera.Timer = reader.ReadInt16();
+                                flybyCamera.Fov = reader.ReadSingle();
+                                flybyCamera.RotationX = reader.ReadSingle();
+                                flybyCamera.RotationY = reader.ReadSingle();
+
+                                reader.ReadBytes(8);
+
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                objectsList.Add(flybyCamera);
+
+                                break;
+
+                            case Prj2ObjectType.Sink:
+                                var sink = new SinkInstance();
+
+                                sink.RoomIndex = roomIndex;
+                                sink.Position = reader.ReadVector3();
+                                sink.Strength = reader.ReadInt16();
+
+                                reader.ReadBytes(8);
+
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                objectsList.Add(sink);
+
+                                break;
+
+                            case Prj2ObjectType.SoundSource:
+                                var sound = new SoundSourceInstance();
+
+                                sound.RoomIndex = roomIndex;
+                                sound.Position = reader.ReadVector3();
+                                sound.SoundId = reader.ReadInt16();
+                                sound.Flags = reader.ReadInt16();
+                                sound.CodeBits = reader.ReadByte();
+
+                                reader.ReadBytes(8);
+
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
+
+                                objectsList.Add(sound);
+
+                                break;
+                        }
                     }
 
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-
                     // Read triggers
-                    int numTriggers = reader.ReadInt32();
+                    uint numTriggers = reader.ReadUInt32();
                     for (int i = 0; i < numTriggers; i++)
                     {
-                        var o = new TriggerInstance(reader.ReadInt32(), null)
+                        var roomIndex = reader.ReadUInt16();
+                        var trigger = new TriggerInstance(new Rectangle(reader.ReadInt32(),
+                                                                        reader.ReadInt32(),
+                                                                        reader.ReadInt32(),
+                                                                        reader.ReadInt32()));
+                        trigger.RoomIndex = roomIndex;
+                        trigger.TriggerType = (TriggerType)reader.ReadUInt16();
+                        trigger.TargetType = (TriggerTargetType)reader.ReadUInt16();
+                        trigger.TargetData = reader.ReadInt16();
+
+                        var targetObject = reader.ReadInt32();
+                        if (targetObject != -1) trigger.TargetObj = objectsList[targetObject];
+
+                        trigger.Timer = reader.ReadInt16();
+                        trigger.CodeBits = reader.ReadByte();
+                        trigger.OneShot = reader.ReadBoolean();
+
+                        reader.ReadBytes(8);
+
+                        // Check for other chunks
+                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                        if (chunkType != Prj2ChunkType.NoExtraChunk)
                         {
-                            X = reader.ReadByte(),
-                            Z = reader.ReadByte(),
-                            NumXBlocks = reader.ReadByte(),
-                            NumZBlocks = reader.ReadByte(),
-                            TriggerType = (TriggerType)reader.ReadByte(),
-                            TargetType = (TriggerTargetType)reader.ReadByte(),
-                            Target = reader.ReadInt32(),
-                            Timer = reader.ReadInt16(),
-                            OneShot = reader.ReadBoolean(),
-                            CodeBits = (byte)(reader.ReadByte() & 0x1f),
-                            Room = level.GetOrCreateDummyRoom(reader.ReadInt16())
-                        };
+                            // TODO: logic for reading in the future other chunks
+                        }
 
-
-                        reader.ReadInt16();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-
-                        level.Triggers.Add(o.Id, o);
+                        triggersList.Add(trigger);
                     }
 
                     // Read rooms
-                    int numRooms = reader.ReadInt32();
+                    uint numRooms = reader.ReadUInt32();
                     for (int i = 0; i < numRooms; i++)
                     {
                         bool defined = reader.ReadBoolean();
-                        if (!defined)
-                        {
-                            if (level.Rooms[i] != null)
-                                logger.Warn($"Room {i} is used, but is marked as undefined");
-                            continue;
-                        }
+                        if (!defined) continue;
 
-                        var room = level.GetOrCreateDummyRoom(i);
-                        room.Name = reader.ReadStringUTF8();
-                        room.Position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                        room.Resize(room.NumXSectors, room.NumZSectors);
+                        var roomName = reader.ReadStringUTF8();
+                        var position = reader.ReadVector3();
+                        var numXsectors = reader.ReadByte();
+                        var numZsectors = reader.ReadByte();
 
-                        for (int z = 0; z < room.NumZSectors; z++)
+                        var room = new Room(level, numXsectors, numZsectors, roomName);
+                        room.Position = position;
+
+                        for (int z = 0; z < numZsectors; z++)
                         {
-                            for (int x = 0; x < room.NumXSectors; x++)
+                            for (int x = 0; x < numXsectors; x++)
                             {
-                                var b = new Block(BlockType.Floor, BlockFlags.None)
+                                var b = new Block(0, 12);
+
+                                b.Type = (BlockType)reader.ReadUInt16();
+                                b.Flags = (BlockFlags)reader.ReadUInt16();
+
+                                for (int j = 0; j < 4; j++) b.QAFaces[j] = reader.ReadInt16();
+                                for (int j = 0; j < 4; j++) b.EDFaces[j] = reader.ReadInt16();
+                                for (int j = 0; j < 4; j++) b.WSFaces[j] = reader.ReadInt16();
+                                for (int j = 0; j < 4; j++) b.RFFaces[j] = reader.ReadInt16();
+
+                                var floorPortal = reader.ReadInt32();
+                                if (floorPortal != -1) b.FloorPortal = portalsList[floorPortal];
+                                b.FloorOpacity = (PortalOpacity)reader.ReadUInt16();
+
+                                var ceilingPortal = reader.ReadInt32();
+                                if (ceilingPortal != -1) b.CeilingPortal = portalsList[ceilingPortal];
+                                b.CeilingOpacity = (PortalOpacity)reader.ReadUInt16();
+                                
+                                var wallPortal = reader.ReadInt32();
+                                if (wallPortal != -1) b.WallPortal = portalsList[wallPortal];
+                                b.WallOpacity = (PortalOpacity)reader.ReadUInt16();
+
+                                b.NoCollisionFloor = reader.ReadBoolean();
+                                b.NoCollisionCeiling = reader.ReadBoolean();
+
+                                b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
+                                b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
+                                b.FloorSplitDirectionToggled = reader.ReadBoolean();
+                                b.CeilingSplitDirectionToggled = reader.ReadBoolean();
+
+                                for (int f = 0; f < 29; f++)
                                 {
-                                    Type = (BlockType)reader.ReadByte(),
-                                    Flags = (BlockFlags)reader.ReadInt16(),
-                                    QAFaces =
+                                    bool textured = reader.ReadBoolean();
+                                    if (textured)
                                     {
-                                        [0] = reader.ReadInt16(),
-                                        [1] = reader.ReadInt16(),
-                                        [2] = reader.ReadInt16(),
-                                        [3] = reader.ReadInt16()
-                                    },
-                                    EDFaces =
-                                    {
-                                        [0] = reader.ReadInt16(),
-                                        [1] = reader.ReadInt16(),
-                                        [2] = reader.ReadInt16(),
-                                        [3] = reader.ReadInt16()
-                                    },
-                                    WSFaces =
-                                    {
-                                        [0] = reader.ReadInt16(),
-                                        [1] = reader.ReadInt16(),
-                                        [2] = reader.ReadInt16(),
-                                        [3] = reader.ReadInt16()
-                                    },
-                                    RFFaces =
-                                    {
-                                        [0] = reader.ReadInt16(),
-                                        [1] = reader.ReadInt16(),
-                                        [2] = reader.ReadInt16(),
-                                        [3] = reader.ReadInt16()
-                                    },
-                                    SplitFoorType = reader.ReadByte(),
-                                    SplitFloor = reader.ReadBoolean(),
-                                    SplitCeilingType = reader.ReadByte(),
-                                    SplitCeiling = reader.ReadBoolean(),
-                                    RealSplitFloor = reader.ReadByte(),
-                                    RealSplitCeiling = reader.ReadByte(),
-                                    Climb =
-                                    {
-                                        [0] = reader.ReadBoolean(),
-                                        [1] = reader.ReadBoolean(),
-                                        [2] = reader.ReadBoolean(),
-                                        [3] = reader.ReadBoolean()
-                                    },
-                                    FloorOpacity = (PortalOpacity)reader.ReadByte(),
-                                    CeilingOpacity = (PortalOpacity)reader.ReadByte(),
-                                    WallOpacity = (PortalOpacity)reader.ReadByte(),
-                                    FloorPortal = portalIdResolver[reader.ReadInt32()],
-                                    CeilingPortal = portalIdResolver[reader.ReadInt32()],
-                                    WallPortal = portalIdResolver[reader.ReadInt32()],
-                                    IsFloorSolid = reader.ReadBoolean(),
-                                    IsCeilingSolid = reader.ReadBoolean(),
-                                    NoCollisionFloor = reader.ReadBoolean(),
-                                    NoCollisionCeiling = reader.ReadBoolean()
-                                };
+                                        var texture = new TextureArea();
 
-                                foreach (var f in b.FaceTextures)
-                                {
-                                    f.Defined = reader.ReadBoolean();
-                                    f.Flipped = reader.ReadBoolean();
-                                    f.Texture = reader.ReadInt16();
-                                    f.Rotation = reader.ReadByte();
-                                    f.Transparent = reader.ReadBoolean();
-                                    f.DoubleSided = reader.ReadBoolean();
-                                    f.Invisible = reader.ReadBoolean();
-                                    f.NoCollision = reader.ReadBoolean();
-                                    f.TextureTriangle = (TextureTileType)reader.ReadByte();
+                                        texture.TexCoord0 = reader.ReadVector2();
+                                        texture.TexCoord1 = reader.ReadVector2();
+                                        texture.TexCoord2 = reader.ReadVector2();
+                                        texture.TexCoord3 = reader.ReadVector2();
+                                        texture.BlendMode = (BlendMode)reader.ReadUInt16();
+                                        texture.DoubleSided = reader.ReadBoolean();
 
-                                    for (int n = 0; n < 4; n++)
-                                        f.RectangleUV[n] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-                                    for (int n = 0; n < 3; n++)
-                                        f.TriangleUV[n] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-                                    for (int n = 0; n < 3; n++)
-                                        f.TriangleUV2[n] = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+                                        reader.ReadBytes(8);
 
-                                    reader.ReadInt32();
-                                    reader.ReadInt32();
-                                    reader.ReadInt32();
-                                    reader.ReadInt32();
+                                        // Check for other chunks
+                                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                        if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                        {
+                                            // TODO: logic for reading in the future other chunks
+                                        }
+
+                                        b.SetFaceTexture((BlockFace)f, texture);
+                                    }
                                 }
 
-                                b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadByte();
-                                b.FloorDiagonalSplitType = (DiagonalSplitType)reader.ReadByte();
-                                b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadByte();
-                                b.CeilingDiagonalSplitType = (DiagonalSplitType)reader.ReadByte();
+                                reader.ReadBytes(32);
 
-                                reader.ReadInt32();
-                                reader.ReadInt32();
-                                reader.ReadInt32();
-                                reader.ReadInt32();
-
-                                room.Blocks[x, z] = b;
+                                // Check for other chunks
+                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                {
+                                    // TODO: logic for reading in the future other chunks
+                                }
                             }
                         }
 
-                        int numLights = reader.ReadInt32();
+                        uint numLights = reader.ReadUInt32();
                         for (int j = 0; j < numLights; j++)
                         {
-                            var l = new Light((LightType)reader.ReadByte(), 
-                                new Vector3(reader.ReadSingle(), reader.ReadSingle(),  reader.ReadSingle()))
+                            var l = new Light((LightType)reader.ReadUInt16());
+
+                            l.Position = reader.ReadVector3();
+                            l.Intensity = reader.ReadSingle();
+                            l.Color = reader.ReadVector3();
+                            l.In = reader.ReadSingle();
+                            l.Out = reader.ReadSingle();
+                            l.Len = reader.ReadSingle();
+                            l.Cutoff = reader.ReadSingle();
+                            var rotationX = reader.ReadSingle();
+                            var rotationY = reader.ReadSingle();
+                            l.SetArbitaryRotationsYX(rotationY, rotationX);
+                            l.Enabled = reader.ReadBoolean();
+                            l.CastsShadows = reader.ReadBoolean();
+                            l.IsDynamicallyUsed = reader.ReadBoolean();
+                            l.IsStaticallyUsed = reader.ReadBoolean();
+
+                            reader.ReadBytes(8);
+
+                            // Check for other chunks
+                            chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                            if (chunkType != Prj2ChunkType.NoExtraChunk)
                             {
-                                Intensity = reader.ReadSingle(),
-                                Color = Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte()),
-                                In = reader.ReadSingle(),
-                                Out = reader.ReadSingle(),
-                                Len = reader.ReadSingle(),
-                                Cutoff = reader.ReadSingle(),
-                                DirectionX = reader.ReadSingle(),
-                                DirectionY = reader.ReadSingle(),
-                                Enabled = reader.ReadBoolean(),
-                                CastsShadows = reader.ReadBoolean(),
-                                IsDynamicallyUsed = reader.ReadBoolean(),
-                                IsStaticallyUsed = reader.ReadBoolean()
-                            };
+                                // TODO: logic for reading in the future other chunks
+                            }
 
-
-                            reader.ReadByte();
-                            reader.ReadInt16();
-
-                            room.Lights.Add(l);
+                            room.AddObject(level, l);
                         }
 
-                        room.AmbientLight =
-                            Color.FromArgb(255, reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-                        room.Flipped = reader.ReadBoolean();
-                        room.AlternateRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
+                        room.AmbientLight = reader.ReadVector4();
                         room.AlternateGroup = reader.ReadInt16();
-                        room.WaterLevel = reader.ReadInt16();
-                        room.MistLevel = reader.ReadInt16();
-                        room.ReflectionLevel = reader.ReadInt16();
+                        room.AlternateRoomIndex = reader.ReadInt32();
+                        room.AlternateBaseRoomIndex = reader.ReadInt32();
                         room.FlagCold = reader.ReadBoolean();
                         room.FlagDamage = reader.ReadBoolean();
                         room.FlagHorizon = reader.ReadBoolean();
@@ -374,58 +413,64 @@ namespace TombEditor.Geometry.IO
                         room.FlagSnow = reader.ReadBoolean();
                         room.FlagWater = reader.ReadBoolean();
                         room.FlagQuickSand = reader.ReadBoolean();
-                        room.Flipped = reader.ReadBoolean();
-                        room.BaseRoom = level.GetOrCreateDummyRoom(reader.ReadInt16());
                         room.ExcludeFromPathFinding = reader.ReadBoolean();
+                        room.WaterLevel = reader.ReadInt16();
+                        room.MistLevel = reader.ReadInt16();
+                        room.ReflectionLevel = reader.ReadInt16();
+                        room.Reverberation = (Reverberation)reader.ReadUInt16();
 
-                        reader.ReadInt32();
-                        reader.ReadInt32();
-                        reader.ReadInt32();
+                        reader.ReadBytes(64);
 
-                        System.Diagnostics.Debug.Assert(ReferenceEquals(room, level.Rooms[i]));
-                    }
-
-                    int numAnimatedSets = reader.ReadInt32();
-                    for (int i = 0; i < numAnimatedSets; i++)
-                    {
-                        var effect = (AnimatexTextureSetEffect)reader.ReadByte();
-                        var aSet = new AnimatedTextureSet { Effect = effect };
-                        int numAnimatedTextures = reader.ReadInt32();
-                        for (int j = 0; j < numAnimatedTextures; j++)
+                        // Check for other chunks
+                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                        if (chunkType != Prj2ChunkType.NoExtraChunk)
                         {
-                            short texturePage = reader.ReadInt16();
-                            short textureX = reader.ReadInt16();
-                            short textureY = reader.ReadInt16();
-
-                            aSet.Textures.Add(new AnimatedTexture(textureX, textureY, texturePage));
+                            // TODO: logic for reading in the future other chunks
                         }
 
-                        level.AnimatedTextures.Add(aSet);
+                        level.Rooms[i] = room;
                     }
 
-                    int numTextureSounds = reader.ReadInt32();
-                    for (int i = 0; i < numTextureSounds; i++)
+                    uint numAnimatedTextures = reader.ReadUInt32();
+                    uint numTextureSounds = reader.ReadUInt32();
+
+                    reader.ReadBytes(256);
+
+                    // Check for other chunks
+                    chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                    if (chunkType != Prj2ChunkType.NoExtraChunk)
                     {
-                        var txtSound = new TextureSound(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16())
-                        {
-                            Sound = (TextureSounds)reader.ReadByte()
-                        };
-
-                        level.TextureSounds.Add(txtSound);
+                        // TODO: logic for reading in the future other chunks
                     }
-                    
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
-                    reader.ReadInt32();
+                }
+
+                // Now link everything
+                foreach (var obj in objectsList)
+                    obj.Room = level.Rooms[obj.RoomIndex];
+
+                foreach (var trigger in triggersList)
+                {
+                    trigger.Room = level.Rooms[trigger.RoomIndex];
+                    trigger.Room.AddObject(level, trigger);
+
+                    /*for (int x = trigger.Area.X; x < trigger.Area.X + trigger.Area.Width; x++)
+                    {
+                        for (int z = trigger.Area.Y; z < trigger.Area.Y + trigger.Area.Height; z++)
+                        {*/
+
+                    /* }
+                 }*/
+                }
+
+                foreach (var portal in portalsList)
+                {
+                    portal.Room = level.Rooms[portal.RoomIndex];
+                    portal.AdjoiningRoom = level.Rooms[portal.AdjoiningRoomIndex];
+                    portal.Room.AddObject(level, portal);
                 }
 
                 // Check that there are uninitialized objects
-                foreach (Room room in level.Rooms.Where(room => room != null))
+               /* foreach (Room room in level.Rooms.Where(room => room != null))
                 {
                     if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
                         throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
@@ -433,7 +478,7 @@ namespace TombEditor.Geometry.IO
                     foreach (var currentPortal in room.Portals)
                         if ((currentPortal.AdjoiningRoom == null) || (currentPortal.Room == null))
                             throw new Exception("There appears to be an uninitialized portal.");
-                }
+                }*/
             }
             catch (Exception ex)
             {
@@ -441,53 +486,11 @@ namespace TombEditor.Geometry.IO
                 return null;
             }
             
-            // Now fill the structures loaded from PRJ2 
-            for (int i = 0; i < level.Triggers.Count; i++)
-            {
-                var trigger = level.Triggers[i];
-
-                for (int x = trigger.X; x < trigger.X + trigger.NumXBlocks; x++)
-                    for (int z = trigger.Z; z < trigger.Z + trigger.NumZBlocks; z++)
-                        trigger.Room.Blocks[x, z].Triggers.Add(trigger);
-            }
-
-            foreach (var obj in level.Objects.Values)
-            {
-                var objectType = obj.ObjType;
-                int objectId = obj.Id;
-
-                switch (objectType)
-                {
-                    case ObjectInstanceType.Moveable:
-                        obj.Room.Moveables.Add(objectId);
-                        break;
-                    case ObjectInstanceType.Static:
-                        obj.Room.Statics.Add(objectId);
-                        break;
-                    case ObjectInstanceType.Camera:
-                        obj.Room.Cameras.Add(objectId);
-                        break;
-                    case ObjectInstanceType.Sink:
-                        obj.Room.Sinks.Add(objectId);
-                        break;
-                    case ObjectInstanceType.SoundSource:
-                        obj.Room.SoundSources.Add(objectId);
-                        break;
-                    case ObjectInstanceType.FlyByCamera:
-                        obj.Room.FlyByCameras.Add(objectId);
-                        break;
-                }
-            }
-
             // Now build the real geometry and update DirectX buffers
             foreach (var room in level.Rooms.Where(room => room != null))
-            {
-                room.BuildGeometry();
-                room.CalculateLightingForThisRoom();
-                room.UpdateBuffers();
-            }
+                room.UpdateCompletely();
 
-            return level;*/
+            return level;
         }
         
         private static BinaryReaderEx CreatePrjReader(string filename)

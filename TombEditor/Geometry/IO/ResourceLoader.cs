@@ -110,7 +110,7 @@ namespace TombEditor.Geometry.IO
                     bool retry = false;
                     progressReporter.InvokeGui(delegate (IWin32Window owner)
                         {
-                            switch (MessageBox.Show(owner, "The *.wad file '" + path + " could not be loaded. " +
+                            switch (MessageBox.Show(owner, "The objects file '" + path + " could not be loaded. " +
                                 "Do you want to load a substituting file now?", "Open project",
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                             {
