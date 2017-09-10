@@ -19,7 +19,8 @@ namespace TombEditor.Geometry.IO
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
             throw new NotSupportedException();
-            /*var level = new Level();
+            /*
+            var level = new Level();
 
             IdResolver<Portal> portalIdResolver = new IdResolver<Portal>(() => new Portal(null));
             
