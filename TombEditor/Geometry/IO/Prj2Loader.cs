@@ -54,6 +54,13 @@ namespace TombEditor.Geometry.IO
                    // ResourceLoader.TryLoadingTexture(level, progressReporter);
                     ResourceLoader.TryLoadingObjects(level, progressReporter);
 
+                  /*  var texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(Utils.TryFindAbsolutePath(
+                               level.Settings, level.Settings.TextureFilePath), VariableType.LevelDirectory), true);
+                    if (texture.Image.Width != 256)
+                        texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed
+                    level.Settings.Textures.Add(texture);
+                    ResourceLoader.CheckLoadedTexture(level.Settings, texture, progressReporter);*/
+
                     // Read fillers
                     reader.ReadBytes(16);
 
@@ -310,15 +317,15 @@ namespace TombEditor.Geometry.IO
                                 for (int j = 0; j < 4; j++) b.RFFaces[j] = reader.ReadInt16();
 
                                 var floorPortal = reader.ReadInt32();
-                                if (floorPortal != -1) b.FloorPortal = portalsList[floorPortal];
+                                //if (floorPortal != -1) b.FloorPortal = portalsList[floorPortal];
                                 b.FloorOpacity = (PortalOpacity)reader.ReadUInt16();
 
                                 var ceilingPortal = reader.ReadInt32();
-                                if (ceilingPortal != -1) b.CeilingPortal = portalsList[ceilingPortal];
+                                //if (ceilingPortal != -1) b.CeilingPortal = portalsList[ceilingPortal];
                                 b.CeilingOpacity = (PortalOpacity)reader.ReadUInt16();
                                 
                                 var wallPortal = reader.ReadInt32();
-                                if (wallPortal != -1) b.WallPortal = portalsList[wallPortal];
+                                //if (wallPortal != -1) b.WallPortal = portalsList[wallPortal];
                                 b.WallOpacity = (PortalOpacity)reader.ReadUInt16();
 
                                 b.NoCollisionFloor = reader.ReadBoolean();
@@ -331,17 +338,18 @@ namespace TombEditor.Geometry.IO
 
                                 for (int f = 0; f < 29; f++)
                                 {
-                                    bool textured = reader.ReadBoolean();
-                                    if (textured)
-                                    {
-                                        var texture = new TextureArea();
+                                    Prj2FaceTextureMode mode = (Prj2FaceTextureMode)reader.ReadUInt16();
 
-                                        texture.TexCoord0 = reader.ReadVector2();
-                                        texture.TexCoord1 = reader.ReadVector2();
-                                        texture.TexCoord2 = reader.ReadVector2();
-                                        texture.TexCoord3 = reader.ReadVector2();
-                                        texture.BlendMode = (BlendMode)reader.ReadUInt16();
-                                        texture.DoubleSided = reader.ReadBoolean();
+                                    if (mode == Prj2FaceTextureMode.Texture)
+                                    {
+                                        var textureArea = new TextureArea();
+
+                                        textureArea.TexCoord0 = reader.ReadVector2();
+                                        textureArea.TexCoord1 = reader.ReadVector2();
+                                        textureArea.TexCoord2 = reader.ReadVector2();
+                                        textureArea.TexCoord3 = reader.ReadVector2();
+                                        textureArea.BlendMode = (BlendMode)reader.ReadUInt16();
+                                        textureArea.DoubleSided = reader.ReadBoolean();
 
                                         reader.ReadBytes(8);
 
@@ -352,7 +360,13 @@ namespace TombEditor.Geometry.IO
                                             // TODO: logic for reading in the future other chunks
                                         }
 
-                                        b.SetFaceTexture((BlockFace)f, texture);
+                                        textureArea.Texture = level.Settings.Textures[0];
+
+                                        b.SetFaceTexture((BlockFace)f, textureArea);
+                                    }
+                                    else if (mode == Prj2FaceTextureMode.InvisibleColor)
+                                    {
+                                        b.SetFaceTexture((BlockFace)f, new TextureArea { Texture = TextureInvisible.Instance });
                                     }
                                 }
 
@@ -364,6 +378,8 @@ namespace TombEditor.Geometry.IO
                                 {
                                     // TODO: logic for reading in the future other chunks
                                 }
+
+                                room.Blocks[x, z] = b;
                             }
                         }
 
@@ -445,40 +461,33 @@ namespace TombEditor.Geometry.IO
                 }
 
                 // Now link everything
+                for (int i = 0; i < level.Rooms.Length; i++)
+                {
+                    if (level.Rooms[i] == null) continue;
+                    if (level.Rooms[i].AlternateRoomIndex != -1) level.Rooms[i].AlternateRoom = level.Rooms[level.Rooms[i].AlternateRoomIndex];
+                    if (level.Rooms[i].AlternateBaseRoomIndex != -1) level.Rooms[i].AlternateBaseRoom = level.Rooms[level.Rooms[i].AlternateBaseRoomIndex];
+                }
+
                 foreach (var obj in objectsList)
+                {
                     obj.Room = level.Rooms[obj.RoomIndex];
+                    obj.Room.AddObject(level, obj);
+                }
 
                 foreach (var trigger in triggersList)
                 {
                     trigger.Room = level.Rooms[trigger.RoomIndex];
                     trigger.Room.AddObject(level, trigger);
-
-                    /*for (int x = trigger.Area.X; x < trigger.Area.X + trigger.Area.Width; x++)
-                    {
-                        for (int z = trigger.Area.Y; z < trigger.Area.Y + trigger.Area.Height; z++)
-                        {*/
-
-                    /* }
-                 }*/
                 }
 
                 foreach (var portal in portalsList)
                 {
                     portal.Room = level.Rooms[portal.RoomIndex];
-                    portal.AdjoiningRoom = level.Rooms[portal.AdjoiningRoomIndex];
-                    portal.Room.AddObject(level, portal);
+                    portal.AdjoiningRoom = level.Rooms[portal.AdjoiningRoomIndex];                    
                 }
 
-                // Check that there are uninitialized objects
-               /* foreach (Room room in level.Rooms.Where(room => room != null))
-                {
-                    if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
-                        throw new Exception("Room " + level.Rooms.ReferenceIndexOf(room) + " has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
-
-                    foreach (var currentPortal in room.Portals)
-                        if ((currentPortal.AdjoiningRoom == null) || (currentPortal.Room == null))
-                            throw new Exception("There appears to be an uninitialized portal.");
-                }*/
+                foreach (var portal in portalsList)
+                    portal.Room.AddObject(level, portal);
             }
             catch (Exception ex)
             {

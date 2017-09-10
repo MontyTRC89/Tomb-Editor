@@ -24,6 +24,13 @@ namespace TombEditor.Geometry.IO
         Light
     }
 
+    public enum Prj2FaceTextureMode : ushort
+    {
+        NoTexture,
+        Texture,
+        InvisibleColor
+    }
+
     public class Prj2Writer
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -323,9 +330,22 @@ namespace TombEditor.Geometry.IO
                                 {
                                     var texture = b.GetFaceTexture((BlockFace)f);
 
-                                    writer.Write(!texture.TextureIsUnavailable);
+                                    var mode = Prj2FaceTextureMode.NoTexture;
+                                    if (texture.TextureIsInvisble)
+                                    {
+                                        mode = Prj2FaceTextureMode.InvisibleColor;
+                                    }
+                                    else
+                                    {
+                                        if (!texture.TextureIsUnavailable)
+                                            mode = Prj2FaceTextureMode.Texture;
+                                        else
+                                            mode = Prj2FaceTextureMode.NoTexture;
+                                    }
 
-                                    if (!texture.TextureIsUnavailable)
+                                    writer.Write((ushort)mode);
+
+                                    if (mode == Prj2FaceTextureMode.Texture)
                                     {
                                         writer.Write(texture.TexCoord0);
                                         writer.Write(texture.TexCoord1);
