@@ -18,6 +18,7 @@ namespace TombLib.Wad
         public ushort NextFrame { get; set; }
         public ushort FrameStart { get; set; }
         public ushort FrameEnd { get; set; }
+        public string Name { get; set; }
 
         public List<WadKeyFrame> KeyFrames { get; private set; }
         public List<WadStateChange> StateChanges { get; private set; }
@@ -34,6 +35,7 @@ namespace TombLib.Wad
             KeyFrames = new List<WadKeyFrame>();
             StateChanges = new List<WadStateChange>();
             AnimCommands = new List<WadAnimCommand>();
+            Name = "Animation";
         }
     }
 }
