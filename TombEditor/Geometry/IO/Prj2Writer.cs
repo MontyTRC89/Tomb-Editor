@@ -406,6 +406,17 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
+                        // Write some references
+                        uint numPortalsForThisRoom = (uint)r.Portals.Count();
+                        writer.Write(numPortalsForThisRoom);
+                        foreach (var portalInRoom in r.Portals)
+                            writer.Write((uint)portalsList.IndexOf(portalInRoom));
+
+                        uint numTriggersForThisRoom = (uint)r.Triggers.Count();
+                        writer.Write(numTriggersForThisRoom);
+                        foreach (var triggerInRoom in r.Triggers)
+                            writer.Write((uint)triggersList.IndexOf(triggerInRoom));
+
                         writer.Write(r.AmbientLight);
                         writer.Write(r.AlternateGroup);
                         writer.Write((r.AlternateRoom != null ? (int)level.Rooms.ReferenceIndexOf(r.AlternateRoom) : (int)-1));

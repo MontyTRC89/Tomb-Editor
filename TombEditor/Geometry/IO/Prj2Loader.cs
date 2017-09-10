@@ -38,7 +38,7 @@ namespace TombEditor.Geometry.IO
                     int versionCode = reader.ReadInt32();
 
                     // Read resource files
-                    level.Settings.TextureFilePath = reader.ReadStringUTF8();
+                    var texturePath = reader.ReadStringUTF8();
                     level.Settings.WadFilePath = reader.ReadStringUTF8();
                     level.Settings.FontTextureFilePath = reader.ReadStringUTF8();
                     level.Settings.SkyTextureFilePath = reader.ReadStringUTF8();
@@ -51,15 +51,16 @@ namespace TombEditor.Geometry.IO
                         level.Settings.SoundPaths.Add(new SoundPath(reader.ReadStringUTF8()));
                     level.Settings.IgnoreMissingSounds = reader.ReadBoolean();
 
-                   // ResourceLoader.TryLoadingTexture(level, progressReporter);
                     ResourceLoader.TryLoadingObjects(level, progressReporter);
 
-                  /*  var texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(Utils.TryFindAbsolutePath(
-                               level.Settings, level.Settings.TextureFilePath), VariableType.LevelDirectory), true);
+                    LevelTexture texture;
+                    if (string.IsNullOrEmpty(texturePath))
+                        texture = new LevelTexture();
+                    else
+                        texture = new LevelTexture(level.Settings, texturePath, true);
                     if (texture.Image.Width != 256)
                         texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed
                     level.Settings.Textures.Add(texture);
-                    ResourceLoader.CheckLoadedTexture(level.Settings, texture, progressReporter);*/
 
                     // Read fillers
                     reader.ReadBytes(16);
@@ -118,7 +119,7 @@ namespace TombEditor.Geometry.IO
                                 moveable.CodeBits = reader.ReadByte();
                                 moveable.Color = reader.ReadVector4();
 
-                                 reader.ReadBytes(8);
+                                reader.ReadBytes(8);
 
                                 // Check for other chunks
                                 chunkType = (Prj2ChunkType)reader.ReadUInt16();
@@ -317,16 +318,13 @@ namespace TombEditor.Geometry.IO
                                 for (int j = 0; j < 4; j++) b.RFFaces[j] = reader.ReadInt16();
 
                                 var floorPortal = reader.ReadInt32();
-                                //if (floorPortal != -1) b.FloorPortal = portalsList[floorPortal];
-                                b.FloorOpacity = (PortalOpacity)reader.ReadUInt16();
+                                b.TempFloorOpacity = (PortalOpacity)reader.ReadUInt16();
 
                                 var ceilingPortal = reader.ReadInt32();
-                                //if (ceilingPortal != -1) b.CeilingPortal = portalsList[ceilingPortal];
-                                b.CeilingOpacity = (PortalOpacity)reader.ReadUInt16();
-                                
+                                b.TempCeilingOpacity = (PortalOpacity)reader.ReadUInt16();
+
                                 var wallPortal = reader.ReadInt32();
-                                //if (wallPortal != -1) b.WallPortal = portalsList[wallPortal];
-                                b.WallOpacity = (PortalOpacity)reader.ReadUInt16();
+                                b.TempWallOpacity = (PortalOpacity)reader.ReadUInt16();
 
                                 b.NoCollisionFloor = reader.ReadBoolean();
                                 b.NoCollisionCeiling = reader.ReadBoolean();
@@ -415,10 +413,18 @@ namespace TombEditor.Geometry.IO
                             room.AddObject(level, l);
                         }
 
+                        uint numPortalsForThisRoom = reader.ReadUInt32();
+                        for (int j = 0; j < numPortalsForThisRoom; j++)
+                            room.Prj2Portals.Add(reader.ReadUInt32());
+
+                        uint numTriggersForThisRoom = reader.ReadUInt32();
+                        for (int j = 0; j < numTriggersForThisRoom; j++)
+                            room.Prj2Triggers.Add(reader.ReadUInt32());
+
                         room.AmbientLight = reader.ReadVector4();
                         room.AlternateGroup = reader.ReadInt16();
-                        room.AlternateRoomIndex = reader.ReadInt32();
-                        room.AlternateBaseRoomIndex = reader.ReadInt32();
+                        room.Prj2AlternateRoomIndex = reader.ReadInt32();
+                        room.Prj2AlternateBaseRoomIndex = reader.ReadInt32();
                         room.FlagCold = reader.ReadBoolean();
                         room.FlagDamage = reader.ReadBoolean();
                         room.FlagHorizon = reader.ReadBoolean();
@@ -464,8 +470,8 @@ namespace TombEditor.Geometry.IO
                 for (int i = 0; i < level.Rooms.Length; i++)
                 {
                     if (level.Rooms[i] == null) continue;
-                    if (level.Rooms[i].AlternateRoomIndex != -1) level.Rooms[i].AlternateRoom = level.Rooms[level.Rooms[i].AlternateRoomIndex];
-                    if (level.Rooms[i].AlternateBaseRoomIndex != -1) level.Rooms[i].AlternateBaseRoom = level.Rooms[level.Rooms[i].AlternateBaseRoomIndex];
+                    if (level.Rooms[i].Prj2AlternateRoomIndex != -1) level.Rooms[i].AlternateRoom = level.Rooms[level.Rooms[i].Prj2AlternateRoomIndex];
+                    if (level.Rooms[i].Prj2AlternateBaseRoomIndex != -1) level.Rooms[i].AlternateBaseRoom = level.Rooms[level.Rooms[i].Prj2AlternateBaseRoomIndex];
                 }
 
                 foreach (var obj in objectsList)
@@ -482,12 +488,42 @@ namespace TombEditor.Geometry.IO
 
                 foreach (var portal in portalsList)
                 {
-                    portal.Room = level.Rooms[portal.RoomIndex];
-                    portal.AdjoiningRoom = level.Rooms[portal.AdjoiningRoomIndex];                    
+                    portal.AdjoiningRoom = level.Rooms[portal.AdjoiningRoomIndex];
+                }
+
+                for (int i = 0; i < level.Rooms.Length; i++)
+                {
+                    if (level.Rooms[i] == null) continue;
+
+                    var room = level.Rooms[i];
+                    foreach (var portalIndex in room.Prj2Portals)
+                    {
+                        var portal = portalsList[(int)portalIndex];
+                        portal.AddPortalToRoom(level, room, true);
+                    }
                 }
 
                 foreach (var portal in portalsList)
-                    portal.Room.AddObject(level, portal);
+                {
+                    portal.AddPortalToRoom(level, portal.Room, true);
+                    if (portal.Room.AlternateRoom != null) portal.AddPortalToRoom(level, portal.AdjoiningRoom, true);
+                }
+
+                for (int i = 0; i < level.Rooms.Length; i++)
+                {
+                    if (level.Rooms[i] == null) continue;
+
+                    var room = level.Rooms[i];
+                    for (int x = 0; x < room.NumXSectors; x++)
+                    {
+                        for (int z = 0; z < room.NumZSectors; z++)
+                        {
+                            room.Blocks[x, z].FloorOpacity = room.Blocks[x, z].TempFloorOpacity;
+                            room.Blocks[x, z].CeilingOpacity = room.Blocks[x, z].TempCeilingOpacity;
+                            room.Blocks[x, z].WallOpacity = room.Blocks[x, z].TempWallOpacity;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
