@@ -23,7 +23,28 @@ namespace TombEditor.Controls
     public partial class PanelRendering3D : Panel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
+        private class BoundingBoxToDraw
+        {
+            public BoundingBox BoundingBox { get; set; }
+            public Vector3 Position { get; set; }
+
+            public BoundingBoxToDraw(BoundingBox box, Vector3 pos, bool half)
+            {
+                BoundingBox = box;
+                Position = Editor.Instance.SelectedRoom.WorldPos + pos;
+
+                if (half)
+                {
+                    float halfX = (BoundingBox.Maximum.X - BoundingBox.Minimum.X) / 2.0f;
+                    float halfY = (BoundingBox.Maximum.Y - BoundingBox.Minimum.Y) / 2.0f;
+                    float halfZ = (BoundingBox.Maximum.Z - BoundingBox.Minimum.Z) / 2.0f;
+
+                    Position += new Vector3(halfX, halfY, halfZ);
+                }
+            }
+        }
+
         private class RoomRenderBucket
         {
             public Room Room { get; set; }
@@ -181,7 +202,7 @@ namespace TombEditor.Controls
 
         private Buffer<EditorVertex> _flybyPathVertexBuffer;
         private bool _drawFlybyPath = false;
-        private bool _drawRoomBoundingBox = false;
+        private List<BoundingBoxToDraw> _boundingBoxesToDraw;
 
         private Effect _roomEffect;
 
@@ -812,7 +833,9 @@ namespace TombEditor.Controls
                 }
                 else if (instance is RoomGeometryInstance)
                 {
-                    BoundingBox box = ((RoomGeometryInstance)instance).Model.BoundingBox;
+                    var geometry = (RoomGeometryInstance)instance;
+                    BoundingBox box = new BoundingBox(instance.Position + geometry.Model.BoundingBox.Minimum,
+                                                      instance.Position + geometry.Model.BoundingBox.Maximum);
                     if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                         result = new PickingResultObject(distance, instance);
                 }
@@ -845,9 +868,22 @@ namespace TombEditor.Controls
             return DoPicking(ray);
         }
 
+        private void AddRoomBoundingBox()
+        {
+            float height = (_editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner());
+
+            var boundingBox = new BoundingBox(Vector3.Zero,
+                                              new Vector3(_editor.SelectedRoom.NumXSectors * 1024.0f,
+                                                          height * 256.0f,
+                                                          _editor.SelectedRoom.NumZSectors * 1024.0f
+                                                          ));
+
+            _boundingBoxesToDraw.Add(new BoundingBoxToDraw(boundingBox, Vector3.Zero, true));
+        }
+
         private void DrawDebugLines(Matrix viewProjection)
         {
-            if (!_drawFlybyPath && !_drawHeightLine && !_drawRoomBoundingBox) return;
+            if (!_drawFlybyPath && !_drawHeightLine && _boundingBoxesToDraw.Count == 0) return;
 
             _device.SetRasterizerState(_rasterizerWireframe);
             
@@ -881,25 +917,29 @@ namespace TombEditor.Controls
                 _device.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
             }
 
-            if (_drawRoomBoundingBox)
+            if (_boundingBoxesToDraw.Count != 0)
             {
                 _device.SetVertexBuffer(_linesCube.VertexBuffer);
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesCube.VertexBuffer));
                 _device.SetIndexBuffer(_linesCube.IndexBuffer, false);
+            }
 
-                float height = (_editor.SelectedRoom.GetHighestCorner() - _editor.SelectedRoom.GetLowestCorner());
+            foreach (var boundingBox in _boundingBoxesToDraw)
+            {
+                float scaleX = (boundingBox.BoundingBox.Maximum.X - boundingBox.BoundingBox.Minimum.X) / 256.0f;
+                float scaleY = (boundingBox.BoundingBox.Maximum.Y - boundingBox.BoundingBox.Minimum.Y) / 256.0f;
+                float scaleZ = (boundingBox.BoundingBox.Maximum.Z - boundingBox.BoundingBox.Minimum.Z) / 256.0f;
 
-                Matrix scaleMatrix = Matrix.Scaling(_editor.SelectedRoom.NumXSectors * 1024.0f / 256.0f,
-                                                    height,
-                                                    _editor.SelectedRoom.NumZSectors * 1024.0f / 256.0f);
+                /*float halfX = (boundingBox.BoundingBox.Maximum.X - boundingBox.BoundingBox.Minimum.X) / 2.0f;
+                float halfY = (boundingBox.BoundingBox.Maximum.Y - boundingBox.BoundingBox.Minimum.Y) / 2.0f;
+                float halfZ = (boundingBox.BoundingBox.Maximum.Z - boundingBox.BoundingBox.Minimum.Z) / 2.0f;*/
 
-                Matrix translateMatrix = Matrix.Translation(_editor.SelectedRoom.NumXSectors * 1024.0f / 2.0f,
-                                                            height * 256.0f / 2.0f,
-                                                            _editor.SelectedRoom.NumZSectors * 1024.0f / 2.0f);
+                Matrix scaleMatrix = Matrix.Scaling(scaleX, scaleY, scaleZ);
 
-                solidEffect.Parameters["ModelViewProjection"].SetValue(scaleMatrix * 
-                                                                       _editor.SelectedRoom.Transform * 
-                                                                       translateMatrix * 
+                Matrix translateMatrix = Matrix.Translation(boundingBox.Position /*+ new Vector3(halfX, halfY, halfZ)*/);
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(scaleMatrix *
+                                                                       translateMatrix *
                                                                        viewProjection);
                 solidEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -1526,6 +1566,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, modelInfo.Position);
+
+                    // Add the bounding box
+                    _boundingBoxesToDraw.Add(new BoundingBoxToDraw(model.BoundingBox, modelInfo.Position, false));
                 }
 
                 _lastObject = modelInfo;
@@ -1611,6 +1654,9 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
+
+                    // Add the bounding box
+                    _boundingBoxesToDraw.Add(new BoundingBoxToDraw(model.Meshes[0].BoundingBox, instance.Position, false));
                 }
 
                 _lastObject = instance;
@@ -1914,7 +1960,10 @@ namespace TombEditor.Controls
             Debug.Reset();
             _drawHeightLine = false;
             _drawFlybyPath = false;
-            _drawRoomBoundingBox = ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && DrawPortals);
+            _boundingBoxesToDraw = new List<BoundingBoxToDraw>();
+
+            if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && DrawPortals)
+                AddRoomBoundingBox();
 
             // Don't draw anything if device is not ready
             if (_device == null || _editor.SelectedRoom == null)

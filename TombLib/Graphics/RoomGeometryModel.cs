@@ -13,9 +13,13 @@ namespace TombLib.Graphics
 {
     public class RoomGeometryModel : Model<RoomGeometryMesh, RoomGeometryVertex>
     {
-        public RoomGeometryModel(GraphicsDevice device)
+        public float Scale { get; private set; }
+
+        public RoomGeometryModel(GraphicsDevice device, float scale)
             : base(device, ModelType.RoomGeometry)
-        { }
+        {
+            Scale = scale;
+        }
 
         public override void BuildBuffers()
         {

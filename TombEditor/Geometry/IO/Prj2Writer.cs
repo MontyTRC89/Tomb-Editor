@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using NLog;
 using TombLib.IO;
+using TombLib.Graphics;
 
 namespace TombEditor.Geometry.IO
 {
@@ -47,6 +48,7 @@ namespace TombEditor.Geometry.IO
             var portalsList = new List<Portal>();
             var triggersList = new List<TriggerInstance>();
             var objectsList = new List<ObjectInstance>();
+            var modelsList = new List<string>();
 
             foreach(var room in level.Rooms)
             {
@@ -61,9 +63,14 @@ namespace TombEditor.Geometry.IO
                         portalsList.Add(portal);
 
                 foreach (var obj in room.Objects)
-                    if (!objectsList.Contains(obj) && obj.GetType() != typeof(Light))
+                    if (!objectsList.Contains(obj) && 
+                        obj.GetType() != typeof(Light) && 
+                        obj.GetType() != typeof(RoomGeometryInstance))
                         objectsList.Add(obj);
             }
+
+            for (int m = 0; m < GeometryImporterExporter.Models.Count; m++)
+                modelsList.Add(GeometryImporterExporter.Models.ElementAt(m).Key);
 
             try
             {
@@ -92,7 +99,16 @@ namespace TombEditor.Geometry.IO
                     writer.Write(level.Settings.IgnoreMissingSounds);
 
                     writer.WriteFiller(0x00, 16);
-                    
+
+                    // Write imported references
+                    uint numModels = (uint)GeometryImporterExporter.Models.Count;
+                    writer.Write(numModels);
+                    for (int i = 0; i < numModels; i++)
+                    {
+                        writer.WriteStringUTF8(GeometryImporterExporter.Models.ElementAt(i).Key);
+                        writer.Write(GeometryImporterExporter.Models.ElementAt(i).Value.Scale);
+                    }
+
                     // Write portals
                     writer.Write(portalsList.Count);
                     foreach (var p in portalsList)
@@ -233,20 +249,6 @@ namespace TombEditor.Geometry.IO
                             writer.Write(instance.Flags);
                             writer.Write(instance.CodeBits);
 
-                            writer.WriteFiller(0x00, 8);
-
-                            // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
-                        }
-                        else if (o.GetType() == typeof(RoomGeometryInstance))
-                        {
-                            RoomGeometryInstance instance = (RoomGeometryInstance)o;
-
-                            writer.Write((ushort)Prj2ObjectType.RoomGeometry);
-                            writer.Write((ushort)level.Rooms.ReferenceIndexOf(o.Room));
-                            writer.Write(instance.Position);
-                            
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
@@ -397,6 +399,30 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(l.CastsShadows);
                                 writer.Write(l.IsDynamicallyUsed);
                                 writer.Write(l.IsStaticallyUsed);
+
+                                writer.WriteFiller(0x00, 8);
+
+                                // No more data, in future we can expand the structure using chunks
+                                chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
+                                writer.Write(chunkMagicWord);
+                            }
+                        }
+
+                        // Write imported geometry
+                        uint numImportedGeometry = 0;
+                        foreach (var o in r.Objects)
+                            if (o.GetType() == typeof(RoomGeometryInstance))
+                                numImportedGeometry++;
+                        writer.Write(numImportedGeometry);
+
+                        foreach (var o in r.Objects)
+                        {
+                            if (o.GetType() == typeof(RoomGeometryInstance))
+                            {
+                                RoomGeometryInstance instance = (RoomGeometryInstance)o;
+
+                                writer.Write(instance.Position);
+                                writer.Write((uint)modelsList.IndexOf(instance.Model.Name));
 
                                 writer.WriteFiller(0x00, 8);
 

@@ -14,8 +14,8 @@ namespace TombEditor.Geometry
 {
     public static class GeometryImporterExporter
     {
-        public static Dictionary<string, Texture2D> Textures;
-        public static Dictionary<string, RoomGeometryModel> Models;
+        public static Dictionary<string, Texture2D> Textures { get; private set; }
+        public static Dictionary<string, RoomGeometryModel> Models { get; private set; }
         
         private static DeviceManager _manager;
 
@@ -37,7 +37,7 @@ namespace TombEditor.Geometry
             Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
             
             // Create a new static model
-            RoomGeometryModel model = new RoomGeometryModel(_manager.Device);
+            RoomGeometryModel model = new RoomGeometryModel(_manager.Device, scale);
 
             model.Name = Path.GetFileName(filename);
 
