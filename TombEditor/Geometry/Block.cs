@@ -96,7 +96,12 @@ namespace TombEditor.Geometry
         public Portal CeilingPortal { get; set; } = null; // This is not supposed to be modified here.
         public bool NoCollisionFloor { get; set; }
         public bool NoCollisionCeiling { get; set; }
-        
+
+        // Helper data for Prj2 loading
+        internal PortalOpacity TempFloorOpacity { get; set; }
+        internal PortalOpacity TempCeilingOpacity { get; set; }
+        internal PortalOpacity TempWallOpacity { get; set; }
+
         public Block(int floor, int ceiling)
         {
             for (int i = 0; i < 4; i++)

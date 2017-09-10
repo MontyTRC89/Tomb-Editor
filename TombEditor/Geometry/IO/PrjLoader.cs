@@ -1345,14 +1345,14 @@ namespace TombEditor.Geometry.IO
                             texInfo._x + 0.5f,
                             texInfo._y + 0.5f),
                         new Vector2(
-                            texInfo._x + texInfo._width + 0.5f,
+                            texInfo._x + texInfo._width - 0.5f,
                             texInfo._y + 0.5f),
                         new Vector2(
-                            texInfo._x + texInfo._width + 0.5f,
-                            texInfo._y + texInfo._height + 0.5f),
+                            texInfo._x + texInfo._width - 0.5f,
+                            texInfo._y + texInfo._height - 0.5f),
                         new Vector2(
                             texInfo._x + 0.5f,
-                            texInfo._y + texInfo._height + 0.5f)
+                            texInfo._y + texInfo._height - 0.5f)
                     };
 
                     TextureArea texture;

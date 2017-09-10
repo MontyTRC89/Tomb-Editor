@@ -63,13 +63,17 @@ namespace TombEditor.Geometry
         private readonly List<EditorVertex> _allVertices = new List<EditorVertex>();
 
         // Helper data for Prj2 loading
-        public int AlternateRoomIndex { get; set; }
-        public int AlternateBaseRoomIndex { get; set; }
+        public int Prj2AlternateRoomIndex { get; set; }
+        public int Prj2AlternateBaseRoomIndex { get; set; }
+        public List<uint> Prj2Portals { get; set; }
+        public List<uint> Prj2Triggers { get; set; }
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
             Resize(level, numXSectors, numZSectors, 0, ceiling);
+            Prj2Portals = new List<uint>();
+            Prj2Triggers = new List<uint>();
         }
 
         public void Resize(Level level, int numXSectors, int numZSectors, short floor = 0, short ceiling = DefaultHeight, DrawingPoint offset = new DrawingPoint())
