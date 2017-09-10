@@ -892,7 +892,7 @@ namespace TombEditor.Geometry.IO
                         if (string.IsNullOrEmpty(textureFilename) || isTextureNA)
                             texture = new LevelTexture();
                         else
-                            texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(TryFindAbsolutePath(
+                            texture = new LevelTexture(level.Settings, level.Settings.MakeRelative(Utils.TryFindAbsolutePath(
                                 level.Settings, textureFilename.Trim('\0', ' ')), VariableType.LevelDirectory), true);
                         if (texture.Image.Width != 256)
                             texture.SetConvert512PixelsToDoubleRows(level.Settings, false); // Only use this compatibility thing if actually needed
@@ -945,7 +945,7 @@ namespace TombEditor.Geometry.IO
                         if (string.IsNullOrEmpty(wadName) || wadName.StartsWith("NA"))
                             level.Settings.WadFilePath = "";
                         else
-                            level.Settings.WadFilePath = level.Settings.MakeRelative(TryFindAbsolutePath(
+                            level.Settings.WadFilePath = level.Settings.MakeRelative(Utils.TryFindAbsolutePath(
                                 level.Settings, Path.ChangeExtension(wadName.Trim('\0', ' '), "wad")), VariableType.LevelDirectory);
                         ResourceLoader.TryLoadingObjects(level, progressReporter);
                         progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
@@ -2204,41 +2204,6 @@ namespace TombEditor.Geometry.IO
                 directory = Path.GetDirectoryName(directory);
             }
             return Path.GetDirectoryName(filename);
-        }
-
-        private static string TryFindAbsolutePath(LevelSettings levelSettings, string filename)
-        {
-            try
-            {
-                // Is the file easily found?
-                if (File.Exists(filename))
-                    return filename;
-
-                string[] filePathComponents = filename.Split(new char[] { '\\', '/' });
-                string[] levelPathComponents = levelSettings.GetVariable(VariableType.LevelDirectory).Split(new char[] { '\\', '/' });
-
-                // Try to go up 2 directories to find file (works in original levels)
-                // If it turns out that many people have directory structures incompatible to this assumptions
-                // we can add more suffisticated options here in the future.
-                int filePathCheckDepth = Math.Min(3, filePathComponents.GetLength(0) - 1);
-                int levelPathCheckDepth = Math.Min(2, levelPathComponents.GetLength(0) - 1);
-                for (int levelPathUntil = 0; levelPathUntil <= levelPathCheckDepth; ++levelPathUntil)
-                    for (int filePathAfter = 1; filePathAfter <= filePathCheckDepth; ++filePathAfter)
-                    {
-                        var basePath = levelPathComponents.Take(levelPathComponents.GetLength(0) - levelPathUntil);
-                        var filePath = filePathComponents.Skip(filePathComponents.GetLength(0) - filePathAfter);
-                        string filepathSuggestion = string.Join(LevelSettings.Dir.ToString(), basePath.Union(filePath));
-                        if (File.Exists(filepathSuggestion))
-                            return filepathSuggestion;
-                    }
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "TryFindAbsolutePath failed");
-                // In cas of an error we can just give up to find the absolute path alreasy
-                // and prompt the user for the file path.
-            }
-            return filename;
         }
     }
 }

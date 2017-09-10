@@ -137,7 +137,7 @@ namespace TombEditor.Geometry
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
                             if (room.Blocks[x, z].CeilingPortal != null)
-                                throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
                         {
@@ -150,7 +150,7 @@ namespace TombEditor.Geometry
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
                             if (room.Blocks[x, z].WallPortal != null)
-                                throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
                         {
