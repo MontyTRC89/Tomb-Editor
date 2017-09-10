@@ -61,6 +61,11 @@ namespace TombLib.IO
             Write(value.Maximum);
         }
 
+        public void WriteFiller(byte value, int sizeInBytes)
+        {
+            for (int i = 0; i < sizeInBytes; i++) Write(value);
+        }
+
         public void WriteBlock<T>(T block)
         {
             var sizeOfT = Marshal.SizeOf(typeof(T));
