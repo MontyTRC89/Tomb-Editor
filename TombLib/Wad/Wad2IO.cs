@@ -198,6 +198,7 @@ namespace TombLib.Wad
                     {
                         var animation = new WadAnimation();
 
+                        animation.Name = reader.ReadStringUTF8();
                         animation.FrameDuration = reader.ReadByte();
                         animation.StateId = reader.ReadUInt16();
                         animation.Speed = reader.ReadInt32();
@@ -209,7 +210,7 @@ namespace TombLib.Wad
                         animation.FrameStart = reader.ReadUInt16();
                         animation.FrameEnd = reader.ReadUInt16();
                         animation.RealNumberOfFrames = reader.ReadUInt16();
-
+                        
                         uint numKeyframes = reader.ReadUInt32();
                         for (int k = 0; k < numKeyframes; k++)
                         {
@@ -596,6 +597,7 @@ namespace TombLib.Wad
 
                     foreach (var animation in moveable.Animations)
                     {
+                        writer.WriteStringUTF8(animation.Name);
                         writer.Write(animation.FrameDuration);
                         writer.Write(animation.StateId);
                         writer.Write(animation.Speed);
@@ -607,7 +609,7 @@ namespace TombLib.Wad
                         writer.Write(animation.FrameStart);
                         writer.Write(animation.FrameEnd);
                         writer.Write(animation.RealNumberOfFrames);
-
+                        
                         // Write keyframes
                         uint numKeyframes = (uint)animation.KeyFrames.Count;
                         writer.Write(numKeyframes);

@@ -375,6 +375,7 @@ namespace TombLib.Wad
                 animation.NextFrame = anim.NextFrame;
                 animation.StateId = anim.StateId;
                 animation.RealNumberOfFrames = (ushort)(anim.FrameEnd - anim.FrameStart + 1);
+                animation.Name = "Animation " + j;
 
                 for (int k = 0; k < anim.NumStateChanges; k++)
                 {
