@@ -25,6 +25,7 @@ namespace TombEditor.Geometry.IO
             var portalsList = new List<Portal>();
             var triggersList = new List<TriggerInstance>();
             var objectsList = new List<ObjectInstance>();
+            var modelsList = new Dictionary<uint, string>();
 
             Prj2ChunkType chunkType;
 
@@ -64,6 +65,22 @@ namespace TombEditor.Geometry.IO
 
                     // Read fillers
                     reader.ReadBytes(16);
+
+                    // Read imported geometry
+                    uint numImportedGeometry = reader.ReadUInt32();
+                    for (int i = 0; i < numImportedGeometry; i++)
+                    {
+                        var modelFileName = reader.ReadStringUTF8();
+                        var scale = reader.ReadSingle();
+
+                        if (File.Exists(modelFileName))
+                        {
+                            if (GeometryImporterExporter.LoadModel(modelFileName, scale) != null)
+                            {
+                                modelsList.Add((uint)i, modelFileName);
+                            }
+                        }
+                    }
 
                     // Read portals
                     uint numPortals = reader.ReadUInt32();
@@ -411,6 +428,31 @@ namespace TombEditor.Geometry.IO
                             }
 
                             room.AddObject(level, l);
+                        }
+
+                        uint numImportedGeometryForThisRoom = reader.ReadUInt32();
+                        for (int j = 0; j < numImportedGeometryForThisRoom; j++)
+                        {
+                            var pos = reader.ReadVector3();
+                            var model = reader.ReadUInt32();
+
+                            // If model is not present in the file system, ignore it
+                            if (!modelsList.ContainsKey(model)) continue;
+
+                            var importedGeometry = new RoomGeometryInstance();
+                            importedGeometry.Position = pos;
+                            importedGeometry.Model = GeometryImporterExporter.Models[modelsList[model]];
+
+                            reader.ReadBytes(8);
+
+                            // Check for other chunks
+                            chunkType = (Prj2ChunkType)reader.ReadUInt16();
+                            if (chunkType != Prj2ChunkType.NoExtraChunk)
+                            {
+                                // TODO: logic for reading in the future other chunks
+                            }
+
+                            room.AddObject(level, importedGeometry);
                         }
 
                         uint numPortalsForThisRoom = reader.ReadUInt32();
