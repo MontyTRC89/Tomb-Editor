@@ -9,9 +9,9 @@ namespace TombEditor.Geometry
     public class FlybyCameraInstance : PositionBasedObjectInstance, IRotateableYXRoll, IHasScriptID
     {
         public ushort? ScriptId { get; set; }
-        public byte Sequence { get; set; }
-        public byte Number { get; set; }
-        public ushort Timer { get; set; }
+        public ushort Sequence { get; set; }
+        public ushort Number { get; set; }
+        public short Timer { get; set; }
         public ushort Flags { get; set; }
 
         private float _speed { get; set; } = 1;

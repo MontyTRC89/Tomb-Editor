@@ -81,7 +81,7 @@ namespace TombEditor
 
             _flyByCamera.Sequence = byte.Parse(tbSequence.Text);
             _flyByCamera.Number = byte.Parse(tbNumber.Text);
-            _flyByCamera.Timer = ushort.Parse(tbTimer.Text);
+            _flyByCamera.Timer = short.Parse(tbTimer.Text);
             _flyByCamera.Speed = float.Parse(tbSpeed.Text);
             _flyByCamera.Fov = float.Parse(tbFOV.Text);
             _flyByCamera.Roll = float.Parse(tbRoll.Text);

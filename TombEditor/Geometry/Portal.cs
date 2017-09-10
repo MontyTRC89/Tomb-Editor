@@ -16,13 +16,16 @@ namespace TombEditor.Geometry
     public class Portal : SectorBasedObjectInstance
     {
         public PortalDirection Direction { get; }
-        public Room AdjoiningRoom { get; }
+        public Room AdjoiningRoom { get; internal set; }
+
+        // Helper data for loading Prj2
+        public ushort AdjoiningRoomIndex { get; set; }
         
         public Portal(Rectangle area, PortalDirection direction, Room adjoiningRoom)
             : base(area)
         {
-            if (adjoiningRoom == null)
-                throw new NullReferenceException("'adjoiningRoom' must not be null");
+            /*if (adjoiningRoom == null)
+                throw new NullReferenceException("'adjoiningRoom' must not be null");*/
             Direction = direction;
             AdjoiningRoom = adjoiningRoom;
         }

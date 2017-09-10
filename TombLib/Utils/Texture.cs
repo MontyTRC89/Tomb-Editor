@@ -25,9 +25,6 @@ namespace TombLib.Utils
 
         public bool IsUnavailable => Image == UnloadedPlaceholder;
         public bool IsAvailable => Image != UnloadedPlaceholder;
-
-        // Used only inside Tomb Editor for referecing position in original map
-        public RectangleF AreaInTextureMap { get; set; }
     }
     
     public class TextureInvisible : Texture
