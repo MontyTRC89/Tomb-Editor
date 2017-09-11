@@ -74,6 +74,8 @@ namespace TombEditor.Compilers
                 newBox.TrueFloor = aux.TrueFloor;
                 newBox.OverlapIndex = aux.OverlapIndex;
 
+                if (aux.IsolatedBox) newBox.OverlapIndex = (short)(newBox.OverlapIndex | 0x8000);
+
                 _boxes[i] = newBox;
                 _zones[i] = zone;
             }
@@ -90,10 +92,26 @@ namespace TombEditor.Compilers
             ushort aGroundZone4 = 1;
             ushort aFlyZone = 1;
 
+            // Init zones with default values
+
+            for (var i = 0; i < _boxes.Length; i++)
+            {
+                _zones[i].GroundZone1_Normal = 0x7ff;
+                _zones[i].GroundZone2_Normal = 0x7ff;
+                _zones[i].GroundZone3_Normal = 0x7ff;
+                _zones[i].GroundZone4_Normal = 0x7ff;
+                _zones[i].FlyZone_Normal = 0x7ff;
+                _zones[i].GroundZone1_Alternate = 0x7ff;
+                _zones[i].GroundZone2_Alternate = 0x7ff;
+                _zones[i].GroundZone3_Alternate = 0x7ff;
+                _zones[i].GroundZone4_Alternate = 0x7ff;
+                _zones[i].FlyZone_Alternate = 0x7ff;
+            }
+
             for (var i = 0; i < _boxes.Length; i++)
             {
                 // Skeleton like enemis: in the future implement also jump
-                if (_zones[i].GroundZone1_Normal == 0)
+                if (_zones[i].GroundZone1_Normal == 0x7ff)
                 {
                     if (_tempBoxes[i].FlipMap) continue;
 
@@ -101,14 +119,14 @@ namespace TombEditor.Compilers
 
                     foreach (var box in GetAllReachableBoxes(i, 1, false))
                     {
-                        _zones[box].GroundZone1_Normal = groundZone1;
+                        if (_zones[box].GroundZone1_Normal == 0x7ff) _zones[box].GroundZone1_Normal = groundZone1;
                     }
 
                     groundZone1++;
                 }
 
                 // Mummy like enemis: the simplest case
-                if (_zones[i].GroundZone2_Normal == 0)
+                if (_zones[i].GroundZone2_Normal == 0x7ff)
                 {
                     if (_tempBoxes[i].FlipMap) continue;
 
@@ -116,14 +134,14 @@ namespace TombEditor.Compilers
 
                     foreach (var box in GetAllReachableBoxes(i, 2, false))
                     {
-                        _zones[box].GroundZone2_Normal = groundZone2;
+                        if (_zones[box].GroundZone2_Normal == 0x7ff) _zones[box].GroundZone2_Normal = groundZone2;
                     }
 
                     groundZone2++;
                 }
 
                 // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
-                if (_zones[i].GroundZone3_Normal == 0)
+                if (_zones[i].GroundZone3_Normal == 0x7ff)
                 {
                     if (_tempBoxes[i].FlipMap) continue;
 
@@ -131,14 +149,14 @@ namespace TombEditor.Compilers
 
                     foreach (var box in GetAllReachableBoxes(i, 3, false))
                     {
-                        _zones[box].GroundZone3_Normal = groundZone3;
+                        if (_zones[box].GroundZone3_Normal == 0x7ff) _zones[box].GroundZone3_Normal = groundZone3;
                     }
 
                     groundZone3++;
                 }
 
                 // Baddy like enemis: they can jump, grab and monkey
-                if (_zones[i].GroundZone4_Normal == 0)
+                if (_zones[i].GroundZone4_Normal == 0x7ff)
                 {
                     if (_tempBoxes[i].FlipMap) continue;
 
@@ -146,14 +164,14 @@ namespace TombEditor.Compilers
 
                     foreach (var box in GetAllReachableBoxes(i, 4, false))
                     {
-                        _zones[box].GroundZone4_Normal = groundZone4;
+                        if (_zones[box].GroundZone4_Normal == 0x7ff) _zones[box].GroundZone4_Normal = groundZone4;
                     }
 
                     groundZone4++;
                 }
 
                 // Bat like enemis: they can fly everywhere, except into the water
-                if (_zones[i].FlyZone_Normal == 0)
+                if (_zones[i].FlyZone_Normal == 0x7ff)
                 {
                     if (_tempBoxes[i].FlipMap) continue;
 
@@ -161,84 +179,86 @@ namespace TombEditor.Compilers
 
                     foreach (var box in GetAllReachableBoxes(i, 5, false))
                     {
-                        _zones[box].FlyZone_Normal = flyZone;
+                        if (_zones[box].FlyZone_Normal == 0x7ff) _zones[box].FlyZone_Normal = flyZone;
                     }
 
                     flyZone++;
                 }
+            }
 
-                // Flipped rooms------------------------------------------
-
+            // Flipped rooms------------------------------------------
+            for (var i = 0; i < _boxes.Length; i++)
+            {
                 // Skeleton like enemis: in the future implement also jump
-                if (_zones[i].GroundZone1_Alternate == 0)
+                if (_zones[i].GroundZone1_Alternate == 0x7ff)
                 {
-                    if (!_tempBoxes[i].FlipMap) continue;
+                    //if (!_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone1_Alternate = aGroundZone1;
 
                     foreach (var box in GetAllReachableBoxes(i, 1, true))
                     {
-                        _zones[box].GroundZone1_Alternate = aGroundZone1;
+                        if (_zones[box].GroundZone1_Alternate == 0x7ff) _zones[box].GroundZone1_Alternate = aGroundZone1;
                     }
 
                     aGroundZone1++;
                 }
 
                 // Mummy like enemis: the simplest case
-                if (_zones[i].GroundZone2_Alternate == 0)
+                if (_zones[i].GroundZone2_Alternate == 0x7ff)
                 {
-                    if (!_tempBoxes[i].FlipMap) continue;
+                    //if (!_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone2_Alternate = aGroundZone2;
 
                     foreach (var box in GetAllReachableBoxes(i, 2, true))
                     {
-                        _zones[box].GroundZone2_Alternate = aGroundZone2;
+                        if (_zones[box].GroundZone2_Alternate == 0x7ff) _zones[box].GroundZone2_Alternate = aGroundZone2;
                     }
 
                     aGroundZone2++;
                 }
 
                 // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
-                if (_zones[i].GroundZone3_Alternate == 0)
+                if (_zones[i].GroundZone3_Alternate == 0x7ff)
                 {
-                    if (!_tempBoxes[i].FlipMap) continue;
+                    //if (!_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone3_Alternate = aGroundZone3;
 
                     foreach (var box in GetAllReachableBoxes(i, 3, true))
                     {
-                        _zones[box].GroundZone3_Alternate = aGroundZone3;
+                        if (_zones[box].GroundZone3_Alternate == 0x7ff) _zones[box].GroundZone3_Alternate = aGroundZone3;
                     }
 
                     aGroundZone3++;
                 }
 
                 // Baddy like enemis: they can jump, grab and monkey
-                if (_zones[i].GroundZone4_Alternate == 0)
+                if (_zones[i].GroundZone4_Alternate == 0x7ff)
                 {
-                    if (!_tempBoxes[i].FlipMap) continue;
+                    //if (!_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone4_Alternate = aGroundZone4;
 
                     foreach (var box in GetAllReachableBoxes(i, 4, true))
                     {
-                        _zones[box].GroundZone4_Alternate = aGroundZone4;
+                        if (_zones[box].GroundZone4_Alternate == 0x7ff) _zones[box].GroundZone4_Alternate = aGroundZone4;
                     }
 
                     aGroundZone4++;
                 }
 
                 // Bat like enemis: they can fly everywhere, except into the water
-                if (_zones[i].FlyZone_Alternate == 0)
+                if (_zones[i].FlyZone_Alternate == 0x7ff)
                 {
-                    if (!_tempBoxes[i].FlipMap) continue;
+                    //if (!_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].FlyZone_Alternate = aFlyZone;
 
                     foreach (var box in GetAllReachableBoxes(i, 5, true))
                     {
-                        _zones[box].FlyZone_Alternate = aFlyZone;
+                        if (_zones[box].FlyZone_Alternate == 0x7ff) _zones[box].FlyZone_Alternate = aFlyZone;
                     }
 
                     aFlyZone++;
@@ -685,7 +705,7 @@ namespace TombEditor.Compilers
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256 && 
                             ((!flipped  && !_tempBoxes[boxIndex].FlipMap) || 
-                            (flipped))) 
+                            (flipped && _tempBoxes[boxIndex].FlipMap))) 
                             add = true;
                     }
 
@@ -701,7 +721,7 @@ namespace TombEditor.Compilers
 
                         if (water == isWater && (canJump || canClimb) &&
                             ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
-                            (flipped)))
+                            (flipped && _tempBoxes[boxIndex].FlipMap)))
                             add = true;
                     }
 
@@ -726,7 +746,7 @@ namespace TombEditor.Compilers
 
                         if (water == isWater && (canJump || canClimb || canMonkey) &&
                             ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
-                            (flipped)))
+                            (flipped && _tempBoxes[boxIndex].FlipMap)))
                             add = true;
                     }
 
@@ -736,7 +756,7 @@ namespace TombEditor.Compilers
                         var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         if (water == isWater &&
                             ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
-                            (flipped)))
+                            (flipped && _tempBoxes[boxIndex].FlipMap)))
                             add = true;
                     }
 

@@ -372,8 +372,8 @@ namespace TombEditor.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.AlternateRoom != null ||
-                                         currentRoom.AlternateRoom != null))
+                                        (dec_currentRoom.Flipped ||
+                                         currentRoom.Flipped))
                                     {
                                         break;
                                     }
@@ -426,8 +426,8 @@ namespace TombEditor.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.AlternateRoom != null ||
-                                         currentRoom.AlternateRoom != null))
+                                        (dec_currentRoom.Flipped ||
+                                         currentRoom.Flipped))
                                     {
                                         break;
                                     }
@@ -480,8 +480,8 @@ namespace TombEditor.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.AlternateRoom != null ||
-                                         currentRoom.AlternateRoom != null))
+                                        (dec_currentRoom.Flipped ||
+                                         currentRoom.Flipped))
                                     {
                                         break;
                                     }
@@ -534,8 +534,8 @@ namespace TombEditor.Compilers
                                 {
                                     // If the box goes in another room and one of current rooms has a flipped room that stop now
                                     if (dec_currentRoom != currentRoom &&
-                                        (dec_currentRoom.AlternateRoom != null ||
-                                         currentRoom.AlternateRoom != null))
+                                        (dec_currentRoom.Flipped ||
+                                         currentRoom.Flipped))
                                     {
                                         break;
                                     }

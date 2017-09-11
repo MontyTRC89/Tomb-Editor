@@ -53,7 +53,7 @@ namespace TombEditor.Compilers
                         Room isWallWithCeilingPortal = null;
                         foreach (var portal in ceilingPortals)
                         {
-                            if (x < portal.Area.X - 1 || x > portal.Area.Right + 2 || z < portal.Area.Y - 1 || z > portal.Area.Right + 2)
+                            if (x < portal.Area.X - 1 || x > portal.Area.Right + 2 || z < portal.Area.Y - 1 || z > portal.Area.Bottom + 2)
                                 continue;
 
                             var adjoining = portal.AdjoiningRoom;
@@ -212,7 +212,7 @@ namespace TombEditor.Compilers
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x03);
 
-                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
+                            var slope = (ushort)(((-block.CeilingIfQuadSlopeZ) << 8) | ((-block.CeilingIfQuadSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
