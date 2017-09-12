@@ -553,6 +553,8 @@ namespace TombEditor.Compilers
         public bool Portal;
         public bool FlipMap;
         public bool Water;
+        public bool Flag2;
+        public bool Flag4;
     }
 
     public struct tr_overlap_aux
