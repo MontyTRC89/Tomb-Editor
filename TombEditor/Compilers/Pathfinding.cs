@@ -46,9 +46,10 @@ namespace TombEditor.Compilers
                 box.IsolatedBox = dec_boxes[i].IsolatedBox;
                 box.Monkey = dec_boxes[i].Monkey;
                 box.Jump = dec_boxes[i].Jump;
-                box.FlipMap = dec_boxes[i].Flipped;
                 box.OverlapIndex = dec_boxes[i].OverlapIndex;
                 box.TrueFloor = (short)(dec_boxes[i].TrueFloor * -256);
+                box.Flag4 = dec_boxes[i].Flag4;
+                box.Flag2 = dec_boxes[i].Flag2;
 
                 _tempBoxes.Add(box);
             }
@@ -113,7 +114,7 @@ namespace TombEditor.Compilers
                 // Skeleton like enemis: in the future implement also jump
                 if (_zones[i].GroundZone1_Normal == 0x7ff)
                 {
-                    if (_tempBoxes[i].FlipMap) continue;
+                    //if (_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone1_Normal = groundZone1;
 
@@ -128,7 +129,7 @@ namespace TombEditor.Compilers
                 // Mummy like enemis: the simplest case
                 if (_zones[i].GroundZone2_Normal == 0x7ff)
                 {
-                    if (_tempBoxes[i].FlipMap) continue;
+                    //if (_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone2_Normal = groundZone2;
 
@@ -143,7 +144,7 @@ namespace TombEditor.Compilers
                 // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
                 if (_zones[i].GroundZone3_Normal == 0x7ff)
                 {
-                    if (_tempBoxes[i].FlipMap) continue;
+                    //if (_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone3_Normal = groundZone3;
 
@@ -158,7 +159,7 @@ namespace TombEditor.Compilers
                 // Baddy like enemis: they can jump, grab and monkey
                 if (_zones[i].GroundZone4_Normal == 0x7ff)
                 {
-                    if (_tempBoxes[i].FlipMap) continue;
+                    //if (_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].GroundZone4_Normal = groundZone4;
 
@@ -173,7 +174,7 @@ namespace TombEditor.Compilers
                 // Bat like enemis: they can fly everywhere, except into the water
                 if (_zones[i].FlyZone_Normal == 0x7ff)
                 {
-                    if (_tempBoxes[i].FlipMap) continue;
+                    //if (_tempBoxes[i].FlipMap) continue;
 
                     _zones[i].FlyZone_Normal = flyZone;
 
@@ -704,8 +705,8 @@ namespace TombEditor.Compilers
                         var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         if (water == isWater && step <= 256 && 
-                            ((!flipped  && !_tempBoxes[boxIndex].FlipMap) || 
-                            (flipped && _tempBoxes[boxIndex].FlipMap))) 
+                            ((!flipped  && _tempBoxes[boxIndex].Flag4) || 
+                            (flipped && _tempBoxes[boxIndex].Flag2))) 
                             add = true;
                     }
 
@@ -720,8 +721,8 @@ namespace TombEditor.Compilers
                         var canClimb = Math.Abs(step) <= 256;
 
                         if (water == isWater && (canJump || canClimb) &&
-                            ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
-                            (flipped && _tempBoxes[boxIndex].FlipMap)))
+                            ((!flipped && _tempBoxes[boxIndex].Flag4) ||
+                            (flipped && _tempBoxes[boxIndex].Flag2)))
                             add = true;
                     }
 
@@ -745,8 +746,8 @@ namespace TombEditor.Compilers
                         var canMonkey = _tempBoxes[boxIndex].Monkey;
 
                         if (water == isWater && (canJump || canClimb || canMonkey) &&
-                            ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
-                            (flipped && _tempBoxes[boxIndex].FlipMap)))
+                            ((!flipped && _tempBoxes[boxIndex].Flag4) ||
+                            (flipped && _tempBoxes[boxIndex].Flag2)))
                             add = true;
                     }
 
@@ -755,8 +756,8 @@ namespace TombEditor.Compilers
                     {
                         var water = (_tempRooms[_roomsUnmapping[_tempBoxes[boxIndex].Room]].Flags & 0x01) != 0;
                         if (water == isWater &&
-                            ((!flipped && !_tempBoxes[boxIndex].FlipMap) ||
-                            (flipped && _tempBoxes[boxIndex].FlipMap)))
+                            ((!flipped && _tempBoxes[boxIndex].Flag4) ||
+                            (flipped && _tempBoxes[boxIndex].Flag2)))
                             add = true;
                     }
 

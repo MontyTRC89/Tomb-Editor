@@ -15,20 +15,15 @@ namespace TombEditor.Compilers
         public int Xmin;
         public int Xmax;
         public short TrueFloor;
-        public short Clicks;
         public short OverlapIndex;
-        public byte NumXSectors;
-        public byte NumZSectors;
         public bool IsolatedBox;
         public bool NotWalkableBox;
         public bool Monkey;
         public bool Jump;
         public Room Room;
         public bool Water;
-        public int IsBaseRoom;
-        public int IsAlternateRoom;
-        public bool Flipped;
-        public short ZoneID;
+        public bool Flag4;
+        public bool Flag2;
     }
 
     public sealed partial class LevelCompilerTr4
@@ -130,6 +125,15 @@ namespace TombEditor.Compilers
 
             i = 0;
 
+            for (int k = 0; k < dec_numBoxes; k++)
+            {
+                if (!_tempRooms[dec_boxes[k].Room].Flipped)
+                {
+                    dec_boxes[k].Flag4 = true;
+                    dec_boxes[k].Flag2 = true;
+                }
+            }
+
             do
             {
                 dec_tr_box_aux box1 = dec_boxes[i];
@@ -137,7 +141,7 @@ namespace TombEditor.Compilers
 
                 int numOverlapsAdded = 0;
 
-                if (!box1.Flipped)
+                if ( box1.Flag4)
                 {
                     if (dec_flipped)
                     {
@@ -152,7 +156,7 @@ namespace TombEditor.Compilers
                             if (i % 50 == 0 && j % 50 == 0) Console.WriteLine("CHecking overlap " + i + " vs " + j);
                             dec_tr_box_aux box2 = dec_boxes[j];
 
-                            if (!box2.Flipped)
+                            if (box2.Flag4)
                             {
                                 if (Dec_BoxesOverlap(ref box1, ref box2))
                                 {
@@ -175,7 +179,7 @@ namespace TombEditor.Compilers
                     while (j < dec_numBoxes);
                 }
 
-                if (box1.Flipped)
+                if (box1.Flag2)
                 {
                     if (!dec_flipped)
                     {
@@ -189,20 +193,23 @@ namespace TombEditor.Compilers
                         {
                             dec_tr_box_aux box2 = dec_boxes[j];
 
-                            if (box2.Flipped)
+                            if (box2.Flag2)
                             {
-                                if (Dec_BoxesOverlap(ref box1, ref box2))
+                                if (!(box1.Flag4 && box2.Flag4))
                                 {
-                                    if (dec_numOverlaps == 16384) return false;
-                                    if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                    if (Dec_BoxesOverlap(ref box1, ref box2))
+                                    {
+                                        if (dec_numOverlaps == 16384) return false;
+                                        if (dec_boxes[i].OverlapIndex == 0x7ff) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
-                                    dec_overlaps[dec_numOverlaps] = (ushort)j;
+                                        dec_overlaps[dec_numOverlaps] = (ushort)j;
 
-                                    if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
-                                    if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
+                                        if (dec_jump) dec_overlaps[dec_numOverlaps] |= 0x800;
+                                        if (dec_monkey) dec_overlaps[dec_numOverlaps] |= 0x2000;
 
-                                    dec_numOverlaps++;
-                                    numOverlapsAdded++;
+                                        dec_numOverlaps++;
+                                        numOverlapsAdded++;
+                                    }
                                 }
                             }
                         }
@@ -251,6 +258,10 @@ namespace TombEditor.Compilers
                 dec_boxes[dec_numBoxes] = box;
                 dec_numBoxes++;
             }
+            else
+            {
+                if (dec_flipped) dec_boxes[boxIndex].Flag2 = true;
+            }
 
             return boxIndex;
         }
@@ -267,8 +278,7 @@ namespace TombEditor.Compilers
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
-                block.FloorOpacity == PortalOpacity.Opacity1 /*||
-                block.CeilingOpacity == PortalOpacity.Opacity1*/)
+                block.FloorOpacity == PortalOpacity.Opacity1)
             {
                 return false;
             }
@@ -299,11 +309,11 @@ namespace TombEditor.Compilers
 
             if (dec_flipped)
             {
-                box.Flipped = true;
+                box.Flag2 = true;
             }
             else
             {
-                box.Flipped = false;
+                box.Flag4 = true;
             }
 
             if (dec_monkey)
