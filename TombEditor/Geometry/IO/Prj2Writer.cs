@@ -38,12 +38,6 @@ namespace TombEditor.Geometry.IO
 
         public static bool SaveToPrj2(string filename, Level level)
         {
-            const byte filler8 = 0;
-            const short filler16 = 0;
-            const int filler32 = 0;
-
-            ushort chunkMagicWord;
-
             // First collect all shared lists so we can save references as indices
             var portalsList = new List<Portal>();
             var triggersList = new List<TriggerInstance>();
@@ -124,8 +118,7 @@ namespace TombEditor.Geometry.IO
                         writer.WriteFiller(0x00, 16);
 
                         // No more data, in future we can expand the structure using chunks
-                        chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                        writer.Write(chunkMagicWord);
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                     }
 
                     // Write objects: moveables, static meshes, cameras, sinks, sound sources
@@ -156,8 +149,7 @@ namespace TombEditor.Geometry.IO
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord); 
+                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk); 
                         }
                         else if (o.GetType() == typeof(StaticInstance))
                         {
@@ -175,8 +167,7 @@ namespace TombEditor.Geometry.IO
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
+                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                         }
                         else if (o.GetType() == typeof(CameraInstance))
                         {
@@ -197,8 +188,7 @@ namespace TombEditor.Geometry.IO
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
+                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                         }
                         else if (o.GetType() == typeof(FlybyCameraInstance))
                         {
@@ -220,8 +210,7 @@ namespace TombEditor.Geometry.IO
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
+                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                         }
                         else if (o.GetType() == typeof(SinkInstance))
                         {
@@ -235,8 +224,7 @@ namespace TombEditor.Geometry.IO
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
+                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                         }
                         else if (o.GetType() == typeof(SoundSourceInstance))
                         {
@@ -252,8 +240,7 @@ namespace TombEditor.Geometry.IO
                             writer.WriteFiller(0x00, 8);
 
                             // No more data, in future we can expand the structure using chunks
-                            chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                            writer.Write(chunkMagicWord);
+                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                         }
                     }
 
@@ -278,8 +265,7 @@ namespace TombEditor.Geometry.IO
                         writer.WriteFiller(0x00, 8);
 
                         // No more data, in future we can expand the structure using chunks
-                        chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                        writer.Write(chunkMagicWord);
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                     }
 
                     // Write rooms
@@ -359,16 +345,14 @@ namespace TombEditor.Geometry.IO
                                         writer.WriteFiller(0x00, 8);
 
                                         // No more data, in future we can expand the structure using chunks
-                                        chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                                        writer.Write(chunkMagicWord);
+                                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                                     }
                                 }
 
                                 writer.WriteFiller(0x00, 32);
 
                                 // No more data, in future we can expand the structure using chunks
-                                chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                                writer.Write(chunkMagicWord);
+                                writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                             }
                         }
 
@@ -403,8 +387,7 @@ namespace TombEditor.Geometry.IO
                                 writer.WriteFiller(0x00, 8);
 
                                 // No more data, in future we can expand the structure using chunks
-                                chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                                writer.Write(chunkMagicWord);
+                                writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                             }
                         }
 
@@ -427,8 +410,7 @@ namespace TombEditor.Geometry.IO
                                 writer.WriteFiller(0x00, 8);
 
                                 // No more data, in future we can expand the structure using chunks
-                                chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                                writer.Write(chunkMagicWord);
+                                writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                             }
                         }
 
@@ -466,8 +448,7 @@ namespace TombEditor.Geometry.IO
                         writer.WriteFiller(0x00, 64);
 
                         // No more data, in future we can expand the structure using chunks
-                        chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                        writer.Write(chunkMagicWord);
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                     }
 
                     // Write animated textures
@@ -506,8 +487,7 @@ namespace TombEditor.Geometry.IO
                     writer.WriteFiller(0x00, 256);
 
                     // No more data, in future we can expand the structure using chunks
-                    chunkMagicWord = (ushort)Prj2ChunkType.NoExtraChunk;
-                    writer.Write(chunkMagicWord);
+                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
 
                     projectData = ms.ToArray();
                 }
