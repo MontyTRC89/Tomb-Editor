@@ -537,24 +537,15 @@ namespace TombEditor.Compilers
         public byte Xmin;
         public byte Xmax;
         public short TrueFloor;
-        public short Clicks;
-        public byte RoomBelow;
         public short OverlapIndex;
-        public int ZoneID;
-        public bool Border;
-        public byte NumXSectors;
-        public byte NumZSectors;
         public bool IsolatedBox;
         public bool NotWalkableBox;
         public bool Monkey;
         public bool Jump;
         public short Room;
-        public short AlternateRoom;
         public bool Portal;
-        public bool FlipMap;
-        public bool Water;
-        public bool Flag2;
-        public bool Flag4;
+        public bool Flag0x02;
+        public bool Flag0x04;
     }
 
     public struct tr_overlap_aux
