@@ -39,9 +39,11 @@ namespace TombEditor
         private readonly Buffer<EditorVertex> _linesBuffer;
 
         private readonly GeometricPrimitive _sphere;
+        private readonly GeometricPrimitive _cube;
         private readonly Color4 _red;
         private readonly Color4 _green;
         private readonly Color4 _blue;
+        private readonly Color4 _yellow;
 
         public Gizmo(Editor editor, DeviceManager deviceManager)
         {
@@ -52,6 +54,7 @@ namespace TombEditor
             _red = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
             _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
             _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
+            _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
 
             // Initialize the gizmo geometry
             var v0 = new EditorVertex {Position = new Vector3(0.0f, 0.0f, 0.0f)};
@@ -64,6 +67,7 @@ namespace TombEditor
                 (_device, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _sphere = GeometricPrimitive.Sphere.New(_device, 128.0f, 16);
+            _cube = GeometricPrimitive.Cube.New(_device, 128.0f);
 
             // Initialize the rasterizer state for wireframe drawing
             var renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
@@ -231,6 +235,19 @@ namespace TombEditor
             solidEffect.CurrentTechnique.Passes[0].Apply();
 
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+
+            // center cube
+            _device.SetVertexBuffer(_cube.VertexBuffer);
+            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cube.VertexBuffer));
+            _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
+
+            model = Matrix.Translation(Position) *
+                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
+            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+            solidEffect.Parameters["Color"].SetValue(_yellow);
+            solidEffect.CurrentTechnique.Passes[0].Apply();
+
+            _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
 
             _device.SetDepthStencilState(_depthStencilStateDefault);
         }

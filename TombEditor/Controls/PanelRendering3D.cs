@@ -952,7 +952,7 @@ namespace TombEditor.Controls
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 foreach (var trigger in room.Triggers)
                     if (trigger.TargetObj == instance)
-                        message += "\nTriggered in Room " + trigger.Room + " by " + trigger + ".";
+                        message += "\nTriggered in Room " + trigger.Room + " on sectors [" + trigger.Area.X + ", " + trigger.Area.Y + " to " + trigger.Area.Right + ", " + trigger.Area.Bottom + "]";
         }
 
         private void DrawLights(Matrix viewProjection, Room room)
@@ -1107,10 +1107,10 @@ namespace TombEditor.Controls
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
-                string message = light.ToString();
+                string message = "Light";
                 
                 // Object position
-                message += "\n" + GetObjectPositionString(room, light.Position);
+                message += "\n" + GetObjectPositionString(room, light);
 
                 Matrix modelViewProjection =
                     Matrix.Translation(room.WorldPos) *
@@ -1144,10 +1144,10 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    string message = instance.ToString();
+                    string message = "Camera " + (instance.Fixed ? "(Fixed)" : "");
 
                     // Object position
-                    message += "\n" + GetObjectPositionString(room, instance.Position);
+                    message += "\n" + GetObjectPositionString(room, instance);
 
                     Matrix modelViewProjection =
                         Matrix.Translation(room.WorldPos) *
@@ -1183,13 +1183,13 @@ namespace TombEditor.Controls
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
-
-                    string message = instance.ToString();
-
+                   
                     FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
 
+                    string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ")"; 
+
                     // Object position
-                    message += "\n" + GetObjectPositionString(room, instance.Position);
+                    message += "\n" + GetObjectPositionString(room, instance);
 
                     var modelViewProjection =
                         Matrix.Translation(room.WorldPos) *
@@ -1228,10 +1228,10 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    var message = instance.ToString();
+                    var message = "Sink";
 
                     // Object position
-                    message += "\n" + GetObjectPositionString(room, instance.Position);
+                    message += "\n" + GetObjectPositionString(room, instance);
 
                     var modelViewProjection =
                         Matrix.Translation(room.WorldPos) *
@@ -1269,14 +1269,14 @@ namespace TombEditor.Controls
 
                     SoundSourceInstance sound = (SoundSourceInstance) instance;
 
-                    string message = instance.ToString();
+                    string message = "Sound source"; 
                     if ((sound.SoundId >= 0) && (sound.SoundId < (_editor.Level?.Wad?.OriginalWad?.Sounds?.Count ?? 0)))
                         message += " (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundId] + ") ";
                     else
                         message += " ( Invalid sound ) ";
 
                     // Object position
-                    message += "\n" + GetObjectPositionString(room, instance.Position);
+                    message += "\n" + GetObjectPositionString(room, instance);
 
                     Matrix modelViewProjection =
                         Matrix.Translation(room.WorldPos) *
@@ -1302,7 +1302,7 @@ namespace TombEditor.Controls
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
-            if (_editor.SelectedRoom != null)
+            /*if (_editor.SelectedRoom != null)
             {
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
@@ -1320,7 +1320,7 @@ namespace TombEditor.Controls
                         message += "\nUnavailable " + instance.ItemType.ToString();
 
                         // Object position
-                        message += "\n" + GetObjectPositionString(room, instance.Position);
+                        message += "\n" + GetObjectPositionString(room, instance);
 
                         var modelViewProjection =
                             Matrix.Translation(room.WorldPos) *
@@ -1374,7 +1374,7 @@ namespace TombEditor.Controls
                     effect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
-            }
+            }*/
             
             _device.SetVertexBuffer(_cone.VertexBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
@@ -1468,11 +1468,10 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string message = instance.ToString();
-                    message += "\n" + _editor.Level.Wad.Moveables[instance.WadObjectId].ToString();
+                    string message = _editor.Level.Wad.Moveables[instance.WadObjectId].ToString();
 
                     // Object position
-                    message += "\n" + GetObjectPositionString(room, instance.Position);
+                    message += "\n" + GetObjectPositionString(room, instance);
 
                     // Add OCB
                     if (instance.Ocb != 0)
@@ -1560,7 +1559,7 @@ namespace TombEditor.Controls
                     string message = modelInfo.ToString();
 
                     // Object position
-                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, modelInfo.Position);
+                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, modelInfo);
 
                     Debug.AddString(message, screenPos);
 
@@ -1642,11 +1641,10 @@ namespace TombEditor.Controls
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
 
-                    string message = instance.ToString();
-                    message += "\n" + _editor.Level.Wad.Statics[instance.WadObjectId].ToString();
+                    string message = _editor.Level.Wad.Statics[instance.WadObjectId].ToString();
 
                     // Object position
-                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance.Position);
+                    message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -2931,13 +2929,13 @@ namespace TombEditor.Controls
             return room.Blocks[xBlock, zBlock].FloorMin * 256.0f;
         }
 
-
-        private static string GetObjectPositionString(Room room, Vector3 position)
+        private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
         {
             // Get the distance between point and floor in units
-            float height = position.Y - GetFloorHeight(room, position);
+            float height = instance.Position.Y - GetFloorHeight(room, instance.Position);
 
-            string message = "Position: [" + position.X + ", " + position.Y + ", " + position.Z + "]";
+            string message = "Position: [" + instance.Position.X + ", " + instance.Position.Y + ", " + instance.Position.Z + "]";
+            message += "\nSector Position: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + ", " + instance.SectorPosition.Z + "]";
             message += "\nHeight: " + Math.Round(height) + " units(" + (height / 256.0f) +
                        " clicks)";
 
@@ -2952,10 +2950,10 @@ namespace TombEditor.Controls
             float height = position.Y - floorHeight;
 
             // Prepare two vertices for the line
-            EditorVertex[] vertices = new EditorVertex[] 
+            EditorVertex[] vertices = new EditorVertex[]
             {
                 new EditorVertex { Position = position },
-                new EditorVertex { Position = position }
+                new EditorVertex { Position = new Vector3(position.X,floorHeight,position.Z) }
             };
 
             // Prepare the Vertex Buffer
