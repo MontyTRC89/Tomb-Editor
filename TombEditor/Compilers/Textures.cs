@@ -85,35 +85,27 @@ namespace TombEditor.Compilers
             //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             // Collect all sprites and sort them
-            List<WadTexture> packedTextures = new List<WadTexture>();
-            for (int i = 0; i < _level.Wad.SpriteTextures.Count; i++)
-            {
-                packedTextures.Add(_level.Wad.SpriteTextures.ElementAt(i).Value);
-            }
-
+            List<WadTexture> packedTextures = _level.Wad.SpriteTextures.Values.ToList();
             packedTextures.Sort(new ComparerWadTextures());
 
             // Pack the textures in pages of 256x256
             List<ImageC> texturePages = new List<ImageC>();
-            int processedTextures = 0;
             ImageC currentTexture = ImageC.CreateNew(256, 256);
             RectPackerSimpleStack packer = new RectPackerSimpleStack(256, 256);
             List<WadTexture> currentTextures = new List<WadTexture>();
             WadTexture texture = new WadTexture();
-            RectPacker.Point? point = new RectPacker.Point();
 
-            while (processedTextures <= packedTextures.Count)
+            for (int processedTexture = 0; processedTexture <= packedTextures.Count; ++processedTexture)
             {
-                bool canTextureBeAdded = false;
-                if (processedTextures < packedTextures.Count)
+                RectPacker.Point? point = null;
+                if (processedTexture < packedTextures.Count)
                 {
-                    texture = packedTextures[processedTextures];
+                    texture = packedTextures[processedTexture];
                     point = packer.TryAdd(texture.Width, texture.Height);
-                    canTextureBeAdded = point.HasValue;
                 }
 
                 // If no more textures can be added, it's time to end current page
-                if (!canTextureBeAdded || processedTextures == packedTextures.Count)
+                if (!point.HasValue || processedTexture == packedTextures.Count)
                 {
                     foreach (var textureToSave in currentTextures)
                     {
@@ -133,19 +125,21 @@ namespace TombEditor.Compilers
                     // Add the 256x256 page to the list
                     texturePages.Add(currentTexture);
 
-                    if (processedTextures == packedTextures.Count) break;
+                    if (processedTexture == packedTextures.Count) break;
 
                     // Create new packer and texture
                     packer = new RectPackerSimpleStack(256, 256);
                     currentTexture = ImageC.CreateNew(256, 256);
                     currentTextures = new List<WadTexture>();
+                    
+                    // Pack in new texture
+                    point = packer.TryAdd(texture.Width, texture.Height);
                 }
 
                 texture.PositionInPackedTexture = new Vector2(point.Value.X, point.Value.Y);
                 texture.Tile = (ushort)texturePages.Count;
 
                 currentTextures.Add(texture);
-                processedTextures++;
             }
 
             // Now build data structures
