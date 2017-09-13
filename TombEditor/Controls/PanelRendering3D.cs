@@ -145,7 +145,7 @@ namespace TombEditor.Controls
         private class PickingResultObject : PickingResult
         {
             public ObjectInstance ObjectInstance { get; set; }
-            public PickingResultObject(float Distance,  ObjectInstance objectPtr)
+            public PickingResultObject(float Distance, ObjectInstance objectPtr)
             {
                 this.Distance = Distance;
                 this.ObjectInstance = objectPtr;
@@ -314,10 +314,10 @@ namespace TombEditor.Controls
                 target = room.WorldPos + room.GetLocalCenter();
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, - MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000);
+            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000);
             Invalidate();
         }
-        
+
         public void InitializePanel(DeviceManager deviceManager)
         {
             _deviceManager = deviceManager;
@@ -411,9 +411,9 @@ namespace TombEditor.Controls
                 _textureAtlas = TextureLoad.Load(_device, textures[0].Image);
             }
         }
-        
+
         protected override void OnPaintBackground(PaintEventArgs e)
-        {}
+        { }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -477,7 +477,7 @@ namespace TombEditor.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            
+
             Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
             Invalidate();
         }
@@ -705,7 +705,7 @@ namespace TombEditor.Controls
                                 };
                             }
                         }
-                        else  if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
+                        else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
                         { // Texture editing
                             PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
 
@@ -740,7 +740,7 @@ namespace TombEditor.Controls
 
             BoundingBox box = new BoundingBox(new Vector3(transformedMin.X, transformedMin.Y, transformedMin.Z),
                 new Vector3(transformedMax.X, transformedMax.Y, transformedMax.Z));
-            
+
             float distance;
             if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
             {
@@ -860,7 +860,7 @@ namespace TombEditor.Controls
         {
             // Get the current ViewProjection matrix
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-            
+
             // First get the ray in 3D space from X, Y mouse coordinates
             Ray ray = Ray.GetPickRay((int)Math.Round(x), (int)Math.Round(y), new ViewportF(0, 0, Width, Height),
                 Matrix.Translation(_editor.SelectedRoom.WorldPos) * viewProjection);
@@ -886,7 +886,7 @@ namespace TombEditor.Controls
             if (!_drawFlybyPath && !_drawHeightLine && _boundingBoxesToDraw.Count == 0) return;
 
             _device.SetRasterizerState(_rasterizerWireframe);
-            
+
             Effect solidEffect = _deviceManager.Effects["Solid"];
 
             Matrix model = Matrix.Translation(_editor.SelectedRoom.WorldPos);
@@ -910,7 +910,7 @@ namespace TombEditor.Controls
             {
                 _device.SetVertexBuffer(_flybyPathVertexBuffer);
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
-                
+
                 solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
                 solidEffect.CurrentTechnique.Passes[0].Apply();
 
@@ -1017,7 +1017,7 @@ namespace TombEditor.Controls
                 solidEffect.CurrentTechnique.Passes[0].Apply();
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
             }
-            
+
             if (_editor.SelectedObject is Light)
             {
                 Light light = (Light)_editor.SelectedObject;
@@ -1108,7 +1108,7 @@ namespace TombEditor.Controls
                 }
 
                 string message = "Light";
-                
+
                 // Object position
                 message += "\n" + GetObjectPositionString(room, light);
 
@@ -1183,10 +1183,10 @@ namespace TombEditor.Controls
                 {
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
-                   
+
                     FlybyCameraInstance flyby = (FlybyCameraInstance)instance;
 
-                    string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ")"; 
+                    string message = "Flyby camera (" + instance.Sequence + ":" + instance.Number + ")";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
@@ -1267,9 +1267,9 @@ namespace TombEditor.Controls
                     color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
                     _device.SetRasterizerState(_rasterizerWireframe);
 
-                    SoundSourceInstance sound = (SoundSourceInstance) instance;
+                    SoundSourceInstance sound = (SoundSourceInstance)instance;
 
-                    string message = "Sound source"; 
+                    string message = "Sound source";
                     if ((sound.SoundId >= 0) && (sound.SoundId < (_editor.Level?.Wad?.OriginalWad?.Sounds?.Count ?? 0)))
                         message += " (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundId] + ") ";
                     else
@@ -1375,7 +1375,7 @@ namespace TombEditor.Controls
                     _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
             }*/
-            
+
             _device.SetVertexBuffer(_cone.VertexBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
             _device.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
@@ -1384,7 +1384,7 @@ namespace TombEditor.Controls
             foreach (var flyby in room.Objects.OfType<FlybyCameraInstance>())
             {
                 // Outer cone
-                float coneAngle = (float) Math.Atan2(512, 1024);
+                float coneAngle = (float)Math.Atan2(512, 1024);
                 float cutoffScaleH = 1;
                 float cutoffScaleW = MathUtil.DegreesToRadians(flyby.Fov / 2) / coneAngle * cutoffScaleH;
 
@@ -1406,7 +1406,7 @@ namespace TombEditor.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Effect skinnedModelEffect = _deviceManager.Effects["Model"];
-            
+
             MoveableInstance _lastObject = null;
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
@@ -1432,7 +1432,7 @@ namespace TombEditor.Controls
                     _device.SetVertexInputLayout(
                         VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
                 }
-                
+
                 skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
@@ -1494,7 +1494,7 @@ namespace TombEditor.Controls
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Effect geometryEffect = _deviceManager.Effects["RoomGeometry"];
-            
+
             RoomGeometryInstance _lastObject = null;
 
             for (int k = 0; k < RoomGeometryToDraw.Count; k++)
@@ -1505,7 +1505,7 @@ namespace TombEditor.Controls
                 //Debug.NumMoveables++;
 
                 Room room = modelInfo.Room;
-                
+
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
 
@@ -1573,13 +1573,13 @@ namespace TombEditor.Controls
                 _lastObject = modelInfo;
             }
         }
-        
+
         private void DrawStatics(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             Effect staticMeshEffect = _deviceManager.Effects["StaticModel"];
-            
+
             staticMeshEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
@@ -1604,11 +1604,11 @@ namespace TombEditor.Controls
                 }
 
                 Debug.NumStaticMeshes++;
-                
+
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
                 if (_editor.SelectedObject == instance)
                     staticMeshEffect.Parameters["Color"].SetValue(_selectionColor);
-                
+
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
 
@@ -1826,7 +1826,7 @@ namespace TombEditor.Controls
             _transparentBuckets = new List<RoomRenderBucket>();
             _solidBuckets = new List<RoomRenderBucket>();
             _invisibleBuckets = new List<RoomRenderBucket>();
-            
+
             Vector3 cameraPosition = Camera.GetPosition();
 
             // Build buckets
@@ -1860,14 +1860,14 @@ namespace TombEditor.Controls
                             else if (faceTexture.Texture == TextureInvisible.Instance)
                             {
                                 RoomRenderBucket bucket = new RoomRenderBucket
-                                    {
-                                        Face = face,
-                                        X = x,
-                                        Z = z,
-                                        Room = room,
-                                        BlendMode = BlendMode.Normal,
-                                        DoubleSided = faceTexture.DoubleSided
-                                    };
+                                {
+                                    Face = face,
+                                    X = x,
+                                    Z = z,
+                                    Room = room,
+                                    BlendMode = BlendMode.Normal,
+                                    DoubleSided = faceTexture.DoubleSided
+                                };
 
                                 _invisibleBuckets.Add(bucket);
                             }
@@ -2137,7 +2137,7 @@ namespace TombEditor.Controls
             float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = {"North", "South", "East", "West"};
+            string[] messages = { "North", "South", "East", "West" };
             Vector3[] positions = new Vector3[4];
 
             Vector3 center = _editor.SelectedRoom.GetLocalCenter();
@@ -2447,7 +2447,7 @@ namespace TombEditor.Controls
                     // sono in un'area selezionata, quindi attivo la selezione a prescindere
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.998f, 0.0f, 0.0f, 1.0f)); // Selection color
-                    
+
                     // applico la texture della freccia al pavimento e al soffitto
                     if (face == (BlockFace)25 || face == (BlockFace)26)
                     {
@@ -2556,85 +2556,94 @@ namespace TombEditor.Controls
                             rf = BlockFace.SouthRF;
                             middle = BlockFace.SouthMiddle;
 
-                            if (face != middle)
-                                switch (_editor.SelectedSectors.Arrow)
-                                {
-                                    case EditorArrowType.EdgeN:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeE:
-                                        if (face == BlockFace.SouthRF)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeS:
-                                        if (face == BlockFace.SouthRF)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeW:
-                                        if (face == BlockFace.SouthRF)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNW:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNE:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSE:
-                                        if (face == BlockFace.SouthRF)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSW:
-                                        if (face == BlockFace.SouthRF)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                }
+                            switch (_editor.SelectedSectors.Arrow)
+                            {
+                                case EditorArrowType.EdgeN:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeS:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up_down"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNW:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNE:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                            }
                         }
 
                         if (x == room.NumXSectors - 1)
@@ -2645,85 +2654,94 @@ namespace TombEditor.Controls
                             rf = BlockFace.WestRF;
                             middle = BlockFace.WestMiddle;
 
-                            if (face != middle)
-                                switch (_editor.SelectedSectors.Arrow)
-                                {
-                                    case EditorArrowType.EdgeN:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeE:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeS:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeW:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNW:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNE:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSE:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSW:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                }
+                            switch (_editor.SelectedSectors.Arrow)
+                            {
+                                case EditorArrowType.EdgeN:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeE:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeS:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up_down"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNE:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSE:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                            }
                         }
 
                         if (z == 0)
@@ -2734,85 +2752,94 @@ namespace TombEditor.Controls
                             rf = BlockFace.NorthRF;
                             middle = BlockFace.NorthMiddle;
 
-                            if (face != middle)
-                                switch (_editor.SelectedSectors.Arrow)
-                                {
-                                    case EditorArrowType.EdgeN:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeE:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeS:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeW:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNW:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNE:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSE:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSW:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                }
+                            switch (_editor.SelectedSectors.Arrow)
+                            {
+                                case EditorArrowType.EdgeN:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up_down"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeS:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNW:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSE:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSW:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                            }
                         }
 
                         if (x == 0)
@@ -2823,86 +2850,95 @@ namespace TombEditor.Controls
                             rf = BlockFace.EastRF;
                             middle = BlockFace.EastMiddle;
 
-                            if (face != middle)
-                                switch (_editor.SelectedSectors.Arrow)
-                                {
-                                    case EditorArrowType.EdgeN:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeE:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeS:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.EdgeW:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNW:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerNE:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                            switch (_editor.SelectedSectors.Arrow)
+                            {
+                                case EditorArrowType.EdgeN:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up_down"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_down"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_up"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeS:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.EdgeW:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNW:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerNE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne_se"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_se"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_ne"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
 
-                                        break;
-                                    case EditorArrowType.CornerSE:
-                                        if (face == rf)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == ws)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
-                                        if (face == qa)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        if (face == ed)
-                                            _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                    case EditorArrowType.CornerSW:
-                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
-                                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
-                                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                                        break;
-                                }
+                                    break;
+                                case EditorArrowType.CornerSE:
+                                    if (face == middle)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw_sw"]);
+                                    if (face == rf)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == ws)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_sw"]);
+                                    if (face == qa)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    if (face == ed)
+                                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["arrow_nw"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                                case EditorArrowType.CornerSW:
+                                    _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["cross"]);
+                                    _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                                    _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                                    break;
+                            }
                         }
                     }
                 }
@@ -2980,7 +3016,7 @@ namespace TombEditor.Controls
             // Is it actually necessary to show the path?
             if (flybyCameras.Count < 2)
                 return;
-            
+
             // Sort cameras
             flybyCameras.Sort(new ComparerFlybyCameras());
 
@@ -3001,7 +3037,7 @@ namespace TombEditor.Controls
                 vertices.Add(v1);
                 vertices.Add(v2);
             }
-                       
+
             // Prepare the Vertex Buffer
             if (_flybyPathVertexBuffer != null) _flybyPathVertexBuffer.Dispose();
             _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
