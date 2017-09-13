@@ -125,6 +125,12 @@ namespace TombEditor.Compilers
 
             i = 0;
 
+            // All boxes beloging to non flipped rooms have both flags set so they can be linked with 
+            // boxes belonging to both rooms of normal-alternate pair.
+            // Instead box of rooms that are member of a normal-alternate pair have just only one flag set, 
+            // 0x04 is for normal rooms and 0x02 is for flipped rooms.
+            // This is an hack, because probably both flags were set in this case with the FlipAllRooms() function 
+            // That I could not implement because the way Tomb Editor is designed.
             for (int k = 0; k < dec_numBoxes; k++)
             {
                 if (!_tempRooms[dec_boxes[k].Room].Flipped)
@@ -134,6 +140,8 @@ namespace TombEditor.Compilers
                 }
             }
 
+            // TODO: don't return even if too many overlaps are added (like winroomedit does)
+            // Just warn the user about the problem
             do
             {
                 dec_tr_box_aux box1 = dec_boxes[i];

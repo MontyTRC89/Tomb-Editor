@@ -321,7 +321,7 @@ namespace TombEditor.Geometry
         public int FloorIfQuadSlopeX => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXnZp] : 0;
         public int FloorIfQuadSlopeZ => FloorIsQuad ? QAFaces[FaceXpZp] - QAFaces[FaceXpZn] : 0;
         public int CeilingIfQuadSlopeX => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXnZp] : 0;
-        public int CeilingIfQuadSlopeZ => CeilingIsQuad ? WSFaces[FaceXpZp] - WSFaces[FaceXpZn] : 0;
+        public int CeilingIfQuadSlopeZ => CeilingIsQuad ? WSFaces[FaceXpZn] - WSFaces[FaceXpZp] : 0;
         public short FloorMax => Math.Max(Math.Max(QAFaces[0], QAFaces[1]), Math.Max(QAFaces[2], QAFaces[3]));
         public short FloorMin => Math.Min(Math.Min(QAFaces[0], QAFaces[1]), Math.Min(QAFaces[2], QAFaces[3]));
         public short CeilingMax => Math.Max(Math.Max(WSFaces[0], WSFaces[1]), Math.Max(WSFaces[2], WSFaces[3]));
