@@ -22,8 +22,8 @@ namespace TombEditor.Compilers
         public bool Jump;
         public Room Room;
         public bool Water;
-        public bool Flag4;
-        public bool Flag2;
+        public bool Flag0x04;
+        public bool Flag0x02;
     }
 
     public sealed partial class LevelCompilerTr4
@@ -129,8 +129,8 @@ namespace TombEditor.Compilers
             {
                 if (!_tempRooms[dec_boxes[k].Room].Flipped)
                 {
-                    dec_boxes[k].Flag4 = true;
-                    dec_boxes[k].Flag2 = true;
+                    dec_boxes[k].Flag0x04 = true;
+                    dec_boxes[k].Flag0x02 = true;
                 }
             }
 
@@ -141,7 +141,7 @@ namespace TombEditor.Compilers
 
                 int numOverlapsAdded = 0;
 
-                if ( box1.Flag4)
+                if ( box1.Flag0x04)
                 {
                     if (dec_flipped)
                     {
@@ -156,7 +156,7 @@ namespace TombEditor.Compilers
                             if (i % 50 == 0 && j % 50 == 0) Console.WriteLine("CHecking overlap " + i + " vs " + j);
                             dec_tr_box_aux box2 = dec_boxes[j];
 
-                            if (box2.Flag4)
+                            if (box2.Flag0x04)
                             {
                                 if (Dec_BoxesOverlap(ref box1, ref box2))
                                 {
@@ -179,7 +179,7 @@ namespace TombEditor.Compilers
                     while (j < dec_numBoxes);
                 }
 
-                if (box1.Flag2)
+                if (box1.Flag0x02)
                 {
                     if (!dec_flipped)
                     {
@@ -193,9 +193,9 @@ namespace TombEditor.Compilers
                         {
                             dec_tr_box_aux box2 = dec_boxes[j];
 
-                            if (box2.Flag2)
+                            if (box2.Flag0x02)
                             {
-                                if (!(box1.Flag4 && box2.Flag4))
+                                if (!(box1.Flag0x04 && box2.Flag0x04))
                                 {
                                     if (Dec_BoxesOverlap(ref box1, ref box2))
                                     {
@@ -260,7 +260,7 @@ namespace TombEditor.Compilers
             }
             else
             {
-                if (dec_flipped) dec_boxes[boxIndex].Flag2 = true;
+                if (dec_flipped) dec_boxes[boxIndex].Flag0x02 = true;
             }
 
             return boxIndex;
@@ -309,11 +309,11 @@ namespace TombEditor.Compilers
 
             if (dec_flipped)
             {
-                box.Flag2 = true;
+                box.Flag0x02 = true;
             }
             else
             {
-                box.Flag4 = true;
+                box.Flag0x04 = true;
             }
 
             if (dec_monkey)
