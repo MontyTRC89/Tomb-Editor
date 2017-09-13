@@ -1083,14 +1083,16 @@ namespace TombEditor
             if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
 
-            Level level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, new ProgressReporterSimple(this));
-            if (level == null)
+            try
             {
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "There was an error while opening project file. File may be in use or may be corrupted", "Error");
-                return;
+                _editor.Level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, new ProgressReporterSimple(this));
             }
-            _editor.Level = level;
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Unable to open \"" + openFileDialogPRJ2.FileName + "\"");
+                DarkUI.Forms.DarkMessageBox.ShowError(
+                    "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc, "Error");
+            }
         }
         
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1133,15 +1135,17 @@ namespace TombEditor
             }
             if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
-
-            if (Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level))
+            
+            try
             {
+                Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
                 _editor.Level.Settings.LevelFilePath = saveFileDialogPRJ2.FileName;
                 _editor.LevelFileNameChange();
             }
-            else
+            catch (Exception exc)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file", "Error");
+                logger.Error(exc, "Unable to save to \"" + saveFileDialogPRJ2.FileName + "\".");
+                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file. Exception: " + exc, "Error");
             }
         }
         private void butRoomUp_Click(object sender, EventArgs e)
