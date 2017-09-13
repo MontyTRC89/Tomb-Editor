@@ -658,7 +658,6 @@ namespace TombEditor.Compilers
                             for (var x = xMin; x < xMax; x++)
                             {
                                 var currentBlock = room.Blocks[x, room.NumZSectors - 2];
-                                // var facingBlock = room.Blocks[x, room.NumZSectors - 1];
                                 var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X), 1];
 
                                 y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[3], minFloorCurrentRoom + currentBlock.QAFaces[0]);
@@ -671,7 +670,6 @@ namespace TombEditor.Compilers
                             }
 
                             var lastBlock = room.Blocks[xMax - 1, room.NumZSectors - 2];
-                            //  var lastFacingBlock = room.Blocks[xMax - 1, room.NumZSectors - 1];
                             var lastOtherBlock = adjoiningRoom.Blocks[xMax - 1 + (int)(room.Position.X - adjoiningRoom.Position.X), 1];
 
                             y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[2], minFloorCurrentRoom + lastBlock.QAFaces[1]);
@@ -741,7 +739,6 @@ namespace TombEditor.Compilers
                             for (var z = zMax; z < zMin; z++)
                             {
                                 var currentBlock = room.Blocks[room.NumXSectors - 2, z];
-                                //var facingBlock = room.Blocks[room.NumXSectors - 1, z];
                                 var otherBlock = adjoiningRoom.Blocks[1, z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
 
                                 y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[0], minFloorCurrentRoom + currentBlock.QAFaces[1]);
@@ -754,7 +751,6 @@ namespace TombEditor.Compilers
                             }
 
                             var lastBlock = room.Blocks[room.NumXSectors - 2, zMin - 1];
-                            //  var lastFacingBlock = room.Blocks[room.NumXSectors - 1, zMin - 1];
                             var lastOtherBlock = adjoiningRoom.Blocks[1, zMin - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
 
                             y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[3], minFloorCurrentRoom + lastBlock.QAFaces[2]);
@@ -825,7 +821,7 @@ namespace TombEditor.Compilers
                             {
                                 var currentBlock = room.Blocks[x, 1];
                                 // var facingBlock = room.Blocks[x, 0];
-                                var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X), adjoiningRoom.NumZSectors - 1];
+                                var otherBlock = adjoiningRoom.Blocks[x + (int)(room.Position.X - adjoiningRoom.Position.X), adjoiningRoom.NumZSectors - 2];
 
                                 y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[1], minFloorCurrentRoom + currentBlock.QAFaces[2]);
                                 y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[1], minFloorCurrentRoom + currentBlock.WSFaces[2]);
@@ -837,8 +833,7 @@ namespace TombEditor.Compilers
                             }
 
                             var lastBlock = room.Blocks[xMin - 1, 1];
-                            //  var lastFacingBlock = room.Blocks[xMin - 1, 0];
-                            var lastOtherBlock = adjoiningRoom.Blocks[xMin - 1 + (int)(room.Position.X - adjoiningRoom.Position.X), adjoiningRoom.NumZSectors - 1];
+                            var lastOtherBlock = adjoiningRoom.Blocks[xMin - 1 + (int)(room.Position.X - adjoiningRoom.Position.X), adjoiningRoom.NumZSectors - 2];
 
                             y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[0], minFloorCurrentRoom + lastBlock.QAFaces[3]);
                             y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[0], minFloorCurrentRoom + lastBlock.WSFaces[3]);
@@ -907,8 +902,7 @@ namespace TombEditor.Compilers
                             for (var z = zMin; z < zMax; z++)
                             {
                                 var currentBlock = room.Blocks[1, z];
-                                //  var facingBlock = room.Blocks[0, z];
-                                var otherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 1, z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
+                                var otherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, z + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
 
                                 y1 = Math.Max(minFloorOtherRoom + otherBlock.QAFaces[2], minFloorCurrentRoom + currentBlock.QAFaces[3]);
                                 y2 = Math.Min(minFloorOtherRoom + otherBlock.WSFaces[2], minFloorCurrentRoom + currentBlock.WSFaces[3]);
@@ -920,8 +914,7 @@ namespace TombEditor.Compilers
                             }
 
                             var lastBlock = room.Blocks[1, zMax - 1];
-                            //var lastFacingBlock = room.Blocks[0, zMax - 1];
-                            var lastOtherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 1, zMax - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
+                            var lastOtherBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, zMax - 1 + (int)(room.Position.Z - adjoiningRoom.Position.Z)];
 
                             y1 = Math.Max(minFloorOtherRoom + lastOtherBlock.QAFaces[1], minFloorCurrentRoom + lastBlock.QAFaces[0]);
                             y2 = Math.Min(minFloorOtherRoom + lastOtherBlock.WSFaces[1], minFloorCurrentRoom + lastBlock.WSFaces[0]);

@@ -212,7 +212,7 @@ namespace TombEditor.Compilers
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x03);
 
-                            var slope = (ushort)(((-block.CeilingIfQuadSlopeZ) << 8) | ((-block.CeilingIfQuadSlopeX) & 0xff));
+                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
