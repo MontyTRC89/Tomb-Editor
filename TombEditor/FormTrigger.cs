@@ -15,8 +15,9 @@ namespace TombEditor
     {
         private Level _level;
         private TriggerInstance _trigger;
+        private bool comboParameterBeingInitialized = false;
 
-        public FormTrigger(Level level, TriggerInstance trigger)
+        public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject)
         {
             _level = level;
             _trigger = trigger;
@@ -26,6 +27,16 @@ namespace TombEditor
                 comboType.Items.Add(triggerType);
             foreach (TriggerTargetType triggerTargetType in Enum.GetValues(typeof(TriggerTargetType)))
                 comboTargetType.Items.Add(triggerTargetType);
+
+            comboParameter.SelectedIndexChanged += delegate
+                {
+                    if (!comboParameterBeingInitialized)
+                    {
+                        ObjectInstance objectToSelect = comboParameter.SelectedItem as ObjectInstance;
+                        if (objectToSelect != null)
+                            selectObject(objectToSelect);
+                    }
+                };
         }
 
         private void FormTrigger_Load(object sender, EventArgs e)
@@ -132,26 +143,39 @@ namespace TombEditor
 
         private void FindAndAddObjects<T>() where T : ObjectInstance
         {
-            comboParameter.Items.Clear();
-            comboParameter.SelectedItem = null;
+            try
+            {
+                comboParameterBeingInitialized = true;
 
-            foreach (Room room in _level.Rooms.Where(room => room != null))
-                foreach (var instance in room.Objects.OfType<T>())
-                {
-                    comboParameter.Items.Add(instance);
-                    if (_trigger.TargetObj == instance)
-                        comboParameter.SelectedItem = instance;
-                }
+                // Save selected item
+                var selectedItem = comboParameter.SelectedItem;
+                comboParameter.SelectedItem = null;
 
-            if ((comboParameter.Items.Count > 0) && (comboParameter.SelectedItem == null))
-                comboParameter.SelectedIndex = 0; // Select top item, no matter what it is.
+                // Populate list with new items
+                comboParameter.Items.Clear();
+                foreach (Room room in _level.Rooms.Where(room => room != null))
+                    foreach (var instance in room.Objects.OfType<T>())
+                    {
+                        comboParameter.Items.Add(instance);
+                        if (_trigger.TargetObj == instance)
+                            comboParameter.SelectedItem = instance;
+                    }
+                
+                // Select old item if possible
+                if ((selectedItem != null) && comboParameter.Items.Contains(selectedItem))
+                    comboParameter.SelectedItem = selectedItem;
+            }
+            finally
+            {
+                comboParameterBeingInitialized = false;
+            }
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
             _trigger.TriggerType = (TriggerType)comboType.SelectedItem;
             _trigger.TargetType = (TriggerTargetType)comboTargetType.SelectedItem;
-            _trigger.Timer = Int16.Parse(tbTimer.Text);
+            _trigger.Timer = short.Parse(tbTimer.Text);
             byte codeBits = 0;
             codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
             codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
@@ -165,30 +189,31 @@ namespace TombEditor
                 _trigger.TargetType == TriggerTargetType.Target || _trigger.TargetType == TriggerTargetType.FlyByCamera ||
                 _trigger.TargetType == TriggerTargetType.Sink)
             {
-                if (comboParameter.SelectedItem == null)
+                var selectedObject = comboParameter.SelectedItem as ObjectInstance;
+                if (selectedObject == null)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowWarning("You don't have in your project any object of the type that you have required",
+                    DarkMessageBox.ShowWarning("You don't have in your project any object of the type that you have required",
                                                             "Save trigger", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
 
-                _trigger.TargetObj = (ObjectInstance)comboParameter.SelectedItem;
+                _trigger.TargetObj = selectedObject;
                 _trigger.TargetData = 0;
             }
             else
             {
                 _trigger.TargetObj = null;
-                _trigger.TargetData = Int16.Parse(tbParameter.Text);
+                _trigger.TargetData = short.Parse(tbParameter.Text);
             }
 
             DialogResult = DialogResult.OK;
-            this.Close();
+            Close();
         }
 
         private void butCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
     }
 }

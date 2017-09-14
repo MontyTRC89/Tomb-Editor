@@ -50,6 +50,8 @@ namespace TombEditor
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
             this.comboParameter = new DarkUI.Controls.DarkComboBox(this.components);
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -64,6 +66,8 @@ namespace TombEditor
             // 
             // comboType
             // 
+            this.comboType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.comboType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.comboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -72,12 +76,14 @@ namespace TombEditor
             this.comboType.ItemHeight = 18;
             this.comboType.Location = new System.Drawing.Point(89, 10);
             this.comboType.Name = "comboType";
-            this.comboType.Size = new System.Drawing.Size(159, 24);
+            this.comboType.Size = new System.Drawing.Size(587, 24);
             this.comboType.Sorted = true;
             this.comboType.TabIndex = 1;
             // 
             // comboTargetType
             // 
+            this.comboTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboTargetType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.comboTargetType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.comboTargetType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -86,7 +92,7 @@ namespace TombEditor
             this.comboTargetType.ItemHeight = 18;
             this.comboTargetType.Location = new System.Drawing.Point(89, 37);
             this.comboTargetType.Name = "comboTargetType";
-            this.comboTargetType.Size = new System.Drawing.Size(159, 24);
+            this.comboTargetType.Size = new System.Drawing.Size(587, 24);
             this.comboTargetType.Sorted = true;
             this.comboTargetType.TabIndex = 3;
             this.comboTargetType.SelectedIndexChanged += new System.EventHandler(this.comboTargetType_SelectedIndexChanged);
@@ -113,22 +119,26 @@ namespace TombEditor
             // 
             // tbParameter
             // 
+            this.tbParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbParameter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbParameter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbParameter.Location = new System.Drawing.Point(89, 64);
             this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(100, 22);
+            this.tbParameter.Size = new System.Drawing.Size(452, 22);
             this.tbParameter.TabIndex = 5;
             // 
             // tbTimer
             // 
+            this.tbTimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbTimer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbTimer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tbTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbTimer.Location = new System.Drawing.Point(89, 94);
             this.tbTimer.Name = "tbTimer";
-            this.tbTimer.Size = new System.Drawing.Size(100, 22);
+            this.tbTimer.Size = new System.Drawing.Size(568, 22);
             this.tbTimer.TabIndex = 7;
             // 
             // label4
@@ -197,10 +207,11 @@ namespace TombEditor
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(324, 188);
+            this.butCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butCancel.Location = new System.Drawing.Point(346, 3);
             this.butCancel.Name = "butCancel";
             this.butCancel.Padding = new System.Windows.Forms.Padding(5);
-            this.butCancel.Size = new System.Drawing.Size(86, 23);
+            this.butCancel.Size = new System.Drawing.Size(174, 22);
             this.butCancel.TabIndex = 68;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -208,10 +219,11 @@ namespace TombEditor
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(232, 188);
+            this.butOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butOK.Location = new System.Drawing.Point(166, 3);
             this.butOK.Name = "butOK";
             this.butOK.Padding = new System.Windows.Forms.Padding(5);
-            this.butOK.Size = new System.Drawing.Size(86, 23);
+            this.butOK.Size = new System.Drawing.Size(174, 22);
             this.butOK.TabIndex = 67;
             this.butOK.Text = "OK";
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -219,6 +231,8 @@ namespace TombEditor
             // 
             // comboParameter
             // 
+            this.comboParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.comboParameter.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.comboParameter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -227,18 +241,35 @@ namespace TombEditor
             this.comboParameter.ItemHeight = 18;
             this.comboParameter.Location = new System.Drawing.Point(89, 64);
             this.comboParameter.Name = "comboParameter";
-            this.comboParameter.Size = new System.Drawing.Size(535, 24);
+            this.comboParameter.Size = new System.Drawing.Size(587, 24);
             this.comboParameter.Sorted = true;
             this.comboParameter.TabIndex = 69;
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 180F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.butOK, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.butCancel, 2, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 173);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(687, 28);
+            this.tableLayoutPanel1.TabIndex = 70;
             // 
             // FormTrigger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(646, 223);
+            this.ClientSize = new System.Drawing.Size(688, 202);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.comboParameter);
-            this.Controls.Add(this.butCancel);
-            this.Controls.Add(this.butOK);
             this.Controls.Add(this.cbOneShot);
             this.Controls.Add(this.cbBit4);
             this.Controls.Add(this.cbBit3);
@@ -254,15 +285,17 @@ namespace TombEditor
             this.Controls.Add(this.comboType);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(32000, 229);
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(371, 229);
             this.Name = "FormTrigger";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Trigger editor";
             this.Load += new System.EventHandler(this.FormTrigger_Load);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -287,5 +320,6 @@ namespace TombEditor
         private DarkButton butCancel;
         private DarkButton butOK;
         private DarkComboBox comboParameter;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }
