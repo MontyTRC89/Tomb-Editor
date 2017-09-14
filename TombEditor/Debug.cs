@@ -2,6 +2,7 @@
 using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace TombEditor
 {
@@ -22,7 +23,7 @@ namespace TombEditor
         public static long NumMoveables { get; set; }
         public static long NumStaticMeshes { get; set; }
         public static List<DebugString> Strings { get; set; }
-        
+
         public static void Reset()
         {
             NumRooms = 0;
@@ -49,19 +50,36 @@ namespace TombEditor
             SpriteBatch batch = new SpriteBatch(deviceManager.Device);
             batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
 
-            batch.DrawString(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), Color.White);
-            batch.DrawString(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
+            batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), Color.White);
+            batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
             if (!string.IsNullOrEmpty(selectedItem))
-                batch.DrawString(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), Color.White);
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), Color.White);
 
             for (int i = 0; i < Strings.Count; i++)
             {
-                batch.DrawString(deviceManager.Font, Strings[i].Content, Strings[i].Position, Color.White);
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, Color.White);
             }
 
             batch.End();
 
             deviceManager.Device.SetBlendState(deviceManager.Device.BlendStates.Opaque);
+        }
+    }
+
+    // Remove this class and use 'DrawString' once we have updated the SharpDX library so this becomes unnecessary
+    public static class SpriteBatchExtensions
+    {
+        // There seems to be a bug in the old version of SharpDx we are currently using
+        // that makes 'DrawString' crash the application when unknown characters are encountered
+        // even though 'SpriteFont' is setup to use a 'DefaultCharacter' as a replacement.
+        public static void DrawStringOnOldSharpDx(this SpriteBatch spriteBatch, SpriteFont spriteFont, string text, Vector2 position, Color color)
+        {
+            var text2 = new StringBuilder(text);
+            if (spriteFont.DefaultCharacter.HasValue)
+                for (int i = 0; i < text2.Length; ++i)
+                    if (!spriteFont.Characters.Contains(text2[i]))
+                        text2[i] = spriteFont.DefaultCharacter.Value;
+            spriteBatch.DrawString(spriteFont, text2, position, color);
         }
     }
 }
