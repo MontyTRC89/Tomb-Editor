@@ -37,9 +37,7 @@ namespace TombEditor.Compilers
             {
                 _tempRooms.Add(room, BuildRoom(room));
             }
-
-
-
+            
             ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
 
             MatchPortalVertexColors();
@@ -372,7 +370,7 @@ namespace TombEditor.Compilers
                         Math.Round(instance.RotationY * (65536.0 / 360.0))))),
                     ObjectID = (ushort)instance.WadObjectId,
                     Intensity1 = PackColorTo16Bit(new Vector4(instance.Color.Z, instance.Color.Y, instance.Color.X, instance.Color.W)),
-                    Intensity2 = 0
+                    Intensity2 = instance.Ocb 
                 })
                 .ToArray();
 

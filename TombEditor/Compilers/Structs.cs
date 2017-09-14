@@ -259,7 +259,7 @@ namespace TombEditor.Compilers
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Length);
-            if (Portals.Length != 0)
+            if (Lights.Length != 0)
                 writer.WriteBlockArray(Lights);
 
             // Write static meshes

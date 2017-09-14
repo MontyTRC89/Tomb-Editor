@@ -175,6 +175,12 @@
     <Compile Include="FormLevelSettings.designer.cs">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormStaticMesh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormStaticMesh.Designer.cs">
+      <DependentUpon>FormStaticMesh.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSplash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -310,6 +316,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormLevelSettings.resx">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormStaticMesh.resx">
+      <DependentUpon>FormStaticMesh.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormSplash.resx">
       <DependentUpon>FormSplash.cs</DependentUpon>
