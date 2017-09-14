@@ -112,6 +112,14 @@ namespace TombEditor.Geometry.IO
                     (writer, id2) => writer.Write(texture.Convert512PixelsToDoubleRows));
                 ChunkProcessing.WriteChunk(stream, Prj2Chunks.TextureReplaceMagentaWithTransparency,
                     (writer, id2) => writer.Write(texture.ReplaceMagentaWithTransparency));
+                ChunkProcessing.WriteChunk(stream, Prj2Chunks.TextureSounds, (writer, id2) =>
+                    {
+                        writer.Write(texture.TextureSoundWidth);
+                        writer.Write(texture.TextureSoundHeight);
+                        for (int y = 0; y < texture.TextureSoundHeight; ++y)
+                            for (int x = 0; x < texture.TextureSoundWidth; ++x)
+                                writer.Write((byte)(texture.GetTextureSound(x, y)));
+                    });
                 ChunkProcessing.WriteChunkEnd(stream);
             });
         }
