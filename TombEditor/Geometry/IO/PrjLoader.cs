@@ -1365,6 +1365,7 @@ namespace TombEditor.Geometry.IO
                     texture.TexCoord3 = new Vector2(0);
 
                     int txtRot = prjFace._txtRotation + 1;
+                    int rotationForWallTriangles = 1;
 
                     if (room.GetFaceVertexRange(x, z, face).Count == 3)
                     {
@@ -1413,7 +1414,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
 
@@ -1457,7 +1458,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
 
@@ -1501,7 +1502,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
 
@@ -1545,7 +1546,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
                         }
@@ -1591,7 +1592,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
 
@@ -1635,7 +1636,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
 
@@ -1679,7 +1680,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
 
@@ -1723,7 +1724,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else
                                 {
-                                    txtRot += 2;
+                                    txtRot += rotationForWallTriangles;
                                 }
                             }
                         }

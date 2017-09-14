@@ -1658,18 +1658,18 @@ namespace TombEditor.Geometry
                         new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
                         new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                         new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
+                        face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
                 else if (qA == yA && qB > yB)
                     AddTriangle(x, z, qaFace,
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                         new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                         new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                         face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
                 else if (qA > yA && qB == yB)
                     AddTriangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                         new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
                         new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                         face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
 
                 // ED
@@ -1689,15 +1689,15 @@ namespace TombEditor.Geometry
                             face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
                     else if (eA > yA && eB == yB)
                         AddTriangle(x, z, edFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             new Vector3(xA * 1024.0f, eA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
                     else if (eA == yA && eB > yB)
                         AddTriangle(x, z, edFace,
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                             new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                             face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f),  false);
                 }
             }
@@ -1729,19 +1729,19 @@ namespace TombEditor.Geometry
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
                             new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
+                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
                     else if (wA < yA && wB == yB)
                         AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
                             new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-							face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
                     else if (wA == yA && wB < yB)
                         AddTriangle(x, z, wsFace,
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
                             new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-							face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
 
                     // RF
                     if (subdivide)
@@ -1760,15 +1760,15 @@ namespace TombEditor.Geometry
                                 face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
                         else if (rA < yA && rB == yB)
                             AddTriangle(x, z, rfFace,
-                                new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xA * 1024.0f, rA * 256.0f, zA * 1024.0f),
                                 face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
                         else if (rA == yA && rB < yB)
                             AddTriangle(x, z, rfFace,
-                                new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
                                 face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
                     }
                 }
@@ -1790,20 +1790,20 @@ namespace TombEditor.Geometry
                     new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                     new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                     new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
-                    face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
+                    face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
 
             else if (yA != yD && yB == yC)
                 AddTriangle(x, z, middleFace,
+                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                     new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f), 
-                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                     face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
 
             else if (yA == yD && yB != yC)
                 AddTriangle(x, z, middleFace,
+                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                     new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                     face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
         }
 
