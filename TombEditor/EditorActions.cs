@@ -681,6 +681,12 @@ namespace TombEditor
                     formMoveable.ShowDialog(owner);
                 _editor.ObjectChange(instance);
             }
+            else if (instance is StaticInstance)
+            {
+                using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
+                    formStaticMesh.ShowDialog(owner);
+                _editor.ObjectChange(instance);
+            }
             else if (instance is FlybyCameraInstance)
             {
                 using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))

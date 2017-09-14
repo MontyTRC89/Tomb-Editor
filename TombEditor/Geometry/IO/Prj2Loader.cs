@@ -246,7 +246,7 @@ namespace TombEditor.Geometry.IO
                         staticMesh.Position = reader.ReadVector3();
                         staticMesh.RotationY = reader.ReadSingle();
                         staticMesh.RotationYRadians = reader.ReadSingle();
-                        staticMesh.Ocb = reader.ReadInt16();
+                        staticMesh.Ocb = reader.ReadUInt16();
                         staticMesh.Color = reader.ReadVector4();
 
                         reader.ReadBytes(8);
