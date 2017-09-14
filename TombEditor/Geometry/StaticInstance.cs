@@ -14,7 +14,8 @@ namespace TombEditor.Geometry
         PoisonLaraOnCollision = 256,
         HugeCollision = 512,
         HardShatter = 1024,
-        EnableHeavyTriggerOnCollision = 2048
+        EnableHeavyTriggerOnCollision = 2048,
+        Scalable = 4096
     }
 
     public class StaticInstance : ItemInstance

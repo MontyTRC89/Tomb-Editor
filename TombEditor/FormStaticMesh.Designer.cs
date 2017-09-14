@@ -43,11 +43,13 @@ namespace TombEditor
             this.cbBurnLaraOnCollision = new DarkUI.Controls.DarkCheckBox();
             this.cbDamageLaraOnContact = new DarkUI.Controls.DarkCheckBox();
             this.cbGlassTrasparency = new DarkUI.Controls.DarkCheckBox();
+            this.cbScalable = new DarkUI.Controls.DarkCheckBox();
+            this.tbScalable = new DarkUI.Controls.DarkTextBox();
             this.SuspendLayout();
             // 
             // butOK
             // 
-            this.butOK.Location = new System.Drawing.Point(56, 266);
+            this.butOK.Location = new System.Drawing.Point(53, 291);
             this.butOK.Name = "butOK";
             this.butOK.Padding = new System.Windows.Forms.Padding(5);
             this.butOK.Size = new System.Drawing.Size(86, 23);
@@ -58,7 +60,7 @@ namespace TombEditor
             // 
             // butCancel
             // 
-            this.butCancel.Location = new System.Drawing.Point(148, 266);
+            this.butCancel.Location = new System.Drawing.Point(145, 291);
             this.butCancel.Name = "butCancel";
             this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(86, 23);
@@ -157,11 +159,34 @@ namespace TombEditor
             this.cbGlassTrasparency.TabIndex = 23;
             this.cbGlassTrasparency.Text = "Glass trasparency";
             // 
+            // cbScalable
+            // 
+            this.cbScalable.AutoSize = true;
+            this.cbScalable.Location = new System.Drawing.Point(12, 252);
+            this.cbScalable.Name = "cbScalable";
+            this.cbScalable.Size = new System.Drawing.Size(68, 17);
+            this.cbScalable.TabIndex = 24;
+            this.cbScalable.Text = "Scalable";
+            this.cbScalable.CheckedChanged += new System.EventHandler(this.cbScalable_CheckedChanged);
+            // 
+            // tbScalable
+            // 
+            this.tbScalable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbScalable.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbScalable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbScalable.Location = new System.Drawing.Point(86, 251);
+            this.tbScalable.Name = "tbScalable";
+            this.tbScalable.Size = new System.Drawing.Size(53, 22);
+            this.tbScalable.TabIndex = 25;
+            this.tbScalable.Text = "0";
+            // 
             // FormStaticMesh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(291, 301);
+            this.ClientSize = new System.Drawing.Size(291, 326);
+            this.Controls.Add(this.tbScalable);
+            this.Controls.Add(this.cbScalable);
             this.Controls.Add(this.cbGlassTrasparency);
             this.Controls.Add(this.cbDamageLaraOnContact);
             this.Controls.Add(this.cbBurnLaraOnCollision);
@@ -204,5 +229,7 @@ namespace TombEditor
         private DarkCheckBox cbBurnLaraOnCollision;
         private DarkCheckBox cbDamageLaraOnContact;
         private DarkCheckBox cbGlassTrasparency;
+        private DarkCheckBox cbScalable;
+        private DarkTextBox tbScalable;
     }
 }
