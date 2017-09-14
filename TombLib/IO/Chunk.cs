@@ -45,7 +45,7 @@ namespace TombLib.IO
     public struct ChunkID
     {
         public static readonly ChunkID Empty = new ChunkID(new byte[0], 0);
-        private static readonly Encoding _encoding = Encoding.UTF8;
+        private static readonly Encoding _encoding = Encoding.ASCII;
 
         private byte[] _idBytes; // Actually store the chunk ID as bytes. We don't want fancy Unicode comparison (different id bytes would compare identical, also big overhead)
         private int _idLength; // Extra field to allow only part of the array
