@@ -46,12 +46,12 @@ namespace TombEditor.Geometry
 
     public class TriggerInstance : SectorBasedObjectInstance
     {
-        public TriggerType TriggerType { get; set; }
-        public TriggerTargetType TargetType { get; set; }
-        public ObjectInstance TargetObj { get; set; } //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
-        public short TargetData { get; set; }
-        public short Timer { get; set; }
-        public bool OneShot { get; set; }
+        public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
+        public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;
+        public ObjectInstance TargetObj { get; set; } = null; //Used for following old trigger types: "Camera", "FlyByCamera", "Object", "Sink", "Target"
+        public short TargetData { get; set; } = 0;
+        public short Timer { get; set; } = 0;
+        public bool OneShot { get; set; } = false;
         public byte CodeBits { get; set; } = 0x1f; // Only the lower 5 bits are used.
 
         public TriggerInstance(Rectangle area)

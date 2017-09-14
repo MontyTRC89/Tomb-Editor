@@ -581,7 +581,31 @@ namespace TombEditor
         public static void AddTrigger(Room room, Rectangle area, IWin32Window parent)
         { 
             var trigger = new TriggerInstance(area);
-            using (var formTrigger = new FormTrigger(_editor.Level, trigger))
+
+            // Initialize trigger with selected object if the selected object makes sense in the trigger context.
+            if (_editor.SelectedObject is MoveableInstance)
+            {
+                trigger.TargetType = TriggerTargetType.Object;
+                trigger.TargetObj = _editor.SelectedObject;
+            }
+            else if (_editor.SelectedObject is FlybyCameraInstance)
+            {
+                trigger.TargetType = TriggerTargetType.FlyByCamera;
+                trigger.TargetObj = _editor.SelectedObject;
+            }
+            else if (_editor.SelectedObject is CameraInstance)
+            {
+                trigger.TargetType = TriggerTargetType.Camera;
+                trigger.TargetObj = _editor.SelectedObject;
+            }
+            else if (_editor.SelectedObject is SinkInstance)
+            {
+                trigger.TargetType = TriggerTargetType.Sink;
+                trigger.TargetObj = _editor.SelectedObject;
+            }
+            
+            // Display form
+            using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj)))
             {
                 if (formTrigger.ShowDialog(parent) != DialogResult.OK)
                     return;
@@ -707,7 +731,7 @@ namespace TombEditor
             }
             else if (instance is TriggerInstance)
             {
-                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance))
+                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj)))
                     formTrigger.ShowDialog(owner);
                 _editor.ObjectChange(instance);
             }
