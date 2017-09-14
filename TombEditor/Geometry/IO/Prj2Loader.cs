@@ -111,21 +111,35 @@ namespace TombEditor.Geometry.IO
                 return false;
 
             string path = "";
-            bool convert512PixelsToDoubleRows = false;
-            bool replaceMagentaWithTransparency = false;
+            LevelTexture texture = new LevelTexture();
             ChunkProcessing.ParseChunks(streamOuter, (stream, id, chunkSize) =>
             {
                 if (id == Prj2Chunks.TexturePath)
-                    path = stream.ReadStringUTF8();
+                    path = stream.ReadStringUTF8(); // Don't set the path right away, to not load the texture until all information is available.
                 else if (id == Prj2Chunks.TextureConvert512PixelsToDoubleRows)
-                    convert512PixelsToDoubleRows = stream.ReadBoolean();
+                    texture.SetConvert512PixelsToDoubleRows(settings, stream.ReadBoolean());
                 else if (id == Prj2Chunks.TextureReplaceMagentaWithTransparency)
-                    replaceMagentaWithTransparency = stream.ReadBoolean();
+                    texture.SetReplaceWithTransparency(settings, stream.ReadBoolean());
+                else if (id == Prj2Chunks.TextureSounds)
+                {
+                    int width = stream.ReadInt32();
+                    int height = stream.ReadInt32();
+                    texture.ResizeTextureSounds(width, height);
+                    for (int y = 0; y < texture.TextureSoundHeight; ++y)
+                        for (int x = 0; x < texture.TextureSoundWidth; ++x)
+                        {
+                            byte textureSoundByte = stream.ReadByte();
+                            if (textureSoundByte > 15)
+                                textureSoundByte = 15;
+                            texture.SetTextureSound(x, y, (TextureSound)textureSoundByte);
+                        }
+                }
                 else
                     return false;
                 return true;
             });
-            settings.Textures.Add(new LevelTexture(settings, path, convert512PixelsToDoubleRows, replaceMagentaWithTransparency));
+            texture.SetPath(settings, path);
+            settings.Textures.Add(texture);
             return true;
         }
 
