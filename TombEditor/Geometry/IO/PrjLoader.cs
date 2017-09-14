@@ -1319,7 +1319,7 @@ namespace TombEditor.Geometry.IO
             }
         }
 
-        #pragma warning disable 0675 // Disable warning about bitwise or
+#pragma warning disable 0675 // Disable warning about bitwise or
         private static void LoadTextureArea(Room room, int x, int z, BlockFace face, LevelTexture levelTexture, List<PrjTexInfo> tempTextures, PrjFace prjFace, int adjustRotation)
         {
             Block block = room.Blocks[x, z];
@@ -1338,7 +1338,7 @@ namespace TombEditor.Geometry.IO
                 case 0x0007: // TYPE_TEXTURE_TILE
                     int texIndex = ((prjFace._txtFlags & 0x03) << 8) | prjFace._txtIndex;
                     PrjTexInfo texInfo = tempTextures[texIndex];
-                    
+
                     var uv = new Vector2[]
                     {
                         new Vector2(
@@ -1365,52 +1365,34 @@ namespace TombEditor.Geometry.IO
                     texture.TexCoord3 = new Vector2(0);
 
                     int txtRot = prjFace._txtRotation + 1;
+
                     if (room.GetFaceVertexRange(x, z, face).Count == 3)
                     {
                         txtRot = txtRot % 3;
-                        if ((prjFace._txtFlags & 0x80) != 0) // is flipped
+
+                        // If face is flipped
+                        if ((prjFace._txtFlags & 0x80) != 0)
                         {
                             if (prjFace._txtTriangle == 0)
                             {
+                                texture.TexCoord0 = uv[1];
+                                texture.TexCoord1 = uv[2];
+                                texture.TexCoord2 = uv[0];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-                                        }
-
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
@@ -1418,93 +1400,43 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-                                        }
-
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[1];
-                                    texture.TexCoord1 = uv[2];
-                                    texture.TexCoord2 = uv[0];
-
                                     txtRot += 2;
                                 }
                             }
 
                             if (prjFace._txtTriangle == 1)
                             {
+                                texture.TexCoord0 = uv[0];
+                                texture.TexCoord1 = uv[3];
+                                texture.TexCoord2 = uv[1];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-                                        }
-
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
@@ -1512,93 +1444,43 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-                                        }
-
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[0];
-                                    texture.TexCoord1 = uv[3];
-                                    texture.TexCoord2 = uv[1];
-
                                     txtRot += 2;
                                 }
                             }
 
                             if (prjFace._txtTriangle == 3)
                             {
+                                texture.TexCoord0 = uv[2];
+                                texture.TexCoord1 = uv[1];
+                                texture.TexCoord2 = uv[3];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-                                        }
-
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
@@ -1606,48 +1488,19 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-                                        }
-
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[2];
-                                    texture.TexCoord1 = uv[1];
-                                    texture.TexCoord2 = uv[3];
-
                                     txtRot += 2;
                                 }
                             }
@@ -1656,43 +1509,22 @@ namespace TombEditor.Geometry.IO
                             {
                                 if (isFloor)
                                 {
+                                    texture.TexCoord0 = uv[3];
+                                    texture.TexCoord1 = uv[2];
+                                    texture.TexCoord2 = uv[0];
+
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-                                        }
-
                                         if (face == BlockFace.FloorTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
@@ -1700,428 +1532,197 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 2;
-                                        }
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-                                        }
-
                                         if (face == BlockFace.CeilingTriangle2)
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[3];
-                                    texture.TexCoord1 = uv[2];
-                                    texture.TexCoord2 = uv[0];
-
                                     txtRot += 2;
                                 }
                             }
                         }
                         else // ===========================================================================================
                         {
+                            texture.TexCoord0 = uv[0];
+                            texture.TexCoord1 = uv[1];
+                            texture.TexCoord2 = uv[3];
+
                             if (prjFace._txtTriangle == 0)
                             {
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Floor) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
+                                        if (face == BlockFace.Floor)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.FloorTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-                                        }
-
-                                        if (face == BlockFace.FloorTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
                                 {
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Ceiling) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
+                                        if (face == BlockFace.Ceiling)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.CeilingTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-                                        }
-
-                                        if (face == BlockFace.CeilingTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[0];
-                                            texture.TexCoord1 = uv[1];
-                                            texture.TexCoord2 = uv[3];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[0];
-                                    texture.TexCoord1 = uv[1];
-                                    texture.TexCoord2 = uv[3];
-
                                     txtRot += 2;
                                 }
                             }
 
                             if (prjFace._txtTriangle == 1)
                             {
+                                texture.TexCoord0 = uv[1];
+                                texture.TexCoord1 = uv[2];
+                                texture.TexCoord2 = uv[0];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Floor) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
+                                        if (face == BlockFace.Floor)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.FloorTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-                                        }
-
-                                        if (face == BlockFace.FloorTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
                                 {
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Ceiling) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
+                                        if (face == BlockFace.Ceiling)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.CeilingTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-                                        }
-
-                                        if (face == BlockFace.CeilingTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[1];
-                                            texture.TexCoord1 = uv[2];
-                                            texture.TexCoord2 = uv[0];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[1];
-                                    texture.TexCoord1 = uv[2];
-                                    texture.TexCoord2 = uv[0];
-
                                     txtRot += 2;
                                 }
                             }
 
                             if (prjFace._txtTriangle == 3)
                             {
+                                texture.TexCoord0 = uv[3];
+                                texture.TexCoord1 = uv[0];
+                                texture.TexCoord2 = uv[2];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Floor) // OK
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-
+                                        if (face == BlockFace.Floor)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.FloorTriangle2) // TODO
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor) // OK
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-                                        }
-
-                                        if (face == BlockFace.FloorTriangle2) // OK
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
                                 {
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Ceiling) // OK
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-
+                                        if (face == BlockFace.Ceiling)
                                             txtRot += 2;
-                                        }
 
-                                        if (face ==
-                                            BlockFace.CeilingTriangle2) // TODO
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling) // OK
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-                                        }
-
-                                        if (face ==
-                                            BlockFace.CeilingTriangle2) // OK
-                                        {
-                                            texture.TexCoord0 = uv[3];
-                                            texture.TexCoord1 = uv[0];
-                                            texture.TexCoord2 = uv[2];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[3];
-                                    texture.TexCoord1 = uv[0];
-                                    texture.TexCoord2 = uv[2];
-
                                     txtRot += 2;
                                 }
                             }
 
                             if (prjFace._txtTriangle == 2)
                             {
+                                texture.TexCoord0 = uv[2];
+                                texture.TexCoord1 = uv[3];
+                                texture.TexCoord2 = uv[1];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Floor) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
+                                        if (face == BlockFace.Floor)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.FloorTriangle2) // TODO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Floor) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-                                        }
-
-                                        if (face == BlockFace.FloorTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
+                                        if (face == BlockFace.FloorTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else if (isCeiling)
                                 {
                                     if (!block.CeilingSplitDirectionIsXEqualsY)
                                     {
-                                        if (face == BlockFace.Ceiling) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
+                                        if (face == BlockFace.Ceiling)
                                             txtRot += 2;
-                                        }
 
-                                        if (face == BlockFace.CeilingTriangle2) // TODO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                     else
                                     {
-                                        if (face == BlockFace.Ceiling) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-                                        }
-
-                                        if (face == BlockFace.CeilingTriangle2) // CORRETTO
-                                        {
-                                            texture.TexCoord0 = uv[2];
-                                            texture.TexCoord1 = uv[3];
-                                            texture.TexCoord2 = uv[1];
-
+                                        if (face == BlockFace.CeilingTriangle2)
                                             txtRot += 1;
-                                        }
                                     }
                                 }
                                 else
                                 {
-                                    texture.TexCoord0 = uv[2];
-                                    texture.TexCoord1 = uv[3];
-                                    texture.TexCoord2 = uv[1];
-
                                     txtRot += 2;
                                 }
                             }
@@ -2142,8 +1743,8 @@ namespace TombEditor.Geometry.IO
                     }
                     else
                     {
-                        txtRot = txtRot % 4;
-                        if ((prjFace._txtFlags & 0x80) != 0) // is flipped
+                        // Apply flipping
+                        if ((prjFace._txtFlags & 0x80) != 0)
                         {
                             var temp = uv[0];
                             uv[0] = uv[1];
@@ -2154,13 +1755,11 @@ namespace TombEditor.Geometry.IO
                             uv[3] = temp;
                         }
 
-                        txtRot += adjustRotation;
-                        if (txtRot < 0)
-                            txtRot = (sbyte)(3 - txtRot);
-                        if (txtRot > 3)
-                            txtRot = (sbyte)(txtRot % 3);
+                        // Adjust rotation only for vertical faces
+                        if (face != BlockFace.Floor && face != BlockFace.FloorTriangle2 &&
+                            face != BlockFace.Ceiling && face != BlockFace.CeilingTriangle2)
+                            txtRot--;
 
-                        txtRot += 1;
                         for (int rot = 0; rot < txtRot; rot++)
                         {
                             var temp = uv[3];
