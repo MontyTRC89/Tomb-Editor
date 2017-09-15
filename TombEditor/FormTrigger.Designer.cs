@@ -126,7 +126,7 @@ namespace TombEditor
             this.tbParameter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbParameter.Location = new System.Drawing.Point(89, 64);
             this.tbParameter.Name = "tbParameter";
-            this.tbParameter.Size = new System.Drawing.Size(452, 22);
+            this.tbParameter.Size = new System.Drawing.Size(568, 22);
             this.tbParameter.TabIndex = 5;
             // 
             // tbTimer
