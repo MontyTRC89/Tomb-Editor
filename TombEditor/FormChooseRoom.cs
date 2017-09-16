@@ -20,10 +20,16 @@ namespace TombEditor
         {
             InitializeComponent();
 
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MinimumSize = new Size(399, 244) + (Size - ClientSize);
+            
+            // Populate lists
             titelLabel.Text = why;
             foreach (Room room in rooms)
                 roomListBox.Items.Add(room);
 
+            // View room when the selection is changed
             roomListBox.SelectedIndexChanged += delegate
                 {
                     butOk.Enabled = SelectedRoom != null;

@@ -113,7 +113,6 @@ namespace TombEditor
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(160, 120);
             this.Name = "FormOperationDialog";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

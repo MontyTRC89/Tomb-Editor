@@ -808,7 +808,6 @@
             this.ClientSize = new System.Drawing.Size(592, 773);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(600, 800);
             this.Name = "FormLevelSettings";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

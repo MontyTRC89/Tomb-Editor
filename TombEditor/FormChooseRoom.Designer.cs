@@ -116,7 +116,6 @@
             this.Controls.Add(this.titelLabel);
             this.Controls.Add(this.roomListBox);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(407, 271);
             this.Name = "FormChooseRoom";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
