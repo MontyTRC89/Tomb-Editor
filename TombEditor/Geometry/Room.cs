@@ -63,17 +63,13 @@ namespace TombEditor.Geometry
         private readonly List<EditorVertex> _allVertices = new List<EditorVertex>();
 
         // Helper data for Prj2 loading
-        public int Prj2AlternateRoomIndex { get; set; }
-        public int Prj2AlternateBaseRoomIndex { get; set; }
-        public List<uint> Prj2Portals { get; set; }
-        public List<uint> Prj2Triggers { get; set; }
+        internal int Prj2AlternateRoomIndex { get; set; }
+        internal int Prj2AlternateBaseRoomIndex { get; set; }
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
             Resize(level, numXSectors, numZSectors, 0, ceiling);
-            Prj2Portals = new List<uint>();
-            Prj2Triggers = new List<uint>();
         }
 
         public void Resize(Level level, int numXSectors, int numZSectors, short floor = 0, short ceiling = DefaultHeight, DrawingPoint offset = new DrawingPoint())
@@ -292,11 +288,10 @@ namespace TombEditor.Geometry
                     // North
                     if (x > 0 && x < NumXSectors - 1 && z > 0 && z < NumZSectors - 2 &&
                         !(Blocks[x, z + 1].Type == BlockType.Wall &&
-                         (Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.NE)))
+                         (Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.XnZn)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != null &&
-                            Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
-                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE))
+                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZn))
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, false);
@@ -306,12 +301,11 @@ namespace TombEditor.Geometry
                     // South
                     if (x > 0 && x < NumXSectors - 1 && z > 1 && z < NumZSectors - 1 &&
                         !(Blocks[x, z - 1].Type == BlockType.Wall &&
-                         (Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.SE)))
+                         (Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.XpZp || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.XnZp)))
                     {
                         if ((Blocks[x, z].Type == BlockType.Wall ||
-                            (Blocks[x, z].WallPortal != null &&
-                            Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
-                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE))
+                            (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZp || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZp))
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, false);
@@ -320,11 +314,10 @@ namespace TombEditor.Geometry
                     // East
                     if (z > 0 && z < NumZSectors - 1 && x > 0 && x < NumXSectors - 2 &&
                         !(Blocks[x + 1, z].Type == BlockType.Wall &&
-                        (Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.SE)))
+                        (Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.XnZn || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.XnZp)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != null &&
-                             Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
-                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE))
+                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZn || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZp))
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, false);
@@ -333,11 +326,10 @@ namespace TombEditor.Geometry
                     // West
                     if (z > 0 && z < NumZSectors - 1 && x > 1 && x < NumXSectors - 1 &&
                         !(Blocks[x - 1, z].Type == BlockType.Wall &&
-                        (Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.SW)))
+                        (Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.XpZp)))
                     {
-                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal != null &&
-                             Blocks[x, z].WallOpacity != PortalOpacity.None)) &&
-                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW))
+                        if ((Blocks[x, z].Type == BlockType.Wall || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false)) &&
+                            !(Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZp))
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, false);
@@ -367,7 +359,7 @@ namespace TombEditor.Geometry
                     // North border wall
                     if (z == 0 && x != 0 && x != NumXSectors - 1 &&
                         !(Blocks[x, 1].Type == BlockType.Wall &&
-                         (Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.NE)))
+                         (Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.XnZn)))
                     {
                         bool addMiddle = false;
 
@@ -385,15 +377,15 @@ namespace TombEditor.Geometry
 
                             if (adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].Type == BlockType.Wall &&
                                 (adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.SE ||
-                                 adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.SW))
+                                 adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XnZp ||
+                                 adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XpZp))
                             {
                                 addMiddle = true;
                             }
                         }
 
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.North, true, true, false);
@@ -402,7 +394,7 @@ namespace TombEditor.Geometry
                     // South border wall
                     if (z == NumZSectors - 1 && x != 0 && x != NumXSectors - 1 &&
                         !(Blocks[x, NumZSectors - 2].Type == BlockType.Wall &&
-                         (Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.SW || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.SE)))
+                         (Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XpZp || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XnZp)))
                     {
                         bool addMiddle = false;
 
@@ -420,14 +412,14 @@ namespace TombEditor.Geometry
 
                             if (adjoiningRoom.Blocks[facingX, 1].Type == BlockType.Wall &&
                                 (adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.NE ||
-                                 adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.NW))
+                                 adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                 adjoiningRoom.Blocks[facingX, 1].FloorDiagonalSplit == DiagonalSplit.XpZn))
                             {
                                 addMiddle = true;
                             }
                         }
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.South, true, true, false);
@@ -436,7 +428,7 @@ namespace TombEditor.Geometry
                     // West border wall
                     if (x == 0 && z != 0 && z != NumZSectors - 1 &&
                         !(Blocks[1, z].Type == BlockType.Wall &&
-                         (Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.NE || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.SE)))
+                         (Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.XnZn || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.XnZp)))
                     {
                         bool addMiddle = false;
 
@@ -454,14 +446,14 @@ namespace TombEditor.Geometry
 
                             if (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].Type == BlockType.Wall &&
                                 (adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.NW ||
-                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.SW))
+                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.XpZn ||
+                                 adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].FloorDiagonalSplit == DiagonalSplit.XpZp))
                             {
                                 addMiddle = true;
                             }
                         }
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.East, true, true, false);
@@ -470,7 +462,7 @@ namespace TombEditor.Geometry
                     // East border wall
                     if (x == NumXSectors - 1 && z != 0 && z != NumZSectors - 1 &&
                         !(Blocks[NumXSectors - 2, z].Type == BlockType.Wall &&
-                         (Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.NW || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.SW)))
+                         (Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.XpZp)))
                     {
                         bool addMiddle = false;
 
@@ -488,432 +480,38 @@ namespace TombEditor.Geometry
 
                             if (adjoiningRoom.Blocks[1, facingZ].Type == BlockType.Wall &&
                                 (adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.None ||
-                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.NE ||
-                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.SE))
+                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                 adjoiningRoom.Blocks[1, facingZ].FloorDiagonalSplit == DiagonalSplit.XnZp))
                             {
                                 addMiddle = true;
                             }
                         }
 
-                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal != null && Blocks[x, z].WallOpacity != PortalOpacity.None))
+                        if (addMiddle || (Blocks[x, z].Type == BlockType.BorderWall && Blocks[x, z].WallPortal == null) || (Blocks[x, z].WallPortal?.HasTexturedFaces ?? false))
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, true);
                         else
                             AddVerticalFaces(x, z, FaceDirection.West, true, true, false);
                     }
-
-                    // If is a non diagonal wall, then continue
-                    if (Blocks[x, z].Type == BlockType.Wall && Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
-                        continue;
-
-                    //
-                    // 1----2    Split 0: 231 413  
-                    // | \  |    Split 1: 124 342
-                    // |  \ |
-                    // 4----3
-                    //
-
-                    //
-                    // 1----2    Split 0: 231 413  
-                    // |  / |    Split 1: 124 342
-                    // | /  |
-                    // 4----3
-                    //
-
-                    // Floor polygons ---------------------------------------------------------------------------------
-                    var face = Blocks[x, z].GetFaceTexture(BlockFace.Floor);
                     
-                    if (Block.IsQuad(qa0, qa1, qa2, qa3) || (Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None))
+                    // Floor polygons
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnection(new DrawingPoint(x, z));
+                    BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsY,
+                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType);
+
+                    // Ceiling polygons
+                    var sectorVertices = _sectorVertices[x, z];
+                    int startCeilingPolygons = sectorVertices.Count;
+
+                    RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnection(new DrawingPoint(x, z));
+                    BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsY,
+                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType);
+
+                    // Change vertices order for ceiling polygons
+                    for (int i = startCeilingPolygons; i < sectorVertices.Count; i += 3)
                     {
-                        if ((Blocks[x, z].FloorPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
-                            (Blocks[x, z].FloorPortal != null && (Blocks[x, z].FloorOpacity != PortalOpacity.None || IsFloorSolid(new DrawingPoint(x, z)))) ||
-                             Blocks[x, z].Type == BlockType.Wall)
-                        {
-                            if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.None)
-                            {
-                                AddRectangle(x, z, BlockFace.Floor,
-                                    new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
-                                    new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
-                                    new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
-                                    new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                    face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                            }
-                            else
-                            {
-                                bool splitDirection = Blocks[x, z].FloorSplitDirectionIsXEqualsY;
-
-                                bool addTriangle1 = true;
-                                bool addTriangle2 = true;
-
-                                int y1 = 0;
-                                int y2 = 0;
-                                int y3 = 0;
-                                int y4 = 0;
-                                int y5 = 0;
-                                int y6 = 0;
-
-                                if (Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
-                                {
-                                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW)
-                                    {
-                                        splitDirection = true;
-                                        addTriangle1 = true;
-                                        addTriangle2 = Blocks[x, z].Type != BlockType.Wall;
-                                        y1 = qa0;
-                                        y2 = qa0;
-                                        y3 = qa0;
-                                        y4 = qa2;
-                                        y5 = qa3;
-                                        y6 = qa1;
-                                    }
-
-                                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE)
-                                    {
-                                        splitDirection = false;
-                                        addTriangle1 = true;
-                                        addTriangle2 = Blocks[x, z].Type != BlockType.Wall;
-                                        y1 = qa1;
-                                        y2 = qa1;
-                                        y3 = qa1;
-                                        y4 = qa3;
-                                        y5 = qa0;
-                                        y6 = qa2;
-                                    }
-
-                                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE)
-                                    {
-                                        splitDirection = true;
-                                        addTriangle1 = Blocks[x, z].Type != BlockType.Wall;
-                                        addTriangle2 = true;
-                                        y1 = qa0;
-                                        y2 = qa1;
-                                        y3 = qa3;
-                                        y4 = qa2;
-                                        y5 = qa2;
-                                        y6 = qa2;
-                                    }
-
-                                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW)
-                                    {
-                                        splitDirection = false;
-                                        addTriangle1 = Blocks[x, z].Type != BlockType.Wall;
-                                        addTriangle2 = true;
-                                        y1 = qa1;
-                                        y2 = qa2;
-                                        y3 = qa0;
-                                        y4 = qa3;
-                                        y5 = qa3;
-                                        y6 = qa3;
-                                    }
-                                }
-                                else
-                                {
-                                    if (!splitDirection)
-                                    {
-                                        addTriangle1 = true;
-                                        addTriangle2 = true;
-                                        y1 = qa1;
-                                        y2 = qa2;
-                                        y3 = qa0;
-                                        y4 = qa3;
-                                        y5 = qa0;
-                                        y6 = qa2;
-                                    }
-                                    else
-                                    {
-                                        addTriangle1 = true;
-                                        addTriangle2 = true;
-                                        y1 = qa0;
-                                        y2 = qa1;
-                                        y3 = qa3;
-                                        y4 = qa2;
-                                        y5 = qa3;
-                                        y6 = qa1;
-                                    }
-                                }
-
-                                if (!splitDirection)
-                                {
-                                    if (addTriangle1)
-                                    {
-                                        AddTriangle(x, z, BlockFace.Floor,
-                                            new Vector3(x * 1024.0f, y3 * 256.0f, (z + 1) * 1024.0f),
-                                            new Vector3((x + 1) * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
-                                            new Vector3((x + 1) * 1024.0f, y2 * 256.0f, z * 1024.0f),
-											face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f),  false);
-                                    }
-
-                                    if (addTriangle2)
-                                    {
-                                        face = Blocks[x, z].GetFaceTexture(BlockFace.FloorTriangle2);
-                                        AddTriangle(x, z, BlockFace.FloorTriangle2,
-                                            new Vector3((x + 1) * 1024.0f, y6 * 256.0f, z * 1024.0f),
-                                            new Vector3(x * 1024.0f, y4 * 256.0f, z * 1024.0f),
-                                            new Vector3(x * 1024.0f, y5 * 256.0f, (z + 1) * 1024.0f),
-											face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), false);
-                                    }
-                                }
-                                else
-                                {
-                                    if (addTriangle1)
-                                    {
-                                        AddTriangle(x, z, BlockFace.Floor,
-                                            new Vector3(x * 1024.0f, y3 * 256.0f, z * 1024.0f),
-                                            new Vector3(x * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
-                                            new Vector3((x + 1) * 1024.0f, y2 * 256.0f, (z + 1) * 1024.0f),
-											face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                                    }
-
-                                    if (addTriangle2)
-                                    {
-                                        face = Blocks[x, z].GetFaceTexture(BlockFace.FloorTriangle2);
-                                        AddTriangle(x, z, BlockFace.FloorTriangle2,
-                                            new Vector3((x + 1) * 1024.0f, y6 * 256.0f, (z + 1) * 1024.0f),
-                                            new Vector3((x + 1) * 1024.0f, y4 * 256.0f, z * 1024.0f),
-                                            new Vector3(x * 1024.0f, y5 * 256.0f, z * 1024.0f), 
-											face, new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if ((Blocks[x, z].FloorPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
-                            (Blocks[x, z].FloorPortal != null && (Blocks[x, z].FloorOpacity != PortalOpacity.None || IsFloorSolid(new DrawingPoint(x, z)))))
-                        {
-                            if (!Blocks[x, z].FloorSplitDirectionIsXEqualsY)
-                            {
-                                AddTriangle(x, z, BlockFace.Floor,
-                                    new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
-                                    new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
-                                    new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
-                                    face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f),  false);
-
-                                face = Blocks[x, z].GetFaceTexture(BlockFace.FloorTriangle2);
-                                AddTriangle(x, z, BlockFace.FloorTriangle2,
-                                    new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
-                                    new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                    new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
-                                    face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f),  false);
-                            }
-                            else
-                            {
-                                AddTriangle(x, z, BlockFace.Floor,
-                                    new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                    new Vector3(x * 1024.0f, qa0 * 256.0f, (z + 1) * 1024.0f),
-                                    new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
-                                    face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f),  true);
-
-                                face = Blocks[x, z].GetFaceTexture(BlockFace.FloorTriangle2);
-                                AddTriangle(x, z, BlockFace.FloorTriangle2,
-                                    new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
-                                    new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
-                                    new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                    face, new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f),  true);
-                            }
-                        }
-                    }
-
-                    // Ceiling polygons ---------------------------------------------------------------------------------
-                    //
-                    //  2----1    Split 0: 142 324  
-                    //  | \  |    Split 1: 213 431
-                    //  |  \ |
-                    //  3----4
-                    //
-
-                    face = Blocks[x, z].GetFaceTexture(BlockFace.Ceiling);
-                    
-                    if (Block.IsQuad(ws0, ws1, ws2, ws3) || (Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None))
-                    {
-                        if (!((Blocks[x, z].CeilingPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
-                            (Blocks[x, z].CeilingPortal != null && (Blocks[x, z].CeilingOpacity != PortalOpacity.None || IsCeilingSolid(new DrawingPoint(x, z)))) ||
-                             Blocks[x, z].Type == BlockType.Wall))
-                            continue;
-
-                        if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.None)
-                        {
-                            AddRectangle(x, z, BlockFace.Ceiling,
-                                new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, ws3 * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
-                                face, new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f));
-                        }
-                        else
-                        {
-                            bool splitDirection = Blocks[x, z].CeilingSplitDirectionIsXEqualsY;
-
-                            bool addTriangle1 = true;
-                            bool addTriangle2 = true;
-
-                            int y1 = 0;
-                            int y2 = 0;
-                            int y3 = 0;
-                            int y4 = 0;
-                            int y5 = 0;
-                            int y6 = 0;
-
-                            if (Blocks[x, z].CeilingDiagonalSplit != DiagonalSplit.None)
-                            {
-                                if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NW)
-                                {
-                                    splitDirection = false;
-                                    addTriangle1 = true;
-                                    addTriangle2 = (Blocks[x, z].Type != BlockType.Wall);
-                                    y1 = ws0;
-                                    y2 = ws0;
-                                    y3 = ws0;
-                                    y4 = ws2;
-                                    y5 = ws1;
-                                    y6 = ws3;
-                                }
-
-                                if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NE)
-                                {
-                                    splitDirection = true;
-                                    addTriangle1 = true;
-                                    addTriangle2 = (Blocks[x, z].Type != BlockType.Wall);
-                                    y1 = ws1;
-                                    y2 = ws1;
-                                    y3 = ws1;
-                                    y4 = ws3;
-                                    y5 = ws2;
-                                    y6 = ws0;
-                                }
-
-                                if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SE)
-                                {
-                                    splitDirection = false;
-                                    addTriangle1 = (Blocks[x, z].Type != BlockType.Wall);
-                                    addTriangle2 = true;
-                                    y1 = ws0;
-                                    y2 = ws3;
-                                    y3 = ws1;
-                                    y4 = ws2;
-                                    y5 = ws2;
-                                    y6 = ws2;
-                                }
-
-                                if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SW)
-                                {
-                                    splitDirection = true;
-                                    addTriangle1 = (Blocks[x, z].Type != BlockType.Wall);
-                                    addTriangle2 = true;
-                                    y1 = ws1;
-                                    y2 = ws0;
-                                    y3 = ws2;
-                                    y4 = ws3;
-                                    y5 = ws3;
-                                    y6 = ws3;
-                                }
-                            }
-                            else
-                            {
-                                if (!splitDirection)
-                                {
-                                    addTriangle1 = true;
-                                    addTriangle2 = true;
-                                    y1 = ws0;
-                                    y2 = ws3;
-                                    y3 = ws1;
-                                    y4 = ws2;
-                                    y5 = ws1;
-                                    y6 = ws3;
-                                }
-                                else
-                                {
-                                    addTriangle1 = true;
-                                    addTriangle2 = true;
-                                    y1 = ws1;
-                                    y2 = ws0;
-                                    y3 = ws2;
-                                    y4 = ws3;
-                                    y5 = ws2;
-                                    y6 = ws0;
-                                }
-                            }
-
-                            if (!splitDirection)
-                            {
-                                if (addTriangle1)
-                                {
-                                    AddTriangle(x, z, BlockFace.Ceiling,
-                                        new Vector3((x + 1) * 1024.0f, y3 * 256.0f, (z + 1) * 1024.0f),
-                                        new Vector3(x * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
-                                        new Vector3(x * 1024.0f, y2 * 256.0f, z * 1024.0f),
-                                        face, new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f),  true);
-                                }
-
-                                if (addTriangle2)
-                                {
-                                    face = Blocks[x, z].GetFaceTexture(BlockFace.CeilingTriangle2);
-                                    AddTriangle(x, z, BlockFace.CeilingTriangle2,
-                                        new Vector3((x) * 1024.0f, y6 * 256.0f, z * 1024.0f),
-                                        new Vector3((x + 1) * 1024.0f, y4 * 256.0f, (z) * 1024.0f),
-                                        new Vector3((x + 1) * 1024.0f, y5 * 256.0f, (z + 1) * 1024.0f),
-                                        face, new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f), new Vector2(1.0f, 0.0f),  true);
-                                }
-                            }
-                            else
-                            {
-                                if (addTriangle1)
-                                {
-                                    AddTriangle(x, z, BlockFace.Ceiling,
-                                        new Vector3((x + 1) * 1024.0f, y3 * 256.0f, (z) * 1024.0f),
-                                        new Vector3((x + 1) * 1024.0f, y1 * 256.0f, (z + 1) * 1024.0f),
-                                        new Vector3((x) * 1024.0f, y2 * 256.0f, (z + 1) * 1024.0f),
-                                        face, new Vector2(1.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f),  false);
-                                }
-
-                                if (addTriangle2)
-                                {
-                                    face = Blocks[x, z].GetFaceTexture(BlockFace.CeilingTriangle2);
-                                    AddTriangle(x, z, BlockFace.CeilingTriangle2,
-                                        new Vector3((x) * 1024.0f, y6 * 256.0f, (z + 1) * 1024.0f),
-                                        new Vector3(x * 1024.0f, y4 * 256.0f, (z) * 1024.0f),
-                                        new Vector3((x + 1) * 1024.0f, y5 * 256.0f, z * 1024.0f),
-                                        face, new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f),  false);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!((Blocks[x, z].CeilingPortal == null && Blocks[x, z].Type == BlockType.Floor) ||
-                            (Blocks[x, z].CeilingPortal != null && (Blocks[x, z].CeilingOpacity != PortalOpacity.None || IsCeilingSolid(new DrawingPoint(x, z))))))
-                            continue;
-
-                        if (!Blocks[x, z].CeilingSplitDirectionIsXEqualsY)
-                        {
-                            AddTriangle(x, z, BlockFace.Ceiling,
-                                new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3(x * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3(x * 1024.0f, ws3 * 256.0f, z * 1024.0f), 
-                                face, new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f),  true);
-
-                            face = Blocks[x, z].GetFaceTexture(BlockFace.CeilingTriangle2);
-                            AddTriangle(x, z, BlockFace.CeilingTriangle2,
-                                new Vector3((x) * 1024.0f, ws3 * 256.0f, z * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
-                                face, new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f), new Vector2(1.0f, 0.0f),  true);
-                        }
-                        else
-                        {
-                            AddTriangle(x, z, BlockFace.Ceiling,
-                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, ws1 * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
-                                face, new Vector2(1.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f),  false);
-
-                            face = Blocks[x, z].GetFaceTexture(BlockFace.CeilingTriangle2);
-                            AddTriangle(x, z, BlockFace.CeilingTriangle2,
-                                new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
-                                new Vector3(x * 1024.0f, ws3 * 256.0f, (z) * 1024.0f),
-                                new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, z * 1024.0f),
-                                face, new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f),  false);
-                        }
+                        var tempVertex = sectorVertices[i + 2];
+                        sectorVertices[i + 2] = sectorVertices[i];
+                        sectorVertices[i] = tempVertex;
                     }
                 }
             }
@@ -926,6 +524,168 @@ namespace TombEditor.Geometry
                     _sectorAllVerticesOffset[x, z] = _allVertices.Count;
                     _allVertices.AddRange(_sectorVertices[x, z]);
                 }
+        }
+
+        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY, BlockFace face1, BlockFace face2, RoomConnectionType portalMode)
+        {
+            BlockType blockType = Blocks[x, z].Type;
+
+            // Exit function if the sector is a complete wall or portal
+            if (portalMode == RoomConnectionType.FullPortal)
+                return;
+
+            switch (blockType)
+            {
+                case BlockType.BorderWall:
+                    return;
+                case BlockType.Wall:
+                    if (splitType == DiagonalSplit.None)
+                        return;
+                    break;
+            }
+
+            // Process relevant sectors for portals
+            switch (portalMode)
+            {
+                case RoomConnectionType.FullPortal:
+                    return;
+                case RoomConnectionType.TriangularPortalXnZp:
+                case RoomConnectionType.TriangularPortalXpZn:
+                    if (Block.IsQuad(h0, h1, h2, h3))
+                        diagonalSplitXEqualsY = true;
+                    break;
+                case RoomConnectionType.TriangularPortalXpZp:
+                case RoomConnectionType.TriangularPortalXnZn:
+                    if (Block.IsQuad(h0, h1, h2, h3))
+                        diagonalSplitXEqualsY = false;
+                    break;
+            }
+            
+            //
+            // 1----2    Split 0: 231 413  
+            // | \  |    Split 1: 124 342
+            // |  \ |
+            // 4----3
+            //
+
+            //
+            // 1----2    Split 0: 231 413  
+            // |  / |    Split 1: 124 342
+            // | /  |
+            // 4----3
+            //
+
+            // Build sector
+            if (splitType != DiagonalSplit.None)
+            {
+                switch (splitType)
+                {
+                    case DiagonalSplit.XpZn:
+                        if (portalMode != RoomConnectionType.TriangularPortalXnZp)
+                            AddTriangle(x, z, face1,
+                                new Vector3(x * 1024.0f, h0 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+
+                        if (portalMode != RoomConnectionType.TriangularPortalXpZn && blockType != BlockType.Wall)
+                            AddTriangle(x, z, face2,
+                                new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
+                        break;
+                    case DiagonalSplit.XnZn:
+                        if (portalMode != RoomConnectionType.TriangularPortalXpZp)
+                            AddTriangle(x, z, face1,
+                                new Vector3(x * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h1 * 256.0f, z * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), false);
+
+                        if (portalMode != RoomConnectionType.TriangularPortalXnZn && blockType != BlockType.Wall)
+                            AddTriangle(x, z, face2,
+                                new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), false);
+                        break;
+                    case DiagonalSplit.XnZp:
+                        if (portalMode != RoomConnectionType.TriangularPortalXpZn)
+                            AddTriangle(x, z, face2,
+                                new Vector3((x + 1) * 1024.0f, h2 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
+
+                        if (portalMode != RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
+                            AddTriangle(x, z, face1,
+                                new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+
+                        break;
+                    case DiagonalSplit.XpZp:
+                        if (portalMode != RoomConnectionType.TriangularPortalXnZn)
+                            AddTriangle(x, z, face2,
+                                new Vector3((x + 1) * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                                new Vector3(x * 1024.0f, h3 * 256.0f, (z + 1) * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), false);
+
+                        if (portalMode != RoomConnectionType.TriangularPortalXpZp && blockType != BlockType.Wall)
+                            AddTriangle(x, z, face1,
+                                new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                                Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), false);
+                        break;
+                    default:
+                        throw new NotSupportedException("Unknown FloorDiagonalSplit");
+                }
+            }
+            else if (Block.IsQuad(h0, h1, h2, h3) && (portalMode == RoomConnectionType.NoPortal))
+            {
+                AddRectangle(x, z, face1,
+                    new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                    new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                    new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                    new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                    Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+            }
+            else if (diagonalSplitXEqualsY || (portalMode == RoomConnectionType.TriangularPortalXnZp) || (portalMode == RoomConnectionType.TriangularPortalXpZn))
+            {
+                if (portalMode != RoomConnectionType.TriangularPortalXnZp)
+                    AddTriangle(x, z, face1,
+                        new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                        new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                        new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                        Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+
+                if (portalMode != RoomConnectionType.TriangularPortalXpZn)
+                    AddTriangle(x, z, face2,
+                        new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                        new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                        new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                        Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
+            }
+            else
+            {
+                if (portalMode != RoomConnectionType.TriangularPortalXpZp)
+                    AddTriangle(x, z, face1,
+                        new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                        new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                        new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                        Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), false);
+
+                if (portalMode != RoomConnectionType.TriangularPortalXnZn)
+                    AddTriangle(x, z, face2,
+                        new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
+                        new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
+                        new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
+                        Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), false);
+            }
         }
 
         public void UpdateCompletely()
@@ -1023,49 +783,49 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         qA = Blocks[x, z].QAFaces[0];
                         qB = Blocks[x, z].QAFaces[0];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         qA = Blocks[x, z].QAFaces[1];
                         qB = Blocks[x, z].QAFaces[1];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.SE)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         fA = otherBlock.QAFaces[2];
                         fB = otherBlock.QAFaces[2];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.SW)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         fA = otherBlock.QAFaces[3];
                         fB = otherBlock.QAFaces[3];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NW)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         wA = Blocks[x, z].WSFaces[0];
                         wB = Blocks[x, z].WSFaces[0];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NE)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         wA = Blocks[x, z].WSFaces[1];
                         wB = Blocks[x, z].WSFaces[1];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.SE)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         cA = otherBlock.WSFaces[2];
                         cB = otherBlock.WSFaces[2];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.SW)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         cA = otherBlock.WSFaces[3];
                         cB = otherBlock.WSFaces[3];
@@ -1143,49 +903,49 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         qA = Blocks[x, z].QAFaces[3];
                         qB = Blocks[x, z].QAFaces[3];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         qA = Blocks[x, z].QAFaces[2];
                         qB = Blocks[x, z].QAFaces[2];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.NW)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         fA = otherBlock.QAFaces[0];
                         fB = otherBlock.QAFaces[0];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.NE)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         fA = otherBlock.QAFaces[1];
                         fB = otherBlock.QAFaces[1];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SW)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         wA = Blocks[x, z].WSFaces[3];
                         wB = Blocks[x, z].WSFaces[3];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SE)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         wA = Blocks[x, z].WSFaces[2];
                         wB = Blocks[x, z].WSFaces[2];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.NW)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         cA = otherBlock.WSFaces[0];
                         cB = otherBlock.WSFaces[0];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.NE)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         cA = otherBlock.WSFaces[1];
                         cB = otherBlock.WSFaces[1];
@@ -1263,49 +1023,49 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NE)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         qA = Blocks[x, z].QAFaces[1];
                         qB = Blocks[x, z].QAFaces[1];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SE)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         qA = Blocks[x, z].QAFaces[2];
                         qB = Blocks[x, z].QAFaces[2];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.NW)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         fA = otherBlock.QAFaces[0];
                         fB = otherBlock.QAFaces[0];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.SW)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         fA = otherBlock.QAFaces[3];
                         fB = otherBlock.QAFaces[3];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NE)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         wA = Blocks[x, z].WSFaces[1];
                         wB = Blocks[x, z].WSFaces[1];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SE)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         wA = Blocks[x, z].WSFaces[2];
                         wB = Blocks[x, z].WSFaces[2];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.NW)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         cA = otherBlock.WSFaces[0];
                         cB = otherBlock.WSFaces[0];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.SW)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         cA = otherBlock.WSFaces[3];
                         cB = otherBlock.WSFaces[3];
@@ -1316,7 +1076,7 @@ namespace TombEditor.Geometry
                 case FaceDirection.DiagonalFloor:
                     switch (Blocks[x, z].FloorDiagonalSplit)
                     {
-                        case DiagonalSplit.NW:
+                        case DiagonalSplit.XpZn:
                             xA = x + 1;
                             xB = x;
                             zA = z + 1;
@@ -1339,7 +1099,7 @@ namespace TombEditor.Geometry
                             rfFace = BlockFace.DiagonalRF;
                             wsFace = BlockFace.DiagonalWS;
                             break;
-                        case DiagonalSplit.NE:
+                        case DiagonalSplit.XnZn:
                             xA = x + 1;
                             xB = x;
                             zA = z;
@@ -1362,7 +1122,7 @@ namespace TombEditor.Geometry
                             rfFace = BlockFace.DiagonalRF;
                             wsFace = BlockFace.DiagonalWS;
                             break;
-                        case DiagonalSplit.SE:
+                        case DiagonalSplit.XnZp:
                             xA = x;
                             xB = x + 1;
                             zA = z;
@@ -1415,7 +1175,7 @@ namespace TombEditor.Geometry
                 case FaceDirection.DiagonalCeiling:
                     switch (Blocks[x, z].CeilingDiagonalSplit)
                     {
-                        case DiagonalSplit.NW:
+                        case DiagonalSplit.XpZn:
                             xA = x + 1;
                             xB = x;
                             zA = z + 1;
@@ -1438,7 +1198,7 @@ namespace TombEditor.Geometry
                             rfFace = BlockFace.DiagonalRF;
                             wsFace = BlockFace.DiagonalWS;
                             break;
-                        case DiagonalSplit.NE:
+                        case DiagonalSplit.XnZn:
                             xA = x + 1;
                             xB = x;
                             zA = z;
@@ -1461,7 +1221,7 @@ namespace TombEditor.Geometry
                             rfFace = BlockFace.DiagonalRF;
                             wsFace = BlockFace.DiagonalWS;
                             break;
-                        case DiagonalSplit.SE:
+                        case DiagonalSplit.XnZp:
                             xA = x;
                             xB = x + 1;
                             zA = z;
@@ -1582,49 +1342,49 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.NW)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         qA = Blocks[x, z].QAFaces[0];
                         qB = Blocks[x, z].QAFaces[0];
                     }
 
-                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.SW)
+                    if (Blocks[x, z].FloorDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         qA = Blocks[x, z].QAFaces[3];
                         qB = Blocks[x, z].QAFaces[3];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.NE)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         fA = otherBlock.QAFaces[1];
                         fB = otherBlock.QAFaces[1];
                     }
 
-                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.SE)
+                    if (otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         fA = otherBlock.QAFaces[2];
                         fB = otherBlock.QAFaces[2];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.NW)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZn)
                     {
                         wA = Blocks[x, z].WSFaces[0];
                         wB = Blocks[x, z].WSFaces[0];
                     }
 
-                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.SW)
+                    if (Blocks[x, z].CeilingDiagonalSplit == DiagonalSplit.XpZp)
                     {
                         wA = Blocks[x, z].WSFaces[3];
                         wB = Blocks[x, z].WSFaces[3];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.NE)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                     {
                         cA = otherBlock.WSFaces[1];
                         cB = otherBlock.WSFaces[1];
                     }
 
-                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.SE)
+                    if (otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp)
                     {
                         cA = otherBlock.WSFaces[2];
                         cB = otherBlock.WSFaces[2];
@@ -2653,40 +2413,86 @@ namespace TombEditor.Geometry
             return oppositePortal;
         }
 
-        public bool IsFloorSolid(DrawingPoint pos)
+        public enum RoomConnectionType
+        {
+            NoPortal,
+            TriangularPortalXnZn,
+            TriangularPortalXpZn,
+            TriangularPortalXnZp,
+            TriangularPortalXpZp,
+            FullPortal
+        };
+
+        public struct RoomConnectionInfo
+        {
+            public Portal Portal { get; }
+            public RoomConnectionType AnyType { get; }
+
+            public RoomConnectionInfo(Portal portal, RoomConnectionType anyType)
+            {
+                Portal = portal;
+                AnyType = anyType;
+            }
+
+            ///<summary>Gives how the block visually appears regarding portals</summary>
+            public RoomConnectionType VisualType => (Portal?.HasTexturedFaces ?? true) ? RoomConnectionType.NoPortal : AnyType;
+            ///<summary>Gives how the block geometrically behaves regarding portals</summary>
+            public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
+        };
+
+
+        private RoomConnectionType CalculateRoomConnectionType(Room adjoiningRoom, short[] thisHeights, short[] adjoiningHeights)
+        {
+            bool matchesAtXnYn = (Position.Y + thisHeights[Block.FaceXnZn]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXnZn]);
+            bool matchesAtXpYn = (Position.Y + thisHeights[Block.FaceXpZn]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXpZn]);
+            bool matchesAtXnYp = (Position.Y + thisHeights[Block.FaceXnZp]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXnZp]);
+            bool matchesAtXpYp = (Position.Y + thisHeights[Block.FaceXpZp]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXpZp]);
+            if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp)
+                return RoomConnectionType.FullPortal;
+            else if (!matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp)
+                return RoomConnectionType.TriangularPortalXpZp;
+            else if (matchesAtXnYn && !matchesAtXpYn && matchesAtXnYp && matchesAtXpYp)
+                return RoomConnectionType.TriangularPortalXnZp;
+            else if (matchesAtXnYn && matchesAtXpYn && !matchesAtXnYp && matchesAtXpYp)
+                return RoomConnectionType.TriangularPortalXpZn;
+            else if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && !matchesAtXpYp)
+                return RoomConnectionType.TriangularPortalXnZn;
+            else
+                return RoomConnectionType.NoPortal;
+        }
+
+        public RoomConnectionInfo GetFloorRoomConnection(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
             if ((block.FloorPortal == null) || block.IsAnyWall || block.ForceFloorSolid)
-                return true;
+                return new RoomConnectionInfo();
 
             Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
             Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
-            if (adjoiningBlock.IsAnyWall)
-                return true;
+            if ((adjoiningBlock.CeilingPortal == null) || adjoiningBlock.IsAnyWall)
+                return new RoomConnectionInfo();
 
-            int identicalEdgeCount = 0;
-            for (int i = 0; i < 4; ++i)
-                if ((Position.Y + block.QAFaces[i]) == (adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[i]))
-                    ++identicalEdgeCount;
-            return identicalEdgeCount < 4;
+            if (block.FloorDiagonalSplit != adjoiningBlock.CeilingDiagonalSplit)
+                return new RoomConnectionInfo();
+
+            return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, block.QAFaces, adjoiningBlock.WSFaces));
         }
 
-        public bool IsCeilingSolid(DrawingPoint pos)
+        public RoomConnectionInfo GetCeilingRoomConnection(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
             if ((block.CeilingPortal == null) || block.IsAnyWall)
-                return true;
+                return new RoomConnectionInfo();
 
             Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
             Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
-            if (adjoiningBlock.IsAnyWall || adjoiningBlock.ForceFloorSolid)
-                return true;
+            if ((adjoiningBlock.FloorPortal == null) || adjoiningBlock.IsAnyWall || adjoiningBlock.ForceFloorSolid)
+                return new RoomConnectionInfo();
 
-            int identicalEdgeCount = 0;
-            for (int i = 0; i < 4; ++i)
-                if ((Position.Y + block.WSFaces[i]) == (adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[i]))
-                    ++identicalEdgeCount;
-            return identicalEdgeCount < 4;
+            if (block.CeilingDiagonalSplit != adjoiningBlock.FloorDiagonalSplit)
+                return new RoomConnectionInfo();
+
+            return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(adjoiningRoom, block.WSFaces, adjoiningBlock.QAFaces));
         }
 
         public void SmartBuildGeometry(Rectangle area)

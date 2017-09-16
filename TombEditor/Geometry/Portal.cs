@@ -10,22 +10,26 @@ namespace TombEditor.Geometry
 
     public enum PortalOpacity : byte
     {
-        None, Opacity1, Opacity2
+        None,
+        SolidFaces, // Called 'Opacity 1' in the old editor
+        TraversableFaces // Called 'Opacity 2' in the old editor
     }
 
     public class Portal : SectorBasedObjectInstance
     {
         public PortalDirection Direction { get; }
         public Room AdjoiningRoom { get; internal set; }
-
-        // Helper data for loading Prj2
-        public ushort AdjoiningRoomIndex { get; set; }
+        public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
         
+        public bool HasTexturedFaces => Opacity != PortalOpacity.None;
+
+        public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
+
         public Portal(Rectangle area, PortalDirection direction, Room adjoiningRoom)
             : base(area)
         {
-            /*if (adjoiningRoom == null)
-                throw new NullReferenceException("'adjoiningRoom' must not be null");*/
+            if (adjoiningRoom == null)
+                throw new NullReferenceException("'adjoiningRoom' must not be null");
             Direction = direction;
             AdjoiningRoom = adjoiningRoom;
         }
@@ -117,65 +121,40 @@ namespace TombEditor.Geometry
         {
             base.AddToRoom(level, room);
 
-            AddPortalToRoom(level, room, false);
-        }
-
-        public void AddPortalToRoom(Level level, Room room, bool loading)
-        {
-            base.AddToRoom(level, room);
-
             // Set sector information to this portal ...
             switch (Direction)
             {
                 case PortalDirection.Floor:
-                    if (!loading)
-                    {
-                        for (int x = Area.X; x <= Area.Right; ++x)
-                            for (int z = Area.Y; z <= Area.Bottom; ++z)
-                                if (room.Blocks[x, z].FloorPortal != null)
-                                    throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
-                    }
+                    for (int x = Area.X; x <= Area.Right; ++x)
+                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                            if (room.Blocks[x, z].FloorPortal != null)
+                                throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
 
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        {
                             room.Blocks[x, z].FloorPortal = this;
-                            room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
-                        }
                     break;
 
                 case PortalDirection.Ceiling:
-                    if (!loading)
-                    {
-                        for (int x = Area.X; x <= Area.Right; ++x)
-                            for (int z = Area.Y; z <= Area.Bottom; ++z)
-                                if (room.Blocks[x, z].CeilingPortal != null)
-                                    throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
-                    }
+                    for (int x = Area.X; x <= Area.Right; ++x)
+                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                            if (room.Blocks[x, z].CeilingPortal != null)
+                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
 
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        {
                             room.Blocks[x, z].CeilingPortal = this;
-                            room.Blocks[x, z].CeilingOpacity = PortalOpacity.None;
-                        }
                     break;
 
                 default:
-                    if (!loading)
-                    {
-                        for (int x = Area.X; x <= Area.Right; ++x)
-                            for (int z = Area.Y; z <= Area.Bottom; ++z)
-                                if (room.Blocks[x, z].WallPortal != null)
-                                    throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
-                    }
+                    for (int x = Area.X; x <= Area.Right; ++x)
+                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                            if (room.Blocks[x, z].WallPortal != null)
+                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
 
                     for (int x = Area.X; x <= Area.Right; ++x)
                         for (int z = Area.Y; z <= Area.Bottom; ++z)
-                        {
                             room.Blocks[x, z].WallPortal = this;
-                            room.Blocks[x, z].WallOpacity = PortalOpacity.None;
-                        }
                     break;
             }
         }
@@ -186,25 +165,7 @@ namespace TombEditor.Geometry
 
             if ((room.Flipped) || (AdjoiningRoom?.Flipped ?? false))
                 throw new NotImplementedException("Removing portals from rooms that are flipped is not supported just yet. :(");
-
-            for (int x = Area.X; x <= Area.Right; x++)
-                for (int z = Area.Y; z <= Area.Bottom; z++)
-                    if (Direction == PortalDirection.Floor)
-                    {
-                        room.Blocks[x, z].FloorPortal = null;
-                        room.Blocks[x, z].FloorOpacity = PortalOpacity.None;
-                    }
-                    else if (Direction == PortalDirection.Ceiling)
-                    {
-                        room.Blocks[x, z].CeilingPortal = null;
-                        room.Blocks[x, z].CeilingOpacity = PortalOpacity.None;
-                    }
-                    else if (Direction == PortalDirection.North || Direction == PortalDirection.South ||
-                        Direction == PortalDirection.West || Direction == PortalDirection.East)
-                    {
-                        room.Blocks[x, z].WallPortal = null;
-                        room.Blocks[x, z].WallOpacity = PortalOpacity.None;
-                    }
+            
             room.UpdateCompletely();
 
             // Delete the corresponding opposite portal.

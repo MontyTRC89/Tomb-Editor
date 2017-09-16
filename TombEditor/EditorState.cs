@@ -12,7 +12,7 @@ namespace TombEditor
 
     public enum EditorActionType
     {
-        None, PlaceItem, PlaceLight, PlaceCamera, PlaceFlyByCamera, PlaceSoundSource, PlaceSink, PlaceNoCollision, Paste, Stamp
+        None, PlaceItem, PlaceLight, PlaceCamera, PlaceFlyByCamera, PlaceSoundSource, PlaceSink, Paste, Stamp
     }
 
     public struct EditorAction

@@ -31,7 +31,6 @@ namespace TombEditor.Controls
         private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Editor.ColorFloor.MixWith(Color.Black, 0.1));
         private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 4);
         private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 4);
-        private static readonly Brush _noCollisionBrush = new SolidBrush(Editor.ColorNoCollision);
         private static readonly Brush _triggerBrush = new SolidBrush(Editor.ColorTrigger);
         private static readonly Brush _climbBrush = new SolidBrush(Editor.ColorClimb);
         private static readonly float _climbWidth = 4;
@@ -227,8 +226,6 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_monkeyBrush, rectangle);
                         else if (block.Flags.HasFlag(BlockFlags.DeathFire) || block.Flags.HasFlag(BlockFlags.DeathElectricity) || block.Flags.HasFlag(BlockFlags.DeathLava))
                             e.Graphics.FillRectangle(_deathBrush, rectangle);
-                        else if (block.NoCollisionFloor || block.NoCollisionCeiling)
-                            e.Graphics.FillRectangle(_noCollisionBrush, rectangle);
                         else
                             e.Graphics.FillRectangle(_floorBrush, rectangle);
 

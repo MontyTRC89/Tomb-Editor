@@ -36,10 +36,10 @@ namespace TombEditor.Geometry
     public enum DiagonalSplit : byte
     {
         None = 0,
-        NW = 1,
-        NE = 2,
-        SE = 3,
-        SW = 4
+        XnZp = 1,
+        XpZp = 2,
+        XpZn = 3,
+        XnZn = 4
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -91,18 +91,7 @@ namespace TombEditor.Geometry
         public Portal FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public Portal WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public Portal CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
-
-        public PortalOpacity FloorOpacity { get; set; }
-        public PortalOpacity CeilingOpacity { get; set; }
-        public PortalOpacity WallOpacity { get; set; }
-        public bool NoCollisionFloor { get; set; }
-        public bool NoCollisionCeiling { get; set; }
-
-        // Helper data for Prj2 loading
-        internal PortalOpacity TempFloorOpacity { get; set; }
-        internal PortalOpacity TempCeilingOpacity { get; set; }
-        internal PortalOpacity TempWallOpacity { get; set; }
-
+        
         public Block(int floor, int ceiling)
         {
             for (int i = 0; i < 4; i++)
@@ -252,10 +241,8 @@ namespace TombEditor.Geometry
                         if (min == h4 && max == h2)
                             return FloorSplitDirectionToggled;
 
-                        break;
+                        return FloorSplitDirectionToggled;
                 }
-
-                return FloorSplitDirectionToggled;
             }
             set
             {
@@ -274,35 +261,33 @@ namespace TombEditor.Geometry
                 switch (horizontalTriangle)
                 {
                     case 0:
-                        return CeilingSplitDirectionToggled;
+                        return !CeilingSplitDirectionToggled;
                     case 1:
-                        return !CeilingSplitDirectionToggled;
-                    case 2:
                         return CeilingSplitDirectionToggled;
-                    case 3:
+                    case 2:
                         return !CeilingSplitDirectionToggled;
+                    case 3:
+                        return CeilingSplitDirectionToggled;
                     default:
                         int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
 
                         if (max == h1 && max == h3)
-                            return CeilingSplitDirectionToggled;
-                        if (max == h2 && max == h4)
                             return !CeilingSplitDirectionToggled;
+                        if (max == h2 && max == h4)
+                            return CeilingSplitDirectionToggled;
 
                         if (min == h1 && max == h3)
-                            return CeilingSplitDirectionToggled;
+                            return !CeilingSplitDirectionToggled;
                         if (min == h2 && max == h4)
-                            return !CeilingSplitDirectionToggled;
-                        if (min == h3 && max == h1)
                             return CeilingSplitDirectionToggled;
-                        if (min == h4 && max == h2)
+                        if (min == h3 && max == h1)
                             return !CeilingSplitDirectionToggled;
+                        if (min == h4 && max == h2)
+                            return CeilingSplitDirectionToggled;
 
-                        break;
+                        return !CeilingSplitDirectionToggled;
                 }
-
-                return CeilingSplitDirectionToggled;
             }
             set
             {

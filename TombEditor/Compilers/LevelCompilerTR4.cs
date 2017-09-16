@@ -495,32 +495,27 @@ namespace TombEditor.Compilers
             return true;
         }
 
+        private void FindBottomFloor(ref Room room, ref int x, ref int z)
+        {
+            while (room.GetFloorRoomConnection(new DrawingPoint(x, z)).TraversableType == Room.RoomConnectionType.FullPortal)
+            {
+                var sector = room.Blocks[x, z];
+                x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);
+                z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
+                room = sector.FloorPortal.AdjoiningRoom;
+            } 
+        }
+
         private short GetMostDownFloor(Room room, int x, int z)
         {
-            do
-            {
-                var sector = room.Blocks[x, z];
-                if (room.IsFloorSolid(new DrawingPoint(x, z)))
-                    return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * 256);
-
-                x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);
-                z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
-                room = sector.FloorPortal.AdjoiningRoom;
-            } while (true);
+            FindBottomFloor(ref room, ref x, ref z);
+            return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * 256);
         }
-        
+
         private bool FindMonkeyFloor(Room room, int x, int z)
         {
-            do
-            {
-                var sector = room.Blocks[x, z];
-                if (room.IsFloorSolid(new DrawingPoint(x, z)))
-                    return sector.Flags.HasFlag(BlockFlags.Monkey);
-
-                x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);
-                z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
-                room = sector.FloorPortal.AdjoiningRoom;
-            } while (true);
+            FindBottomFloor(ref room, ref x, ref z);
+            return room.Blocks[x, z].Flags.HasFlag(BlockFlags.Monkey);
         }
 
         private void PrepareItems()

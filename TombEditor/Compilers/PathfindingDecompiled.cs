@@ -286,7 +286,7 @@ namespace TombEditor.Compilers
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
-                block.FloorOpacity == PortalOpacity.Opacity1)
+                (block.FloorPortal == null ? false : block.FloorPortal.Opacity == PortalOpacity.SolidFaces))
             {
                 return false;
             }
@@ -659,8 +659,9 @@ namespace TombEditor.Compilers
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
 
-                    if (block.WallOpacity == PortalOpacity.Opacity1) return false;
-
+                    if (block.WallPortal == null ? false : block.WallPortal.Opacity == PortalOpacity.SolidFaces)
+                        return false;
+                    
                     if (!Dec_IsOutsideOrdBorderRoom(x, z)) break;
                 }
 
@@ -672,16 +673,13 @@ namespace TombEditor.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
-                while (!room.IsFloorSolid(new DrawingPoint(xInRoom, zInRoom)))
+                while (room.GetFloorRoomConnection(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-                    if (adjoiningRoom.AlternateRoom != null && dec_flipped) adjoiningRoom = adjoiningRoom.AlternateRoom;
-
-                    if (block.FloorOpacity == PortalOpacity.Opacity1 &&
-                        !(room.FlagWater ^ adjoiningRoom.FlagWater))
-                    {
+                    if (adjoiningRoom.AlternateRoom != null && dec_flipped)
+                        adjoiningRoom = adjoiningRoom.AlternateRoom;
+                    if (room.FlagWater == adjoiningRoom.FlagWater)
                         break;
-                    }
 
                     dec_currentRoom = adjoiningRoom;
 
@@ -732,7 +730,7 @@ namespace TombEditor.Compilers
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
-                block.WallOpacity == PortalOpacity.Opacity1 || 
+                (block.WallPortal == null ? false : block.WallPortal.Opacity == PortalOpacity.SolidFaces) || 
                 (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = -1;
@@ -744,7 +742,7 @@ namespace TombEditor.Compilers
             }
 
             // If it's not a wall portal or is vertical toggle opacity 1
-            if ((block.WallPortal == null || block.WallOpacity == PortalOpacity.Opacity1))
+            if ((block.WallPortal == null || block.WallPortal.Opacity == PortalOpacity.SolidFaces))
             {
 
             }
@@ -769,18 +767,13 @@ namespace TombEditor.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (!room.IsFloorSolid(new DrawingPoint(xInRoom, zInRoom)))
+            while (room.GetFloorRoomConnection(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
-                if (adjoiningRoom2.AlternateRoom != null && dec_flipped) adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
-
-                if (block.FloorOpacity == PortalOpacity.Opacity1)
-                {
-                    if (!(room.FlagWater ^ adjoiningRoom2.FlagWater))
-                    {
-                        break;
-                    }
-                }
+                if (adjoiningRoom2.AlternateRoom != null && dec_flipped)
+                    adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
+                if (room.FlagWater == adjoiningRoom2.FlagWater)
+                    break;
 
                 dec_currentRoom = adjoiningRoom2;
                 room = dec_currentRoom;

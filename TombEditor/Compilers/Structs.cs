@@ -567,7 +567,6 @@ namespace TombEditor.Compilers
         public bool Box;
         public bool BorderWall;
         public bool Portal;
-        public bool IsFloorSolid;
         public bool NotWalkableFloor;
         public Room WallPortal;
         public Portal FloorPortal;

@@ -263,7 +263,6 @@ namespace TombEditor.Controls
                     case EditorActionType.PlaceFlyByCamera:
                     case EditorActionType.PlaceItem:
                     case EditorActionType.PlaceLight:
-                    case EditorActionType.PlaceNoCollision:
                     case EditorActionType.PlaceSink:
                     case EditorActionType.PlaceSoundSource:
                     case EditorActionType.Stamp:
@@ -602,10 +601,6 @@ namespace TombEditor.Controls
                             EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, new FlybyCameraInstance());
                             _editor.Action = EditorAction.None;
                         }
-                        break;
-                    case EditorActionType.PlaceNoCollision:
-                        if (newPicking is PickingResultBlock)
-                            EditorActions.PlaceNoCollision(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, ((PickingResultBlock)newPicking).Face);
                         break;
                     case EditorActionType.Paste:
                         if (newPicking is PickingResultBlock)
@@ -2431,9 +2426,7 @@ namespace TombEditor.Controls
                 int xMax = Math.Max(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
                 int zMin = Math.Min(_editor.SelectedSectors.Start.Y, _editor.SelectedSectors.End.Y);
                 int zMax = Math.Max(_editor.SelectedSectors.Start.Y, _editor.SelectedSectors.End.Y);
-
-                bool noCollision = false;
-
+                
                 if (face < (BlockFace)10)
                 {
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 80.0f / 255.0f, 0.0f, 1.0f));
@@ -2464,20 +2457,8 @@ namespace TombEditor.Controls
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNotWalkable));
                     if ((room.Blocks[x, z].Flags & BlockFlags.ClimbAny) != BlockFlags.None)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorClimb));
-                    if ((room.Blocks[x, z].NoCollisionFloor &&
-                         (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)))
-                    {
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNoCollision));
-                        noCollision = true;
-                    }
                     if (room.Blocks[x, z].Triggers.Count != 0)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorTrigger));
-                    if ((room.Blocks[x, z].NoCollisionCeiling &&
-                         (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)))
-                    {
-                        _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(Editor.ColorNoCollision));
-                        noCollision = true;
-                    }
                 }
 
                 // Portals
@@ -2487,13 +2468,13 @@ namespace TombEditor.Controls
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
-                if ((face == (BlockFace)25 || face == (BlockFace)26) && !noCollision)
+                if (face == (BlockFace)25 || face == (BlockFace)26)
                 {
                     if (room.Blocks[x, z].FloorPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
                 }
 
-                if ((face == (BlockFace)27 || face == (BlockFace)28) && !noCollision)
+                if (face == (BlockFace)27 || face == (BlockFace)28)
                 {
                     if (room.Blocks[x, z].CeilingPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
