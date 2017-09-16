@@ -10,12 +10,9 @@ namespace TombLib.Wad
     public partial class Wad2
     {
         private void CollectTexturesAndMeshesForCancellation(WadObject obj,
-                                                             out List<WadTexture> textures,
-                                                             out List<WadMesh> meshes)
+                                                             List<WadTexture> textures,
+                                                             List<WadMesh> meshes)
         {
-            textures = new List<WadTexture>();
-            meshes = new List<WadMesh>();
-
             var meshesToCheck = new List<WadMesh>();
             var texturesToCheck = new List<WadTexture>();
 
@@ -38,7 +35,7 @@ namespace TombLib.Wad
             // Now check if some of selected meshes are used elsewhere
             foreach (var mesh in meshesToCheck)
             {
-                bool found = false;
+                bool foundInMoveables = false;
 
                 for (int i = 0; i < Moveables.Count; i++)
                 {
@@ -49,31 +46,32 @@ namespace TombLib.Wad
                     {
                         if (moveableMesh == mesh)
                         {
-                            found = true;
+                            foundInMoveables = true;
                             break;
                         }
                     }
 
-                    if (found) break;
+                    if (foundInMoveables) break;
                 }
 
-                if (!found) meshes.Add(mesh);
+                bool foundInStatics = false;
 
-                found = false;
-
-                for (int i = 0; i < Statics.Count; i++)
+                if (!foundInMoveables)
                 {
-                    var staticMesh = Statics.ElementAt(i).Value;
-                    if (obj.GetType() == typeof(WadStatic) && staticMesh.ObjectID == obj.ObjectID) continue;
-
-                    if (staticMesh.Mesh == mesh)
+                    for (int i = 0; i < Statics.Count; i++)
                     {
-                        found = true;
-                        break;
+                        var staticMesh = Statics.ElementAt(i).Value;
+                        if (obj.GetType() == typeof(WadStatic) && staticMesh.ObjectID == obj.ObjectID) continue;
+
+                        if (staticMesh.Mesh == mesh)
+                        {
+                            foundInStatics = true;
+                            break;
+                        }
                     }
                 }
 
-                if (!found) meshes.Add(mesh);
+                if (!foundInMoveables && !foundInStatics) meshes.Add(mesh);
             }
 
             // At this point, I have only the meshes to remove and from them I collect all textures
@@ -88,7 +86,7 @@ namespace TombLib.Wad
             // Like for meshes, search inside other objects
             foreach (var texture in texturesToCheck)
             {
-                bool found = false;
+                bool foundInMoveables = false;
 
                 for (int i = 0; i < Moveables.Count; i++)
                 {
@@ -101,20 +99,18 @@ namespace TombLib.Wad
                         {
                             if (poly.Texture == texture)
                             {
-                                found = true;
+                                foundInMoveables = true;
                                 break;
                             }
                         }
 
-                        if (found) break;
+                        if (foundInMoveables) break;
                     }
 
-                    if (found) break;
+                    if (foundInMoveables) break;
                 }
 
-                if (!found) textures.Add(texture);
-
-                found = false;
+                bool foundInStatics = false;
 
                 for (int i = 0; i < Statics.Count; i++)
                 {
@@ -125,26 +121,106 @@ namespace TombLib.Wad
                     {
                         if (poly.Texture == texture)
                         {
-                            found = true;
+                            foundInStatics = true;
                             break;
                         }
                     }
 
-                    if (found) break;
+                    if (foundInStatics) break;
                 }
 
-                if (!found) textures.Add(texture);
+                if (!foundInMoveables && !foundInStatics) textures.Add(texture);
             }
         }
 
-        public void DeleteMoveable(WadMoveable moveable)
+        public void DeleteObject(WadObject obj)
         {
-            throw new NotImplementedException();
+            // Collect resources to remove
+            var textures = new List<WadTexture>();
+            var meshes = new List<WadMesh>();
+
+            CollectTexturesAndMeshesForCancellation(obj, textures, meshes);
+
+            // Delete shared resource not needed anymore
+            foreach (var texture in textures)
+                Textures.Remove(texture.Hash);
+
+            foreach (var mesh in meshes)
+                Meshes.Remove(mesh.Hash);
+
+            // Delete object
+            if (obj.GetType() == typeof(WadMoveable))
+                Moveables.Remove(obj.ObjectID);
+            else
+                Statics.Remove(obj.ObjectID);
         }
 
-        public void AddMoveable(Wad2 sourceWad, WadMoveable moveable)
+        public void AddObject(WadObject obj, uint destination)
         {
-            throw new NotImplementedException();
+            bool isMoveable = (obj.GetType() == typeof(WadMoveable));
+
+            // Check if the destination slot is alredy used
+            // If the destination slot is used, then delete object
+            if (isMoveable)
+            {
+                if (Moveables.ContainsKey(destination))
+                    DeleteObject(Moveables[destination]);
+            }
+            else
+            {
+                if (Statics.ContainsKey(destination))
+                    DeleteObject(Statics[destination]);
+            }
+
+            // Collect all meshes and textures
+            var textures = new List<WadTexture>();
+            var meshes = new List<WadMesh>();
+
+            // Add meshes to the shared meshes array
+            if (isMoveable)
+            {
+                var moveable = (WadMoveable)obj;
+
+                // Add a clone of meshes
+                foreach (var mesh in moveable.Meshes)
+                    meshes.Add(mesh.Clone());
+            }
+            else
+            {
+                var staticMesh = (WadStatic)obj;
+                meshes.Add(staticMesh.Mesh.Clone());
+            }
+
+            // Now in the clone list check for textures and update them if present
+            foreach (var mesh in meshes)
+            {
+                foreach (var poly in mesh.Polys)
+                {
+                    if (Textures.ContainsKey(poly.Texture.Hash))
+                        poly.Texture = Textures[poly.Texture.Hash];
+                    else
+                        Textures.Add(poly.Texture.Hash, poly.Texture);
+                }
+            }
+
+            // Add the object to Wad2
+            if (isMoveable)
+            {
+                var moveable = (WadMoveable)obj;
+                moveable.Meshes.Clear();
+                moveable.Meshes.AddRange(meshes);
+
+                moveable.ObjectID = destination;
+                Moveables.Add(destination, moveable);
+            }
+            else
+            {
+                var staticMesh = (WadStatic)obj;
+                staticMesh.Mesh = meshes[0];
+
+                staticMesh.ObjectID = destination;
+                Statics.Add(destination, staticMesh);
+            }
         }
 
         public bool AddSprite(WadSpriteSequence sequence, ImageC image)
