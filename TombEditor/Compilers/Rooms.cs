@@ -266,10 +266,10 @@ namespace TombEditor.Compilers
                                 var xv = trVertex.Position.X / 1024;
                                 var zv = trVertex.Position.Z / 1024;
 
-                                if ((room.GetFloorRoomConnection(new DrawingPoint(xv, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv].IsAnyWall) &&
-                                    (room.GetFloorRoomConnection(new DrawingPoint(xv - 1, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv].IsAnyWall) &&
-                                    (room.GetFloorRoomConnection(new DrawingPoint(xv, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv - 1].IsAnyWall) &&
-                                    (room.GetFloorRoomConnection(new DrawingPoint(xv - 1, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv - 1].IsAnyWall))
+                                if ((room.GetFloorRoomConnectionInfo(new DrawingPoint(xv, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv].IsAnyWall) &&
+                                    (room.GetFloorRoomConnectionInfo(new DrawingPoint(xv - 1, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv].IsAnyWall) &&
+                                    (room.GetFloorRoomConnectionInfo(new DrawingPoint(xv, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv - 1].IsAnyWall) &&
+                                    (room.GetFloorRoomConnectionInfo(new DrawingPoint(xv - 1, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv - 1].IsAnyWall))
                                 {
                                     trVertex.Attributes = 0x6000;
                                 }
@@ -487,7 +487,7 @@ namespace TombEditor.Compilers
                     sector.FloorDataIndex = 0;
 
                     // Setup portals
-                    if (room.GetFloorRoomConnection(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    if (room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
                     {
                         sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
                         aux.Portal = true;
@@ -499,7 +499,7 @@ namespace TombEditor.Compilers
                         aux.FloorPortal = null;
                     }
 
-                    if (room.GetCeilingRoomConnection(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    if (room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
                         sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
                     else
                         sector.RoomAbove = 255;

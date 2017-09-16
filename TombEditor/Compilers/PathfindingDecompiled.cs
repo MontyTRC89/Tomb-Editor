@@ -673,7 +673,7 @@ namespace TombEditor.Compilers
                 block = room.Blocks[xInRoom, zInRoom];
 
                 // After having probed that we can reach X, Z from the original room, do the following
-                while (room.GetFloorRoomConnection(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
+                while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped)
@@ -767,7 +767,7 @@ namespace TombEditor.Compilers
 
             Room oldRoom = adjoiningRoom;
 
-            while (room.GetFloorRoomConnection(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
+            while (room.GetFloorRoomConnectionInfo(new DrawingPoint(xInRoom, zInRoom)).TraversableType == Room.RoomConnectionType.FullPortal)
             {
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped)

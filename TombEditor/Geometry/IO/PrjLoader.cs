@@ -871,7 +871,7 @@ namespace TombEditor.Geometry.IO
                         for (int z = 0; z < room.NumZSectors; ++z)
                             for (int x = 0; x < room.NumXSectors; ++x)
                             {
-                                Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnection(new DrawingPoint(x, z));
+                                Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
                                 switch (connectionInfo.AnyType)
                                 {
                                     case Room.RoomConnectionType.TriangularPortalXnZn:

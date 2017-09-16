@@ -38,8 +38,8 @@ namespace TombEditor.Compilers
                     {
                         var sector = GetSector(tempRoom, x, z);
                         var block = room.Blocks[x, z];
-                        Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnection(new DrawingPoint(x, z));
-                        Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnection(new DrawingPoint(x, z));
+                        Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
+                        Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
 
                         var baseFloorData = (ushort)tempFloorData.Count;
 
