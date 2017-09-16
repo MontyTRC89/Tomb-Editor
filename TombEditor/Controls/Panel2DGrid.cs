@@ -9,7 +9,7 @@ using NLog;
 using TombLib.Graphics;
 using TombEditor.Geometry;
 using Rectangle = System.Drawing.Rectangle;
-
+using System.Drawing.Drawing2D;
 
 namespace TombEditor.Controls
 {
@@ -28,6 +28,7 @@ namespace TombEditor.Controls
         private static readonly Brush _monkeyBrush = new SolidBrush(Editor.ColorMonkey);
         private static readonly Brush _boxBrush = new SolidBrush(Editor.ColorBox);
         private static readonly Brush _notWalkableBrush = new SolidBrush(Editor.ColorNotWalkable);
+        private static readonly Brush _forceFloorSolidBrush = new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.Transparent, Editor.ColorFloor.MixWith(Color.Black, 0.1));
         private static readonly Pen _beetlePen = new Pen(Color.FromArgb(100, 100, 100), 4);
         private static readonly Pen _triggerTriggererPen = new Pen(Color.FromArgb(0, 0, 252), 4);
         private static readonly Brush _noCollisionBrush = new SolidBrush(Editor.ColorNoCollision);
@@ -232,6 +233,8 @@ namespace TombEditor.Controls
                             e.Graphics.FillRectangle(_floorBrush, rectangle);
 
                         //Draw additional features on floor tile
+                        if (block.ForceFloorSolid)
+                            e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
                         if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
                         if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ))

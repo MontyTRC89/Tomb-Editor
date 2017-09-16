@@ -1253,7 +1253,17 @@ namespace TombEditor
                     room.Blocks[x, z].Flags ^= flag;
             _editor.RoomSectorPropertiesChange(room);
         }
-        
+
+        public static void ToggleForceFloorSolid(Room room, Rectangle area)
+        {
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
+                    room.Blocks[x, z].ForceFloorSolid = !room.Blocks[x, z].ForceFloorSolid;
+            SmartBuildGeometry(room, area);
+            _editor.RoomGeometryChange(room);
+            _editor.RoomSectorPropertiesChange(room);
+        }
+
         public static void AddPortal(Room room, Rectangle area, IWin32Window owner)
         {
             // Check if fliproom

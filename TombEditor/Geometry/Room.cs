@@ -2656,7 +2656,7 @@ namespace TombEditor.Geometry
         public bool IsFloorSolid(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
-            if ((block.FloorPortal == null) || block.IsAnyWall)
+            if ((block.FloorPortal == null) || block.IsAnyWall || block.ForceFloorSolid)
                 return true;
 
             Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
@@ -2679,7 +2679,7 @@ namespace TombEditor.Geometry
 
             Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
             Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
-            if (adjoiningBlock.IsAnyWall)
+            if (adjoiningBlock.IsAnyWall || adjoiningBlock.ForceFloorSolid)
                 return true;
 
             int identicalEdgeCount = 0;

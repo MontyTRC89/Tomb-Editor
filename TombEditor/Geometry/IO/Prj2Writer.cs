@@ -343,6 +343,7 @@ namespace TombEditor.Geometry.IO
 
                             writer.Write((ushort)b.Type);
                             writer.Write((ushort)b.Flags);
+                            writer.Write((bool)b.ForceFloorSolid);
 
                             for (int n = 0; n < 4; n++)
                                 writer.Write(b.QAFaces[n]);
