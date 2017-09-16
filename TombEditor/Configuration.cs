@@ -35,6 +35,9 @@ namespace TombEditor
         public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 5.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
 
+        public float Gizmo_Size { get; set; } = 1024.0f;
+        public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
+        public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
 
         public static string GetDefaultPath()
         {
