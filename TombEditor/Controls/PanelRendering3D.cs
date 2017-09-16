@@ -425,7 +425,7 @@ namespace TombEditor.Controls
 
             _skyVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray<EditorVertex>(), SharpDX.Direct3D11.ResourceUsage.Default);
 
-            _skyTexture = Texture2D.Load(_device, "Editor\\sky.png");
+            //_skyTexture = Texture2D.Load(_device, "Editor\\sky.png");
         }
 
         private void RebuildTextureAtlas()
