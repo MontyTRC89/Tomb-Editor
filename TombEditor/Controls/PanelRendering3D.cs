@@ -178,7 +178,9 @@ namespace TombEditor.Controls
         private System.Drawing.Point _lastMousePosition;
         private bool _doSectorSelection = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
-
+        private Buffer<EditorVertex> _skyVertexBuffer;
+        private Texture2D _skyTexture;
+        
         // Gizmo
         private Gizmo _gizmo;
 
@@ -376,7 +378,55 @@ namespace TombEditor.Controls
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
             _gizmo = new Gizmo(_editor, deviceManager);
 
+            PrepareSky();
+
             logger.Info("Graphic Device ready");
+        }
+
+        private void PrepareSky()
+        {
+            var vertices = new List<EditorVertex>();
+
+            for (int x = 0; x < 16; x++)
+            {
+                for (int z = 0; z < 16; z++)
+                {
+                    var v1 = new EditorVertex
+                    {
+                        Position = new Vector3(x, 0.0f, z) * 1024.0f,
+                        UV = new Vector2(0.0f, 1.0f)
+                    };
+
+                    var v2 = new EditorVertex
+                    {
+                        Position = new Vector3(x + 1, 0.0f, z) * 1024.0f,
+                        UV = new Vector2(1.0f, 1.0f)
+                    };
+
+                    var v3 = new EditorVertex
+                    {
+                        Position = new Vector3(x + 1, 0.0f, z + 1) * 1024.0f,
+                        UV = new Vector2(0.0f, 1.0f)
+                    };
+
+                    var v4 = new EditorVertex
+                    {
+                        Position = new Vector3(x, 0.0f, z + 1) * 1024.0f,
+                        UV = new Vector2(0.0f, 0.0f)
+                    };
+
+                    vertices.Add(v2);
+                    vertices.Add(v4);
+                    vertices.Add(v1);
+                    vertices.Add(v4);
+                    vertices.Add(v2);
+                    vertices.Add(v3);
+                }
+            }
+
+            _skyVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray<EditorVertex>(), SharpDX.Direct3D11.ResourceUsage.Default);
+
+            _skyTexture = Texture2D.Load(_device, "Editor\\sky.png");
         }
 
         private void RebuildTextureAtlas()
@@ -1674,14 +1724,26 @@ namespace TombEditor.Controls
 
             SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[459];
             skinnedModel.BuildAnimationPose(skinnedModel.Animations[0].KeyFrames[0]);
-
-            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-
+                        
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
+
+            /*_device.SetVertexBuffer(0, _skyVertexBuffer);
+
+            Matrix skyMatrix = Matrix.Scaling(50.0f) * Matrix.Translation(new Vector3(-409600.0f, 20480.0f, -409600.0f)) * _editor.SelectedRoom.Transform;
+            skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(skyMatrix * viewProjection);
+
+            skinnedModelEffect.Parameters["Texture"].SetResource(_skyTexture);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
+
+            skinnedModelEffect.Techniques[0].Passes[0].Apply();
+            _device.Draw(PrimitiveType.TriangleList, _skyVertexBuffer.ElementCount);
+            */
 
             _device.SetVertexBuffer(0, skinnedModel.VertexBuffer);
             _device.SetIndexBuffer(skinnedModel.IndexBuffer, true);
+
+            skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
             for (int i = 0; i < skinnedModel.Meshes.Count; i++)
             {
