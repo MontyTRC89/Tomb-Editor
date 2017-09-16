@@ -535,7 +535,7 @@ namespace TombEditor.Geometry
                                     new Vector3((x + 1) * 1024.0f, qa1 * 256.0f, (z + 1) * 1024.0f),
                                     new Vector3((x + 1) * 1024.0f, qa2 * 256.0f, z * 1024.0f),
                                     new Vector3(x * 1024.0f, qa3 * 256.0f, z * 1024.0f),
-                                    face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
+                                    face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
                             }
                             else
                             {
@@ -738,7 +738,7 @@ namespace TombEditor.Geometry
                                 new Vector3((x) * 1024.0f, ws0 * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x) * 1024.0f, ws3 * 256.0f, (z) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, ws2 * 256.0f, (z) * 1024.0f),
-                                face, new Vector2(1.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f));
+                                face, new Vector2(1.0f, 0.0f), new Vector2(0.0f, 0.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 1.0f));
                         }
                         else
                         {
