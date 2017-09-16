@@ -102,12 +102,6 @@ namespace TombLib.Utils
             Set(i, color.R, color.G, color.B, color.A);
         }
 
-        public void SetData(byte[] data)
-        {
-            if (data.Length != 4 * Width * Height) return;
-            Array.Copy(data, _data, data.Length);
-        }
-
         public ColorC GetPixel(int x, int y)
         {
             int index = (y * Width + x) * PixelSize;
@@ -364,18 +358,11 @@ namespace TombLib.Utils
             return new MemoryStream(_data);
         }
 
-        public byte[] ToByteArray()
-        {
-            byte[] buffer = new byte[_data.Length];
-            Array.Copy(_data, buffer, _data.Length);
-            return buffer;
-        }
-
         public Stream ToRawStream(int yStart, int Height)
         {
             return new MemoryStream(_data, yStart * (Width * PixelSize), Height * (Width * PixelSize));
         }
-        
+
         public ulong HashImageData(System.Security.Cryptography.HashAlgorithm hashAlgorithm)
         {
             ulong metaHash = unchecked((ulong)Width * 4551534108298448059ul + (ulong)Height * 7310107420406914801ul); // two random primes

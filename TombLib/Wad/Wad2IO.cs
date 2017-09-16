@@ -31,12 +31,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < numTextures; i++)
                 {
                     var texture = new WadTexture();
-
-                    var image = ImageC.CreateNew(reader.ReadInt32(), reader.ReadInt32());
-                    var buffer = reader.ReadBytes(4 * image.Width * image.Height);
-                    image.SetData(buffer);
-
-                    texture.Image = image;
+                    texture.Image = ImageC.FromStreamRaw(reader.BaseStream, reader.ReadInt32(), reader.ReadInt32());
 
                     // Check for other chunks
                     chunkType = (WadChunkType)reader.ReadUInt16();
@@ -382,12 +377,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < numSprites; i++)
                 {
                     var texture = new WadTexture();
-
-                    var image = ImageC.CreateNew(reader.ReadInt32(), reader.ReadInt32());
-                    var buffer = reader.ReadBytes(4 * image.Width * image.Height);
-                    image.SetData(buffer);
-
-                    texture.Image = image;
+                    texture.Image = ImageC.FromStreamRaw(reader.BaseStream, reader.ReadInt32(), reader.ReadInt32());
 
                     // Check for other chunks
                     chunkType = (WadChunkType)reader.ReadUInt16();
@@ -470,7 +460,7 @@ namespace TombLib.Wad
 
                     writer.Write(texture.Width);
                     writer.Write(texture.Height);
-                    writer.Write(texture.Image.ToByteArray());
+                    texture.Image.WriteToStreamRaw(writer.BaseStream);
 
                     // No more data, in future we can expand the structure using chunks
                     chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
@@ -757,7 +747,7 @@ namespace TombLib.Wad
 
                     writer.Write(texture.Width);
                     writer.Write(texture.Height);
-                    writer.Write(texture.Image.ToByteArray());
+                    texture.Image.WriteToStreamRaw(writer.BaseStream);
 
                     // No more data, in future we can expand the structure using chunks
                     chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
