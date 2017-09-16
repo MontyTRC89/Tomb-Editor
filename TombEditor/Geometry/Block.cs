@@ -71,6 +71,7 @@ namespace TombEditor.Geometry
 
         public BlockType Type { get; set; } = BlockType.Floor;
         public BlockFlags Flags { get; set; } = BlockFlags.None;
+        public bool ForceFloorSolid { get; set; } = false; // If this is set to true, portals are overwritten for this sector.
         // ReSharper disable once InconsistentNaming
         public short[] EDFaces { get; } = new short[4];
         // ReSharper disable once InconsistentNaming
@@ -80,20 +81,20 @@ namespace TombEditor.Geometry
         // ReSharper disable once InconsistentNaming
         public short[] RFFaces { get; } = new short[4];
         private TextureArea[] _faceTextures { get; } = new TextureArea[(int)FaceCount];
+
         public bool FloorSplitDirectionToggled { get; set; } = false;
         public bool CeilingSplitDirectionToggled { get; set; } = false;
-
-        public DiagonalSplit FloorDiagonalSplit { get; set; }
-        public DiagonalSplit CeilingDiagonalSplit { get; set; }
+        public DiagonalSplit FloorDiagonalSplit { get; set; } = DiagonalSplit.None;
+        public DiagonalSplit CeilingDiagonalSplit { get; set; } = DiagonalSplit.None;
 
         public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
+        public Portal FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public Portal WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public Portal CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
 
         public PortalOpacity FloorOpacity { get; set; }
         public PortalOpacity CeilingOpacity { get; set; }
         public PortalOpacity WallOpacity { get; set; }
-        public Portal FloorPortal { get; set; } = null; // This is not supposed to be modified here.
-        public Portal WallPortal { get; set; } = null; // This is not supposed to be modified here.
-        public Portal CeilingPortal { get; set; } = null; // This is not supposed to be modified here.
         public bool NoCollisionFloor { get; set; }
         public bool NoCollisionCeiling { get; set; }
 

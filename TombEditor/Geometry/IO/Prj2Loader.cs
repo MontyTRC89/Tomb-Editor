@@ -412,6 +412,7 @@ namespace TombEditor.Geometry.IO
 
                         b.Type = (BlockType)reader.ReadUInt16();
                         b.Flags = (BlockFlags)reader.ReadUInt16();
+                        b.ForceFloorSolid = reader.ReadBoolean();
 
                         for (int j = 0; j < 4; j++)
                             b.QAFaces[j] = reader.ReadInt16();

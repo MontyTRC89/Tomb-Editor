@@ -496,6 +496,13 @@ namespace TombEditor
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.TriggerTriggerer);
         }
 
+        private void butForceFloorSolid_Click(object sender, EventArgs e)
+        {
+            if (!CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.ToggleForceFloorSolid(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
         private void butAddPointLight_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Light };
@@ -1879,11 +1886,6 @@ namespace TombEditor
         {
             string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
                             "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
