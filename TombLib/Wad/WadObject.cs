@@ -5,6 +5,6 @@ namespace TombLib.Wad
 {
     public class WadObject
     {
-        public uint ObjectID;
+        public uint ObjectID { get; set; }
     }
 }

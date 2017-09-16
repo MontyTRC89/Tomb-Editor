@@ -35,6 +35,53 @@ namespace TombLib.Wad
             _polygons = new List<WadPolygon>();
         }
 
+        public WadMesh Clone()
+        {
+            var mesh = new WadMesh();
+
+            mesh.BoundingBox = new BoundingBox(new Vector3(BoundingBox.Minimum.X,
+                                                           BoundingBox.Minimum.Y,
+                                                           BoundingBox.Minimum.Z),
+                                               new Vector3(BoundingBox.Maximum.X,
+                                                           BoundingBox.Maximum.Y,
+                                                           BoundingBox.Maximum.Z));
+
+            mesh.BoundingSphere = new BoundingSphere(new Vector3(BoundingSphere.Center.X,
+                                                                 BoundingSphere.Center.Y,
+                                                                 BoundingSphere.Center.Z),
+                                                     BoundingSphere.Radius);
+
+            foreach (var position in VerticesPositions)
+                mesh.VerticesPositions.Add(new Vector3(position.X, position.Y, position.Z));
+
+            foreach (var normal in VerticesNormals)
+                mesh.VerticesNormals.Add(new Vector3(normal.X, normal.Y, normal.Z));
+
+            foreach (var shade in VerticesShades)
+                mesh.VerticesShades.Add(shade);
+
+            foreach (var poly in Polys)
+            {
+                var newPoly = new WadPolygon(poly.Shape);
+
+                newPoly.Indices.AddRange(poly.Indices.ToArray());
+
+                foreach (var uv in poly.UV)
+                    newPoly.UV.Add(new Vector2(uv.X, uv.Y));
+
+                newPoly.Attributes = poly.Attributes;
+                newPoly.ShineStrength = poly.ShineStrength;
+                newPoly.Transparent = poly.Transparent;
+                newPoly.Texture = poly.Texture;
+
+                mesh.Polys.Add(newPoly);
+            }
+
+            mesh.UpdateHash();
+
+            return mesh;
+        }
+
         public byte[] ToByteArray()
         {
             using (var ms = new MemoryStream())
