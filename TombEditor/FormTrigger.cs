@@ -23,20 +23,27 @@ namespace TombEditor
             _trigger = trigger;
             InitializeComponent();
 
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MaximumSize = new Size(32000, Size.Height);
+            MinimumSize = new Size(347 + (Size.Height - ClientSize.Height), Size.Height);
+
+            // Populate lists
             foreach (TriggerType triggerType in Enum.GetValues(typeof(TriggerType)))
                 comboType.Items.Add(triggerType);
             foreach (TriggerTargetType triggerTargetType in Enum.GetValues(typeof(TriggerTargetType)))
                 comboTargetType.Items.Add(triggerTargetType);
 
+            // Center items in the trigger window
             comboParameter.SelectedIndexChanged += delegate
+            {
+                if (!comboParameterBeingInitialized)
                 {
-                    if (!comboParameterBeingInitialized)
-                    {
-                        ObjectInstance objectToSelect = comboParameter.SelectedItem as ObjectInstance;
-                        if (objectToSelect != null)
-                            selectObject(objectToSelect);
-                    }
-                };
+                    ObjectInstance objectToSelect = comboParameter.SelectedItem as ObjectInstance;
+                    if (objectToSelect != null)
+                        selectObject(objectToSelect);
+                }
+            };
         }
 
         private void FormTrigger_Load(object sender, EventArgs e)

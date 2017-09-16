@@ -27,6 +27,12 @@ namespace TombEditor
         public FormMain()
         {
             InitializeComponent();
+
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MinimumSize = new Size(1212, 763) + (Size - ClientSize);
+            
+            // Update palette
             lightPalette.SelectedColorChanged += delegate
             {
                     Light light = _editor.SelectedObject as Light;

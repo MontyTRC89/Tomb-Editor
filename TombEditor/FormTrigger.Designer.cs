@@ -287,9 +287,7 @@ namespace TombEditor
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(32000, 229);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(371, 229);
             this.Name = "FormTrigger";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

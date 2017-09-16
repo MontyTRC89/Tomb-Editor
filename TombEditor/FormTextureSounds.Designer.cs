@@ -99,7 +99,6 @@ namespace TombEditor
             this.Controls.Add(this.textureMap);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(492, 200);
             this.Name = "FormTextureSounds";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

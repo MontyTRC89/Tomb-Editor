@@ -89,10 +89,14 @@ namespace TombEditor
 
         public FormLevelSettings(Editor editor)
         {
-            InitializeComponent();
-
             _editor = editor;
             _levelSettings = editor.Level.Settings.Clone();
+
+            InitializeComponent();
+
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MinimumSize = new Size(592, 773) + (Size - ClientSize);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.SoundPaths)
