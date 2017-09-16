@@ -335,6 +335,20 @@ namespace TombEditor
                 else
                     panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
 
+                // Update portal opacity controls
+                if ((obj is Editor.ObjectChangedEvent) ||
+                   (obj is Editor.SelectedObjectChangedEvent))
+                {
+                    var portal = _editor.SelectedObject as Portal;
+                    butOpacityNone.Enabled = portal != null;
+                    butOpacitySolidFaces.Enabled = portal != null;
+                    butOpacityTraversableFaces.Enabled = portal != null;
+
+                    butOpacityNone.Checked = portal == null ? false : portal.Opacity == PortalOpacity.None;
+                    butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
+                    butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
+                }
+
                 // Set enabled state
                 panelLightColor.Enabled = IsLight;
                 numLightIntensity.Enabled = IsLight;
@@ -597,19 +611,19 @@ namespace TombEditor
             panel3D.Invalidate();
         }
         
-        private void butNoOpacity_Click(object sender, EventArgs e)
+        private void butOpacityNone_Click(object sender, EventArgs e)
         {
             SetPortalOpacity(PortalOpacity.None);
         }
 
-        private void butOpacity1_Click(object sender, EventArgs e)
+        private void butOpacitySolidFaces_Click(object sender, EventArgs e)
         {
-            SetPortalOpacity(PortalOpacity.Opacity1);
+            SetPortalOpacity(PortalOpacity.SolidFaces);
         }
 
-        private void butOpacity2_Click(object sender, EventArgs e)
+        private void butOpacityTraversableFaces_Click(object sender, EventArgs e)
         {
-            SetPortalOpacity(PortalOpacity.Opacity2);
+            SetPortalOpacity(PortalOpacity.TraversableFaces);
         }
 
         private void butTextureFloor_Click(object sender, EventArgs e)
@@ -1761,14 +1775,6 @@ namespace TombEditor
             EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, (room) => room.GetLowestCorner() - 12, 12);
         }
         
-        private void butNoCollision_Click(object sender, EventArgs e)
-        {
-            if (butNoCollision.Checked)
-                _editor.Action = EditorAction.None;
-            else
-                _editor.Action = new EditorAction { Action = EditorActionType.PlaceNoCollision };
-        }
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to exit?",

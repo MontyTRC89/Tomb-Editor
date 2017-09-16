@@ -216,10 +216,9 @@
             this.butPaste = new System.Windows.Forms.ToolStripButton();
             this.butClone = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.butNoOpacity = new System.Windows.Forms.ToolStripButton();
-            this.butOpacity1 = new System.Windows.Forms.ToolStripButton();
-            this.butOpacity2 = new System.Windows.Forms.ToolStripButton();
-            this.butNoCollision = new System.Windows.Forms.ToolStripButton();
+            this.butOpacityNone = new System.Windows.Forms.ToolStripButton();
+            this.butOpacitySolidFaces = new System.Windows.Forms.ToolStripButton();
+            this.butOpacityTraversableFaces = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
@@ -2339,10 +2338,9 @@
             this.butPaste,
             this.butClone,
             this.toolStripSeparator5,
-            this.butNoOpacity,
-            this.butOpacity1,
-            this.butOpacity2,
-            this.butNoCollision,
+            this.butOpacityNone,
+            this.butOpacitySolidFaces,
+            this.butOpacityTraversableFaces,
             this.toolStripSeparator4,
             this.butTextureFloor,
             this.butTextureCeiling,
@@ -2531,54 +2529,48 @@
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 28);
             // 
-            // butNoOpacity
+            // butOpacityNone
             // 
-            this.butNoOpacity.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butNoOpacity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butNoOpacity.Image = global::TombEditor.Properties.Resources.rectangle_filled_16;
-            this.butNoOpacity.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butNoOpacity.Name = "butNoOpacity";
-            this.butNoOpacity.Size = new System.Drawing.Size(23, 25);
-            this.butNoOpacity.Text = "toolStripButton1";
-            this.butNoOpacity.ToolTipText = "Solid face";
-            this.butNoOpacity.Click += new System.EventHandler(this.butNoOpacity_Click);
+            this.butOpacityNone.CheckOnClick = true;
+            this.butOpacityNone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butOpacityNone.Enabled = false;
+            this.butOpacityNone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butOpacityNone.Image = global::TombEditor.Properties.Resources.rectangle_filled_16;
+            this.butOpacityNone.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butOpacityNone.Name = "butOpacityNone";
+            this.butOpacityNone.Size = new System.Drawing.Size(23, 25);
+            this.butOpacityNone.Text = "toolStripButton1";
+            this.butOpacityNone.ToolTipText = "Solid face";
+            this.butOpacityNone.Click += new System.EventHandler(this.butOpacityNone_Click);
             // 
-            // butOpacity1
+            // butOpacitySolidFaces
             // 
-            this.butOpacity1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butOpacity1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butOpacity1.Image = global::TombEditor.Properties.Resources.ToggleOpacity1_16;
-            this.butOpacity1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.butOpacity1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butOpacity1.Name = "butOpacity1";
-            this.butOpacity1.Size = new System.Drawing.Size(23, 25);
-            this.butOpacity1.Text = "toolStripButton2";
-            this.butOpacity1.ToolTipText = "Toggle opacity 1";
-            this.butOpacity1.Click += new System.EventHandler(this.butOpacity1_Click);
+            this.butOpacitySolidFaces.CheckOnClick = true;
+            this.butOpacitySolidFaces.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butOpacitySolidFaces.Enabled = false;
+            this.butOpacitySolidFaces.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butOpacitySolidFaces.Image = global::TombEditor.Properties.Resources.ToggleOpacity1_16;
+            this.butOpacitySolidFaces.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.butOpacitySolidFaces.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butOpacitySolidFaces.Name = "butOpacitySolidFaces";
+            this.butOpacitySolidFaces.Size = new System.Drawing.Size(23, 25);
+            this.butOpacitySolidFaces.Text = "toolStripButton2";
+            this.butOpacitySolidFaces.ToolTipText = "Toggle opacity 1";
+            this.butOpacitySolidFaces.Click += new System.EventHandler(this.butOpacitySolidFaces_Click);
             // 
-            // butOpacity2
+            // butOpacityTraversableFaces
             // 
-            this.butOpacity2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butOpacity2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butOpacity2.Image = global::TombEditor.Properties.Resources.ToggleOpacity2_16;
-            this.butOpacity2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butOpacity2.Name = "butOpacity2";
-            this.butOpacity2.Size = new System.Drawing.Size(23, 25);
-            this.butOpacity2.Text = "toolStripButton3";
-            this.butOpacity2.ToolTipText = "Toggle opacity 2";
-            this.butOpacity2.Click += new System.EventHandler(this.butOpacity2_Click);
-            // 
-            // butNoCollision
-            // 
-            this.butNoCollision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butNoCollision.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butNoCollision.Image = global::TombEditor.Properties.Resources.NoCollision_16;
-            this.butNoCollision.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butNoCollision.Name = "butNoCollision";
-            this.butNoCollision.Size = new System.Drawing.Size(23, 25);
-            this.butNoCollision.Text = "toolStripButton1";
-            this.butNoCollision.ToolTipText = "No collision";
-            this.butNoCollision.Click += new System.EventHandler(this.butNoCollision_Click);
+            this.butOpacityTraversableFaces.CheckOnClick = true;
+            this.butOpacityTraversableFaces.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butOpacityTraversableFaces.Enabled = false;
+            this.butOpacityTraversableFaces.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butOpacityTraversableFaces.Image = global::TombEditor.Properties.Resources.ToggleOpacity2_16;
+            this.butOpacityTraversableFaces.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butOpacityTraversableFaces.Name = "butOpacityTraversableFaces";
+            this.butOpacityTraversableFaces.Size = new System.Drawing.Size(23, 25);
+            this.butOpacityTraversableFaces.Text = "toolStripButton3";
+            this.butOpacityTraversableFaces.ToolTipText = "Toggle opacity 2";
+            this.butOpacityTraversableFaces.Click += new System.EventHandler(this.butOpacityTraversableFaces_Click);
             // 
             // toolStripSeparator4
             // 
@@ -3002,9 +2994,9 @@
         private System.Windows.Forms.ToolStripButton butAddFlybyCamera;
         private System.Windows.Forms.ToolStripButton butAddSoundSource;
         private System.Windows.Forms.ToolStripButton butAddSink;
-        private System.Windows.Forms.ToolStripButton butNoOpacity;
-        private System.Windows.Forms.ToolStripButton butOpacity1;
-        private System.Windows.Forms.ToolStripButton butOpacity2;
+        private System.Windows.Forms.ToolStripButton butOpacityNone;
+        private System.Windows.Forms.ToolStripButton butOpacitySolidFaces;
+        private System.Windows.Forms.ToolStripButton butOpacityTraversableFaces;
         private System.Windows.Forms.ToolStripButton butTextureFloor;
         private System.Windows.Forms.ToolStripButton butTextureCeiling;
         private System.Windows.Forms.ToolStripButton butTextureWalls;
@@ -3028,7 +3020,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton butCompileLevel;
         private System.Windows.Forms.ToolStripButton butCompileLevelAndPlay;
-        private System.Windows.Forms.ToolStripButton butNoCollision;
         private DarkUI.Controls.DarkComboBox comboReverberation;
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkButton butFlagTriggerTriggerer;

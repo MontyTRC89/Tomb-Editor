@@ -266,17 +266,10 @@ namespace TombEditor.Compilers
                                 var xv = trVertex.Position.X / 1024;
                                 var zv = trVertex.Position.Z / 1024;
 
-                                if (!(room.IsFloorSolid(new DrawingPoint(xv, zv)) || room.Blocks[xv, zv].Type == BlockType.Wall ||
-                                        room.Blocks[xv, zv].Type == BlockType.BorderWall) &&
-                                    !(room.IsFloorSolid(new DrawingPoint(xv - 1, zv)) ||
-                                        room.Blocks[xv - 1, zv].Type == BlockType.Wall ||
-                                        room.Blocks[xv - 1, zv].Type == BlockType.BorderWall) &&
-                                    !(room.IsFloorSolid(new DrawingPoint(xv, zv - 1)) ||
-                                        room.Blocks[xv, zv - 1].Type == BlockType.Wall ||
-                                        room.Blocks[xv, zv - 1].Type == BlockType.BorderWall) &&
-                                    !(room.IsFloorSolid(new DrawingPoint(xv - 1, zv - 1)) ||
-                                        room.Blocks[xv - 1, zv - 1].Type == BlockType.Wall ||
-                                        room.Blocks[xv - 1, zv - 1].Type == BlockType.BorderWall))
+                                if ((room.GetFloorRoomConnection(new DrawingPoint(xv, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv].IsAnyWall) &&
+                                    (room.GetFloorRoomConnection(new DrawingPoint(xv - 1, zv)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv].IsAnyWall) &&
+                                    (room.GetFloorRoomConnection(new DrawingPoint(xv, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv, zv - 1].IsAnyWall) &&
+                                    (room.GetFloorRoomConnection(new DrawingPoint(xv - 1, zv - 1)).AnyType != Room.RoomConnectionType.NoPortal || room.Blocks[xv - 1, zv - 1].IsAnyWall))
                                 {
                                     trVertex.Attributes = 0x6000;
                                 }
@@ -493,29 +486,30 @@ namespace TombEditor.Compilers
                     sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (int)GetTextureSound(room, x, z)));
                     sector.FloorDataIndex = 0;
 
-                    if (block.FloorPortal != null)
+                    // Setup portals
+                    if (room.GetFloorRoomConnection(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
+                    {
                         sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
+                        aux.Portal = true;
+                        aux.FloorPortal = block.FloorPortal;
+                    }
                     else
-                        sector.RoomBelow = 0xff;
+                    {
+                        sector.RoomBelow = 255;
+                        aux.FloorPortal = null;
+                    }
 
-                    if (block.CeilingPortal != null)
+                    if (room.GetCeilingRoomConnection(new DrawingPoint(x, z)).TraversableType != Room.RoomConnectionType.NoPortal)
                         sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
                     else
-                        sector.RoomAbove = 0xff;
+                        sector.RoomAbove = 255;
 
-                    if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
-                        block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
-                    {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
-                    }
+                    if (block.WallPortal != null && block.WallPortal.Opacity != PortalOpacity.SolidFaces)
+                        aux.WallPortal = block.WallPortal.AdjoiningRoom;
                     else
-                    {
-                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
-                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
-                    }
+                        aux.WallPortal = null;
 
-                    //Setup some aux data for box generation
+                    // Setup some flags for box generation
                     if (block.Type == BlockType.BorderWall)
                         aux.BorderWall = true;
                     if ((block.Flags & BlockFlags.Monkey) != 0)
@@ -535,53 +529,19 @@ namespace TombEditor.Compilers
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
 
-                    // I must setup portal only if current sector is not solid and opacity if different from 1
-                    if (block.FloorPortal != null)
+                    // Setup floor heights
+                    if (x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1 ||
+                        block.Type == BlockType.BorderWall || block.Type == BlockType.Wall)
                     {
-                        if ((!room.IsFloorSolid(new DrawingPoint(x, z)) &&
-                             block.FloorOpacity != PortalOpacity.Opacity1) ||
-                            (room.IsFloorSolid(new DrawingPoint(x, z)) && block.NoCollisionFloor))
-                        {
-                            var portal = block.FloorPortal;
-                            sector.RoomBelow = (byte)_roomsRemappingDictionary[block.FloorPortal.AdjoiningRoom];
-                        }
-                        else
-                        {
-                            sector.RoomBelow = 255;
-                        }
+                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
+                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
                     }
                     else
                     {
-                        sector.RoomBelow = 255;
+                        sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
+                        sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
                     }
-
-                    if ((block.FloorPortal != null &&
-                         block.FloorOpacity != PortalOpacity.Opacity1 &&
-                         !room.IsFloorSolid(new DrawingPoint(x, z))))
-                    {
-                        aux.Portal = true;
-                        aux.FloorPortal = block.FloorPortal;
-                    }
-                    else
-                    {
-                        aux.FloorPortal = null;
-                    }
-
-                    aux.IsFloorSolid = room.IsFloorSolid(new DrawingPoint(x, z));
-
-                    if ((block.CeilingPortal != null &&
-                         block.CeilingOpacity != PortalOpacity.Opacity1))
-                    {
-                    }
-                    else
-                    {
-                    }
-
-                    if (block.WallPortal != null && block.WallOpacity != PortalOpacity.Opacity1)
-                        aux.WallPortal = block.WallPortal.AdjoiningRoom;
-                    else
-                        aux.WallPortal = null;
-
+                    
                     aux.LowestFloor = (sbyte)(-room.Position.Y - block.FloorMin);
                     var q0 = block.QAFaces[0];
                     var q1 = block.QAFaces[1];

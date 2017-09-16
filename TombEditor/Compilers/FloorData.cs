@@ -25,16 +25,12 @@ namespace TombEditor.Compilers
                 // Get all portals
                 var ceilingPortals = new List<Portal>();
                 for (var z = 0; z < room.NumZSectors; z++)
-                {
                     for (var x = 0; x < room.NumXSectors; x++)
                     {
-                        if (room.Blocks[x, z].CeilingPortal != null &&
-                            room.Blocks[x, z].CeilingOpacity != PortalOpacity.Opacity1)
-                        {
-                            ceilingPortals.Add(room.Blocks[x, z].CeilingPortal);
-                        }
+                        var ceilingPortal = room.Blocks[x, z].CeilingPortal;
+                        if ((ceilingPortal != null) && !ceilingPortals.Contains(ceilingPortal))
+                            ceilingPortals.Add(ceilingPortal);
                     }
-                }
 
                 for (var z = 0; z < room.NumZSectors; z++)
                 {
@@ -42,8 +38,8 @@ namespace TombEditor.Compilers
                     {
                         var sector = GetSector(tempRoom, x, z);
                         var block = room.Blocks[x, z];
-                        bool isFloorSolid = room.IsFloorSolid(new DrawingPoint(x, z));
-                        bool isCeilingSolid = room.IsCeilingSolid(new DrawingPoint(x, z));
+                        Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnection(new DrawingPoint(x, z));
+                        Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnection(new DrawingPoint(x, z));
 
                         var baseFloorData = (ushort)tempFloorData.Count;
 
@@ -112,8 +108,7 @@ namespace TombEditor.Compilers
                         if (block.FloorPortal != null)
                         {
                             // Setup portal only if current sector is not solid and opacity if different from 1
-                            if ((!isFloorSolid && block.FloorOpacity != PortalOpacity.Opacity1) ||
-                                (isFloorSolid && block.NoCollisionFloor))
+                            if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.FloorPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
@@ -131,8 +126,7 @@ namespace TombEditor.Compilers
                         if (block.CeilingPortal != null)
                         {
                             //  Setup portal only if current sector is not solid and opacity if different from 1
-                            if ((!isCeilingSolid && block.CeilingOpacity != PortalOpacity.Opacity1) ||
-                                (isCeilingSolid && block.NoCollisionCeiling))
+                            if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.CeilingPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
@@ -152,7 +146,7 @@ namespace TombEditor.Compilers
                             var portal = block.WallPortal;
 
                             // Only if the portal is not a Toggle Opacity 1
-                            if (block.WallOpacity != PortalOpacity.Opacity1)
+                            if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                             {
                                 const ushort data1 = 0x8001;
                                 var data2 = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom];
@@ -160,7 +154,7 @@ namespace TombEditor.Compilers
                                 tempFloorData.Add(data1);
                                 tempFloorData.Add(data2);
 
-                                if (block.WallOpacity == PortalOpacity.Opacity2)
+                                if (block.WallPortal.Opacity == PortalOpacity.TraversableFaces)
                                 {
                                     sector.Floor = -127;
                                     sector.Ceiling = -127;
@@ -243,14 +237,14 @@ namespace TombEditor.Compilers
                             else
                                 sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
 
-                            if (block.FloorDiagonalSplit == DiagonalSplit.NE ||
-                                block.FloorDiagonalSplit == DiagonalSplit.SW)
+                            if (block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                                block.FloorDiagonalSplit == DiagonalSplit.XpZp)
                             {
                                 lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                if (block.FloorPortal != null && block.NoCollisionFloor)
+                                if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                 {
-                                    function = block.FloorDiagonalSplit == DiagonalSplit.NE ? 0x0c : 0x0b;
+                                    function = block.FloorDiagonalSplit == DiagonalSplit.XnZn ? 0x0c : 0x0b;
                                 }
                                 else
                                 {
@@ -260,7 +254,7 @@ namespace TombEditor.Compilers
                                 // Diagonal steps and walls are the simplest case. All corner heights are zero 
                                 // except eventually the right angle on the top face. Corrections t1 and t2 
                                 // are simple to calculate
-                                if (block.FloorDiagonalSplit == DiagonalSplit.NE)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
                                 {
                                     var lowCorner = q1;
                                     var highCorner = q3;
@@ -318,16 +312,16 @@ namespace TombEditor.Compilers
                             {
                                 lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                if (block.FloorPortal != null && block.NoCollisionFloor)
+                                if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                 {
-                                    function = block.FloorDiagonalSplit == DiagonalSplit.NW ? 0x0d : 0x0e;
+                                    function = block.FloorDiagonalSplit == DiagonalSplit.XpZn ? 0x0d : 0x0e;
                                 }
                                 else
                                 {
                                     function = 0x08;
                                 }
 
-                                if (block.FloorDiagonalSplit == DiagonalSplit.NW)
+                                if (block.FloorDiagonalSplit == DiagonalSplit.XpZn)
                                 {
                                     var lowCorner = q0;
                                     var highCorner = q2;
@@ -422,7 +416,7 @@ namespace TombEditor.Compilers
 
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
-                                        if (block.FloorPortal != null && block.NoCollisionFloor)
+                                        if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {
                                             if (q0 == q1 && q1 == q2 && q2 == q0)
                                             {
@@ -546,7 +540,7 @@ namespace TombEditor.Compilers
                                     }
                                     else
                                     {
-                                        if (block.FloorPortal != null && block.NoCollisionFloor)
+                                        if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {
                                             if (q3 == q0 && q0 == q1 && q1 == q3)
                                             {
@@ -686,21 +680,21 @@ namespace TombEditor.Compilers
                                 else
                                     sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
 
-                                if (block.CeilingDiagonalSplit == DiagonalSplit.NE ||
-                                    block.CeilingDiagonalSplit == DiagonalSplit.SW)
+                                if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn ||
+                                    block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
                                 {
                                     lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                    if (block.CeilingPortal != null && block.NoCollisionCeiling)
+                                    if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                     {
-                                        function = block.CeilingDiagonalSplit == DiagonalSplit.NE ? 0x10 : 0x0f;
+                                        function = block.CeilingDiagonalSplit == DiagonalSplit.XnZn ? 0x10 : 0x0f;
                                     }
                                     else
                                     {
                                         function = 0x09;
                                     }
 
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.NE)
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn)
                                     {
                                         var lowCorner = w1;
                                         var highCorner = w3;
@@ -732,16 +726,16 @@ namespace TombEditor.Compilers
                                 {
                                     lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                                    if (block.CeilingPortal != null && block.NoCollisionCeiling)
+                                    if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                     {
-                                        function = block.CeilingDiagonalSplit == DiagonalSplit.NW ? 0x11 : 0x12;
+                                        function = block.CeilingDiagonalSplit == DiagonalSplit.XpZn ? 0x11 : 0x12;
                                     }
                                     else
                                     {
                                         function = 0x0a;
                                     }
 
-                                    if (block.CeilingDiagonalSplit == DiagonalSplit.NW)
+                                    if (block.CeilingDiagonalSplit == DiagonalSplit.XpZn)
                                     {
                                         var lowCorner = w0;
                                         var highCorner = w2;
@@ -813,7 +807,7 @@ namespace TombEditor.Compilers
 
                                     if (!block.FloorSplitDirectionIsXEqualsY)
                                     {
-                                        if (block.CeilingPortal != null && block.NoCollisionCeiling)
+                                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {
                                             if (w0 == w1 && w1 == w2 && w2 == w0)
                                             {
@@ -918,7 +912,7 @@ namespace TombEditor.Compilers
                                     }
                                     else
                                     {
-                                        if (block.CeilingPortal != null && block.NoCollisionCeiling)
+                                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {
                                             if (w3 == w0 && w0 == w1 && w1 == w3)
                                             {

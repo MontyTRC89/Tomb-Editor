@@ -5,11 +5,8 @@ namespace TombEditor.Geometry
 {
     public abstract class ObjectInstance : ICloneable
     {
-        public Room Room { get; internal set; }
-
-        // Helper data for loading Prj2
-        public ushort RoomIndex { get; set; }
-
+        public Room Room { get; private set; }
+        
         public abstract ObjectInstance Clone();
 
         object ICloneable.Clone()

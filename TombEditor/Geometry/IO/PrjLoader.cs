@@ -40,6 +40,8 @@ namespace TombEditor.Geometry.IO
             public PortalOpacity _floorOpacity;
             public PortalOpacity _ceilingOpacity;
             public PortalOpacity _wallOpacity;
+            public bool _hasNoCollisionFloor;
+            public bool _hasNoCollisionCeiling;
         }
 
         private struct PrjTexInfo
@@ -711,31 +713,31 @@ namespace TombEditor.Geometry.IO
                                 if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
                                 {
                                     if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0)
-                                        tempBlock._wallOpacity = PortalOpacity.Opacity1;
+                                        tempBlock._wallOpacity = PortalOpacity.SolidFaces;
                                     if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0x1000)
-                                        tempBlock._wallOpacity = PortalOpacity.Opacity2;
+                                        tempBlock._wallOpacity = PortalOpacity.TraversableFaces;
                                 }
                                 else
                                 {
-                                    if ((blockFlags1 & 0x0002) == 0x0002)
-                                        tempBlock._floorOpacity = PortalOpacity.Opacity1;
+                                    if ((blockFlags1 & 0x0002) != 0)
+                                        tempBlock._floorOpacity = PortalOpacity.SolidFaces;
 
-                                    if ((blockFlags1 & 0x0004) == 0x0004)
-                                        tempBlock._ceilingOpacity = PortalOpacity.Opacity1;
+                                    if ((blockFlags1 & 0x0004) != 0)
+                                        tempBlock._ceilingOpacity = PortalOpacity.SolidFaces;
 
-                                    if ((blockFlags1 & 0x0800) == 0x0800)
-                                        tempBlock._floorOpacity = PortalOpacity.Opacity2;
+                                    if ((blockFlags1 & 0x0800) != 0)
+                                        tempBlock._floorOpacity = PortalOpacity.TraversableFaces;
 
-                                    if ((blockFlags1 & 0x0400) == 0x0400)
-                                        tempBlock._ceilingOpacity = PortalOpacity.Opacity2;
+                                    if ((blockFlags1 & 0x0400) != 0)
+                                        tempBlock._ceilingOpacity = PortalOpacity.TraversableFaces;
                                 }
 
                                 // Read more flags
                                 short blockFlags2 = reader.ReadInt16();
                                 short blockFlags3 = reader.ReadInt16();
 
-                                block.NoCollisionFloor = (blockFlags2 & 0x06) != 0;
-                                block.NoCollisionCeiling = (blockFlags2 & 0x18) != 0;
+                                tempBlock._hasNoCollisionFloor = (blockFlags2 & 0x06) != 0;
+                                tempBlock._hasNoCollisionCeiling = (blockFlags2 & 0x18) != 0;
 
                                 if ((blockFlags2 & 0x0040) != 0)
                                     block.Flags |= BlockFlags.Beetle;
@@ -775,43 +777,48 @@ namespace TombEditor.Geometry.IO
                             newPortals.Add(prjPortal._thisPortalId, p);
                         }
 
-                        foreach (var room in level.Rooms)
+                        foreach (var tempRoom in tempRooms)
                         {
-                            if (room == null)
-                                continue;
-
-                            List<int> portalsForThisRoom = tempRoomPortals[level.Rooms.ReferenceIndexOf(room)];
+                            List<int> portalsForThisRoom = tempRoomPortals[tempRoom.Key];
+                            Room room = level.Rooms[tempRoom.Key];
 
                             foreach (var portalId in portalsForThisRoom)
                             {
+                                Portal portal = newPortals[portalId];
+
+                                // Figure out opacity of the portal
+                                PortalOpacity maxOpacity = PortalOpacity.None;
+                                switch (portal.Direction)
+                                {
+                                    case PortalDirection.Ceiling:
+                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                            for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                                if (tempRoom.Value[x, z]._ceilingOpacity > maxOpacity)
+                                                    maxOpacity = tempRoom.Value[x, z]._ceilingOpacity;
+                                        break;
+                                    case PortalDirection.Floor:
+                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                            for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                                if (tempRoom.Value[x, z]._floorOpacity > maxOpacity)
+                                                    maxOpacity = tempRoom.Value[x, z]._floorOpacity;
+                                        break;
+                                    default:
+                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                            for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                                if (tempRoom.Value[x, z]._wallOpacity > maxOpacity)
+                                                    maxOpacity = tempRoom.Value[x, z]._wallOpacity;
+                                        break;
+                                }
+                                portal.Opacity = maxOpacity;
+
+                                // Add portal to rooms
                                 room.AddObject(level, newPortals[portalId]);
                             }
                         }
 
                         progressReporter.ReportProgress(32, "Portals linked");
                     }
-
-                    // Adjust portal opacities
-                    {
-                        for (int i = 0; i < level.Rooms.Length; i++)
-                        {
-                            if (level.Rooms[i] == null)
-                                continue;
-
-                            var blocks = tempRooms[i];
-
-                            for (int x = 0; x < level.Rooms[i].NumXSectors; x++)
-                            {
-                                for (int z = 0; z < level.Rooms[i].NumZSectors; z++)
-                                {
-                                    level.Rooms[i].Blocks[x, z].FloorOpacity = blocks[x, z]._floorOpacity;
-                                    level.Rooms[i].Blocks[x, z].CeilingOpacity = blocks[x, z]._ceilingOpacity;
-                                    level.Rooms[i].Blocks[x, z].WallOpacity = blocks[x, z]._wallOpacity;
-                                }
-                            }
-                        }
-                    }
-
+                    
                     // Link triggers
                     {
                         progressReporter.ReportProgress(31, "Link triggers");
@@ -857,8 +864,28 @@ namespace TombEditor.Geometry.IO
                         progressReporter.ReportProgress(35, "Triggers linked");
                     }
 
-                    // Ignore unused things indices
+                    // Transform the no collision tiles into the ForceFloorSolid option.
+                    foreach (var tempRoom in tempRooms)
+                    {
+                        Room room = level.Rooms[tempRoom.Key];
+                        for (int z = 0; z < room.NumZSectors; ++z)
+                            for (int x = 0; x < room.NumXSectors; ++x)
+                            {
+                                Room.RoomConnectionInfo connectionInfo = room.GetFloorRoomConnection(new DrawingPoint(x, z));
+                                switch (connectionInfo.AnyType)
+                                {
+                                    case Room.RoomConnectionType.TriangularPortalXnZn:
+                                    case Room.RoomConnectionType.TriangularPortalXpZn:
+                                    case Room.RoomConnectionType.TriangularPortalXnZp:
+                                    case Room.RoomConnectionType.TriangularPortalXpZp:
+                                        if (!tempRoom.Value[x, z]._hasNoCollisionFloor)
+                                            room.Blocks[x, z].ForceFloorSolid = true;
+                                        break;
+                                }
+                            }
+                    }
 
+                    // Ignore unused things indices
                     int dwNumThings = reader.ReadInt32(); // number of things in the map
                     int dwMaxThings = reader.ReadInt32(); // always 2000
                     reader.ReadBytes(dwMaxThings * 4);

@@ -145,9 +145,7 @@ namespace TombEditor.Geometry.IO
                             portalsList.Add(portal);
 
                     foreach (var obj in room.Objects)
-                        if (!objectsList.Contains(obj) &&
-                            obj.GetType() != typeof(Light) &&
-                            obj.GetType() != typeof(RoomGeometryInstance))
+                        if (!objectsList.Contains(obj))
                             objectsList.Add(obj);
                 }
 
@@ -160,164 +158,6 @@ namespace TombEditor.Geometry.IO
                 {
                     writer.WriteStringUTF8(GeometryImporterExporter.Models.ElementAt(i).Key);
                     writer.Write(GeometryImporterExporter.Models.ElementAt(i).Value.Scale);
-                }
-
-                // Write portals
-                writer.Write(portalsList.Count);
-                foreach (var p in portalsList)
-                {
-                    writer.Write((ushort)rooms.ReferenceIndexOf(p.Room));
-                    writer.Write((ushort)rooms.ReferenceIndexOf(p.AdjoiningRoom));
-                    writer.Write((ushort)p.Direction);
-                    writer.Write(p.Area.Left);
-                    writer.Write(p.Area.Top);
-                    writer.Write(p.Area.Right);
-                    writer.Write(p.Area.Bottom);
-
-                    writer.WriteFiller(0x00, 16);
-
-                    // No more data, in future we can expand the structure using chunks
-                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                }
-
-                // Write objects: moveables, static meshes, cameras, sinks, sound sources
-                int numObjects = 0;
-                foreach (var o in objectsList)
-                    if (o.GetType() != typeof(Light))
-                        numObjects++;
-
-                writer.Write(numObjects);
-                foreach (var o in objectsList)
-                {
-                    if (o.GetType() == typeof(MoveableInstance))
-                    {
-                        MoveableInstance instance = (MoveableInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Moveable);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.ItemType.Id);
-                        writer.Write(instance.Position);
-                        writer.Write(instance.RotationY);
-                        writer.Write(instance.RotationYRadians);
-                        writer.Write(instance.Ocb);
-                        writer.Write(instance.Invisible);
-                        writer.Write(instance.ClearBody);
-                        writer.Write(instance.CodeBits);
-                        writer.Write(instance.Color);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o.GetType() == typeof(StaticInstance))
-                    {
-                        StaticInstance instance = (StaticInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Static);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.ItemType.Id);
-                        writer.Write(instance.Position);
-                        writer.Write(instance.RotationY);
-                        writer.Write(instance.RotationYRadians);
-                        writer.Write(instance.Ocb);
-                        writer.Write(instance.Color);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o.GetType() == typeof(CameraInstance))
-                    {
-                        CameraInstance instance = (CameraInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Camera);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Fixed);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o.GetType() == typeof(FlybyCameraInstance))
-                    {
-                        FlybyCameraInstance instance = (FlybyCameraInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.FlybyCamera);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Flags);
-                        writer.Write(instance.Number);
-                        writer.Write(instance.Sequence);
-                        writer.Write(instance.Roll);
-                        writer.Write(instance.Speed);
-                        writer.Write(instance.Timer);
-                        writer.Write(instance.Fov);
-                        writer.Write(instance.RotationX);
-                        writer.Write(instance.RotationY);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o.GetType() == typeof(SinkInstance))
-                    {
-                        SinkInstance instance = (SinkInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Sink);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Strength);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o.GetType() == typeof(SoundSourceInstance))
-                    {
-                        SoundSourceInstance instance = (SoundSourceInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.SoundSource);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.SoundId);
-                        writer.Write(instance.Flags);
-                        writer.Write(instance.CodeBits);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                }
-
-                // Write triggers
-                int numTriggers = triggersList.Count;
-                writer.Write(numTriggers);
-                foreach (var t in triggersList)
-                {
-                    writer.Write((ushort)rooms.ReferenceIndexOf(t.Room));
-                    writer.Write(t.Area.Left);
-                    writer.Write(t.Area.Top);
-                    writer.Write(t.Area.Right);
-                    writer.Write(t.Area.Bottom);
-                    writer.Write((ushort)t.TriggerType);
-                    writer.Write((ushort)t.TargetType);
-                    writer.Write(t.TargetData);
-                    writer.Write((t.TargetObj != null ? (int)objectsList.IndexOf(t.TargetObj) : (int)-1));
-                    writer.Write(t.Timer);
-                    writer.Write(t.CodeBits);
-                    writer.Write(t.OneShot);
-
-                    writer.WriteFiller(0x00, 8);
-
-                    // No more data, in future we can expand the structure using chunks
-                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                 }
 
                 // Write rooms
@@ -353,19 +193,11 @@ namespace TombEditor.Geometry.IO
                                 writer.Write(b.WSFaces[n]);
                             for (int n = 0; n < 4; n++)
                                 writer.Write(b.RFFaces[n]);
-
-                            writer.Write((b.FloorPortal != null ? (int)portalsList.IndexOf(b.FloorPortal) : (int)-1));
-                            writer.Write((ushort)b.FloorOpacity);
-                            writer.Write((b.CeilingPortal != null ? (int)portalsList.IndexOf(b.CeilingPortal) : (int)-1));
-                            writer.Write((ushort)b.CeilingOpacity);
-                            writer.Write((b.WallPortal != null ? (int)portalsList.IndexOf(b.WallPortal) : (int)-1));
-                            writer.Write((ushort)b.WallOpacity);
-                            writer.Write(b.NoCollisionFloor);
-                            writer.Write(b.NoCollisionCeiling);
+                            
                             writer.Write((ushort)b.FloorDiagonalSplit);
                             writer.Write((ushort)b.CeilingDiagonalSplit);
-                            writer.Write(b.FloorSplitDirectionToggled);
-                            writer.Write(b.CeilingSplitDirectionToggled);
+                            writer.Write(b.FloorSplitDirectionIsXEqualsY);
+                            writer.Write(b.CeilingSplitDirectionIsXEqualsY);
 
                             for (int f = 0; f < 29; f++)
                             {
@@ -408,76 +240,8 @@ namespace TombEditor.Geometry.IO
                             writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                         }
                     }
-
-                    // Write lights
-                    uint numLights = 0;
-                    foreach (var o in r.Objects)
-                        if (o.GetType() == typeof(Light))
-                            numLights++;
-                    writer.Write(numLights);
-
-                    foreach (var o in r.Objects)
-                    {
-                        if (o.GetType() == typeof(Light))
-                        {
-                            var l = (Light)o;
-
-                            writer.Write((ushort)l.Type);
-                            writer.Write(l.Position);
-                            writer.Write(l.Intensity);
-                            writer.Write(l.Color);
-                            writer.Write(l.In);
-                            writer.Write(l.Out);
-                            writer.Write(l.Len);
-                            writer.Write(l.Cutoff);
-                            writer.Write(l.RotationX);
-                            writer.Write(l.RotationY);
-                            writer.Write(l.Enabled);
-                            writer.Write(l.CastsShadows);
-                            writer.Write(l.IsDynamicallyUsed);
-                            writer.Write(l.IsStaticallyUsed);
-
-                            writer.WriteFiller(0x00, 8);
-
-                            // No more data, in future we can expand the structure using chunks
-                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                        }
-                    }
-
-                    // Write imported geometry
-                    uint numImportedGeometry = 0;
-                    foreach (var o in r.Objects)
-                        if (o.GetType() == typeof(RoomGeometryInstance))
-                            numImportedGeometry++;
-                    writer.Write(numImportedGeometry);
-
-                    foreach (var o in r.Objects)
-                    {
-                        if (o.GetType() == typeof(RoomGeometryInstance))
-                        {
-                            RoomGeometryInstance instance = (RoomGeometryInstance)o;
-
-                            writer.Write(instance.Position);
-                            writer.Write((uint)modelsList.IndexOf(instance.Model.Name));
-
-                            writer.WriteFiller(0x00, 8);
-
-                            // No more data, in future we can expand the structure using chunks
-                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                        }
-                    }
-
-                    // Write some references
-                    uint numPortalsForThisRoom = (uint)r.Portals.Count();
-                    writer.Write(numPortalsForThisRoom);
-                    foreach (var portalInRoom in r.Portals)
-                        writer.Write((uint)portalsList.IndexOf(portalInRoom));
-
-                    uint numTriggersForThisRoom = (uint)r.Triggers.Count();
-                    writer.Write(numTriggersForThisRoom);
-                    foreach (var triggerInRoom in r.Triggers)
-                        writer.Write((uint)triggersList.IndexOf(triggerInRoom));
-
+                    
+                    // Write room properties
                     writer.Write(r.AmbientLight);
                     writer.Write(r.AlternateGroup);
                     writer.Write((r.AlternateRoom != null ? (int)rooms.ReferenceIndexOf(r.AlternateRoom) : (int)-1));
@@ -504,41 +268,200 @@ namespace TombEditor.Geometry.IO
                     writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                 }
 
-                // Write animated textures
-                /*int numAnimatedTextures = level.AnimatedTextures.Count;
-                writer.Write(numAnimatedTextures);
-                foreach (var textureSet in level.AnimatedTextures)
+                // Write portals
+                writer.Write(portalsList.Count);
+                foreach (var p in portalsList)
                 {
-                    writer.Write((byte)textureSet.Effect);
+                    writer.Write((ushort)rooms.ReferenceIndexOf(p.Room));
+                    writer.Write((ushort)rooms.ReferenceIndexOf(p.AdjoiningRoom));
+                    writer.Write((ushort)p.Direction);
+                    writer.Write(p.Area.Left);
+                    writer.Write(p.Area.Top);
+                    writer.Write(p.Area.Right);
+                    writer.Write(p.Area.Bottom);
+                    writer.Write((byte)p.Opacity);
 
-                    int numTexturesInSet = textureSet.Textures.Count;
-                    writer.Write(numTexturesInSet);
+                    writer.WriteFiller(0x00, 16);
 
-                    foreach (var texture in textureSet.Textures)
+
+                    // No more data, in future we can expand the structure using chunks
+                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                }
+
+                // Write objects
+                writer.Write(objectsList.Count);
+                foreach (var o in objectsList)
+                {
+                    if (o is MoveableInstance)
                     {
-                        writer.Write(texture.Page);
-                        writer.Write(texture.X);
-                        writer.Write(texture.Y);
+                        var instance = (MoveableInstance)o;
+
+                        writer.Write((ushort)Prj2ObjectType.Moveable);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.ItemType.Id);
+                        writer.Write(instance.Position);
+                        writer.Write(instance.RotationY);
+                        writer.Write(instance.RotationYRadians);
+                        writer.Write(instance.Ocb);
+                        writer.Write(instance.Invisible);
+                        writer.Write(instance.ClearBody);
+                        writer.Write(instance.CodeBits);
+                        writer.Write(instance.Color);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is StaticInstance)
+                    {
+                        var instance = (StaticInstance)o;
+
+                        writer.Write((ushort)Prj2ObjectType.Static);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.ItemType.Id);
+                        writer.Write(instance.Position);
+                        writer.Write(instance.RotationY);
+                        writer.Write(instance.RotationYRadians);
+                        writer.Write(instance.Ocb);
+                        writer.Write(instance.Color);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is CameraInstance)
+                    {
+                        var instance = (CameraInstance)o;
+
+                        writer.Write((ushort)Prj2ObjectType.Camera);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.Position);
+                        writer.Write(instance.Fixed);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is FlybyCameraInstance)
+                    {
+                        var instance = (FlybyCameraInstance)o;
+
+                        writer.Write((ushort)Prj2ObjectType.FlybyCamera);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.Position);
+                        writer.Write(instance.Flags);
+                        writer.Write(instance.Number);
+                        writer.Write(instance.Sequence);
+                        writer.Write(instance.Roll);
+                        writer.Write(instance.Speed);
+                        writer.Write(instance.Timer);
+                        writer.Write(instance.Fov);
+                        writer.Write(instance.RotationX);
+                        writer.Write(instance.RotationY);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is SinkInstance)
+                    {
+                        var instance = (SinkInstance)o;
+
+                        writer.Write((ushort)Prj2ObjectType.Sink);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.Position);
+                        writer.Write(instance.Strength);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is SoundSourceInstance)
+                    {
+                        var instance = (SoundSourceInstance)o;
+
+                        writer.Write((ushort)Prj2ObjectType.SoundSource);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.Position);
+                        writer.Write(instance.SoundId);
+                        writer.Write(instance.Flags);
+                        writer.Write(instance.CodeBits);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is Light)
+                    {
+                        var instance = (Light)o;
+
+                        writer.Write((ushort)Prj2ObjectType.Light);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write((ushort)instance.Type);
+                        writer.Write(instance.Position);
+                        writer.Write(instance.Intensity);
+                        writer.Write(instance.Color);
+                        writer.Write(instance.In);
+                        writer.Write(instance.Out);
+                        writer.Write(instance.Len);
+                        writer.Write(instance.Cutoff);
+                        writer.Write(instance.RotationX);
+                        writer.Write(instance.RotationY);
+                        writer.Write(instance.Enabled);
+                        writer.Write(instance.CastsShadows);
+                        writer.Write(instance.IsDynamicallyUsed);
+                        writer.Write(instance.IsStaticallyUsed);
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                    }
+                    else if (o is RoomGeometryInstance)
+                    {
+                        var instance = (RoomGeometryInstance)o;
+                        writer.Write((ushort)Prj2ObjectType.RoomGeometry);
+                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
+                        writer.Write(instance.Position);
+                        writer.Write((uint)modelsList.IndexOf(instance.Model.Name));
+
+                        writer.WriteFiller(0x00, 8);
+
+                        // No more data, in future we can expand the structure using chunks
+                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                     }
                 }
-                */
 
-                // TODO: waiting for final animated textures code
-                uint numAnimatedTextures = 0;
-                writer.Write(numAnimatedTextures);
-
-                uint numTextureSounds = 0; // level.TextureSounds.Count;
-                writer.Write(numTextureSounds);
-                /*foreach (var sound in level.TextureSounds)
+                // Write triggers
+                int numTriggers = triggersList.Count;
+                writer.Write(numTriggers);
+                foreach (var t in triggersList)
                 {
-                    writer.Write(sound.X);
-                    writer.Write(sound.Y);
-                    writer.Write(sound.Page);
-                    writer.Write((byte)sound.Sound);
-                }*/
+                    writer.Write((ushort)rooms.ReferenceIndexOf(t.Room));
+                    writer.Write(t.Area.Left);
+                    writer.Write(t.Area.Top);
+                    writer.Write(t.Area.Right);
+                    writer.Write(t.Area.Bottom);
+                    writer.Write((ushort)t.TriggerType);
+                    writer.Write((ushort)t.TargetType);
+                    writer.Write(t.TargetData);
+                    writer.Write((t.TargetObj != null ? (int)objectsList.IndexOf(t.TargetObj) : (int)-1));
+                    writer.Write(t.Timer);
+                    writer.Write(t.CodeBits);
+                    writer.Write(t.OneShot);
 
-                writer.WriteFiller(0x00, 256);
+                    writer.WriteFiller(0x00, 8);
 
+                    // No more data, in future we can expand the structure using chunks
+                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                }
+                
                 // No more data, in future we can expand the structure using chunks
                 writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
 
