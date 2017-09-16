@@ -88,6 +88,10 @@
     <Compile Include="Graphics\Camera.cs" />
     <Compile Include="IO\Chunk.cs" />
     <Compile Include="IO\LEB128.cs" />
+    <Compile Include="NG\NGExtraParameter.cs" />
+    <Compile Include="NG\NGTimerParameter.cs" />
+    <Compile Include="NG\NGTrigger.cs" />
+    <Compile Include="NG\NGTriggersDefinitions.cs" />
     <Compile Include="Utils\Hash.cs" />
     <Compile Include="Utils\ImageC.cs" />
     <Compile Include="Graphics\TextureLoad.cs" />
@@ -145,6 +149,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NG\NG_Constants.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NG\COLORS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="NG\INVENTORY-ITEM-INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />

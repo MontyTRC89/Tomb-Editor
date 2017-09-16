@@ -13,6 +13,7 @@ using TombEditor.Geometry.IO;
 using TombLib.Wad;
 using TombEditor.Controls;
 using TombLib.Utils;
+using TombLib.NG;
 
 namespace TombEditor
 {
@@ -1884,8 +1885,7 @@ namespace TombEditor
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string result = Utils.GetRelativePath("E:\\Vecchi\\Tomb-Editor\\Build\\coastal.prj",
-                            "E:\\Vecchi\\Tomb-Editor\\Build\\Graphics\\Wads\\coastal.wad");
+            NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
         }
     }
 }

@@ -1,0 +1,4781 @@
+; THIS FILE IS USED ONLY AS reference to translate the description
+; of triggers. Don't translate this file, it will be ignored by NGLE program
+; If you wish translate the triggers go to http://www.trlevelmanager.net/ng.htm  website
+; and click on the link about [Translation TRNG Project] to have all tools and informations
+; to translate the trng tools
+
+<START_TRIGGERWHAT_15_O_H>
+#TIMER_SIGNED_LONG#
+<END>
+
+;FLIP EFFECTS   --------------------------------- FLIPEFFECT
+<START_TRIGGERWHAT_9_O_H>
+;List of flipeffects constants for "trigger what" flipeffect (code = 9) to show in Object field
+;From 0 to 46 they are flipeffects should work on standard tomb4 engine
+;following (greather than 46) are flipeffects working only on TRNG (Tomb Raider 
+;Next Generation engine)
+
+;note: some old flipeffect, requiring an object like argument, has been moved
+;in Action trigger ("Perform flipeffect on current object") because performing directly
+;above flipeffects you'll get a crash since you can not specify an object using 
+;a common flipeffect trigger
+
+1:OldFlip. Plays a fast single eartquake, sound and rumbler.
+2:OldFlip. Plays a flooding sound effect
+4:OldFlip. Jump to next level (following position in script.dat)
+5:OldFlip. Triggers a camera in puzzle animation belove the puzzle_hole.
+7:OldFlip. Plays continuos earthquake sound effect and rumbler.
+8:OldFlip. Swap crowbar with empty hand on Lara's right hand
+10:OldFlip. Will play the <&>sound effect number.
+11:OldFlip. Will play an explosion sound effect.
+12:OldFlip. Remove items (weapons, crowbar, flare) from Lara's hands
+14:OldFlip. Adds/Removes Right Gun from Lara's hand and/or holster
+15:OldFlip. Adds/Removes Left Gun from Lara's hand and/or holster
+16:OldFlip. Creates right gun constant flare
+17:OldFlip. Creates left gun constant flare
+26:OldFlip. Initialise Hair of Lara, to call after swap mesh
+28:OldFlip. Set the RGB color for the fog bulbs to the <&>value
+30:OldFlip. (?) Force Von Croy to reach <&>AI_FOLLOW OCB when ???
+31:OldFlip. Kills any swarming scarab beetles that are currently active.
+44:OldFlip. Free left hand of Lara.
+45:OldFlip. Start screen timer and force Von Croy to reach <&>AI_FOLLOW OCB number
+46:OldFlip. Kill all enemies. They disappear, no dying animation.
+
+;end of standard flipeffects, from next row starts new ng flipeffect
+
+47:Inventory-Item. Remove <&>inventory-item from inventory
+48:Inventory-Item. Increase (+1) in (E)way the number of <&>inventory-item in inventory
+49:Inventory-Item. Decrease (-1) number of <&>inventory-item in inventory
+50:Inventory-Item. Set (E) number of <&>inventory-item
+51:Keyboard. Disable <&>keyboard command for (E) time
+52:Keyboard. Enable newly <&>keyboard command
+53:Keyboard. Simulate receivement of <&>keyboard comand in (E) way
+54:Screen. Hide screen for <&>time in (E) way
+55:Screen. Show screen (to abort Hide Screen effect)
+56:Animated Textures. Stop animation of <&>th range
+57:Animated Textures. Restart animation of <&>th range
+58:Animated Textures. Set <&>th frame in (E)th texture of first p-range
+59:Animated Textures. Set <&>th frame in (E)th texture of second p-range
+60:Animated Textures. Invert scroll direction in <&>th range
+61:Weather. Fog. Enable Volumetric FX in current level (Disable fog Distance)
+62:Weather. Fog. Disable Volumetric FX in current level (Enable fog Distance)
+63:Lara. (Health) Kill Lara in <&>way 
+64:Text. Print ExtraNG <&>string on screen for (E) seconds
+65:Text. Print Standard <&>string on screen for (E) seconds
+66:Text. Set <&>color and (E)position for next Print String flipeffect
+67:Text. Erase all strings showed with Print String effect
+68:Sound. (CD) Play <&>CD track in (E) way on channel1
+69:Sound. (CD) Stop all CD tracks (channel1 and channel2)
+70:Sound. Play <&>Sound sample of first group (0-255) for (E) time
+71:Sound. Play <&>Sound sample of second group (256-max) for (E) time
+72:Sound. Stop <&>Sound sample of first group (0-255)
+73:Sound. Stop <&>Sound sample of second group (256-max)
+74:Sound. Stop all sound samples currently played
+75:Text. Set blink <&>status and (E)speed
+76:Text. Reset all text formatting settings with default values 
+77:Lara. (Animation) Force <&>Animation (0-255) of (E)slot for Lara
+78:Lara. (Animation) Force <&>StateID and (E)next StateID for Lara
+79:Lara. (Move) Move Lara in LARA_START_POS with <&>OCB value in (E)way
+80:Lara. (Animation) Force <&>Animation (256-512) of (E)slot for Lara
+81:Text. Set <&>size characters for next print string command
+82:Delay. Load <&>level in (E)seconds
+83:Lara. (Weapons) Remove weapons or flare from lara's hands
+84:CutScene. Set FadeIn for <&>time
+85:CutScene. Set FadeOut for <&>time in (E)way
+86:Timer. <&>Show/Hide screen timer
+87:AnimCommand. Add to current object the <&>Effect for (E)time
+88:Mirror. (E)Enable/Disable mirror with <&>hidden room 
+89:Lara. (Health) Damage Lara, decreasing life by <&>percentage of full vitality in (E) way
+90:Lara. (Health) Recharge Lara, increase life by <&>percentage of full vitality in (E) way
+91:Lara. (Health) Lara invulnerable for <&>time with (E)effect
+92:Lara. (Health) Remove flames from Lara
+93:Lara. (Health) Remove invulnerable status for Lara
+94:Animated Textures. Start <&>Texture Sequence for (E)animated range
+95:Animated Textures. Stop <&>Texture Sequence
+96:Lara. (Weapons) Disarm Lara in <&>way
+97:Backup. Save in silent way the current game in <&> backup file
+98:Backup. Restore (load) the <&>backup file in (E)way
+99:Lara. (Mesh) Swap meshes of Lara with <&>slot in (E)way
+100:Lara. (Mesh) Set single <&>Lara mesh with mesh got from (E)slot
+101:AnimCommand. Active heavy triggers in sector where is Lara
+102:AnimCommand. Turn (facing) current object of <&>degrees in (E)way
+103:AnimCommand. Update also original Lara position. (after a SetPosition)
+104:Lara. (Health) <&>Enable/disable infinite Air for Lara underwater
+105:Lara. (Mesh) Copy meshes from <&>slot to Lara meshes in (E)way
+106:Lara. (Mesh) Backup meshes of Lara in <&>slot in (E)way
+107:Lara. (Weapons) <&>Enable/disable usage of weapons for Lara
+108:Lara. (Mesh) <&>Hide/Show holster meshes
+109:GlobalTriggers. <&>Enable/Disable the (E)GlobalTrigger
+110:Lara. (Health) Increase air for Lara of <&>units in (E)way
+111:Lara. (Health) Decrease Damage Bar of Damage room of <&>units in (E)way
+112:Lara. (Health) Decrease Cold bar of Cold room of <&>units in (E)way
+113:Lara. (Health) Poison Lara with <&>intensity of poison
+114:Lara. (Health) Remove poison from Lara
+115:Room. Set the <&>room as (E)type of room
+116:Room. Remove from the <&>room the (E)type of room
+117:Weather. Set Rain/Snow intensity for <&>room with the new (E)intensity value
+118:TriggerGroup. Perform <&>TriggerGroup from script.dat in (E)way
+119:Camera. Set current CAMERA as follow camera on(&)Axis until (E)condition
+120:Camera. Stop current axis or effect camera and the CAMERA linked with it
+121:Lara. (Skills) Disable <&>Skill
+122:Lara. (Skills) Restore <&>Skill
+123:Camera. Use current CAMERA to perform <&>Effect at (E)distance from target
+124:FlipMap. Enable <&>flipmap with (E)buttons for activation
+125:FlipMap. FlipOn for <&>flipmap 
+126:FlipMap. FlipOff for <&>flipmap
+127:Organizer. Enable <&>Organizer
+128:Organizer. Stop <&>Organizer
+129:Sound. (CD) Play <&>CD track in (E) way on channel2
+130:Sound. (CD) Stop CD track of <&>Channel
+131:Sound. (CD) Play <&>Imported file in loop mode on (E)channel
+132:Sound. (CD) Play <&>Imported file in single play mode on (E)channel
+133:Sound. (CD) Set <&>volume for audio track on (E)channel
+134:Lara. (Physics) Pad Mode. Attract Lara in <&>direction with (E)speed
+135:Lara. (Physics) Over Mode. Attract Lara in <&>direction with (E)speed
+136:Lara. (Physics) Vertical. Attract Lara <&>up/down with (E)speed
+
+137:ItemGroup. Move continuously forward-backward <&>ItemGroup of (E) clicks
+138:ItemGroup. Move up <&>ItemGroup for (E) clicks
+139:ItemGroup. Move down <&>ItemGroup for (E) clicks
+140:ItemGroup. Move to north <&>ItemGroup for (E) clicks
+141:ItemGroup. Move to east <&>ItemGroup for (E) clicks
+142:ItemGroup. Move to south <&>ItemGroup for (E) clicks
+143:ItemGroup. Move to west <&>ItemGroup for (E) clicks
+144:ItemGroup. Move continuosly upstairs-downstairs <&>ItemGroup of (E) clicks
+145:ItemGroup. Activate <&>ItemGroup with (E)Timer value
+146:ItemGroup. Untrigger <&>ItemGroup with (E)Timer value
+147:ItemGroup. Disable all continuos actions of <&>ItemGroup
+
+148:Text. Print ExtraNG <&>string on screen, freeze game and wait Escape
+149:Text. Print Standard <&>string on screen, freeze game and wait Escape
+
+150:Weather. Sky, <&>Enable/Disable the (E)Layer1/2
+151:Weather. Lightning, <&>Enabled/Disable the Lightning
+152:Weather. Sky, Set new <&>Color for (E)Layer1/2
+153:Weather. Sky, Set new <&>Speed for (E)Layer1/2
+154:Weather. Sky, change slowly the color of Layer1 to <&>color in (E)seconds
+155:Weather. Sky, change slowly the color of Layer2 to <&>color in (E)seconds
+156:Weather. Snow. Set <&>new state for Snow in current level
+157:Weather. Rain. Set <&>new state for Rain in current level
+158:Lara. (Physics) Pad+Over Mode. Attract Lara in <&>direction with (E)speed
+159:Distance. Set level far view (max distance) to <&>number of sectors 
+160:Statics. Explosion. Shatter <&>static
+161:Statics. Collision. Remove collision from <&>static
+162:Statics. Collision. Restore collision for <&>static
+163:Statics. Transparency. Set ICE transparency for <&>static
+164:Statics. Transparency. Set GLASS transparency for <&>static
+165:Statics. Transparency. Remove any transparency from <&>static
+166:Statics. Move. Move static with data in <&>parameters list
+167:Moveable. Move. Move moveable with data in <&>paramters list
+168:Sound. Play <&>sound (single playback) of global sound map (v130)
+169:Lara. (Animation) Force <&>Animation for Lara, preserve StateId
+170:Lara. (Animation) Force <&>Animation for Lara, set new StateId
+171:Lara. (Animation) Force <&>Animation for Lara, set neutral StateId 
+172:Statics. Rotation. Rotate static with data of <&>Parameters list
+173:Moveable. Rotation. Rotate moveable using data of <&>Parameters list
+174:Statics. Rotation. Stop all rotations for <&>Static
+175:Statics. Rotation. Stop all rotations of statics in <&>Room
+176:Moveable. Rotation. Stop all rotations of moveables in <&>Room
+177:Statics. Move. Stop the motion of <&>Static
+178:Moveable. Move. Stop motions of all moveables in <&>Room
+179:Statics. Move. Stop the movements of all statics in <&>Room
+180:Statics. Explosion. Explosion of <&>static
+181:Statics. Explosion. Set explosive attribute for <&>static
+182:Statics. Explosion. Remove explosive attribute for <&>static
+183:Statics. Poison. Set poison attribute for <&>static
+184:Statics. Poison. Remove poison attribute for <&>static
+185:Statics. Damage. Set damage attribute for <&>static
+186:Statics. Damage. Remove damage attribute for <&>static
+187:Statics. Burning. Set burning attribute for <&>static
+188:Statics. Burning. Remove burning attribute for <&>static
+189:Statics. Visibility. Set <&>static as invisible
+190:Statics. Visibility. Render newly visibile <&>static
+191:Statics. Color. Change color of static using <&>PARAM_COLOR_ITEM data
+192:TriggerGroup. Stop <&>TriggerGroup (it had been enabled in continue mode)
+193:Sound. (CD) Play <&>CD Track on (E)channel with final restore of old track
+194:Weather. Fog. Set <&>Start Distance Fog value
+195:Weather. Fog. Change Start Fog distance to <&>Distance in (E)seconds
+196:Weather. Fog. Pulse Start distance Fog from current to <&>Distance in (E)seconds
+197:Weather. Fog. <&>Enable/Disable all fog (distance fog or fog bulbs)
+198:Weather. Fog. Stop the Pulse Start distance fog and set new <&>Fog Distance
+199:Lara. (Mesh) Torch. <&>Light/Put-Out the Torch in the hands of Lara
+200:Lara. (Mesh) Torch. <&>Give/Remove Torch to/from hand of Lara
+201:Text. Vertical Scrolling of ExtraNG <&>string with (E) speed
+202:Text. Vertical Scrollling. Abort all vertical scrolling text operations
+203:Text. Print formatted text <&>ExtaNg string with (E)formatting data
+204:Text. Print. Remove (&)Extra NG String from screen
+205:Text. Vertical Scrolling of ExtraNG <&>string with (E)formatting data
+206:Text. Horizontal Scrolling of ExtraNG <&>string with (E)formatting data
+207:Text. Print PSX <&>String with (E)formatting data
+208:Text. Print PC <&>String with (E)formatting data
+209:Text. Print PC <&>string with (E)formatting data, and wait Escape 
+210:Text. Print ExtraNG <&>string with (E)formatting data, and wait Escape
+211:AnimCommand. Set temporary Free Hands until is performing <&>Animation
+212:AnimCommand. Set temporary Free Hands for <&>Seconds
+213:AnimCommand. Remove Free Hands and restore previous status
+214:Camera. Change camera mode with <&>Parameters for (E)time
+215:Camera. Restore camera mode after a "change camera" flipeffect
+216:AnimCommand. Reset the number of turns (jump power) of ParallelBar
+217:Images. Show image with data in <&>Image script command for (E)Seconds
+218:Images. Remove from screen the current Pop Up Image
+219:Diary. Add <&>Extra NG String to (E)Diary
+220:Diary. Clear all strings in <&>Diary
+221:Diary. Remove last string from <&>Diary
+222:Diary. Show <&>Diary at (E)page
+223:Show Statistics Screen
+224:Weather. Fog. Set the <&>Color for Distance Fog
+225:Weather. Fog. Enable Hardware Fog (removed, no more effect)
+226:Weather. Fog. Set <&>Max visibility distance for Fog Bulbs
+227:Weather. Fog. Set <&>End Fog limit for Distance fog
+228:Weather. Fog. Change End limit of Distance Fog in <&>way with (E)speed
+229:Weather. Fog. Change Start limit of Distance Fog in <&>way with (E)speed
+230:Weather. Fog. Stop the <&>Change limit of Distance fog effect
+231:Variables. Numeric. Add to <&>Variable the (E)value
+232:Variables. Numeric. Set <&>Variable with (E)value
+233:Variables. Numeric. Substract from <&>Variable the (E)value
+234:Variables. Numeric. Set in <&>Variable the (E)bit
+235:Variables. Numeric. Clear in <&>Variable the (E)bit
+236:Variables. Store. Copy CurrentValue to <&>Store variable
+237:Variables. Store. Copy <&>Store variable to CurrentValue
+238:Variables. Text. Copy the <&>Text Variable to (E)Text Variable
+239:Variables. Text. Copy the <&>NG String to (E)Text Variable.
+240:Variables. Text. Add to Big Text the <&>Extra NG String with (E)Separator
+241:Variables. Clear. Clear the <&>Variable group
+242:Variables. Text. Add to Big Text the <&>Text Variable with (E)Separator
+243:Variables. Text. Add to Big Text the <&>Numeric Variable with (E)Separator
+244:Variables. Memory. Copy to <&>Numeric Variable the (E)Savegame Memory value
+245:Variables. Memory. Copy from <&>Numeric Variable to (E)Savegame Memory
+246:Variables. Memory. Set in <&>Savegame Memory the (E)Value
+247:Variables. Memory. Set in <&>Savegame Memory the (E)Bit
+248:Variables. Memory. Clear in <&>Savegame Memory the (E)Bit
+249:Variables. Memory. Add to <&>Savegame Memory the (E)Value
+250:Variables. Memory. Subtract to <&>Savegame Memory the (E)Value
+251:Variables. Numeric. Multiply <&>Numeric Variable by (E)Value
+252:Variables. Numeric. Set in <&>Numeric Variable the (E)Negative Value
+253:Variables. Numeric. Divide <&>Numeric Variable by (E)Value
+254:Variables. Memory. Set in <&>Savegame Memory the (E)Negative Value
+255:Variables. Memory. Set in <&>Selected Item memory the (E)Value
+256:Variables. Memory. Copy to <&> Numeric Variable the (E)Selected Item Memory 
+257:Variables. Memory. Copy from <&>Numeric Variable to (E)Selected Item Memory
+258:Variables. Memory. Add to <&>Selected Item Memory the (E)Value
+259:Variables. Memory. Set in <&>Selected Item Memory the (E)Bit
+260:Variables. Memory. Clear in <&>Selected Item Memory the (E)Bit
+261:Variables. Memory. Set in <&>Selected Item Memory the (E)Big Number value
+262:Variables. Memory. Set in <&>Savegame Memory the (E)Big Number value
+263:Variables. Numeric. Set in <&>Numeric Variable the (E)Big Number value
+264:Variables. Timer. Start the <&>TRNG Timer in (E)Mode
+265:Variables. Timer. Stop the <&>TRNG Timer
+266:Variables. Timer. Initialize <&>TRNG Timer to (E)Seconds
+267:Variables. Timer. Initialize <&>TRNG Timer to (E)Big Number seconds
+268:Variables. Timer. Initialize <&>TRNG Timer to (E)Frame Ticks (1/30 of second)
+269:Variables. Timer. Show <&>TRNG Timer in (E)Position
+270:Variables. Timer. Hide <&>TRNG Timer in (E)Seconds
+271:Variables. Numeric. Copy <&>Numeric Variable to CurrentValue
+272:Variables. Numeric. Copy CurrentValue to <&>Numeric Variable
+273:Variables. Memory. Add to <&>Savegame Memory the CurrentValue
+274:Variables. Memory. Subtract from <&>Savegame Memory the CurrentValue
+275:Variables. Memory. Add to <&>Selected Item Memory  the CurrentValue
+276:Variables. Memory. Subtract from <&>Item Memory the CurrentValue
+277:Variables. Memory. Copy from <&>Code Memory to CurrentValue
+278:Variables. Memory. Copy from CurrentValue to <&>Code Memory
+279:Variables. Memory. Set in <&>Code Memory the (E)Value
+280:Variables. Memory. Add to <&>Code Memory the (E)Value
+281:Variables. Memory. Set in <&>Code Memory the (E)Bit 
+282:Variables. Memory. Clear in <&>Code Memory the (E)Bit
+283:Variables. Memory. Add to <&>Code Memory the CurrentValue
+284:Variables. Numeric. Invert the sign of <&>Numeric Variable
+285:Variables. Numeric. Add to CurrentValue the <&>Numeric Variable
+286:Variables. Numeric. Subtract from CurrentValue the <&>Numeric Variable
+287:Variables. Numeric. Divide CurrentValue by <&>Numeric Variable
+288:Variables. Numeric. Multiply CurrentValue by <&>Numeric Variable
+289:Switch. Perform the <&>Switch script command
+290:Organizer. Resume <&>Organizer in (E)way
+291:Variables. Numeric. Copy to<&>Numeric Variable the (E)ColorRGB
+292:Variables. Memory. Set the <&>Slot as Selected Slot Memory
+293:Variables. Memory. Copy from (E)Selected Slot Memory to <&>Numeric Variable
+294:Variables. Memory. Copy from <&>Numeric Variable to (E)Selected Slot Memory
+295:Variables. Memory. Copy from (E)Selected Animation Memory to <&>Numeric Variable
+296:Variables. Memory. Copy from <&>Numeric Variable to (E)Selected Animation Memory
+297:Variables. Convert the <&>NGLE Room index in TOMB Room Index to CurrentValue
+298:Variables. Convert the Tomb Room Index to NGLE Room Index in CurrentValue
+299:Variables. Convert the NGLE Room Index to Tomb Room Index in CurrentValue
+300:Variables. Convert the Tomb Item Index to NGLE Item Index in CurrentValue
+301:Variables. Convert the NGLE Item Index to Tomb Item Index in CurrentValue
+302:Variables. Save the coordinates and facing of Item index in CurrentValue
+303:Variables. Numeric. Generate in <&>Numeric Variable the (E)random number
+304:Variables. Numeric. Generate in <&>Numeric Variable a random CurrentValue
+305:Variables. Numeric. Perform operation <&>NumericVariable AND (E)Number
+306:Inventory-Item. Pop up inventory to select the <&>Item in (E)way
+307:Variables. Memory. Set the <&>Animation as Seleted Animation Memory
+308:Variables. Log. Print in log file the <&>Extra NG String
+309:Variables. Log. Print the value of <&>Numeric Variable in (E)Format
+310:Collision. Set North-West <&>Tri-Collision changing floor of (E)Clicks
+311:Collision. Set North-East <&>Tri-Collision changing floor of (E)Clicks
+312:Collision. Set South-East <&>Tri-Collision changing floor of (E)Clicks
+313:Collision. Set South-West <&>Tri-Collision changing floor of (E)Clicks
+314:Collision. Set North <&>Slope-Collision changing floor of (E)Clicks
+315:Collision. Set South <&>Slope-Collision changing floor of (E)Clicks
+316:Collision. Set East <&>Slope-Collision changing floor of (E)Clicks
+317:Collision. Set West <&>Slope-Collision changing floor of (E)Clicks
+318:Collision. Set North <&>Ceiling-Slope-Collision changing ceiling of (E)Clicks
+319:Collision. Set South <&>Ceiling-Slope-Collision changing ceiling of (E)Clicks
+320:Collision. Set East <&>Ceiling-Slope-Collision changing ceiling of (E)Clicks
+321:Collision. Set West <&>Ceiling-Slope-Collision changing ceiling of (E)Clicks
+322:Collision. Set North-West <&>Ceiling-Tri-Collision changing ceiling of (E)Clicks
+323:Collision. Set North-East <&>Ceiling-Tri-Collision changing ceiling of (E)Clicks
+324:Collision. Set South-West <&>Ceiling-Tri-Collision changing ceiling of (E)Clicks
+325:Collision. Set South-East <&>Ceiling-Tri-Collision changing ceiling of (E)Clicks
+326:Collision. Set North-West <&>Tri-Split-Collision changing floor of (E)Clicks
+327:Collision. Set North-East <&>Tri-Split-Collision changing floor of (E)Clicks
+328:Collision. Set South-East <&>Tri-Split-Collision changing floor of (E)Clicks
+329:Collision. Set South-West <&>Tri-Split-Collision changing floor of (E)Clicks
+330:Collision. Set the <&>Side of closed sector as non-hangable from Lara
+331:Custom Bar. Show the <&>Custom bar on screen for (E)Seconds
+332:Custom Bar. Hide the <&>Custom bar
+333:Flipmap. Alternate continuosly the <&>flipmap with the (E)Frame interval
+334:Flipmap. Stop the alternate of <&>flimap letting the (E)Flipmap type
+335:Variables. Memory. Set the <&>Inventory item as Selected Inventory Memory
+336:Variables. Memory. Copy from <&>Numeric Variable to (E)Inventory Memory
+337:Variables. Memory. Set in <&>Inventory Memory the (E)Value
+338:Variables. Memory. Set in <&>Inventory Memory the (E)Big Number value
+339:Variables. Memory. Copy to <&>Numeric Variable the (E)Inventory Memory
+340:Lara. (Mesh) Swap Mesh of <&>Extra Lara Slots with that of (E)Slot
+341:Swap Mesh. Swap mesh of <&>Slot with mesh of (E)Slot
+342:Variables. Memory. Set in <&>Code Memory the (E)Negative number
+343:Fish. Clear (disable) all fish of <&>fish Type
+344:Swap Mesh. Swap mesh of current Horizont object with <&>Slot mesh
+345:TriggerGroup. Enable newly the one-shot <&>TriggerGroup already performed
+346:Camera. Enable the <&>StandBy camera effect for (E)seconds
+347:Enemy. Freeze all enemies for <&>seconds in (E)way
+348:Enemy. Remove the "freeze all enemies" mode
+349:Lara. (Physics) Trigger clockwise whirl at <&>center and (E)Diameter
+350:Lara. (Physics) Trigger unclockwise whirl at <&>center and (E)Diameter
+351:Variables. Memory. Convert from item address to item index the value in Current Value variable
+352:Statics. Scale a static item using the data in <&>Parameters command
+353:Statics. Stop the endless scaling of the static started with the <&>Parameters command
+354:ItemGroup. Statics. Perform <&>trigger with (E)ItemGroup of statics
+355:Screen. Flash screen with the <&>Light color for (E)Durate
+356:Screen. Remove Infinite Flash effect
+357:Sprite. Show sprite with data in <&>Parameters for (E)Durate
+358:Sprite. Remove from the screen the sprite with data in <&>Parameters
+359:Weather. Perform a lightning with data in <&>Parameters for (E)Durate in Tick frames (1/30 second)
+360:Text. Print unlimited <&>Extra NG String with current settings for infinite time
+361:Weather. Set in advance the rain/snow setting using the intensity of <&>Room
+362:Weather. Stop the endless lightning effect with <&>Parameters
+363:Text. Print ExtraNG <&>string with windows font and formatting data in the (E)Parameters command 
+364:Text. Remove print ExtraNG<&>string with windows font that used data in the (E)Parameters command
+365:Camera. Increase the zoom factor (enable Super Zoom mode) for Binocular
+366:Variables. Boat. Move <&>fuel to boat tank (Local Long Delta variable) in (E)way
+367:Camera. Show black screen for <&>seconds with final curtain effect
+368:Camera. Fade. Stop black screen and open curtain 
+369:Camera. Set Cinema screen with black rows of <&>depth for (E)seconds
+370:AnimCommand. If current item is wading water, add to him twirls (ripples) with <&>Intensity in (E)quantity
+371:TriggerGroup. Perform <&>TriggerGroup from script.dat (Single execution to use when in TriggerGroup there are only commands)
+372:TriggerGroup. Perform <&>TriggerGroup from script.dat (Mutiple performing to use when in TriggerGroup there is some condition)
+373:TriggerGroup. Perform <&>TriggerGroup from script.dat (continue performing to stop with f192 trigger)
+374:GlobalTriggers. Enable GlobalTrigger with ID<&>
+375:GlobalTriggers. Disable GlobalTrigger with ID<&>
+376:Organizer. Resume <&>Organizer from first command (reset)
+377:Organizer. Resume <&>Organizer from next command (immediatly)
+378:Organizer. Resume <&>Organizer from next command in the given time set in next command
+379:Cutscene. Perform the demo.pak at <&>index of Demo script command
+380:Cutscene. Stop the current demo in progress
+381:Cutscene. Camera. Look Leading Actor from <&>View angle and (E)Distance
+382:Cutscene. Camera. Look Extra Actor from <&>View angle and (E)Distance
+383:Cutscene. Camera. Look Lara from <&>View angle and (E)Distance
+384:Cutscene. Camera. Reset cutscene camera and come back to lara's chase camera
+385:Cutscene. Camera. Move up cutscene camera of <&>Clicks in (E)demo frames
+386:Cutscene. Camera. Move down cutscene camera of <&>Clicks in (E)demo frames
+387:Cutscene. Camera. Zoom-in cutscene camera covering <&>Distance in (E)demo frames
+388:Cutscene. Camera. Zoom-out cutscene camera covering <&>Distance in (E)demo frames
+389:Cutscene. Camera. Rotate at right cutscene camera around target by <&>Degrees in (E)demo frames
+390:Cutscene. Camera. Rotate at left cutscene camera around target by <&>Degrees in (E)demo frames
+391:Cutscene. Camera. Freeze cutscene camera for <&>demo frames
+392:Cutscene. Camera. Remove freeze from cutscene camera
+393:Cutscene. Animations. Swap animations set in data of <&>Parameter command for (E)Actor
+394:Cutscene. Free cutscene <&>resources (to call at end of cutscene)
+395:Cutscene. Camera. Actor with <&>role will look Lara (enemy subjective view, enemy not visible)
+396:Cutscene. Camera. Lara will look Actor with <&>role (lara subjective view, lara not visible)
+397:Cutscene. Swap Von Croy <&>mesh with same mesh of (E)slot
+398:Cutscene. AI. Set Von Croy<&>Data with (E)Value 
+399:Cutscene. Lara's texts. Set <&>Color and (E)position for lara's texts
+400:Cutscene. Leading Actor's texts. Set <&>Color and (E)position for leading actor's texts
+401:Cutscene. Extra Actor's texts. Set <&>Color and (E)position for extra actor's texts
+402:Sprite. Stop the animated sprites with data in <&>Parameter at (E)frame
+403:Sprite. Resume animation of sprites with data in <&>Parameter
+404:Secret. Trigger <&>secret
+405:FMV. Play <&>fmv
+406:Camera. Get/Remove<&> infinite durate for current camera (not flyby)
+407:Lara. (Weapons) Force <&>holsters type for Lara 
+408:Lara. (Weapons) Set current selected weapon<&> (no change for mesh)
+409:Images. Perform <&>InputBox parameters and wait for player input
+410:Variables. Text. Clear <&>Text variable
+411:Lara. Set <&>Opacity level of Lara for (E)Seconds
+<END>
+
+<START_EFFECT_10_T>
+0:Sound for little beetle  
+1:Elevator or cableway  
+2:Electric motor  
+3:Vibrating only while lara is walking.
+4:Helicopter
+5:Strong electric motor (like a drill)  
+6:Electric motor (acute) like chain pulley  
+7:Electric motor (more acut than aboves)  
+8:Electric motor (more near (high volume) than aboves)  
+9:Electric motor (more far, low volume)  
+10:Exchange of shots, whistling of shots (cool)  
+11:Motor in neutral (car)  
+18:Chains or a fall of pebbles  
+19:Low buzzing  
+24:Sea surf  
+26:Like effect 5  
+28:Like buzz of eltricity  
+29:Metal sound, chaotic  
+30:Despairing scream. (Cool)  
+31:Short scream of lara when she touchs enemies (ugly)  
+32:Like effect 11  
+33:Landslip  
+34:Like above but more acute  
+35:Thunders (cool)  
+36:Like effect 1  
+39:Ticking of clock work.  
+<END>
+
+
+;FOG BULB COLORS for flipeffect 28
+<START_EFFECT_28_T>
+#COLORS#
+<END>
+
+<START_EFFECT_47_T_H>
+#INVENTORY-ITEM-INDEX#
+<END>
+
+<START_EFFECT_48_T_H>
+#INVENTORY-ITEM-INDEX#
+<END>
+
+<START_EFFECT_48_E_H>
+0: Hidden way (change number of items with no visible effect)
+1: Show animation of item (like it was picked up)
+<END>
+
+<START_EFFECT_49_T_H>
+#INVENTORY-ITEM-INDEX#
+<END>
+
+<START_EFFECT_50_T_H>
+#INVENTORY-ITEM-INDEX#
+<END>
+
+<START_EFFECT_50_E_H>
+#SEQUENCE_128#
+<END>
+
+<START_EFFECT_51_T_H>
+0: All keyboard commands
+1: Up
+2: Down
+3: Left
+4: Right
+5: Duck
+6: Dash
+7: Walk
+8: Jump
+9: Action (and Enter)
+10: Draw Weapon
+11: Use Flare
+12: Look
+13: Roll
+14: Inventory
+15: Step Left
+16: Step Right
+17: Pause
+18: Save the game (special)
+19: Load the game (special)
+20: Select weapon keys (all fast weapon selctors)
+<END>
+
+<START_EFFECT_51_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_52_T_H>
+#SAME_OF#=EFFECT_51_T
+<END>
+
+<START_EFFECT_53_T_H>
+#SAME_OF#=EFFECT_51_T
+<END>
+
+<START_EFFECT_53_E_H>
+0:Single sending
+1:Send command for 0.2 seconds
+2:Send command for 0.3 seconds
+3:Send command for 0.4 seconds
+4:Send command for 0.5 seconds
+5:Send command for 0.7 seconds
+6:Send command for 1 second
+7:Send command for 2 seconds
+8:Send command for 3 seconds
+9:Send command for 4 seconds
+10:Send command for 5 seconds
+11:Send command for 6 seconds
+12:Send command for 7 seconds
+13:Send command for 8 seconds
+14:Send command for 9 seconds
+15:Send command for 10 seconds
+16:Send command for 15 seconds
+17:Send command for 20 seconds
+18:Send command for 25 seconds
+19:Send command for 30 seconds
+20:Send command for 35 seconds
+<END>
+
+<START_EFFECT_54_T_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_54_E_H>
+0:Black screen
+1:Let current frame
+<END>
+
+<START_EFFECT_56_T_H>
+#ANIMATION_RANGE#
+<END>
+
+<START_EFFECT_57_T_H>
+#ANIMATION_RANGE#
+<END>
+
+<START_EFFECT_58_T_H>
+0: 1th Frame
+1: 2th Frame
+2: 3th Frame
+3: 4th Frame
+4: 5th Frame
+5: 6th Frame
+6: 7th Frame
+7: 8th Frame
+8: 9th Frame
+9: 10th Frame
+10: 11th Frame
+11: 12th Frame
+12: 13th Frame
+13: 14th Frame
+14: 15th Frame
+15: 16th Frame
+<END>
+
+<START_EFFECT_58_E_H>
+0: 1th Position
+1: 2th Position
+2: 3th Position
+3: 4th Position
+4: 5th Position
+5: 6th Position
+6: 7th Position
+7: 8th Position
+8: 9th Position
+9: 10th Position
+10: 11th Position
+11: 12th Position
+12: 13th Position
+13: 14th Position
+14: 15th Position
+15: 16th Position
+<END>
+
+
+<START_EFFECT_59_T_H>
+#SAME_OF#=EFFECT_58_T
+<END>
+
+<START_EFFECT_59_E_H>
+#SAME_OF#=EFFECT_58_E
+<END>
+
+<START_EFFECT_60_T_H>
+#ANIMATION_RANGE#
+<END>
+
+<START_EFFECT_63_T_H>
+0: Default death (vitality=0)
+1: Burning and immediate death
+2: Burning and decrease vitality
+<END>
+
+
+
+
+<START_EFFECT_64_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_64_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_65_T_H>
+#STRING_LIST_255#
+<END>
+
+<START_EFFECT_65_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_66_T_H>
+1:Blinking White
+2:White
+3:Red
+4:Blue
+5:Metal (White + Gray)
+6:Gold (White + Yellow)
+7:Dark Metal (Dark Gray + Light Gray)
+8:Yellow
+<END>
+
+<START_EFFECT_66_E_H>
+1:Bottom line, central alignment
+2:Top line, central alignment
+3:Central line, central aligment
+4:Top line, left aligmnet
+5:Top line, right aligment
+6:Bottom line, left aligment
+7:Bottom line, right aligment
+10:Under left default bars
+11:Under right default bars
+<END>
+
+<START_EFFECT_68_T_H>
+#CD_TRACK_LIST#
+<END>
+
+<START_EFFECT_68_E_H>
+0:Single playback
+1:Looped playback
+<END>
+
+<START_EFFECT_70_T_H>
+#SOUND_EFFECT_A#
+<END>
+
+<START_EFFECT_70_E_H>
+#TIME_LIST_32#
+<END>
+
+<START_EFFECT_71_T_H>
+#SOUND_EFFECT_B#
+<END>
+
+<START_EFFECT_71_E_H>
+#TIME_LIST_32#
+<END>
+
+<START_EFFECT_72_T_H>
+#SOUND_EFFECT_A#
+<END>
+
+<START_EFFECT_73_T_H>
+#SOUND_EFFECT_B#
+<END>
+
+<START_EFFECT_75_T_H>
+0:Disable blinking
+1:Enable blinking
+<END>
+
+<START_EFFECT_75_E_H>
+1:Max speed 
+2:Very very fast
+4:Very fast
+8:Fast
+16:Normal
+32:Slow
+64:Very slow
+<END>
+
+<START_EFFECT_77_T_H>
+#ANIMATION_LIST_255#
+<END>
+
+<START_EFFECT_77_E_H>
+#LARA_ANIM_SLOT#
+<END>
+
+<START_EFFECT_78_T_H>
+#STATE_ID_LIST#
+<END>
+
+<START_EFFECT_78_E_H>
+#STATE_ID_LIST#
+<END>
+
+<START_EFFECT_79_T_H>
+#LARA_POS_OCB#
+<END>
+
+<START_EFFECT_79_E_H>
+0: Standard (at center of sector)
+1: Keep original sector displacement of Lara
+<END>
+
+<START_EFFECT_80_T_H>
+#ANIMATION_LIST_B#
+<END>
+
+<START_EFFECT_80_E_H>
+#LARA_ANIM_SLOT#
+<END>
+
+<START_EFFECT_81_T_H>
+0:Standard Size
+1:Half Width
+2:Half Height
+3:Half Width and Height
+4:Double Width
+5:Double Height
+6:Double Width and Height
+7:Half Width and Height and no borders
+8:Micro Characters, always squared of 'keypad' type
+9:Atomic Characters, the littles available characters
+<END>
+
+<START_EFFECT_82_T_H>
+#SEQUENCE_128#
+<END>
+
+<START_EFFECT_82_E_H>
+#TIME_LIST_32#
+<END>
+
+<START_EFFECT_84_T_H>
+3:Very long time
+8:Long
+16:Default
+22:Fast
+25:Very fast
+<END>
+
+
+<START_EFFECT_85_T_H>
+#SAME_OF#=EFFECT_84_T
+<END>
+
+<START_EFFECT_85_E_H>
+0: Fade Out standard (screen becomes black)
+1: Fade Out and Fade In (screen becomes black and then come back the light)
+<END>
+
+<START_EFFECT_86_T_H>
+0:Hide screen timer
+1:Show screen timer
+<END>
+
+<START_EFFECT_87_T_H>
+#ADD_EFFECT_255#
+<END>
+
+<START_EFFECT_87_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_88_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_88_E_H>
+0:Disable Mirror 
+1:Enable Mirror
+2:Enable Mirror with blinking effect
+<END>
+
+<START_EFFECT_89_T_H>
+#PERCENTAGE#
+<END>
+
+<START_EFFECT_89_E_H>
+0:Immediatly, one-shot
+1:Continuosly, until lara is over current trigger
+<END>
+
+<START_EFFECT_90_T_H>
+#PERCENTAGE#
+<END>
+
+<START_EFFECT_90_E_H>
+0:Immediatly, one-shot
+1:Continuosly, until lara is over current trigger
+<END>
+
+<START_EFFECT_91_T_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_91_E_H>
+0:No effect
+1:Transparency
+2:Blinking transparency - fast
+3:Blinking transparency - middle
+4:Blinking transparency - slow
+5:Blinking transparency - very slow
+<END>
+
+<START_EFFECT_94_T_H>
+#TEX_SEQUENCE#
+<END>
+
+<START_EFFECT_94_E_H>
+#ANIMATION_RANGE#
+<END>
+
+
+<START_EFFECT_95_T_H>
+#TEX_SEQUENCE#
+<END>
+
+<START_EFFECT_96_T_H>
+0:Remove All. (Weapons + Ammos)
+1:Remove only weapons
+<END>
+
+<START_EFFECT_97_T_H>
+#BACKUP_LIST#
+<END>
+
+<START_EFFECT_98_T_H>
+#BACKUP_LIST#
+<END>
+
+<START_EFFECT_98_E_H>
+0: Standard way (progress bar + load camera screen)
+1: Hidden screen (let last game screen and load in background)
+2: Black screen (Set black screen and no progress bar)
+<END>
+
+<START_EFFECT_99_T_H>
+#SWAP_MESH_SLOT#
+<END>
+
+<START_EFFECT_99_E_H>
+0: Lara Skin  (standard)
+1: Lara Skin + Lara Joints (Slot+1)
+2: Lara Skin + Lara Joints (Slot+1) + Hairs (Slot+2)
+3: Lara Skin + Lara Joints (Slot+1) + Hairs (Slot+2) + ShootingHead (Slot+3)
+4: Lara Skin + Shooting Head (Slot+1)
+5: Lara Skin + Shooting Head (Slot+1) + Hairs (Slot+2)
+<END>
+
+<START_EFFECT_100_T_H>
+0: Lara Butt
+1: Lara Right Thigh
+2: Lara Right Calf
+3: Lara Right Foot
+4: Lara Left Thigh
+5: Lara Left Calf
+6: Lara Left Foot
+7: Lara Bust
+8: Lara Right Arm
+9: Lara Right Fore-Arm
+10: Lara Right Hand
+11: Lara Left Arm
+12: Lara Left Fore-Arm
+13: Lara Left Hand
+14: Lara Head
+15: Object on the Lara's Back
+16: Objects in the Holsters
+<END>
+
+<START_EFFECT_100_E_H>
+#SET_STANDARD_MESH#
+<END>
+
+<START_EFFECT_102_T_H>
+2:  45 degress 
+4:  90 degrees
+6: 135 degrees
+8: 180 degress
+<END>
+
+<START_EFFECT_102_E_H>
+0: Clockwise direction
+1: Inverse Clockwise direction
+<END>
+
+<START_EFFECT_104_T_H>
+0: Disable Infinite air
+1: Enable Infinite air
+<END>
+
+<START_EFFECT_105_T_H>
+#SWAP_MESH_SLOT#
+<END>
+
+<START_EFFECT_105_E_H>
+0: Lara Skin  (standard)
+1: Lara Skin + Lara Joints (Slot+1)
+2: Lara Skin + Lara Joints (Slot+1) + Hairs (Slot+2)
+3: Lara Skin + Lara Joints (Slot+1) + Hairs (Slot+2) + ShootingHead (Slot+3)
+4: Lara Skin + Shooting Head (Slot+1)
+5: Lara Skin + Shooting Head (Slot+1) + Hairs (Slot+2)
+<END>
+
+<START_EFFECT_106_T_H>
+#SWAP_MESH_SLOT#
+<END>
+
+<START_EFFECT_106_E_H>
+0: Lara Skin  (standard)
+1: Lara Skin + Lara Joints (Slot+1)
+2: Lara Skin + Lara Joints (Slot+1) + Hairs (Slot+2)
+3: Lara Skin + Lara Joints (Slot+1) + Hairs (Slot+2) + ShootingHead (Slot+3)
+4: Lara Skin + Shooting Head (Slot+1)
+5: Lara Skin + Shooting Head (Slot+1) + Hairs (Slot+2)
+<END>
+
+<START_EFFECT_107_T_H>
+0: Enable newly the usage of weapons
+1: Disable usage of weapons (the weapons will reamin in the inventory)
+<END>
+
+<START_EFFECT_108_T_H>
+0: Show holsters
+1: Hide holsters (like with young Lara)
+<END>
+
+<START_EFFECT_109_T_H>
+0: Disable global trigger
+1: Enable global trigger
+<END>
+
+<START_EFFECT_109_E_H>
+#REPEAT#GlobalTrigger=#1#127#1
+<END>
+
+<START_EFFECT_110_T_H>
+#RECHARGE_256#
+<END>
+
+
+<START_EFFECT_110_E_H>
+0: Continue, until lara remains in current sector (30 times for second)
+1: Single recharge. (You can use One-shot button to forbid furhter charging)
+<END>
+
+
+<START_EFFECT_111_T_H>
+#RECHARGE_256#
+<END>
+
+<START_EFFECT_111_E_H>
+0: Continue, until lara remains in current sector (30 times for second)
+1: Single recharge. (You can use One-shot button to forbid furhter charging)
+<END>
+
+<START_EFFECT_112_T_H>
+#RECHARGE_256#
+<END>
+
+<START_EFFECT_112_E_H>
+0: Continue, until lara remains in current sector (30 times for second)
+1: Single recharge. (You can use One-shot button to forbid furhter charging)
+<END>
+
+<START_EFFECT_113_T_H>
+0: Intensity 1 (Very low, it requirs some seconds to see effects)
+1: Intensity 2 (Little)
+2: Intensity 3 (Like Darts)
+3: Intensity 4 (Like little scorpion)
+4: Intensity 5 (Like Harpy)
+5: Intensity 6 (Max level, immediate and huge screen deformation)
+<END>
+
+<START_EFFECT_115_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_115_E_H>
+0:Water room
+2:Quick Sand room
+4:Damage room
+5:Outside room
+10:Snow room
+11:Rain room 
+12:Cold water room
+<END>
+
+
+<START_EFFECT_116_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_116_E_H>
+#SAME_OF#=EFFECT_115_E
+<END>
+
+<START_EFFECT_117_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_117_E_H>
+0: Intensity 1
+1: Intensity 2
+2: Intensity 3
+3: Intensity 4
+<END>
+
+<START_EFFECT_118_T_H>
+#REPEAT#TriggerGroup=#1#255
+<END>
+
+<START_EFFECT_118_E_H>
+0: Mutiple performing (to use when in TriggerGroup there is some condition)
+1: Single performing (to use when in TriggerGroup there are only commands)
+2: Continue performing (it will be always performed until you stop it)
+<END>
+
+
+<START_EFFECT_119_T_H>
+0:North-South (in ngle) fixed other East-Ovest and Up-Down coords
+1:East-West (in ngle) fixed other North-South and Up-Down coords
+2:Up-Down (3d space) fixed North-South and East-Ovest cords
+3:Horizontal axes fixed the Up-Down coordinate.
+4:North-South (in ngle) preserving East-Ovest distance and fixed Up-Down coords
+5:East-West (in ngle) preserving North-South distance and fixed Up-Down coords
+6:Up-Down (3d space) preserving North-South distance fixed East-Ovest coords
+7:Up-Down (3d space) preserving East-Ovest distance and fixed North-South coords
+8:Horizontal axes preserving Up-Down distance.
+9:North-South (in ngle) preserving Up-Down distance and fixed East-West coords
+10:East-West (in ngle) preserving Up-Down distance and North-South coords
+<END>
+
+<START_EFFECT_119_E_H>
+0:Forever (forces CAMERA to be enabled until you perform flip to stop it)
+1:Until Lara is in current room (where she enabled this trigger)
+2:Same time set in current CAMERA
+<END>
+
+<START_EFFECT_121_T_H>
+0:Disable LOOK feature
+1:Disable Combat Camera
+<END>
+
+<START_EFFECT_122_T_H>
+#SAME_OF#=EFFECT_121_T
+<END>
+
+<START_EFFECT_123_T_H>
+0: Matrix effect, slow speed
+1: Matrix effect, normal speed
+2: Matrix effect, fast speed
+3: Matrix effect, very fast speed
+4: Portrait effect on target (lara or enemy), preserve Up/down distance
+5: Enemy effect, from back like for Lara, preserve Up/Down distance
+6: Portrait effect on target (lara or enemy), same Up/Down coordinate
+7: Enemy effect, from back like for Lara, same Up/Down coordinate
+8: Portrait effect on target (lara or enemy), Upper than target of 1 click
+9: Enemy effect, from back like for Lara, Upper than target of 1 click
+10: Portrait effect on target (lara or enemy), Upper than target of 2 clicks
+11: Enemy effect, from back like for Lara, Upper than target of 2 clicks
+12: Portrait effect on target (lara or enemy), Upper than target of 3 clicks
+13: Enemy effect, from back like for Lara, Upper than target of 3 clicks
+14: Portrait effect on target (lara or enemy), Upper than target of 4 clicks (1 sector)
+15: Enemy effect, from back like for Lara, Upper than target of 4 clicks (1 sector)
+<END>
+
+<START_EFFECT_123_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_124_T_H>
+#REPEAT#FlipMap=#0#31
+<END>
+
+<START_EFFECT_124_E_H>
+#BUTTONS_LIST#
+<END>
+
+<START_EFFECT_125_T_H>
+#REPEAT#FlipMap=#0#31
+<END>
+
+<START_EFFECT_126_T_H>
+#REPEAT#FlipMap=#0#31
+<END>
+
+<START_EFFECT_127_T_H>
+#REPEAT#Organizer=#1#4999
+<END>
+
+<START_EFFECT_128_T_H>
+#REPEAT#Organizer=#1#4999
+<END>
+
+<START_EFFECT_129_T_H>
+#CD_TRACK_LIST#
+<END>
+
+<START_EFFECT_129_E_H>
+0:Single playback
+1:Looped playback
+<END>
+
+<START_EFFECT_130_T_H>
+0:Channel 1 (Background track)
+1:Channel 2 (Foreground track)
+<END>
+
+<START_EFFECT_131_T_H>
+#REPEAT#ImportFile=#1#200
+<END>
+
+<START_EFFECT_131_E_H>
+0:Channel 1 (Background track)
+1:Channel 2 (Foreground track)
+<END>
+
+<START_EFFECT_132_T_H>
+#REPEAT#ImportFile=#1#200
+<END>
+
+<START_EFFECT_132_E_H>
+0:Channel 1 (Background track)
+1:Channel 2 (Foreground track)
+<END>
+
+<START_EFFECT_133_T_H>
+#REPEAT#Volume="#1#100
+<END>
+
+<START_EFFECT_133_E_H>
+0:Channel 1 (Background track)
+1:Channel 2 (Foreground track)
+<END>
+
+<START_EFFECT_134_T_H>
+0: North
+1: North-East
+2: East
+3: South-East
+4: South
+5: South-West
+6: West
+7: North-West
+<END>
+
+<START_EFFECT_134_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_EFFECT_135_T_H>
+0: North
+1: North-East
+2: East
+3: South-East
+4: South
+5: South-West
+6: West
+7: North-West
+<END>
+
+<START_EFFECT_135_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_EFFECT_136_T_H>
+0:Upward (Only during upward jumping phase)
+1:Down (Only during falling phase)
+2:Upward (Always, jumping/falling phase)
+3:Down (Always, jumping/falling phase)
+4:Upward Proportional (Only during upward jumping phase)
+5:Down Proportional (Only during falling phase)
+6:Upward Proportional (Always, jumping/falling phase)
+7:Down Proportional (Always, jumping/falling phase)
+<END>
+
+<START_EFFECT_136_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_EFFECT_137_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_137_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_138_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_138_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_139_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_139_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_140_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_140_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_141_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_141_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_142_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_142_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_143_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_143_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_144_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_144_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_EFFECT_145_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_145_E_H>
+#TIMER_SIGNED#
+<END>
+
+<START_EFFECT_146_T_H>
+#REPEAT#ItemGroup=#1#255
+<END>
+
+<START_EFFECT_146_E_H>
+#TIMER_SIGNED#
+<END>
+
+<START_EFFECT_147_T_H>
+#REPEAT#ItemGroup=#1#999
+<END>
+
+<START_EFFECT_148_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_149_T_H>
+#STRING_LIST_255#
+<END>
+
+<START_EFFECT_150_T_H>
+0: Disable
+1: Enable
+<END>
+
+<START_EFFECT_150_E_H>
+0: Layer1
+1: Layer2
+<END>
+
+<START_EFFECT_151_T_H>
+0: Disable Lightning
+1: Enable Lightning
+<END>
+
+<START_EFFECT_152_T_H>
+#REPEAT#ColorRBG=#1#255
+<END>
+
+<START_EFFECT_152_E_H>
+0: Layer1
+1: Layer2
+<END>
+
+
+<START_EFFECT_153_T_H>
+#REPEAT#Speed=#0#255
+<END>
+
+<START_EFFECT_153_E_H>
+0: Layer1
+1: Layer2
+<END>
+
+<START_EFFECT_154_T_H>
+#REPEAT#ColorRBG=#1#255
+<END>
+
+<START_EFFECT_154_E_H>
+#REPEAT#Seconds=#1#127
+<END>
+
+<START_EFFECT_155_T_H>
+#REPEAT#ColorRBG=#1#255
+<END>
+
+<START_EFFECT_155_E_H>
+#REPEAT#Seconds=#1#127
+<END>
+
+<START_EFFECT_156_T_H>
+0: Snow DISABLED
+1: Snow SINGLE ROOMS
+2: Snow ALL OUTSIDE
+<END>
+
+<START_EFFECT_157_T_H>
+0: Rain DISABLED
+1: Rain SINGLE ROOMS
+2: Rain ALL OUTSIDE
+<END>
+
+<START_EFFECT_158_T_H>
+0: North
+1: North-East
+2: East
+3: South-East
+4: South
+5: South-West
+6: West
+7: North-West
+<END>
+
+<START_EFFECT_158_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_EFFECT_159_T_H>
+#REPEAT#Sectors=#5#127
+<END>
+
+<START_EFFECT_160_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_161_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_162_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_163_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_164_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_165_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_166_T_H>
+#REPEAT#Parameters=PARAM_MOVE_ITEM,#1#999
+<END>
+
+<START_EFFECT_167_T_H>
+#REPEAT#Parameters=PARAM_MOVE_ITEM,#1#999
+<END>
+
+<START_EFFECT_168_T_H>
+#REPEAT#SoundEffect=#0#4095
+<END>
+
+<START_EFFECT_169_T_H>
+#REPEAT#Animation=#0#9999
+<END>
+
+
+<START_EFFECT_170_T_H>
+#REPEAT#Animation=#0#9999
+<END>
+
+
+<START_EFFECT_171_T_H>
+#REPEAT#Animation=#0#9999
+<END>
+
+<START_EFFECT_172_T_H>
+#REPEAT#Parameters=PARAM_ROTATE_ITEM,#1#999
+<END>
+
+<START_EFFECT_173_T_H>
+#REPEAT#Parameters=PARAM_ROTATE_ITEM,#1#999
+<END>
+
+<START_EFFECT_174_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_175_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_176_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_177_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_178_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_179_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_180_T_H>
+#STATIC_LIST#
+<END>
+
+
+<START_EFFECT_181_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_182_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_183_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_184_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_185_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_186_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_187_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_188_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_189_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_190_T_H>
+#STATIC_LIST#
+<END>
+
+<START_EFFECT_191_T_H>
+#REPEAT#Parameters=PARAM_COLOR_ITEM,#1#999
+<END>
+
+<START_EFFECT_192_T_H>
+#REPEAT#TriggerGroup=#0#9999
+<END>
+
+<START_EFFECT_193_T_H>
+#CD_TRACK_LIST#
+<END>
+
+<START_EFFECT_193_E_H>
+0:Channel 1 (Background track)
+1:Channel 2 (Foreground track)
+<END>
+
+<START_EFFECT_194_T_H>
+#FOG_DISTANCES#
+<END>
+
+<START_EFFECT_195_T_H>
+#FOG_DISTANCES#
+<END>
+
+<START_EFFECT_195_E_H>
+#REPEAT#Seconds=#1#127
+<END>
+
+<START_EFFECT_196_T_H>
+#FOG_DISTANCES#
+<END>
+
+<START_EFFECT_196_E_H>
+#REPEAT#Seconds=#1#127
+<END>
+
+<START_EFFECT_197_T_H>
+0:ENABLE fog
+1:DISABLE fog
+<END>
+
+<START_EFFECT_198_T_H>
+#FOG_DISTANCES#
+<END>
+
+<START_EFFECT_199_T_H>
+0:Put out the Torch
+1:Light the Torch
+<END>
+
+<START_EFFECT_200_T_H>
+0:Remove Torch from hand of Lara
+1:Give to Lara the Torch in her hand
+<END>
+
+<START_EFFECT_201_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_201_E_H>
+0: Abs. Normal Speed  (30 fps)
+1: Abs. Slow Speed (15 fps)
+2: Abs. Very Slow Speed (10 fps)
+3: Abs. Fast Speed (60 fps)
+4: Abs. Very Fast Speed (90 fps)
+5: Prop. Normal Speed  (30 fps)
+6: Prop. Slow Speed (15 fps)
+7: Prop. Very Slow Speed (10 fps)
+8: Prop. Fast Speed (60 fps)
+9: Prop. Very Fast Speed (90 fps)
+<END>
+
+<START_EFFECT_203_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_203_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_204_T_H>
+#NG_STRING_LIST_ALL#
+<END>
+
+<START_EFFECT_205_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_205_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_206_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_206_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_207_T_H>
+#PSX_STRING_LIST#
+<END>
+
+<START_EFFECT_207_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_208_T_H>
+#PC_STRING_LIST#
+<END>
+
+<START_EFFECT_208_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_209_T_H>
+#PC_STRING_LIST#
+<END>
+
+<START_EFFECT_209_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_210_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_210_E_H>
+#REPEAT#Parameters=PARAM_PRINT_TEXT, #1#127
+<END>
+
+<START_EFFECT_211_T_H>
+#REPEAT#Animation_#0#9999
+<END>
+
+<START_EFFECT_212_T_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_214_T_H>
+#REPEAT#Parameters=PARAM_SET_CAMERA,#1#255
+<END>
+
+<START_EFFECT_214_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_217_T_H>
+#REPEAT#Image=#1#255
+<END>
+
+<START_EFFECT_217_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_219_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_219_E_H>
+#REPEAT#Diary=#1#100
+<END>
+
+<START_EFFECT_220_T_H>
+#REPEAT#Diary=#1#100
+<END>
+
+<START_EFFECT_221_T_H>
+#REPEAT#Diary=#1#100
+<END>
+
+<START_EFFECT_222_T_H>
+#REPEAT#Diary=#1#100
+<END>
+
+<START_EFFECT_222_E_H>
+0:Last Page
+1:Page  1
+2:Page  2
+3:Page  3
+4:Page  4
+5:Page  5
+6:Page  6
+7:Page  7
+8:Page  8
+9:Page  9
+10:Page 10
+11:Page 11
+12:Page 12
+13:Page 13
+14:Page 14
+15:Page 15
+16:Page 16
+17:Page 17
+18:Page 18
+19:Page 19
+20:Page 20
+<END>
+
+<START_EFFECT_224_T_H>
+#COLORS#
+<END>
+
+<START_EFFECT_226_T_H>
+#FOG_DISTANCES#
+<END>
+
+<START_EFFECT_227_T_H>
+#FOG_DISTANCES#
+<END>
+
+<START_EFFECT_228_T_H>
+0: 1 RANDOM way - Low Intensity (1 sector)
+1: 2 RANDOM way - Middle Intensity (2 sectors)
+2: 4 RANDOM way - High Intensity  (4 sectors)
+3: 8 RANDOM way - Very high Intensity (8 sectors)
+4:16 RANDOM way - Huge Intensity (16 sectors)
+5:32 RANDOM way - Max Intensity (32 sectors)
+8: 1 PULSE way -  Low Intensity (1 sector)
+9: 2 PULSE way - Middle Intensity (2 sectors)
+10: 4 PULSE way - High Intensity (4 sectors)
+11: 8 PULSE way - Very high Intensity (8 sectors)
+12:16 PULSE way - Huge Intensity (16 sectors)
+13:32 PULSE way - Max Intensity (32 sector)
+<END>
+
+<START_EFFECT_228_E_H>
+0:6.0 Very Slow  (6 seconds)
+1:4.0 Slow  (4 seconds)
+2:3.0 Middle  (3 seconds)
+3:2.0 Fast   (2 seconds)
+4:1.0 Very Fast (1 second)
+5:0.5 Ultra Fast (0.5 seconds)
+<END>
+
+<START_EFFECT_229_T_H>
+#SAME_OF#=EFFECT_228_T
+<END>
+
+<START_EFFECT_229_E_H>
+#SAME_OF#=EFFECT_228_E
+<END>
+
+<START_EFFECT_230_T_H>
+1:Stop the [Change END LIMIT fog distance] effect
+2:Stop the [Change START LIMIT fog distance] effect
+<END>
+
+<START_EFFECT_231_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_231_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_232_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_232_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_233_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_233_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_234_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_234_E_H>
+#BIT_LIST#
+<END>
+
+<START_EFFECT_235_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_235_E_H>
+#BIT_LIST#
+<END>
+
+<START_EFFECT_236_T_H>
+#VAR_STORES#
+<END>
+
+<START_EFFECT_237_T_H>
+#VAR_STORES#
+<END>
+
+<START_EFFECT_238_T_H>
+#VAR_TEXT#
+<END>
+
+<START_EFFECT_238_E_H>
+#VAR_TEXT#
+<END>
+
+<START_EFFECT_239_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_239_E_H>
+#VAR_TEXT#
+<END>
+
+<START_EFFECT_240_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_240_E_H>
+0: Use a space as separator
+1: Use a comma + space as separator
+2: Use a fullstop + space as separator
+3: Use a fullstop + new line character
+4: Use a fullstop + 2 new line characters
+<END>
+
+<START_EFFECT_241_T_H>
+0: Clear ALL variables
+1: Clear All Common Numeric Variables
+2: Clear Store Variables
+3: Clear Text Variables
+4: Clear Common Numeric Local Variables
+5: Clear Common Numeric Global Variables
+<END>
+
+<START_EFFECT_242_T_H>
+#VAR_TEXT#
+<END>
+
+<START_EFFECT_242_E_H>
+#SAME_OF#=EFFECT_240_E
+<END>
+
+<START_EFFECT_243_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_243_E_H>
+#SAME_OF#=EFFECT_240_E
+<END>
+
+<START_EFFECT_244_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_244_E_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_245_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_245_E_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_246_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_246_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_247_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_247_E_H>
+#BIT_LIST#
+<END>
+
+<START_EFFECT_248_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_248_E_H>
+#BIT_LIST#
+<END>
+
+<START_EFFECT_249_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_249_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_250_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_250_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_251_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_251_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_252_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_252_E_H>
+#NEGATIVE_NUMBERS#
+<END>
+
+<START_EFFECT_253_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_253_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_254_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_254_E_H>
+#NEGATIVE_NUMBERS#
+<END>
+
+<START_EFFECT_255_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_255_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_256_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_256_E_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_257_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_257_E_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_258_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_258_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_259_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_259_E_H>
+#BIT_LIST#
+<END>
+
+<START_EFFECT_260_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_260_E_H>
+#BIT_LIST#
+<END>
+
+<START_EFFECT_261_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_261_E_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_EFFECT_262_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_262_E_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_EFFECT_263_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_263_E_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_EFFECT_264_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_264_E_H>
+0:Increasing Timer
+1:Decreasing Timer (Countdown)
+<END>
+
+<START_EFFECT_265_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_266_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_266_E_H>
+#REPEAT#Seconds=#0#127
+<END>
+
+<START_EFFECT_267_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_267_E_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_EFFECT_268_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_268_E_H>
+#REPEAT#Frame Ticks=#0#127
+<END>
+
+<START_EFFECT_269_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_269_E_H>
+1:POSITION_BOTTOM_CENTER
+2:POSITION_TOP_CENTER
+3:POSITION_CENTER_CENTER
+4:POSITION_TOP_LEFT
+5:POSITION_TOP_RIGHT
+6:POSITION_BOTTOM_LEFT
+7:POSITION_BOTTOM_RIGHT
+8:POSITION_DOWN_DAMAGE_BAR
+9:POSITION_DOWN_COLD_BAR
+10:POSITION_DOWN_LEFT_BARS
+11:POSITION_DOWN_RIGHT_BARS
+<END>
+
+<START_EFFECT_270_T_H>
+0:Local Timer
+1:Global Timer
+<END>
+
+<START_EFFECT_270_E_H>
+#REPEAT#Seconds=#0#127
+<END>
+
+<START_EFFECT_271_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_272_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_273_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_274_T_H>
+#MEMORY_SAVE#
+<END>
+
+<START_EFFECT_275_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_276_T_H>
+#MEMORY_ITEM#
+<END>
+
+<START_EFFECT_277_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_278_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_279_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_279_E_H>
+#REPEAT#Value #0#127
+<END>
+
+
+<START_EFFECT_280_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_280_E_H>
+#REPEAT#Value #0#127
+<END>
+
+<START_EFFECT_281_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_281_E_H>
+#BIT_LIST#
+<END>
+
+
+<START_EFFECT_282_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_282_E_H>
+#BIT_LIST#
+<END>
+
+
+<START_EFFECT_283_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_284_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_285_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_286_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_287_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_288_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_289_T_H>
+#REPEAT#Switch=#1#1279
+<END>
+
+<START_EFFECT_290_T_H>
+#REPEAT#Organizer=#1#255
+<END>
+
+<START_EFFECT_290_E_H>
+0:Resume from first command (like a new Enabling)
+1:Resume from next command immediatly
+2:Resume from next command in required time set in next command
+<END>
+
+<START_EFFECT_291_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_291_E_H>
+#REPEAT#ColorRBG=#1#127
+<END>
+
+<START_EFFECT_292_T_H>
+#WAD-SLOTS#
+<END>
+
+<START_EFFECT_293_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_293_E_H>
+#MEMORY_SLOT#
+<END>
+
+<START_EFFECT_294_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_294_E_H>
+#MEMORY_SLOT#
+<END>
+
+
+<START_EFFECT_295_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_295_E_H>
+#MEMORY_ANIMATION#
+<END>
+
+<START_EFFECT_296_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_296_E_H>
+#MEMORY_ANIMATION#
+<END>
+
+<START_EFFECT_297_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_303_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_303_E_H>
+#REPEAT#Random Number between 0 and #1#126
+<END>
+
+<START_EFFECT_304_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_305_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_305_E_H>
+#REPEAT#Number=#1#127
+<END>
+
+<START_EFFECT_306_T_H>
+#INVENTORY-ITEM-INDEX#
+<END>
+
+<START_EFFECT_306_E_H>
+0:Silent way
+1:If item si missing play LARA_SAY_NO sound
+<END>
+
+<START_EFFECT_307_T_H>
+#REPEAT#Animation=#0#9999
+<END>
+
+<START_EFFECT_308_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_309_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_309_E_H>
+1:Decimal
+2:Hexadecimal
+4:Binary
+3:Decimal and Hexadecimal
+5:Decimal and Binary
+6:Hexadecimal and Binary
+7:Decimal, Hexadecimal and Binary
+<END>
+
+<START_EFFECT_310_T_H>
+#REPEAT#Triangular collision with height=#0#15
+<END>
+
+<START_EFFECT_310_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_311_T_H>
+#REPEAT#Triangular collision with height=#0#15
+<END>
+
+<START_EFFECT_311_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_312_T_H>
+#REPEAT#Triangular collision with height=#0#15
+<END>
+
+<START_EFFECT_312_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_313_T_H>
+#REPEAT#Triangular collision with height=#0#15
+<END>
+
+<START_EFFECT_313_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_314_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_314_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_315_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_315_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_316_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_316_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_317_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_317_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_318_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_318_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_319_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_319_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_320_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_320_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_321_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_321_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_322_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_322_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_323_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_323_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_324_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_324_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_325_T_H>
+#REPEAT#Slope Collision with height=#0#15
+<END>
+
+<START_EFFECT_325_E_H>
+#COLLISION_CEILING#
+<END>
+
+<START_EFFECT_326_T_H>
+#REPEAT#Triangular split collision with height=#0#15
+<END>
+
+<START_EFFECT_326_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_327_T_H>
+#REPEAT#Triangular split collision with height=#0#15
+<END>
+
+<START_EFFECT_327_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_328_T_H>
+#REPEAT#Triangular split collision with height=#0#15
+<END>
+
+<START_EFFECT_328_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_329_T_H>
+#REPEAT#Triangular split collision with height=#0#15
+<END>
+
+<START_EFFECT_329_E_H>
+#COLLISION_FLOOR#
+<END>
+
+<START_EFFECT_330_T_H>
+0:North Side
+1:East Side
+2:South Side
+3:West Side
+<END>
+
+<START_EFFECT_331_T_H>
+4:BAR_CUSTOM1
+5:BAR_CUSTOM2
+6:BAR_CUSTOM3
+7:BAR_CUSTOM4
+<END>
+
+<START_EFFECT_331_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_332_T_H>
+4:BAR_CUSTOM1
+5:BAR_CUSTOM2
+6:BAR_CUSTOM3
+7:BAR_CUSTOM4
+<END>
+
+<START_EFFECT_333_T_H>
+#REPEAT#FlipMap=#0#31
+<END>
+
+<START_EFFECT_333_E_H>
+#REPEAT#Frames=#1#127
+<END>
+
+<START_EFFECT_334_T_H>
+#REPEAT#FlipMap=#0#31
+<END>
+
+<START_EFFECT_334_E_H>
+0:Let the main room
+1:Let the flipped room
+<END>
+
+<START_EFFECT_335_T_H>
+#MEM_INVENTORY_INDICES#
+<END>
+
+<START_EFFECT_336_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_336_E_H>
+#MEMORY_INVENTORY#
+<END>
+
+<START_EFFECT_337_T_H>
+#MEMORY_INVENTORY#
+<END>
+
+<START_EFFECT_337_E_H>
+#REPEAT#Value=#0#127
+<END>
+
+<START_EFFECT_338_T_H>
+#MEMORY_INVENTORY#
+<END>
+
+<START_EFFECT_338_E_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_EFFECT_339_T_H>
+#VAR_NORMALS#
+<END>
+
+<START_EFFECT_339_E_H>
+#MEMORY_INVENTORY#
+<END>
+
+<START_EFFECT_340_T_H>
+#LARA_OTHER_SLOTS#
+<END>
+
+<START_EFFECT_340_E_H>
+#SWAP_MESH_SLOT#
+<END>
+
+<START_EFFECT_341_T_H>
+#SLOT_MESH_MOVEABLES#
+<END>
+
+<START_EFFECT_341_E_H>
+#SLOT_MESH_MOVEABLES#
+<END>
+
+<START_EFFECT_342_T_H>
+#MEMORY_CODE#
+<END>
+
+<START_EFFECT_342_E_H>
+#NEGATIVE_NUMBERS#
+<END>
+
+<START_EFFECT_343_T_H>
+0:ALL FISH
+1:Predator Fish (all fish that attack Lara)
+2:Good Fish (all fish that don't attack Lara)
+3:Pirana Fish (Gray fish)
+4:Clown Fish (White/Red fish)
+5:Butterfly Fish (Yellow fish)
+6:Angel Fish (white/azure fish)
+<END>
+
+<START_EFFECT_344_T_H>
+#SWAP_MESH_SLOT#
+<END>
+
+<START_EFFECT_345_T_H>
+#REPEAT#TriggerGroup=#0#9999
+<END>
+
+<START_EFFECT_346_T_H>
+#REPEAT#StandBy=#1#255
+<END>
+
+<START_EFFECT_346_E_H>
+#REPEAT#Seconds=#1#127
+<END>
+
+<START_EFFECT_347_T_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_347_E_H>
+0: Stop only enemies
+1: Stop enemies and time counters
+<END>
+
+<START_EFFECT_349_T_H>
+#LARA_POS_OCB#
+<END>
+
+<START_EFFECT_349_E_H>
+#REPEAT#Diameter clicks=#4#40
+<END>
+
+<START_EFFECT_350_T_H>
+#LARA_POS_OCB#
+<END>
+
+<START_EFFECT_350_E_H>
+#REPEAT#Diameter clicks=#4#40
+<END>
+
+<START_EFFECT_352_T_H>
+#REPEAT#Parameters=PARAM_SCALE_ITEM, #1#999
+<END>
+
+
+<START_EFFECT_353_T_H>
+#REPEAT#Parameters=PARAM_SCALE_ITEM, #1#999
+<END>
+
+<START_EFFECT_354_T_H>
+160:Statics. Explosion. Shatter <&>static
+161:Statics. Collision. Remove collision from <&>static
+162:Statics. Collision. Restore collision for <&>static
+163:Statics. Transparency. Set ICE transparency for <&>static
+164:Statics. Transparency. Set GLASS transparency for <&>static
+165:Statics. Transparency. Remove any transparency from <&>static
+174:Statics. Rotation. Stop all rotations for <&>Static
+177:Statics. Move. Stop the motion of <&>Static
+180:Statics. Explosion. Explosion of <&>static
+181:Statics. Explosion. Set explosive attribute for <&>static
+182:Statics. Explosion. Remove explosive attribute for <&>static
+183:Statics. Poison. Set poison attribute for <&>static
+184:Statics. Poison. Remove poison attribute for <&>static
+185:Statics. Damage. Set damage attribute for <&>static
+186:Statics. Damage. Remove damage attribute for <&>static
+187:Statics. Burning. Set burning attribute for <&>static
+188:Statics. Burning. Remove burning attribute for <&>static
+189:Statics. Visibility. Set <&>static as invisible
+190:Statics. Visibility. Render newly visibile <&>static
+<END>
+
+<START_EFFECT_354_E_H>
+#REPEAT#ItemGroup=#1#127
+<END>
+
+<START_EFFECT_355_T_H>
+0:Red Light
+1:Orange
+2:Yellow
+3:White
+4:Green 
+5:Purple
+6:LightGreen
+7:Blue
+8:Azure
+9:Gray
+10:Brown
+<END>
+
+<START_EFFECT_355_E_H>
+5:Infinite
+10:Fast 
+20:Normal
+30:Slow
+40:Very Slow
+<END>
+
+<START_EFFECT_357_T_H>
+#REPEAT#Parameters=PARAM_SHOW_SPRITE,#1#255
+<END>
+
+<START_EFFECT_357_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_358_T_H>
+#REPEAT#Parameters=PARAM_SHOW_SPRITE,#1#999
+<END>
+
+<START_EFFECT_359_T_H>
+#REPEAT#Parameters=PARAM_LIGHTNING,#1#255
+<END>
+
+<START_EFFECT_359_E_H>
+#REPEAT#Frame Ticks=#0#127
+<END>
+
+<START_EFFECT_360_T_H>
+#NG_STRING_LIST_ALL#
+<END>
+
+<START_EFFECT_361_T_H>
+#ROOMS_255#
+<END>
+
+<START_EFFECT_362_T_H>
+#REPEAT#Parameters=PARAM_LIGHTNING,#1#999
+<END>
+
+<START_EFFECT_363_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_363_E_H>
+#REPEAT#Parameters=PARAM_WTEXT,#1#127
+<END>
+
+<START_EFFECT_364_T_H>
+#NG_STRING_LIST_255#
+<END>
+
+<START_EFFECT_364_E_H>
+#REPEAT#Parameters=PARAM_WTEXT,#1#127
+<END>
+
+<START_EFFECT_366_T_H>
+#REPEAT#Operating time (fuel), minutes #0,#36
+<END>
+
+<START_EFFECT_366_E_H>
+0: Add to current fuel
+1: Set as new fuel (ignoring previous level of fuel)
+<END>
+
+<START_EFFECT_367_T_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_369_T_H>
+0: No cinema effect (remove infinite cinema effect)
+1: Tiny
+2: Middle
+3: Big
+4: Huge
+5: Fissure (looking through a fissure)
+<END>
+
+<START_EFFECT_369_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_EFFECT_370_T_H>
+#REPEAT#Intensity=#1#127
+<END>
+
+<START_EFFECT_370_E_H>
+#REPEAT#Quantity=#1#20
+<END>
+
+<START_EFFECT_371_T_H>
+#REPEAT#TriggerGroup=#1#9999
+<END>
+
+<START_EFFECT_372_T_H>
+#REPEAT#TriggerGroup=#1#9999
+<END>
+
+<START_EFFECT_373_T_H>
+#REPEAT#TriggerGroup=#1#9999
+<END>
+
+<START_EFFECT_374_T_H>
+#REPEAT#GlobalTrigger=#1#4999
+<END>
+
+<START_EFFECT_375_T_H>
+#REPEAT#GlobalTrigger=#1#4999
+<END>
+
+<START_EFFECT_376_T_H>
+#REPEAT#Organizer=#1#4999
+<END>
+
+<START_EFFECT_377_T_H>
+#REPEAT#Organizer=#1#4999
+<END>
+
+<START_EFFECT_378_T_H>
+#REPEAT#Organizer=#1#4999
+<END>
+
+<START_EFFECT_379_T_H>
+#REPEAT#Index in DemoArray fields=#1#999
+<END>
+
+<START_EFFECT_381_T_H>
+0:Absolute. Camera placed at NORTH of target
+1:Absolute. Camera placed at NORTH-EAST of target
+2:Absolute. Camera placed at EAST of target
+3:Absolute. Camera placed at SOUTH-EAST of target
+4:Absolute. Camera placed at SOUTH of target
+5:Absolute. Camera placed at SOUTH-WEST of target
+6:Absolute. Camera placed at WEST of target
+7:Absolute. Camera placed at NORTH-WEST of target
+8:Relative. Camera placed AHEAD of target
+9:Relative. Camera placed at RIGHT-AHEAD of target
+10:Relative. Camera placed at RIGHT of target
+11:Relative. Camera placed at RIGHT-BEHIND of target
+12:Relative. Camera placed at BEHIND of target
+13:Relative. Camera placed at LEFT-BEHIND of target
+14:Relative. Camera placed at LEFT of target
+15:Relative. Camera placed at LEFT-AHEAD of target
+<END>
+
+
+<START_EFFECT_381_E_H>
+#REPEAT#Clicks=#0#127
+<END>
+
+<START_EFFECT_382_T_H>
+#SAME_OF#=EFFECT_381_T
+<END>
+
+<START_EFFECT_382_E_H>
+#REPEAT#Clicks=#0#127
+<END>
+
+<START_EFFECT_383_T_H>
+#SAME_OF#=EFFECT_381_T
+<END>
+
+<START_EFFECT_383_E_H>
+#REPEAT#Clicks=#0#127
+<END>
+
+<START_EFFECT_385_T_H>
+#REPEAT#Clicks=#1#127
+<END>
+
+<START_EFFECT_385_E_H>
+#REPEAT#Demo frames=#0#127
+<END>
+
+<START_EFFECT_386_T_H>
+#REPEAT#Clicks=#1#127
+<END>
+
+<START_EFFECT_386_E_H>
+#REPEAT#Demo frames=#0#127
+<END>
+
+<START_EFFECT_387_T_H>
+#REPEAT#Clicks=#1#160
+<END>
+
+<START_EFFECT_387_E_H>
+#REPEAT#Demo frames=#0#127
+<END>
+
+<START_EFFECT_388_T_H>
+#REPEAT#Clicks=#1#160
+<END>
+
+<START_EFFECT_388_E_H>
+#REPEAT#Demo frames=#0#127
+<END>
+
+<START_EFFECT_389_T_H>
+0:Degrees Infinite (rotate forever)
+1:Degrees  15
+2:Degrees  30
+3:Degrees  45
+4:Degrees  60
+5:Degrees  75
+6:Degrees  90
+7:Degrees 105
+8:Degrees 120
+9:Degrees 135
+10:Degrees 150
+11:Degrees 165
+12:Degrees 180
+13:Degrees 195
+14:Degrees 210
+15:Degrees 225
+16:Degrees 240
+17:Degrees 255
+18:Degrees 270
+19:Degrees 285
+20:Degrees 300
+21:Degrees 315
+22:Degrees 330
+23:Degrees 345
+24:Degrees=360 (full circle and stop)
+<END>
+
+<START_EFFECT_389_E_H>
+#REPEAT#Demo frames=#0#127
+<END>
+
+<START_EFFECT_390_T_H>
+#SAME_OF#=EFFECT_389_T
+<END>
+
+<START_EFFECT_390_E_H>
+#REPEAT#Demo frames=#0#127
+<END>
+
+<START_EFFECT_391_T_H>
+#REPEAT#Demo frames=#0#3000
+<END>
+
+<START_EFFECT_393_T_H>
+#REPEAT#Parameters=PARAM_SWAP_ANIMATIONS, #1#255
+<END>
+
+<START_EFFECT_393_E_H>
+0:Lara
+1:Leading Actor
+2:Extra Actor
+<END>
+
+<START_EFFECT_394_T_H>
+0:Restore ALL. AI for actors, disable Basic Collision, free cutscene camera and restore animation swapping
+1:Restore cutscene stuff but do not affect the animation swapping
+<END>
+
+<START_EFFECT_395_T_H>
+0:Leading Actor
+1:Extra Actor
+<END>
+
+<START_EFFECT_396_T_H>
+0:Leading Actor
+1:Extra Actor
+<END>
+
+<START_EFFECT_397_T_H>
+0: empty (stomach)
+1: Left Thigh 
+2: Left Calf
+3: Left Foot
+4: Right Thigh
+5: Right Calf
+6: Right Foot
+7: Chest
+8: Left Hip
+9: empty (Left Side)
+10: Right Hip
+11: empty (Right Side)
+12: Left Arm 
+13: Left Forearm
+14: Left Palm with thumb
+15: Left Fingers (no thumb)
+16: Right Arm
+17: Right Forearm
+18: Right Hand
+19: Right Holster
+20: Left Holster
+21: Head
+22: empty (back belly)
+23: empty (groin)
+24: empty (right internal knee)
+<END>
+
+<START_EFFECT_397_E_H>
+0: MESHSWAP1
+1: MESHSWAP2
+2: MESHSWAP3
+3: ANIMATING1
+4: ANIMATING1_MIP
+5: ANIMATING2
+6: ANIMATING2_MIP
+7: ANIMATING3
+8: ANIMATING3_MIP
+9: ANIMATING4
+10: ANIMATING4_MIP
+11: ANIMATING5
+12: ANIMATING5_MIP
+13: ANIMATING6
+14: ANIMATING6_MIP
+15: ANIMATING7
+16: ANIMATING7_MIP
+17: ANIMATING8
+18: ANIMATING8_MIP
+19: ANIMATING9
+20: ANIMATING9_MIP
+21: ANIMATING10
+22: ANIMATING10_MIP
+23: ANIMATING11
+24: ANIMATING11_MIP
+25: ANIMATING12
+26: ANIMATING12_MIP
+27: ANIMATING13
+28: ANIMATING13_MIP
+29: ANIMATING14
+30: ANIMATING14_MIP
+31: ANIMATING15
+32: ANIMATING15_MIP
+33: ANIMATING16
+34: ANIMATING16_MIP
+<END>
+
+<START_EFFECT_398_T_H>
+0:Von Croy wait for Lara (0=false / 1=true)
+1:Current AI OCB value
+2:Next AI OCB value to reach
+3:Von Croy Mode (0=Angkor Wat / 1=Iris Race)
+4:Knife in right hand (0=No / 1=Knife)
+<END>
+
+<START_EFFECT_398_E_H>
+#REPEAT#Value=#0#127
+<END>
+
+<START_EFFECT_399_T_H>
+#SAME_OF#=EFFECT_66_T
+<END>
+
+<START_EFFECT_399_E_H>
+#SAME_OF#=EFFECT_66_E
+<END>
+
+<START_EFFECT_400_T_H>
+#SAME_OF#=EFFECT_66_T
+<END>
+
+<START_EFFECT_400_E_H>
+#SAME_OF#=EFFECT_66_E
+<END> 
+
+<START_EFFECT_401_T_H>
+#SAME_OF#=EFFECT_66_T
+<END>
+
+<START_EFFECT_401_E_H>
+#SAME_OF#=EFFECT_66_E
+<END>
+
+<START_EFFECT_402_T_H>
+#REPEAT#Parameters=PARAM_SHOW_SPRITE,#1#255
+<END>
+
+<START_EFFECT_402_E_H>
+#REPEAT#Frame=#0#127
+<END>
+
+<START_EFFECT_403_T_H>
+#REPEAT#Parameters=PARAM_SHOW_SPRITE,#1#255
+<END>
+
+<START_EFFECT_404_T_H>
+#REPEAT#Secret #0#255
+<END>
+
+<START_EFFECT_405_T_H>
+#FMV_LIST#
+<END>
+
+<START_EFFECT_406_T_H>
+0:Remove infinite durate, quit now the camera
+1:Enable infinite durate
+<END>
+
+<START_EFFECT_407_T_H>
+0: No Holster
+13: Empty Holsters
+14: Holsters with Pistols
+15: Holsters with Uzis
+16: Holsters with Revolver
+<END>
+
+<START_EFFECT_408_T_H>
+0: No selected weapon
+1: Pistols
+2: Revolver
+3: UZIs
+4: ShotGun
+5: GrenadeGun
+6: CrossBow
+<END>
+
+<START_EFFECT_409_T_H>
+#REPEAT#Parameters=PARAM_INPUT_BOX,#1#999
+<END>
+
+<START_EFFECT_410_T_H>
+#VAR_TEXT#
+<END>
+
+<START_EFFECT_411_T_H>
+#REPEAT#Opacity Level=#0#255
+<END>
+
+<START_EFFECT_411_E_H>
+#TIME_LIST_128#
+<END>
+
+;**************************************************************************
+;ACTIONS ------------------------------------- ACTIONS
+<START_TRIGGERWHAT_11_T_H>
+;list of actions for trigger what ACTION (code = 11) to show in Timer field
+1:Turn <#>ANIMATING moving slowly in clockwise of (E) degrees
+2:Turn <#>ANIMATING moving slowly in inverse clockwise of (E) degrees
+3:Turn <#>ANIMATING moving fastly in clockwise of (E) degrees
+4:Turn <#>ANIMATING moving fastly in inverse clockwise of (E) degrees
+5:Turn <#>ANIMATING moving endless in (E) way 
+6:Turn vertically <#>ANIMATING moving slowly in clockwise of (E) degrees
+7:Turn vertically <#>ANIMATING moving slowly in inverse clockwise of (E) degrees
+8:Turn vertically <#>ANIMATING moving fastly in clockwise of (E) degrees
+9:Turn vertically <#>ANIMATING moving fastly in inverse clockwise of (E) degrees
+10:Turn vertically <#>ANIMATING moving endless in (E) way 
+11:Turn immediatly  <#>object of (E) degrees in clockwise 
+12:Turn immediatly  <#>object of (E) degrees in inverse clockwise
+13:Perform (E) flipeffect on <#>object
+14:Enemy. Kill <#>object in (E) way
+15:Force (E) animation (0-31) for <#>object 
+16:Force (E) animation (32-63) for <#>object 
+17:Force (E) animation (64-95) for <#>object 
+
+18:Turn <#>ANIMATING moving slowly in clockwise until (E) facing
+19:Turn <#>ANIMATING moving slowly in inverse clockwise until (E) facing
+20:Turn <#>ANIMATING moving fastly in clockwise until (E) facing
+21:Turn <#>ANIMATING moving fastly in inverse clockwise until (E) facing
+
+22:Turn vertically <#>ANIMATING moving slowly in clockwise until (E) facing
+23:Turn vertically <#>ANIMATING moving slowly in inverse clockwise until (E) facing
+24:Turn vertically <#>ANIMATING moving fastly in clockwise until (E) facing
+25:Turn vertically <#>ANIMATING moving fastly in inverse clockwise until (E)facing
+26:Trigger. (Door) (E)Open/Close <#>door
+27:Elevator. Move <#>elevator to (E) floor
+28:Elevator. Move <#>elevator to floor number set in last keypad operation
+29:Move. Move continuously forward-backward <#>animating of (E) clicks
+30:Move. Move up <#>animating for (E) clicks
+31:Move. Move down <#>animating for (E) clicks
+32:Move. Move to north <#>animating for (E) clicks
+33:Move. Move to east <#>animating for (E) clicks
+34:Move. Move to south <#>animating for (E) clicks
+35:Move. Move to west <#>animating for (E) clicks
+36:Move. Move continuosly upstairs-downstairs <#>animating of (E) clicks
+37:Swap Mesh of <#>moveable with (E)Slot
+38:Enemy. Hurth <#>enemy removing (E)Vitality points
+39:Enemy. Set (E)Next State Id for <#>enemy
+40:Enemy. Move immediatly <#>enemy in lara_start_pos with (E)OCB setting
+41:Trigger. (Camera) Activate <#>Camera or fixed camera with (E)Timer value
+42:Trigger. (Target) Set <#>Moveable as Target for camera or fixed camera
+43:Trigger. (Moveable) Activate <#>Object with (E)Timer value
+44:Trigger. (Moveable) Untrigger <#>Object with (E)Timer value
+45:Trigger. (FlyBy) (E)Activate or Untrigger the <#>FlyBy camera sequence
+46:Trigger. (Sink) Activate the <#>Sink
+47:Disable. Disable all continuos actions on <#>Moveable
+48:Effect. Add to <#>Enemy the (E)AddEffect from script.txt
+49:Effect. Remove from <#>Enemy the (E)AddEffect from script.txt
+50:Enemy. Mesh. Set for <#>enemy the (E)mesh as invisible
+51:Enemy. Mesh. Set for <#>enemy the (E)mesh as visible
+52:Enemy. Timer. Show the trigger count-down for <#>enemy using (E)format
+53:Enemy. Mesh. Set for <#>enmey the (E)transparecy level
+54:Variables. Set the index of <#>moveable as Selected Item
+55:Variables. Save the position of <#>Moveable from (E)Store Variable (x,y,z,room)
+56:Variables. Move <#>Moveable to position saved from (E)Store Variable
+57:Variables. Move <#>Moveable to position saved from (E)Store Variable (center)
+58:Enemy. Freeze. Freeze <#>Enemy for (E)Seconds
+59:Enemy. Freeze. Remove freeze for <#>Enemy in (E)way
+60:Enemy. Save the coordinates and facing of <#>Moveable in savegame
+61:Collision. Disable the collisions of <#>Moveable
+62:Collision. Enable newly the collisions of <#>Moveable
+63:Move. Move up <#>animating for (E)units (one sector = 1024)
+64:Move. Move down <#>animating for (E)units (one sector = 1024)
+65:Move. Move to north <#>animating for (E)units (one sector = 1024)
+66:Move. Move to east <#>animating for (E)units (one sector = 1024)
+67:Move. Move to south <#>animating for (E)units (one sector = 1024)
+68:Move. Move to west <#>animating for (E)units (one sector = 1024)
+69:Enemy. (Physics) OVER Mode. Attract to North <#>Moveable with (E)speed
+70:Enemy. (Physics) OVER Mode. Attract to South <#>Moveable with (E)speed
+71:Enemy. (Physics) OVER Mode. Attract to East <#>Moveable with (E)speed
+72:Enemy. (Physics) OVER Mode. Attract to West <#>Moveable with (E)speed
+
+73:Enemy. (Physics) PAD Mode. Attract to North <#>Moveable with (E)speed
+74:Enemy. (Physics) PAD Mode. Attract to South <#>Moveable with (E)speed
+75:Enemy. (Physics) PAD Mode. Attract to East <#>Moveable with (E)speed
+76:Enemy. (Physics) PAD Mode. Attract to West <#>Moveable with (E)speed
+77:Trigger. (Tight-Rope) Disable <#>Tight-Rope
+78:Trigger. (Tight-Rope) Enable newly <#>Tight-Rope (previously disabled)
+79:Enemy. (OCB) Change the OCB value of <#>Moveable with (E)Big Number value
+80:Turn. Turn <#>Animating around the center at North (E)Distance in circular way
+81:Turn. Stop circular turning for <#>Animating item in (E)way
+82:Effect. Apply on the <#>Moveable the (E)preset effect
+83:Statics. Apply on <#>static the (E)Add Effect from script file
+84:Statics. Remove from <#>static the (E)Add Effect of script file
+85:Turn. Resume circular turning of <#>Animating previously put in Pause
+86:Cutscene. Change <#>Moveable to (E)Actor status
+87:Cutscene. Give to <#>Moveable the (E)Leading or Extra Actor role
+88:Cutscene. Set for actor <#>Moveable the (E)Basic collision status
+89:Creature. Force for <#>Moveable the (E)Frame of current animation
+90:Creature. Force for <#>Moveable the (E)State-id
+91:Cutscene. Speech. Apply (E)Speech Parameters for <#>Moveable 
+92:Enemy. Mesh. Flip (E)Mesh of <#>Moveable
+93:Move. Update room for <#>Animating with (E)units of Y displacement
+94:Trigger. Set <#>Moveable as ACTIVE item (item that you'll move or animate)
+95:Trigger. Remove <#>Moveable from active item list (you'll not move or animate it)
+<END>
+
+<START_ACTION_1_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_2_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_3_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_4_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_5_E_H>
+0:Clockwise slowly
+1:Clockwise fastly
+2:Inverse Clockwise slowly
+3:Inverse Clockwise fastly
+<END>
+
+<START_ACTION_6_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_7_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_8_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_9_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_10_E_H>
+#SAME_OF#=ACTION_5_E
+<END>
+
+<START_ACTION_11_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_12_E_H>
+#DEGREES#
+<END>
+
+<START_ACTION_13_E>
+0:Make the <&>object turn around 180 degrees.
+1:Floor shake effect closed to <&>Moveable
+3:Makes bubbles in position of <&>moveable (LARA_START_POS)
+6:Activates key triggers of <&>key switch object.
+18:Swaps meshes of #object with meshswap1. 
+19:Swaps meshes of #object with meshswap2.
+20:Swaps meshes of #object with meshswap3.
+21:Hide object. Makes #ANIMATING invisible
+22:Show object. Makes #ANIMATING visible
+29:Ghost trap in position #LARA_START_POS for Wraith3 
+32:Create floor shadow for #moveable (futile)
+43:(?) Put in left hand of Lara some (?) mesh of #moveable 
+<END>
+
+<START_ACTION_14_E_H>
+0:Default death animation (only for mortal creatures, removing vitality)
+1:Remove immediatly (disappear any item)
+2:Exploding moveable on ground/sky
+3:Exploding moveable underwater
+4:Exploding creature
+5:Kill Creature
+6:Hide Creature (when other ways don't work)
+7:Anti-trigger Item (like if it was never enabled)
+8:Disable emitter
+<END>
+
+<START_ACTION_15_E>
+#ANIMATION_LIST_32A#
+<END>
+
+<START_ACTION_16_E>
+#ANIMATION_LIST_32B#
+<END>
+
+<START_ACTION_17_E>
+#ANIMATION_LIST_32C#
+<END>
+
+<START_ACTION_18_E_H>
+0: North
+2: North-East
+4: East
+6: South-East
+8: South
+10: South-West
+12: West
+14: North-West
+<END>
+
+<START_ACTION_19_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_20_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_21_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_22_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_23_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_24_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_25_E_H>
+#SAME_OF#=ACTION_18_E
+<END>
+
+<START_ACTION_26_E_H>
+0:Close the door
+1:Open the door
+<END>
+
+<START_ACTION_27_E_H>
+0:1st floor
+1:2nd Floor
+2:3rd floor
+3:4th floor
+4:5th floor
+5:6th floor
+6:7th floor
+7:8th floor
+8:9th floor
+9:10h floor
+<END>
+
+<START_ACTION_29_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_30_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_31_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_32_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_33_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_34_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_35_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_36_E_H>
+#CLICK_DISTANCE_32#
+<END>
+
+<START_ACTION_37_E_H>
+#SWAP_MESH_SLOT#
+<END>
+
+<START_ACTION_38_E_H>
+#REPEAT#Vitality Points=#1#127#1
+<END>
+
+<START_ACTION_39_E_H>
+#REPEAT#Next State Id=#0#127
+<END>
+
+<START_ACTION_40_E_H>
+#LARA_POS_OCB#
+<END>
+
+<START_ACTION_41_O_H>
+#CAMERA_EFFECTS#
+<END>
+
+<START_ACTION_41_E_H>
+#REPEAT#Timer=#0#127
+<END>
+
+<START_ACTION_43_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_43_E_H>
+#TIMER_SIGNED#
+<END>
+
+<START_ACTION_44_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_44_E_H>
+#TIMER_SIGNED#
+<END>
+
+<START_ACTION_45_O_H>
+#FLYBY_LIST#
+<END>
+
+<START_ACTION_45_E_H>
+0: Activate Flyby camera sequence
+1: Untrigger (abort) current flyby camera sequence
+<END>
+
+<START_ACTION_46_O_H>
+#SINK_LIST#
+<END>
+
+<START_ACTION_47_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_48_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_48_E_H>
+#REPEAT#AddEffect=#1#127
+<END>
+
+<START_ACTION_49_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_49_E_H>
+#REPEAT#AddEffect=#1#127
+<END>
+
+<START_ACTION_50_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_50_E_H>
+#REPEAT#MESH=#0#31
+<END>
+
+<START_ACTION_51_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_51_E_H>
+#REPEAT#MESH=#0#31
+<END>
+
+<START_ACTION_52_O_H>
+#MOVEABLES#
+<END>
+
+
+<START_ACTION_52_E_H>
+0: Only seconds. Example "13"
+1: Seconds and one decimal digit. Point separator. Example "13.4"
+2: Seconds and two decimal digit. Point separator. Example "13.46"
+3: Seconds and one decimal digit. Colon separator. Example "13;4"
+4: Seconds and two decimal digit. Colon separator. Example "13;46"
+5: Only seconds with three noughts format. Example  "013" or "001"
+<END>
+
+<START_ACTION_53_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_53_E_H>
+#REPEAT#Transparency Level=#0#126
+<END>
+
+<START_ACTION_54_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_55_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_55_E_H>
+#VAR_LONG_STORE#
+<END>
+
+<START_ACTION_56_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_56_E_H>
+#VAR_LONG_STORE#
+<END>
+
+<START_ACTION_57_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_57_E_H>
+#VAR_LONG_STORE#
+<END>
+
+<START_ACTION_58_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_58_E_H>
+#TIME_LIST_128#
+<END>
+
+<START_ACTION_59_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_59_E_H>
+0:No effect
+1:Explosion Effect
+2:Vibrate effect
+3:Vibrate and explosion 
+<END>
+
+<START_ACTION_60_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_61_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_62_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_63_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_63_E_H>
+#MICRO_CLICKS#
+<END>
+
+<START_ACTION_64_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_64_E_H>
+#MICRO_CLICKS#
+<END>
+
+<START_ACTION_65_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_65_E_H>
+#MICRO_CLICKS#
+<END>
+
+<START_ACTION_66_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_66_E_H>
+#MICRO_CLICKS#
+<END>
+
+<START_ACTION_67_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_67_E_H>
+#MICRO_CLICKS#
+<END>
+
+<START_ACTION_68_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_68_E_H>
+#MICRO_CLICKS#
+<END>
+
+<START_ACTION_69_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_69_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_ACTION_70_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_71_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_ACTION_72_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_72_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_ACTION_73_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_73_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_ACTION_74_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_74_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_ACTION_75_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_75_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+<START_ACTION_76_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_76_E_H>
+#REPEAT#Speed=#1#127
+<END>
+
+;FMV triggerwhat list --------------------- FMV
+<START_TRIGGERWHAT_14_O_H>
+#FMV_LIST#
+<END>
+
+<START_ACTION_77_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_78_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_79_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_79_E_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_ACTION_80_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_80_E_H>
+#REPEAT#Sectors=#1#127
+<END>
+
+<START_ACTION_81_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_81_E_H>
+1:Immediatly
+2:Slow down until stopping
+3:Stop to next east,west,sud or north of the center
+4:Stop when it reachs NORTH of the center
+5:Stop when it reachs SOUTH of the center
+6:Stop when it reachs EAST of the center
+7:Stop when it reachs WEST of the center
+8:Pause. Stop temporary its movement
+<END>
+
+<START_ACTION_82_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_82_E_H>
+0:Baboon Teleport (Untrigger moveable)
+1:Helicopter Explosion
+2:Baboon Teleport (Trigger moveable)
+3:Harpy (loading by power)
+
+<END>
+
+<START_ACTION_83_O_H>
+#STATIC_LIST#
+<END>
+
+<START_ACTION_83_E_H>
+#REPEAT#AddEffect=#1#127
+<END>
+
+<START_ACTION_84_O_H>
+#STATIC_LIST#
+<END>
+
+<START_ACTION_84_E_H>
+#REPEAT#AddEffect=#1#127
+<END>
+
+<START_ACTION_85_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_86_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_86_E_H>
+0:Activate enemy and force him as Actor
+1:Remove living Actor and restore his AI slot skills
+2:Force living Enemy as Actor and initialize him to first state-id
+3:Force living Actor as common Enemy
+4:Force living Enemy as Actor and let his current animation in progress
+5:Activate again former removed enemy, setting him as Actor
+<END>
+
+<START_ACTION_87_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_87_E_H>
+0: Leading Actor
+1: Extra Actor
+<END>
+
+<START_ACTION_88_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_88_E_H>
+0: Add basic collision to actor
+1: Remove basic collision from actor
+<END>
+
+<START_ACTION_89_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_89_E_H>
+#REPEAT#Frame #0#127
+<END>
+
+
+<START_ACTION_90_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_90_E_H>
+#REPEAT#State Id #0#127
+<END>
+
+<START_ACTION_91_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_91_E_H>
+#REPEAT#Parameters=PARAM_ACTOR_SPEECH,#1#127
+<END>
+
+<START_ACTION_92_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_92_E_H>
+#REPEAT#Mesh=#0#63
+<END>
+
+<START_ACTION_93_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_93_E_H>
+0: No displacement (keep original Y coordinate)
+1: Upper -  64 units (one quarter of click)
+2: Upper - 128 units (half click)
+3: Upper - 192 units (three quarter of click)
+4: Upper - 256 units (one click)
+5: Upper - 512 units (half sector)
+6: Upper - 768 units (three quarter of sector)
+7: Upper -1024 units (one sector)
+16: Lower +  64 units (a quarter of click)
+17: Lower + 128 units (half click)
+18: Lower + 192 units (three quarter of click)
+19: Lower + 256 units (one click)
+20: Lower + 512 units (half sector)
+21: Lower + 768 units (three quarter of sector)
+22: Lower +1024 units (one sector)
+<END>
+
+<START_ACTION_94_O_H>
+#MOVEABLES#
+<END>
+
+<START_ACTION_95_O_H>
+#MOVEABLES#
+<END>
+
+;CONDITION LIST  -------------------------- CONDITION
+<START_TRIGGERTYPE_12_T_H>
+;list of conditions used by trigger type CONDITION (code = 12) to show in Timer field
+
+1:Inventory. Missing <#>inventory_item. 
+2:Inventory. Present <#>inventory_item.
+3:Inventory. There are at least (E) of <#>inventory_item in inventory
+4:Inventory. There are less than (E) of <#>inventory_item in inventory
+5:Lara. (Status) Lara is performing <#>action is (E) 
+6:Fragmented trigger. Check in (E) way if lara is in <#>fragment of 2x2 sector grid
+7:Fragmented trigger. Check in (E) way if lara is in <#>fragment of 3x3 sector grid
+8:Fragmented trigger. Check in (E) way if lara is in <#>fragment of 4x4 sector grid
+9:Vertical trigger. Zone of <#>clicks from floor and high (E) clicks
+10:Vertical trigger. Inverse zone of <#>clicks from floor and high (E) clicks
+11:Vertical trigger. Anti zone of <#>click from floor and high (E) clicks
+12:Keyboard. <#>keyboard scancode is currently (E)
+13:Keyboard. <#>Command game is currently (E)
+14:Creature. <#>Creature is currently (E)
+15:Multiple condition of <#>TriggerGroup script command
+16:Multiple condition of <#>MultEnvCondition script command in (E)way
+17:Lara. (Secrets) Lara found at least <#>secrets
+18:Lara. (Secrets) Lara found exaclty <#>secrets
+19:KeyPad. Last number typed in keypad is <#>value
+20:Timer. Timer Screen value is (E) than <#>seconds
+21:Creature. Current animation of <#>creature is (E)animation (0-31)
+22:Creature. Current State Id of <#>creature is (E)State Id
+23:Creature. Current animation of <#>creature is (E)animation (32-63)
+24:Creature. Current animation of <#>creature is (E)animation (64-95)
+25:Lara. (Status) Current <#>Lara status is (E)enabled/disabled
+26:Collision. Lara is touching <#>Moveable
+27:Collision. Lara is touching some moveable of <#>Slot type
+28:Collision. Lara is touching some <#>Creature type
+29:Lara. (Health) Lara vitality is (E)Condition than <#>vitality
+30:Lara. (Animation) Lara is performing <#>animation
+31:Lara. (State-Id) Lara is in <#>State-id
+32:AnimTextures. The <#>AnimRange textures is (E)enabled/disabled
+33:Collision. Lara is touching some static of <#>Slot static type
+34:Collision. Lara is touching the <#>Static item
+35:Lara. (Holds) Lara is holding/driving the <#>item
+36:Random. Condition is true with <#>chances on 64 computed in (E)way
+37:Creature. The <#>creature has the (E)Transparency level
+38:Variables. The <#>Numeric Variable is >= than (E)Big Number value
+39:Variables. The <#>Numeric Variable is < than (E)Big Number value
+40:Variables. The <#>Numeric Variable is = than (E)Big Number value
+41:Variables. The <#>Numeric Variable is >= than (E)Value
+42:Variables. The <#>Numeric Variable is < than (E)Value
+43:Variables. The <#>Numeric Variable is = than (E)Value
+44:Variables. The <#>Numeric Variable has the (E)Bit set
+45:Variables. The <#>Numeric Variable has the (E)Bit clear
+46:Variables. The Current Value variable is >= than <#>Value
+47:Variables. The Current Value variable is < than <#>Value
+48:Variables. The Current Value variable is = than <#>Value
+49:Variables. The <#>Code Memory is = than Current Value
+50:Variables. The <#>Code Memory is >= than Current Value
+51:Variables. The <#>Code Memory is < than Current Value
+52:Variables. The <#>Code Memory has the (E)Bit set
+53:Variables. The <#>Code Memory has the (E)BIt clear
+54:Lara. Distance. Lara is distant by <#>Moveable less or even than (E)Clicks
+55:Lara. Distance. Lara is distant by <#>Moveable less or even than (E)Units
+56:Variables. CurrentValue is >= than <#>Variable
+57:Variables. CurrentValue is = than <#>Variable
+58:Variables. CurrentValues is < than <#>Variable
+59:Inventory. The just selected item from inventory is <#>Item
+60:Fragmented trigger. Check in (E) way if lara is in the <#>circle
+61:Fragmented trigger. Check in (E) way if lara is in the sector with center in north-west corner and <#>Radius
+62:Fragmented trigger. Check in (E) way if lara is in the sector with center in north-east corner and <#>Radius
+63:Fragmented trigger. Check in (E) way if lara is in the sector with center in South-East corner and <#>Radius
+64:Fragmented trigger. Check in (E) way if lara is in the sector with center in South-West corner and <#>Radius
+65:Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-north side and <#>Radius
+66:Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-south side and <#>Radius
+67:Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-east side and <#>Radius
+68:Fragmented trigger. Check in (E) way if lara is in the sector with center in middle-west side and <#>Radius
+
+69:Fragmented trigger. Check in (E) way if lara is in the North-East corner triangle with <#>Size
+
+70:Fragmented trigger. Check in (E) way if lara is in the North-West corner triangle with <#>Size
+
+71:Fragmented trigger. Check in (E) way if lara is in the South-East corner triangle with <#>Size
+
+72:Fragmented trigger. Check in (E) way if lara is in the South-West corner triangle with <#>Size
+
+73:Fragmented trigger. Check in (E) way if lara is in the South side triangle with <#>Size
+
+74:Fragmented trigger. Check in (E) way if lara is in the North side triangle with <#>Size
+
+75:Fragmented trigger. Check in (E) way if lara is in the East side triangle with <#>Size
+
+76:Fragmented trigger. Check in (E) way if lara is in the West side triangle with <#>Size
+
+77:Fragmented trigger. Check in (E) way if lara is in the Rhombus with <#>Size
+
+78:Fragmented trigger. Check in (E) way if lara is in the custom triangle defined in the <#>Parameter command
+
+79:Fragmented trigger. Check in (E) way if lara is in the quadrilateral defined in the <#>Parameter command
+
+80:Fragmented trigger: Check in (E) way if lara is in the custom Circle defined in the <#>Parameter command
+
+81:Lara. Room. Lara is in the <#>room type
+82:Collision. <#>Moveable is touching Lara with its (E)mesh
+83:Collision. Lara is touching <#>Moveable with her (E)mesh
+84:Creature. <#>Moveable with (E)degrees of view is able to see Lara 
+85:Sound. The <#>Sfx Sound effect is playing
+86:Cutscene. Current demo is playing/recording the <#>frame
+87:Cutscene. Current demo is playing/recording the <#>frame from Paramaters=PARAM_BIG_NUMBERS script command
+88:Cutscene. Leading Actor is far from floor of <#>Units or greater
+89:Cutscene. Leading Actor is far from floor of <#>Units or lower
+90:Cutscene. Leading Actor top side is far from ceiling of <#>Units or greater
+91:Cutscene. Leading Actor top side is far from ceiling of <#>Units or lower
+92:Creature. PAD trigger. the <#>moveable is touching floor
+93:Variables. The (E)Text Variable is even than <#>NG String (Case sensitive comparison)
+94:Variables. The (E)Text Variable is even than <#>NG String (Not case sensitive comparison)
+95:Variables. The (E)Text Variable is even than <#>TextVariable (Case sensitive comparison)
+96:Variables. The (E)Text Variable is even than <#>TextVariable (Not case sensitive comparison)
+97:Variables. The <#>Text Variable is a (E)string
+<END>
+
+
+;List for condition 1 
+<START_CONDITION_1_O>
+#INVENTORY-ITEMS#
+<END>
+
+;List of condition 2
+<START_CONDITION_2_O>
+#INVENTORY-ITEMS#
+<END>
+
+<START_CONDITION_3_O>
+#INVENTORY-ITEMS#
+<END>
+
+
+<START_CONDITION_3_B>
+#SEQUENCE_32#
+<END>
+
+<START_CONDITION_4_O>
+#INVENTORY-ITEMS#
+<END>
+
+<START_CONDITION_4_B>
+#SEQUENCE_32#
+<END>
+
+<START_CONDITION_5_O_H>
+0:Climbing
+1:Swimming underwater
+2:Floating on water
+3:Falling 
+4:Jumping
+5:Moving on all fours or is duck
+6:Sliding
+7:Rolling
+8:Running 
+9:Walking
+10:Dying
+11:Stopping
+12:Monkey
+13:Pushing block
+14:Pulling block
+15:Pushing or pulling block
+16:Swimming underwater or on water
+17:Shooting
+18:Hanged
+19:Dripping
+<END>
+
+<START_CONDITION_5_B_H>
+1:FALSE (Lara is NOT performing #action)
+0:TRUE (Lara is performing #action)
+<END>
+
+<START_CONDITION_6_O>
+#FRAG_2x2#
+<END>
+
+<START_CONDITION_6_B_H>
+0:DEFAULT. Lara is over current #fragment
+1:PAD. Lara is touching current #fragment
+2:INVERSE. Lara is over any fragment except specified #fragment
+3:PAD & INVERSE. Lara is touching any fragment except specified #fragment
+<END>
+
+<START_CONDITION_7_O>
+#FRAG_3x3#
+<END>
+
+
+<START_CONDITION_7_B_H>
+#SAME_OF#=CONDITION_6_B
+<END>
+
+
+<START_CONDITION_8_O>
+#FRAG_4x4#
+<END>
+
+<START_CONDITION_8_B_H>
+#SAME_OF#=CONDITION_6_B
+<END>
+
+<START_CONDITION_9_O>
+#HALF_CLICKS#
+<END>
+
+<START_CONDITION_9_B_H>
+#HALF_CLICKS_32#
+<END>
+
+<START_CONDITION_10_O>
+#HALF_CLICKS#
+<END>
+
+<START_CONDITION_10_B_H>
+#HALF_CLICKS_32#
+<END>
+
+<START_CONDITION_11_O>
+#HALF_CLICKS#
+<END>
+
+<START_CONDITION_11_B_H>
+#HALF_CLICKS_32#
+<END>
+
+<START_CONDITION_12_O_H>
+1:ESCAPE
+2:Number1
+3:Number2
+4:Number3
+5:Number4
+6:Number5
+7:Number6
+8:Number7
+9:Number8
+10:Number9
+11:Number0
+14:BACK_SPACE
+15:TAB
+16:KeyQ
+17:KeyW
+18:KeyE
+19:KeyR
+20:KeyT
+21:KeyY
+22:KeyU
+23:KeyI
+24:KeyO
+25:KeyP
+28:ENTER
+29:CTRL
+30:KeyA
+31:KeyS
+32:KeyD
+33:KeyF
+34:KeyG
+35:KeyH
+36:KeyJ
+37:KeyK
+38:KeyL
+42:SHIFT Left
+44:KeyZ
+45:KeyX
+46:KeyC
+47:KeyV
+48:KeyB
+49:KeyN
+50:KeyM 
+54:SHIFT_Right
+56:ALT
+57:SPACE
+58:CAPS_LOCK
+59:F1
+60:F2
+61:F3
+62:F4
+63:F5
+64:F6
+65:F7
+66:F8
+67:F9
+68:F10
+69:NUM_LOCK
+70:SCROLL_LOCK
+71:HOME_PAD7
+72:UP_ARROW_PAD8
+73:PAGE_UP_PAD_9
+74:PAD_MINUS
+75:LEFT_ARROW_PAD4
+76:PAD_5
+77:RIGHT_ARROW_PAD6
+78:PAD_PLUS
+79:END_PAD1
+80:DOWN_ARROW_PAD2
+81:PAGE_DOWN_PAD3
+82:INS_PAD0
+83:DEL_PAD_POINT
+87:F11
+88:F12
+<END>
+
+<START_CONDITION_12_B_H>
+#KEYBOARD_MODE#
+<END>
+
+<START_CONDITION_13_O_H>
+0:Foreward (run, UP Arrow)
+1:Backward (DOWN arrow)
+2:Left
+3:Right
+4:Duck
+5:Rush (dash)
+6:Walk (slowly)
+7:Jump
+8:Action (engage)
+9:Extract current weapon
+10:Extract flare
+11:Look
+12:Roll
+13:Require inventory
+14:Walk left
+15:Walk right
+16:Pause
+17:Inventory
+18:Escape
+<END>
+
+<START_CONDITION_13_B_H>
+#KEYBOARD_MODE#
+<END>
+
+<START_CONDITION_14_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_14_B_H>
+0: Enemy is dead
+1: Enemy has not been yet activated
+2: Enemy is living
+3: Enemy is active
+4: Enemy is not active
+<END>
+
+<START_CONDITION_15_O_H>
+#REPEAT#TriggerGroup=#1#1023
+<END>
+
+<START_CONDITION_16_O_H>
+#REPEAT#MultEnvCondition=#1#1023
+<END>
+
+<START_CONDITION_16_B_H>
+0: In AND way. (All ENV conditions have to be true)
+1: in OR way. (Just a single ENV condition is true)
+<END>
+
+<START_CONDITION_17_O_H>
+#REPEAT#Found Secrets=#1#127#1
+<END>
+
+<START_CONDITION_18_O_H>
+#REPEAT#Found Secrets=#1#127#1
+<END>
+
+<START_CONDITION_19_O_H>
+#REPEAT#Value=#0#1023
+<END>
+
+<START_CONDITION_20_O_H>
+#REPEAT#Seconds=#0#1023
+<END>
+
+<START_CONDITION_20_B_H>
+0: Higher than ...
+1: Lower than ...
+2: Equal than ...
+<END>
+
+<START_CONDITION_21_B_H>
+#REPEAT#Animation=#0#31
+<END>
+
+<START_CONDITION_22_B_H>
+#REPEAT#StateId=#0#31
+<END>
+
+<START_CONDITION_23_B_H>
+#REPEAT#Animation=#32#63#0
+<END>
+
+<START_CONDITION_24_B_H>
+#REPEAT#Animation=#64#95#0
+<END>
+
+<START_CONDITION_25_O_H>
+0: Invulnerable
+1: Infinite Air underwater
+2: Poisoned
+3: Transparent
+4: Touching floor (PAD)
+5: Demo/Custscene mode
+<END>
+
+<START_CONDITION_25_B_H>
+0: Disabled (False)
+1: Enabled (True)
+<END>
+
+<START_CONDITION_27_O_H>
+#WAD-SLOTS#
+<END>
+
+<START_CONDITION_28_O_H>
+0: Mortal Creatures
+1: Immortal Creatures
+2: Guides and friends
+<END>
+
+<START_CONDITION_29_O_H>
+#REPEAT#Vitality=#0#1000
+<END>
+
+<START_CONDITION_29_B_H>
+0: Equal than ...
+1: Higher than ...
+2: Less than ...
+<END>
+
+<START_CONDITION_30_O_H>
+#REPEAT#Animation=#0#999
+<END>
+
+<START_CONDITION_31_O_H>
+#REPEAT#State-Id=#0#255
+<END>
+
+<START_CONDITION_32_O_H>
+#ANIMATION_RANGE#
+<END>
+
+<START_CONDITION_32_B_H>
+0:Disabled
+1:Enabled
+<END>
+
+<START_CONDITION_33_O_H>
+#STATIC_SLOTS#
+<END>
+
+<START_CONDITION_34_O_H>
+#STATIC_LIST#
+<END>
+
+<START_CONDITION_35_O_H>
+1:Holding_Pistols
+2:Holding_Revolver
+3:Holding_Uzi
+4:Holding_Shotgun
+5:Holding_GrenadeGun
+6:Holding_CrossBow
+7:Holding_Flare
+8:Holding_Out_Torch
+9:Holding_Fired_Torch
+10:Driving_Jeep
+11:Driving_SideCar
+12:Driving_RubberBoat
+13:Driving_MotorBoat
+14:Holding_Rope
+15:Holding_Pole
+16:Holding_Any_Torch
+17:Driving_Kayak
+<END>
+
+<START_CONDITION_36_O_H>
+#REPEAT#Chances=#1#64
+<END>
+
+<START_CONDITION_36_B_H>
+0:Test condition only while lara enters in this sector
+1:Test condition continuosly until lara is over this sector
+<END>
+
+<START_CONDITION_37_O_H>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_37_B_H>
+#TRANSPARENCY32#
+<END>
+
+<START_CONDITION_38_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_38_B_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#31
+<END>
+
+<START_CONDITION_39_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_39_B_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#31
+<END>
+
+<START_CONDITION_40_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_40_B_H>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#31
+<END>
+
+<START_CONDITION_41_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_41_B_H>
+#REPEAT#Value=#0#31
+<END>
+
+<START_CONDITION_42_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_42_B_H>
+#REPEAT#Value=#0#31
+<END>
+
+<START_CONDITION_43_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_43_B_H>
+#REPEAT#Value=#0#31
+<END>
+
+<START_CONDITION_44_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_44_B_H>
+#BIT_LIST#
+<END>
+
+<START_CONDITION_45_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_45_B_H>
+#BIT_LIST#
+<END>
+
+<START_CONDITION_46_O_H>
+#REPEAT#Value=#0#1023
+<END>
+
+<START_CONDITION_47_O_H>
+#REPEAT#Value=#0#1023
+<END>
+
+<START_CONDITION_48_O_H>
+#REPEAT#Value=#0#1023
+<END>
+
+<START_CONDITION_49_O_H>
+#MEMORY_CODE#
+<END>
+
+<START_CONDITION_50_O_H>
+#MEMORY_CODE#
+<END>
+
+<START_CONDITION_51_O_H>
+#MEMORY_CODE#
+<END>
+
+<START_CONDITION_52_O_H>
+#MEMORY_CODE#
+<END>
+
+<START_CONDITION_52_B_H>
+#BIT_LIST#
+<END>
+
+<START_CONDITION_53_O_H>
+#MEMORY_CODE#
+<END>
+
+<START_CONDITION_53_B_H>
+#BIT_LIST#
+<END>
+
+<START_CONDITION_54_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_54_B_H>
+#REPEAT#Value=#1#31
+<END>
+
+<START_CONDITION_55_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_55_B_H>
+#REPEAT#Units in Parameters=PARAM_BIG_NUMBERS at index=#0#31
+<END>
+
+<START_CONDITION_56_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_57_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_58_O_H>
+#VAR_NORMALS#
+<END>
+
+<START_CONDITION_59_O_H>
+#INVENTORY-ITEMS#
+<END>
+
+<START_CONDITION_60_O_H>
+#REPEAT#Circle with radius=#1#512
+<END>
+
+<START_CONDITION_60_B_H>
+0:DEFAULT. Lara is over current circle
+1:PAD. Lara is touching current circle
+2:INVERSE. Lara is outside of current circle
+3:PAD & INVERSE. Lara is touching the outside zone of current circle
+<END>
+
+<START_CONDITION_61_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_61_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_62_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_62_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_63_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_63_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+
+<START_CONDITION_64_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_64_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_65_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_65_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_66_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_66_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+
+<START_CONDITION_67_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_67_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_68_O_H>
+#REPEAT#Circle Sector with radius=#1#1023
+<END>
+
+<START_CONDITION_68_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_69_O_H>
+#REPEAT#Cathetus Size=#16#1023
+<END>
+
+<START_CONDITION_69_B_H>
+0:DEFAULT. Lara is over current Triangle
+1:PAD. Lara is touching current Triangle
+2:INVERSE. Lara is outside of current Triangle
+3:PAD & INVERSE. Lara is touching the outside zone of current Triangle
+<END>
+
+<START_CONDITION_70_O_H>
+#REPEAT#Cathetus Size=#16#1023
+<END>
+
+<START_CONDITION_70_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_71_O_H>
+#REPEAT#Cathetus Size=#16#1023
+<END>
+
+<START_CONDITION_71_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_72_O_H>
+#REPEAT#Cathetus Size=#16#1023
+<END>
+
+<START_CONDITION_72_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+
+<START_CONDITION_73_O_H>
+#REPEAT#Side Size=#16#1023
+<END>
+
+<START_CONDITION_73_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_74_O_H>
+#REPEAT#Side Size=#16#1023
+<END>
+
+<START_CONDITION_74_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_75_O_H>
+#REPEAT#Side Size=#16#1023
+<END>
+
+<START_CONDITION_75_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_76_O_H>
+#REPEAT#Side Size=#16#1023
+<END>
+
+<START_CONDITION_76_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_77_O_H>
+#REPEAT#Diagonal Size=#16#1023
+<END>
+
+<START_CONDITION_77_B_H>
+0:DEFAULT. Lara is over current Rhombus
+1:PAD. Lara is touching current Rhombus
+2:INVERSE. Lara is outside of current Rhombus
+3:PAD & INVERSE. Lara is touching the outside zone of current Rhombus
+<END>
+
+<START_CONDITION_78_O_H>
+#REPEAT#Parameters=PARAM_TRIANGLE, #1#255
+<END>
+
+<START_CONDITION_78_B_H>
+#SAME_OF#=CONDITION_69_B
+<END>
+
+<START_CONDITION_79_O_H>
+#REPEAT#Parameters=PARAM_QUADRILATERAL, #1#255
+<END>
+
+<START_CONDITION_79_B_H>
+0:DEFAULT. Lara is over current Quadrilateral
+1:PAD. Lara is touching current Quadrilateral
+2:INVERSE. Lara is outside of current Quadrilateral
+3:PAD & INVERSE. Lara is touching the outside zone of current Quadrilateral
+<END>
+
+<START_CONDITION_80_O_H>
+#REPEAT#Parameters=PARAM_CIRCLE, #1#255
+<END>
+
+<START_CONDITION_80_B_H>
+#SAME_OF#=CONDITION_60_B
+<END>
+
+<START_CONDITION_81_O_H>
+0:Water room
+2:Quick Sand room
+4:Damage room
+5:Outside room
+10:Snow room
+11:Rain room 
+12:Cold water room
+<END>
+
+<START_CONDITION_82_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_82_B_H>
+#REPEAT#Mesh #0#31
+<END>
+
+<START_CONDITION_83_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_83_B_H>
+#REPEAT#Mesh #0#31
+<END>
+
+<START_CONDITION_84_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_84_B_H>
+1: 22.5 degrees
+2: 45 degrees
+3: 67.5 degrees
+4: 90 degrees
+5:112.5 degrees
+6:135 degrees
+7:157.5 degrees
+8:180 degrees
+9:202.5 degrees
+10:225 degrees
+11:247.5 degrees
+12:270 degrees
+<END>
+
+<START_CONDITION_85_O>
+#SFX_1024#
+<END>
+
+<START_CONDITION_86_O>
+#REPEAT#Frame#0#1023
+<END>
+
+<START_CONDITION_87_O>
+#REPEAT#Value of Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_CONDITION_88_O>
+#REPEAT#Units typed in Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_CONDITION_89_O>
+#REPEAT#Units typed in Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_CONDITION_90_O>
+#REPEAT#Units typed in Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_CONDITION_91_O>
+#REPEAT#Units typed in Parameters=PARAM_BIG_NUMBERS at index=#0#127
+<END>
+
+<START_CONDITION_92_O>
+#MOVEABLES#
+<END>
+
+<START_CONDITION_93_O>
+#NG_STRING_LIST_ALL#
+<END>
+
+<START_CONDITION_93_B_H>
+ 0: BigText (319 characters)
+ 1: Last Input Text  (79 characters)
+ 2: Text1 (79 characters)
+ 3: Text2 (79 characters)
+ 4: Text3 (79 characters)
+ 5: Text4 (79 characters)
+<END>
+
+<START_CONDITION_94_O>
+#NG_STRING_LIST_ALL#
+<END>
+
+<START_CONDITION_94_B_H>
+#SAME_OF#=CONDITION_93_B
+<END>
+
+<START_CONDITION_95_O>
+#VAR_TEXT#
+<END>
+
+<START_CONDITION_95_B_H>
+#SAME_OF#=CONDITION_93_B
+<END>
+
+<START_CONDITION_96_O>
+#VAR_TEXT#
+<END>
+
+<START_CONDITION_96_B_H>
+#SAME_OF#=CONDITION_93_B
+<END>
+
+<START_CONDITION_97_O>
+#VAR_TEXT#
+<END>
+
+<START_CONDITION_97_B_H>
+0:An empty string (no character, zero length)
+1:A meaningfull string (not empty, there is one or more character)
+<END>
+;****************************************************************
+;TEXT SECTION used for pre-set list in trigger type window
+<START_TEXTS_1_T_H>
+0:Strip fragment %dth %s strip
+1:Two crossed stripes at point (%d,%d)
+2:horizontal
+3:vertical
+4:bottom-up
+5:top-down
+6:Percentage
+7:Transparency
+8:Value
+9:No change
+10:Decrease floor collision by %2d clicks
+11:Decrease ceiling collision by %2d clicks
+12:Increase ceiling collision by %2d clicks
+13:Units
+14:Sequence
+15:Sectors
+16:Game Backup
+17:%s seconds       (Wait <#> seconds before activating)
+18:%s seconds       (Activate and wait <#> seconds before deactivating)
+19:(NULL. No timer operation) 0 timer
+20:Recharge of %3d units
+21:Recharge with %3d %% of full bar
+22:Moved of %3d degrees
+23:%2d] %s  (Red=%d  Green=%d  Blue=%d)
+24:Square fragment
+25:Diagonal %s passing at point (%d,%d)
+26:Two crossed diagonals passing at point (%d,%d)
+27:Clicks = %5s (Half-Clicks=%d)
+28:Forever (use other action/effect to disable it)
+29:seconds
+30:%2dth Animation Range
+31:Perform one single time
+32:DON'T CHANGE
+33:OCB=%3d of LARA_START_POS(%d) in sector (%d,%d) of %s
+34:ACTIVE
+35:INACTIVE
+36:Multi shot for positive condition
+37:Single shot for positive condition
+38:%-26s ID %-6d in sector (%d,%d) of %s
+39:%s=%3d FlyByCamera(%d) Room %d  Sector=(%d,%d)
+40:Increase floor collision by %2d clicks
+<END>
+
