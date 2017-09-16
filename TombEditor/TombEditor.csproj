@@ -181,12 +181,6 @@
     <Compile Include="FormStaticMesh.Designer.cs">
       <DependentUpon>FormStaticMesh.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormSplash.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormSplash.Designer.cs">
-      <DependentUpon>FormSplash.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormOperationDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -319,9 +313,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormStaticMesh.resx">
       <DependentUpon>FormStaticMesh.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FormSplash.resx">
-      <DependentUpon>FormSplash.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormOperationDialog.resx">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>
