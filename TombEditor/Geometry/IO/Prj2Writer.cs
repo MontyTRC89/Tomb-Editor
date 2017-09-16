@@ -235,13 +235,6 @@ namespace TombEditor.Geometry.IO
                         writer.Write((ushort)Prj2ObjectType.Camera);
                         writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
                         writer.Write(instance.Position);
-                        writer.Write(instance.Flags);
-                        writer.Write(instance.Number);
-                        writer.Write(instance.Sequence);
-                        writer.Write(instance.Roll);
-                        writer.Write(instance.Speed);
-                        writer.Write(instance.Timer);
-                        writer.Write(instance.Fov);
                         writer.Write(instance.Fixed);
 
                         writer.WriteFiller(0x00, 8);
