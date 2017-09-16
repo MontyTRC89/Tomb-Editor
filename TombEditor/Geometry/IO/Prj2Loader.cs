@@ -267,13 +267,6 @@ namespace TombEditor.Geometry.IO
 
                         camera.RoomIndex = roomIndex;
                         camera.Position = reader.ReadVector3();
-                        camera.Flags = reader.ReadUInt16();
-                        camera.Number = reader.ReadUInt16();
-                        camera.Sequence = reader.ReadUInt16();
-                        camera.Roll = reader.ReadSingle();
-                        camera.Speed = reader.ReadSingle();
-                        camera.Timer = reader.ReadInt16();
-                        camera.Fov = reader.ReadSingle();
                         camera.Fixed = reader.ReadBoolean();
 
                         reader.ReadBytes(8);

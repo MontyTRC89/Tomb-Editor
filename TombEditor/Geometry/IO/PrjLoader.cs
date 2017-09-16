@@ -560,7 +560,6 @@ namespace TombEditor.Geometry.IO
                                     var camera = new CameraInstance()
                                     {
                                         ScriptId = unchecked((ushort)(objectsThings2[j])),
-                                        Timer = objTimer,
                                         Fixed = (objectType == 0x4080),
                                         Position = position
                                     };
