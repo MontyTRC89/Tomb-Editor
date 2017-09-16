@@ -286,7 +286,7 @@ namespace TombEditor.Compilers
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
-                (block.FloorPortal == null ? false : block.FloorPortal.Opacity == PortalOpacity.SolidFaces))
+                ((block.FloorPortal != null) && (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)))
             {
                 return false;
             }
@@ -659,7 +659,7 @@ namespace TombEditor.Compilers
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
 
-                    if (block.WallPortal == null ? false : block.WallPortal.Opacity == PortalOpacity.SolidFaces)
+                    if (block.WallPortal.Opacity == PortalOpacity.SolidFaces)
                         return false;
                     
                     if (!Dec_IsOutsideOrdBorderRoom(x, z)) break;
@@ -678,7 +678,7 @@ namespace TombEditor.Compilers
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped)
                         adjoiningRoom = adjoiningRoom.AlternateRoom;
-                    if (room.FlagWater == adjoiningRoom.FlagWater)
+                    if (room.FlagWater != adjoiningRoom.FlagWater)
                         break;
 
                     dec_currentRoom = adjoiningRoom;
@@ -730,7 +730,7 @@ namespace TombEditor.Compilers
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
-                (block.WallPortal == null ? false : block.WallPortal.Opacity == PortalOpacity.SolidFaces) || 
+                ((block.WallPortal != null) && (block.WallPortal.Opacity == PortalOpacity.SolidFaces)) || 
                 (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = -1;
@@ -772,7 +772,8 @@ namespace TombEditor.Compilers
                 Room adjoiningRoom2 = block.FloorPortal.AdjoiningRoom;
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped)
                     adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
-                if (room.FlagWater == adjoiningRoom2.FlagWater)
+
+                if (room.FlagWater != adjoiningRoom2.FlagWater)
                     break;
 
                 dec_currentRoom = adjoiningRoom2;
