@@ -494,7 +494,7 @@ namespace TombEditor.Geometry
                     }
                     
                     // Floor polygons
-                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnection(new DrawingPoint(x, z));
+                    RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsY,
                         BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType);
 
@@ -502,7 +502,7 @@ namespace TombEditor.Geometry
                     var sectorVertices = _sectorVertices[x, z];
                     int startCeilingPolygons = sectorVertices.Count;
 
-                    RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnection(new DrawingPoint(x, z));
+                    RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsY,
                         BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType);
 
@@ -2461,7 +2461,7 @@ namespace TombEditor.Geometry
                 return RoomConnectionType.NoPortal;
         }
 
-        public RoomConnectionInfo GetFloorRoomConnection(DrawingPoint pos)
+        public RoomConnectionInfo GetFloorRoomConnectionInfo(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
             if ((block.FloorPortal == null) || block.IsAnyWall || block.ForceFloorSolid)
@@ -2478,7 +2478,7 @@ namespace TombEditor.Geometry
             return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, block.QAFaces, adjoiningBlock.WSFaces));
         }
 
-        public RoomConnectionInfo GetCeilingRoomConnection(DrawingPoint pos)
+        public RoomConnectionInfo GetCeilingRoomConnectionInfo(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
             if ((block.CeilingPortal == null) || block.IsAnyWall)
