@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\To
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib", "TombLib\TombLib.csproj", "{A0421DCD-80D1-44D8-8243-6A33F83A692C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WadTool", "WadTool\WadTool.csproj", "{FA212817-73AF-453A-9F34-A59BEABFF916}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A0421DCD-80D1-44D8-8243-6A33F83A692C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0421DCD-80D1-44D8-8243-6A33F83A692C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0421DCD-80D1-44D8-8243-6A33F83A692C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA212817-73AF-453A-9F34-A59BEABFF916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA212817-73AF-453A-9F34-A59BEABFF916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA212817-73AF-453A-9F34-A59BEABFF916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA212817-73AF-453A-9F34-A59BEABFF916}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

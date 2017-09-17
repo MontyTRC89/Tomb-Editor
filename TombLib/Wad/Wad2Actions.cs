@@ -173,8 +173,8 @@ namespace TombLib.Wad
             }
 
             // Collect all meshes and textures
-            var textures = new List<WadTexture>();
-            var meshes = new List<WadMesh>();
+            var texturesToAdd = new List<WadTexture>();
+            var meshesToAdd = new List<WadMesh>();
 
             // Add meshes to the shared meshes array
             if (isMoveable)
@@ -183,16 +183,16 @@ namespace TombLib.Wad
 
                 // Add a clone of meshes
                 foreach (var mesh in moveable.Meshes)
-                    meshes.Add(mesh.Clone());
+                    meshesToAdd.Add(mesh.Clone());
             }
             else
             {
                 var staticMesh = (WadStatic)obj;
-                meshes.Add(staticMesh.Mesh.Clone());
+                meshesToAdd.Add(staticMesh.Mesh.Clone());
             }
 
             // Now in the clone list check for textures and update them if present
-            foreach (var mesh in meshes)
+            foreach (var mesh in meshesToAdd)
             {
                 foreach (var poly in mesh.Polys)
                 {
@@ -201,6 +201,8 @@ namespace TombLib.Wad
                     else
                         Textures.Add(poly.Texture.Hash, poly.Texture);
                 }
+
+                mesh.UpdateHash();
             }
 
             // Add the object to Wad2
@@ -208,7 +210,14 @@ namespace TombLib.Wad
             {
                 var moveable = (WadMoveable)obj;
                 moveable.Meshes.Clear();
-                moveable.Meshes.AddRange(meshes);
+               
+                foreach (var mesh in meshesToAdd)
+                {
+                    if (!Meshes.ContainsKey(mesh.Hash))
+                        Meshes.Add(mesh.Hash, mesh);
+
+                    moveable.Meshes.Add(Meshes[mesh.Hash]);
+                }
 
                 moveable.ObjectID = destination;
                 Moveables.Add(destination, moveable);
@@ -216,7 +225,11 @@ namespace TombLib.Wad
             else
             {
                 var staticMesh = (WadStatic)obj;
-                staticMesh.Mesh = meshes[0];
+                
+                if (!Meshes.ContainsKey(meshesToAdd[0].Hash))
+                    Meshes.Add(meshesToAdd[0].Hash, meshesToAdd[0]);
+
+                staticMesh.Mesh = Meshes[meshesToAdd[0].Hash];
 
                 staticMesh.ObjectID = destination;
                 Statics.Add(destination, staticMesh);
