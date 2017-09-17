@@ -310,9 +310,9 @@ namespace TombEditor.Controls
                             Brush colorBrush = _roomsNormalBrush;
                             if (room.Room == selectedRoom)
                                 colorBrush = _roomsSelectionBrush;
-                            else if ((RoomsToMove != null) && RoomsToMove.Contains(selectedRoom))
+                            else if ((RoomsToMove != null) && RoomsToMove.Contains(room.Room))
                                 colorBrush = _roomsToMoveBrush;
-                            else if ((additionalRoomsToMove != null) && additionalRoomsToMove.Contains(selectedRoom))
+                            else if ((additionalRoomsToMove != null) && additionalRoomsToMove.Contains(room.Room))
                                 colorBrush = _roomsToMoveBrush;
                             else if ((room.Block != null) && (room.Block.Type != BlockType.Floor))
                                 colorBrush = _roomsWallBrush;
