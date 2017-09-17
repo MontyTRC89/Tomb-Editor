@@ -73,6 +73,17 @@ namespace TombLib.Wad
             GraphicsDevice = device;
         }
 
+        public short[] FixedSounds
+        {
+            get
+            {
+                return new short[] {0, 2, 6, 7, 8, 9, 10, 17, 19, 27, 30, 31, 33, 35, 36, 37, 49, 60,
+                                    68, 79, 105, 106, 107, 108, 109,
+                                    110, 111, 113, 114, 115, 116, 118, 121, 148, 149, 150, 163, 182, 183, 185, 186,
+                                    199, 235, 270, 288, 290, 291, 292, 293, 293, 325, 339, 340, 344, 347, 351, 368};
+            }
+        }
+
         public void PrepareDataForDirectX()
         {
             Dispose();
@@ -88,7 +99,7 @@ namespace TombLib.Wad
             packedTextures.Sort(new ComparerWadTextures());
 
             RectPackerSimpleStack packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
-
+            163,
             foreach (var texture in packedTextures)
             {
                 var point = packer.TryAdd(texture.Width, texture.Height);
