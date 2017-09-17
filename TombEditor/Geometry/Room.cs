@@ -2468,7 +2468,8 @@ namespace TombEditor.Geometry
                 return new RoomConnectionInfo();
 
             Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-            Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
+            DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+            Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
             if ((adjoiningBlock.CeilingPortal == null) || adjoiningBlock.IsAnyWall)
                 return new RoomConnectionInfo();
 
@@ -2485,7 +2486,8 @@ namespace TombEditor.Geometry
                 return new RoomConnectionInfo();
 
             Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
-            Block adjoiningBlock = adjoiningRoom.GetBlock(pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos));
+            DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+            Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
             if ((adjoiningBlock.FloorPortal == null) || adjoiningBlock.IsAnyWall || adjoiningBlock.ForceFloorSolid)
                 return new RoomConnectionInfo();
 
