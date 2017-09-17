@@ -1308,9 +1308,9 @@ namespace TombEditor
                     if ((area.Width == 0) && (area.X == (room.NumXSectors - 1)))
                         candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.East, neighborRoom));
                     if ((area.Height == 0) && (area.Y == 0))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.North, neighborRoom));
-                    if ((area.Height == 0) && (area.Y == (room.NumZSectors - 1)))
                         candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.South, neighborRoom));
+                    if ((area.Height == 0) && (area.Y == (room.NumZSectors - 1)))
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.North, neighborRoom));
                 }
             }
 
