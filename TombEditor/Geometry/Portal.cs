@@ -5,7 +5,7 @@ namespace TombEditor.Geometry
 {
     public enum PortalDirection : byte
     {
-        Floor, Ceiling, North, South, East, West
+        Floor, Ceiling, WallPositiveZ, WallNegativeZ, WallPositiveX, WallNegativeX
     }
 
     public enum PortalOpacity : byte
@@ -67,14 +67,14 @@ namespace TombEditor.Geometry
                     return PortalDirection.Floor;
                 case PortalDirection.Floor:
                     return PortalDirection.Ceiling;
-                case PortalDirection.East:
-                    return PortalDirection.West;
-                case PortalDirection.West:
-                    return PortalDirection.East;
-                case PortalDirection.North:
-                    return PortalDirection.South;
-                case PortalDirection.South:
-                    return PortalDirection.North;
+                case PortalDirection.WallPositiveX:
+                    return PortalDirection.WallNegativeX;
+                case PortalDirection.WallNegativeX:
+                    return PortalDirection.WallPositiveX;
+                case PortalDirection.WallPositiveZ:
+                    return PortalDirection.WallNegativeZ;
+                case PortalDirection.WallNegativeZ:
+                    return PortalDirection.WallPositiveZ;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -84,13 +84,13 @@ namespace TombEditor.Geometry
         {
             switch (direction)
             {
-                case PortalDirection.East:
+                case PortalDirection.WallPositiveX:
                     return area.Offset(new DrawingPoint(-1, 0));
-                case PortalDirection.North:
+                case PortalDirection.WallPositiveZ:
                     return area.Offset(new DrawingPoint(0, -1));
-                case PortalDirection.South:
+                case PortalDirection.WallNegativeZ:
                     return area.Offset(new DrawingPoint(0, 1));
-                case PortalDirection.West:
+                case PortalDirection.WallNegativeX:
                     return area.Offset(new DrawingPoint(1, 0));
                 default:
                     return area;

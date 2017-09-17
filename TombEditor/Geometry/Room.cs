@@ -116,22 +116,22 @@ namespace TombEditor.Geometry
                 if (instance is Portal)
                     switch (((Portal)instance).Direction) // Special constraints for portals on walls
                     {
-                        case PortalDirection.North:
+                        case PortalDirection.WallPositiveZ:
                             if (newArea.Bottom != (oldSectorSize.Y - 1))
                                 continue;
                             instanceNewAreaConstraint = newArea.Inflate(-1, 0);
                             break;
-                        case PortalDirection.South:
+                        case PortalDirection.WallNegativeZ:
                             if (newArea.Top != 0)
                                 continue;
                             instanceNewAreaConstraint = newArea.Inflate(-1, 0);
                             break;
-                        case PortalDirection.East:
+                        case PortalDirection.WallPositiveX:
                             if (newArea.Right != (oldSectorSize.X - 1))
                                 continue;
                             instanceNewAreaConstraint = newArea.Inflate(0, -1);
                             break;
-                        case PortalDirection.West:
+                        case PortalDirection.WallNegativeX:
                             if (newArea.Left != 0)
                                 continue;
                             instanceNewAreaConstraint = newArea.Inflate(0, -1);
@@ -365,7 +365,7 @@ namespace TombEditor.Geometry
 
                         if (Blocks[x, z].WallPortal != null)
                         {
-                            var portal = FindPortal(x, z, PortalDirection.South);
+                            var portal = FindPortal(x, z, PortalDirection.WallNegativeZ);
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
@@ -400,7 +400,7 @@ namespace TombEditor.Geometry
 
                         if (Blocks[x, z].WallPortal != null)
                         {
-                            var portal = FindPortal(x, z, PortalDirection.North);
+                            var portal = FindPortal(x, z, PortalDirection.WallPositiveZ);
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
@@ -434,7 +434,7 @@ namespace TombEditor.Geometry
 
                         if (Blocks[x, z].WallPortal != null)
                         {
-                            var portal = FindPortal(x, z, PortalDirection.West);
+                            var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
@@ -468,7 +468,7 @@ namespace TombEditor.Geometry
 
                         if (Blocks[x, z].WallPortal != null)
                         {
-                            var portal = FindPortal(x, z, PortalDirection.East);
+                            var portal = FindPortal(x, z, PortalDirection.WallPositiveX);
                             var adjoiningRoom = portal.AdjoiningRoom;
                             if (Flipped && AlternateBaseRoom != null)
                             {
@@ -738,7 +738,7 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].WallPortal != null)
                     {
-                        var portal = FindPortal(x, z, PortalDirection.South);
+                        var portal = FindPortal(x, z, PortalDirection.WallNegativeZ);
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
                         {
@@ -859,7 +859,7 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].WallPortal != null)
                     {
-                        var portal = FindPortal(x, z, PortalDirection.North);
+                        var portal = FindPortal(x, z, PortalDirection.WallPositiveZ);
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
                         {
@@ -979,7 +979,7 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].WallPortal != null)
                     {
-                        var portal = FindPortal(x, z, PortalDirection.West);
+                        var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
                         {
@@ -1297,7 +1297,7 @@ namespace TombEditor.Geometry
 
                     if (Blocks[x, z].WallPortal != null)
                     {
-                        var portal = FindPortal(x, z, PortalDirection.East);
+                        var portal = FindPortal(x, z, PortalDirection.WallPositiveX);
                         var adjoiningRoom = portal.AdjoiningRoom;
 
                         if (Flipped && AlternateBaseRoom != null)

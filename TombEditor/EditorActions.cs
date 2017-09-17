@@ -1304,13 +1304,13 @@ namespace TombEditor
                         }
                     }
                     if ((area.Width == 0) && (area.X == 0))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.West, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallNegativeX, neighborRoom));
                     if ((area.Width == 0) && (area.X == (room.NumXSectors - 1)))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.East, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallPositiveX, neighborRoom));
                     if ((area.Height == 0) && (area.Y == 0))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.South, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallNegativeZ, neighborRoom));
                     if ((area.Height == 0) && (area.Y == (room.NumZSectors - 1)))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.North, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallPositiveZ, neighborRoom));
                 }
             }
 
