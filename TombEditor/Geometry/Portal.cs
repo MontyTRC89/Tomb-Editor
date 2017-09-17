@@ -125,35 +125,35 @@ namespace TombEditor.Geometry
             switch (Direction)
             {
                 case PortalDirection.Floor:
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             if (room.Blocks[x, z].FloorPortal != null)
                                 throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
 
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             room.Blocks[x, z].FloorPortal = this;
                     break;
 
                 case PortalDirection.Ceiling:
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             if (room.Blocks[x, z].CeilingPortal != null)
-                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].CeilingPortal + "'!");
 
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             room.Blocks[x, z].CeilingPortal = this;
                     break;
 
                 default:
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             if (room.Blocks[x, z].WallPortal != null)
-                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].WallPortal + "'!");
 
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             room.Blocks[x, z].WallPortal = this;
                     break;
             }
@@ -165,14 +165,34 @@ namespace TombEditor.Geometry
 
             if ((room.Flipped) || (AdjoiningRoom?.Flipped ?? false))
                 throw new NotImplementedException("Removing portals from rooms that are flipped is not supported just yet. :(");
-            
-            room.UpdateCompletely();
+
+            // Remove portal reference
+            switch (Direction)
+            {
+                case PortalDirection.Floor:
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
+                            room.Blocks[x, z].FloorPortal = null;
+                    break;
+                case PortalDirection.Ceiling:
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
+                            room.Blocks[x, z].CeilingPortal = null;
+                    break;
+                default:
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
+                            room.Blocks[x, z].WallPortal = null;
+                    break;
+            }
 
             // Delete the corresponding opposite portal.
             // (Will invoke this routine again from the other perspective).
             var oppositePortal = FindOppositePortal(room);
             if (oppositePortal != null)
                 AdjoiningRoom.RemoveObject(level, oppositePortal);
+
+            room.UpdateCompletely();
         }
     }
 }
