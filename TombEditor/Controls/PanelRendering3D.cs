@@ -2194,7 +2194,7 @@ namespace TombEditor.Controls
             float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = { "North", "South", "East", "West" };
+            string[] messages = { "+Z (North)", "-Z (South)", "-X (East)", "+X (West)" };
             Vector3[] positions = new Vector3[4];
 
             Vector3 center = _editor.SelectedRoom.GetLocalCenter();
@@ -2593,11 +2593,11 @@ namespace TombEditor.Controls
 
                         if (z == room.NumZSectors - 1)
                         {
-                            qa = BlockFace.SouthQA;
-                            ws = BlockFace.SouthWS;
-                            ed = BlockFace.SouthED;
-                            rf = BlockFace.SouthRF;
-                            middle = BlockFace.SouthMiddle;
+                            qa = BlockFace.NegativeZ_QA;
+                            ws = BlockFace.NegativeZ_WS;
+                            ed = BlockFace.NegativeZ_ED;
+                            rf = BlockFace.NegativeZ_RF;
+                            middle = BlockFace.NegativeZ_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {
@@ -2691,11 +2691,11 @@ namespace TombEditor.Controls
 
                         if (x == room.NumXSectors - 1)
                         {
-                            qa = BlockFace.WestQA;
-                            ws = BlockFace.WestWS;
-                            ed = BlockFace.WestED;
-                            rf = BlockFace.WestRF;
-                            middle = BlockFace.WestMiddle;
+                            qa = BlockFace.NegativeX_QA;
+                            ws = BlockFace.NegativeX_WS;
+                            ed = BlockFace.NegativeX_ED;
+                            rf = BlockFace.NegativeX_RF;
+                            middle = BlockFace.NegativeX_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {
@@ -2789,11 +2789,11 @@ namespace TombEditor.Controls
 
                         if (z == 0)
                         {
-                            qa = BlockFace.NorthQA;
-                            ws = BlockFace.NorthWS;
-                            ed = BlockFace.NorthED;
-                            rf = BlockFace.NorthRF;
-                            middle = BlockFace.NorthMiddle;
+                            qa = BlockFace.PositiveZ_QA;
+                            ws = BlockFace.PositiveZ_WS;
+                            ed = BlockFace.PositiveZ_ED;
+                            rf = BlockFace.PositiveZ_RF;
+                            middle = BlockFace.PositiveZ_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {
@@ -2887,11 +2887,11 @@ namespace TombEditor.Controls
 
                         if (x == 0)
                         {
-                            qa = BlockFace.EastQA;
-                            ws = BlockFace.EastWS;
-                            ed = BlockFace.EastED;
-                            rf = BlockFace.EastRF;
-                            middle = BlockFace.EastMiddle;
+                            qa = BlockFace.PositiveX_QA;
+                            ws = BlockFace.PositiveX_WS;
+                            ed = BlockFace.PositiveX_ED;
+                            rf = BlockFace.PositiveX_RF;
+                            middle = BlockFace.PositiveX_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {

@@ -144,11 +144,11 @@
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
-            this.butClimbWest = new DarkUI.Controls.DarkButton();
-            this.butClimbSouth = new DarkUI.Controls.DarkButton();
-            this.butClimbEast = new DarkUI.Controls.DarkButton();
+            this.butClimbNegativeX = new DarkUI.Controls.DarkButton();
+            this.butClimbNegativeZ = new DarkUI.Controls.DarkButton();
+            this.butClimbPositiveX = new DarkUI.Controls.DarkButton();
             this.butCropRoom = new DarkUI.Controls.DarkButton();
-            this.butClimbNorth = new DarkUI.Controls.DarkButton();
+            this.butClimbPositiveZ = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -1182,11 +1182,11 @@
             this.panel2.Controls.Add(this.butDeath);
             this.panel2.Controls.Add(this.butDeleteRoom);
             this.panel2.Controls.Add(this.butPortal);
-            this.panel2.Controls.Add(this.butClimbWest);
-            this.panel2.Controls.Add(this.butClimbSouth);
-            this.panel2.Controls.Add(this.butClimbEast);
+            this.panel2.Controls.Add(this.butClimbNegativeX);
+            this.panel2.Controls.Add(this.butClimbNegativeZ);
+            this.panel2.Controls.Add(this.butClimbPositiveX);
             this.panel2.Controls.Add(this.butCropRoom);
-            this.panel2.Controls.Add(this.butClimbNorth);
+            this.panel2.Controls.Add(this.butClimbPositiveZ);
             this.panel2.Controls.Add(this.butSplitRoom);
             this.panel2.Controls.Add(this.butCopyRoom);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
@@ -1677,35 +1677,35 @@
             this.butDeleteRoom.TabIndex = 20;
             this.butDeleteRoom.Click += new System.EventHandler(this.butDeleteRoom_Click);
             // 
-            // butClimbWest
+            // butClimbNegativeX
             // 
-            this.butClimbWest.Image = global::TombEditor.Properties.Resources.climb_west;
-            this.butClimbWest.Location = new System.Drawing.Point(227, 168);
-            this.butClimbWest.Name = "butClimbWest";
-            this.butClimbWest.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbWest.Size = new System.Drawing.Size(24, 24);
-            this.butClimbWest.TabIndex = 10;
-            this.butClimbWest.Click += new System.EventHandler(this.butClimbWest_Click);
+            this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.climb_west;
+            this.butClimbNegativeX.Location = new System.Drawing.Point(227, 168);
+            this.butClimbNegativeX.Name = "butClimbNegativeX";
+            this.butClimbNegativeX.Padding = new System.Windows.Forms.Padding(5);
+            this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
+            this.butClimbNegativeX.TabIndex = 10;
+            this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
             // 
-            // butClimbSouth
+            // butClimbNegativeZ
             // 
-            this.butClimbSouth.Image = global::TombEditor.Properties.Resources.climb_south;
-            this.butClimbSouth.Location = new System.Drawing.Point(256, 140);
-            this.butClimbSouth.Name = "butClimbSouth";
-            this.butClimbSouth.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbSouth.Size = new System.Drawing.Size(24, 24);
-            this.butClimbSouth.TabIndex = 11;
-            this.butClimbSouth.Click += new System.EventHandler(this.butClimbSouth_Click);
+            this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.climb_south;
+            this.butClimbNegativeZ.Location = new System.Drawing.Point(256, 140);
+            this.butClimbNegativeZ.Name = "butClimbNegativeZ";
+            this.butClimbNegativeZ.Padding = new System.Windows.Forms.Padding(5);
+            this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
+            this.butClimbNegativeZ.TabIndex = 11;
+            this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
             // 
-            // butClimbEast
+            // butClimbPositiveX
             // 
-            this.butClimbEast.Image = global::TombEditor.Properties.Resources.climb_east;
-            this.butClimbEast.Location = new System.Drawing.Point(256, 168);
-            this.butClimbEast.Name = "butClimbEast";
-            this.butClimbEast.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbEast.Size = new System.Drawing.Size(24, 24);
-            this.butClimbEast.TabIndex = 12;
-            this.butClimbEast.Click += new System.EventHandler(this.butClimbEast_Click);
+            this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.climb_east;
+            this.butClimbPositiveX.Location = new System.Drawing.Point(256, 168);
+            this.butClimbPositiveX.Name = "butClimbPositiveX";
+            this.butClimbPositiveX.Padding = new System.Windows.Forms.Padding(5);
+            this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
+            this.butClimbPositiveX.TabIndex = 12;
+            this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
             // 
             // butCropRoom
             // 
@@ -1717,15 +1717,15 @@
             this.butCropRoom.TabIndex = 16;
             this.butCropRoom.Click += new System.EventHandler(this.butCropRoom_Click);
             // 
-            // butClimbNorth
+            // butClimbPositiveZ
             // 
-            this.butClimbNorth.Image = global::TombEditor.Properties.Resources.climb_north;
-            this.butClimbNorth.Location = new System.Drawing.Point(227, 140);
-            this.butClimbNorth.Name = "butClimbNorth";
-            this.butClimbNorth.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbNorth.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNorth.TabIndex = 13;
-            this.butClimbNorth.Click += new System.EventHandler(this.butClimbNorth_Click);
+            this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.climb_north;
+            this.butClimbPositiveZ.Location = new System.Drawing.Point(227, 140);
+            this.butClimbPositiveZ.Name = "butClimbPositiveZ";
+            this.butClimbPositiveZ.Padding = new System.Windows.Forms.Padding(5);
+            this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
+            this.butClimbPositiveZ.TabIndex = 13;
+            this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
             // 
             // butSplitRoom
             // 
@@ -2891,10 +2891,10 @@
         private System.Windows.Forms.Button butMonkey;
         private System.Windows.Forms.Button butDeath;
         private System.Windows.Forms.Button butPortal;
-        private DarkUI.Controls.DarkButton butClimbWest;
-        private DarkUI.Controls.DarkButton butClimbSouth;
-        private DarkUI.Controls.DarkButton butClimbEast;
-        private DarkUI.Controls.DarkButton butClimbNorth;
+        private DarkUI.Controls.DarkButton butClimbNegativeX;
+        private DarkUI.Controls.DarkButton butClimbNegativeZ;
+        private DarkUI.Controls.DarkButton butClimbPositiveX;
+        private DarkUI.Controls.DarkButton butClimbPositiveZ;
         private DarkUI.Controls.DarkButton butCopyRoom;
         private DarkUI.Controls.DarkButton butSplitRoom;
         private DarkUI.Controls.DarkButton butCropRoom;
