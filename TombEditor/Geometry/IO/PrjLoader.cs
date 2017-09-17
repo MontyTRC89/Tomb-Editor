@@ -712,24 +712,16 @@ namespace TombEditor.Geometry.IO
 
                                 if ((x == 0 || z == 0 || x == room.NumXSectors - 1 || z == room.NumZSectors - 1))
                                 {
-                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0)
-                                        tempBlock._wallOpacity = PortalOpacity.SolidFaces;
-                                    if ((blockFlags1 & 0x0008) == 0x0008 && (blockFlags1 & 0x1000) == 0x1000)
-                                        tempBlock._wallOpacity = PortalOpacity.TraversableFaces;
+                                    if ((blockFlags1 & 0x0008) != 0)
+                                        tempBlock._wallOpacity = (blockFlags1 & 0x1000) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
                                 }
                                 else
                                 {
                                     if ((blockFlags1 & 0x0002) != 0)
-                                        tempBlock._floorOpacity = PortalOpacity.SolidFaces;
+                                        tempBlock._floorOpacity = (blockFlags1 & 0x0800) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
 
                                     if ((blockFlags1 & 0x0004) != 0)
-                                        tempBlock._ceilingOpacity = PortalOpacity.SolidFaces;
-
-                                    if ((blockFlags1 & 0x0800) != 0)
-                                        tempBlock._floorOpacity = PortalOpacity.TraversableFaces;
-
-                                    if ((blockFlags1 & 0x0400) != 0)
-                                        tempBlock._ceilingOpacity = PortalOpacity.TraversableFaces;
+                                        tempBlock._ceilingOpacity = (blockFlags1 & 0x0400) != 0 ? PortalOpacity.TraversableFaces : PortalOpacity.SolidFaces;
                                 }
 
                                 // Read more flags
