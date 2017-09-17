@@ -99,7 +99,7 @@ namespace TombLib.Wad
             packedTextures.Sort(new ComparerWadTextures());
 
             RectPackerSimpleStack packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
-            163,
+            
             foreach (var texture in packedTextures)
             {
                 var point = packer.TryAdd(texture.Width, texture.Height);
