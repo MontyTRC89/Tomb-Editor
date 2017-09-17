@@ -23,28 +23,19 @@ namespace TombLib.Wad
 
     public partial class Wad2 : IDisposable
     {
-        // Textures
-        private Dictionary<Hash, WadTexture> _textures;
-
-        // Meshes
-        private Dictionary<Hash, WadMesh> _meshes;
-
-        // Objects
-        private Dictionary<uint, WadMoveable> _moveables;
-        private Dictionary<uint, WadStatic> _staticMeshes;
-
-        // Sounds
-        private Dictionary<ushort, WadSoundInfo> _soundInfos;
-
-        // Sprites
-        private List<WadSpriteSequence> _spriteSequences;
-        private Dictionary<Hash, WadTexture> _spriteTextures;
-
+        public Dictionary<Hash, WadTexture> Textures { get; private set; }
+        public Dictionary<Hash, WadMesh> Meshes { get; private set; }
+        public SortedDictionary<uint, WadMoveable> Moveables { get; private set; }
+        public SortedDictionary<uint, WadStatic> Statics { get; private set; }
+        public Dictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
+        public List<WadSpriteSequence> SpriteSequences { get; private set; }
+        public Dictionary<Hash, WadTexture> SpriteTextures { get; private set; }
+        
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
         public Texture2D DirectXTexture { get; private set; }
-        public Dictionary<uint, SkinnedModel> DirectXMoveables { get; } = new Dictionary<uint, SkinnedModel>();
-        public Dictionary<uint, StaticModel> DirectXStatics { get; } = new Dictionary<uint, StaticModel>();
+        public SortedDictionary<uint, SkinnedModel> DirectXMoveables { get; } = new SortedDictionary<uint, SkinnedModel>();
+        public SortedDictionary<uint, StaticModel> DirectXStatics { get; } = new SortedDictionary<uint, StaticModel>();
 
         // Size of the atlas
         public const int TextureAtlasSize = 2048;
@@ -68,27 +59,19 @@ namespace TombLib.Wad
 
         public Wad2()
         {
-            _textures = new Dictionary<Hash, WadTexture>();
-            _meshes = new Dictionary<Hash, WadMesh>();
-            _moveables = new Dictionary<uint, WadMoveable>();
-            _staticMeshes = new Dictionary<uint, WadStatic>();
-            _soundInfos = new Dictionary<ushort, WadSoundInfo>();
-            _spriteSequences = new List<WadSpriteSequence>();
-            _spriteTextures = new Dictionary<Hash, WadTexture>();
+            Textures = new Dictionary<Hash, WadTexture>();
+            Meshes = new Dictionary<Hash, WadMesh>();
+            Moveables = new SortedDictionary<uint, WadMoveable>();
+            Statics = new SortedDictionary<uint, WadStatic>();
+            SoundInfo = new Dictionary<ushort, WadSoundInfo>();
+            SpriteSequences = new List<WadSpriteSequence>();
+            SpriteTextures = new Dictionary<Hash, WadTexture>();
         }
 
         public Wad2(GraphicsDevice device) : this()
         {
             GraphicsDevice = device;
         }
-
-        public Dictionary<Hash, WadTexture> Textures { get { return _textures; } }
-        public Dictionary<Hash, WadMesh> Meshes { get { return _meshes; } }
-        public Dictionary<uint, WadMoveable> Moveables { get { return _moveables; } }
-        public Dictionary<uint, WadStatic> Statics { get { return _staticMeshes; } }
-        public Dictionary<ushort, WadSoundInfo> SoundInfo { get { return _soundInfos; } }
-        public List<WadSpriteSequence> SpriteSequences { get { return _spriteSequences; } }
-        public Dictionary<Hash, WadTexture> SpriteTextures { get { return _spriteTextures; } }
 
         public void PrepareDataForDirectX()
         {
@@ -97,9 +80,9 @@ namespace TombLib.Wad
             // Pack the textures in a single atlas
             List<WadTexture> packedTextures = new List<WadTexture>();
 
-            for (int i = 0; i < _textures.Count; i++)
+            for (int i = 0; i < Textures.Count; i++)
             {
-                packedTextures.Add(_textures.ElementAt(i).Value);
+                packedTextures.Add(Textures.ElementAt(i).Value);
             }
 
             packedTextures.Sort(new ComparerWadTextures());
