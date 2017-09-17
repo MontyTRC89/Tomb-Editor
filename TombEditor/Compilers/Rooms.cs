@@ -589,7 +589,7 @@ namespace TombEditor.Compilers
                 // Normal and vertices
                 switch (portal.Direction)
                 {
-                    case PortalDirection.North:
+                    case PortalDirection.WallPositiveZ:
                         {
                             newPortal.Normal = new tr_vertex
                             {
@@ -670,7 +670,7 @@ namespace TombEditor.Compilers
                             };
                         }
                         break;
-                    case PortalDirection.East:
+                    case PortalDirection.WallPositiveX:
                         {
                             newPortal.Normal = new tr_vertex
                             {
@@ -751,7 +751,7 @@ namespace TombEditor.Compilers
                             };
                         }
                         break;
-                    case PortalDirection.South:
+                    case PortalDirection.WallNegativeZ:
                         {
                             newPortal.Normal = new tr_vertex
                             {
@@ -833,7 +833,7 @@ namespace TombEditor.Compilers
                             };
                         }
                         break;
-                    case PortalDirection.West:
+                    case PortalDirection.WallNegativeX:
                         {
                             newPortal.Normal = new tr_vertex
                             {

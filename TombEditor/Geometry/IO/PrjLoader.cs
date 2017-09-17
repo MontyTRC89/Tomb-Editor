@@ -187,19 +187,19 @@ namespace TombEditor.Geometry.IO
                             switch (direction)
                             {
                                 case 0x0001:
-                                    directionEnum = PortalDirection.East;
+                                    directionEnum = PortalDirection.WallPositiveX;
                                     break;
                                 case 0x0002:
-                                    directionEnum = PortalDirection.South;
+                                    directionEnum = PortalDirection.WallNegativeZ;
                                     break;
                                 case 0x0004:
                                     directionEnum = PortalDirection.Floor;
                                     break;
                                 case 0xfffe:
-                                    directionEnum = PortalDirection.West;
+                                    directionEnum = PortalDirection.WallNegativeX;
                                     break;
                                 case 0xfffd:
-                                    directionEnum = PortalDirection.North;
+                                    directionEnum = PortalDirection.WallPositiveZ;
                                     break;
                                 case 0xfffb:
                                     directionEnum = PortalDirection.Ceiling;

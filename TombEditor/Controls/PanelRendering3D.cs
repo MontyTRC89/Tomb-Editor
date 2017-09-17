@@ -1845,13 +1845,13 @@ namespace TombEditor.Controls
                 {
                     Vector3 normal = Vector3.Zero;
 
-                    if (portal.Direction == PortalDirection.North)
+                    if (portal.Direction == PortalDirection.WallPositiveZ)
                         normal = -Vector3.UnitZ;
-                    if (portal.Direction == PortalDirection.East)
+                    if (portal.Direction == PortalDirection.WallPositiveX)
                         normal = -Vector3.UnitX;
-                    if (portal.Direction == PortalDirection.South)
+                    if (portal.Direction == PortalDirection.WallNegativeZ)
                         normal = Vector3.UnitZ;
-                    if (portal.Direction == PortalDirection.West)
+                    if (portal.Direction == PortalDirection.WallNegativeX)
                         normal = Vector3.UnitX;
                     if (portal.Direction == PortalDirection.Floor)
                         normal = Vector3.UnitY;
