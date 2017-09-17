@@ -48,7 +48,7 @@ namespace TombEditor
 
             // Load default font
             SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
-            fontData.DefaultCharacter = '?'; // Don't crash on uncommon Unicode values
+            fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
             Font = SpriteFont.New(Device, fontData);
 
             DefaultDeviceManager = this;
