@@ -39,20 +39,30 @@
             this.saveWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertWADToWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.treeDestWad = new DarkUI.Controls.DarkTreeView();
             this.treeSourceWad = new DarkUI.Controls.DarkTreeView();
             this.panel3D = new WadTool.Controls.PanelRendering();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertWADToWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialogWad = new System.Windows.Forms.OpenFileDialog();
+            this.soundManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWad2AsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.darkMenuStrip1.SuspendLayout();
+            this.darkToolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // butTest
             // 
+            this.butTest.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butTest.Location = new System.Drawing.Point(792, 580);
             this.butTest.Name = "butTest";
             this.butTest.Padding = new System.Windows.Forms.Padding(5);
@@ -95,6 +105,7 @@
             this.openDestinationWad2ToolStripMenuItem,
             this.toolStripMenuItem1,
             this.saveWad2ToolStripMenuItem,
+            this.saveWad2AsToolStripMenuItem,
             this.toolStripMenuItem2,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -105,6 +116,7 @@
             // openSourceWADToolStripMenuItem
             // 
             this.openSourceWADToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openSourceWADToolStripMenuItem.Image = global::WadTool.Properties.Resources.opened_folder_16;
             this.openSourceWADToolStripMenuItem.Name = "openSourceWADToolStripMenuItem";
             this.openSourceWADToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.openSourceWADToolStripMenuItem.Text = "Open source WAD/Wad2";
@@ -113,6 +125,7 @@
             // openDestinationWad2ToolStripMenuItem
             // 
             this.openDestinationWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openDestinationWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.import_16;
             this.openDestinationWad2ToolStripMenuItem.Name = "openDestinationWad2ToolStripMenuItem";
             this.openDestinationWad2ToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.openDestinationWad2ToolStripMenuItem.Text = "Open destination Wad2";
@@ -127,6 +140,7 @@
             // saveWad2ToolStripMenuItem
             // 
             this.saveWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.saveWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_16;
             this.saveWad2ToolStripMenuItem.Name = "saveWad2ToolStripMenuItem";
             this.saveWad2ToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.saveWad2ToolStripMenuItem.Text = "Save Wad2";
@@ -141,73 +155,16 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.exitToolStripMenuItem.Image = global::WadTool.Properties.Resources.door_opened_16;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
-            // darkToolStrip1
-            // 
-            this.darkToolStrip1.AutoSize = false;
-            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkToolStrip1.Location = new System.Drawing.Point(0, 24);
-            this.darkToolStrip1.Name = "darkToolStrip1";
-            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.darkToolStrip1.Size = new System.Drawing.Size(1106, 28);
-            this.darkToolStrip1.TabIndex = 3;
-            this.darkToolStrip1.Text = "darkToolStrip1";
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(12, 55);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(73, 13);
-            this.darkLabel1.TabIndex = 5;
-            this.darkLabel1.Text = "Current Wad2";
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(813, 55);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(101, 13);
-            this.darkLabel2.TabIndex = 6;
-            this.darkLabel2.Text = "Source Wad/Wad2";
-            // 
-            // treeDestWad
-            // 
-            this.treeDestWad.Location = new System.Drawing.Point(15, 71);
-            this.treeDestWad.MaxDragChange = 20;
-            this.treeDestWad.Name = "treeDestWad";
-            this.treeDestWad.Size = new System.Drawing.Size(279, 477);
-            this.treeDestWad.TabIndex = 7;
-            this.treeDestWad.Text = "darkTreeView1";
-            // 
-            // treeSourceWad
-            // 
-            this.treeSourceWad.Location = new System.Drawing.Point(816, 71);
-            this.treeSourceWad.MaxDragChange = 20;
-            this.treeSourceWad.Name = "treeSourceWad";
-            this.treeSourceWad.Size = new System.Drawing.Size(279, 477);
-            this.treeSourceWad.TabIndex = 8;
-            this.treeSourceWad.Text = "darkTreeView1";
-            this.treeSourceWad.SelectedNodesChanged += new System.EventHandler(this.treeSourceWad_SelectedNodesChanged);
-            this.treeSourceWad.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeSourceWad_MouseClick);
-            // 
-            // panel3D
-            // 
-            this.panel3D.Location = new System.Drawing.Point(301, 71);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(485, 532);
-            this.panel3D.TabIndex = 9;
-            // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertWADToWad2ToolStripMenuItem});
+            this.convertWADToWad2ToolStripMenuItem,
+            this.soundManagerToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -216,9 +173,154 @@
             // convertWADToWad2ToolStripMenuItem
             // 
             this.convertWADToWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.convertWADToWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_as_16;
             this.convertWADToWad2ToolStripMenuItem.Name = "convertWADToWad2ToolStripMenuItem";
             this.convertWADToWad2ToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.convertWADToWad2ToolStripMenuItem.Text = "Convert source WAD to Wad2";
+            // 
+            // darkToolStrip1
+            // 
+            this.darkToolStrip1.AutoSize = false;
+            this.darkToolStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkToolStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkToolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripButton1,
+            this.toolStripButton2,
+            this.toolStripButton3,
+            this.toolStripButton5,
+            this.toolStripSeparator1,
+            this.toolStripButton4});
+            this.darkToolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.darkToolStrip1.Name = "darkToolStrip1";
+            this.darkToolStrip1.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
+            this.darkToolStrip1.Size = new System.Drawing.Size(1106, 28);
+            this.darkToolStrip1.TabIndex = 3;
+            this.darkToolStrip1.Text = "darkToolStrip1";
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton1.Image = global::WadTool.Properties.Resources.opened_folder_16;
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 25);
+            this.toolStripButton1.Text = "toolStripButton1";
+            // 
+            // toolStripButton2
+            // 
+            this.toolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton2.Image = global::WadTool.Properties.Resources.import_16;
+            this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton2.Name = "toolStripButton2";
+            this.toolStripButton2.Size = new System.Drawing.Size(23, 25);
+            this.toolStripButton2.Text = "toolStripButton2";
+            // 
+            // toolStripButton3
+            // 
+            this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton3.Image = global::WadTool.Properties.Resources.save_16;
+            this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton3.Name = "toolStripButton3";
+            this.toolStripButton3.Size = new System.Drawing.Size(23, 25);
+            this.toolStripButton3.Text = "toolStripButton3";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
+            // 
+            // toolStripButton4
+            // 
+            this.toolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton4.Image = global::WadTool.Properties.Resources.volume_up_16;
+            this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton4.Name = "toolStripButton4";
+            this.toolStripButton4.Size = new System.Drawing.Size(23, 25);
+            this.toolStripButton4.Text = "toolStripButton4";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(12, 59);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(79, 13);
+            this.darkLabel1.TabIndex = 5;
+            this.darkLabel1.Text = "Current Wad2";
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(813, 59);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(104, 13);
+            this.darkLabel2.TabIndex = 6;
+            this.darkLabel2.Text = "Source Wad/Wad2";
+            // 
+            // treeDestWad
+            // 
+            this.treeDestWad.Location = new System.Drawing.Point(15, 89);
+            this.treeDestWad.MaxDragChange = 20;
+            this.treeDestWad.Name = "treeDestWad";
+            this.treeDestWad.Size = new System.Drawing.Size(279, 459);
+            this.treeDestWad.TabIndex = 7;
+            this.treeDestWad.Text = "darkTreeView1";
+            // 
+            // treeSourceWad
+            // 
+            this.treeSourceWad.Location = new System.Drawing.Point(816, 89);
+            this.treeSourceWad.MaxDragChange = 20;
+            this.treeSourceWad.Name = "treeSourceWad";
+            this.treeSourceWad.Size = new System.Drawing.Size(279, 459);
+            this.treeSourceWad.TabIndex = 8;
+            this.treeSourceWad.Text = "darkTreeView1";
+            this.treeSourceWad.SelectedNodesChanged += new System.EventHandler(this.treeSourceWad_SelectedNodesChanged);
+            this.treeSourceWad.MouseClick += new System.Windows.Forms.MouseEventHandler(this.treeSourceWad_MouseClick);
+            // 
+            // panel3D
+            // 
+            this.panel3D.Camera = null;
+            this.panel3D.CurrentObject = null;
+            this.panel3D.CurrentWad = null;
+            this.panel3D.Location = new System.Drawing.Point(301, 89);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.Size = new System.Drawing.Size(509, 514);
+            this.panel3D.TabIndex = 9;
+            // 
+            // soundManagerToolStripMenuItem
+            // 
+            this.soundManagerToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.soundManagerToolStripMenuItem.Image = global::WadTool.Properties.Resources.volume_up_16;
+            this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
+            this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
+            this.soundManagerToolStripMenuItem.Text = "Sound manager";
+            // 
+            // saveWad2AsToolStripMenuItem
+            // 
+            this.saveWad2AsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.saveWad2AsToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_as_16;
+            this.saveWad2AsToolStripMenuItem.Name = "saveWad2AsToolStripMenuItem";
+            this.saveWad2AsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.saveWad2AsToolStripMenuItem.Text = "Save Wad2 as...";
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripButton5.Image = global::WadTool.Properties.Resources.save_as_16;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(23, 25);
+            this.toolStripButton5.Text = "toolStripButton5";
             // 
             // FormMain
             // 
@@ -234,6 +336,7 @@
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
             this.Controls.Add(this.butTest);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.darkMenuStrip1;
@@ -243,6 +346,8 @@
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.darkMenuStrip1.ResumeLayout(false);
             this.darkMenuStrip1.PerformLayout();
+            this.darkToolStrip1.ResumeLayout(false);
+            this.darkToolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -269,6 +374,14 @@
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertWADToWad2ToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogWad;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton toolStripButton2;
+        private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripMenuItem saveWad2AsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem soundManagerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
     }
 }
 

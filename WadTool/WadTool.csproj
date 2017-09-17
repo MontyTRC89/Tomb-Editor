@@ -110,6 +110,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -132,6 +133,42 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ankh Icon 13.ico" />
+    <None Include="Resources\volume_up-16.png" />
+    <None Include="Resources\trash-16.png" />
+    <None Include="Resources\ToEnd-16.png" />
+    <None Include="Resources\stones-16.png" />
+    <None Include="Resources\software_installer-16.png" />
+    <None Include="Resources\small_icons-16.png" />
+    <None Include="Resources\settings-16.png" />
+    <None Include="Resources\search-16.png" />
+    <None Include="Resources\save-16.png" />
+    <None Include="Resources\save_as-16.png" />
+    <None Include="Resources\rubber_stamp-16.png" />
+    <None Include="Resources\rectangle_filled-16.png" />
+    <None Include="Resources\plus_math-16.png" />
+    <None Include="Resources\paste-16.png" />
+    <None Include="Resources\opened_folder-16.png" />
+    <None Include="Resources\movie_projector-16.png" />
+    <None Include="Resources\MovementGizmo-16.png" />
+    <None Include="Resources\Move2Sector-16.png" />
+    <None Include="Resources\minus_math-16.png" />
+    <None Include="Resources\light_on-16.png" />
+    <None Include="Resources\import-16.png" />
+    <None Include="Resources\generic_text-16.png" />
+    <None Include="Resources\Fog-16.png" />
+    <None Include="Resources\Effect-16.png" />
+    <None Include="Resources\edit-16.png" />
+    <None Include="Resources\earth_element-16.png" />
+    <None Include="Resources\door_opened-16.png" />
+    <None Include="Resources\cut-16.png" />
+    <None Include="Resources\create_new-16.png" />
+    <None Include="Resources\copy-16.png" />
+    <None Include="Resources\copy_link-16.png" />
+    <None Include="Resources\clipboard-16.png" />
+    <None Include="Resources\CameraFixed-16.png" />
+    <None Include="Resources\Camera-161.png" />
+    <None Include="Resources\angle_right-16.png" />
+    <None Include="Resources\angle_left-16.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
