@@ -864,7 +864,32 @@ namespace TombEditor.Geometry.IO
                         progressReporter.ReportProgress(35, "Triggers linked");
                     }
 
+                    // Link flip rooms
+                    progressReporter.ReportProgress(37, "Link flip rooms");
+                    foreach (var tempRoom in tempRooms)
+                    {
+                        Room room = level.Rooms[tempRoom.Key];
+                        foreach (var info in flipInfos)
+                        {
+                            if (info._baseRoom == tempRoom.Key)
+                            {
+                                room.AlternateRoom = level.Rooms[info._flipRoom];
+                                room.AlternateGroup = info._group;
+                            }
+
+                            if (info._flipRoom != tempRoom.Key)
+                                continue;
+
+                            room.AlternateBaseRoom = level.Rooms[info._baseRoom];
+                            room.AlternateGroup = info._group;
+                            room.Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
+                                level.Rooms[info._baseRoom].Position.Y,
+                                level.Rooms[info._baseRoom].Position.Z);
+                        }
+                    }
+
                     // Transform the no collision tiles into the ForceFloorSolid option.
+                    progressReporter.ReportProgress(40, "Link flip rooms");
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
@@ -927,7 +952,7 @@ namespace TombEditor.Geometry.IO
                         progressReporter.ReportProgress(50, "Loaded texture '" + texture.Path + "'");
                     }
 
-                    // Read textures
+                    // Read texture tiles
                     var tempTextures = new List<PrjTexInfo>();
                     if (!isTextureNA)
                     {
@@ -1075,41 +1100,12 @@ namespace TombEditor.Geometry.IO
                         texture.SetTextureSound(i % 4, i / 4, textureSound);
                     }
 
-                    // Connect flip rooms
-                    progressReporter.ReportProgress(67, "Prcessing flip rooms table");
-
-                    for (int i = 0; i < level.Rooms.Length; i++)
-                    {
-                        if (level.Rooms[i] == null)
-                            continue;
-
-                        var room = level.Rooms[i];
-
-                        foreach (var info in flipInfos)
-                        {
-                            if (info._baseRoom == i)
-                            {
-                                room.AlternateRoom = level.Rooms[info._flipRoom];
-                                room.AlternateGroup = info._group;
-                            }
-
-                            if (info._flipRoom != i)
-                                continue;
-
-                            room.AlternateBaseRoom = level.Rooms[info._baseRoom];
-                            room.AlternateGroup = info._group;
-                            room.Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
-                                level.Rooms[info._baseRoom].Position.Y,
-                                level.Rooms[info._baseRoom].Position.Z);
-                        }
-                    }
-
                     // Build geometry
                     progressReporter.ReportProgress(80, "Building geometry");
                     foreach (var room in level.Rooms.Where(room => room != null))
                         room.BuildGeometry();
 
-                    // Fix faces
+                    // Build faces
                     progressReporter.ReportProgress(85, "Texturize faces");
                     for (int i = 0; i < level.Rooms.GetLength(0); i++)
                     {
@@ -1319,7 +1315,7 @@ namespace TombEditor.Geometry.IO
                     }
                 }
 
-                // Check that there are uninitialized rooms
+                // Check that there are no uninitialized rooms
                 foreach (Room room in level.Rooms)
                     if (room != null)
                         if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
@@ -1328,11 +1324,7 @@ namespace TombEditor.Geometry.IO
                 progressReporter.ReportProgress(95, "Building rooms");
 
                 foreach (var room in level.Rooms.Where(r => r != null))
-                {
-                    room.BuildGeometry();
-                    room.CalculateLightingForThisRoom();
-                    room.UpdateBuffers();
-                }
+                    room.UpdateCompletely();
 
                 progressReporter.ReportProgress(100, "Level loaded correctly!");
 
