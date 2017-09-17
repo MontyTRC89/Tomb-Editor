@@ -802,7 +802,7 @@
             this.texturesToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.texturesToolStripMenuItem.Name = "texturesToolStripMenuItem";
-            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.texturesToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.texturesToolStripMenuItem.Text = "Textures";
             // 
             // loadTextureToolStripMenuItem
@@ -914,7 +914,7 @@
             this.levelSettingsToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
             // 
             // textureMapBuilderToolStripMenuItem
@@ -922,7 +922,7 @@
             this.textureMapBuilderToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.textureMapBuilderToolStripMenuItem.Image = global::TombEditor.Properties.Resources.small_icons_16;
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
-            this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.textureMapBuilderToolStripMenuItem.Text = "Texture Map builder";
             // 
             // levelSettingsToolStripMenuItem
@@ -930,7 +930,7 @@
             this.levelSettingsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.levelSettingsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.settings_16;
             this.levelSettingsToolStripMenuItem.Name = "levelSettingsToolStripMenuItem";
-            this.levelSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.levelSettingsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.levelSettingsToolStripMenuItem.Text = "Level settings";
             this.levelSettingsToolStripMenuItem.Click += new System.EventHandler(this.levelSettingsToolStripMenuItem_Click);
             // 
@@ -2024,7 +2024,7 @@
             this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel22.Location = new System.Drawing.Point(6, 5);
             this.darkLabel22.Name = "darkLabel22";
-            this.darkLabel22.Size = new System.Drawing.Size(104, 13);
+            this.darkLabel22.Size = new System.Drawing.Size(103, 13);
             this.darkLabel22.TabIndex = 48;
             this.darkLabel22.Text = "Triggers on sectors";
             // 
@@ -2855,6 +2855,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tomb Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.panel2.ResumeLayout(false);

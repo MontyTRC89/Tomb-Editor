@@ -73,7 +73,7 @@ namespace TombEditor.Controls
 
                 Presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
                 
-                Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 1024.0f, 0, 1000000);
+                Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000);
             }
         }
         
@@ -124,7 +124,7 @@ namespace TombEditor.Controls
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
-                _device.SetVertexInputLayout(_layout);
+                mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
                 _device.SetVertexBuffer(0, model.VertexBuffer);
                 _device.SetIndexBuffer(model.IndexBuffer, true);
@@ -136,6 +136,7 @@ namespace TombEditor.Controls
                     if (_layout == null)
                     {
                         _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
+                        _device.SetVertexInputLayout(_layout);
                     }
 
                     mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
@@ -158,6 +159,8 @@ namespace TombEditor.Controls
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+
+                mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
