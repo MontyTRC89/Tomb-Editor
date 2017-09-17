@@ -13,7 +13,7 @@ namespace WadTool
 {
     internal class WadToolClass
     {
-        public Wad2 CurrentWad { get; set; }
+        public Wad2 DestinationWad { get; set; }
         public Wad2 SourceWad { get; set; }
 
         public GraphicsDevice Device { get; set; }
