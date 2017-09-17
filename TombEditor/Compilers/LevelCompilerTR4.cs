@@ -93,7 +93,7 @@ namespace TombEditor.Compilers
         private void PrepareSound()
         {
             uint numSamples = 0;
-            for (int i=0;i<_level.Wad.SoundInfo.Count;i++)
+            for (int i = 0; i < _level.Wad.SoundInfo.Count; i++)
             {
                 var soundInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
                 numSamples += (uint)soundInfo.WaveSounds.Count;

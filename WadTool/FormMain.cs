@@ -45,7 +45,7 @@ namespace WadTool
                 oldKarnak.LoadWad("Graphics\\Wads\\coastal.wad");
                 wadKarnak = WadOperations.ConvertTr4Wad(oldKarnak);
            
-            newWad.AddObject(wadKarnak.Moveables[35], 35);
+            newWad.AddObject(wadKarnak.Moveables[35], wadKarnak, 35);
 
             using (var stream = File.OpenWrite("karnak_edited.wad2"))
             {
