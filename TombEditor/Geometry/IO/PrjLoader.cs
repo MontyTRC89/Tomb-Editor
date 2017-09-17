@@ -787,12 +787,22 @@ namespace TombEditor.Geometry.IO
                                             for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
                                                 if (tempRoom.Value[x, z]._ceilingOpacity > maxOpacity)
                                                     maxOpacity = tempRoom.Value[x, z]._ceilingOpacity;
+
+                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                        // the water flag differs.
+                                        if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (maxOpacity == PortalOpacity.SolidFaces))
+                                            maxOpacity = PortalOpacity.TraversableFaces;
                                         break;
                                     case PortalDirection.Floor:
                                         for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
                                             for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
                                                 if (tempRoom.Value[x, z]._floorOpacity > maxOpacity)
                                                     maxOpacity = tempRoom.Value[x, z]._floorOpacity;
+
+                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                        // the water flag differs.
+                                        if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (maxOpacity == PortalOpacity.SolidFaces))
+                                            maxOpacity = PortalOpacity.TraversableFaces;
                                         break;
                                     default:
                                         for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
