@@ -427,32 +427,32 @@ namespace TombEditor
             }
         }
 
-        private void butClimbNorth_Click(object sender, EventArgs e)
-        {
-            if (!CheckForRoomAndBlockSelection())
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
-        }
-
-        private void butClimbEast_Click(object sender, EventArgs e)
+        private void butClimbPositiveZ_Click(object sender, EventArgs e)
         {
             if (!CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveZ);
         }
 
-        private void butClimbSouth_Click(object sender, EventArgs e)
+        private void butClimbPositiveX_Click(object sender, EventArgs e)
         {
             if (!CheckForRoomAndBlockSelection())
                 return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
+            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
         }
 
-        private void butClimbWest_Click(object sender, EventArgs e)
+        private void butClimbNegativeZ_Click(object sender, EventArgs e)
         {
             if (!CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeZ);
+        }
+
+        private void butClimbNegativeX_Click(object sender, EventArgs e)
+        {
+            if (!CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
         }
 
         private void butNotWalkableBox_Click(object sender, EventArgs e)

@@ -687,13 +687,13 @@ namespace TombEditor.Geometry.IO
                                 if ((blockFlags1 & 0x0010) != 0)
                                     block.Flags |= BlockFlags.DeathFire;
                                 if ((blockFlags1 & 0x0200) != 0)
-                                    block.Flags |= BlockFlags.ClimbNegativeX;
-                                if ((blockFlags1 & 0x0100) != 0)
-                                    block.Flags |= BlockFlags.ClimbPositiveZ;
-                                if ((blockFlags1 & 0x0080) != 0)
-                                    block.Flags |= BlockFlags.ClimbPositiveX;
-                                if ((blockFlags1 & 0x0040) != 0)
                                     block.Flags |= BlockFlags.ClimbNegativeZ;
+                                if ((blockFlags1 & 0x0100) != 0)
+                                    block.Flags |= BlockFlags.ClimbPositiveX;
+                                if ((blockFlags1 & 0x0080) != 0)
+                                    block.Flags |= BlockFlags.ClimbPositiveZ;
+                                if ((blockFlags1 & 0x0040) != 0)
+                                    block.Flags |= BlockFlags.ClimbNegativeX;
 
                                 // Read temp blocks that contain texturing informations that will be needed later
                                 var tempBlock = new PrjBlock { _faces = new PrjFace[14] };
@@ -1127,123 +1127,123 @@ namespace TombEditor.Geometry.IO
                                 LoadTextureArea(room, x, z, BlockFace.Ceiling, texture, tempTextures, prjBlock._faces[1], 0);
 
                                 // 2: BLOCK_TEX_N4 (North QA)
-                                if (room.IsFaceDefined(x, z, BlockFace.SouthQA))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.SouthQA, texture, tempTextures, prjBlock._faces[2], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[2], -1);
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthQA, texture, tempTextures, prjBlock._faces[2], -1);
+                                        LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_QA, texture, tempTextures, prjBlock._faces[2], -1);
                                 }
 
                                 // 3: BLOCK_TEX_N1 (North RF)
-                                if (room.IsFaceDefined(x, z, BlockFace.SouthRF) ||
-                                    room.IsFaceDefined(x, z, BlockFace.SouthWS))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_RF) ||
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_WS))
                                 {
-                                    if (room.IsFaceDefined(x, z, BlockFace.SouthRF) &&
-                                        !room.IsFaceDefined(x, z, BlockFace.SouthWS))
+                                    if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_RF) &&
+                                        !room.IsFaceDefined(x, z, BlockFace.NegativeZ_WS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_RF, texture, tempTextures, prjBlock._faces[3], -1);
                                     }
-                                    else if (!room.IsFaceDefined(x, z, BlockFace.SouthRF) &&
-                                        room.IsFaceDefined(x, z, BlockFace.SouthWS))
+                                    else if (!room.IsFaceDefined(x, z, BlockFace.NegativeZ_RF) &&
+                                        room.IsFaceDefined(x, z, BlockFace.NegativeZ_WS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthWS, texture, tempTextures, prjBlock._faces[3], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_WS, texture, tempTextures, prjBlock._faces[3], -1);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_RF, texture, tempTextures, prjBlock._faces[3], -1);
                                     }
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        if (room.IsFaceDefined(x, z - 1, BlockFace.NorthRF) &&
-                                            !room.IsFaceDefined(x, z - 1, BlockFace.NorthWS))
+                                        if (room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_RF) &&
+                                            !room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_WS))
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_RF, texture, tempTextures, prjBlock._faces[3], -1);
                                         }
-                                        else if (!room.IsFaceDefined(x, z - 1, BlockFace.NorthRF) &&
-                                            room.IsFaceDefined(x, z - 1, BlockFace.NorthWS))
+                                        else if (!room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_RF) &&
+                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_WS))
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthWS, texture, tempTextures, prjBlock._faces[3], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_WS, texture, tempTextures, prjBlock._faces[3], -1);
                                         }
                                         else
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthRF, texture, tempTextures, prjBlock._faces[3], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_RF, texture, tempTextures, prjBlock._faces[3], -1);
                                         }
                                 }
 
                                 // 4: BLOCK_TEX_N3 (North middle)
-                                if (room.IsFaceDefined(x, z, BlockFace.SouthMiddle))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_Middle))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.SouthMiddle, texture, tempTextures, prjBlock._faces[4], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.NegativeZ_Middle, texture, tempTextures, prjBlock._faces[4], -1);
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthMiddle, texture, tempTextures, prjBlock._faces[4], -1);
+                                        LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_Middle, texture, tempTextures, prjBlock._faces[4], -1);
                                 }
 
                                 // 5: BLOCK_TEX_W4 (West QA)
-                                if (room.IsFaceDefined(x, z, BlockFace.EastQA))
+                                if (room.IsFaceDefined(x, z, BlockFace.PositiveX_QA))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.EastQA, texture, tempTextures, prjBlock._faces[5], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.PositiveX_QA, texture, tempTextures, prjBlock._faces[5], -1);
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        LoadTextureArea(room, x + 1, z, BlockFace.WestQA, texture, tempTextures, prjBlock._faces[5], -1);
+                                        LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_QA, texture, tempTextures, prjBlock._faces[5], -1);
                                 }
 
                                 // 6: BLOCK_TEX_W1 (West RF)
-                                if (room.IsFaceDefined(x, z, BlockFace.EastRF) ||
-                                    room.IsFaceDefined(x, z, BlockFace.EastWS))
+                                if (room.IsFaceDefined(x, z, BlockFace.PositiveX_RF) ||
+                                    room.IsFaceDefined(x, z, BlockFace.PositiveX_WS))
                                 {
-                                    if (room.IsFaceDefined(x, z, BlockFace.EastRF) &&
-                                        !room.IsFaceDefined(x, z, BlockFace.EastWS))
+                                    if (room.IsFaceDefined(x, z, BlockFace.PositiveX_RF) &&
+                                        !room.IsFaceDefined(x, z, BlockFace.PositiveX_WS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.PositiveX_RF, texture, tempTextures, prjBlock._faces[6], -1);
                                     }
-                                    else if (!room.IsFaceDefined(x, z, BlockFace.EastRF) &&
-                                         room.IsFaceDefined(x, z, BlockFace.EastWS))
+                                    else if (!room.IsFaceDefined(x, z, BlockFace.PositiveX_RF) &&
+                                         room.IsFaceDefined(x, z, BlockFace.PositiveX_WS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastWS, texture, tempTextures, prjBlock._faces[6], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.PositiveX_WS, texture, tempTextures, prjBlock._faces[6], -1);
                                     }
                                     else
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.PositiveX_RF, texture, tempTextures, prjBlock._faces[6], -1);
                                     }
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        if (room.IsFaceDefined(x + 1, z, BlockFace.WestRF) &&
-                                            !room.IsFaceDefined(x + 1, z, BlockFace.WestWS))
+                                        if (room.IsFaceDefined(x + 1, z, BlockFace.NegativeX_RF) &&
+                                            !room.IsFaceDefined(x + 1, z, BlockFace.NegativeX_WS))
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_RF, texture, tempTextures, prjBlock._faces[6], -1);
                                         }
-                                        else if (!room.IsFaceDefined(x + 1, z, BlockFace.WestRF) &&
-                                             room.IsFaceDefined(x + 1, z, BlockFace.WestWS))
+                                        else if (!room.IsFaceDefined(x + 1, z, BlockFace.NegativeX_RF) &&
+                                             room.IsFaceDefined(x + 1, z, BlockFace.NegativeX_WS))
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestWS, texture, tempTextures, prjBlock._faces[6], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_WS, texture, tempTextures, prjBlock._faces[6], -1);
                                         }
                                         else
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestRF, texture, tempTextures, prjBlock._faces[6], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_RF, texture, tempTextures, prjBlock._faces[6], -1);
                                         }
                                 }
 
                                 // 7: BLOCK_TEX_W3 (West middle)
-                                if (room.IsFaceDefined(x, z, BlockFace.EastMiddle))
+                                if (room.IsFaceDefined(x, z, BlockFace.PositiveX_Middle))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.EastMiddle, texture, tempTextures, prjBlock._faces[7], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.PositiveX_Middle, texture, tempTextures, prjBlock._faces[7], -1);
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        LoadTextureArea(room, x + 1, z, BlockFace.WestMiddle, texture, tempTextures, prjBlock._faces[7], -1);
+                                        LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_Middle, texture, tempTextures, prjBlock._faces[7], -1);
                                 }
 
                                 // 8: BLOCK_TEX_F_NENW (Floor Triangle 2)
@@ -1253,64 +1253,64 @@ namespace TombEditor.Geometry.IO
                                 LoadTextureArea(room, x, z, BlockFace.CeilingTriangle2, texture, tempTextures, prjBlock._faces[9], 0);
 
                                 // 10: BLOCK_TEX_N5 (North ED)
-                                if (room.IsFaceDefined(x, z, BlockFace.SouthED))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.SouthED, texture, tempTextures, prjBlock._faces[10], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[10], -1);
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.NorthED, texture, tempTextures, prjBlock._faces[10], -1);
+                                        LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[10], -1);
                                 }
 
                                 // 11: BLOCK_TEX_N2 (North WS)
-                                if (room.IsFaceDefined(x, z, BlockFace.SouthRF) ||
-                                    room.IsFaceDefined(x, z, BlockFace.SouthWS))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_RF) ||
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_WS))
                                 {
-                                    if (room.IsFaceDefined(x, z, BlockFace.SouthRF) &&
-                                        room.IsFaceDefined(x, z, BlockFace.SouthWS))
+                                    if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_RF) &&
+                                        room.IsFaceDefined(x, z, BlockFace.NegativeZ_WS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.SouthWS, texture, tempTextures, prjBlock._faces[11], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_WS, texture, tempTextures, prjBlock._faces[11], -1);
                                     }
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        if (room.IsFaceDefined(x, z - 1, BlockFace.NorthRF) &&
-                                            room.IsFaceDefined(x, z - 1, BlockFace.NorthWS))
+                                        if (room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_RF) &&
+                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_WS))
                                         {
-                                            LoadTextureArea(room, x, z - 1, BlockFace.NorthWS, texture, tempTextures, prjBlock._faces[11], -1);
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_WS, texture, tempTextures, prjBlock._faces[11], -1);
                                         }
                                 }
 
                                 // 12: BLOCK_TEX_W5
-                                if (room.IsFaceDefined(x, z, BlockFace.EastED))
+                                if (room.IsFaceDefined(x, z, BlockFace.PositiveX_ED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.EastED, texture, tempTextures, prjBlock._faces[12], -1);
+                                    LoadTextureArea(room, x, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[12], -1);
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        LoadTextureArea(room, x + 1, z, BlockFace.WestED, texture, tempTextures, prjBlock._faces[12], -1);
+                                        LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[12], -1);
                                 }
 
                                 // 13: BLOCK_TEX_W2 (West WS)
-                                if (room.IsFaceDefined(x, z, BlockFace.EastRF) ||
-                                    room.IsFaceDefined(x, z, BlockFace.EastWS))
+                                if (room.IsFaceDefined(x, z, BlockFace.PositiveX_RF) ||
+                                    room.IsFaceDefined(x, z, BlockFace.PositiveX_WS))
                                 {
-                                    if (room.IsFaceDefined(x, z, BlockFace.EastRF) &&
-                                        room.IsFaceDefined(x, z, BlockFace.EastWS))
+                                    if (room.IsFaceDefined(x, z, BlockFace.PositiveX_RF) &&
+                                        room.IsFaceDefined(x, z, BlockFace.PositiveX_WS))
                                     {
-                                        LoadTextureArea(room, x, z, BlockFace.EastWS, texture, tempTextures, prjBlock._faces[13], -1);
+                                        LoadTextureArea(room, x, z, BlockFace.PositiveX_WS, texture, tempTextures, prjBlock._faces[13], -1);
                                     }
                                 }
                                 else
                                 {
                                     if (x < room.NumXSectors - 1)
-                                        if (room.IsFaceDefined(x + 1, z, BlockFace.WestRF) &&
-                                            room.IsFaceDefined(x + 1, z, BlockFace.WestWS))
+                                        if (room.IsFaceDefined(x + 1, z, BlockFace.NegativeX_RF) &&
+                                            room.IsFaceDefined(x + 1, z, BlockFace.NegativeX_WS))
                                         {
-                                            LoadTextureArea(room, x + 1, z, BlockFace.WestWS, texture, tempTextures, prjBlock._faces[13], -1);
+                                            LoadTextureArea(room, x + 1, z, BlockFace.NegativeX_WS, texture, tempTextures, prjBlock._faces[13], -1);
                                         }
                                 }
                             }

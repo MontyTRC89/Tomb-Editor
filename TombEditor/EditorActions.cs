@@ -903,7 +903,7 @@ namespace TombEditor
         {
             for (int x = 0; x < room.NumXSectors; x++)
                 for (int z = 0; z < room.NumZSectors; z++)
-                    for (BlockFace face = BlockFace.NorthQA; face <= BlockFace.DiagonalRF; face++)
+                    for (BlockFace face = BlockFace.PositiveZ_QA; face <= BlockFace.DiagonalRF; face++)
                         if (room.IsFaceDefined(x, z, face))
                             ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), face, texture);
 

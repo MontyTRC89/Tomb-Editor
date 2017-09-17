@@ -25,11 +25,11 @@ namespace TombEditor.Geometry
         Beetle = 32,
         TriggerTriggerer = 64,
         NotWalkableFloor = 128,
-        ClimbPositiveX = 256,
-        ClimbNegativeX = 512,
-        ClimbPositiveZ = 1024,
-        ClimbNegativeZ = 2048,
-        ClimbAny = ClimbPositiveX  | ClimbNegativeX | ClimbPositiveZ | ClimbNegativeZ
+        ClimbPositiveZ = 256,
+        ClimbNegativeZ = 512,
+        ClimbPositiveX = 1024,
+        ClimbNegativeX = 2048,
+        ClimbAny = ClimbPositiveZ  | ClimbNegativeZ | ClimbPositiveX | ClimbNegativeX
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -45,11 +45,11 @@ namespace TombEditor.Geometry
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum BlockFace : byte
     {
-        NorthQA = 0, SouthQA = 1, WestQA = 2, EastQA = 3, DiagonalQA = 4,
-        NorthED = 5, SouthED = 6, WestED = 7, EastED = 8, DiagonalED = 9,
-        NorthMiddle = 10, SouthMiddle = 11, WestMiddle = 12, EastMiddle = 13, DiagonalMiddle = 14,
-        NorthWS = 15, SouthWS = 16, WestWS = 17, EastWS = 18, DiagonalWS = 19,
-        NorthRF = 20, SouthRF = 21, WestRF = 22, EastRF = 23, DiagonalRF = 24,
+        PositiveZ_QA = 0, NegativeZ_QA = 1, NegativeX_QA = 2, PositiveX_QA = 3, DiagonalQA = 4,
+        PositiveZ_ED = 5, NegativeZ_ED = 6, NegativeX_ED = 7, PositiveX_ED = 8, DiagonalED = 9,
+        PositiveZ_Middle = 10, NegativeZ_Middle = 11, NegativeX_Middle = 12, PositiveX_Middle = 13, DiagonalMiddle = 14,
+        PositiveZ_WS = 15, NegativeZ_WS = 16, NegativeX_WS = 17, PositiveX_WS = 18, DiagonalWS = 19,
+        PositiveZ_RF = 20, NegativeZ_RF = 21, NegativeX_RF = 22, PositiveX_RF = 23, DiagonalRF = 24,
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
 
