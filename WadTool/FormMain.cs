@@ -300,5 +300,49 @@ namespace WadTool
         {
             butSaveAs_Click(null, null);
         }
+
+        private void butAddObjectToDifferentSlot_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must load or create a new destination Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            // Get the selected object
+            if (treeSourceWad.SelectedNodes.Count == 0) return;
+            var node = treeSourceWad.SelectedNodes[0];
+            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
+
+            var currentObject = (WadObject)node.Tag;
+            var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
+
+            // Ask for the new slot
+            var form = new FormSelectSlot();
+            form.IsMoveable = isMoveable;
+            if (form.ShowDialog() != DialogResult.OK) return;
+
+            var objectId = form.ObjectId;
+            var objectName = form.ObjectName;
+
+            // Check if object could be overwritten
+            if (isMoveable && _tool.DestinationWad.Moveables.ContainsKey(objectId) ||
+                !isMoveable && _tool.DestinationWad.Statics.ContainsKey(objectId))
+            {
+                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                   "Destination Wad2 already contains '" + objectName + "'. Do you want to overwrite it?",
+                   "Copy object", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    return;
+            }
+
+            // Copy the object
+            _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, objectId);
+
+            // Update UI
+            UpdateDestinationWad2UI();
+
+            // Rebuild DirectX data
+            _tool.DestinationWad.PrepareDataForDirectX();
+        }
     }
 }

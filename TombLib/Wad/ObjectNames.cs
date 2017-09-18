@@ -13,7 +13,7 @@ namespace TombLib.Wad
         {
             for (uint i = 0; i < 100; i++)
                 _staticNames.Add(i, "Static Mesh #" + i);
-            
+
             using (StreamReader reader = new StreamReader("Editor\\Objects.txt"))
                 while (!reader.EndOfStream)
                 {
@@ -30,12 +30,29 @@ namespace TombLib.Wad
             else
                 return "Unkown";
         }
+
         public static string GetStaticName(uint StaticID)
         {
             if (_staticNames.ContainsKey(StaticID))
                 return _staticNames[StaticID];
             else
                 return "Unkown";
+        }
+
+        public static Dictionary<uint, string> MoveablesNames
+        {
+            get
+            {
+                return _moveableNames;
+            }
+        }
+
+        public static Dictionary<uint, string> StaticNames
+        {
+            get
+            {
+                return _staticNames;
+            }
         }
     }
 }
