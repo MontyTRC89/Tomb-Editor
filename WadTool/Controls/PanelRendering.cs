@@ -46,7 +46,7 @@ namespace WadTool.Controls
 
             _presenter = new SwapChainGraphicsPresenter(_device, pp);
 
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000);
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, (float)Math.PI / 4.0f);
 
             // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
             new BasicEffect(_device);
