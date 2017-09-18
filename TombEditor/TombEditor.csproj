@@ -55,8 +55,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Tomb Raider - The Last Revelation [Alternate].ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TombEditor.Program</StartupObject>
@@ -286,9 +285,6 @@
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
-    <Compile Include="Controls\MultiPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\Panel2DMap.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -355,6 +351,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMoveable.resx">
       <DependentUpon>FormMoveable.cs</DependentUpon>
@@ -408,6 +405,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Editor\sky.png" />
+    <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
     <None Include="Editor\arrow_ne_se.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

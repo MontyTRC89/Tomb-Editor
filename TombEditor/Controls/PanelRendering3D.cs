@@ -1845,13 +1845,13 @@ namespace TombEditor.Controls
                 {
                     Vector3 normal = Vector3.Zero;
 
-                    if (portal.Direction == PortalDirection.North)
+                    if (portal.Direction == PortalDirection.WallPositiveZ)
                         normal = -Vector3.UnitZ;
-                    if (portal.Direction == PortalDirection.East)
+                    if (portal.Direction == PortalDirection.WallPositiveX)
                         normal = -Vector3.UnitX;
-                    if (portal.Direction == PortalDirection.South)
+                    if (portal.Direction == PortalDirection.WallNegativeZ)
                         normal = Vector3.UnitZ;
-                    if (portal.Direction == PortalDirection.West)
+                    if (portal.Direction == PortalDirection.WallNegativeX)
                         normal = Vector3.UnitX;
                     if (portal.Direction == PortalDirection.Floor)
                         normal = Vector3.UnitY;
@@ -2025,13 +2025,11 @@ namespace TombEditor.Controls
                 return;
 
             // reset the backbuffer
-            bool IsFlipMap = (_editor?.SelectedRoom?.AlternateBaseRoom != null);
+            Vector4 clearColor = _editor?.SelectedRoom?.AlternateBaseRoom != null ? _editor.Configuration.Rendering3D_BackgroundColorFlipRoom : _editor.Configuration.Rendering3D_BackgroundColor;
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
-                _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
-                IsFlipMap ? SharpDX.Color.LightCoral : SharpDX.Color.CornflowerBlue, 1.0f, 0);
+            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, clearColor, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
             // verify that editor is ready
@@ -2194,7 +2192,7 @@ namespace TombEditor.Controls
             float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = { "North", "South", "East", "West" };
+            string[] messages = { "+Z (North)", "-Z (South)", "-X (East)", "+X (West)" };
             Vector3[] positions = new Vector3[4];
 
             Vector3 center = _editor.SelectedRoom.GetLocalCenter();
@@ -2593,11 +2591,11 @@ namespace TombEditor.Controls
 
                         if (z == room.NumZSectors - 1)
                         {
-                            qa = BlockFace.SouthQA;
-                            ws = BlockFace.SouthWS;
-                            ed = BlockFace.SouthED;
-                            rf = BlockFace.SouthRF;
-                            middle = BlockFace.SouthMiddle;
+                            qa = BlockFace.NegativeZ_QA;
+                            ws = BlockFace.NegativeZ_WS;
+                            ed = BlockFace.NegativeZ_ED;
+                            rf = BlockFace.NegativeZ_RF;
+                            middle = BlockFace.NegativeZ_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {
@@ -2691,11 +2689,11 @@ namespace TombEditor.Controls
 
                         if (x == room.NumXSectors - 1)
                         {
-                            qa = BlockFace.WestQA;
-                            ws = BlockFace.WestWS;
-                            ed = BlockFace.WestED;
-                            rf = BlockFace.WestRF;
-                            middle = BlockFace.WestMiddle;
+                            qa = BlockFace.NegativeX_QA;
+                            ws = BlockFace.NegativeX_WS;
+                            ed = BlockFace.NegativeX_ED;
+                            rf = BlockFace.NegativeX_RF;
+                            middle = BlockFace.NegativeX_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {
@@ -2789,11 +2787,11 @@ namespace TombEditor.Controls
 
                         if (z == 0)
                         {
-                            qa = BlockFace.NorthQA;
-                            ws = BlockFace.NorthWS;
-                            ed = BlockFace.NorthED;
-                            rf = BlockFace.NorthRF;
-                            middle = BlockFace.NorthMiddle;
+                            qa = BlockFace.PositiveZ_QA;
+                            ws = BlockFace.PositiveZ_WS;
+                            ed = BlockFace.PositiveZ_ED;
+                            rf = BlockFace.PositiveZ_RF;
+                            middle = BlockFace.PositiveZ_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {
@@ -2887,11 +2885,11 @@ namespace TombEditor.Controls
 
                         if (x == 0)
                         {
-                            qa = BlockFace.EastQA;
-                            ws = BlockFace.EastWS;
-                            ed = BlockFace.EastED;
-                            rf = BlockFace.EastRF;
-                            middle = BlockFace.EastMiddle;
+                            qa = BlockFace.PositiveX_QA;
+                            ws = BlockFace.PositiveX_WS;
+                            ed = BlockFace.PositiveX_ED;
+                            rf = BlockFace.PositiveX_RF;
+                            middle = BlockFace.PositiveX_Middle;
 
                             switch (_editor.SelectedSectors.Arrow)
                             {

@@ -23,28 +23,20 @@ namespace TombLib.Wad
 
     public partial class Wad2 : IDisposable
     {
-        // Textures
-        private Dictionary<Hash, WadTexture> _textures;
-
-        // Meshes
-        private Dictionary<Hash, WadMesh> _meshes;
-
-        // Objects
-        private Dictionary<uint, WadMoveable> _moveables;
-        private Dictionary<uint, WadStatic> _staticMeshes;
-
-        // Sounds
-        private Dictionary<ushort, WadSoundInfo> _soundInfos;
-
-        // Sprites
-        private List<WadSpriteSequence> _spriteSequences;
-        private Dictionary<Hash, WadTexture> _spriteTextures;
+        public Dictionary<Hash, WadTexture> Textures { get; private set; }
+        public Dictionary<Hash, WadMesh> Meshes { get; private set; }
+        public SortedDictionary<uint, WadMoveable> Moveables { get; private set; }
+        public SortedDictionary<uint, WadStatic> Statics { get; private set; }
+        public SortedDictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
+        public List<WadSpriteSequence> SpriteSequences { get; private set; }
+        public Dictionary<Hash, WadTexture> SpriteTextures { get; private set; }
+        public string FileName { get; set; }
 
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
         public Texture2D DirectXTexture { get; private set; }
-        public Dictionary<uint, SkinnedModel> DirectXMoveables { get; } = new Dictionary<uint, SkinnedModel>();
-        public Dictionary<uint, StaticModel> DirectXStatics { get; } = new Dictionary<uint, StaticModel>();
+        public SortedDictionary<uint, SkinnedModel> DirectXMoveables { get; } = new SortedDictionary<uint, SkinnedModel>();
+        public SortedDictionary<uint, StaticModel> DirectXStatics { get; } = new SortedDictionary<uint, StaticModel>();
 
         // Size of the atlas
         public const int TextureAtlasSize = 2048;
@@ -68,13 +60,13 @@ namespace TombLib.Wad
 
         public Wad2()
         {
-            _textures = new Dictionary<Hash, WadTexture>();
-            _meshes = new Dictionary<Hash, WadMesh>();
-            _moveables = new Dictionary<uint, WadMoveable>();
-            _staticMeshes = new Dictionary<uint, WadStatic>();
-            _soundInfos = new Dictionary<ushort, WadSoundInfo>();
-            _spriteSequences = new List<WadSpriteSequence>();
-            _spriteTextures = new Dictionary<Hash, WadTexture>();
+            Textures = new Dictionary<Hash, WadTexture>();
+            Meshes = new Dictionary<Hash, WadMesh>();
+            Moveables = new SortedDictionary<uint, WadMoveable>();
+            Statics = new SortedDictionary<uint, WadStatic>();
+            SoundInfo = new SortedDictionary<ushort, WadSoundInfo>();
+            SpriteSequences = new List<WadSpriteSequence>();
+            SpriteTextures = new Dictionary<Hash, WadTexture>();
         }
 
         public Wad2(GraphicsDevice device) : this()
@@ -82,24 +74,27 @@ namespace TombLib.Wad
             GraphicsDevice = device;
         }
 
-        public Dictionary<Hash, WadTexture> Textures { get { return _textures; } }
-        public Dictionary<Hash, WadMesh> Meshes { get { return _meshes; } }
-        public Dictionary<uint, WadMoveable> Moveables { get { return _moveables; } }
-        public Dictionary<uint, WadStatic> Statics { get { return _staticMeshes; } }
-        public Dictionary<ushort, WadSoundInfo> SoundInfo { get { return _soundInfos; } }
-        public List<WadSpriteSequence> SpriteSequences { get { return _spriteSequences; } }
-        public Dictionary<Hash, WadTexture> SpriteTextures { get { return _spriteTextures; } }
-
-        public void PrepareDataForDirectX()
+        public short[] FixedSounds
         {
-            Dispose();
+            get
+            {
+                return new short[] {0, 2, 6, 7, 8, 9, 10, 17, 19, 27, 30, 31, 33, 35, 36, 37, 49, 60,
+                                    68, 79, 105, 106, 107, 108, 109,
+                                    110, 111, 113, 114, 115, 116, 118, 121, 148, 149, 150, 163, 182, 183, 185, 186,
+                                    199, 235, 270, 288, 290, 291, 292, 293, 293, 325, 339, 340, 344, 347, 351, 368};
+            }
+        }
+
+        public List<WadTexture> RebuildTextureAtlas()
+        {
+            if (DirectXTexture != null) DirectXTexture.Dispose();
 
             // Pack the textures in a single atlas
             List<WadTexture> packedTextures = new List<WadTexture>();
 
-            for (int i = 0; i < _textures.Count; i++)
+            for (int i = 0; i < Textures.Count; i++)
             {
-                packedTextures.Add(_textures.ElementAt(i).Value);
+                packedTextures.Add(Textures.ElementAt(i).Value);
             }
 
             packedTextures.Sort(new ComparerWadTextures());
@@ -133,6 +128,16 @@ namespace TombLib.Wad
 
             // Create the DirectX texture atlas
             DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
+
+            return packedTextures;
+        }
+
+        public void PrepareDataForDirectX()
+        {
+            Dispose();
+
+            // Rebuild the texture atlas and covert it to a DirectX texture
+            var packedTextures = RebuildTextureAtlas();
             
             // Create movable models
             for (int i = 0; i < Moveables.Count; i++)

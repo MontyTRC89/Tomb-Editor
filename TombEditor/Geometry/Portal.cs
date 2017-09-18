@@ -5,7 +5,7 @@ namespace TombEditor.Geometry
 {
     public enum PortalDirection : byte
     {
-        Floor, Ceiling, North, South, East, West
+        Floor, Ceiling, WallPositiveZ, WallNegativeZ, WallPositiveX, WallNegativeX
     }
 
     public enum PortalOpacity : byte
@@ -67,14 +67,14 @@ namespace TombEditor.Geometry
                     return PortalDirection.Floor;
                 case PortalDirection.Floor:
                     return PortalDirection.Ceiling;
-                case PortalDirection.East:
-                    return PortalDirection.West;
-                case PortalDirection.West:
-                    return PortalDirection.East;
-                case PortalDirection.North:
-                    return PortalDirection.South;
-                case PortalDirection.South:
-                    return PortalDirection.North;
+                case PortalDirection.WallPositiveX:
+                    return PortalDirection.WallNegativeX;
+                case PortalDirection.WallNegativeX:
+                    return PortalDirection.WallPositiveX;
+                case PortalDirection.WallPositiveZ:
+                    return PortalDirection.WallNegativeZ;
+                case PortalDirection.WallNegativeZ:
+                    return PortalDirection.WallPositiveZ;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -84,13 +84,13 @@ namespace TombEditor.Geometry
         {
             switch (direction)
             {
-                case PortalDirection.East:
+                case PortalDirection.WallPositiveX:
                     return area.Offset(new DrawingPoint(-1, 0));
-                case PortalDirection.North:
+                case PortalDirection.WallPositiveZ:
                     return area.Offset(new DrawingPoint(0, -1));
-                case PortalDirection.South:
+                case PortalDirection.WallNegativeZ:
                     return area.Offset(new DrawingPoint(0, 1));
-                case PortalDirection.West:
+                case PortalDirection.WallNegativeX:
                     return area.Offset(new DrawingPoint(1, 0));
                 default:
                     return area;
@@ -125,35 +125,35 @@ namespace TombEditor.Geometry
             switch (Direction)
             {
                 case PortalDirection.Floor:
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             if (room.Blocks[x, z].FloorPortal != null)
                                 throw new ApplicationException("The new floor portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
 
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             room.Blocks[x, z].FloorPortal = this;
                     break;
 
                 case PortalDirection.Ceiling:
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             if (room.Blocks[x, z].CeilingPortal != null)
-                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("The new ceiling portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].CeilingPortal + "'!");
 
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             room.Blocks[x, z].CeilingPortal = this;
                     break;
 
                 default:
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             if (room.Blocks[x, z].WallPortal != null)
-                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].FloorPortal + "'!");
+                                throw new ApplicationException("The new wall portal '" + this + "' in room '" + room + "' overlaps with '" + room.Blocks[x, z].WallPortal + "'!");
 
-                    for (int x = Area.X; x <= Area.Right; ++x)
-                        for (int z = Area.Y; z <= Area.Bottom; ++z)
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
                             room.Blocks[x, z].WallPortal = this;
                     break;
             }
@@ -165,14 +165,34 @@ namespace TombEditor.Geometry
 
             if ((room.Flipped) || (AdjoiningRoom?.Flipped ?? false))
                 throw new NotImplementedException("Removing portals from rooms that are flipped is not supported just yet. :(");
-            
-            room.UpdateCompletely();
+
+            // Remove portal reference
+            switch (Direction)
+            {
+                case PortalDirection.Floor:
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
+                            room.Blocks[x, z].FloorPortal = null;
+                    break;
+                case PortalDirection.Ceiling:
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
+                            room.Blocks[x, z].CeilingPortal = null;
+                    break;
+                default:
+                    for (int z = Area.Y; z <= Area.Bottom; ++z)
+                        for (int x = Area.X; x <= Area.Right; ++x)
+                            room.Blocks[x, z].WallPortal = null;
+                    break;
+            }
 
             // Delete the corresponding opposite portal.
             // (Will invoke this routine again from the other perspective).
             var oppositePortal = FindOppositePortal(room);
             if (oppositePortal != null)
                 AdjoiningRoom.RemoveObject(level, oppositePortal);
+
+            room.UpdateCompletely();
         }
     }
 }

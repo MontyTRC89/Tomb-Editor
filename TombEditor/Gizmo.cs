@@ -58,16 +58,16 @@ namespace TombEditor
 
             // Initialize the gizmo geometry
             var v0 = new EditorVertex {Position = new Vector3(0.0f, 0.0f, 0.0f)};
-            var vX = new EditorVertex {Position = new Vector3(1024.0f, 0.0f, 0.0f)};
-            var vY = new EditorVertex {Position = new Vector3(0.0f, 1024.0f, 0.0f)};
-            var vZ = new EditorVertex {Position = new Vector3(0.0f, 0.0f, -1024.0f)};
+            var vX = new EditorVertex {Position = new Vector3(1.0f, 0.0f, 0.0f)};
+            var vY = new EditorVertex {Position = new Vector3(0.0f, 1.0f, 0.0f)};
+            var vZ = new EditorVertex {Position = new Vector3(0.0f, 0.0f, -1.0f)};
             var vertices = new[] {v0, vX, v0, vY, v0, vZ};
 
             _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New
                 (_device, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
-            _sphere = GeometricPrimitive.Sphere.New(_device, 128.0f, 16);
-            _cube = GeometricPrimitive.Cube.New(_device, 128.0f);
+            _sphere = GeometricPrimitive.Sphere.New(_device, 1.0f, 16);
+            _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
 
             // Initialize the rasterizer state for wireframe drawing
             var renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
@@ -180,11 +180,10 @@ namespace TombEditor
 
             var solidEffect = _deviceManager.Effects["Solid"];
 
-            var model = Matrix.Translation(Position) *
+            var model = Matrix.Scaling(_editor.Configuration.Gizmo_Size) * 
+                        Matrix.Translation(Position) *
                         Matrix.Translation(_editor.SelectedRoom.WorldPos);
-            var modelViewProjection = model * viewProjection;
-
-            solidEffect.Parameters["ModelViewProjection"].SetValue(modelViewProjection);
+            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 
             // X axis
             solidEffect.Parameters["Color"].SetValue(_red);
@@ -210,7 +209,8 @@ namespace TombEditor
             _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
             // X axis sphere
-            model = Matrix.Translation(Position + Vector3.UnitX * 1024.0f) *
+            model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) * 
+                    Matrix.Translation(Position + Vector3.UnitX * _editor.Configuration.Gizmo_Size) *
                     Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_red);
@@ -219,7 +219,8 @@ namespace TombEditor
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
             // Y axis sphere
-            model = Matrix.Translation(Position + Vector3.UnitY * 1024.0f) *
+            model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) *
+                    Matrix.Translation(Position + Vector3.UnitY * _editor.Configuration.Gizmo_Size) *
                     Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_green);
@@ -228,7 +229,8 @@ namespace TombEditor
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
             // Z axis sphere
-            model = Matrix.Translation(Position - Vector3.UnitZ * 1024.0f) *
+            model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) *
+                    Matrix.Translation(Position - Vector3.UnitZ * _editor.Configuration.Gizmo_Size) *
                     Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_blue);
@@ -241,7 +243,8 @@ namespace TombEditor
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cube.VertexBuffer));
             _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
 
-            model = Matrix.Translation(Position) *
+            model = Matrix.Scaling(_editor.Configuration.Gizmo_CenterCubeSize) *
+                    Matrix.Translation(Position) *
                     Matrix.Translation(_editor.SelectedRoom.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_yellow);

@@ -232,13 +232,13 @@ namespace TombEditor.Controls
                         //Draw additional features on floor tile
                         if (block.ForceFloorSolid)
                             e.Graphics.FillRectangle(_forceFloorSolidBrush, rectangle);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
-                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
                         if (block.Flags.HasFlag(BlockFlags.ClimbPositiveZ))
+                            e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, rectangle.Width, _climbWidth);
+                        if (block.Flags.HasFlag(BlockFlags.ClimbPositiveX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.Right - _climbWidth, rectangle.Y, _climbWidth, rectangle.Height);
-                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX))
-                        e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
                         if (block.Flags.HasFlag(BlockFlags.ClimbNegativeZ))
+                        e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Bottom - _climbWidth, rectangle.Width, _climbWidth);
+                        if (block.Flags.HasFlag(BlockFlags.ClimbNegativeX))
                             e.Graphics.FillRectangle(_climbBrush, rectangle.X, rectangle.Y, _climbWidth, rectangle.Height);
                         RectangleF beetleTriggerRectangle = rectangle;
                         beetleTriggerRectangle.Inflate(-2, -2);

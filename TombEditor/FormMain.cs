@@ -115,7 +115,9 @@ namespace TombEditor
                 but3D.Checked = mode == EditorMode.Geometry;
                 butLightingMode.Checked = mode == EditorMode.Lighting;
                 butFaceEdit.Checked = mode == EditorMode.FaceEdit;
-                multiPage1.SelectedIndex = mode == EditorMode.Map2D ? 1 : 0;
+
+                panel2DMap.Visible = mode == EditorMode.Map2D;
+                panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
             }
 
             // Update flipmap toolbar button
@@ -332,32 +334,32 @@ namespace TombEditor
             }
         }
 
-        private void butClimbNorth_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
-                return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
-        }
-
-        private void butClimbEast_Click(object sender, EventArgs e)
+        private void butClimbPositiveZ_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveZ);
         }
 
-        private void butClimbSouth_Click(object sender, EventArgs e)
+        private void butClimbPositiveX_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
-            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
+            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
         }
 
-        private void butClimbWest_Click(object sender, EventArgs e)
+        private void butClimbNegativeZ_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeZ);
+        }
+
+        private void butClimbNegativeX_Click(object sender, EventArgs e)
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
         }
 
         private void butNotWalkableBox_Click(object sender, EventArgs e)
@@ -1495,6 +1497,11 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

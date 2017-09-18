@@ -9,15 +9,18 @@ namespace TombLib.Wad
 {
     public partial class Wad2
     {
-        private void CollectTexturesAndMeshesForCancellation(WadObject obj,
-                                                             List<WadTexture> textures,
-                                                             List<WadMesh> meshes)
+        private void CollectResourcesForCancellation(WadObject obj,
+                                                     List<WadTexture> textures,
+                                                     List<WadMesh> meshes,
+                                                     List<ushort> sounds)
         {
+            bool isMoveable = obj.GetType() == typeof(WadMoveable);
+
             var meshesToCheck = new List<WadMesh>();
             var texturesToCheck = new List<WadTexture>();
 
             // Collect all meshes
-            if (obj.GetType() == typeof(WadMoveable))
+            if (isMoveable)
             {
                 WadMoveable moveable = (WadMoveable)obj;
 
@@ -40,7 +43,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < Moveables.Count; i++)
                 {
                     var moveable = Moveables.ElementAt(i).Value;
-                    if (obj.GetType() == typeof(WadMoveable) && moveable.ObjectID == obj.ObjectID) continue;
+                    if (isMoveable && moveable.ObjectID == obj.ObjectID) continue;
 
                     foreach (var moveableMesh in moveable.Meshes)
                     {
@@ -61,7 +64,7 @@ namespace TombLib.Wad
                     for (int i = 0; i < Statics.Count; i++)
                     {
                         var staticMesh = Statics.ElementAt(i).Value;
-                        if (obj.GetType() == typeof(WadStatic) && staticMesh.ObjectID == obj.ObjectID) continue;
+                        if (!isMoveable && staticMesh.ObjectID == obj.ObjectID) continue;
 
                         if (staticMesh.Mesh == mesh)
                         {
@@ -91,7 +94,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < Moveables.Count; i++)
                 {
                     var moveable = Moveables.ElementAt(i).Value;
-                    if (obj.GetType() == typeof(WadMoveable) && moveable.ObjectID == obj.ObjectID) continue;
+                    if (isMoveable && moveable.ObjectID == obj.ObjectID) continue;
 
                     foreach (var moveableMesh in moveable.Meshes)
                     {
@@ -115,7 +118,7 @@ namespace TombLib.Wad
                 for (int i = 0; i < Statics.Count; i++)
                 {
                     var staticMesh = Statics.ElementAt(i).Value;
-                    if (obj.GetType() == typeof(WadStatic) && staticMesh.ObjectID == obj.ObjectID) continue;
+                    if (!isMoveable && staticMesh.ObjectID == obj.ObjectID) continue;
 
                     foreach (var poly in staticMesh.Mesh.Polys)
                     {
@@ -131,6 +134,28 @@ namespace TombLib.Wad
 
                 if (!foundInMoveables && !foundInStatics) textures.Add(texture);
             }
+
+            // Now check for waves
+            if (isMoveable)
+            {
+                var moveable = (WadMoveable)obj;
+
+                foreach (var animation in moveable.Animations)
+                {
+                    foreach (var command in animation.AnimCommands)
+                    {
+                        if (command.Type == WadAnimCommandType.PlaySound)
+                        {
+                            ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
+                            if (SoundInfo.ContainsKey(soundId))
+                            {
+                                if (!sounds.Contains(soundId))
+                                    sounds.Add(soundId);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public void DeleteObject(WadObject obj)
@@ -138,8 +163,9 @@ namespace TombLib.Wad
             // Collect resources to remove
             var textures = new List<WadTexture>();
             var meshes = new List<WadMesh>();
+            var sounds = new List<ushort>();
 
-            CollectTexturesAndMeshesForCancellation(obj, textures, meshes);
+            CollectResourcesForCancellation(obj, textures, meshes, sounds);
 
             // Delete shared resource not needed anymore
             foreach (var texture in textures)
@@ -148,6 +174,9 @@ namespace TombLib.Wad
             foreach (var mesh in meshes)
                 Meshes.Remove(mesh.Hash);
 
+            foreach (var sound in sounds)
+                SoundInfo.Remove(sound);
+
             // Delete object
             if (obj.GetType() == typeof(WadMoveable))
                 Moveables.Remove(obj.ObjectID);
@@ -155,7 +184,7 @@ namespace TombLib.Wad
                 Statics.Remove(obj.ObjectID);
         }
 
-        public void AddObject(WadObject obj, uint destination)
+        public void AddObject(WadObject obj, Wad2 srcWad, uint destination)
         {
             bool isMoveable = (obj.GetType() == typeof(WadMoveable));
 
@@ -173,8 +202,9 @@ namespace TombLib.Wad
             }
 
             // Collect all meshes and textures
-            var textures = new List<WadTexture>();
-            var meshes = new List<WadMesh>();
+            var texturesToAdd = new List<WadTexture>();
+            var meshesToAdd = new List<WadMesh>();
+            var soundsToAdd = new List<ushort>();
 
             // Add meshes to the shared meshes array
             if (isMoveable)
@@ -183,16 +213,16 @@ namespace TombLib.Wad
 
                 // Add a clone of meshes
                 foreach (var mesh in moveable.Meshes)
-                    meshes.Add(mesh.Clone());
+                    meshesToAdd.Add(mesh.Clone());
             }
             else
             {
                 var staticMesh = (WadStatic)obj;
-                meshes.Add(staticMesh.Mesh.Clone());
+                meshesToAdd.Add(staticMesh.Mesh.Clone());
             }
 
             // Now in the clone list check for textures and update them if present
-            foreach (var mesh in meshes)
+            foreach (var mesh in meshesToAdd)
             {
                 foreach (var poly in mesh.Polys)
                 {
@@ -201,6 +231,32 @@ namespace TombLib.Wad
                     else
                         Textures.Add(poly.Texture.Hash, poly.Texture);
                 }
+
+                mesh.UpdateHash();
+            }
+
+            // Add all sounds
+            if (isMoveable)
+            {
+                var moveable = (WadMoveable)obj;
+
+                foreach (var animation in moveable.Animations)
+                {
+                    foreach (var command in animation.AnimCommands)
+                    {
+                        if (command.Type == WadAnimCommandType.PlaySound)
+                        {
+                            ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
+                            if (srcWad.SoundInfo.ContainsKey(soundId))
+                            {
+                                if (!SoundInfo.ContainsKey(soundId))
+                                    SoundInfo.Add(soundId, srcWad.SoundInfo[soundId]);
+                                else
+                                    SoundInfo[soundId] = srcWad.SoundInfo[soundId];
+                            }
+                        }
+                    }
+                }
             }
 
             // Add the object to Wad2
@@ -208,7 +264,14 @@ namespace TombLib.Wad
             {
                 var moveable = (WadMoveable)obj;
                 moveable.Meshes.Clear();
-                moveable.Meshes.AddRange(meshes);
+               
+                foreach (var mesh in meshesToAdd)
+                {
+                    if (!Meshes.ContainsKey(mesh.Hash))
+                        Meshes.Add(mesh.Hash, mesh);
+
+                    moveable.Meshes.Add(Meshes[mesh.Hash]);
+                }
 
                 moveable.ObjectID = destination;
                 Moveables.Add(destination, moveable);
@@ -216,7 +279,11 @@ namespace TombLib.Wad
             else
             {
                 var staticMesh = (WadStatic)obj;
-                staticMesh.Mesh = meshes[0];
+                
+                if (!Meshes.ContainsKey(meshesToAdd[0].Hash))
+                    Meshes.Add(meshesToAdd[0].Hash, meshesToAdd[0]);
+
+                staticMesh.Mesh = Meshes[meshesToAdd[0].Hash];
 
                 staticMesh.ObjectID = destination;
                 Statics.Add(destination, staticMesh);

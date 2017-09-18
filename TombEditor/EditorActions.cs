@@ -903,7 +903,7 @@ namespace TombEditor
         {
             for (int x = 0; x < room.NumXSectors; x++)
                 for (int z = 0; z < room.NumZSectors; z++)
-                    for (BlockFace face = BlockFace.NorthQA; face <= BlockFace.DiagonalRF; face++)
+                    for (BlockFace face = BlockFace.PositiveZ_QA; face <= BlockFace.DiagonalRF; face++)
                         if (room.IsFaceDefined(x, z, face))
                             ApplyTextureAutomaticallyNoUpdated(room, new DrawingPoint(x, z), face, texture);
 
@@ -1304,13 +1304,13 @@ namespace TombEditor
                         }
                     }
                     if ((area.Width == 0) && (area.X == 0))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.West, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallNegativeX, neighborRoom));
                     if ((area.Width == 0) && (area.X == (room.NumXSectors - 1)))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.East, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallPositiveX, neighborRoom));
                     if ((area.Height == 0) && (area.Y == 0))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.North, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallNegativeZ, neighborRoom));
                     if ((area.Height == 0) && (area.Y == (room.NumZSectors - 1)))
-                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.South, neighborRoom));
+                        candidates.Add(new Tuple<PortalDirection, Room>(PortalDirection.WallPositiveZ, neighborRoom));
                 }
             }
 
