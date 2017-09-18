@@ -147,8 +147,11 @@ namespace TombLib.Wad
                         if (command.Type == WadAnimCommandType.PlaySound)
                         {
                             ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                            if (!sounds.Contains(soundId))
-                                sounds.Add(soundId);
+                            if (SoundInfo.ContainsKey(soundId))
+                            {
+                                if (!sounds.Contains(soundId))
+                                    sounds.Add(soundId);
+                            }
                         }
                     }
                 }
@@ -244,10 +247,13 @@ namespace TombLib.Wad
                         if (command.Type == WadAnimCommandType.PlaySound)
                         {
                             ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                            if (!SoundInfo.ContainsKey(soundId))
-                                SoundInfo.Add(soundId, srcWad.SoundInfo[soundId]);
-                            else
-                                SoundInfo[soundId] = srcWad.SoundInfo[soundId];
+                            if (srcWad.SoundInfo.ContainsKey(soundId))
+                            {
+                                if (!SoundInfo.ContainsKey(soundId))
+                                    SoundInfo.Add(soundId, srcWad.SoundInfo[soundId]);
+                                else
+                                    SoundInfo[soundId] = srcWad.SoundInfo[soundId];
+                            }
                         }
                     }
                 }

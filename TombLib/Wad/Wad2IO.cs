@@ -21,7 +21,7 @@ namespace TombLib.Wad
         {
             Wad2 wad = new Wad2();
             WadChunkType chunkType;
-
+            
             using (var reader = new BinaryReaderEx(stream))
             {
                 byte[] version = reader.ReadBytes(_magicWord.Length);
