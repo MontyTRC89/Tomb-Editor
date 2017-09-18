@@ -40,13 +40,19 @@ namespace TombEditor.Controls
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Update field of view
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.RenderingItem_FieldOfView * (float)(Math.PI / 180);
+                Invalidate();
+            }
+
+            // Update currently viewed item
             if (obj is Editor.ChosenItemChangedEvent)
             {
                 Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
                 if ((e.Current != null) && (_editor?.Level?.Wad != null))
-                {
-                    Camera = new ArcBallCamera(Vector3.Zero, 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 768.0f, 0, 1000000);
-                }
+                    ResetCamera();
                 Invalidate();
             }
         }
@@ -70,11 +76,15 @@ namespace TombEditor.Controls
                 pp.PresentationInterval = PresentInterval.Immediate;
                 pp.RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer;
                 pp.Flags = SharpDX.DXGI.SwapChainFlags.None;
-
                 Presenter = new SwapChainGraphicsPresenter(_deviceManager.Device, pp);
-                
-                Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000);
+
+                ResetCamera();
             }
+        }
+
+        public void ResetCamera()
+        {
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
         }
         
         protected override void OnMouseEnter(EventArgs e)

@@ -80,7 +80,7 @@ namespace TombEditor
                 }
                 RoomListChange();
                 SelectedRoom = _level.Rooms.First((room) => room != null);
-                CenterCamera();
+                ResetCamera();
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
                 LevelFileNameChange();
@@ -340,10 +340,10 @@ namespace TombEditor
         }
 
         // Center the camera inside the current room.
-        public struct CenterCameraEvent : IEditorCameraEvent {}
-        public void CenterCamera()
+        public struct ResetCameraEvent : IEditorCameraEvent {}
+        public void ResetCamera()
         {
-            RaiseEvent(new CenterCameraEvent { });
+            RaiseEvent(new ResetCameraEvent { });
         }
 
         // Select a texture and center the view
@@ -363,17 +363,17 @@ namespace TombEditor
         }
 
         // Select a room and center the camera
-        public void SelectRoomAndCenterCamera(Room newRoom)
+        public void SelectRoomAndResetCamera(Room newRoom)
         {
             SelectedRoom = newRoom;
-            CenterCamera();
+            ResetCamera();
         }
 
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
         public void ShowObject(ObjectInstance objectInstance)
         {
             if (SelectedRoom != objectInstance.Room)
-                SelectRoomAndCenterCamera(objectInstance.Room);
+                SelectRoomAndResetCamera(objectInstance.Room);
             SelectedObject = objectInstance;
         }
 

@@ -50,8 +50,8 @@ namespace TombEditor.Controls
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             this.UpdateStyles();
             _depthBar.InvalidateParent += Invalidate;
-            _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoomAndCenterCamera(room); Invalidate(); };
-            _depthBar.RoomsMoved += delegate { _editor.RoomGeometryChange(null); _editor.CenterCamera(); };
+            _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoomAndResetCamera(room); Invalidate(); };
+            _depthBar.RoomsMoved += delegate { _editor.RoomGeometryChange(null); _editor.ResetCamera(); };
 
             ResetView();
         }
@@ -457,7 +457,7 @@ namespace TombEditor.Controls
             // Update state
             Invalidate();
             _editor.RoomSectorPropertiesChange(roomReference);
-            _editor.CenterCamera();
+            _editor.ResetCamera();
         }
 
         private Room DoPicking(Vector2 pos)

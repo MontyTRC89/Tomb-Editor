@@ -210,8 +210,6 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
-            CenterCamera();
-
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
         }
@@ -234,6 +232,10 @@ namespace TombEditor.Controls
             {
                 RebuildTextureAtlas();
             }
+
+            // Update FOV
+            if (obj is Editor.ConfigurationChangedEvent)
+                Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
@@ -273,8 +275,8 @@ namespace TombEditor.Controls
             }
 
             // Center camera
-            if (obj is Editor.CenterCameraEvent)
-                CenterCamera();
+            if (obj is Editor.ResetCameraEvent)
+                ResetCamera();
 
             // Move camera to sector
             if (obj is Editor.MoveCameraToSectorEvent)
@@ -305,7 +307,7 @@ namespace TombEditor.Controls
             get { return 0.6f; }
         }
 
-        public void CenterCamera()
+        public void ResetCamera()
         {
             Room room = _editor?.SelectedRoom;
 
@@ -315,7 +317,7 @@ namespace TombEditor.Controls
                 target = room.WorldPos + room.GetLocalCenter();
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000);
+            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
             Invalidate();
         }
 
@@ -339,9 +341,7 @@ namespace TombEditor.Controls
                 RenderTargetUsage = SharpDX.DXGI.Usage.RenderTargetOutput | SharpDX.DXGI.Usage.BackBuffer,
                 Flags = SharpDX.DXGI.SwapChainFlags.None
             };
-
             _presenter = new SwapChainGraphicsPresenter(_device, pp);
-            CenterCamera();
 
             // Maybe I could use this as bounding box, scaling it properly before drawing
             _linesCube = GeometricPrimitive.LinesCube.New(_device);
@@ -376,6 +376,8 @@ namespace TombEditor.Controls
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
             _gizmo = new Gizmo(_editor, deviceManager);
+
+            ResetCamera();
 
             PrepareSky();
 
