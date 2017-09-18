@@ -31,7 +31,7 @@ namespace TombLib.Graphics
         
         public ArcBallCamera(Vector3 target, float rotationX,
             float rotationY, float minRotationY, float maxRotationY,
-            float distance, float minDistance, float maxDistance)
+            float distance, float minDistance, float maxDistance, float fieldOfView)
         {
             Target = target;
             MinRotationY = minRotationY;
@@ -45,6 +45,8 @@ namespace TombLib.Graphics
 
             // Lock the distance between the min and max values
             Distance = MathUtil.Clamp(distance, minDistance, maxDistance);
+
+            FieldOfView = fieldOfView;
         }
 
         public void Zoom(float distanceChange)

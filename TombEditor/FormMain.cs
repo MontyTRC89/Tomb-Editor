@@ -559,7 +559,7 @@ namespace TombEditor
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
                 _editor.RoomListChange();
             }
-            _editor.SelectRoomAndCenterCamera(selectedRoom);
+            _editor.SelectRoomAndResetCamera(selectedRoom);
         }
 
         private void panelRoomAmbientLight_Click(object sender, EventArgs e)
@@ -603,7 +603,7 @@ namespace TombEditor
 
         private void butCenterCamera_Click(object sender, EventArgs e)
         {
-            _editor.CenterCamera();
+            _editor.ResetCamera();
         }
 
         private void butDrawPortals_Click(object sender, EventArgs e)

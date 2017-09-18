@@ -955,7 +955,7 @@ namespace TombEditor
 
             // Update selection
             if (_editor.SelectedRoom == room)
-                _editor.SelectRoomAndCenterCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+                _editor.SelectRoomAndResetCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
             _editor.RoomListChange();
         }
 
