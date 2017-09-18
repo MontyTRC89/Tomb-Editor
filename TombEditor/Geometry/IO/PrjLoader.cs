@@ -891,7 +891,7 @@ namespace TombEditor.Geometry.IO
                     }
 
                     // Transform the no collision tiles into the ForceFloorSolid option.
-                    progressReporter.ReportProgress(40, "Link flip rooms");
+                    progressReporter.ReportProgress(40, "Convert NoCollision to ForceFloorSolid");
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
