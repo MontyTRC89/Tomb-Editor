@@ -278,11 +278,11 @@
     <Compile Include="ToolWindows\ObjectBrowser.Designer.cs">
       <DependentUpon>ObjectBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="ToolWindows\UserControl1.cs">
+    <Compile Include="ToolWindows\SectorOptions.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ToolWindows\UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <Compile Include="ToolWindows\SectorOptions.Designer.cs">
+      <DependentUpon>SectorOptions.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils.cs" />
     <Compile Include="Controls\Panel2DMap.cs">
@@ -312,8 +312,8 @@
     <EmbeddedResource Include="ToolWindows\ObjectBrowser.resx">
       <DependentUpon>ObjectBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ToolWindows\UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
+      <DependentUpon>SectorOptions.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Editor\font.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

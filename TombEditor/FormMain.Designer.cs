@@ -95,43 +95,28 @@
             this.debugAction3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.butFloor = new System.Windows.Forms.Button();
-            this.butWall = new System.Windows.Forms.Button();
-            this.butBox = new System.Windows.Forms.Button();
-            this.butMonkey = new System.Windows.Forms.Button();
-            this.butDeath = new System.Windows.Forms.Button();
-            this.butPortal = new System.Windows.Forms.Button();
-            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.dock_Test = new DarkUI.Docking.DarkDockPanel();
-            this.butDiagonalWall = new DarkUI.Controls.DarkButton();
-            this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
-            this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
-            this.butCeiling = new System.Windows.Forms.Button();
-            this.butNotWalkableBox = new System.Windows.Forms.Button();
-            this.butFlagTriggerTriggerer = new DarkUI.Controls.DarkButton();
-            this.butForceSolidFloor = new DarkUI.Controls.DarkButton();
-            this.butFlagBeetle = new DarkUI.Controls.DarkButton();
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
-            this.butClimbNegativeX = new DarkUI.Controls.DarkButton();
-            this.butClimbNegativeZ = new DarkUI.Controls.DarkButton();
-            this.butClimbPositiveX = new DarkUI.Controls.DarkButton();
-            this.butCropRoom = new DarkUI.Controls.DarkButton();
-            this.butClimbPositiveZ = new DarkUI.Controls.DarkButton();
-            this.butSplitRoom = new DarkUI.Controls.DarkButton();
-            this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panelTextureTools = new System.Windows.Forms.Panel();
             this.darkButton16 = new DarkUI.Controls.DarkButton();
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.cbLightIsDynamicallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightCastsShadows = new DarkUI.Controls.DarkCheckBox();
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
+            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
+            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
+            this.numLightOut = new TombEditor.Controls.LightParameterController();
+            this.numLightIn = new TombEditor.Controls.LightParameterController();
+            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
+            this.numLightLen = new TombEditor.Controls.LightParameterController();
+            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
             this.panelLightColor = new System.Windows.Forms.Panel();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
@@ -197,24 +182,17 @@
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
-            this.lightPalette = new TombEditor.Controls.PanelPalette();
-            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
-            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
-            this.numLightOut = new TombEditor.Controls.LightParameterController();
-            this.numLightIn = new TombEditor.Controls.LightParameterController();
-            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
-            this.numLightLen = new TombEditor.Controls.LightParameterController();
-            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
+            this.darkLabel4 = new DarkUI.Controls.DarkLabel();
+            this.dock_Test = new DarkUI.Docking.DarkDockPanel();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelTextureTools.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -956,302 +934,29 @@
             this.debugAction5ToolStripMenuItem.Text = "Debug Action 5";
             this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
             // 
-            // butFloor
+            // butRoomDown
             // 
-            this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butFloor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-            this.butFloor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.butFloor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butFloor.ForeColor = System.Drawing.Color.White;
-            this.butFloor.Location = new System.Drawing.Point(227, 0);
-            this.butFloor.Name = "butFloor";
-            this.butFloor.Size = new System.Drawing.Size(24, 24);
-            this.butFloor.TabIndex = 3;
-            this.butFloor.Text = "F";
-            this.butFloor.UseVisualStyleBackColor = false;
-            this.butFloor.Click += new System.EventHandler(this.butFloor_Click);
+            this.butRoomDown.Location = new System.Drawing.Point(0, 0);
+            this.butRoomDown.Name = "butRoomDown";
+            this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
+            this.butRoomDown.Size = new System.Drawing.Size(75, 23);
+            this.butRoomDown.TabIndex = 0;
             // 
-            // butWall
+            // butEditRoomName
             // 
-            this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
-            this.butWall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
-            this.butWall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butWall.ForeColor = System.Drawing.Color.White;
-            this.butWall.Location = new System.Drawing.Point(256, 84);
-            this.butWall.Name = "butWall";
-            this.butWall.Size = new System.Drawing.Size(24, 24);
-            this.butWall.TabIndex = 4;
-            this.butWall.Text = "W";
-            this.butWall.UseVisualStyleBackColor = false;
-            this.butWall.Click += new System.EventHandler(this.butWall_Click);
+            this.butEditRoomName.Location = new System.Drawing.Point(0, 0);
+            this.butEditRoomName.Name = "butEditRoomName";
+            this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
+            this.butEditRoomName.Size = new System.Drawing.Size(75, 23);
+            this.butEditRoomName.TabIndex = 0;
             // 
-            // butBox
+            // butDeleteRoom
             // 
-            this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.butBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.butBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butBox.ForeColor = System.Drawing.Color.White;
-            this.butBox.Location = new System.Drawing.Point(227, 28);
-            this.butBox.Name = "butBox";
-            this.butBox.Size = new System.Drawing.Size(24, 24);
-            this.butBox.TabIndex = 5;
-            this.butBox.Text = "B";
-            this.butBox.UseVisualStyleBackColor = false;
-            this.butBox.Click += new System.EventHandler(this.butBox_Click);
-            // 
-            // butMonkey
-            // 
-            this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.butMonkey.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.butMonkey.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
-            this.butMonkey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butMonkey.ForeColor = System.Drawing.Color.White;
-            this.butMonkey.Location = new System.Drawing.Point(227, 56);
-            this.butMonkey.Name = "butMonkey";
-            this.butMonkey.Size = new System.Drawing.Size(24, 24);
-            this.butMonkey.TabIndex = 6;
-            this.butMonkey.Text = "M";
-            this.butMonkey.UseVisualStyleBackColor = false;
-            this.butMonkey.Click += new System.EventHandler(this.butMonkey_Click);
-            // 
-            // butDeath
-            // 
-            this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(0)))));
-            this.butDeath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butDeath.ForeColor = System.Drawing.Color.White;
-            this.butDeath.Location = new System.Drawing.Point(256, 56);
-            this.butDeath.Name = "butDeath";
-            this.butDeath.Size = new System.Drawing.Size(24, 24);
-            this.butDeath.TabIndex = 7;
-            this.butDeath.Text = "D";
-            this.butDeath.UseVisualStyleBackColor = false;
-            this.butDeath.Click += new System.EventHandler(this.butDeath_Click);
-            // 
-            // butPortal
-            // 
-            this.butPortal.BackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
-            this.butPortal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butPortal.ForeColor = System.Drawing.Color.White;
-            this.butPortal.Location = new System.Drawing.Point(227, 84);
-            this.butPortal.Name = "butPortal";
-            this.butPortal.Size = new System.Drawing.Size(24, 24);
-            this.butPortal.TabIndex = 8;
-            this.butPortal.Text = "P";
-            this.butPortal.UseVisualStyleBackColor = false;
-            this.butPortal.Click += new System.EventHandler(this.butPortal_Click);
-            // 
-            // darkLabel4
-            // 
-            this.darkLabel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(1, 253);
-            this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(281, 2);
-            this.darkLabel4.TabIndex = 25;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.dock_Test);
-            this.panel2.Controls.Add(this.butDiagonalWall);
-            this.panel2.Controls.Add(this.butDiagonalCeiling);
-            this.panel2.Controls.Add(this.butDiagonalFloor);
-            this.panel2.Controls.Add(this.butCeiling);
-            this.panel2.Controls.Add(this.butNotWalkableBox);
-            this.panel2.Controls.Add(this.butFlagTriggerTriggerer);
-            this.panel2.Controls.Add(this.butForceSolidFloor);
-            this.panel2.Controls.Add(this.butFlagBeetle);
-            this.panel2.Controls.Add(this.darkLabel4);
-            this.panel2.Controls.Add(this.butFloor);
-            this.panel2.Controls.Add(this.butWall);
-            this.panel2.Controls.Add(this.butBox);
-            this.panel2.Controls.Add(this.butMonkey);
-            this.panel2.Controls.Add(this.butDeath);
-            this.panel2.Controls.Add(this.butPortal);
-            this.panel2.Controls.Add(this.butClimbNegativeX);
-            this.panel2.Controls.Add(this.butClimbNegativeZ);
-            this.panel2.Controls.Add(this.butClimbPositiveX);
-            this.panel2.Controls.Add(this.butCropRoom);
-            this.panel2.Controls.Add(this.butClimbPositiveZ);
-            this.panel2.Controls.Add(this.butSplitRoom);
-            this.panel2.Controls.Add(this.butCopyRoom);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel2.Location = new System.Drawing.Point(0, 24);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(283, 836);
-            this.panel2.TabIndex = 26;
-            // 
-            // dock_Test
-            // 
-            this.dock_Test.AutoSize = true;
-            this.dock_Test.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.dock_Test.Location = new System.Drawing.Point(3, 258);
-            this.dock_Test.MinimumSize = new System.Drawing.Size(274, 274);
-            this.dock_Test.Name = "dock_Test";
-            this.dock_Test.Size = new System.Drawing.Size(274, 574);
-            this.dock_Test.TabIndex = 90;
-            // 
-            // butDiagonalWall
-            // 
-            this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
-            this.butDiagonalWall.Location = new System.Drawing.Point(188, 226);
-            this.butDiagonalWall.Name = "butDiagonalWall";
-            this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalWall.Size = new System.Drawing.Size(92, 23);
-            this.butDiagonalWall.TabIndex = 89;
-            this.butDiagonalWall.Text = "Diag. Wall";
-            this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
-            // 
-            // butDiagonalCeiling
-            // 
-            this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalCeiling.Location = new System.Drawing.Point(97, 226);
-            this.butDiagonalCeiling.Name = "butDiagonalCeiling";
-            this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalCeiling.Size = new System.Drawing.Size(85, 23);
-            this.butDiagonalCeiling.TabIndex = 87;
-            this.butDiagonalCeiling.Text = "Diag. CE";
-            this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
-            // 
-            // butDiagonalFloor
-            // 
-            this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalFloor.Location = new System.Drawing.Point(6, 226);
-            this.butDiagonalFloor.Name = "butDiagonalFloor";
-            this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalFloor.Size = new System.Drawing.Size(85, 23);
-            this.butDiagonalFloor.TabIndex = 86;
-            this.butDiagonalFloor.Text = "Diag. FL";
-            this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
-            // 
-            // butCeiling
-            // 
-            this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
-            this.butCeiling.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
-            this.butCeiling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
-            this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butCeiling.ForeColor = System.Drawing.Color.White;
-            this.butCeiling.Location = new System.Drawing.Point(256, 0);
-            this.butCeiling.Name = "butCeiling";
-            this.butCeiling.Size = new System.Drawing.Size(24, 24);
-            this.butCeiling.TabIndex = 85;
-            this.butCeiling.Text = "C";
-            this.butCeiling.UseVisualStyleBackColor = false;
-            this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
-            // 
-            // butNotWalkableBox
-            // 
-            this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
-            this.butNotWalkableBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(75)))));
-            this.butNotWalkableBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
-            this.butNotWalkableBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
-            this.butNotWalkableBox.Location = new System.Drawing.Point(256, 28);
-            this.butNotWalkableBox.Name = "butNotWalkableBox";
-            this.butNotWalkableBox.Size = new System.Drawing.Size(24, 24);
-            this.butNotWalkableBox.TabIndex = 82;
-            this.butNotWalkableBox.Text = "N";
-            this.butNotWalkableBox.UseVisualStyleBackColor = false;
-            this.butNotWalkableBox.Click += new System.EventHandler(this.butNotWalkableBox_Click);
-            // 
-            // butFlagTriggerTriggerer
-            // 
-            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(256, 112);
-            this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
-            this.butFlagTriggerTriggerer.Padding = new System.Windows.Forms.Padding(5);
-            this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
-            this.butFlagTriggerTriggerer.TabIndex = 44;
-            this.butFlagTriggerTriggerer.Text = "T";
-            this.butFlagTriggerTriggerer.Click += new System.EventHandler(this.butFlagTriggerTriggerer_Click);
-            // 
-            // butForceSolidFloor
-            // 
-            this.butForceSolidFloor.Location = new System.Drawing.Point(227, 196);
-            this.butForceSolidFloor.Name = "butForceSolidFloor";
-            this.butForceSolidFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butForceSolidFloor.Size = new System.Drawing.Size(24, 24);
-            this.butForceSolidFloor.TabIndex = 43;
-            this.butForceSolidFloor.Text = "Ff";
-            this.butForceSolidFloor.Click += new System.EventHandler(this.butForceFloorSolid_Click);
-            // 
-            // butFlagBeetle
-            // 
-            this.butFlagBeetle.Location = new System.Drawing.Point(227, 112);
-            this.butFlagBeetle.Name = "butFlagBeetle";
-            this.butFlagBeetle.Padding = new System.Windows.Forms.Padding(5);
-            this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
-            this.butFlagBeetle.TabIndex = 43;
-            this.butFlagBeetle.Text = "B";
-            this.butFlagBeetle.Click += new System.EventHandler(this.butFlagBeetle_Click);
-            // 
-            // butClimbNegativeX
-            // 
-            this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.climb_west;
-            this.butClimbNegativeX.Location = new System.Drawing.Point(227, 168);
-            this.butClimbNegativeX.Name = "butClimbNegativeX";
-            this.butClimbNegativeX.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNegativeX.TabIndex = 10;
-            this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
-            // 
-            // butClimbNegativeZ
-            // 
-            this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.climb_south;
-            this.butClimbNegativeZ.Location = new System.Drawing.Point(256, 140);
-            this.butClimbNegativeZ.Name = "butClimbNegativeZ";
-            this.butClimbNegativeZ.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNegativeZ.TabIndex = 11;
-            this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
-            // 
-            // butClimbPositiveX
-            // 
-            this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.climb_east;
-            this.butClimbPositiveX.Location = new System.Drawing.Point(256, 168);
-            this.butClimbPositiveX.Name = "butClimbPositiveX";
-            this.butClimbPositiveX.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
-            this.butClimbPositiveX.TabIndex = 12;
-            this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
-            // 
-            // butCropRoom
-            // 
-            this.butCropRoom.Image = global::TombEditor.Properties.Resources.crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(220, 268);
-            this.butCropRoom.Name = "butCropRoom";
-            this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
-            this.butCropRoom.Size = new System.Drawing.Size(24, 24);
-            this.butCropRoom.TabIndex = 16;
-            this.butCropRoom.Click += new System.EventHandler(this.butCropRoom_Click);
-            // 
-            // butClimbPositiveZ
-            // 
-            this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.climb_north;
-            this.butClimbPositiveZ.Location = new System.Drawing.Point(227, 140);
-            this.butClimbPositiveZ.Name = "butClimbPositiveZ";
-            this.butClimbPositiveZ.Padding = new System.Windows.Forms.Padding(5);
-            this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
-            this.butClimbPositiveZ.TabIndex = 13;
-            this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
+            this.butDeleteRoom.Location = new System.Drawing.Point(0, 0);
+            this.butDeleteRoom.Name = "butDeleteRoom";
+            this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
+            this.butDeleteRoom.Size = new System.Drawing.Size(75, 23);
+            this.butDeleteRoom.TabIndex = 0;
             // 
             // panel3
             // 
@@ -1262,6 +967,14 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(287, 836);
             this.panel3.TabIndex = 27;
+            // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTextureMap.Location = new System.Drawing.Point(0, 0);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(287, 805);
+            this.panelTextureMap.TabIndex = 0;
             // 
             // panelTextureTools
             // 
@@ -1348,6 +1061,14 @@
             this.panel4.Size = new System.Drawing.Size(1305, 109);
             this.panel4.TabIndex = 28;
             // 
+            // lightPalette
+            // 
+            this.lightPalette.Location = new System.Drawing.Point(661, 4);
+            this.lightPalette.Name = "lightPalette";
+            this.lightPalette.Size = new System.Drawing.Size(643, 99);
+            this.lightPalette.TabIndex = 50;
+            this.lightPalette.TabStop = false;
+            // 
             // cbLightIsDynamicallyUsed
             // 
             this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1391,6 +1112,83 @@
             this.cbLightEnabled.Size = new System.Drawing.Size(15, 22);
             this.cbLightEnabled.TabIndex = 60;
             this.cbLightEnabled.CheckedChanged += new System.EventHandler(this.cbLightEnabled_CheckedChanged);
+            // 
+            // numLightDirectionY
+            // 
+            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionY.Enabled = false;
+            this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightDirectionY.Location = new System.Drawing.Point(525, 80);
+            this.numLightDirectionY.Name = "numLightDirectionY";
+            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
+            this.numLightDirectionY.TabIndex = 58;
+            this.numLightDirectionY.Value = 0F;
+            // 
+            // numLightDirectionX
+            // 
+            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionX.Enabled = false;
+            this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightDirectionX.Location = new System.Drawing.Point(525, 55);
+            this.numLightDirectionX.Name = "numLightDirectionX";
+            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
+            this.numLightDirectionX.TabIndex = 57;
+            this.numLightDirectionX.Value = 0F;
+            // 
+            // numLightOut
+            // 
+            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
+            this.numLightOut.Enabled = false;
+            this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightOut.Location = new System.Drawing.Point(421, 80);
+            this.numLightOut.Name = "numLightOut";
+            this.numLightOut.Size = new System.Drawing.Size(60, 22);
+            this.numLightOut.TabIndex = 56;
+            this.numLightOut.Value = 0F;
+            // 
+            // numLightIn
+            // 
+            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIn.Enabled = false;
+            this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightIn.Location = new System.Drawing.Point(421, 55);
+            this.numLightIn.Name = "numLightIn";
+            this.numLightIn.Size = new System.Drawing.Size(60, 22);
+            this.numLightIn.TabIndex = 55;
+            this.numLightIn.Value = 0F;
+            // 
+            // numLightCutoff
+            // 
+            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
+            this.numLightCutoff.Enabled = false;
+            this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightCutoff.Location = new System.Drawing.Point(525, 30);
+            this.numLightCutoff.Name = "numLightCutoff";
+            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
+            this.numLightCutoff.TabIndex = 54;
+            this.numLightCutoff.Value = 0F;
+            // 
+            // numLightLen
+            // 
+            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
+            this.numLightLen.Enabled = false;
+            this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightLen.Location = new System.Drawing.Point(525, 5);
+            this.numLightLen.Name = "numLightLen";
+            this.numLightLen.Size = new System.Drawing.Size(60, 22);
+            this.numLightLen.TabIndex = 53;
+            this.numLightLen.Value = 0F;
+            // 
+            // numLightIntensity
+            // 
+            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIntensity.Enabled = false;
+            this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightIntensity.Location = new System.Drawing.Point(421, 30);
+            this.numLightIntensity.Name = "numLightIntensity";
+            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
+            this.numLightIntensity.TabIndex = 52;
+            this.numLightIntensity.Value = 0F;
             // 
             // panelLightColor
             // 
@@ -2132,105 +1930,35 @@
             this.panel2DMap.Size = new System.Drawing.Size(1305, 699);
             this.panel2DMap.TabIndex = 0;
             // 
-            // panel2DGrid
+            // darkLabel4
             // 
-            this.panel2DGrid.Location = new System.Drawing.Point(4, 24);
-            this.panel2DGrid.Name = "panel2DGrid";
-            this.panel2DGrid.Size = new System.Drawing.Size(220, 220);
-            this.panel2DGrid.TabIndex = 81;
+            this.darkLabel4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel4.Location = new System.Drawing.Point(1, 253);
+            this.darkLabel4.Name = "darkLabel4";
+            this.darkLabel4.Size = new System.Drawing.Size(281, 2);
+            this.darkLabel4.TabIndex = 25;
             // 
-            // lightPalette
+            // dock_Test
             // 
-            this.lightPalette.Location = new System.Drawing.Point(661, 4);
-            this.lightPalette.Name = "lightPalette";
-            this.lightPalette.Size = new System.Drawing.Size(643, 99);
-            this.lightPalette.TabIndex = 50;
-            this.lightPalette.TabStop = false;
+            this.dock_Test.AutoSize = true;
+            this.dock_Test.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.dock_Test.Dock = System.Windows.Forms.DockStyle.Left;
+            this.dock_Test.Location = new System.Drawing.Point(0, 0);
+            this.dock_Test.MinimumSize = new System.Drawing.Size(274, 274);
+            this.dock_Test.Name = "dock_Test";
+            this.dock_Test.Size = new System.Drawing.Size(274, 836);
+            this.dock_Test.TabIndex = 90;
             // 
-            // numLightDirectionY
+            // panel2
             // 
-            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
-            this.numLightDirectionY.Enabled = false;
-            this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightDirectionY.Location = new System.Drawing.Point(525, 80);
-            this.numLightDirectionY.Name = "numLightDirectionY";
-            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionY.TabIndex = 58;
-            this.numLightDirectionY.Value = 0F;
-            // 
-            // numLightDirectionX
-            // 
-            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
-            this.numLightDirectionX.Enabled = false;
-            this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightDirectionX.Location = new System.Drawing.Point(525, 55);
-            this.numLightDirectionX.Name = "numLightDirectionX";
-            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionX.TabIndex = 57;
-            this.numLightDirectionX.Value = 0F;
-            // 
-            // numLightOut
-            // 
-            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
-            this.numLightOut.Enabled = false;
-            this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightOut.Location = new System.Drawing.Point(421, 80);
-            this.numLightOut.Name = "numLightOut";
-            this.numLightOut.Size = new System.Drawing.Size(60, 22);
-            this.numLightOut.TabIndex = 56;
-            this.numLightOut.Value = 0F;
-            // 
-            // numLightIn
-            // 
-            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
-            this.numLightIn.Enabled = false;
-            this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightIn.Location = new System.Drawing.Point(421, 55);
-            this.numLightIn.Name = "numLightIn";
-            this.numLightIn.Size = new System.Drawing.Size(60, 22);
-            this.numLightIn.TabIndex = 55;
-            this.numLightIn.Value = 0F;
-            // 
-            // numLightCutoff
-            // 
-            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
-            this.numLightCutoff.Enabled = false;
-            this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightCutoff.Location = new System.Drawing.Point(525, 30);
-            this.numLightCutoff.Name = "numLightCutoff";
-            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
-            this.numLightCutoff.TabIndex = 54;
-            this.numLightCutoff.Value = 0F;
-            // 
-            // numLightLen
-            // 
-            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
-            this.numLightLen.Enabled = false;
-            this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightLen.Location = new System.Drawing.Point(525, 5);
-            this.numLightLen.Name = "numLightLen";
-            this.numLightLen.Size = new System.Drawing.Size(60, 22);
-            this.numLightLen.TabIndex = 53;
-            this.numLightLen.Value = 0F;
-            // 
-            // numLightIntensity
-            // 
-            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
-            this.numLightIntensity.Enabled = false;
-            this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightIntensity.Location = new System.Drawing.Point(421, 30);
-            this.numLightIntensity.Name = "numLightIntensity";
-            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
-            this.numLightIntensity.TabIndex = 52;
-            this.numLightIntensity.Value = 0F;
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(0, 0);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(287, 805);
-            this.panelTextureMap.TabIndex = 0;
+            this.panel2.Controls.Add(this.dock_Test);
+            this.panel2.Controls.Add(this.darkLabel4);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel2.Location = new System.Drawing.Point(0, 24);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(283, 836);
+            this.panel2.TabIndex = 26;
             // 
             // FormMain
             // 
@@ -2239,7 +1967,6 @@
             this.ClientSize = new System.Drawing.Size(1875, 889);
             this.Controls.Add(this.panel3D);
             this.Controls.Add(this.panel2DMap);
-            this.Controls.Add(this.panel2DGrid);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.panel3);
@@ -2253,20 +1980,19 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Tomb Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.FormMain_Load);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panelTextureTools.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2280,27 +2006,12 @@
         private System.Windows.Forms.ToolStripMenuItem roomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem itemsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem texturesToolStripMenuItem;
-        private System.Windows.Forms.Button butFloor;
-        private System.Windows.Forms.Button butWall;
-        private System.Windows.Forms.Button butBox;
-        private System.Windows.Forms.Button butMonkey;
-        private System.Windows.Forms.Button butDeath;
-        private System.Windows.Forms.Button butPortal;
-        private DarkUI.Controls.DarkButton butClimbNegativeX;
-        private DarkUI.Controls.DarkButton butClimbNegativeZ;
-        private DarkUI.Controls.DarkButton butClimbPositiveX;
-        private DarkUI.Controls.DarkButton butClimbPositiveZ;
-        private DarkUI.Controls.DarkButton butCopyRoom;
-        private DarkUI.Controls.DarkButton butSplitRoom;
-        private DarkUI.Controls.DarkButton butCropRoom;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkButton butDeleteRoom;
         private DarkUI.Controls.DarkButton butEditRoomName;
         private DarkUI.Controls.DarkButton butRoomDown;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private System.Windows.Forms.Panel panelRoomAmbientLight;
-        private DarkUI.Controls.DarkLabel darkLabel4;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
         private DarkUI.Controls.DarkStatusStrip statusStrip;
@@ -2396,8 +2107,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton butCompileLevel;
         private System.Windows.Forms.ToolStripButton butCompileLevelAndPlay;
-        private DarkUI.Controls.DarkButton butFlagTriggerTriggerer;
-        private DarkUI.Controls.DarkButton butFlagBeetle;
         private System.Windows.Forms.OpenFileDialog openFileDialogPRJ2;
         private System.Windows.Forms.SaveFileDialog saveFileDialogPRJ2;
         private System.Windows.Forms.OpenFileDialog openFileDialogPRJ;
@@ -2422,10 +2131,8 @@
         private System.Windows.Forms.ToolStripButton butPaste;
         private System.Windows.Forms.ToolStripButton butClone;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private Controls.Panel2DGrid panel2DGrid;
         private Controls.PanelPalette lightPalette;
         private System.Windows.Forms.ToolStripButton butDrawHorizon;
-        private System.Windows.Forms.Button butNotWalkableBox;
         private Controls.LightParameterController numLightIntensity;
         private Controls.LightParameterController numLightDirectionY;
         private Controls.LightParameterController numLightDirectionX;
@@ -2433,10 +2140,6 @@
         private Controls.LightParameterController numLightIn;
         private Controls.LightParameterController numLightCutoff;
         private Controls.LightParameterController numLightLen;
-        private System.Windows.Forms.Button butCeiling;
-        private DarkUI.Controls.DarkButton butDiagonalCeiling;
-        private DarkUI.Controls.DarkButton butDiagonalFloor;
-        private DarkUI.Controls.DarkButton butDiagonalWall;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction0ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem;
@@ -2468,7 +2171,8 @@
         private System.Windows.Forms.ToolStripMenuItem reloadTexturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadWadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveLaraToolStripMenuItem;
-        private DarkUI.Controls.DarkButton butForceSolidFloor;
+        private DarkUI.Controls.DarkLabel darkLabel4;
         private DarkUI.Docking.DarkDockPanel dock_Test;
+        private System.Windows.Forms.Panel panel2;
     }
 }

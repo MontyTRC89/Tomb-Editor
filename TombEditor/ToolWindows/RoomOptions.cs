@@ -89,6 +89,21 @@ namespace TombEditor.ToolWindows
             }
         }
 
+
+        public void Split_Room()
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
+        public void Copy_Room()
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
         private void comboRoom_SelectedIndexChanged(object sender, EventArgs e)
         {
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
@@ -284,6 +299,39 @@ namespace TombEditor.ToolWindows
             _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor();
             _editor.SelectedRoom.UpdateCompletely();
             _editor.RoomPropertiesChange(room);
+        }
+
+        private void butCropRoom_Click(object sender, EventArgs e)
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
+        private void butSplitRoom_Click(object sender, EventArgs e)
+        {
+            Split_Room();
+        }
+
+        private void butCopyRoom_Click(object sender, EventArgs e)
+        {
+            Copy_Room();
+        }
+
+        private void butEditRoomName_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormInputBox())
+            {
+                form.Title = "Edit room's name";
+                form.Message = "Insert the name of this room:";
+                form.Value = _editor.SelectedRoom.Name;
+
+                if (form.ShowDialog(this) == DialogResult.Cancel)
+                    return;
+
+                _editor.SelectedRoom.Name = form.Value;
+                _editor.RoomListChange();
+            }
         }
     }
 }

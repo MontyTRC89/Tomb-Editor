@@ -347,6 +347,7 @@
             this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCropRoom.Size = new System.Drawing.Size(24, 24);
             this.butCropRoom.TabIndex = 84;
+            this.butCropRoom.Click += new System.EventHandler(this.butCropRoom_Click);
             // 
             // butSplitRoom
             // 
@@ -356,6 +357,7 @@
             this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butSplitRoom.Size = new System.Drawing.Size(24, 24);
             this.butSplitRoom.TabIndex = 83;
+            this.butSplitRoom.Click += new System.EventHandler(this.butSplitRoom_Click);
             // 
             // butCopyRoom
             // 
