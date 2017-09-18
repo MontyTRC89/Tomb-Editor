@@ -1638,5 +1638,16 @@ namespace TombEditor
             if (_editor.SelectedRoom == room)
                 _editor.SelectedRoom = newRoom; //Don't center
         }
+
+        public static bool CheckForRoomAndBlockSelection()
+        {
+            if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return false;
+            }
+            return true;
+        }
     }
 }

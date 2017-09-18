@@ -19,15 +19,32 @@ namespace TombEditor
 {
     public partial class FormMain : DarkUI.Forms.DarkForm
     {
+        // Dockable tool windows are created here and placed on actual dock panel at runtime.
+
+        private ToolWindows.TriggerList   TriggerList   = new ToolWindows.TriggerList();
+        private ToolWindows.RoomOptions   RoomOptions   = new ToolWindows.RoomOptions();
+        private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
+
+
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
         private bool _pressedZorY = false;
         private Editor _editor;
         private DeviceManager _deviceManager = new DeviceManager();
-        
+
         public FormMain()
         {
             InitializeComponent();
+
+            // DockPanel message filters for drag and resize.
+            Application.AddMessageFilter(dock_Test.DockContentDragFilter);
+            Application.AddMessageFilter(dock_Test.DockResizeFilter);
+
+            // FIXME: DockPanel loading stuff
+            dock_Test.AddContent(ObjectBrowser);
+            dock_Test.AddContent(RoomOptions);
+            dock_Test.AddContent(TriggerList);
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
@@ -63,7 +80,8 @@ namespace TombEditor
 
             // Initialize panels
             panel3D.InitializePanel(_deviceManager);
-            panelItem.InitializePanel(_deviceManager);
+            ObjectBrowser.Initialize3D(_deviceManager);
+
             panelTextureMap.Configuration = _editor.Configuration;
             panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
@@ -100,91 +118,12 @@ namespace TombEditor
                 multiPage1.SelectedIndex = mode == EditorMode.Map2D ? 1 : 0;
             }
 
-            // Update the room list
-            if (obj is Editor.RoomListChangedEvent)
-            {
-                // Adjust the amount of entries in the combo list
-                while (comboRoom.Items.Count > _editor.Level.Rooms.GetLength(0))
-                    comboRoom.Items.RemoveAt(comboRoom.Items.Count - 1);
-                while (comboRoom.Items.Count < _editor.Level.Rooms.GetLength(0))
-                    comboRoom.Items.Add("");
-
-                // Update the room list
-                for (int i = 0; i < _editor.Level.Rooms.GetLength(0); i++)
-                    if (_editor.Level.Rooms[i] != null)
-                        comboRoom.Items[i] = i + ": " + _editor.Level.Rooms[i].Name;
-                    else
-                        comboRoom.Items[i] = i + ": --- Empty room ---";
-            }
-
-            // Update the room property controls
+            // Update flipmap toolbar button
             if ((obj is Editor.SelectedRoomChangedEvent) ||
                 (obj is Editor.RoomPropertiesChangedEvent))
             {
                 Room room = ((IEditorRoomChangedEvent)obj).Room;
-                if (obj is Editor.SelectedRoomChangedEvent)
-                    comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
-
-                // Update the state of other controls
-                if (room.FlagQuickSand)
-                    comboRoomType.SelectedIndex = 7;
-                else if (room.FlagSnow)
-                    comboRoomType.SelectedIndex = 6;
-                else if (room.FlagRain)
-                    comboRoomType.SelectedIndex = 5;
-                else if (room.FlagWater)
-                    comboRoomType.SelectedIndex = room.WaterLevel;
-                else
-                    comboRoomType.SelectedIndex = 0;
-
-                panelRoomAmbientLight.BackColor = room.AmbientLight.ToWinFormsColor();
-
-                comboMist.SelectedIndex = room.MistLevel;
-                comboReflection.SelectedIndex = room.ReflectionLevel;
-                comboReverberation.SelectedIndex = (int)room.Reverberation;
-
-                cbFlagCold.Checked = room.FlagCold;
-                cbFlagDamage.Checked = room.FlagDamage;
-                cbFlagOutside.Checked = room.FlagOutside;
-                cbHorizon.Checked = room.FlagHorizon;
-                cbNoPathfinding.Checked = room.ExcludeFromPathFinding;
-
                 butFlipMap.Checked = room.Flipped && (room.AlternateRoom == null);
-                comboFlipMap.Enabled = !(room.Flipped && (room.AlternateRoom == null));
-                comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
-            }
-
-            // Update the trigger control
-            if ((obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.RoomSectorPropertiesChangedEvent))
-            {
-                lstTriggers.Items.Clear();
-
-                if ((_editor.Level != null) && _editor.SelectedSectors.Valid)
-                {
-                    // Search for unique triggers inside the selected area
-                    var triggers = new List<TriggerInstance>();
-                    var area = _editor.SelectedSectors.Area;
-                    for (int x = area.X; x <= area.Right; x++)
-                        for (int z = area.Y; z <= area.Bottom; z++)
-                            foreach (var trigger in _editor.SelectedRoom.Blocks[x, z].Triggers)
-                                if (!triggers.Contains(trigger))
-                                    triggers.Add(trigger);
-
-                    // Add triggers to listbox
-                    foreach (TriggerInstance trigger in triggers)
-                        lstTriggers.Items.Add(trigger);
-                }
-            } 
-
-            // Update the trigger control selection
-            if ((obj is Editor.SelectedSectorsChangedEvent) ||
-                (obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.SelectedObjectChangedEvent))
-            {
-                var trigger = _editor.SelectedObject as TriggerInstance;
-                lstTriggers.SelectedItem = (trigger != null) && lstTriggers.Items.Contains(trigger) ? trigger : null;
             }
 
             // Update texture properties
@@ -226,40 +165,6 @@ namespace TombEditor
                         "Z₀ = " + (room.Position.Z + _editor.SelectedSectors.Area.Y) + " | " +
                         "X₁ = " + (room.Position.X + _editor.SelectedSectors.Area.Right) + " | " +
                         "Z₁ = " + (room.Position.Z + _editor.SelectedSectors.Area.Bottom);
-            }
-
-            // Update available items combo box
-            if ((obj is Editor.LoadedWadsChangedEvent))
-            {
-                comboItems.Items.Clear();
-
-                if (_editor.Level?.Wad != null)
-                {
-                    foreach (var movable in _editor.Level.Wad.Moveables.Values)
-                        comboItems.Items.Add(movable);
-                    foreach (var staticMesh in _editor.Level.Wad.Statics.Values)
-                        comboItems.Items.Add(staticMesh);
-                    comboItems.SelectedIndex = 0;
-                }
-            }
-
-            // Update selection of items combo box
-            if (obj is Editor.ChosenItemChangedEvent)
-            {
-                var e = (Editor.ChosenItemChangedEvent)obj;
-                if (!e.Current.HasValue)
-                    comboItems.SelectedIndex = -1;
-                else if (e.Current.Value.IsStatic)
-                    comboItems.Items.Add(_editor.Level.Wad.Statics[e.Current.Value.Id]);
-                else
-                    comboItems.Items.Add(_editor.Level.Wad.Moveables[e.Current.Value.Id]);
-            }
-
-            // Update item color control
-            if (obj is Editor.SelectedObjectChangedEvent)
-            {
-                ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
-                panelStaticMeshColor.BackColor = itemInstance == null ? System.Drawing.Color.Black : itemInstance.Color.ToWinFormsColor();
             }
 
             // Update application title
@@ -382,38 +287,38 @@ namespace TombEditor
             base.OnClosed(e);
             _editor.Configuration.SaveTry();
         }
-        
+
         private void butWall_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SetWall(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butBox_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.Box);
         }
 
         private void butDeath_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.DeathFire);
         }
 
         private void butMonkey_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area,  BlockFlags.Monkey);
         }
 
         private void butPortal_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
 
             try
@@ -429,91 +334,91 @@ namespace TombEditor
 
         private void butClimbNorth_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
         }
 
         private void butClimbEast_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbPositiveZ);
         }
 
         private void butClimbSouth_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
         }
 
         private void butClimbWest_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.ClimbNegativeZ);
         }
 
         private void butNotWalkableBox_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.NotWalkableFloor);
         }
 
         private void butFloor_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SetFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butCeiling_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SetCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butDiagonalFloor_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SetDiagonalFloorSplit(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butDiagonalCeiling_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SetDiagonalCeilingSplit(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butDiagonalWall_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SetDiagonalWallSplit(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butFlagBeetle_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.Beetle);
         }
 
         private void butFlagTriggerTriggerer_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleBlockFlag(_editor.SelectedRoom, _editor.SelectedSectors.Area, BlockFlags.TriggerTriggerer);
         }
 
         private void butForceFloorSolid_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.ToggleForceFloorSolid(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
@@ -547,33 +452,7 @@ namespace TombEditor
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.FogBulb };
         }
-        
-        private void comboRoom_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
-            if (selectedRoom == null)
-            {
-                selectedRoom = new Room(_editor.Level, 20, 20, "Room " + comboRoom.SelectedIndex);
-                _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
-                _editor.RoomListChange();
-            }
-            _editor.SelectRoomAndCenterCamera(selectedRoom);
-        }
 
-        private void panelRoomAmbientLight_Click(object sender, EventArgs e)
-        {
-            Room room = _editor.SelectedRoom;
-
-            colorDialog.Color = room.AmbientLight.ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
-
-            panelRoomAmbientLight.BackColor = colorDialog.Color;
-
-            _editor.SelectedRoom.AmbientLight = colorDialog.Color.ToFloatColor();
-            _editor.SelectedRoom.UpdateCompletely();
-            _editor.RoomPropertiesChange(room);
-        }
 
         private void but3D_Click(object sender, EventArgs e)
         {
@@ -1033,39 +912,6 @@ namespace TombEditor
             _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(null);
         }
-
-        private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if ((comboItems.SelectedItem == null) || (_editor?.Level?.Wad == null))
-                _editor.ChosenItem = null;
-            if (comboItems.SelectedItem is WadMoveable)
-                _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
-            else if (comboItems.SelectedItem is WadStatic)
-                _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
-        }
-        
-        private ItemType? GetCurrentItemWithMessage()
-        {
-            ItemType? result = _editor.ChosenItem;
-            if (result == null)
-                DarkUI.Forms.DarkMessageBox.ShowError("Select an item first", "Error");
-            return result;
-        }
-
-        private void butAddItem_Click(object sender, EventArgs e)
-        {
-            var currentItem = GetCurrentItemWithMessage();
-            if (currentItem == null)
-                return;
-
-            if ((!currentItem.Value.IsStatic) && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't add moveables to a flipped room", "Error");
-                return;
-            }
-
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceItem, ItemType = currentItem.Value };
-        }
         
         private void butDeleteRoom_Click(object sender, EventArgs e)
         {
@@ -1076,7 +922,7 @@ namespace TombEditor
 
         private void butCropRoom_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
@@ -1266,30 +1112,16 @@ namespace TombEditor
             butTextureSounds_Click(null, null);
         }
 
-        private void butItemsBack_Click(object sender, EventArgs e)
-        {
-            if ((comboItems.SelectedIndex - 1) < 0)
-                return;
-            comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
-        }
-
-        private void butItemsNext_Click(object sender, EventArgs e)
-        {
-            if ((comboItems.SelectedIndex + 1) >= comboItems.Items.Count)
-                return;
-            comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
-        }
-
         private void butCopyRoom_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butSplitRoom_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
@@ -1310,41 +1142,30 @@ namespace TombEditor
             }
         }
 
-        private bool CheckForRoomAndBlockSelection()
-        {
-            if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)
-            {
-                DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
-                return false;
-            }
-            return true;
-        }
-
         private void smoothRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void smoothRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void smoothRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void smoothRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
@@ -1352,113 +1173,71 @@ namespace TombEditor
 
         private void sharpRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SharpRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void sharpRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SharpRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void sharpRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SharpRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void sharpRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.SharpRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void butFlattenFloor_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butFlattenCeiling_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void flattenFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void flattenCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (CheckForRoomAndBlockSelection())
+            if (EditorActions.CheckForRoomAndBlockSelection())
                 EditorActions.GridWalls3(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void gridWallsIn5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.GridWalls5(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        private void panelStaticMeshColor_Click(object sender, EventArgs e)
-        {
-            var instance = _editor.SelectedObject as ItemInstance;
-            if (instance == null)
-                return;
-
-            colorDialog.Color = instance.Color.ToWinFormsColor();
-            if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                return;
-
-            panelStaticMeshColor.BackColor = colorDialog.Color;
-            instance.Color = colorDialog.Color.ToFloatColor();
-            _editor.ObjectChange(instance);
-        }
-        
-        private void butFindItem_Click(object sender, EventArgs e)
-        {
-            ItemType? currentItem = GetCurrentItemWithMessage();
-            if (currentItem == null)
-                return;
-
-            // Search for matching objects after the previous one
-            ObjectInstance previousFind = _editor.SelectedObject;
-            ObjectInstance instance = _editor.Level.Rooms
-                .Where(room => room != null)
-                .SelectMany(room => room.Objects)
-                .FindFirstAfterWithWrapAround(
-                (obj) => previousFind == obj,
-                (obj) => (obj is ItemInstance) && ((ItemInstance)obj).ItemType == currentItem.Value);
-            
-            // Show result
-            if (instance == null)
-                DarkUI.Forms.DarkMessageBox.ShowInformation("No object of the selected item type found.", "No object found");
-            else
-                _editor.ShowObject(instance);
-        }
-
-        private void butResetSearch_Click(object sender, EventArgs e)
-        {
-            _editor.SelectedObject = null;
         }
 
         private void butDeleteTrigger_Click(object sender, EventArgs e)
@@ -1477,17 +1256,17 @@ namespace TombEditor
 
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            butFindItem_Click(null, null);
+            ObjectBrowser.FindItem();
         }
 
         private void resetFilterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            butResetSearch_Click(null, null);
+            ObjectBrowser.ResetSearch();
         }
         
         private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
 
             // Search for first Lara and remove her
@@ -1515,38 +1294,6 @@ namespace TombEditor
             }
         }
 
-        private void comboFlipMap_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-
-            var room = _editor.SelectedRoom;
-
-            // Delete flipped room
-            if (comboFlipMap.SelectedIndex == 0 && room.Flipped)
-            {
-                EditorActions.AlternateRoomDisable(room);
-                return;
-            }
-
-            // Change flipped map number, not much to do here
-            if (comboFlipMap.SelectedIndex != 0 && room.Flipped)
-            {
-                if (room.AlternateGroup == (comboFlipMap.SelectedIndex - 1))
-                    return;
-
-                room.AlternateGroup = (short)(comboFlipMap.SelectedIndex - 1);
-                _editor.RoomPropertiesChange(room);
-                return;
-            }
-
-            // Create a new flipped room
-            if (comboFlipMap.SelectedIndex != 0 && !room.Flipped)
-            {
-                EditorActions.AlternateRoomEnable(room, (short)(comboFlipMap.SelectedIndex - 1));
-                return;
-            }
-        }
         
         private void butFlipMap_Click(object sender, EventArgs e)
         {
@@ -1567,143 +1314,6 @@ namespace TombEditor
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveAsToolStripMenuItem_Click(sender, e);
-        }
-
-        private void cbFlagDamage_CheckedChanged(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.FlagDamage = cbFlagDamage.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbFlagCold_CheckedChanged(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.FlagCold = cbFlagCold.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbFlagOutside_CheckedChanged(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.FlagOutside = cbFlagOutside.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbHorizon_CheckedChanged(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.FlagHorizon = cbHorizon.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void cbNoPathfinding_CheckedChanged(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.ExcludeFromPathFinding = cbNoPathfinding.Checked;
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-        
-        private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.Reverberation = (Reverberation)(comboReverberation.SelectedIndex);
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (comboRoomType.SelectedIndex)
-            {
-                case 0:
-                    _editor.SelectedRoom.FlagWater = false;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 0;
-                    break;
-
-                case 1:
-                    _editor.SelectedRoom.FlagWater = true;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 1;
-                    break;
-
-                case 2:
-                    _editor.SelectedRoom.FlagWater = true;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 2;
-                    break;
-
-                case 3:
-                    _editor.SelectedRoom.FlagWater = true;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 3;
-                    break;
-
-                case 4:
-                    _editor.SelectedRoom.FlagWater = true;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 4;
-                    break;
-
-                case 5:
-                    _editor.SelectedRoom.FlagWater = false;
-                    _editor.SelectedRoom.FlagRain = true;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 0;
-                    break;
-
-                case 6:
-                    _editor.SelectedRoom.FlagWater = false;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = true;
-                    _editor.SelectedRoom.FlagQuickSand = false;
-                    _editor.SelectedRoom.WaterLevel = 0;
-                    break;
-
-                case 7:
-                    _editor.SelectedRoom.FlagWater = false;
-                    _editor.SelectedRoom.FlagRain = false;
-                    _editor.SelectedRoom.FlagSnow = false;
-                    _editor.SelectedRoom.FlagQuickSand = true;
-                    _editor.SelectedRoom.WaterLevel = 0;
-                    break;
-            }
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void comboReflection_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboReflection.SelectedIndex == 0)
-            {
-                _editor.SelectedRoom.FlagReflection = false;
-                _editor.SelectedRoom.ReflectionLevel = 0;
-            }
-            else
-            {
-                _editor.SelectedRoom.FlagReflection = true;
-                _editor.SelectedRoom.ReflectionLevel = (short)comboReflection.SelectedIndex;
-            }
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void comboMist_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboReflection.SelectedIndex == 0)
-            {
-                _editor.SelectedRoom.FlagMist = false;
-                _editor.SelectedRoom.MistLevel = 0;
-            }
-            else
-            {
-                _editor.SelectedRoom.FlagMist = true;
-                _editor.SelectedRoom.MistLevel = (short)comboMist.SelectedIndex;
-            }
-            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void butDrawRoomNames_Click(object sender, EventArgs e)
@@ -1783,17 +1393,10 @@ namespace TombEditor
 
             Close();
         }
-        
-        private void lstTriggers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if ((_editor.SelectedRoom == null) || (lstTriggers.SelectedItem == null))
-                return;
-            _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem);
-        }
 
         private void butAddTrigger_Click(object sender, EventArgs e)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection())
                 return;
             EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
