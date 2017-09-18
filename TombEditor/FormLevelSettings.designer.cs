@@ -43,6 +43,7 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.gameLevelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.gameExecutableSuppressAskingForOptionsCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.gameExecutableFilePathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.gameExecutableFilePathTxt = new DarkUI.Controls.DarkTextBox();
@@ -83,12 +84,11 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridView = new TombEditor.Controls.DarkDataGridView();
-            this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu = new DarkUI.Controls.DarkContextMenu();
             this.pathVariablesDataGridViewContextMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.gameExecutableSuppressAskingForOptionsCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
@@ -279,6 +279,16 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(586, 41);
             this.panel3.TabIndex = 3;
+            // 
+            // gameExecutableSuppressAskingForOptionsCheckBox
+            // 
+            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(382, -2);
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(201, 16);
+            this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
+            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Suppress asking for settings dialong";
+            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
             // 
             // gameExecutableFilePathBut
             // 
@@ -728,7 +738,7 @@
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(381, 12);
             this.darkLabel1.TabIndex = 1;
-            this.darkLabel1.Text = "Available variable place holders that can be used inside paths: ";
+            this.darkLabel1.Text = "Available dynamic place holders that can be used inside paths: ";
             // 
             // pathVariablesDataGridView
             // 
@@ -750,15 +760,6 @@
             this.pathVariablesDataGridView.TabIndex = 2;
             this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
             // 
-            // pathVariablesDataGridViewNameColumn
-            // 
-            this.pathVariablesDataGridViewNameColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
-            this.pathVariablesDataGridViewNameColumn.HeaderText = "Placeholder";
-            this.pathVariablesDataGridViewNameColumn.MinimumWidth = 50;
-            this.pathVariablesDataGridViewNameColumn.Name = "pathVariablesDataGridViewNameColumn";
-            this.pathVariablesDataGridViewNameColumn.ReadOnly = true;
-            this.pathVariablesDataGridViewNameColumn.Width = 120;
-            // 
             // pathVariablesDataGridViewContextMenu
             // 
             this.pathVariablesDataGridViewContextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -776,14 +777,6 @@
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
-            // pathVariablesDataGridViewValueColumn
-            // 
-            this.pathVariablesDataGridViewValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.pathVariablesDataGridViewValueColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
-            this.pathVariablesDataGridViewValueColumn.HeaderText = "Value";
-            this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
-            this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
-            // 
             // pathToolTip
             // 
             this.pathToolTip.AutoPopDelay = 32000;
@@ -791,15 +784,22 @@
             this.pathToolTip.ReshowDelay = 100;
             this.pathToolTip.ShowAlways = true;
             // 
-            // gameExecutableSuppressAskingForOptionsCheckBox
+            // pathVariablesDataGridViewNameColumn
             // 
-            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Location = new System.Drawing.Point(382, -2);
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Name = "gameExecutableSuppressAskingForOptionsCheckBox";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Size = new System.Drawing.Size(201, 16);
-            this.gameExecutableSuppressAskingForOptionsCheckBox.TabIndex = 4;
-            this.gameExecutableSuppressAskingForOptionsCheckBox.Text = "Suppress asking for settings dialong";
-            this.gameExecutableSuppressAskingForOptionsCheckBox.CheckedChanged += new System.EventHandler(this.gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged);
+            this.pathVariablesDataGridViewNameColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
+            this.pathVariablesDataGridViewNameColumn.HeaderText = "Placeholder";
+            this.pathVariablesDataGridViewNameColumn.MinimumWidth = 50;
+            this.pathVariablesDataGridViewNameColumn.Name = "pathVariablesDataGridViewNameColumn";
+            this.pathVariablesDataGridViewNameColumn.ReadOnly = true;
+            this.pathVariablesDataGridViewNameColumn.Width = 120;
+            // 
+            // pathVariablesDataGridViewValueColumn
+            // 
+            this.pathVariablesDataGridViewValueColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.pathVariablesDataGridViewValueColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
+            this.pathVariablesDataGridViewValueColumn.HeaderText = "Current Value";
+            this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
+            this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
             // FormLevelSettings
             // 
@@ -899,9 +899,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
         private Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
         private Controls.DarkDataGridView pathVariablesDataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
         private DarkUI.Controls.DarkCheckBox soundsIgnoreMissingSounds;
         private DarkUI.Controls.DarkCheckBox gameExecutableSuppressAskingForOptionsCheckBox;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
     }
 }
