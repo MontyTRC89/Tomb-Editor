@@ -97,7 +97,9 @@ namespace TombEditor
                 but3D.Checked = mode == EditorMode.Geometry;
                 butLightingMode.Checked = mode == EditorMode.Lighting;
                 butFaceEdit.Checked = mode == EditorMode.FaceEdit;
-                multiPage1.SelectedIndex = mode == EditorMode.Map2D ? 1 : 0;
+
+                panel2DMap.Visible = mode == EditorMode.Map2D;
+                panel3D.Visible = (mode == EditorMode.FaceEdit) || (mode == EditorMode.Geometry) || (mode == EditorMode.Lighting);
             }
 
             // Update the room list
