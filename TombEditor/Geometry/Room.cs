@@ -285,7 +285,7 @@ namespace TombEditor.Geometry
 
                     // Vertical polygons  ---------------------------------------------------------------------------------
 
-                    // North
+                    // +Z direction
                     if (x > 0 && x < NumXSectors - 1 && z > 0 && z < NumZSectors - 2 &&
                         !(Blocks[x, z + 1].Type == BlockType.Wall &&
                          (Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x, z + 1].FloorDiagonalSplit == DiagonalSplit.XnZn)))
@@ -298,7 +298,7 @@ namespace TombEditor.Geometry
                     }
 
 
-                    // South
+                    // -Z direction
                     if (x > 0 && x < NumXSectors - 1 && z > 1 && z < NumZSectors - 1 &&
                         !(Blocks[x, z - 1].Type == BlockType.Wall &&
                          (Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.XpZp || Blocks[x, z - 1].FloorDiagonalSplit == DiagonalSplit.XnZp)))
@@ -311,7 +311,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.NegativeZ, true, true, false);
                     }
 
-                    // East
+                    // +X direction
                     if (z > 0 && z < NumZSectors - 1 && x > 0 && x < NumXSectors - 2 &&
                         !(Blocks[x + 1, z].Type == BlockType.Wall &&
                         (Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.XnZn || Blocks[x + 1, z].FloorDiagonalSplit == DiagonalSplit.XnZp)))
@@ -323,7 +323,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.PositiveX, true, true, false);
                     }
 
-                    // West
+                    // -X direction
                     if (z > 0 && z < NumZSectors - 1 && x > 1 && x < NumXSectors - 1 &&
                         !(Blocks[x - 1, z].Type == BlockType.Wall &&
                         (Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x - 1, z].FloorDiagonalSplit == DiagonalSplit.XpZp)))
@@ -356,7 +356,7 @@ namespace TombEditor.Geometry
                         }
                     }
 
-                    // North border wall
+                    // +Z directed border wall
                     if (z == 0 && x != 0 && x != NumXSectors - 1 &&
                         !(Blocks[x, 1].Type == BlockType.Wall &&
                          (Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[x, 1].FloorDiagonalSplit == DiagonalSplit.XnZn)))
@@ -391,7 +391,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.PositiveZ, true, true, false);
                     }
 
-                    // South border wall
+                    // -Z directed border wall
                     if (z == NumZSectors - 1 && x != 0 && x != NumXSectors - 1 &&
                         !(Blocks[x, NumZSectors - 2].Type == BlockType.Wall &&
                          (Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.None || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XpZp || Blocks[x, NumZSectors - 2].FloorDiagonalSplit == DiagonalSplit.XnZp)))
@@ -425,7 +425,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.NegativeZ, true, true, false);
                     }
 
-                    // West border wall
+                    // -X directed border wall
                     if (x == 0 && z != 0 && z != NumZSectors - 1 &&
                         !(Blocks[1, z].Type == BlockType.Wall &&
                          (Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.XnZn || Blocks[1, z].FloorDiagonalSplit == DiagonalSplit.XnZp)))
@@ -459,7 +459,7 @@ namespace TombEditor.Geometry
                             AddVerticalFaces(x, z, FaceDirection.PositiveX, true, true, false);
                     }
 
-                    // East border wall
+                    // +X directed border wall
                     if (x == NumXSectors - 1 && z != 0 && z != NumZSectors - 1 &&
                         !(Blocks[NumXSectors - 2, z].Type == BlockType.Wall &&
                          (Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.None || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.XpZn || Blocks[NumXSectors - 2, z].FloorDiagonalSplit == DiagonalSplit.XpZp)))
