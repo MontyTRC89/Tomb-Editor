@@ -2025,13 +2025,11 @@ namespace TombEditor.Controls
                 return;
 
             // reset the backbuffer
-            bool IsFlipMap = (_editor?.SelectedRoom?.AlternateBaseRoom != null);
+            Vector4 clearColor = _editor?.SelectedRoom?.AlternateBaseRoom != null ? _editor.Configuration.Rendering3D_BackgroundColorFlipRoom : _editor.Configuration.Rendering3D_BackgroundColor;
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
-                _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target,
-                IsFlipMap ? SharpDX.Color.LightCoral : SharpDX.Color.CornflowerBlue, 1.0f, 0);
+            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, clearColor, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
             // verify that editor is ready
