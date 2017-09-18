@@ -25,6 +25,7 @@ namespace TombEditor
         private ToolWindows.RoomOptions   RoomOptions   = new ToolWindows.RoomOptions();
         private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
         private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
+        private ToolWindows.Lighting      Lighting      = new ToolWindows.Lighting();
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
@@ -45,38 +46,24 @@ namespace TombEditor
             dock_Test.AddContent(ObjectBrowser);
             dock_Test.AddContent(RoomOptions);
             dock_Test.AddContent(TriggerList);
+            dock_Test.AddContent(Lighting);
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(1212, 763) + (Size - ClientSize);
             
-            // Update palette
-            lightPalette.SelectedColorChanged += delegate
-            {
-                    Light light = _editor.SelectedObject as Light;
-                    if (light == null)
-                        return;
-                    light.Color = lightPalette.SelectedColor.ToFloatColor3();
-                    _editor.SelectedRoom.UpdateCompletely();
-                    _editor.ObjectChange(light);
-                };
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
 
-            // For each control bind its light parameter
-            numLightIntensity.LightParameter = LightParameter.Intensity;
-            numLightIn.LightParameter = LightParameter.In;
-            numLightOut.LightParameter = LightParameter.Out;
-            numLightLen.LightParameter = LightParameter.Len;
-            numLightCutoff.LightParameter = LightParameter.CutOff;
-            numLightDirectionX.LightParameter = LightParameter.DirectionX;
-            numLightDirectionY.LightParameter = LightParameter.DirectionY;
 
             // Initialize controls
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
             _editor.Level = Level.CreateSimpleLevel();
+
+            // Initialize color controls
+            Lighting.BindParameters();
 
             // Initialize panels
             panel3D.InitializePanel(_deviceManager);
@@ -177,98 +164,18 @@ namespace TombEditor
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
             }
 
-            // Update light UI
+            // Update portal opacity controls
             if ((obj is Editor.ObjectChangedEvent) ||
                (obj is Editor.SelectedObjectChangedEvent))
             {
-                var light = _editor.SelectedObject as Light;
-                
-                bool IsLight = false;
-                bool HasInOutRange = false;
-                bool HasLenCutoffRange = false;
-                bool HasDirection = false;
-                bool CanCastShadows = false;
-                bool CanIlluminateStaticAndDynamicGeometry = false;
-                if (light != null)
-                {
-                    IsLight = true;
-                    switch (light.Type)
-                    {
-                        case LightType.Light:
-                            HasInOutRange = true;
-                            CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
-                            break;
+                var portal = _editor.SelectedObject as Portal;
+                butOpacityNone.Enabled = portal != null;
+                butOpacitySolidFaces.Enabled = portal != null;
+                butOpacityTraversableFaces.Enabled = portal != null;
 
-                        case LightType.Shadow:
-                            HasInOutRange = true;
-                            CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
-                            break;
-
-                        case LightType.Effect:
-                        case LightType.FogBulb:
-                            HasInOutRange = true;
-                            break;
-
-                        case LightType.Spot:
-                            HasInOutRange = true;
-                            HasLenCutoffRange = true;
-                            HasDirection = true;
-                            CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
-                            break;
-
-                        case LightType.Sun:
-                            HasDirection = true;
-                            CanCastShadows = true;
-                            CanIlluminateStaticAndDynamicGeometry = true;
-                            break;
-                    }
-                    
-                    panelLightColor.BackColor = new Vector4(light.Color, 1.0f).ToWinFormsColor();
-                    numLightIntensity.Value = light.Intensity;
-                    cbLightEnabled.Checked = light.Enabled;
-                    cbLightCastsShadows.Checked = light.CastsShadows;
-                    cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
-                    cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
-                    numLightIn.Value = light.In;
-                    numLightOut.Value = light.Out;
-                    numLightLen.Value = light.Len;
-                    numLightCutoff.Value = light.Cutoff;
-                    numLightDirectionX.Value = light.RotationX;
-                    numLightDirectionY.Value = light.RotationY;
-                }
-                else
-                    panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
-
-                // Update portal opacity controls
-                if ((obj is Editor.ObjectChangedEvent) ||
-                   (obj is Editor.SelectedObjectChangedEvent))
-                {
-                    var portal = _editor.SelectedObject as Portal;
-                    butOpacityNone.Enabled = portal != null;
-                    butOpacitySolidFaces.Enabled = portal != null;
-                    butOpacityTraversableFaces.Enabled = portal != null;
-
-                    butOpacityNone.Checked = portal == null ? false : portal.Opacity == PortalOpacity.None;
-                    butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
-                    butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
-                }
-
-                // Set enabled state
-                panelLightColor.Enabled = IsLight;
-                numLightIntensity.Enabled = IsLight;
-                cbLightEnabled.Enabled = IsLight;
-                cbLightCastsShadows.Enabled = CanCastShadows;
-                cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
-                cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
-                numLightIn.Enabled = HasInOutRange;
-                numLightOut.Enabled = HasInOutRange;
-                numLightLen.Enabled = HasLenCutoffRange;
-                numLightCutoff.Enabled = HasLenCutoffRange;
-                numLightDirectionX.Enabled = HasDirection;
-                numLightDirectionY.Enabled = HasDirection;
+                butOpacityNone.Checked = portal == null ? false : portal.Opacity == PortalOpacity.None;
+                butOpacitySolidFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.SolidFaces;
+                butOpacityTraversableFaces.Checked = portal == null ? false : portal.Opacity == PortalOpacity.TraversableFaces;
             }
 
             // Update texture map
@@ -290,35 +197,6 @@ namespace TombEditor
             _editor.Configuration.SaveTry();
         }
 
-        private void butAddPointLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Light };
-        }
-
-        private void butAddShadow_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Shadow };
-        }
-
-        private void butAddSun_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Sun };
-        }
-
-        private void butAddSpotLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Spot };
-        }
-
-        private void butAddEffectLight_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.Effect };
-        }
-
-        private void butAddFogBulb_Click(object sender, EventArgs e)
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.FogBulb };
-        }
 
 
         private void but3D_Click(object sender, EventArgs e)
@@ -444,58 +322,6 @@ namespace TombEditor
         private void butAddSink_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
-        }
-
-        private void UpdateLight<T>(Func<Light, T> getLightValue, Action<Light, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
-        {
-            var light = _editor.SelectedObject as Light;
-            if (light == null)
-                return;
-            
-            T? newValue = getGuiValue(getLightValue(light));
-            if ((!newValue.HasValue) || newValue.Value.Equals(getLightValue(light)))
-                return;
-
-            setLightValue(light, newValue.Value);
-            _editor.SelectedRoom.CalculateLightingForThisRoom();
-            _editor.SelectedRoom.UpdateBuffers();
-            _editor.ObjectChange(light);
-        }
-
-        private void panelLightColor_Click(object sender, EventArgs e)
-        {
-            UpdateLight((light) => light.Color, (light, value) => light.Color = value,
-                (value) =>
-                {
-                    colorDialog.Color = new Vector4(value, 1.0f).ToWinFormsColor();
-                    if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                        return null;
-                    return colorDialog.Color.ToFloatColor3();
-                });
-        }
-
-        private void cbLightEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateLight((light) => light.Enabled, (light, value) => light.Enabled = value,
-                (value) => cbLightEnabled.Checked);
-        }
-        
-        private void cbLightCastsShadows_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateLight((light) => light.CastsShadows, (light, value) => light.CastsShadows = value,
-                (value) => cbLightCastsShadows.Checked);
-        }
-
-        private void cbLightIsStaticallyUsed_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateLight((light) => light.IsStaticallyUsed, (light, value) => light.IsStaticallyUsed = value,
-                (value) => cbLightIsStaticallyUsed.Checked);
-        }
-
-        private void cbLightIsDynamicallyUsed_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateLight((light) => light.IsDynamicallyUsed, (light, value) => light.IsDynamicallyUsed = value,
-                (value) => cbLightIsDynamicallyUsed.Checked);
         }
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -779,13 +605,6 @@ namespace TombEditor
             _editor.Level.ReloadWad();
             _editor.LoadedWadsChange(null);
         }
-        
-        private void butDeleteRoom_Click(object sender, EventArgs e)
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-            EditorActions.DeleteRoom(_editor.SelectedRoom);
-        }
 
         private void butCropRoom_Click(object sender, EventArgs e)
         {
@@ -884,37 +703,6 @@ namespace TombEditor
             {
                 logger.Error(exc, "Unable to save to \"" + saveFileDialogPRJ2.FileName + "\".");
                 DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file. Exception: " + exc, "Error");
-            }
-        }
-        private void butRoomUp_Click(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.Position += new Vector3(0.0f, 1.0f, 0.0f);
-
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.SelectedRoom.CalculateLightingForThisRoom();
-            _editor.SelectedRoom.UpdateBuffers();
-
-            foreach (var portal in _editor.SelectedRoom.Portals)
-            {
-                portal.AdjoiningRoom.BuildGeometry();
-                portal.AdjoiningRoom.CalculateLightingForThisRoom();
-                portal.AdjoiningRoom.UpdateBuffers();
-            }
-        }
-
-        private void butRoomDown_Click(object sender, EventArgs e)
-        {
-            _editor.SelectedRoom.Position += new Vector3(0.0f, -1.0f, 0.0f);
-
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.SelectedRoom.CalculateLightingForThisRoom();
-            _editor.SelectedRoom.UpdateBuffers();
-
-            foreach (var portal in _editor.SelectedRoom.Portals)
-            {
-                portal.AdjoiningRoom.BuildGeometry();
-                portal.AdjoiningRoom.CalculateLightingForThisRoom();
-                portal.AdjoiningRoom.UpdateBuffers();
             }
         }
 
@@ -1331,16 +1119,6 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
-        }
-
-        private void butSplitRoom_Click_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void butCopyRoom_Click_1(object sender, EventArgs e)
-        {
-
         }
     }
 }

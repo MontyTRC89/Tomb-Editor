@@ -311,6 +311,7 @@
             this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomUp.Size = new System.Drawing.Size(24, 24);
             this.butRoomUp.TabIndex = 102;
+            this.butRoomUp.Click += new System.EventHandler(this.butRoomUp_Click);
             // 
             // butRoomDown
             // 
@@ -320,6 +321,7 @@
             this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomDown.Size = new System.Drawing.Size(24, 24);
             this.butRoomDown.TabIndex = 87;
+            this.butRoomDown.Click += new System.EventHandler(this.butRoomDown_Click);
             // 
             // butEditRoomName
             // 
@@ -329,6 +331,7 @@
             this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(24, 24);
             this.butEditRoomName.TabIndex = 86;
+            this.butEditRoomName.Click += new System.EventHandler(this.butEditRoomName_Click);
             // 
             // butDeleteRoom
             // 
@@ -338,6 +341,7 @@
             this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 24);
             this.butDeleteRoom.TabIndex = 85;
+            this.butDeleteRoom.Click += new System.EventHandler(this.butDeleteRoom_Click);
             // 
             // butCropRoom
             // 
@@ -367,6 +371,7 @@
             this.butCopyRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCopyRoom.Size = new System.Drawing.Size(24, 24);
             this.butCopyRoom.TabIndex = 82;
+            this.butCopyRoom.Click += new System.EventHandler(this.butCopyRoom_Click);
             // 
             // RoomOptions
             // 

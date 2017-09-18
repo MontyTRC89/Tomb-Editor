@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
+using SharpDX;
 
 namespace TombEditor.ToolWindows
 {
@@ -331,6 +332,45 @@ namespace TombEditor.ToolWindows
 
                 _editor.SelectedRoom.Name = form.Value;
                 _editor.RoomListChange();
+            }
+        }
+
+        private void butDeleteRoom_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.DeleteRoom(_editor.SelectedRoom);
+        }
+
+        private void butRoomUp_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedRoom.Position += new Vector3(0.0f, 1.0f, 0.0f);
+
+            _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.CalculateLightingForThisRoom();
+            _editor.SelectedRoom.UpdateBuffers();
+
+            foreach (var portal in _editor.SelectedRoom.Portals)
+            {
+                portal.AdjoiningRoom.BuildGeometry();
+                portal.AdjoiningRoom.CalculateLightingForThisRoom();
+                portal.AdjoiningRoom.UpdateBuffers();
+            }
+        }
+
+        private void butRoomDown_Click(object sender, EventArgs e)
+        {
+            _editor.SelectedRoom.Position += new Vector3(0.0f, -1.0f, 0.0f);
+
+            _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.CalculateLightingForThisRoom();
+            _editor.SelectedRoom.UpdateBuffers();
+
+            foreach (var portal in _editor.SelectedRoom.Portals)
+            {
+                portal.AdjoiningRoom.BuildGeometry();
+                portal.AdjoiningRoom.CalculateLightingForThisRoom();
+                portal.AdjoiningRoom.UpdateBuffers();
             }
         }
     }
