@@ -30,7 +30,8 @@ namespace TombLib.Wad
         public SortedDictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
         public List<WadSpriteSequence> SpriteSequences { get; private set; }
         public Dictionary<Hash, WadTexture> SpriteTextures { get; private set; }
-        
+        public string FileName { get; set; }
+
         // Data for rendering
         public GraphicsDevice GraphicsDevice { get; set; }
         public Texture2D DirectXTexture { get; private set; }
@@ -84,9 +85,9 @@ namespace TombLib.Wad
             }
         }
 
-        public void PrepareDataForDirectX()
+        public List<WadTexture> RebuildTextureAtlas()
         {
-            Dispose();
+            if (DirectXTexture != null) DirectXTexture.Dispose();
 
             // Pack the textures in a single atlas
             List<WadTexture> packedTextures = new List<WadTexture>();
@@ -99,7 +100,7 @@ namespace TombLib.Wad
             packedTextures.Sort(new ComparerWadTextures());
 
             RectPackerSimpleStack packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
-            
+
             foreach (var texture in packedTextures)
             {
                 var point = packer.TryAdd(texture.Width, texture.Height);
@@ -127,6 +128,16 @@ namespace TombLib.Wad
 
             // Create the DirectX texture atlas
             DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
+
+            return packedTextures;
+        }
+
+        public void PrepareDataForDirectX()
+        {
+            Dispose();
+
+            // Rebuild the texture atlas and covert it to a DirectX texture
+            var packedTextures = RebuildTextureAtlas();
             
             // Create movable models
             for (int i = 0; i < Moveables.Count; i++)
