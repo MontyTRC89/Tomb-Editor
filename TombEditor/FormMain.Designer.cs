@@ -188,7 +188,8 @@
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusStripSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStripGlobalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStripLocalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.but2D = new System.Windows.Forms.ToolStripButton();
@@ -2176,7 +2177,8 @@
             this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusStripSelectedRoom,
-            this.statusStripSelectionArea});
+            this.statusStripGlobalSelectionArea,
+            this.statusStripLocalSelectionArea});
             this.statusStrip.Location = new System.Drawing.Point(0, 860);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
@@ -2191,17 +2193,26 @@
             this.statusStripSelectedRoom.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
             this.statusStripSelectedRoom.Name = "statusStripSelectedRoom";
-            this.statusStripSelectedRoom.Size = new System.Drawing.Size(450, 16);
+            this.statusStripSelectedRoom.Size = new System.Drawing.Size(500, 16);
             this.statusStripSelectedRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // statusStripSelectionArea
+            // statusStripGlobalSelectionArea
             // 
-            this.statusStripSelectionArea.AutoSize = false;
-            this.statusStripSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.statusStripSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
-            this.statusStripSelectionArea.Name = "statusStripSelectionArea";
-            this.statusStripSelectionArea.Size = new System.Drawing.Size(300, 16);
-            this.statusStripSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.statusStripGlobalSelectionArea.AutoSize = false;
+            this.statusStripGlobalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripGlobalSelectionArea.Name = "statusStripGlobalSelectionArea";
+            this.statusStripGlobalSelectionArea.Size = new System.Drawing.Size(350, 16);
+            this.statusStripGlobalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // statusStripLocalSelectionArea
+            // 
+            this.statusStripLocalSelectionArea.AutoSize = false;
+            this.statusStripLocalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
+            this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(350, 16);
+            this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // colorDialog
             // 
@@ -3026,7 +3037,8 @@
         private System.Windows.Forms.ToolStripMenuItem sharpRandomFloorDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingDownToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel statusStripSelectionArea;
+        private System.Windows.Forms.ToolStripStatusLabel statusStripGlobalSelectionArea;
+        private System.Windows.Forms.ToolStripStatusLabel statusStripLocalSelectionArea;
         private DarkUI.Controls.DarkButton butResetSearch;
         private DarkUI.Controls.DarkCheckBox cbLightEnabled;
         private DarkUI.Controls.DarkLabel darkLabel2;

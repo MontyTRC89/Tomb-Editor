@@ -318,6 +318,12 @@ namespace TombEditor
             RaiseEvent(new RoomSectorPropertiesChangedEvent { Room = room });
         }
 
+        public void RoomMoved(Room room)
+        {
+            RoomSectorPropertiesChange(room);
+            RoomGeometryChange(room);
+        }
+
         // This is invoked for all changes to objects. (eg changing a light, changing a movable, moving a static, ...)
         // "null" can be passed, if it is not determinable what object changed.
         public struct ObjectChangedEvent : IEditorObjectChangedEvent

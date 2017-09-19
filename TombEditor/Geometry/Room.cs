@@ -2179,30 +2179,40 @@ namespace TombEditor.Geometry
 
         public Matrix Transform => Matrix.Translation(new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f));
 
-        public int GetHighestCorner()
+        public int GetHighestCorner(Rectangle area)
         {
             int max = int.MinValue;
 
-            for (int x = 1; x < NumXSectors - 1; x++)
-                for (int z = 1; z < NumZSectors - 1; z++)
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                     if (Blocks[x, z].IsFloor)
                         max = Math.Max(max, Blocks[x, z].CeilingMax);
 
             return max;
         }
 
-        public int GetLowestCorner()
+        public int GetHighestCorner()
+        {
+            return GetHighestCorner(new Rectangle(1, 1, NumXSectors - 2, NumZSectors - 2));
+        }
+
+        public int GetLowestCorner(Rectangle area)
         {
             int min = int.MaxValue;
 
-            for (int x = 1; x < NumXSectors - 1; x++)
-                for (int z = 1; z < NumZSectors - 1; z++)
+            for (int x = area.X; x <= area.Right; x++)
+                for (int z = area.Y; z <= area.Bottom; z++)
                     if (Blocks[x, z].IsFloor)
-                        min = Math.Min(min, Blocks[x, z].FloorMin);
+                        min = Math.Min(min, Blocks[x, z].CeilingMax);
 
             return min;
         }
-        
+
+        public int GetLowestCorner()
+        {
+            return GetLowestCorner(new Rectangle(1, 1, NumXSectors - 2, NumZSectors - 2));
+        }
+
         public Vector3 WorldPos => new Vector3(Position.X * 1024.0f, Position.Y * 256.0f, Position.Z * 1024.0f);
 
         public Vector3 GetLocalCenter()
