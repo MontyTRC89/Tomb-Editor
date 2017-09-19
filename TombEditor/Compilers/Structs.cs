@@ -22,6 +22,13 @@ namespace TombEditor.Compilers
         public short Y;
         public short Z;
 
+        public tr_vertex(short X, short Y, short Z)
+        {
+            this.X = X;
+            this.Y = Y;
+            this.Z = Z;
+        }
+
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_vertex first, tr_vertex second)
