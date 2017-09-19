@@ -52,9 +52,9 @@ namespace TombEditor.Compilers
             var newRoom = new tr_room
             {
                 OriginalRoom = room,
-                Lights = new tr4_room_light[0],
-                StaticMeshes = new tr_room_staticmesh[0],
-                Portals = new tr_room_portal[0],
+                Lights = new List<tr4_room_light>(),
+                StaticMeshes = new List<tr_room_staticmesh>(),
+                Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
                 {
                     X = (int)(room.Position.X * 1024.0f),
@@ -353,8 +353,8 @@ namespace TombEditor.Compilers
 
             ConvertSectors(room, ref newRoom);
 
-            var tempStaticMeshes = room.Objects.OfType<StaticInstance>()
-                .Select(instance => new tr_room_staticmesh
+            foreach (var instance in room.Objects.OfType<StaticInstance>())
+                newRoom.StaticMeshes.Add(new tr_room_staticmesh
                 {
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)Math.Round(newRoom.Info.YBottom - instance.Position.Y),
@@ -363,12 +363,8 @@ namespace TombEditor.Compilers
                         Math.Round(instance.RotationY * (65536.0 / 360.0))))),
                     ObjectID = (ushort)instance.WadObjectId,
                     Intensity1 = PackColorTo16Bit(new Vector4(instance.Color.Z, instance.Color.Y, instance.Color.X, instance.Color.W)),
-                    Intensity2 = instance.Ocb 
-                })
-                .ToArray();
-
-            newRoom.NumStaticMeshes = (ushort)tempStaticMeshes.GetLength(0);
-            newRoom.StaticMeshes = tempStaticMeshes;
+                    Intensity2 = instance.Ocb
+                });
 
             ConvertLights(room, ref newRoom);
 
@@ -403,7 +399,6 @@ namespace TombEditor.Compilers
 
         private static void ConvertLights(Room room, ref tr_room newRoom)
         {
-            var result = new List<tr4_room_light>();
             foreach (var light in room.Objects.OfType<Light>().Where(l => l.IsDynamicallyUsed))
             {
                 var newLight = new tr4_room_light
@@ -463,11 +458,8 @@ namespace TombEditor.Compilers
                         throw new Exception("Unknown light type '" + light.Type + "' encountered.");
                 }
 
-                result.Add(newLight);
+                newRoom.Lights.Add(newLight);
             }
-
-            newRoom.NumLights = (ushort)result.Count;
-            newRoom.Lights = result.ToArray();
         }
 
         private void ConvertSectors(Room room, ref tr_room newRoom)
@@ -571,8 +563,6 @@ namespace TombEditor.Compilers
 
         private void ConvertPortals(IEnumerable<Portal> tempIdPortals, Room room, ref tr_room newRoom)
         {
-            var result = new List<tr_room_portal>();
-
             foreach (var portal in tempIdPortals)
             {
                 int xMin;
@@ -1004,11 +994,8 @@ namespace TombEditor.Compilers
                         break;
                 }
 
-                result.Add(newPortal);
+                newRoom.Portals.Add(newPortal);
             }
-
-            newRoom.NumPortals = (ushort)result.Count;
-            newRoom.Portals = result.ToArray();
         }
         
         private void MatchPortalVertexColors()
