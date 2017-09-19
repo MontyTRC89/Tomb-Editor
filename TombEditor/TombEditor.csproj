@@ -262,6 +262,12 @@
     <Compile Include="ToolWindows\Lighting.Designer.cs">
       <DependentUpon>Lighting.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\MainView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\MainView.Designer.cs">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\TriggerList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -317,6 +323,9 @@
     <Compile Include="TexturePackerTest.cs" />
     <EmbeddedResource Include="ToolWindows\Lighting.resx">
       <DependentUpon>Lighting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\MainView.resx">
+      <DependentUpon>MainView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ObjectBrowser.resx">
       <DependentUpon>ObjectBrowser.cs</DependentUpon>

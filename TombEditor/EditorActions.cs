@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
+using TombEditor.Compilers;
 using TombEditor.Geometry;
 using TombLib.Utils;
+
 
 namespace TombEditor
 {
@@ -1648,6 +1650,90 @@ namespace TombEditor
                 return false;
             }
             return true;
+        }
+
+        public static bool BuildLevel(bool autoCloseWhenDone)
+        {
+            Level level = _editor.Level;
+            string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
+
+            using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
+                new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
+            {
+                form.ShowDialog();
+                return form.DialogResult != DialogResult.Cancel;
+            }
+        }
+
+        public static void BuildLevelAndPlay()
+        {
+            if (!EditorActions.BuildLevel(true))
+                return;
+
+            TombLauncher.Launch(_editor.Level.Settings);
+        }
+
+        public static void TextureWalls()
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+        }
+
+        public static void TextureFloor()
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+        }
+
+        public static void TextureCeiling()
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+        }
+
+        public static void Paste()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
+        }
+
+        public static void Copy(IWin32Window parent)
+        {
+            var instance = _editor.SelectedObject as PositionBasedObjectInstance;
+            if (instance == null)
+            {
+                MessageBox.Show(parent, "You have to select an object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.Copy(instance);
+        }
+
+        public static void Clone(IWin32Window parent)
+        {
+            EditorActions.Copy(parent);
+            _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
+        }
+
+        public static void AddCamera()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
+        }
+
+        public static void AddFlybyCamera()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
+        }
+
+        public static void AddSoundSource()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
+        }
+
+        public static void AddSink()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
     }
 }
