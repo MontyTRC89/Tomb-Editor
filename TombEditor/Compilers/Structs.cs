@@ -185,17 +185,14 @@ namespace TombEditor.Compilers
         public List<tr_face4> Quads;
         public List<tr_face3> Triangles;
         public ushort NumSprites;
-        public ushort NumPortals;
-        public tr_room_portal[] Portals;
+        public List<tr_room_portal> Portals;
         public ushort NumZSectors;
         public ushort NumXSectors;
         public tr_room_sector[] Sectors;
         public uint AmbientIntensity;
         public short LightMode;
-        public ushort NumLights;
-        public tr4_room_light[] Lights;
-        public ushort NumStaticMeshes;
-        public tr_room_staticmesh[] StaticMeshes;
+        public List<tr4_room_light> Lights;
+        public List<tr_room_staticmesh> StaticMeshes;
         public short AlternateRoom;
         public short Flags;
         public byte WaterScheme;
@@ -245,8 +242,8 @@ namespace TombEditor.Compilers
             writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
             // Write portals
-            writer.WriteBlock((ushort)Portals.Length);
-            if (Portals.Length != 0)
+            writer.WriteBlock((ushort)Portals.Count);
+            if (Portals.Count != 0)
                 writer.WriteBlockArray(Portals);
 
             // Write sectors
@@ -258,13 +255,13 @@ namespace TombEditor.Compilers
             writer.Write(AmbientIntensity);
 
             // Write lights
-            writer.WriteBlock((ushort)Lights.Length);
-            if (Lights.Length != 0)
+            writer.WriteBlock((ushort)Lights.Count);
+            if (Lights.Count != 0)
                 writer.WriteBlockArray(Lights);
 
             // Write static meshes
-            writer.WriteBlock((ushort)StaticMeshes.Length);
-            if (StaticMeshes.Length != 0)
+            writer.WriteBlock((ushort)StaticMeshes.Count);
+            if (StaticMeshes.Count != 0)
                 writer.WriteBlockArray(StaticMeshes);
 
             // Write final data
