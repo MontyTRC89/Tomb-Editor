@@ -10,6 +10,7 @@ namespace TombLib.Wad
     {
         private List<WadSound> _sound;
 
+        public string Name { get; set; }
         public List<WadSound> WaveSounds { get { return _sound; } }
         public byte Volume { get; set; }
         public byte Range { get; set; }
