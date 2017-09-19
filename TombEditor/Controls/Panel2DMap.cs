@@ -456,7 +456,7 @@ namespace TombEditor.Controls
 
             // Update state
             Invalidate();
-            _editor.RoomSectorPropertiesChange(roomReference);
+            _editor.RoomMoved(roomReference);
             _editor.ResetCamera();
         }
 

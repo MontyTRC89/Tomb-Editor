@@ -200,7 +200,8 @@ namespace TombEditor
 
             // Update room information on the status strip
             if ((obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.RoomGeometryChangedEvent))
+                (obj is Editor.RoomGeometryChangedEvent) ||
+                (obj is Editor.RoomPropertiesChangedEvent))
             {
                 var room = _editor.SelectedRoom;
                 if (room == null)
@@ -208,26 +209,36 @@ namespace TombEditor
                 else
                     statusStripSelectedRoom.Text = "Selected room: " +
                         "Name = " + room + " | " +
-                        "X = " + room.Position.X + " | " +
-                        "Y = " + room.Position.Y + " | " +
-                        "Z = " + room.Position.Z + " | " +
+                        "Pos = (" + room.Position.X + ", " + room.Position.Y + ", " + room.Position.Z + ") | " +
                         "Floor = " + (room.Position.Y + room.GetLowestCorner()) + " | " +
                          "Ceiling = " + (room.Position.Y + room.GetHighestCorner());
             }
 
             // Update selection information of the status strip
             if ((obj is Editor.SelectedRoomChangedEvent) ||
+                (obj is Editor.RoomGeometryChangedEvent) ||
                 (obj is Editor.SelectedSectorsChangedEvent))
             {
                 var room = _editor.SelectedRoom;
                 if ((room == null) || !_editor.SelectedSectors.Valid)
-                    statusStripSelectionArea.Text = "Selected area: None";
+                {
+                    statusStripGlobalSelectionArea.Text = "Global area: None";
+                    statusStripLocalSelectionArea.Text = "Local area: None";
+                }
                 else
-                    statusStripSelectionArea.Text = "Selected area: " +
-                        "X₀ = " + (room.Position.X + _editor.SelectedSectors.Area.X) + " | " +
-                        "Z₀ = " + (room.Position.Z + _editor.SelectedSectors.Area.Y) + " | " +
-                        "X₁ = " + (room.Position.X + _editor.SelectedSectors.Area.Right) + " | " +
-                        "Z₁ = " + (room.Position.Z + _editor.SelectedSectors.Area.Bottom);
+                {
+                    int minHeight = room.GetLowestCorner(_editor.SelectedSectors.Area);
+                    int maxHeight = room.GetHighestCorner(_editor.SelectedSectors.Area);
+
+                    statusStripGlobalSelectionArea.Text = "Global area = " +
+                        "(" + (room.Position.X + _editor.SelectedSectors.Area.X) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y) + ") \u2192 " +
+                        "(" + (room.Position.X + _editor.SelectedSectors.Area.Right) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Bottom) + ")" +
+                        " | y = [" + (room.Position.Y + minHeight) + ", " + (room.Position.Y + maxHeight) + "]";
+                    statusStripLocalSelectionArea.Text = "Local area = " +
+                        "(" + _editor.SelectedSectors.Area.X + ", " + _editor.SelectedSectors.Area.Y + ") \u2192 " +
+                        "(" + _editor.SelectedSectors.Area.Right + ", " + _editor.SelectedSectors.Area.Bottom + ")" +
+                        " | y = [" + minHeight + ", " + maxHeight + "]";
+                }
             }
 
             // Update available items combo box
