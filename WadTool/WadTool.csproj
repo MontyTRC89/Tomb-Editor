@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ankh Icon 13.ico" />
+    <None Include="Resources\play-16.png" />
     <None Include="Resources\volume_up-16.png" />
     <None Include="Resources\trash-16.png" />
     <None Include="Resources\ToEnd-16.png" />

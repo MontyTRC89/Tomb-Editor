@@ -293,6 +293,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap play_16 {
+            get {
+                object obj = ResourceManager.GetObject("play-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap plus_math_16 {
             get {
                 object obj = ResourceManager.GetObject("plus_math-16", resourceCulture);

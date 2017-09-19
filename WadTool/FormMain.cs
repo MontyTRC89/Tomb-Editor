@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -64,8 +65,36 @@ namespace WadTool
             if (treeDestWad.SelectedNodes.Count == 0) return;
 
             var node = treeDestWad.SelectedNodes[0];
+            var isMoveable = node.Tag.GetType() == typeof(WadMoveable);
 
             if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
+
+            // Load sounds
+            treeSounds.Nodes.Clear();
+
+            if (isMoveable)
+            {
+                var moveable = (WadMoveable)node.Tag;
+                var sounds = moveable.GetSounds(_tool.DestinationWad);
+
+                foreach (var sound in sounds)
+                {
+                    var nodeSound = new DarkUI.Controls.DarkTreeNode(sound.Name);
+                    nodeSound.Tag = sound;
+                    treeSounds.Nodes.Add(nodeSound);
+
+                    int i = 0;
+
+                    foreach (var wave in sound.WaveSounds)
+                    {
+                        var nodeWave = new DarkUI.Controls.DarkTreeNode("Sample " + i);
+                        nodeWave.Tag = wave;
+                        treeSounds.Nodes[treeSounds.Nodes.Count - 1].Nodes.Add(nodeWave);
+
+                        i++;
+                    }
+                }
+            }
 
             panel3D.CurrentWad = _tool.DestinationWad;
             panel3D.CurrentObject = (WadObject)node.Tag;
@@ -343,6 +372,44 @@ namespace WadTool
 
             // Rebuild DirectX data
             _tool.DestinationWad.PrepareDataForDirectX();
+        }
+
+        private void butPlaySound_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must load or create a new destination Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            // Get the selected sound
+            if (treeSounds.SelectedNodes.Count == 0) return;
+            var node = treeSounds.SelectedNodes[0];
+            if (node.Tag == null || node.Tag.GetType() != typeof(WadSound)) return;
+
+            var currentSound = (WadSound)node.Tag;
+            var stream = new MemoryStream(currentSound.WaveData);
+
+            using (var player = new SoundPlayer(stream))
+            {
+                player.Play();
+            }
+        }
+
+        private void convertWADToWad2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_tool.SourceWad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must load a source WAD file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel) return;
+
+            using (var stream = new FileStream(saveFileDialogWad2.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                Wad2.SaveToStream(_tool.SourceWad, stream);
+            }
         }
     }
 }
