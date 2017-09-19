@@ -268,6 +268,12 @@
     <Compile Include="ToolWindows\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\TexturePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\TexturePanel.Designer.cs">
+      <DependentUpon>TexturePanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\TriggerList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -391,6 +397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\RoomOptions.resx">
       <DependentUpon>RoomOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\TexturePanel.resx">
+      <DependentUpon>TexturePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\TriggerList.resx">
       <DependentUpon>TriggerList.cs</DependentUpon>

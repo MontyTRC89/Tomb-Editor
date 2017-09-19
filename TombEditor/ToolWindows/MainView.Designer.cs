@@ -15,7 +15,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
@@ -50,20 +49,10 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
+            this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panel3D
-            // 
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Location = new System.Drawing.Point(3, 31);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(1327, 703);
-            this.panel3D.TabIndex = 13;
             // 
             // toolStrip
             // 
@@ -483,6 +472,17 @@
             this.butCompileLevelAndPlay.ToolTipText = "Build level & play";
             this.butCompileLevelAndPlay.Click += new System.EventHandler(this.butCompileLevelAndPlay_Click);
             // 
+            // panel3D
+            // 
+            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Location = new System.Drawing.Point(3, 31);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.Size = new System.Drawing.Size(1327, 703);
+            this.panel3D.TabIndex = 13;
+            // 
             // panel2DMap
             // 
             this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -493,6 +493,7 @@
             this.panel2DMap.Name = "panel2DMap";
             this.panel2DMap.Size = new System.Drawing.Size(1326, 703);
             this.panel2DMap.TabIndex = 14;
+            this.panel2DMap.Visible = false;
             // 
             // MainView
             // 
@@ -512,8 +513,6 @@
         }
 
         #endregion
-
-        private Controls.PanelRendering3D panel3D;
         private DarkUI.Controls.DarkToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton but2D;
         private System.Windows.Forms.ToolStripButton but3D;
@@ -548,6 +547,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton butCompileLevel;
         private System.Windows.Forms.ToolStripButton butCompileLevelAndPlay;
+        private Controls.PanelRendering3D panel3D;
         private Controls.Panel2DMap panel2DMap;
     }
 }

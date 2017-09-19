@@ -117,7 +117,7 @@
             "Medium",
             "Large",
             "Pipe"});
-            this.comboReverberation.Location = new System.Drawing.Point(199, 185);
+            this.comboReverberation.Location = new System.Drawing.Point(217, 184);
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(66, 24);
             this.comboReverberation.TabIndex = 101;
@@ -127,7 +127,7 @@
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel18.Location = new System.Drawing.Point(196, 169);
+            this.darkLabel18.Location = new System.Drawing.Point(214, 168);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(42, 13);
             this.darkLabel18.TabIndex = 100;
@@ -274,7 +274,7 @@
             this.comboRoom.ItemHeight = 18;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
-            this.comboRoom.Size = new System.Drawing.Size(202, 24);
+            this.comboRoom.Size = new System.Drawing.Size(220, 24);
             this.comboRoom.TabIndex = 90;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
@@ -306,7 +306,7 @@
             // butRoomUp
             // 
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.RoomRaise_16;
-            this.butRoomUp.Location = new System.Drawing.Point(241, 89);
+            this.butRoomUp.Location = new System.Drawing.Point(259, 88);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomUp.Size = new System.Drawing.Size(24, 24);
@@ -316,7 +316,7 @@
             // butRoomDown
             // 
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.RoomLower_16;
-            this.butRoomDown.Location = new System.Drawing.Point(241, 119);
+            this.butRoomDown.Location = new System.Drawing.Point(259, 118);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomDown.Size = new System.Drawing.Size(24, 24);
@@ -326,7 +326,7 @@
             // butEditRoomName
             // 
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(241, 28);
+            this.butEditRoomName.Location = new System.Drawing.Point(259, 27);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(24, 24);
@@ -336,7 +336,7 @@
             // butDeleteRoom
             // 
             this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.trash_16;
-            this.butDeleteRoom.Location = new System.Drawing.Point(241, 59);
+            this.butDeleteRoom.Location = new System.Drawing.Point(259, 58);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 24);
@@ -346,7 +346,7 @@
             // butCropRoom
             // 
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(211, 28);
+            this.butCropRoom.Location = new System.Drawing.Point(229, 27);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCropRoom.Size = new System.Drawing.Size(24, 24);
@@ -356,7 +356,7 @@
             // butSplitRoom
             // 
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.split_files_16;
-            this.butSplitRoom.Location = new System.Drawing.Point(211, 89);
+            this.butSplitRoom.Location = new System.Drawing.Point(229, 88);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butSplitRoom.Size = new System.Drawing.Size(24, 24);
@@ -366,7 +366,7 @@
             // butCopyRoom
             // 
             this.butCopyRoom.Image = global::TombEditor.Properties.Resources.copy_16;
-            this.butCopyRoom.Location = new System.Drawing.Point(211, 59);
+            this.butCopyRoom.Location = new System.Drawing.Point(229, 58);
             this.butCopyRoom.Name = "butCopyRoom";
             this.butCopyRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCopyRoom.Size = new System.Drawing.Size(24, 24);
@@ -405,9 +405,9 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Room Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MaximumSize = new System.Drawing.Size(268, 211);
+            this.MaximumSize = new System.Drawing.Size(0, 211);
             this.Name = "RoomOptions";
-            this.Size = new System.Drawing.Size(268, 211);
+            this.Size = new System.Drawing.Size(286, 211);
             this.ResumeLayout(false);
             this.PerformLayout();
 

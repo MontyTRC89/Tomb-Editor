@@ -1735,5 +1735,17 @@ namespace TombEditor
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
+
+        public static void ShowTextureSoundsDialog(IWin32Window parent)
+        {
+            using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
+                form.ShowDialog(parent);
+        }
+
+        public static void ShowAnimationRangesDialog(IWin32Window parent)
+        {
+            using (FormAnimatedTextures form = new FormAnimatedTextures())
+                form.ShowDialog(parent);
+        }
     }
 }

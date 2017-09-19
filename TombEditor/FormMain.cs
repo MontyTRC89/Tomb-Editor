@@ -25,6 +25,7 @@ namespace TombEditor
         private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
         private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
         private ToolWindows.Lighting      Lighting      = new ToolWindows.Lighting();
+        private ToolWindows.TexturePanel  TexturePanel  = new ToolWindows.TexturePanel();
 
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -38,25 +39,24 @@ namespace TombEditor
             InitializeComponent();
 
             // DockPanel message filters for drag and resize.
-            Application.AddMessageFilter(dock_Test.DockContentDragFilter);
-            Application.AddMessageFilter(dock_Test.DockResizeFilter);
+            Application.AddMessageFilter(dockArea.DockContentDragFilter);
+            Application.AddMessageFilter(dockArea.DockResizeFilter);
 
-            // FIXME: DockPanel loading stuff
-            dock_Test.AddContent(MainView);
-            dock_Test.AddContent(SectorOptions);
-            dock_Test.AddContent(ObjectBrowser);
-            dock_Test.AddContent(RoomOptions);
-            dock_Test.AddContent(TriggerList);
-            dock_Test.AddContent(Lighting);
+            // Add tool windows to dock area.
+            dockArea.AddContent(MainView);
+            dockArea.AddContent(SectorOptions);
+            dockArea.AddContent(ObjectBrowser);
+            dockArea.AddContent(RoomOptions);
+            dockArea.AddContent(TriggerList);
+            dockArea.AddContent(Lighting);
+            dockArea.AddContent(TexturePanel);
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(1212, 763) + (Size - ClientSize);
             
-
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
-
 
             // Initialize controls
             _editor = Editor.Instance;
@@ -67,16 +67,13 @@ namespace TombEditor
             Lighting.BindParameters();
 
             // Initialize panels
-            MainView.Initialize3D(_deviceManager);
-            ObjectBrowser.Initialize3D(_deviceManager);
-
-            panelTextureMap.Configuration = _editor.Configuration;
-            panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
-
+            MainView.Initialize(_deviceManager);
+            ObjectBrowser.Initialize(_deviceManager);
+            TexturePanel.Initialize();
+            
             // Initialize the geometry importer class
             GeometryImporterExporter.Initialize(_deviceManager);
 
-            
 
             this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
@@ -133,18 +130,6 @@ namespace TombEditor
                     Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
             }
-
-            // Update texture map
-            if (obj is Editor.SelectedTexturesChangedEvent)
-                panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
-
-            // Reset texture map
-            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
-                panelTextureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
-
-            // Center texture on texture map
-            if (obj is Editor.SelectTextureAndCenterViewEvent)
-                panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
         }
 
         protected override void OnClosed(EventArgs e)
@@ -541,9 +526,6 @@ namespace TombEditor
             }
         }
 
-
-
-
         private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.BuildLevel(false);
@@ -554,29 +536,15 @@ namespace TombEditor
             EditorActions.BuildLevelAndPlay();
         }
 
-        private void darkButton15_Click(object sender, EventArgs e)
-        {
-            using (FormAnimatedTextures form = new FormAnimatedTextures())
-                form.ShowDialog(this);
-        }
-
         private void animationRangesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            darkButton15_Click(null, null);
-        }
-
-        private void butTextureSounds_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
-                form.ShowDialog(this);
+            EditorActions.ShowAnimationRangesDialog(this);
         }
 
         private void textureSoundsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            butTextureSounds_Click(null, null);
+            EditorActions.ShowTextureSoundsDialog(this);
         }
-
-        
 
         private void smoothRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -605,7 +573,6 @@ namespace TombEditor
                 return;
             EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
-
 
         private void sharpRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -731,8 +698,6 @@ namespace TombEditor
         }
 
         
-        
-
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveAsToolStripMenuItem_Click(sender, e);
@@ -767,10 +732,6 @@ namespace TombEditor
         {
             EditorActions.Clone(this);
         }
-        
-        
-
-        
 
         private void newRoomUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -789,13 +750,6 @@ namespace TombEditor
                 return;
 
             Close();
-        }
-
-        private void butAddTrigger_Click(object sender, EventArgs e)
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
-                return;
-            EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
     
         private void levelSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -885,6 +839,11 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+        }
+
+        private void darkButton16_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

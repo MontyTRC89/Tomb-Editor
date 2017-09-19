@@ -25,7 +25,7 @@ namespace TombEditor.ToolWindows
             _editor.EditorEventRaised += EditorEventRaised;
         }
 
-        public void Initialize3D(DeviceManager _deviceManager)
+        public void Initialize(DeviceManager _deviceManager)
         {
             panelItem.InitializePanel(_deviceManager);
         }            

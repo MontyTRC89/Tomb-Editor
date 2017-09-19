@@ -98,12 +98,6 @@
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
-            this.panelTextureTools = new System.Windows.Forms.Panel();
-            this.darkButton16 = new DarkUI.Controls.DarkButton();
-            this.butAnimationRanges = new DarkUI.Controls.DarkButton();
-            this.butTextureSounds = new DarkUI.Controls.DarkButton();
             this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
@@ -112,11 +106,9 @@
             this.saveFileDialogPRJ2 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogPRJ = new System.Windows.Forms.OpenFileDialog();
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
-            this.dock_Test = new DarkUI.Docking.DarkDockPanel();
+            this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panelTextureTools.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -136,7 +128,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(1875, 24);
+            this.menuStrip.Size = new System.Drawing.Size(652, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "darkMenuStrip1";
             // 
@@ -884,68 +876,6 @@
             this.butDeleteRoom.Size = new System.Drawing.Size(75, 23);
             this.butDeleteRoom.TabIndex = 0;
             // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.panelTextureMap);
-            this.panel3.Controls.Add(this.panelTextureTools);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel3.Location = new System.Drawing.Point(1588, 24);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(287, 856);
-            this.panel3.TabIndex = 27;
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(0, 0);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(287, 825);
-            this.panelTextureMap.TabIndex = 0;
-            // 
-            // panelTextureTools
-            // 
-            this.panelTextureTools.Controls.Add(this.darkButton16);
-            this.panelTextureTools.Controls.Add(this.butAnimationRanges);
-            this.panelTextureTools.Controls.Add(this.butTextureSounds);
-            this.panelTextureTools.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelTextureTools.Location = new System.Drawing.Point(0, 825);
-            this.panelTextureTools.Name = "panelTextureTools";
-            this.panelTextureTools.Size = new System.Drawing.Size(287, 31);
-            this.panelTextureTools.TabIndex = 8;
-            // 
-            // darkButton16
-            // 
-            this.darkButton16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkButton16.Location = new System.Drawing.Point(220, 4);
-            this.darkButton16.Name = "darkButton16";
-            this.darkButton16.Padding = new System.Windows.Forms.Padding(5);
-            this.darkButton16.Size = new System.Drawing.Size(64, 23);
-            this.darkButton16.TabIndex = 2;
-            this.darkButton16.Text = "Bump";
-            this.darkButton16.Visible = false;
-            // 
-            // butAnimationRanges
-            // 
-            this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAnimationRanges.Location = new System.Drawing.Point(111, 4);
-            this.butAnimationRanges.Name = "butAnimationRanges";
-            this.butAnimationRanges.Padding = new System.Windows.Forms.Padding(5);
-            this.butAnimationRanges.Size = new System.Drawing.Size(103, 23);
-            this.butAnimationRanges.TabIndex = 1;
-            this.butAnimationRanges.Text = "Animation ranges";
-            this.butAnimationRanges.Click += new System.EventHandler(this.darkButton15_Click);
-            // 
-            // butTextureSounds
-            // 
-            this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTextureSounds.Location = new System.Drawing.Point(4, 4);
-            this.butTextureSounds.Name = "butTextureSounds";
-            this.butTextureSounds.Padding = new System.Windows.Forms.Padding(5);
-            this.butTextureSounds.Size = new System.Drawing.Size(101, 23);
-            this.butTextureSounds.TabIndex = 0;
-            this.butTextureSounds.Text = "Texture sounds";
-            this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
-            // 
             // statusStrip
             // 
             this.statusStrip.AutoSize = false;
@@ -954,10 +884,10 @@
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusStripSelectedRoom,
             this.statusStripSelectionArea});
-            this.statusStrip.Location = new System.Drawing.Point(0, 880);
+            this.statusStrip.Location = new System.Drawing.Point(0, 329);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.statusStrip.Size = new System.Drawing.Size(1875, 29);
+            this.statusStrip.Size = new System.Drawing.Size(652, 29);
             this.statusStrip.SizingGrip = false;
             this.statusStrip.TabIndex = 29;
             this.statusStrip.Text = "statusStrip";
@@ -1005,29 +935,30 @@
             this.darkContextMenu1.Name = "darkContextMenu1";
             this.darkContextMenu1.Size = new System.Drawing.Size(61, 4);
             // 
-            // dock_Test
+            // dockArea
             // 
-            this.dock_Test.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.dock_Test.Location = new System.Drawing.Point(3, 0);
-            this.dock_Test.MinimumSize = new System.Drawing.Size(274, 274);
-            this.dock_Test.Name = "dock_Test";
-            this.dock_Test.Size = new System.Drawing.Size(1579, 900);
-            this.dock_Test.TabIndex = 90;
+            this.dockArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.dockArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockArea.Location = new System.Drawing.Point(0, 0);
+            this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
+            this.dockArea.Name = "dockArea";
+            this.dockArea.Size = new System.Drawing.Size(652, 305);
+            this.dockArea.TabIndex = 90;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.dock_Test);
-            this.panel2.Location = new System.Drawing.Point(4, 24);
+            this.panel2.Controls.Add(this.dockArea);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1582, 996);
+            this.panel2.Size = new System.Drawing.Size(652, 305);
             this.panel2.TabIndex = 26;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1875, 909);
-            this.Controls.Add(this.panel3);
+            this.ClientSize = new System.Drawing.Size(652, 358);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
@@ -1040,8 +971,6 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panelTextureTools.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -1064,14 +993,9 @@
         private DarkUI.Controls.DarkButton butRoomDown;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private System.Windows.Forms.Panel panelRoomAmbientLight;
-        private System.Windows.Forms.Panel panel3;
         private DarkUI.Controls.DarkStatusStrip statusStrip;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage4;
-        private System.Windows.Forms.Panel panelTextureTools;
-        private DarkUI.Controls.DarkButton darkButton16;
-        private DarkUI.Controls.DarkButton butAnimationRanges;
-        private DarkUI.Controls.DarkButton butTextureSounds;
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
@@ -1137,7 +1061,6 @@
         private System.Windows.Forms.ToolStripMenuItem debugAction3ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction5ToolStripMenuItem;
-        private Controls.PanelTextureMap panelTextureMap;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem gridWallsIn3ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gridWallsIn5ToolStripMenuItem;
@@ -1153,7 +1076,7 @@
         private System.Windows.Forms.ToolStripMenuItem reloadTexturesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reloadWadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveLaraToolStripMenuItem;
-        private DarkUI.Docking.DarkDockPanel dock_Test;
+        private DarkUI.Docking.DarkDockPanel dockArea;
         private System.Windows.Forms.Panel panel2;
     }
 }

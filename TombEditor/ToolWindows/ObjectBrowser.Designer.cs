@@ -147,7 +147,7 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Object Browser";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MaximumSize = new System.Drawing.Size(268, 266);
+            this.MaximumSize = new System.Drawing.Size(0, 266);
             this.Name = "ObjectBrowser";
             this.Size = new System.Drawing.Size(268, 266);
             this.ResumeLayout(false);

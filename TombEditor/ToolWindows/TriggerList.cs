@@ -74,7 +74,6 @@ namespace TombEditor.ToolWindows
             }
         }
         
-
         private void butAddTrigger_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection())

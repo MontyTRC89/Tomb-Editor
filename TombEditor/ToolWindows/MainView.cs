@@ -26,7 +26,7 @@ namespace TombEditor.ToolWindows
             _editor.EditorEventRaised += EditorEventRaised;
         }
 
-        public void Initialize3D(DeviceManager _deviceManager)
+        public void Initialize(DeviceManager _deviceManager)
         {
             panel3D.InitializePanel(_deviceManager);
 
@@ -90,7 +90,7 @@ namespace TombEditor.ToolWindows
             }
         }
 
-            private void but3D_Click(object sender, EventArgs e)
+        private void but3D_Click(object sender, EventArgs e)
         {
             _editor.Mode = EditorMode.Geometry;
             _editor.Action = EditorAction.None;
