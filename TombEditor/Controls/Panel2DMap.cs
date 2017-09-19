@@ -21,7 +21,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public float ViewScale { get; set; } = 6.0f;
 
-        private DepthBar _depthBar = new DepthBar();
+        private DepthBar _depthBar;
         private Editor _editor;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Room _roomMouseClicked;
@@ -46,12 +46,12 @@ namespace TombEditor.Controls
         {
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-            this.UpdateStyles();
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            UpdateStyles();
+
+            _depthBar = new DepthBar(_editor);
             _depthBar.InvalidateParent += Invalidate;
-            _depthBar.SelectRoom += delegate(Room room) { _editor.SelectRoomAndResetCamera(room); Invalidate(); };
-            _depthBar.RoomsMoved += delegate { _editor.RoomGeometryChange(null); _editor.ResetCamera(); };
 
             ResetView();
         }
@@ -449,15 +449,8 @@ namespace TombEditor.Controls
         private void UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, HashSet<Room> roomsToMove)
         {
             newRoomPos = new Vector2((float)Math.Round(newRoomPos.X), (float)Math.Round(newRoomPos.Y));
-            //currentRoomPos = Vector2.Clamp(currentRoomPos, new Vector2(0), new Vector2(Level.MaxSectorCoord));
             Vector2 roomMovement = newRoomPos - roomReference.SectorPos.ToVec2();
-            foreach (Room room in roomsToMove)
-                room.SectorPos = room.SectorPos.Offset(new DrawingPoint((int)roomMovement.X, (int)roomMovement.Y));
-
-            // Update state
-            Invalidate();
-            _editor.RoomMoved(roomReference);
-            _editor.ResetCamera();
+            EditorActions.MoveRooms(new Vector3(roomMovement.X, 0, roomMovement.Y), roomsToMove);
         }
 
         private Room DoPicking(Vector2 pos)

@@ -1638,5 +1638,40 @@ namespace TombEditor
             if (_editor.SelectedRoom == room)
                 _editor.SelectedRoom = newRoom; //Don't center
         }
+
+        public static void MoveRooms(Vector3 positionDelta, IEnumerable<Room> rooms)
+        {
+            HashSet<Room> roomsToMove = new HashSet<Room>(rooms);
+
+            // Update position of all rooms
+            foreach (Room room in roomsToMove)
+                room.Position += positionDelta;
+
+            // Make list of potential rooms to update
+            HashSet<Room> roomsToUpdate = new HashSet<Room>();
+            foreach (Room room in roomsToMove)
+            {
+                bool anyRoomUpdated = false;
+                foreach (Portal portal in room.Portals)
+                    if (!roomsToMove.Contains(portal.AdjoiningRoom))
+                    {
+                        roomsToUpdate.Add(portal.AdjoiningRoom);
+                        anyRoomUpdated = true;
+                    }
+
+                if (anyRoomUpdated)
+                    roomsToUpdate.Add(room);
+            }
+
+            // Update
+            foreach (Room room in roomsToUpdate)
+            {
+                 room.UpdateCompletely();
+                _editor.RoomSectorPropertiesChange(room);
+            }
+            
+            foreach (Room room in roomsToMove)
+                _editor.RoomGeometryChange(room);
+        }
     }
 }
