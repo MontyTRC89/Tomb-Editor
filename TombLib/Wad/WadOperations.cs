@@ -12,6 +12,8 @@ namespace TombLib.Wad
 {
     public static class WadOperations
     {
+        public static string SamplesPath { get; set; } = "Sounds\\Samples";
+
         public static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(TR4Wad oldWad)
         {
             var textures = new Dictionary<int, WadTexture>();
@@ -277,9 +279,9 @@ namespace TombLib.Wad
 
                 var oldInfo = oldWad.SoundInfo[oldWad.SoundMap[i]];
                 var newInfo = new WadSoundInfo();
-                
+
                 // Fill the new sound info
-                //newInfo.Name=
+                newInfo.Name = Wad2.OfficialSoundNames[i];
                 newInfo.Volume = oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = oldInfo.Chance;
@@ -295,7 +297,7 @@ namespace TombLib.Wad
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
                     // TODO: use the configured path in editor
-                    string fileName = "Sounds\\Samples\\" + oldWad.Sounds[j];
+                    string fileName = SamplesPath + "\\" + oldWad.Sounds[j];
 
                     // If wave sound exists, then load it in memory
                     if (File.Exists(fileName))
