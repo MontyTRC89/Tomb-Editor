@@ -2203,7 +2203,7 @@ namespace TombEditor.Geometry
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                     if (Blocks[x, z].IsFloor)
-                        min = Math.Min(min, Blocks[x, z].CeilingMax);
+                        min = Math.Min(min, Blocks[x, z].FloorMin);
 
             return min;
         }
