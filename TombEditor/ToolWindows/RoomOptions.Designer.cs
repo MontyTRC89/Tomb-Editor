@@ -405,7 +405,7 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Room Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MaximumSize = new System.Drawing.Size(0, 211);
+            this.MinimumSize = new System.Drawing.Size(284, 211);
             this.Name = "RoomOptions";
             this.SerializationKey = "RoomOptions";
             this.Size = new System.Drawing.Size(284, 211);

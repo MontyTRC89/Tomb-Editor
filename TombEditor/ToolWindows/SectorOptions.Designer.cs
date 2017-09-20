@@ -284,6 +284,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.butDiagonalWall);
             this.Controls.Add(this.butDiagonalCeiling);
             this.Controls.Add(this.butDiagonalFloor);
@@ -306,7 +307,7 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Sector Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MaximumSize = new System.Drawing.Size(0, 284);
+            this.MinimumSize = new System.Drawing.Size(284, 284);
             this.Name = "SectorOptions";
             this.SerializationKey = "SectorOptions";
             this.Size = new System.Drawing.Size(284, 284);
