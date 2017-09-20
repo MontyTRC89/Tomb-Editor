@@ -389,8 +389,8 @@ namespace TombEditor.Compilers
                     writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                     // Write portals
-                    writer.WriteBlock((ushort)tempRoom.Portals.Length);
-                    if (tempRoom.Portals.Length != 0)
+                    writer.WriteBlock((ushort)tempRoom.Portals.Count);
+                    if (tempRoom.Portals.Count != 0)
                         writer.WriteBlockArray(tempRoom.Portals);
 
                     // Write sectors
@@ -402,9 +402,9 @@ namespace TombEditor.Compilers
                     writer.Write(tempRoom.AmbientIntensity);
 
                     // Write lights
-                    writer.WriteBlock((ushort)tempRoom.Lights.Length);
+                    writer.WriteBlock((ushort)tempRoom.Lights.Count);
 
-                    for (var j = 0; j < tempRoom.Lights.Length; j++)
+                    for (var j = 0; j < tempRoom.Lights.Count; j++)
                     {
                         var light = tempRoom.Lights[j];
                         writer.Write(light.X);
@@ -420,8 +420,8 @@ namespace TombEditor.Compilers
                     }
 
                     // Write static meshes
-                    writer.WriteBlock((ushort)tempRoom.StaticMeshes.Length);
-                    if (tempRoom.StaticMeshes.Length != 0)
+                    writer.WriteBlock((ushort)tempRoom.StaticMeshes.Count);
+                    if (tempRoom.StaticMeshes.Count != 0)
                         writer.WriteBlockArray(tempRoom.StaticMeshes);
 
                     // Write final data

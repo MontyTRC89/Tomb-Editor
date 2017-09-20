@@ -54,14 +54,7 @@ namespace TombEditor.Compilers
                 for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
                 {
                     var vertex = oldMesh.VerticesPositions[j];
-                    var newVertex = new tr_vertex
-                    {
-                        X = (short)vertex.X,
-                        Y = (short)-vertex.Y,
-                        Z = (short)vertex.Z
-                    };
-
-                    newMesh.Vertices[j] = newVertex;
+                    newMesh.Vertices[j] = new tr_vertex((short)vertex.X, (short)-vertex.Y, (short)vertex.Z);
 
                     currentMeshSize += 6;
                 }
@@ -76,14 +69,7 @@ namespace TombEditor.Compilers
                     for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
                     {
                         var normal = oldMesh.VerticesNormals[j];
-                        var newNormal = new tr_vertex
-                        {
-                            X = (short)normal.X,
-                            Y = (short)-normal.Y,
-                            Z = (short)normal.Z
-                        };
-
-                        newMesh.Normals[j] = newNormal;
+                        newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
 
                         currentMeshSize += 6;
                     }

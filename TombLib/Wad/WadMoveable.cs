@@ -29,5 +29,25 @@ namespace TombLib.Wad
         {
             return "(" + ObjectID + ") " + ObjectNames.GetMoveableName(ObjectID);
         }
+
+        public List<WadSoundInfo> GetSounds(Wad2 wad)
+        {
+            var sounds = new List<WadSoundInfo>();
+
+            foreach (var animation in Animations)
+            {
+                foreach (var command in animation.AnimCommands)
+                {
+                    ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
+                    if (wad.SoundInfo.ContainsKey(soundId))
+                    {
+                        if (!sounds.Contains(wad.SoundInfo[soundId]))
+                            sounds.Add(wad.SoundInfo[soundId]);
+                    }
+                }
+            }
+
+            return sounds;
+        }
     }
 }

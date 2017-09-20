@@ -138,15 +138,20 @@ namespace TombEditor.Controls
             // Choose action
             if (e.Button == MouseButtons.Left)
             {
-                if ((selectedSectorObject is Portal) && selectedSectorObject.Area.Contains(sectorPos))
+                if ((selectedSectorObject != null) && 
+                    (selectedSectorObject.Room == _editor.SelectedRoom) &&
+                    selectedSectorObject.Area.Contains(sectorPos))
                 {
-                    Room room = _editor.SelectedRoom;
-                    _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
-                    _editor.SelectedObject = ((Portal)selectedSectorObject).FindOppositePortal(room);
-                }
-                else if ((selectedSectorObject is TriggerInstance) && selectedSectorObject.Area.Contains(sectorPos))
-                { // Open trigger options
-                    EditorActions.EditObject(_editor.SelectedRoom, selectedSectorObject, this.Parent);
+                    if (selectedSectorObject is Portal)
+                    {
+                        Room room = _editor.SelectedRoom;
+                        _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
+                        _editor.SelectedObject = ((Portal)selectedSectorObject).FindOppositePortal(room);
+                    }
+                    else if (selectedSectorObject is TriggerInstance)
+                    { // Open trigger options
+                        EditorActions.EditObject(_editor.SelectedRoom, selectedSectorObject, this.Parent);
+                    }
                 }
                 else
                 { // Do block selection
@@ -260,7 +265,7 @@ namespace TombEditor.Controls
                     e.Graphics.DrawRectangle(_selectionPen, ToVisualCoord(_editor.SelectedSectors.Area));
 
                 var instance = _editor.SelectedObject as SectorBasedObjectInstance;
-                if (instance != null)
+                if ((instance != null) && (instance.Room == _editor.SelectedRoom))
                 {
                     Pen pen = instance is Portal ? _selectedPortalPen : _selectedTriggerPen;
                     RectangleF visualArea = ToVisualCoord(instance.Area);

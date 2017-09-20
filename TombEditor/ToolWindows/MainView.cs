@@ -116,7 +116,7 @@ namespace TombEditor.ToolWindows
 
         private void butCenterCamera_Click(object sender, EventArgs e)
         {
-            _editor.CenterCamera();
+            _editor.ResetCamera();
         }
 
         private void butDrawPortals_Click(object sender, EventArgs e)

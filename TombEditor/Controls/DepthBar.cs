@@ -20,8 +20,6 @@ namespace TombEditor.Controls
         public float SelectedLimit1 { get; set; } = MaxDepth;
         public readonly List<Vector2> DepthProbes = new List<Vector2>();
         public event Action InvalidateParent;
-        public event Action<Room> SelectRoom;
-        public event Action RoomsMoved;
 
         private const float _marginX = 2.0f;
         private const float _marginY = 48.0f;
@@ -35,6 +33,7 @@ namespace TombEditor.Controls
         private const float _selectionMaxPixelDistanceForMove = 8.0f;
         private const float _minDepthDifferenceBetweenIndependentlyMergedSequences = 12.0f;
 
+        private Editor _editor;
         private HashSet<Room> _roomsToMove; // Set to a valid list only if room dragging is active
         private Room _roomMouseClicked;
         private float _roomMouseOffset; // Relative depth difference to where it was clicked.
@@ -80,6 +79,11 @@ namespace TombEditor.Controls
             RoomMove
         }
         private SelectionMode _selectionMode = SelectionMode.None;
+
+        public DepthBar(Editor editor)
+        {
+            _editor = editor;
+        }
 
         public RectangleF getBarArea(Size parentControlSize)
         {
@@ -151,7 +155,7 @@ namespace TombEditor.Controls
                                             _roomsToMove = level.GetConnectedRooms(_roomMouseClicked);
                                             _roomMouseOffset = mouseDepth - _roomMouseClicked.Position.Y;
                                             _roomMouseMoveStarted = false;
-                                            SelectRoom?.Invoke(_roomMouseClicked);
+                                            _editor.SelectRoomAndResetCamera(_roomMouseClicked);
                                             InvalidateParent?.Invoke();
                                             _selectionMode = SelectionMode.RoomMove;
                                             return false;
@@ -206,14 +210,7 @@ namespace TombEditor.Controls
                     destinationHeight = Math.Max(Math.Min(destinationHeight, maxHeight), minHeight);
 
                     // do movement
-                    float heightChange = destinationHeight - _roomMouseClicked.Position.Y;
-                    foreach (Room room in _roomsToMove)
-                        room.Position += new Vector3(0, heightChange, 0);
-
-                    // Update state
-                    _roomMouseMoveStarted = true;
-                    InvalidateParent?.Invoke();
-                    RoomsMoved?.Invoke();
+                    EditorActions.MoveRooms(new Vector3(0, destinationHeight - _roomMouseClicked.Position.Y, 0), _roomsToMove);
                     break;
             }
         }

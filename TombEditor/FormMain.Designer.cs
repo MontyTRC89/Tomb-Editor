@@ -100,17 +100,18 @@
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
             this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusStripSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStripGlobalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStripLocalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.openFileDialogPRJ2 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialogPRJ2 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogPRJ = new System.Windows.Forms.OpenFileDialog();
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.panelDockArea = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.panelDockArea.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -134,6 +135,7 @@
             // 
             // fileToolStripMenuItem
             // 
+            this.fileToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProjectToolStripMenuItem,
             this.openProjectToolStripMenuItem,
@@ -245,6 +247,7 @@
             // 
             // editToolStripMenuItem
             // 
+            this.editToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
@@ -312,6 +315,7 @@
             // 
             // roomsToolStripMenuItem
             // 
+            this.roomsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.roomsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.copyRoomToolStripMenuItem,
             this.splitRoomToolStripMenuItem,
@@ -518,6 +522,7 @@
             // 
             // itemsToolStripMenuItem
             // 
+            this.itemsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.itemsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadWADToolStripMenuItem,
             this.unloadWADToolStripMenuItem,
@@ -640,6 +645,7 @@
             // 
             // texturesToolStripMenuItem
             // 
+            this.texturesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.texturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadTextureToolStripMenuItem,
             this.UnloadTextureToolStripMenuItem,
@@ -763,6 +769,7 @@
             // 
             // toolsToolStripMenuItem
             // 
+            this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textureMapBuilderToolStripMenuItem,
             this.levelSettingsToolStripMenuItem});
@@ -791,6 +798,7 @@
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.debugToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.debugAction0ToolStripMenuItem,
             this.debugAction1ToolStripMenuItem,
@@ -883,7 +891,8 @@
             this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusStripSelectedRoom,
-            this.statusStripSelectionArea});
+            this.statusStripGlobalSelectionArea,
+            this.statusStripLocalSelectionArea});
             this.statusStrip.Location = new System.Drawing.Point(0, 329);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
@@ -901,14 +910,23 @@
             this.statusStripSelectedRoom.Size = new System.Drawing.Size(450, 16);
             this.statusStripSelectedRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // statusStripSelectionArea
+            // statusStripGlobalSelectionArea
             // 
-            this.statusStripSelectionArea.AutoSize = false;
-            this.statusStripSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.statusStripSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
-            this.statusStripSelectionArea.Name = "statusStripSelectionArea";
-            this.statusStripSelectionArea.Size = new System.Drawing.Size(300, 16);
-            this.statusStripSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.statusStripGlobalSelectionArea.AutoSize = false;
+            this.statusStripGlobalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripGlobalSelectionArea.Name = "statusStripGlobalSelectionArea";
+            this.statusStripGlobalSelectionArea.Size = new System.Drawing.Size(350, 16);
+            this.statusStripGlobalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // statusStripLocalSelectionArea
+            // 
+            this.statusStripLocalSelectionArea.AutoSize = false;
+            this.statusStripLocalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
+            this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(350, 16);
+            this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // colorDialog
             // 
@@ -945,21 +963,21 @@
             this.dockArea.Size = new System.Drawing.Size(652, 305);
             this.dockArea.TabIndex = 90;
             // 
-            // panel2
+            // panelDockArea
             // 
-            this.panel2.Controls.Add(this.dockArea);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 24);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(652, 305);
-            this.panel2.TabIndex = 26;
+            this.panelDockArea.Controls.Add(this.dockArea);
+            this.panelDockArea.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelDockArea.Location = new System.Drawing.Point(0, 24);
+            this.panelDockArea.Name = "panelDockArea";
+            this.panelDockArea.Size = new System.Drawing.Size(652, 305);
+            this.panelDockArea.TabIndex = 26;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(652, 358);
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panelDockArea);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -973,7 +991,7 @@
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
-            this.panel2.ResumeLayout(false);
+            this.panelDockArea.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1069,7 +1087,8 @@
         private System.Windows.Forms.ToolStripMenuItem sharpRandomFloorDownToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sharpRandomCeilingDownToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel statusStripSelectionArea;
+        private System.Windows.Forms.ToolStripStatusLabel statusStripGlobalSelectionArea;
+        private System.Windows.Forms.ToolStripStatusLabel statusStripLocalSelectionArea;
         private System.Windows.Forms.ToolStripMenuItem UnloadTextureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unloadWADToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem levelSettingsToolStripMenuItem;
@@ -1077,6 +1096,6 @@
         private System.Windows.Forms.ToolStripMenuItem reloadWadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveLaraToolStripMenuItem;
         private DarkUI.Docking.DarkDockPanel dockArea;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panelDockArea;
     }
 }

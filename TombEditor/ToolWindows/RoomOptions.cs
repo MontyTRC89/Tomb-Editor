@@ -100,7 +100,7 @@ namespace TombEditor.ToolWindows
                 _editor.Level.Rooms[comboRoom.SelectedIndex] = selectedRoom;
                 _editor.RoomListChange();
             }
-            _editor.SelectRoomAndCenterCamera(selectedRoom);
+            _editor.SelectRoomAndResetCamera(selectedRoom);
         }
 
         private void comboFlipMap_SelectedIndexChanged(object sender, EventArgs e)

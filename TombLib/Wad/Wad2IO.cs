@@ -344,6 +344,7 @@ namespace TombLib.Wad
 
                     ushort soundId = reader.ReadUInt16();
 
+                    sound.Name = reader.ReadStringUTF8();
                     sound.Volume = reader.ReadByte();
                     sound.Range = reader.ReadByte();
                     sound.Pitch = reader.ReadByte();
@@ -710,6 +711,7 @@ namespace TombLib.Wad
                     ushort soundId = (ushort)wad.SoundInfo.ElementAt(i).Key;
 
                     writer.Write(soundId);
+                    writer.WriteStringUTF8(sound.Name);
                     writer.Write(sound.Volume);
                     writer.Write(sound.Range);
                     writer.Write(sound.Pitch);

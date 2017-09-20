@@ -17,6 +17,7 @@ namespace TombEditor
     {
         Room Room { get; }
     }
+
     public interface IEditorObjectChangedEvent : IEditorEvent
     {
         object Object { get; }
@@ -46,7 +47,7 @@ namespace TombEditor
         // On the positive side, this allows us to catch any state changes from all known and unknown components
         // therefore being very flexible to future components and improveing state safety by guaranteed updates.
 
-        public struct LevelChangedEvent : IEditorProperyChangedEvent
+        public class LevelChangedEvent : IEditorProperyChangedEvent
         {
             public Level Previous { get; set; }
             public Level Current { get; set; }
@@ -80,14 +81,14 @@ namespace TombEditor
                 }
                 RoomListChange();
                 SelectedRoom = _level.Rooms.First((room) => room != null);
-                CenterCamera();
+                ResetCamera();
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
                 LevelFileNameChange();
             }
         }
         
-        public struct ActionChangedEvent : IEditorProperyChangedEvent
+        public class ActionChangedEvent : IEditorProperyChangedEvent
         {
             public EditorAction Previous { get; set; }
             public EditorAction Current { get; set; }
@@ -106,7 +107,7 @@ namespace TombEditor
             }
         }
 
-        public struct ChosenItemChangedEvent : IEditorProperyChangedEvent
+        public class ChosenItemChangedEvent : IEditorProperyChangedEvent
         {
             public ItemType? Previous { get; set; }
             public ItemType? Current { get; set; }
@@ -125,7 +126,7 @@ namespace TombEditor
             }
         }
 
-        public struct ModeChangedEvent : IEditorProperyChangedEvent
+        public class ModeChangedEvent : IEditorProperyChangedEvent
         {
             public EditorMode Previous { get; set; }
             public EditorMode Current { get; set; }
@@ -144,7 +145,7 @@ namespace TombEditor
             }
         }
 
-        public struct SelectedRoomChangedEvent : IEditorProperyChangedEvent, IEditorRoomChangedEvent
+        public class SelectedRoomChangedEvent : IEditorProperyChangedEvent, IEditorRoomChangedEvent
         {
             public Room Previous { get; set; }
             public Room Current { get; set; }
@@ -165,7 +166,17 @@ namespace TombEditor
             }
         }
 
-        public struct SelectedObjectChangedEvent : IEditorProperyChangedEvent
+        public bool IsSelectedRoomEvent(IEditorEvent eventObj)
+        {
+            if (eventObj == null)
+                return false;
+            var roomEvent = eventObj as IEditorRoomChangedEvent;
+            if (roomEvent == null)
+                return true;
+            return (SelectedRoom != null) && (roomEvent.Room == SelectedRoom);
+        }
+        
+        public class SelectedObjectChangedEvent : IEditorProperyChangedEvent
         {
             public ObjectInstance Previous { get; set; }
             public ObjectInstance Current { get; set; }
@@ -184,7 +195,7 @@ namespace TombEditor
             }
         }
 
-        public struct SelectedSectorsChangedEvent : IEditorProperyChangedEvent
+        public class SelectedSectorsChangedEvent : IEditorProperyChangedEvent
         {
             public SectorSelection Previous { get; set; }
             public SectorSelection Current { get; set; }
@@ -203,7 +214,7 @@ namespace TombEditor
             }
         }
 
-        public struct SelectedTexturesChangedEvent : IEditorProperyChangedEvent
+        public class SelectedTexturesChangedEvent : IEditorProperyChangedEvent
         {
             public TextureArea Previous { get; set; }
             public TextureArea Current { get; set; }
@@ -222,7 +233,7 @@ namespace TombEditor
             }
         }
 
-        public struct ConfigurationChangedEvent : IEditorProperyChangedEvent
+        public class ConfigurationChangedEvent : IEditorProperyChangedEvent
         {
             public Configuration Previous { get; set; }
             public Configuration Current { get; set; }
@@ -242,7 +253,7 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded wads changed for the level.
-        public struct LoadedWadsChangedEvent : IEditorEvent
+        public class LoadedWadsChangedEvent : IEditorEvent
         {
             public TombLib.Wad.Wad2 Current { get; set; }
         }
@@ -252,7 +263,7 @@ namespace TombEditor
         }
 
         // This is invoked if the loaded textures changed for the level.
-        public struct LoadedTexturesChangedEvent : IEditorEvent { }
+        public class LoadedTexturesChangedEvent : IEditorEvent { }
         public void LoadedTexturesChange()
         {
             RaiseEvent(new LoadedTexturesChangedEvent { });
@@ -260,7 +271,7 @@ namespace TombEditor
         
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
-        public struct RoomTextureChangedEvent : IEditorRoomChangedEvent
+        public class RoomTextureChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; set; }
         }
@@ -272,7 +283,7 @@ namespace TombEditor
         // This is invoked when ever the geometry of the room changed. (eg the room is moved, individual sectors are moved up or down, ...)
         // This is not invoked when other the properties of the room change
         // Textures, room properties like reverbration, objects changed, ...
-        public struct RoomGeometryChangedEvent : IEditorRoomChangedEvent
+        public class RoomGeometryChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; set; }
         }
@@ -282,7 +293,7 @@ namespace TombEditor
         }
 
         // This is invoked when the level is saved an the file name changed.
-        public struct LevelFileNameChanged : IEditorEvent { }
+        public class LevelFileNameChanged : IEditorEvent { }
         public void LevelFileNameChange()
         {
             RaiseEvent(new LevelFileNameChanged { });
@@ -290,15 +301,15 @@ namespace TombEditor
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
         // "null" can be passed, if it is not determinable what room changed.
-        public struct RoomListChangedEvent : IEditorEvent { } 
+        public class RoomListChangedEvent : IEditorEvent { } 
         public void RoomListChange()
         {
             RaiseEvent(new RoomListChangedEvent { });
         }
-
+        
         // This is invoked for all changes to room flags, "Reverbration", ...
         // "null" can be passed, if it is not determinable what room changed.
-        public struct RoomPropertiesChangedEvent : IEditorRoomChangedEvent
+        public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; set; }
         }
@@ -309,7 +320,7 @@ namespace TombEditor
 
         // This is invoked for all changes to sectors. (eg setting a trigger, adding a portal, setting a sector to monkey, ...)
         // "null" can be passed, if it is not determinable what room changed.
-        public struct RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent
+        public class RoomSectorPropertiesChangedEvent : IEditorRoomChangedEvent
         {
             public Room Room { get; set; }
         }
@@ -317,10 +328,10 @@ namespace TombEditor
         {
             RaiseEvent(new RoomSectorPropertiesChangedEvent { Room = room });
         }
-
+        
         // This is invoked for all changes to objects. (eg changing a light, changing a movable, moving a static, ...)
         // "null" can be passed, if it is not determinable what object changed.
-        public struct ObjectChangedEvent : IEditorObjectChangedEvent
+        public class ObjectChangedEvent : IEditorObjectChangedEvent
         {
             public object Object { get; set; }
         }
@@ -330,7 +341,7 @@ namespace TombEditor
         }
 
         // Move the camera to the center of a specific sector.
-        public struct MoveCameraToSectorEvent : IEditorCameraEvent
+        public class MoveCameraToSectorEvent : IEditorCameraEvent
         {
             public DrawingPoint Sector { get; set; }
         }
@@ -340,14 +351,14 @@ namespace TombEditor
         }
 
         // Center the camera inside the current room.
-        public struct CenterCameraEvent : IEditorCameraEvent {}
-        public void CenterCamera()
+        public class ResetCameraEvent : IEditorCameraEvent {}
+        public void ResetCamera()
         {
-            RaiseEvent(new CenterCameraEvent { });
+            RaiseEvent(new ResetCameraEvent { });
         }
 
         // Select a texture and center the view
-        public struct SelectTextureAndCenterViewEvent : IEditorEvent
+        public class SelectTextureAndCenterViewEvent : IEditorEvent
         {
             public TextureArea Texture { get; set; }
         }
@@ -363,17 +374,20 @@ namespace TombEditor
         }
 
         // Select a room and center the camera
-        public void SelectRoomAndCenterCamera(Room newRoom)
+        public void SelectRoomAndResetCamera(Room newRoom)
         {
+            if (SelectedRoom == newRoom)
+                return;
+
             SelectedRoom = newRoom;
-            CenterCamera();
+            ResetCamera();
         }
 
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
         public void ShowObject(ObjectInstance objectInstance)
         {
             if (SelectedRoom != objectInstance.Room)
-                SelectRoomAndCenterCamera(objectInstance.Room);
+                SelectRoomAndResetCamera(objectInstance.Room);
             SelectedObject = objectInstance;
         }
 
