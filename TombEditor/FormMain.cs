@@ -12,20 +12,21 @@ using TombEditor.Geometry.IO;
 using TombLib.Wad;
 using TombLib.Utils;
 using TombLib.NG;
+using DarkUI.Docking;
 
 namespace TombEditor
 {
     public partial class FormMain : DarkUI.Forms.DarkForm
     {
-        // Dockable tool windows are created here and placed on actual dock panel at runtime.
+        // Dockable tool windows are placed on actual dock panel at runtime.
 
-        private ToolWindows.MainView      MainView      = new ToolWindows.MainView();
-        private ToolWindows.TriggerList   TriggerList   = new ToolWindows.TriggerList();
-        private ToolWindows.RoomOptions   RoomOptions   = new ToolWindows.RoomOptions();
-        private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
-        private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
-        private ToolWindows.Lighting      Lighting      = new ToolWindows.Lighting();
-        private ToolWindows.TexturePanel  TexturePanel  = new ToolWindows.TexturePanel();
+        private ToolWindows.MainView      MainView;
+        private ToolWindows.TriggerList   TriggerList;
+        private ToolWindows.RoomOptions   RoomOptions;
+        private ToolWindows.ObjectBrowser ObjectBrowser;
+        private ToolWindows.SectorOptions SectorOptions;
+        private ToolWindows.Lighting      Lighting;
+        private ToolWindows.TexturePanel  TexturePanel;
 
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -38,19 +39,6 @@ namespace TombEditor
         {
             InitializeComponent();
 
-            // DockPanel message filters for drag and resize.
-            Application.AddMessageFilter(dockArea.DockContentDragFilter);
-            Application.AddMessageFilter(dockArea.DockResizeFilter);
-
-            // Add tool windows to dock area.
-            dockArea.AddContent(MainView);
-            dockArea.AddContent(SectorOptions);
-            dockArea.AddContent(ObjectBrowser);
-            dockArea.AddContent(RoomOptions);
-            dockArea.AddContent(TriggerList);
-            dockArea.AddContent(Lighting);
-            dockArea.AddContent(TexturePanel);
-
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(1212, 763) + (Size - ClientSize);
@@ -62,6 +50,8 @@ namespace TombEditor
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
             _editor.Level = Level.CreateSimpleLevel();
+
+            PopulateDockPanel();
 
             // Initialize color controls
             Lighting.BindParameters();
@@ -89,7 +79,53 @@ namespace TombEditor
             base.Dispose(disposing);
         }
 
-        private void EditorEventRaised(IEditorEvent obj)
+        private void PopulateDockPanel()
+        {
+            // DockPanel message filters for drag and resize.
+            Application.AddMessageFilter(dockArea.DockContentDragFilter);
+            Application.AddMessageFilter(dockArea.DockResizeFilter);
+
+            MainView = new ToolWindows.MainView();
+            TriggerList = new ToolWindows.TriggerList();
+            RoomOptions = new ToolWindows.RoomOptions();
+            ObjectBrowser = new ToolWindows.ObjectBrowser();
+            SectorOptions = new ToolWindows.SectorOptions();
+            Lighting = new ToolWindows.Lighting();
+            TexturePanel = new ToolWindows.TexturePanel();
+
+            if (_editor.Configuration.Window_Layout == null)
+            {
+                // Add default windows to dock area.
+                dockArea.AddContent(MainView);
+                dockArea.AddContent(SectorOptions);
+                dockArea.AddContent(ObjectBrowser);
+                dockArea.AddContent(RoomOptions);
+                dockArea.AddContent(TriggerList);
+                dockArea.AddContent(Lighting);
+                dockArea.AddContent(TexturePanel);
+            }
+            else
+            {
+                dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
+            }
+        }
+
+        private DarkDockContent FindDockContentByKey(string key)
+        {
+            switch (key)
+            {
+                case "MainView"     : return MainView;
+                case "TriggerList"  : return TriggerList;
+                case "Lighting"     : return Lighting;
+                case "ObjectBrowser": return ObjectBrowser;
+                case "RoomOptions"  : return RoomOptions;
+                case "SectorOptions": return SectorOptions;
+                case "TexturePanel" : return TexturePanel;
+                default: logger.Warn("Unknown tool window '" + key + "' in configuration."); return null;
+            }
+        }
+
+            private void EditorEventRaised(IEditorEvent obj)
         {
             // Update room information on the status strip
             if ((obj is Editor.SelectedRoomChangedEvent) ||
@@ -134,6 +170,8 @@ namespace TombEditor
 
         protected override void OnClosed(EventArgs e)
         {
+            _editor.Configuration.Window_Layout = dockArea.GetDockPanelState();
+
             base.OnClosed(e);
             _editor.Configuration.SaveTry();
         }

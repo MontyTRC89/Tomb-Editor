@@ -407,7 +407,8 @@
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MaximumSize = new System.Drawing.Size(0, 211);
             this.Name = "RoomOptions";
-            this.Size = new System.Drawing.Size(286, 211);
+            this.SerializationKey = "RoomOptions";
+            this.Size = new System.Drawing.Size(0, 211);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -1,5 +1,6 @@
 ﻿using NLog;
 using SharpDX;
+using DarkUI.Docking;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -41,6 +42,8 @@ namespace TombEditor
         public float Gizmo_Size { get; set; } = 1024.0f;
         public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
+
+        public DockPanelState Window_Layout;
 
             
         public static string GetDefaultPath()

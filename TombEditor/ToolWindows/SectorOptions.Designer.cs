@@ -308,7 +308,8 @@
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MaximumSize = new System.Drawing.Size(0, 284);
             this.Name = "SectorOptions";
-            this.Size = new System.Drawing.Size(286, 284);
+            this.SerializationKey = "SectorOptions";
+            this.Size = new System.Drawing.Size(0, 284);
             this.ResumeLayout(false);
 
         }

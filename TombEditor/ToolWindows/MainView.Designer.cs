@@ -505,6 +505,7 @@
             this.DockText = "";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainView";
+            this.SerializationKey = "MainView";
             this.Size = new System.Drawing.Size(1333, 737);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
