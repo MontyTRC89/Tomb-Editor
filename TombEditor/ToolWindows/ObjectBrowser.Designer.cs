@@ -32,7 +32,7 @@
             // 
             this.butResetSearch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butResetSearch.Image = global::TombEditor.Properties.Resources.undo_16;
-            this.butResetSearch.Location = new System.Drawing.Point(205, 238);
+            this.butResetSearch.Location = new System.Drawing.Point(221, 238);
             this.butResetSearch.Name = "butResetSearch";
             this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
             this.butResetSearch.Size = new System.Drawing.Size(60, 23);
@@ -45,7 +45,7 @@
             // 
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butFindItem.Image = global::TombEditor.Properties.Resources.search_16;
-            this.butFindItem.Location = new System.Drawing.Point(205, 209);
+            this.butFindItem.Location = new System.Drawing.Point(221, 209);
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Padding = new System.Windows.Forms.Padding(5);
             this.butFindItem.Size = new System.Drawing.Size(60, 23);
@@ -57,7 +57,7 @@
             // panelStaticMeshColor
             // 
             this.panelStaticMeshColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelStaticMeshColor.Location = new System.Drawing.Point(205, 91);
+            this.panelStaticMeshColor.Location = new System.Drawing.Point(219, 91);
             this.panelStaticMeshColor.Name = "panelStaticMeshColor";
             this.panelStaticMeshColor.Size = new System.Drawing.Size(60, 20);
             this.panelStaticMeshColor.TabIndex = 68;
@@ -67,7 +67,7 @@
             // 
             this.darkLabel14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(202, 58);
+            this.darkLabel14.Location = new System.Drawing.Point(216, 58);
             this.darkLabel14.Name = "darkLabel14";
             this.darkLabel14.Size = new System.Drawing.Size(66, 30);
             this.darkLabel14.TabIndex = 67;
@@ -84,14 +84,14 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(35, 28);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(166, 24);
+            this.comboItems.Size = new System.Drawing.Size(186, 24);
             this.comboItems.TabIndex = 66;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             // 
             // butItemsNext
             // 
             this.butItemsNext.Image = global::TombEditor.Properties.Resources.angle_right_16;
-            this.butItemsNext.Location = new System.Drawing.Point(207, 28);
+            this.butItemsNext.Location = new System.Drawing.Point(227, 28);
             this.butItemsNext.Name = "butItemsNext";
             this.butItemsNext.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsNext.Size = new System.Drawing.Size(24, 24);
@@ -111,7 +111,7 @@
             // butAddItem
             // 
             this.butAddItem.Image = global::TombEditor.Properties.Resources.plus_math_16;
-            this.butAddItem.Location = new System.Drawing.Point(243, 28);
+            this.butAddItem.Location = new System.Drawing.Point(257, 28);
             this.butAddItem.Name = "butAddItem";
             this.butAddItem.Padding = new System.Windows.Forms.Padding(5);
             this.butAddItem.Size = new System.Drawing.Size(24, 24);
@@ -123,7 +123,7 @@
             this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelItem.Location = new System.Drawing.Point(5, 58);
             this.panelItem.Name = "panelItem";
-            this.panelItem.Size = new System.Drawing.Size(196, 203);
+            this.panelItem.Size = new System.Drawing.Size(210, 203);
             this.panelItem.TabIndex = 62;
             // 
             // colorDialog
@@ -147,10 +147,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Object Browser";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MaximumSize = new System.Drawing.Size(0, 266);
+            this.MaximumSize = new System.Drawing.Size(0, 264);
             this.Name = "ObjectBrowser";
             this.SerializationKey = "ObjectBrowser";
-            this.Size = new System.Drawing.Size(0, 266);
+            this.Size = new System.Drawing.Size(284, 264);
             this.ResumeLayout(false);
 
         }

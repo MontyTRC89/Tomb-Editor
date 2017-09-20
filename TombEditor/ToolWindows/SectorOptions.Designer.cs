@@ -40,7 +40,7 @@
             // 
             this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
-            this.butDiagonalWall.Location = new System.Drawing.Point(187, 254);
+            this.butDiagonalWall.Location = new System.Drawing.Point(189, 254);
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalWall.Size = new System.Drawing.Size(92, 23);
@@ -53,7 +53,7 @@
             // 
             this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalCeiling.Location = new System.Drawing.Point(96, 254);
+            this.butDiagonalCeiling.Location = new System.Drawing.Point(95, 254);
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
             this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalCeiling.Size = new System.Drawing.Size(85, 23);
@@ -83,7 +83,7 @@
             this.butCeiling.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
             this.butCeiling.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
-            this.butCeiling.Location = new System.Drawing.Point(255, 28);
+            this.butCeiling.Location = new System.Drawing.Point(257, 28);
             this.butCeiling.Name = "butCeiling";
             this.butCeiling.Size = new System.Drawing.Size(24, 24);
             this.butCeiling.TabIndex = 105;
@@ -99,7 +99,7 @@
             this.butNotWalkableBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(112)))));
             this.butNotWalkableBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
-            this.butNotWalkableBox.Location = new System.Drawing.Point(255, 56);
+            this.butNotWalkableBox.Location = new System.Drawing.Point(257, 56);
             this.butNotWalkableBox.Name = "butNotWalkableBox";
             this.butNotWalkableBox.Size = new System.Drawing.Size(24, 24);
             this.butNotWalkableBox.TabIndex = 104;
@@ -109,7 +109,7 @@
             // 
             // butFlagTriggerTriggerer
             // 
-            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(255, 140);
+            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(257, 140);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Padding = new System.Windows.Forms.Padding(5);
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
@@ -119,7 +119,7 @@
             // 
             // butForceSolidFloor
             // 
-            this.butForceSolidFloor.Location = new System.Drawing.Point(226, 224);
+            this.butForceSolidFloor.Location = new System.Drawing.Point(228, 224);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
             this.butForceSolidFloor.Padding = new System.Windows.Forms.Padding(5);
             this.butForceSolidFloor.Size = new System.Drawing.Size(24, 24);
@@ -129,7 +129,7 @@
             // 
             // butFlagBeetle
             // 
-            this.butFlagBeetle.Location = new System.Drawing.Point(226, 140);
+            this.butFlagBeetle.Location = new System.Drawing.Point(228, 140);
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Padding = new System.Windows.Forms.Padding(5);
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
@@ -145,7 +145,7 @@
             this.butFloor.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(142)))), ((int)(((byte)(142)))));
             this.butFloor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butFloor.ForeColor = System.Drawing.Color.White;
-            this.butFloor.Location = new System.Drawing.Point(226, 28);
+            this.butFloor.Location = new System.Drawing.Point(228, 28);
             this.butFloor.Name = "butFloor";
             this.butFloor.Size = new System.Drawing.Size(24, 24);
             this.butFloor.TabIndex = 90;
@@ -161,7 +161,7 @@
             this.butWall.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
             this.butWall.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butWall.ForeColor = System.Drawing.Color.White;
-            this.butWall.Location = new System.Drawing.Point(255, 112);
+            this.butWall.Location = new System.Drawing.Point(257, 112);
             this.butWall.Name = "butWall";
             this.butWall.Size = new System.Drawing.Size(24, 24);
             this.butWall.TabIndex = 91;
@@ -177,7 +177,7 @@
             this.butBox.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.butBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butBox.ForeColor = System.Drawing.Color.White;
-            this.butBox.Location = new System.Drawing.Point(226, 56);
+            this.butBox.Location = new System.Drawing.Point(228, 56);
             this.butBox.Name = "butBox";
             this.butBox.Size = new System.Drawing.Size(24, 24);
             this.butBox.TabIndex = 92;
@@ -193,7 +193,7 @@
             this.butMonkey.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.butMonkey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
-            this.butMonkey.Location = new System.Drawing.Point(226, 84);
+            this.butMonkey.Location = new System.Drawing.Point(228, 84);
             this.butMonkey.Name = "butMonkey";
             this.butMonkey.Size = new System.Drawing.Size(24, 24);
             this.butMonkey.TabIndex = 93;
@@ -209,7 +209,7 @@
             this.butDeath.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(180)))), ((int)(((byte)(0)))));
             this.butDeath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butDeath.ForeColor = System.Drawing.Color.White;
-            this.butDeath.Location = new System.Drawing.Point(255, 84);
+            this.butDeath.Location = new System.Drawing.Point(257, 84);
             this.butDeath.Name = "butDeath";
             this.butDeath.Size = new System.Drawing.Size(24, 24);
             this.butDeath.TabIndex = 94;
@@ -225,7 +225,7 @@
             this.butPortal.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
             this.butPortal.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.butPortal.ForeColor = System.Drawing.Color.White;
-            this.butPortal.Location = new System.Drawing.Point(226, 112);
+            this.butPortal.Location = new System.Drawing.Point(228, 112);
             this.butPortal.Name = "butPortal";
             this.butPortal.Size = new System.Drawing.Size(24, 24);
             this.butPortal.TabIndex = 95;
@@ -236,7 +236,7 @@
             // butClimbNegativeX
             // 
             this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.climb_west;
-            this.butClimbNegativeX.Location = new System.Drawing.Point(226, 196);
+            this.butClimbNegativeX.Location = new System.Drawing.Point(228, 196);
             this.butClimbNegativeX.Name = "butClimbNegativeX";
             this.butClimbNegativeX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
@@ -246,7 +246,7 @@
             // butClimbNegativeZ
             // 
             this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.climb_south;
-            this.butClimbNegativeZ.Location = new System.Drawing.Point(255, 168);
+            this.butClimbNegativeZ.Location = new System.Drawing.Point(257, 168);
             this.butClimbNegativeZ.Name = "butClimbNegativeZ";
             this.butClimbNegativeZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
@@ -256,7 +256,7 @@
             // butClimbPositiveX
             // 
             this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.climb_east;
-            this.butClimbPositiveX.Location = new System.Drawing.Point(255, 196);
+            this.butClimbPositiveX.Location = new System.Drawing.Point(257, 196);
             this.butClimbPositiveX.Name = "butClimbPositiveX";
             this.butClimbPositiveX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
@@ -273,7 +273,7 @@
             // butClimbPositiveZ
             // 
             this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.climb_north;
-            this.butClimbPositiveZ.Location = new System.Drawing.Point(226, 168);
+            this.butClimbPositiveZ.Location = new System.Drawing.Point(228, 168);
             this.butClimbPositiveZ.Name = "butClimbPositiveZ";
             this.butClimbPositiveZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
@@ -309,7 +309,7 @@
             this.MaximumSize = new System.Drawing.Size(0, 284);
             this.Name = "SectorOptions";
             this.SerializationKey = "SectorOptions";
-            this.Size = new System.Drawing.Size(0, 284);
+            this.Size = new System.Drawing.Size(284, 284);
             this.ResumeLayout(false);
 
         }

@@ -20,13 +20,13 @@ namespace TombEditor
     {
         // Dockable tool windows are placed on actual dock panel at runtime.
 
-        private ToolWindows.MainView      MainView;
-        private ToolWindows.TriggerList   TriggerList;
-        private ToolWindows.RoomOptions   RoomOptions;
-        private ToolWindows.ObjectBrowser ObjectBrowser;
-        private ToolWindows.SectorOptions SectorOptions;
-        private ToolWindows.Lighting      Lighting;
-        private ToolWindows.TexturePanel  TexturePanel;
+        private ToolWindows.MainView MainView           = new ToolWindows.MainView();
+        private ToolWindows.TriggerList TriggerList     = new ToolWindows.TriggerList();
+        private ToolWindows.RoomOptions RoomOptions     = new ToolWindows.RoomOptions();
+        private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
+        private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
+        private ToolWindows.Lighting Lighting           = new ToolWindows.Lighting();
+        private ToolWindows.TexturePanel TexturePanel   = new ToolWindows.TexturePanel();
 
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -84,14 +84,6 @@ namespace TombEditor
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
             Application.AddMessageFilter(dockArea.DockResizeFilter);
-
-            MainView = new ToolWindows.MainView();
-            TriggerList = new ToolWindows.TriggerList();
-            RoomOptions = new ToolWindows.RoomOptions();
-            ObjectBrowser = new ToolWindows.ObjectBrowser();
-            SectorOptions = new ToolWindows.SectorOptions();
-            Lighting = new ToolWindows.Lighting();
-            TexturePanel = new ToolWindows.TexturePanel();
 
             if (_editor.Configuration.Window_Layout == null)
             {
@@ -748,12 +740,12 @@ namespace TombEditor
 
         private void splitRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RoomOptions.Split_Room();
+            EditorActions.SplitRoom();
         }
 
         private void copyRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RoomOptions.Copy_Room();
+            EditorActions.CopyRoom();
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)

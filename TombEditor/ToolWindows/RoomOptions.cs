@@ -91,20 +91,6 @@ namespace TombEditor.ToolWindows
         }
 
 
-        public void Split_Room()
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
-                return;
-            EditorActions.SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
-        public void Copy_Room()
-        {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
-                return;
-            EditorActions.CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
-        }
-
         private void comboRoom_SelectedIndexChanged(object sender, EventArgs e)
         {
             Room selectedRoom = _editor.Level.Rooms[comboRoom.SelectedIndex];
@@ -311,12 +297,12 @@ namespace TombEditor.ToolWindows
 
         private void butSplitRoom_Click(object sender, EventArgs e)
         {
-            Split_Room();
+            EditorActions.SplitRoom();
         }
 
         private void butCopyRoom_Click(object sender, EventArgs e)
         {
-            Copy_Room();
+            EditorActions.CopyRoom();
         }
 
         private void butEditRoomName_Click(object sender, EventArgs e)

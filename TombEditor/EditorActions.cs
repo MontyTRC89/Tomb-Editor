@@ -1641,6 +1641,20 @@ namespace TombEditor
                 _editor.SelectedRoom = newRoom; //Don't center
         }
 
+        public static void SplitRoom()
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
+        public static void CopyRoom()
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
         public static bool CheckForRoomAndBlockSelection()
         {
             if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)

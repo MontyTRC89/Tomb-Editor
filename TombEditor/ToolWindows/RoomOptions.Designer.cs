@@ -408,7 +408,7 @@
             this.MaximumSize = new System.Drawing.Size(0, 211);
             this.Name = "RoomOptions";
             this.SerializationKey = "RoomOptions";
-            this.Size = new System.Drawing.Size(0, 211);
+            this.Size = new System.Drawing.Size(284, 211);
             this.ResumeLayout(false);
             this.PerformLayout();
 
