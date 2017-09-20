@@ -69,6 +69,9 @@
             this.butPlaySound = new DarkUI.Controls.DarkButton();
             this.treeSounds = new DarkUI.Controls.DarkTreeView();
             this.butRenameSound = new DarkUI.Controls.DarkButton();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -104,7 +107,8 @@
             this.darkMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.debugToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
             this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
@@ -470,6 +474,31 @@
             this.butRenameSound.Text = "Rename";
             this.butRenameSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.debugAction0ToolStripMenuItem,
+            this.debugAction1ToolStripMenuItem});
+            this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // debugAction0ToolStripMenuItem
+            // 
+            this.debugAction0ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction0ToolStripMenuItem.Name = "debugAction0ToolStripMenuItem";
+            this.debugAction0ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction0ToolStripMenuItem.Text = "Debug action 0";
+            this.debugAction0ToolStripMenuItem.Click += new System.EventHandler(this.debugAction0ToolStripMenuItem_Click);
+            // 
+            // debugAction1ToolStripMenuItem
+            // 
+            this.debugAction1ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction1ToolStripMenuItem.Name = "debugAction1ToolStripMenuItem";
+            this.debugAction1ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction1ToolStripMenuItem.Text = "Debug action 1";
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -551,6 +580,9 @@
         private DarkUI.Controls.DarkButton butPlaySound;
         private DarkUI.Controls.DarkTreeView treeSounds;
         private DarkUI.Controls.DarkButton butRenameSound;
+        private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction0ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem;
     }
 }
 
