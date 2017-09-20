@@ -56,6 +56,9 @@ namespace TombEditor
             numLightDirectionX.LightParameter = LightParameter.DirectionX;
             numLightDirectionY.LightParameter = LightParameter.DirectionY;
 
+            // Load sounds
+            OriginalSoundsDefinitions.LoadSounds(File.OpenRead("Sounds\\sounds.txt"));
+
             // Initialize controls
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;

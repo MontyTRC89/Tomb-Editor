@@ -115,7 +115,7 @@ namespace TombEditor
         private struct RowSoundSample
         {
             public short ID { get; set; }
-            public string Name => Wad2.OfficialSoundNames[ID];
+            public string Name => OriginalSoundsDefinitions.SoundNames[ID];
             public string File { get; set; }
         }
 
