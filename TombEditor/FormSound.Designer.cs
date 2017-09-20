@@ -28,109 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lstSamples = new BrightIdeasSoftware.FastObjectListView();
-            this.olvColumn3 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.butPlay = new System.Windows.Forms.Button();
-            this.butCancel = new System.Windows.Forms.Button();
-            this.butOK = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.tbSound = new System.Windows.Forms.TextBox();
-            this.cbBit5 = new System.Windows.Forms.CheckBox();
-            this.cbBit1 = new System.Windows.Forms.CheckBox();
-            this.cbBit2 = new System.Windows.Forms.CheckBox();
-            this.cbBit3 = new System.Windows.Forms.CheckBox();
-            this.cbBit4 = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.lstSamples)).BeginInit();
+            this.label1 = new DarkUI.Controls.DarkLabel();
+            this.tbSound = new DarkUI.Controls.DarkTextBox();
+            this.cbBit5 = new DarkUI.Controls.DarkCheckBox();
+            this.cbBit1 = new DarkUI.Controls.DarkCheckBox();
+            this.cbBit2 = new DarkUI.Controls.DarkCheckBox();
+            this.cbBit3 = new DarkUI.Controls.DarkCheckBox();
+            this.cbBit4 = new DarkUI.Controls.DarkCheckBox();
+            this.lstSounds = new DarkUI.Controls.DarkListView();
+            this.butPlaySound = new DarkUI.Controls.DarkButton();
+            this.darkButton1 = new DarkUI.Controls.DarkButton();
+            this.darkButton2 = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
-            // 
-            // lstSamples
-            // 
-            this.lstSamples.AllColumns.Add(this.olvColumn3);
-            this.lstSamples.AllColumns.Add(this.olvColumn4);
-            this.lstSamples.AllColumns.Add(this.olvColumn5);
-            this.lstSamples.CellEditUseWholeCell = false;
-            this.lstSamples.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvColumn3,
-            this.olvColumn4,
-            this.olvColumn5});
-            this.lstSamples.Cursor = System.Windows.Forms.Cursors.Default;
-            this.lstSamples.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstSamples.FullRowSelect = true;
-            this.lstSamples.GridLines = true;
-            this.lstSamples.Location = new System.Drawing.Point(12, 12);
-            this.lstSamples.MultiSelect = false;
-            this.lstSamples.Name = "lstSamples";
-            this.lstSamples.RowHeight = 25;
-            this.lstSamples.ShowGroups = false;
-            this.lstSamples.ShowImagesOnSubItems = true;
-            this.lstSamples.Size = new System.Drawing.Size(597, 387);
-            this.lstSamples.TabIndex = 52;
-            this.lstSamples.UseCompatibleStateImageBehavior = false;
-            this.lstSamples.View = System.Windows.Forms.View.Details;
-            this.lstSamples.VirtualMode = true;
-            this.lstSamples.Click += new System.EventHandler(this.lstSamples_Click);
-            // 
-            // olvColumn3
-            // 
-            this.olvColumn3.AspectName = "ID";
-            this.olvColumn3.Text = "ID";
-            // 
-            // olvColumn4
-            // 
-            this.olvColumn4.AspectName = "Name";
-            this.olvColumn4.Text = "Name";
-            this.olvColumn4.Width = 250;
-            // 
-            // olvColumn5
-            // 
-            this.olvColumn5.AspectName = "File";
-            this.olvColumn5.Text = "File";
-            this.olvColumn5.Width = 250;
-            // 
-            // butPlay
-            // 
-            this.butPlay.Image = global::TombEditor.Properties.Resources.sound1;
-            this.butPlay.Location = new System.Drawing.Point(523, 405);
-            this.butPlay.Name = "butPlay";
-            this.butPlay.Size = new System.Drawing.Size(86, 32);
-            this.butPlay.TabIndex = 53;
-            this.butPlay.Text = "Play";
-            this.butPlay.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.butPlay.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butPlay.UseVisualStyleBackColor = true;
-            this.butPlay.Click += new System.EventHandler(this.butPlay_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Image = global::TombEditor.Properties.Resources.cross;
-            this.butCancel.Location = new System.Drawing.Point(310, 490);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(86, 32);
-            this.butCancel.TabIndex = 1;
-            this.butCancel.Text = "Cancel";
-            this.butCancel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butCancel.UseVisualStyleBackColor = true;
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // butOK
-            // 
-            this.butOK.Image = global::TombEditor.Properties.Resources.tick;
-            this.butOK.Location = new System.Drawing.Point(218, 490);
-            this.butOK.Name = "butOK";
-            this.butOK.Size = new System.Drawing.Size(86, 32);
-            this.butOK.TabIndex = 0;
-            this.butOK.Text = "OK";
-            this.butOK.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butOK.UseVisualStyleBackColor = true;
-            this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(12, 415);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 13);
@@ -139,6 +53,9 @@
             // 
             // tbSound
             // 
+            this.tbSound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbSound.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSound.Location = new System.Drawing.Point(59, 412);
             this.tbSound.Name = "tbSound";
             this.tbSound.ReadOnly = true;
@@ -153,7 +70,6 @@
             this.cbBit5.Size = new System.Drawing.Size(47, 17);
             this.cbBit5.TabIndex = 56;
             this.cbBit5.Text = "Bit 5";
-            this.cbBit5.UseVisualStyleBackColor = true;
             // 
             // cbBit1
             // 
@@ -163,7 +79,6 @@
             this.cbBit1.Size = new System.Drawing.Size(47, 17);
             this.cbBit1.TabIndex = 57;
             this.cbBit1.Text = "Bit 1";
-            this.cbBit1.UseVisualStyleBackColor = true;
             // 
             // cbBit2
             // 
@@ -173,7 +88,6 @@
             this.cbBit2.Size = new System.Drawing.Size(47, 17);
             this.cbBit2.TabIndex = 58;
             this.cbBit2.Text = "Bit 2";
-            this.cbBit2.UseVisualStyleBackColor = true;
             // 
             // cbBit3
             // 
@@ -183,7 +97,6 @@
             this.cbBit3.Size = new System.Drawing.Size(47, 17);
             this.cbBit3.TabIndex = 59;
             this.cbBit3.Text = "Bit 3";
-            this.cbBit3.UseVisualStyleBackColor = true;
             // 
             // cbBit4
             // 
@@ -193,13 +106,59 @@
             this.cbBit4.Size = new System.Drawing.Size(47, 17);
             this.cbBit4.TabIndex = 60;
             this.cbBit4.Text = "Bit 4";
-            this.cbBit4.UseVisualStyleBackColor = true;
+            // 
+            // lstSounds
+            // 
+            this.lstSounds.Location = new System.Drawing.Point(13, 13);
+            this.lstSounds.Name = "lstSounds";
+            this.lstSounds.Size = new System.Drawing.Size(593, 386);
+            this.lstSounds.TabIndex = 61;
+            this.lstSounds.Text = "darkListView1";
+            this.lstSounds.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lstSounds_MouseClick);
+            // 
+            // butPlaySound
+            // 
+            this.butPlaySound.Image = global::TombEditor.Properties.Resources.play_16;
+            this.butPlaySound.Location = new System.Drawing.Point(514, 410);
+            this.butPlaySound.Name = "butPlaySound";
+            this.butPlaySound.Padding = new System.Windows.Forms.Padding(5);
+            this.butPlaySound.Size = new System.Drawing.Size(92, 23);
+            this.butPlaySound.TabIndex = 62;
+            this.butPlaySound.Text = "Play sound";
+            this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butPlaySound.Click += new System.EventHandler(this.butPlay_Click);
+            // 
+            // darkButton1
+            // 
+            this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkButton1.Location = new System.Drawing.Point(174, 495);
+            this.darkButton1.Name = "darkButton1";
+            this.darkButton1.Padding = new System.Windows.Forms.Padding(5);
+            this.darkButton1.Size = new System.Drawing.Size(130, 24);
+            this.darkButton1.TabIndex = 63;
+            this.darkButton1.Text = "Ok";
+            this.darkButton1.Click += new System.EventHandler(this.butOK_Click);
+            // 
+            // darkButton2
+            // 
+            this.darkButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkButton2.Location = new System.Drawing.Point(310, 495);
+            this.darkButton2.Name = "darkButton2";
+            this.darkButton2.Padding = new System.Windows.Forms.Padding(5);
+            this.darkButton2.Size = new System.Drawing.Size(130, 24);
+            this.darkButton2.TabIndex = 64;
+            this.darkButton2.Text = "Cancel";
+            this.darkButton2.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // FormSound
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(618, 531);
+            this.Controls.Add(this.darkButton1);
+            this.Controls.Add(this.darkButton2);
+            this.Controls.Add(this.butPlaySound);
+            this.Controls.Add(this.lstSounds);
             this.Controls.Add(this.cbBit4);
             this.Controls.Add(this.cbBit3);
             this.Controls.Add(this.cbBit2);
@@ -207,10 +166,6 @@
             this.Controls.Add(this.cbBit5);
             this.Controls.Add(this.tbSound);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.butPlay);
-            this.Controls.Add(this.lstSamples);
-            this.Controls.Add(this.butCancel);
-            this.Controls.Add(this.butOK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -220,27 +175,22 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sound source";
             this.Load += new System.EventHandler(this.FormSound_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.lstSamples)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button butOK;
-        private System.Windows.Forms.Button butCancel;
-        private BrightIdeasSoftware.FastObjectListView lstSamples;
-        private BrightIdeasSoftware.OLVColumn olvColumn3;
-        private BrightIdeasSoftware.OLVColumn olvColumn4;
-        private BrightIdeasSoftware.OLVColumn olvColumn5;
-        private System.Windows.Forms.Button butPlay;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox tbSound;
-        private System.Windows.Forms.CheckBox cbBit5;
-        private System.Windows.Forms.CheckBox cbBit1;
-        private System.Windows.Forms.CheckBox cbBit2;
-        private System.Windows.Forms.CheckBox cbBit3;
-        private System.Windows.Forms.CheckBox cbBit4;
+        private DarkUI.Controls.DarkLabel label1;
+        private DarkUI.Controls.DarkTextBox tbSound;
+        private DarkUI.Controls.DarkCheckBox cbBit5;
+        private DarkUI.Controls.DarkCheckBox cbBit1;
+        private DarkUI.Controls.DarkCheckBox cbBit2;
+        private DarkUI.Controls.DarkCheckBox cbBit3;
+        private DarkUI.Controls.DarkCheckBox cbBit4;
+        private DarkUI.Controls.DarkListView lstSounds;
+        private DarkUI.Controls.DarkButton butPlaySound;
+        private DarkUI.Controls.DarkButton darkButton1;
+        private DarkUI.Controls.DarkButton darkButton2;
     }
 }

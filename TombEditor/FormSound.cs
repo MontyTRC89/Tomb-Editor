@@ -14,42 +14,28 @@ using NLog;
 
 namespace TombEditor
 {
-    public partial class FormSound : Form
+    public partial class FormSound : DarkUI.Forms.DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
         private SoundSourceInstance _soundSource;
         private Wad2 _wad;
+        private Editor _editor;
+        private ushort _selectedSound = 0;
 
         public FormSound(SoundSourceInstance soundSource, Wad2 wad)
         {
             _soundSource = soundSource;
             _wad = wad;
+            _editor = Editor.Instance;
 
             InitializeComponent();
             
-            using (StreamReader reader = new StreamReader(new FileStream("Sounds\\Sounds.txt", FileMode.Open, FileAccess.Read, FileShare.Read)))
+            foreach (var sound in _editor.Level.Wad.SoundInfo)
             {
-                List<RowSoundSample> rows = new List<RowSoundSample>();
-                short id = 0;
-                while (reader.EndOfStream == false)
-                {
-                    string line = reader.ReadLine();
-                    string[] tokens = line.Split(':');
-                    string file = "";
-
-                    if (tokens.Length > 1)
-                    {
-                        string temp = tokens[1].Trim(' ', '\t');
-                        tokens = temp.Split(' ', '\t');
-                        file = tokens[0];
-                    }
-                    
-                    rows.Add(new RowSoundSample { ID = id++, File = file });
-                }
-
-                lstSamples.SetObjects(rows);
-                tbSound.Text = rows.FirstOrDefault(row => row.ID == _soundSource.SoundId).Name;
+                var item = new DarkUI.Controls.DarkListItem(sound.Value.Name);
+                item.Tag = sound.Key;
+                lstSounds.Items.Add(item);
             }
 
             cbBit1.Checked = (_soundSource.CodeBits & (1 << 0)) != 0;
@@ -57,6 +43,13 @@ namespace TombEditor
             cbBit3.Checked = (_soundSource.CodeBits & (1 << 2)) != 0;
             cbBit4.Checked = (_soundSource.CodeBits & (1 << 3)) != 0;
             cbBit5.Checked = (_soundSource.CodeBits & (1 << 4)) != 0;
+
+            if (_editor.Level.Wad.SoundInfo.ContainsKey((ushort)_soundSource.SoundId))
+            {
+                var soundInfo = _editor.Level.Wad.SoundInfo[(ushort)_soundSource.SoundId];
+                _selectedSound = (ushort)_soundSource.SoundId;
+                tbSound.Text = soundInfo.Name;
+            }
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -67,61 +60,58 @@ namespace TombEditor
         
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (lstSamples.SelectedObject == null)
-                return;
-            RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
+            _soundSource.SoundId = (short)_selectedSound;
 
-            _soundSource.SoundId = row.ID;
             byte codeBits = 0;
             codeBits |= (byte)(cbBit1.Checked ? (1 << 0) : 0);
-            codeBits |= (byte)(cbBit1.Checked ? (1 << 1) : 0);
-            codeBits |= (byte)(cbBit1.Checked ? (1 << 2) : 0);
-            codeBits |= (byte)(cbBit1.Checked ? (1 << 3) : 0);
-            codeBits |= (byte)(cbBit1.Checked ? (1 << 4) : 0);
+            codeBits |= (byte)(cbBit2.Checked ? (1 << 1) : 0);
+            codeBits |= (byte)(cbBit3.Checked ? (1 << 2) : 0);
+            codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
+            codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
             _soundSource.CodeBits = codeBits;
-
+            
             DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void butPlay_Click(object sender, EventArgs e)
         {
-            if (lstSamples.SelectedObject == null)
+            if (lstSounds.SelectedIndices.Count == 0)
                 return;
-            RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
 
-            if (row.File != "")
+            var soundId = (ushort)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag;
+            var sound = _editor.Level.Wad.SoundInfo[soundId];
+
+            if (sound.WaveSounds.Count > 0)
             {
                 try
                 {
-                    SoundPlayer player = new SoundPlayer("Sounds\\Samples\\" + row.File + ".wav");
+                    var stream = new MemoryStream(sound.WaveSounds[0].WaveData);
+                    SoundPlayer player = new SoundPlayer(stream);
                     player.Play();
                 }
                 catch (Exception exc)
                 {
-                    logger.Warn(exc, "Unable to play sample \"" + row.File + "\"");
+                    logger.Warn(exc, "Unable to play sample");
                 }
             }
-        }
-
-        private void lstSamples_Click(object sender, EventArgs e)
-        {
-            if (lstSamples.SelectedObject == null)
-                return;
-            RowSoundSample row = (RowSoundSample)lstSamples.SelectedObject;
-            tbSound.Text = row.Name;
-        }
-
-        private struct RowSoundSample
-        {
-            public short ID { get; set; }
-            public string Name => OriginalSoundsDefinitions.SoundNames[ID];
-            public string File { get; set; }
         }
 
         private void FormSound_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void lstSounds_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (lstSounds.SelectedIndices.Count == 0)
+                return;
+
+            var soundId = (ushort)lstSounds.Items[lstSounds.SelectedIndices[0]].Tag;
+            var sound = _editor.Level.Wad.SoundInfo[soundId];
+            _selectedSound = soundId;
+
+            tbSound.Text = sound.Name;
         }
     }
 }
