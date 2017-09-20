@@ -1317,10 +1317,11 @@ namespace TombEditor.Controls
                     SoundSourceInstance sound = (SoundSourceInstance)instance;
 
                     string message = "Sound source";
-                    if ((sound.SoundId >= 0) && (sound.SoundId < (_editor.Level?.Wad?.OriginalWad?.Sounds?.Count ?? 0)))
-                        message += " (" + _editor.Level.Wad.OriginalWad.Sounds[sound.SoundId] + ") ";
+                    if ((sound.SoundId >= 0) && _editor.Level.Wad != null &&
+                        _editor.Level.Wad.SoundInfo.ContainsKey((ushort)sound.SoundId))
+                        message += " (" + _editor.Level.Wad.SoundInfo[(ushort)sound.SoundId].Name + ") ";
                     else
-                        message += " ( Invalid sound ) ";
+                        message += " ( Invalid or missing sound ) ";
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);

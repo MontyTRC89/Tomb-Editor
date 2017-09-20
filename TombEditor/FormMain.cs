@@ -710,6 +710,12 @@ namespace TombEditor
 
         private void butAddSoundSource_Click(object sender, EventArgs e)
         {
+            if (_editor.Level.Wad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("Before adding sound sources you must load a WAD/Wad2 file", "Error");
+                return;
+            }
+
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
         }
 

@@ -126,7 +126,7 @@ namespace TombLib.Wad
             GraphicsDevice = device;
         }
 
-        /*public static string[] OfficialSoundNames { get { return _officialSoundNames; } }*/
+        public static string[] OfficialSoundNames { get { return _officialSoundNames; } }
 
         public short[] FixedSounds
         {
