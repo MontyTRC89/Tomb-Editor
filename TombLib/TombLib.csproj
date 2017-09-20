@@ -138,6 +138,8 @@
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\Texture.cs" />
     <Compile Include="Utils\ZLib.cs" />
+    <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
+    <Compile Include="Wad\OriginalSound.cs" />
     <Compile Include="Wad\Wad2Actions.cs" />
     <Compile Include="Wad\Wad2IO.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />

@@ -186,7 +186,7 @@ namespace TombEditor.ToolWindows
                 return;
             }
             EditorActions.SetPortalOpacity(_editor.SelectedRoom, portal, opacity);
-        }
+        } 
 
         private void butAddCamera_Click(object sender, EventArgs e)
         {

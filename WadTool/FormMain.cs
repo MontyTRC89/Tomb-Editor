@@ -24,6 +24,9 @@ namespace WadTool
             _tool = WadToolClass.Instance;
             _tool.Initialize();
 
+            // Load sounds
+            OriginalSoundsDefinitions.LoadSounds(File.OpenRead("Sounds\\sounds.txt"));
+
             panel3D.InitializePanel(_tool.Device);
         }
 
@@ -410,6 +413,11 @@ namespace WadTool
             {
                 Wad2.SaveToStream(_tool.SourceWad, stream);
             }
+        }
+
+        private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

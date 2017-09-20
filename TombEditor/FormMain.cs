@@ -46,6 +46,9 @@ namespace TombEditor
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
 
+            // Load sounds
+            OriginalSoundsDefinitions.LoadSounds(File.OpenRead("Sounds\\sounds.txt"));
+
             // Initialize controls
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -180,7 +183,6 @@ namespace TombEditor
             base.OnClosed(e);
             _editor.Configuration.SaveTry();
         }
-
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
