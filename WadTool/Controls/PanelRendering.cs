@@ -14,7 +14,7 @@ namespace WadTool.Controls
     public class PanelRendering : Panel
     {
         public Wad2 CurrentWad { get; set; }
-        public WadObject CurrentObject { get; set; }
+        public IRenderableObject CurrentObject { get; set; }
         public ArcBallCamera Camera { get; set; }
 
         private GraphicsDevice _device;
@@ -24,6 +24,7 @@ namespace WadTool.Controls
         private VertexInputLayout _layout;
         private float _lastX;
         private float _lastY;
+        private SpriteBatch _spriteBatch;
         
         public void InitializePanel(GraphicsDevice device)
         {
@@ -70,6 +71,8 @@ namespace WadTool.Controls
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
             _tool = WadToolClass.Instance;
+
+            _spriteBatch = new SpriteBatch(_tool.Device);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -93,12 +96,10 @@ namespace WadTool.Controls
 
             if (CurrentWad != null && CurrentObject != null)
             {
-                bool isMoveable = (CurrentObject.GetType() == typeof(WadMoveable));
-
                 Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-                if (!isMoveable)
+                if (CurrentObject.GetType() == typeof(StaticModel))
                 {
-                    StaticModel model = CurrentWad.DirectXStatics[CurrentObject.ObjectID];
+                    var model = (StaticModel)CurrentObject;
 
                     Effect mioEffect = _tool.Effects["StaticModel"];
                     mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
@@ -127,10 +128,10 @@ namespace WadTool.Controls
                         _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                     }
                 }
-                else
+                else if (CurrentObject.GetType() == typeof(SkinnedModel))
                 {
-                    SkinnedModel model = CurrentWad.DirectXMoveables[CurrentObject.ObjectID];
-                    SkinnedModel skin = model;
+                    var model = (SkinnedModel)CurrentObject;
+                    var skin = model;
 
                     Effect mioEffect = _tool.Effects["Model"];
 
@@ -160,6 +161,21 @@ namespace WadTool.Controls
                         mioEffect.Techniques[0].Passes[0].Apply();
                         _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                     }
+                }
+                else if (CurrentObject.GetType() == typeof(WadSprite))
+                {
+                    var sprite = (WadSprite)CurrentObject;
+
+                    int x = (Width - sprite.Width) / 2;
+                    int y = (Height - sprite.Height) / 2;
+
+                    _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
+                    _spriteBatch.Draw(sprite.DirectXTexture, new DrawingRectangle(x, y, sprite.Width, sprite.Height), Color.White);
+                    _spriteBatch.End();
+                }
+                else
+                {
+
                 }
             }
 

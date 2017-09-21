@@ -99,7 +99,6 @@ namespace TombEditor.Geometry
 
                         newWad = WadOperations.ConvertTr4Wad(oldWad);
 
-                        newWad.OriginalWad = oldWad;
                         newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
                         newWad.PrepareDataForDirectX();
                     }

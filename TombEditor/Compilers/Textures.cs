@@ -85,7 +85,7 @@ namespace TombEditor.Compilers
             //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             // Collect all sprites and sort them
-            List<WadTexture> packedTextures = _level.Wad.SpriteTextures.Values.ToList();
+            List<WadSprite> packedTextures = _level.Wad.SpriteTextures.Values.ToList();
             packedTextures.Sort(new ComparerWadTextures());
 
             // Pack the textures in pages of 256x256

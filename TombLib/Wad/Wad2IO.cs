@@ -377,7 +377,7 @@ namespace TombLib.Wad
                 uint numSprites = reader.ReadUInt32();
                 for (int i = 0; i < numSprites; i++)
                 {
-                    var texture = new WadTexture();
+                    var texture = new WadSprite();
                     texture.Image = ImageC.FromStreamRaw(reader.BaseStream, reader.ReadInt32(), reader.ReadInt32());
 
                     // Check for other chunks

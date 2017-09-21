@@ -29,7 +29,7 @@ namespace TombLib.Wad
         public SortedDictionary<uint, WadStatic> Statics { get; private set; }
         public SortedDictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
         public List<WadSpriteSequence> SpriteSequences { get; private set; }
-        public Dictionary<Hash, WadTexture> SpriteTextures { get; private set; }
+        public Dictionary<Hash, WadSprite> SpriteTextures { get; private set; }
         public string FileName { get; set; }
 
         // Data for rendering
@@ -40,9 +40,6 @@ namespace TombLib.Wad
 
         // Size of the atlas
         public const int TextureAtlasSize = 2048;
-
-        // TODO: to remove
-        public TR4Wad OriginalWad;
 
         private static string[] _officialSoundNames = new string[] { "LARA_FEET", "LARA_CLIMB2", "LARA_NO", "LARA_SLIPPING", "LARA_LAND",
             "LARA_CLIMB1", "LARA_DRAW", "LARA_HOLSTER", "LARA_FIRE", "LARA_RELOAD", "LARA_RICOCHET", "PUSH_BLOCK_END", "METAL_SCRAPE_LOOP",
@@ -118,7 +115,7 @@ namespace TombLib.Wad
             Statics = new SortedDictionary<uint, WadStatic>();
             SoundInfo = new SortedDictionary<ushort, WadSoundInfo>();
             SpriteSequences = new List<WadSpriteSequence>();
-            SpriteTextures = new Dictionary<Hash, WadTexture>();
+            SpriteTextures = new Dictionary<Hash, WadSprite>();
         }
 
         public Wad2(GraphicsDevice device) : this()
@@ -205,6 +202,13 @@ namespace TombLib.Wad
             {
                 WadStatic staticMesh = Statics.ElementAt(i).Value;
                 DirectXStatics.Add(staticMesh.ObjectID, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, packedTextures));
+            }
+
+            // Prepare sprites
+            for (int i = 0; i < SpriteTextures.Count; i++)
+            {
+                var sprite = SpriteTextures.ElementAt(i).Value;
+                sprite.DirectXTexture = TextureLoad.Load(GraphicsDevice, sprite.Image);
             }
         }
 
