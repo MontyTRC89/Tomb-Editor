@@ -1,17 +1,19 @@
-﻿using System;
+﻿using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TombLib.Utils;
 
 namespace TombLib.Wad
 {
-    public class WadSprite
+    public class WadSprite : WadTexture, IDisposable
     {
-        public string Hash;
-        public ushort Width { get { return (ushort)Texture.Width; } }
-        public ushort Height { get { return (ushort)Texture.Height; } }
-        public ImageC Texture;
+        public Texture2D DirectXTexture { get; set; }
+
+        public void Dispose()
+        {
+            if (DirectXTexture != null) DirectXTexture.Dispose();
+        }
     }
 }

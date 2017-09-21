@@ -10,9 +10,7 @@ namespace TombEditor.Compilers
     public sealed partial class LevelCompilerTr4
     {
         private void WriteLevelTr4()
-        {
-            var wad = _level.Wad.OriginalWad;
-
+        {            
             // Now begin to compile the geometry block in a MemoryStream
             using (var geometryDataBuffer = new MemoryStream())
             {
@@ -311,8 +309,7 @@ namespace TombEditor.Compilers
 
         private bool WriteLevelTr3()
         {
-            var wad = _level.Wad.OriginalWad;
-
+           
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
@@ -578,16 +575,16 @@ namespace TombEditor.Compilers
 
                 // Write sound data
                 byte[] sfxBuffer;
-                using (var readerSounds = new BinaryReaderEx(new FileStream(
+               /* using (var readerSounds = new BinaryReaderEx(new FileStream(
                         @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
                     readerSounds.BaseStream.Seek(0, SeekOrigin.Begin);
                     readerSounds.ReadBytes(370 * 2);
                     _numSoundDetails = (uint)readerSounds.ReadInt16();
-                }
+                }*/
 
-                writer.WriteBlockArray(sfxBuffer);
+               // writer.WriteBlockArray(sfxBuffer);
 
                 writer.Flush();
             }

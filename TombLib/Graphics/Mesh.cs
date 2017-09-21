@@ -10,7 +10,7 @@ using SharpDX;
 
 namespace TombLib.Graphics
 {
-    public abstract class Mesh<T> : GraphicsResource where T : struct, IVertex
+    public abstract class Mesh<T> : GraphicsResource, IRenderableObject where T : struct, IVertex
     {
         public int BaseIndex { get; set; }
         public int NumIndices { get; set; }

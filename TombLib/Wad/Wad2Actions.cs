@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace TombLib.Wad
@@ -290,15 +291,33 @@ namespace TombLib.Wad
             }
         }
 
+        public bool AddSpriteSequence(uint objectID)
+        {
+            // Check if the sequence already exists
+            foreach (var seq in SpriteSequences)
+                if (seq.ObjectID == objectID)
+                    return false;
+
+            var sequence = new WadSpriteSequence();
+            sequence.ObjectID = objectID;
+
+            SpriteSequences.Add(sequence);
+
+            return true;
+        }
+
         public bool AddSprite(WadSpriteSequence sequence, ImageC image)
         {
             // Create a new texture
-            var sprite = new WadTexture();
+            var sprite = new WadSprite();
             sprite.Image = image;
             sprite.UpdateHash();
 
             // Check if texture exists
-            if (!SpriteTextures.ContainsKey(sprite.Hash)) return false;
+            if (SpriteTextures.ContainsKey(sprite.Hash))
+                sprite = SpriteTextures[sprite.Hash];
+            else
+                if (GraphicsDevice != null) sprite.DirectXTexture = TextureLoad.Load(GraphicsDevice, sprite.Image);
 
             // Add the texture to the sequence
             sequence.Sprites.Add(sprite);
@@ -306,10 +325,60 @@ namespace TombLib.Wad
             return true;
         }
 
-        public void DeleteSprite(WadSpriteSequence sequence, WadTexture sprite)
+        public bool DeleteSprite(WadSpriteSequence sequence, WadSprite sprite)
         {
+            if (!SpriteSequences.Contains(sequence) || !sequence.Sprites.Contains(sprite)) return false;
+
+            // Check if sprite exists
+            bool found = false;
+            foreach (var seq in SpriteSequences)
+                if (seq != sequence)
+                    if (seq.Sprites.Contains(sprite))
+                        found = true;
+
+            // Remove the sprite from the sequence
             sequence.Sprites.Remove(sprite);
-            SpriteTextures.Remove(sprite.Hash);
+
+            // Eventually remove sprite from the shared list
+            if (!found)
+            {
+                sprite.Dispose();
+                SpriteTextures.Remove(sprite.Hash);
+            }
+
+            return true;
+        }
+
+        public bool DeleteSpriteSequence(WadSpriteSequence sequence)
+        {
+            if (!SpriteSequences.Contains(sequence)) return false;
+
+            var spritesToRemove = new List<WadSprite>();
+
+            foreach (var sprite in sequence.Sprites)
+            {
+                // Check if sprite exists
+                bool found = false;
+                foreach (var seq in SpriteSequences)
+                    if (seq != sequence)
+                        if (seq.Sprites.Contains(sprite))
+                            found = true;
+
+                if (!found)
+                    spritesToRemove.Add(sprite);
+            }
+
+            // Remove unused sprites
+            for (int i = 0; i < spritesToRemove.Count; i++)
+            {
+                spritesToRemove[i].Dispose();
+                SpriteTextures.Remove(spritesToRemove[i].Hash);
+            }
+
+            // Remove the sequence
+            SpriteSequences.Remove(sequence);
+
+            return true;
         }
     }
 }

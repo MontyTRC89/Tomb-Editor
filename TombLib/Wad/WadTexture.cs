@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using TombLib.Utils;
+using TombLib.Graphics;
 
 namespace TombLib.Wad
 {
-    public class WadTexture : Texture, IEquatable<WadTexture>
+    public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>
     {
         private Hash _hash;
         

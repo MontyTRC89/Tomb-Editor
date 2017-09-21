@@ -18,7 +18,7 @@ namespace TombLib.Graphics
         RoomGeometry
     }
 
-    public abstract class Model<T, U> : IDisposable where U : struct
+    public abstract class Model<T, U> : IRenderableObject, IDisposable where U : struct
     {
         public Buffer<U> VertexBuffer { get; protected set; }
         public Buffer IndexBuffer { get; protected set; }

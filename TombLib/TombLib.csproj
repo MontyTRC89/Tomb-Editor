@@ -102,6 +102,7 @@
     <Compile Include="Graphics\ArcBallCamera.cs" />
     <Compile Include="Graphics\Bone.cs" />
     <Compile Include="Graphics\Camera.cs" />
+    <Compile Include="Graphics\IRenderableObject.cs" />
     <Compile Include="IO\Chunk.cs" />
     <Compile Include="IO\LEB128.cs" />
     <Compile Include="NG\NGExtraParameter.cs" />
