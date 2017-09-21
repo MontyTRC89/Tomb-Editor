@@ -35,19 +35,8 @@ namespace TombEditor.ToolWindows
             base.Dispose(disposing);
         }
 
-        public void BindParameters()
+        public void Initialize()
         {
-            // Update palette
-            lightPalette.SelectedColorChanged += delegate
-            {
-                Light light = _editor.SelectedObject as Light;
-                if (light == null)
-                    return;
-                light.Color = lightPalette.SelectedColor.ToFloatColor3();
-                _editor.SelectedRoom.UpdateCompletely();
-                _editor.ObjectChange(light);
-            };
-
             // For each control bind its light parameter
             numLightIntensity.LightParameter = LightParameter.Intensity;
             numLightIn.LightParameter = LightParameter.In;

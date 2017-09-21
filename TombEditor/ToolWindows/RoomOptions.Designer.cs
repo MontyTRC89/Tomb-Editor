@@ -286,6 +286,7 @@
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
             this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 24);
             this.panelRoomAmbientLight.TabIndex = 89;
+            this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
             // 
             // darkLabel3
             // 

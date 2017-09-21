@@ -2,8 +2,11 @@
 using SharpDX;
 using DarkUI.Docking;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
 using System.Xml.Serialization;
 
 namespace TombEditor
@@ -45,9 +48,95 @@ namespace TombEditor
         public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
 
-        public DockPanelState Window_Layout;
+        public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
-            
+        public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
+        {
+            Regions = new List<DockRegionState>
+            {
+                new DockRegionState
+                {
+                    Area = DarkDockArea.Document,
+                    Size = new Size(0, 0),
+                    Groups = new List<DockGroupState>
+                    {
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "MainView" },
+                            VisibleContent = "MainView",
+                            Order = 0
+                        }
+                    }
+                },
+                new DockRegionState
+                {
+                    Area = DarkDockArea.Left,
+                    Size = new Size(286, 893),
+                    Groups = new List<DockGroupState>
+                    {
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "SectorOptions" },
+                            VisibleContent = "SectorOptions",
+                            Order = 0
+                        },
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "RoomOptions" },
+                            VisibleContent = "RoomOptions",
+                            Order = 1
+                        },
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "ObjectBrowser" },
+                            VisibleContent = "ObjectBrowser",
+                            Order = 2
+                        },
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "TriggerList" },
+                            VisibleContent = "TriggerList",
+                            Order = 3
+                        }
+                    }
+                },
+                new DockRegionState
+                {
+                    Area = DarkDockArea.Right,
+                    Size = new Size(280, 0),
+                    Groups = new List<DockGroupState>
+                    {
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "TexturePanel" },
+                            VisibleContent = "TexturePanel",
+                            Order = 0
+                        }
+                    }
+                },
+                new DockRegionState
+                {
+                    Area = DarkDockArea.Bottom,
+                    Size = new Size(1007, 134),
+                    Groups = new List<DockGroupState>
+                    {
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "Lighting" },
+                            VisibleContent = "Lighting",
+                            Order = 0
+                        },
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "Palette" },
+                            VisibleContent = "Palette",
+                            Order = 1
+                        }
+                    }
+                }
+            }
+        };
+
         public static string GetDefaultPath()
         {
             return Path.GetDirectoryName(Application.ExecutablePath) + "/TombEditorConfiguration.xml";

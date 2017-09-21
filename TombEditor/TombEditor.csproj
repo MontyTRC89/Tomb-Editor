@@ -268,6 +268,12 @@
     <Compile Include="ToolWindows\MainView.Designer.cs">
       <DependentUpon>MainView.cs</DependentUpon>
     </Compile>
+    <Compile Include="ToolWindows\Palette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\Palette.Designer.cs">
+      <DependentUpon>Palette.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\TexturePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -335,6 +341,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ObjectBrowser.resx">
       <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\Palette.resx">
+      <DependentUpon>Palette.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
       <DependentUpon>SectorOptions.cs</DependentUpon>

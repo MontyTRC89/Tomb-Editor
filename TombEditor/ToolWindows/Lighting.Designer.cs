@@ -15,7 +15,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.cbLightIsDynamicallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightCastsShadows = new DarkUI.Controls.DarkCheckBox();
@@ -48,16 +47,7 @@
             this.butAddPointLight = new DarkUI.Controls.DarkButton();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.SuspendLayout();
-            // 
-            // lightPalette
-            // 
-            this.lightPalette.Location = new System.Drawing.Point(444, 28);
-            this.lightPalette.Name = "lightPalette";
-            this.lightPalette.Size = new System.Drawing.Size(642, 99);
-            this.lightPalette.TabIndex = 81;
-            this.lightPalette.TabStop = false;
             // 
             // cbLightIsDynamicallyUsed
             // 
@@ -420,7 +410,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lightPalette);
             this.Controls.Add(this.cbLightIsDynamicallyUsed);
             this.Controls.Add(this.cbLightIsStaticallyUsed);
             this.Controls.Add(this.cbLightCastsShadows);
@@ -455,19 +444,16 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
             this.DockText = "Lighting";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(1088, 131);
+            this.MinimumSize = new System.Drawing.Size(442, 128);
             this.Name = "Lighting";
             this.SerializationKey = "Lighting";
-            this.Size = new System.Drawing.Size(1088, 131);
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
+            this.Size = new System.Drawing.Size(442, 128);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private Controls.PanelPalette lightPalette;
         private DarkUI.Controls.DarkCheckBox cbLightIsDynamicallyUsed;
         private DarkUI.Controls.DarkCheckBox cbLightIsStaticallyUsed;
         private DarkUI.Controls.DarkCheckBox cbLightCastsShadows;

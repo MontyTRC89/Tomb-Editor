@@ -88,6 +88,7 @@
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textureMapBuilderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restoreWindowLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -772,7 +773,8 @@
             this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textureMapBuilderToolStripMenuItem,
-            this.levelSettingsToolStripMenuItem});
+            this.levelSettingsToolStripMenuItem,
+            this.restoreWindowLayoutToolStripMenuItem});
             this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
@@ -783,7 +785,7 @@
             this.textureMapBuilderToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.textureMapBuilderToolStripMenuItem.Image = global::TombEditor.Properties.Resources.small_icons_16;
             this.textureMapBuilderToolStripMenuItem.Name = "textureMapBuilderToolStripMenuItem";
-            this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.textureMapBuilderToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.textureMapBuilderToolStripMenuItem.Text = "Texture Map builder";
             // 
             // levelSettingsToolStripMenuItem
@@ -791,9 +793,18 @@
             this.levelSettingsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.levelSettingsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.settings_16;
             this.levelSettingsToolStripMenuItem.Name = "levelSettingsToolStripMenuItem";
-            this.levelSettingsToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.levelSettingsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.levelSettingsToolStripMenuItem.Text = "Level settings";
             this.levelSettingsToolStripMenuItem.Click += new System.EventHandler(this.levelSettingsToolStripMenuItem_Click);
+            // 
+            // restoreWindowLayoutToolStripMenuItem
+            // 
+            this.restoreWindowLayoutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.restoreWindowLayoutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.restoreWindowLayoutToolStripMenuItem.Name = "restoreWindowLayoutToolStripMenuItem";
+            this.restoreWindowLayoutToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.restoreWindowLayoutToolStripMenuItem.Text = "Restore window layout";
+            this.restoreWindowLayoutToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowLayoutToolStripMenuItem_Click);
             // 
             // debugToolStripMenuItem
             // 
@@ -1097,5 +1108,6 @@
         private System.Windows.Forms.ToolStripMenuItem moveLaraToolStripMenuItem;
         private DarkUI.Docking.DarkDockPanel dockArea;
         private System.Windows.Forms.Panel panelDockArea;
+        private System.Windows.Forms.ToolStripMenuItem restoreWindowLayoutToolStripMenuItem;
     }
 }

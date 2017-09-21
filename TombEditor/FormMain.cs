@@ -26,6 +26,7 @@ namespace TombEditor
         private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
         private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
         private ToolWindows.Lighting Lighting           = new ToolWindows.Lighting();
+        private ToolWindows.Palette Palette             = new ToolWindows.Palette();
         private ToolWindows.TexturePanel TexturePanel   = new ToolWindows.TexturePanel();
 
 
@@ -56,13 +57,12 @@ namespace TombEditor
 
             PopulateDockPanel();
 
-            // Initialize color controls
-            Lighting.BindParameters();
-
             // Initialize panels
             MainView.Initialize(_deviceManager);
             ObjectBrowser.Initialize(_deviceManager);
             TexturePanel.Initialize();
+            Lighting.Initialize();
+            Palette.Initialize();
             
             // Initialize the geometry importer class
             GeometryImporterExporter.Initialize(_deviceManager);
@@ -88,21 +88,7 @@ namespace TombEditor
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
             Application.AddMessageFilter(dockArea.DockResizeFilter);
 
-            if (_editor.Configuration.Window_Layout == null)
-            {
-                // Add default windows to dock area.
-                dockArea.AddContent(MainView);
-                dockArea.AddContent(SectorOptions);
-                dockArea.AddContent(ObjectBrowser);
-                dockArea.AddContent(RoomOptions);
-                dockArea.AddContent(TriggerList);
-                dockArea.AddContent(Lighting);
-                dockArea.AddContent(TexturePanel);
-            }
-            else
-            {
-                dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
-            }
+            dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
         }
 
         private DarkDockContent FindDockContentByKey(string key)
@@ -112,6 +98,7 @@ namespace TombEditor
                 case "MainView"     : return MainView;
                 case "TriggerList"  : return TriggerList;
                 case "Lighting"     : return Lighting;
+                case "Palette"      : return Palette;
                 case "ObjectBrowser": return ObjectBrowser;
                 case "RoomOptions"  : return RoomOptions;
                 case "SectorOptions": return SectorOptions;
@@ -120,7 +107,7 @@ namespace TombEditor
             }
         }
 
-            private void EditorEventRaised(IEditorEvent obj)
+        private void EditorEventRaised(IEditorEvent obj)
         {
             // Update room information on the status strip
             if ((obj is Editor.SelectedRoomChangedEvent) ||
@@ -683,20 +670,6 @@ namespace TombEditor
             EditorActions.GridWalls5(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
-        private void butDeleteTrigger_Click(object sender, EventArgs e)
-        {
-            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
-                return;
-            EditorActions.DeleteObject(_editor.SelectedRoom, _editor.SelectedObject);
-        }
-
-        private void butEditTrigger_Click(object sender, EventArgs e)
-        {
-            if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
-                return;
-            EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject, this);
-        }
-
         private void findObjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ObjectBrowser.FindItem();
@@ -798,6 +771,12 @@ namespace TombEditor
                 form.ShowDialog(this);
         }
 
+        private void restoreWindowLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dockArea.RemoveContent();
+            dockArea.RestoreDockPanelState(Configuration.Window_LayoutDefault, FindDockContentByKey);
+        }
+
         // Only for debugging purposes...
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -879,11 +858,6 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
-        }
-
-        private void darkButton16_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
