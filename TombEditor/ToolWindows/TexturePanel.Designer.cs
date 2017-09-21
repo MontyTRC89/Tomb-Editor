@@ -21,7 +21,6 @@
             this.butBump = new DarkUI.Controls.DarkButton();
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
-            this.panelTextureMap.SuspendLayout();
             this.panelTextureTools.SuspendLayout();
             this.SuspendLayout();
             // 
