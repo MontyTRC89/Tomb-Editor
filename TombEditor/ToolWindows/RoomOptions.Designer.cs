@@ -53,6 +53,7 @@
             this.cbNoPathfinding.Size = new System.Drawing.Size(106, 17);
             this.cbNoPathfinding.TabIndex = 106;
             this.cbNoPathfinding.Text = "No pathfinding";
+            this.cbNoPathfinding.CheckedChanged += new System.EventHandler(this.cbNoPathfinding_CheckedChanged);
             // 
             // cbHorizon
             // 
@@ -63,6 +64,7 @@
             this.cbHorizon.Size = new System.Drawing.Size(118, 17);
             this.cbHorizon.TabIndex = 105;
             this.cbHorizon.Text = "Draw sky & horizon";
+            this.cbHorizon.CheckedChanged += new System.EventHandler(this.cbHorizon_CheckedChanged);
             // 
             // comboFlipMap
             // 
@@ -121,6 +123,7 @@
             this.comboReverberation.Name = "comboReverberation";
             this.comboReverberation.Size = new System.Drawing.Size(66, 24);
             this.comboReverberation.TabIndex = 101;
+            this.comboReverberation.SelectedIndexChanged += new System.EventHandler(this.comboReverberation_SelectedIndexChanged);
             // 
             // darkLabel18
             // 
@@ -153,6 +156,7 @@
             this.comboMist.Name = "comboMist";
             this.comboMist.Size = new System.Drawing.Size(52, 24);
             this.comboMist.TabIndex = 99;
+            this.comboMist.SelectedIndexChanged += new System.EventHandler(this.comboMist_SelectedIndexChanged);
             // 
             // darkLabel17
             // 
@@ -185,6 +189,7 @@
             this.comboReflection.Name = "comboReflection";
             this.comboReflection.Size = new System.Drawing.Size(52, 24);
             this.comboReflection.TabIndex = 97;
+            this.comboReflection.SelectedIndexChanged += new System.EventHandler(this.comboReflection_SelectedIndexChanged);
             // 
             // darkLabel16
             // 
@@ -206,6 +211,7 @@
             this.cbFlagOutside.Size = new System.Drawing.Size(67, 17);
             this.cbFlagOutside.TabIndex = 95;
             this.cbFlagOutside.Text = "Outside";
+            this.cbFlagOutside.CheckedChanged += new System.EventHandler(this.cbFlagOutside_CheckedChanged);
             // 
             // cbFlagCold
             // 
@@ -216,6 +222,7 @@
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 94;
             this.cbFlagCold.Text = "Cold";
+            this.cbFlagCold.CheckedChanged += new System.EventHandler(this.cbFlagCold_CheckedChanged);
             // 
             // cbFlagDamage
             // 
@@ -226,6 +233,7 @@
             this.cbFlagDamage.Size = new System.Drawing.Size(68, 17);
             this.cbFlagDamage.TabIndex = 93;
             this.cbFlagDamage.Text = "Damage";
+            this.cbFlagDamage.CheckedChanged += new System.EventHandler(this.cbFlagDamage_CheckedChanged);
             // 
             // comboRoomType
             // 
@@ -250,6 +258,7 @@
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(99, 24);
             this.comboRoomType.TabIndex = 92;
+            this.comboRoomType.SelectedIndexChanged += new System.EventHandler(this.comboRoomType_SelectedIndexChanged);
             // 
             // darkLabel15
             // 
