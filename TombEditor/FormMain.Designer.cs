@@ -130,7 +130,7 @@
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(652, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1204, 24);
             this.menuStrip.TabIndex = 0;
             this.menuStrip.Text = "darkMenuStrip1";
             // 
@@ -904,10 +904,10 @@
             this.statusStripSelectedRoom,
             this.statusStripGlobalSelectionArea,
             this.statusStripLocalSelectionArea});
-            this.statusStrip.Location = new System.Drawing.Point(0, 329);
+            this.statusStrip.Location = new System.Drawing.Point(0, 701);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.statusStrip.Size = new System.Drawing.Size(652, 29);
+            this.statusStrip.Size = new System.Drawing.Size(1204, 29);
             this.statusStrip.SizingGrip = false;
             this.statusStrip.TabIndex = 29;
             this.statusStrip.Text = "statusStrip";
@@ -971,7 +971,7 @@
             this.dockArea.Location = new System.Drawing.Point(0, 0);
             this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
             this.dockArea.Name = "dockArea";
-            this.dockArea.Size = new System.Drawing.Size(652, 305);
+            this.dockArea.Size = new System.Drawing.Size(1204, 677);
             this.dockArea.TabIndex = 90;
             // 
             // panelDockArea
@@ -980,14 +980,14 @@
             this.panelDockArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDockArea.Location = new System.Drawing.Point(0, 24);
             this.panelDockArea.Name = "panelDockArea";
-            this.panelDockArea.Size = new System.Drawing.Size(652, 305);
+            this.panelDockArea.Size = new System.Drawing.Size(1204, 677);
             this.panelDockArea.TabIndex = 26;
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(652, 358);
+            this.ClientSize = new System.Drawing.Size(1204, 730);
             this.Controls.Add(this.panelDockArea);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
@@ -995,9 +995,8 @@
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
             this.Name = "FormMain";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Tomb Editor";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);

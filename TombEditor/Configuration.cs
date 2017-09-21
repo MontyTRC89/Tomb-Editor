@@ -48,8 +48,12 @@ namespace TombEditor
         public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
 
+        public Point Window_Position { get; set; } = new Point(32, 32);
+        public Size Window_Size { get; set; } = Window_SizeDefault;
+        public bool Window_Maximized { get; set; } = true;
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
+        public static readonly Size Window_SizeDefault = new Size(1212, 763);
         public static readonly DockPanelState Window_LayoutDefault = new DockPanelState
         {
             Regions = new List<DockRegionState>
@@ -103,7 +107,7 @@ namespace TombEditor
                 new DockRegionState
                 {
                     Area = DarkDockArea.Right,
-                    Size = new Size(280, 0),
+                    Size = new Size(286, 0),
                     Groups = new List<DockGroupState>
                     {
                         new DockGroupState

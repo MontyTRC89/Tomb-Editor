@@ -39,10 +39,6 @@ namespace TombEditor
         public FormMain()
         {
             InitializeComponent();
-
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(1212, 763) + (Size - ClientSize);
             
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
@@ -55,6 +51,7 @@ namespace TombEditor
             _editor.EditorEventRaised += EditorEventRaised;
             _editor.Level = Level.CreateSimpleLevel();
 
+            InitializeWindow();
             PopulateDockPanel();
 
             // Initialize panels
@@ -80,6 +77,18 @@ namespace TombEditor
             if (disposing && (components != null))
                 components.Dispose();
             base.Dispose(disposing);
+        }
+
+        private void InitializeWindow()
+        {
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
+
+            // Restore window settings.
+            WindowState = (_editor.Configuration.Window_Maximized == true ? FormWindowState.Maximized : FormWindowState.Normal);
+            Size = _editor.Configuration.Window_Size;
+            Location = _editor.Configuration.Window_Position;
         }
 
         private void PopulateDockPanel()
@@ -165,7 +174,11 @@ namespace TombEditor
 
         protected override void OnClosed(EventArgs e)
         {
+            // Save window configuration.
+            _editor.Configuration.Window_Position = Location;
+            _editor.Configuration.Window_Size = Size;
             _editor.Configuration.Window_Layout = dockArea.GetDockPanelState();
+            _editor.Configuration.Window_Maximized = (WindowState == FormWindowState.Maximized);
 
             base.OnClosed(e);
             _editor.Configuration.SaveTry();
@@ -359,13 +372,7 @@ namespace TombEditor
         
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var settings = _editor.Level.Settings;
-            string path = ResourceLoader.BrowseTextureFile(settings, settings.TextureFilePath, this);
-            if (settings.TextureFilePath == path)
-                return;
-
-            settings.TextureFilePath = path;
-            _editor.LoadedTexturesChange();
+            EditorActions.LoadTextures(this);
         }
         
         private void unloadTextureToolStripMenuItem_Click(object sender, EventArgs e)

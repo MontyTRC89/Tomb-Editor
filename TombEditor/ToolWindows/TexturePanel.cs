@@ -51,6 +51,9 @@ namespace TombEditor.ToolWindows
             // Center texture on texture map
             if (obj is Editor.SelectTextureAndCenterViewEvent)
                 panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
+
+            if (obj is Editor.LoadedTexturesChangedEvent)
+                lblLoadHelper.Visible = (panelTextureMap.VisibleTexture == null);
         }
 
         private void butTextureSounds_Click(object sender, EventArgs e)
@@ -63,9 +66,9 @@ namespace TombEditor.ToolWindows
             EditorActions.ShowAnimationRangesDialog(this);
         }
 
-        private void butBump_Click(object sender, EventArgs e)
+        private void lblLoadHelper_Click(object sender, EventArgs e)
         {
-
+            EditorActions.LoadTextures(this.Parent);
         }
     }
 }

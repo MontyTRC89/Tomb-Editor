@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using NLog;
 using TombEditor.Compilers;
 using TombEditor.Geometry;
+using TombEditor.Geometry.IO;
 using TombLib.Utils;
 
 
@@ -1685,6 +1686,17 @@ namespace TombEditor
                 return;
 
             TombLauncher.Launch(_editor.Level.Settings);
+        }
+
+        public static void LoadTextures(IWin32Window owner)
+        {
+            var settings = _editor.Level.Settings;
+            string path = ResourceLoader.BrowseTextureFile(settings, settings.TextureFilePath, owner);
+            if (settings.TextureFilePath == path)
+                return;
+
+            settings.TextureFilePath = path;
+            _editor.LoadedTexturesChange();
         }
 
         public static void TextureWalls()
