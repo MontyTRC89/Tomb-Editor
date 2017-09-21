@@ -175,8 +175,10 @@ namespace TombEditor
         protected override void OnClosed(EventArgs e)
         {
             // Save window configuration.
+            // Window size gets saved only when editor is not in maximized state.
+            if (WindowState != FormWindowState.Maximized)
+                _editor.Configuration.Window_Size = Size;
             _editor.Configuration.Window_Position = Location;
-            _editor.Configuration.Window_Size = Size;
             _editor.Configuration.Window_Layout = dockArea.GetDockPanelState();
             _editor.Configuration.Window_Maximized = (WindowState == FormWindowState.Maximized);
 
