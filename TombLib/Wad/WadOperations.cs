@@ -281,7 +281,7 @@ namespace TombLib.Wad
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = OriginalSoundsDefinitions.SoundNames[i];
+                newInfo.Name = OriginalSoundsDefinitions.GetSoundName(i);
                 newInfo.Volume = oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = oldInfo.Chance;
