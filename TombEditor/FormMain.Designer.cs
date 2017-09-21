@@ -971,6 +971,7 @@
             this.dockArea.Location = new System.Drawing.Point(0, 0);
             this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
             this.dockArea.Name = "dockArea";
+            this.dockArea.Padding = new System.Windows.Forms.Padding(2);
             this.dockArea.Size = new System.Drawing.Size(1204, 677);
             this.dockArea.TabIndex = 90;
             // 
