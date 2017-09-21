@@ -73,6 +73,7 @@
             this.panelTriggerList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTriggerList.Location = new System.Drawing.Point(0, 25);
             this.panelTriggerList.Name = "panelTriggerList";
+            this.panelTriggerList.Padding = new System.Windows.Forms.Padding(2);
             this.panelTriggerList.Size = new System.Drawing.Size(279, 280);
             this.panelTriggerList.TabIndex = 58;
             // 
@@ -85,9 +86,9 @@
             this.lstTriggers.FormattingEnabled = true;
             this.lstTriggers.IntegralHeight = false;
             this.lstTriggers.ItemHeight = 18;
-            this.lstTriggers.Location = new System.Drawing.Point(0, 0);
+            this.lstTriggers.Location = new System.Drawing.Point(2, 2);
             this.lstTriggers.Name = "lstTriggers";
-            this.lstTriggers.Size = new System.Drawing.Size(279, 280);
+            this.lstTriggers.Size = new System.Drawing.Size(275, 276);
             this.lstTriggers.TabIndex = 56;
             // 
             // TriggerList

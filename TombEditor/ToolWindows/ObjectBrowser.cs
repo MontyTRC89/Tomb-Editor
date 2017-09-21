@@ -74,6 +74,12 @@ namespace TombEditor.ToolWindows
                 ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
                 panelStaticMeshColor.BackColor = itemInstance == null ? System.Drawing.Color.Black : itemInstance.Color.ToWinFormsColor();
             }
+
+            if (obj is Editor.LoadedWadsChangedEvent)
+            {
+                lblLoadHelper.Visible = (_editor.Level.Wad == null);
+                panelItem.Visible = (_editor.Level.Wad != null);
+            }
         }
 
         private ItemType? GetCurrentItemWithMessage()
@@ -174,6 +180,11 @@ namespace TombEditor.ToolWindows
                 _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
             else if (comboItems.SelectedItem is WadStatic)
                 _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
+        }
+
+        private void lblLoadHelper_Click(object sender, EventArgs e)
+        {
+            EditorActions.LoadWad(Parent);
         }
     }
 }

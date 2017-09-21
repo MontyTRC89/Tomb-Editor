@@ -439,31 +439,17 @@ namespace TombEditor
 
         private void loadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var settings = _editor.Level.Settings;
-            string path = ResourceLoader.BrowseObjectFile(settings, settings.WadFilePath, this);
-            if (path == settings.WadFilePath)
-                return;
-
-            settings.WadFilePath = path;
-            _editor.Level.ReloadWad();
-            _editor.LoadedWadsChange(_editor.Level.Wad);
+            EditorActions.LoadWad(this);
         }
 
         private void unloadWADToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.Settings.WadFilePath = null;
-            _editor.Level.ReloadWad();
-            _editor.LoadedWadsChange(null);
+            EditorActions.UnloadWad();
         }
         
         private void reloadWadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _editor.Level.ReloadWad();
-            _editor.LoadedWadsChange(null);
-        }
-
-        private void butCropRoom_Click(object sender, EventArgs e)
-        {
+            EditorActions.ReloadWad();
         }
 
         private void addCameraToolStripMenuItem_Click(object sender, EventArgs e)
@@ -727,7 +713,7 @@ namespace TombEditor
 
         private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            butCropRoom_Click(null, null);
+            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void splitRoomToolStripMenuItem_Click(object sender, EventArgs e)

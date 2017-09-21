@@ -102,6 +102,7 @@
             // 
             // but2D
             // 
+            this.but2D.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.but2D.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.but2D.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.but2D.Image = global::TombEditor.Properties.Resources._2DView_16;
@@ -113,6 +114,7 @@
             // 
             // but3D
             // 
+            this.but3D.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.but3D.Checked = true;
             this.but3D.CheckState = System.Windows.Forms.CheckState.Checked;
             this.but3D.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -127,6 +129,7 @@
             // 
             // butFaceEdit
             // 
+            this.butFaceEdit.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butFaceEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butFaceEdit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butFaceEdit.Image = global::TombEditor.Properties.Resources.TextureMode_16;
@@ -139,6 +142,7 @@
             // 
             // butLightingMode
             // 
+            this.butLightingMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butLightingMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butLightingMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butLightingMode.Image = global::TombEditor.Properties.Resources.light_on_16;
@@ -151,6 +155,7 @@
             // 
             // butCenterCamera
             // 
+            this.butCenterCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butCenterCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butCenterCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butCenterCamera.Image = global::TombEditor.Properties.Resources.center_direction_16;
@@ -163,6 +168,7 @@
             // 
             // butDrawPortals
             // 
+            this.butDrawPortals.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDrawPortals.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDrawPortals.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawPortals.Image = global::TombEditor.Properties.Resources.door_opened_16;
@@ -175,6 +181,7 @@
             // 
             // butDrawHorizon
             // 
+            this.butDrawHorizon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDrawHorizon.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDrawHorizon.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawHorizon.Image = global::TombEditor.Properties.Resources.earth_element_16;
@@ -187,6 +194,7 @@
             // 
             // butDrawRoomNames
             // 
+            this.butDrawRoomNames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDrawRoomNames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDrawRoomNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawRoomNames.Image = global::TombEditor.Properties.Resources.generic_text_16;
@@ -199,6 +207,7 @@
             // 
             // toolStripSeparator1
             // 
+            this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -206,6 +215,7 @@
             // 
             // butFlipMap
             // 
+            this.butFlipMap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butFlipMap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butFlipMap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butFlipMap.Image = global::TombEditor.Properties.Resources.copy_link_16;
@@ -218,6 +228,7 @@
             // 
             // toolStripSeparator6
             // 
+            this.toolStripSeparator6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripSeparator6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator6.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator6.Name = "toolStripSeparator6";
@@ -225,6 +236,7 @@
             // 
             // butCopy
             // 
+            this.butCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butCopy.Image = global::TombEditor.Properties.Resources.copy_16;
@@ -237,6 +249,7 @@
             // 
             // butPaste
             // 
+            this.butPaste.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butPaste.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butPaste.Image = global::TombEditor.Properties.Resources.clipboard_16;
@@ -249,6 +262,7 @@
             // 
             // butClone
             // 
+            this.butClone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butClone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butClone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butClone.Image = global::TombEditor.Properties.Resources.rubber_stamp_16;
@@ -261,6 +275,7 @@
             // 
             // toolStripSeparator5
             // 
+            this.toolStripSeparator5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripSeparator5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator5.Name = "toolStripSeparator5";
@@ -268,6 +283,7 @@
             // 
             // butOpacityNone
             // 
+            this.butOpacityNone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butOpacityNone.CheckOnClick = true;
             this.butOpacityNone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butOpacityNone.Enabled = false;
@@ -282,6 +298,7 @@
             // 
             // butOpacitySolidFaces
             // 
+            this.butOpacitySolidFaces.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butOpacitySolidFaces.CheckOnClick = true;
             this.butOpacitySolidFaces.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butOpacitySolidFaces.Enabled = false;
@@ -297,6 +314,7 @@
             // 
             // butOpacityTraversableFaces
             // 
+            this.butOpacityTraversableFaces.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butOpacityTraversableFaces.CheckOnClick = true;
             this.butOpacityTraversableFaces.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butOpacityTraversableFaces.Enabled = false;
@@ -311,6 +329,7 @@
             // 
             // toolStripSeparator4
             // 
+            this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripSeparator4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator4.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator4.Name = "toolStripSeparator4";
@@ -318,6 +337,7 @@
             // 
             // butTextureFloor
             // 
+            this.butTextureFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureFloor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTextureFloor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureFloor.Image = global::TombEditor.Properties.Resources.TextureFloor_16;
@@ -330,6 +350,7 @@
             // 
             // butTextureCeiling
             // 
+            this.butTextureCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureCeiling.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTextureCeiling.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.TextureCeiling_16;
@@ -342,6 +363,7 @@
             // 
             // butTextureWalls
             // 
+            this.butTextureWalls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureWalls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTextureWalls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.TextureWalls_16;
@@ -354,6 +376,7 @@
             // 
             // butAdditiveBlending
             // 
+            this.butAdditiveBlending.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAdditiveBlending.CheckOnClick = true;
             this.butAdditiveBlending.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butAdditiveBlending.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -366,6 +389,7 @@
             // 
             // butDoubleSided
             // 
+            this.butDoubleSided.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butDoubleSided.CheckOnClick = true;
             this.butDoubleSided.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butDoubleSided.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -378,6 +402,7 @@
             // 
             // butInvisible
             // 
+            this.butInvisible.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butInvisible.CheckOnClick = true;
             this.butInvisible.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butInvisible.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -389,6 +414,7 @@
             // 
             // toolStripSeparator2
             // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -396,6 +422,7 @@
             // 
             // butAddCamera
             // 
+            this.butAddCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAddCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butAddCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butAddCamera.Image = global::TombEditor.Properties.Resources.Camera_161;
@@ -407,6 +434,7 @@
             // 
             // butAddFlybyCamera
             // 
+            this.butAddFlybyCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAddFlybyCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butAddFlybyCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butAddFlybyCamera.Image = global::TombEditor.Properties.Resources.movie_projector_16;
@@ -419,6 +447,7 @@
             // 
             // butAddSoundSource
             // 
+            this.butAddSoundSource.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAddSoundSource.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butAddSoundSource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butAddSoundSource.Image = global::TombEditor.Properties.Resources.volume_up_16;
@@ -431,6 +460,7 @@
             // 
             // butAddSink
             // 
+            this.butAddSink.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAddSink.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butAddSink.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butAddSink.Image = global::TombEditor.Properties.Resources.tornado_16;
@@ -443,6 +473,7 @@
             // 
             // toolStripSeparator3
             // 
+            this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -450,6 +481,7 @@
             // 
             // butCompileLevel
             // 
+            this.butCompileLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butCompileLevel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butCompileLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butCompileLevel.Image = global::TombEditor.Properties.Resources.software_installer_16;
@@ -462,6 +494,7 @@
             // 
             // butCompileLevelAndPlay
             // 
+            this.butCompileLevelAndPlay.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butCompileLevelAndPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butCompileLevelAndPlay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butCompileLevelAndPlay.Image = global::TombEditor.Properties.Resources.play_16;

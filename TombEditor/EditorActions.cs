@@ -1699,6 +1699,31 @@ namespace TombEditor
             _editor.LoadedTexturesChange();
         }
 
+        public static void LoadWad(IWin32Window owner)
+        {
+            var settings = _editor.Level.Settings;
+            string path = ResourceLoader.BrowseObjectFile(settings, settings.WadFilePath, owner);
+            if (path == settings.WadFilePath)
+                return;
+
+            settings.WadFilePath = path;
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(_editor.Level.Wad);
+        }
+
+        public static void UnloadWad()
+        {
+            _editor.Level.Settings.WadFilePath = null;
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(null);
+        }
+
+        public static void ReloadWad()
+        {
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(null);
+        }
+
         public static void TextureWalls()
         {
             if (_editor.SelectedRoom == null)
