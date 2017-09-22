@@ -67,8 +67,8 @@ namespace TombEditor.Controls
             {
                 PresentationParameters pp = new PresentationParameters();
                 pp.BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm;
-                pp.BackBufferWidth = Width;
-                pp.BackBufferHeight = Height;
+                pp.BackBufferWidth = ClientSize.Width;
+                pp.BackBufferHeight = ClientSize.Height;
                 pp.DepthStencilFormat = DepthFormat.Depth24Stencil8;
                 pp.DeviceWindowHandle = this;
                 pp.IsFullScreen = false;
@@ -205,7 +205,7 @@ namespace TombEditor.Controls
         {
             base.OnResize(e);
             if (Presenter != null)
-                Presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                Presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

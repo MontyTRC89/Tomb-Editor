@@ -331,8 +331,8 @@ namespace TombEditor.Controls
             var pp = new PresentationParameters
             {
                 BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
-                BackBufferWidth = Width,
-                BackBufferHeight = Height,
+                BackBufferWidth = ClientSize.Width,
+                BackBufferHeight = ClientSize.Height,
                 DepthStencilFormat = DepthFormat.Depth24Stencil8,
                 DeviceWindowHandle = this,
                 IsFullScreen = false,
@@ -474,8 +474,8 @@ namespace TombEditor.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (_presenter != null && Width != 0 && Height != 0)
-                _presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+            if (_presenter != null && ClientSize.Width != 0 && ClientSize.Height != 0)
+                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
