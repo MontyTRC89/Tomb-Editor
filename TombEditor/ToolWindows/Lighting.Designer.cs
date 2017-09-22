@@ -229,7 +229,7 @@
             this.darkLabel9.Name = "darkLabel9";
             this.darkLabel9.Size = new System.Drawing.Size(51, 22);
             this.darkLabel9.TabIndex = 77;
-            this.darkLabel9.Text = "Cutoff";
+            this.darkLabel9.Text = "Out α";
             this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel23
@@ -284,7 +284,7 @@
             this.darkLabel10.Name = "darkLabel10";
             this.darkLabel10.Size = new System.Drawing.Size(51, 22);
             this.darkLabel10.TabIndex = 73;
-            this.darkLabel10.Text = "Len";
+            this.darkLabel10.Text = "In α";
             this.darkLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel8
@@ -295,7 +295,7 @@
             this.darkLabel8.Name = "darkLabel8";
             this.darkLabel8.Size = new System.Drawing.Size(51, 22);
             this.darkLabel8.TabIndex = 71;
-            this.darkLabel8.Text = "Out";
+            this.darkLabel8.Text = "Out d";
             this.darkLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel7
@@ -306,7 +306,7 @@
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(51, 22);
             this.darkLabel7.TabIndex = 70;
-            this.darkLabel7.Text = "In";
+            this.darkLabel7.Text = "In d";
             this.darkLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel6

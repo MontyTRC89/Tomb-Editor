@@ -331,8 +331,8 @@ namespace TombEditor.Controls
             var pp = new PresentationParameters
             {
                 BackBufferFormat = SharpDX.DXGI.Format.R8G8B8A8_UNorm,
-                BackBufferWidth = Width,
-                BackBufferHeight = Height,
+                BackBufferWidth = ClientSize.Width,
+                BackBufferHeight = ClientSize.Height,
                 DepthStencilFormat = DepthFormat.Depth24Stencil8,
                 DeviceWindowHandle = this,
                 IsFullScreen = false,
@@ -474,8 +474,8 @@ namespace TombEditor.Controls
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            if (_presenter != null && Width != 0 && Height != 0)
-                _presenter.Resize(Width, Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+            if (_presenter != null && ClientSize.Width != 0 && ClientSize.Height != 0)
+                _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -1077,7 +1077,7 @@ namespace TombEditor.Controls
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow)
                     {
-                        Matrix model = Matrix.Scaling(light.In * 2.0f) * Matrix.Translation(light.Position) *
+                        Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * Matrix.Translation(light.Position) *
                                        Matrix.Translation(room.WorldPos);
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -1090,7 +1090,7 @@ namespace TombEditor.Controls
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow ||
                         light.Type == LightType.FogBulb)
                     {
-                        Matrix model = Matrix.Scaling(light.Out * 2.0f) * Matrix.Translation(light.Position) *
+                        Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * Matrix.Translation(light.Position) *
                                        Matrix.Translation(room.WorldPos);
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
@@ -1108,8 +1108,8 @@ namespace TombEditor.Controls
 
                     // Inner cone
                     float coneAngle = (float)Math.Atan2(512, 1024);
-                    float lenScaleH = light.Len;
-                    float lenScaleW = MathUtil.DegreesToRadians(light.In) / coneAngle * lenScaleH;
+                    float lenScaleH = light.InnerRange;
+                    float lenScaleW = MathUtil.DegreesToRadians(light.InnerAngle) / coneAngle * lenScaleH;
 
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.RotationX)) *
                                       Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.RotationY));
@@ -1124,8 +1124,8 @@ namespace TombEditor.Controls
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
 
                     // Outer cone
-                    float cutoffScaleH = light.Cutoff;
-                    float cutoffScaleW = MathUtil.DegreesToRadians(light.Out) / coneAngle * cutoffScaleH;
+                    float cutoffScaleH = light.OuterRange;
+                    float cutoffScaleW = MathUtil.DegreesToRadians(light.OuterAngle) / coneAngle * cutoffScaleH;
 
                     Matrix model2 = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation *
                                     Matrix.Translation(light.Position) *
@@ -2137,7 +2137,7 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["FogBulbEnabled"].SetValue(true);
                     _roomEffect.Parameters["FogBulbIntensity"].SetValue(light.Intensity);
                     _roomEffect.Parameters["FogBulbPosition"].SetValue(Vector3.Transform(light.Position, _editor.SelectedRoom.Transform));
-                    _roomEffect.Parameters["FogBulbRadius"].SetValue(light.Out * 1024.0f);
+                    _roomEffect.Parameters["FogBulbRadius"].SetValue(light.OuterRange * 1024.0f);
                 }
                 else
                 {
