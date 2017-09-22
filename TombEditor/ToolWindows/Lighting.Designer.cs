@@ -95,7 +95,8 @@
             // 
             // numLightDirectionY
             // 
-            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightDirectionY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightDirectionY.Enabled = false;
             this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightDirectionY.Location = new System.Drawing.Point(302, 102);
@@ -106,7 +107,8 @@
             // 
             // numLightDirectionX
             // 
-            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightDirectionX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightDirectionX.Enabled = false;
             this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightDirectionX.Location = new System.Drawing.Point(302, 77);
@@ -117,7 +119,8 @@
             // 
             // numLightOut
             // 
-            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
+            this.numLightOut.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightOut.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightOut.Enabled = false;
             this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightOut.Location = new System.Drawing.Point(198, 102);
@@ -128,7 +131,8 @@
             // 
             // numLightIn
             // 
-            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightIn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightIn.Enabled = false;
             this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightIn.Location = new System.Drawing.Point(198, 77);
@@ -139,7 +143,8 @@
             // 
             // numLightCutoff
             // 
-            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
+            this.numLightCutoff.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightCutoff.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightCutoff.Enabled = false;
             this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightCutoff.Location = new System.Drawing.Point(302, 52);
@@ -150,7 +155,8 @@
             // 
             // numLightLen
             // 
-            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
+            this.numLightLen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightLen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightLen.Enabled = false;
             this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightLen.Location = new System.Drawing.Point(302, 27);
@@ -161,8 +167,10 @@
             // 
             // numLightIntensity
             // 
-            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIntensity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightIntensity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.numLightIntensity.Enabled = false;
+            this.numLightIntensity.ForeColor = System.Drawing.SystemColors.ControlText;
             this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
             this.numLightIntensity.Location = new System.Drawing.Point(198, 52);
             this.numLightIntensity.Name = "numLightIntensity";

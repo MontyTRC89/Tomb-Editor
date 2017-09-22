@@ -42,8 +42,8 @@ namespace TombEditor.Controls
             }
         }
         
-        private Color _backgroundColor = Color.FromArgb(255, 60, 63, 65);
-        private Color _borderColor = Color.FromArgb(255, 171, 173, 179);
+        private Color _backgroundColor = Color.FromArgb(69, 73, 74);
+        private Color _borderColor = Color.Gainsboro;
 
         private SolidBrush _backgroundBrush;
         private Pen _borderPen;
@@ -81,15 +81,14 @@ namespace TombEditor.Controls
         private void EditorEventRaised(IEditorEvent obj)
         {}
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnMouseWheel(MouseEventArgs e)
         {
-            base.OnPaint(e);
+            base.OnMouseWheel(e);
 
-            Graphics g = e.Graphics;
-
-            g.FillRectangle(_backgroundBrush, 0, 0, 60, 22);
-            g.DrawRectangle(_borderPen, 0, 0, 60, 21);
-
+            if(e.Delta < 0)
+                butDown_MouseDown(null, e);
+            else
+                butUp_MouseDown(null, e);
         }
 
         private void SetParameters()
@@ -224,10 +223,10 @@ namespace TombEditor.Controls
             float newValue = _value;
 
             // Change parameter value
-            if (e.Button == MouseButtons.Left)
-                newValue -= _step;
-            if (e.Button == MouseButtons.Right)
+            if (ModifierKeys.HasFlag(Keys.Shift))
                 newValue -= _fastStep;
+            else
+                newValue -= _step;
 
             // Check for ranges
             if ((light.Type == LightType.Spot || light.Type == LightType.Sun) && (LightParameter == LightParameter.DirectionY))
@@ -261,10 +260,10 @@ namespace TombEditor.Controls
             float newValue = _value;
 
             // Change parameter value
-            if (e.Button == MouseButtons.Left)
-                newValue += _step;
-            if (e.Button == MouseButtons.Right)
+            if (ModifierKeys.HasFlag(Keys.Shift))
                 newValue += _fastStep;
+            else 
+                newValue += _step;
 
             // Check for ranges
             if ((light.Type == LightType.Spot || light.Type == LightType.Sun) &&
