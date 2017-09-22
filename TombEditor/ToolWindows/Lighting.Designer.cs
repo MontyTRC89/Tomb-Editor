@@ -21,10 +21,10 @@
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
             this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
             this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
-            this.numLightOut = new TombEditor.Controls.LightParameterController();
-            this.numLightIn = new TombEditor.Controls.LightParameterController();
-            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
-            this.numLightLen = new TombEditor.Controls.LightParameterController();
+            this.numLightOuterRange = new TombEditor.Controls.LightParameterController();
+            this.numLightInnerRange = new TombEditor.Controls.LightParameterController();
+            this.numLightOuterAngle = new TombEditor.Controls.LightParameterController();
+            this.numLightInnerAngle = new TombEditor.Controls.LightParameterController();
             this.numLightIntensity = new TombEditor.Controls.LightParameterController();
             this.panelLightColor = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
@@ -117,53 +117,53 @@
             this.numLightDirectionX.TabIndex = 87;
             this.numLightDirectionX.Value = 0F;
             // 
-            // numLightOut
+            // numLightOuterRange
             // 
-            this.numLightOut.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightOut.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightOut.Enabled = false;
-            this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightOut.Location = new System.Drawing.Point(198, 102);
-            this.numLightOut.Name = "numLightOut";
-            this.numLightOut.Size = new System.Drawing.Size(60, 22);
-            this.numLightOut.TabIndex = 86;
-            this.numLightOut.Value = 0F;
+            this.numLightOuterRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightOuterRange.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numLightOuterRange.Enabled = false;
+            this.numLightOuterRange.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightOuterRange.Location = new System.Drawing.Point(198, 102);
+            this.numLightOuterRange.Name = "numLightOuterRange";
+            this.numLightOuterRange.Size = new System.Drawing.Size(60, 22);
+            this.numLightOuterRange.TabIndex = 86;
+            this.numLightOuterRange.Value = 0F;
             // 
-            // numLightIn
+            // numLightInnerRange
             // 
-            this.numLightIn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightIn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightIn.Enabled = false;
-            this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightIn.Location = new System.Drawing.Point(198, 77);
-            this.numLightIn.Name = "numLightIn";
-            this.numLightIn.Size = new System.Drawing.Size(60, 22);
-            this.numLightIn.TabIndex = 85;
-            this.numLightIn.Value = 0F;
+            this.numLightInnerRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightInnerRange.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numLightInnerRange.Enabled = false;
+            this.numLightInnerRange.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightInnerRange.Location = new System.Drawing.Point(198, 77);
+            this.numLightInnerRange.Name = "numLightInnerRange";
+            this.numLightInnerRange.Size = new System.Drawing.Size(60, 22);
+            this.numLightInnerRange.TabIndex = 85;
+            this.numLightInnerRange.Value = 0F;
             // 
-            // numLightCutoff
+            // numLightOuterAngle
             // 
-            this.numLightCutoff.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightCutoff.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightCutoff.Enabled = false;
-            this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightCutoff.Location = new System.Drawing.Point(302, 52);
-            this.numLightCutoff.Name = "numLightCutoff";
-            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
-            this.numLightCutoff.TabIndex = 84;
-            this.numLightCutoff.Value = 0F;
+            this.numLightOuterAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightOuterAngle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numLightOuterAngle.Enabled = false;
+            this.numLightOuterAngle.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightOuterAngle.Location = new System.Drawing.Point(302, 52);
+            this.numLightOuterAngle.Name = "numLightOuterAngle";
+            this.numLightOuterAngle.Size = new System.Drawing.Size(60, 22);
+            this.numLightOuterAngle.TabIndex = 84;
+            this.numLightOuterAngle.Value = 0F;
             // 
-            // numLightLen
+            // numLightInnerAngle
             // 
-            this.numLightLen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightLen.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightLen.Enabled = false;
-            this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightLen.Location = new System.Drawing.Point(302, 27);
-            this.numLightLen.Name = "numLightLen";
-            this.numLightLen.Size = new System.Drawing.Size(60, 22);
-            this.numLightLen.TabIndex = 83;
-            this.numLightLen.Value = 0F;
+            this.numLightInnerAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.numLightInnerAngle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numLightInnerAngle.Enabled = false;
+            this.numLightInnerAngle.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightInnerAngle.Location = new System.Drawing.Point(302, 27);
+            this.numLightInnerAngle.Name = "numLightInnerAngle";
+            this.numLightInnerAngle.Size = new System.Drawing.Size(60, 22);
+            this.numLightInnerAngle.TabIndex = 83;
+            this.numLightInnerAngle.Value = 0F;
             // 
             // numLightIntensity
             // 
@@ -424,10 +424,10 @@
             this.Controls.Add(this.cbLightEnabled);
             this.Controls.Add(this.numLightDirectionY);
             this.Controls.Add(this.numLightDirectionX);
-            this.Controls.Add(this.numLightOut);
-            this.Controls.Add(this.numLightIn);
-            this.Controls.Add(this.numLightCutoff);
-            this.Controls.Add(this.numLightLen);
+            this.Controls.Add(this.numLightOuterRange);
+            this.Controls.Add(this.numLightInnerRange);
+            this.Controls.Add(this.numLightOuterAngle);
+            this.Controls.Add(this.numLightInnerAngle);
             this.Controls.Add(this.numLightIntensity);
             this.Controls.Add(this.panelLightColor);
             this.Controls.Add(this.darkLabel12);
@@ -468,10 +468,10 @@
         private DarkUI.Controls.DarkCheckBox cbLightEnabled;
         private Controls.LightParameterController numLightDirectionY;
         private Controls.LightParameterController numLightDirectionX;
-        private Controls.LightParameterController numLightOut;
-        private Controls.LightParameterController numLightIn;
-        private Controls.LightParameterController numLightCutoff;
-        private Controls.LightParameterController numLightLen;
+        private Controls.LightParameterController numLightOuterRange;
+        private Controls.LightParameterController numLightInnerRange;
+        private Controls.LightParameterController numLightOuterAngle;
+        private Controls.LightParameterController numLightInnerAngle;
         private Controls.LightParameterController numLightIntensity;
         private System.Windows.Forms.Panel panelLightColor;
         private DarkUI.Controls.DarkLabel darkLabel12;

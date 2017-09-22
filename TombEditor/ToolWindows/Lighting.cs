@@ -27,10 +27,10 @@ namespace TombEditor.ToolWindows
 
             // For each control bind its light parameter
             numLightIntensity.LightParameter = LightParameter.Intensity;
-            numLightIn.LightParameter = LightParameter.In;
-            numLightOut.LightParameter = LightParameter.Out;
-            numLightLen.LightParameter = LightParameter.Len;
-            numLightCutoff.LightParameter = LightParameter.CutOff;
+            numLightInnerRange.LightParameter = LightParameter.InnerRange;
+            numLightOuterRange.LightParameter = LightParameter.OuterRange;
+            numLightInnerAngle.LightParameter = LightParameter.InnerAngle;
+            numLightOuterAngle.LightParameter = LightParameter.OuterAngle;
             numLightDirectionX.LightParameter = LightParameter.DirectionX;
             numLightDirectionY.LightParameter = LightParameter.DirectionY;
         }
@@ -101,10 +101,10 @@ namespace TombEditor.ToolWindows
                     cbLightCastsShadows.Checked = light.CastsShadows;
                     cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
                     cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
-                    numLightIn.Value = light.In;
-                    numLightOut.Value = light.Out;
-                    numLightLen.Value = light.Len;
-                    numLightCutoff.Value = light.Cutoff;
+                    numLightInnerRange.Value = light.InnerRange;
+                    numLightOuterRange.Value = light.OuterRange;
+                    numLightInnerAngle.Value = light.InnerAngle;
+                    numLightOuterAngle.Value = light.OuterAngle;
                     numLightDirectionX.Value = light.RotationX;
                     numLightDirectionY.Value = light.RotationY;
                 }
@@ -118,10 +118,10 @@ namespace TombEditor.ToolWindows
                 cbLightCastsShadows.Enabled = CanCastShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
-                numLightIn.Enabled = HasInOutRange;
-                numLightOut.Enabled = HasInOutRange;
-                numLightLen.Enabled = HasLenCutoffRange;
-                numLightCutoff.Enabled = HasLenCutoffRange;
+                numLightInnerRange.Enabled = HasInOutRange;
+                numLightOuterRange.Enabled = HasInOutRange;
+                numLightInnerAngle.Enabled = HasLenCutoffRange;
+                numLightOuterAngle.Enabled = HasLenCutoffRange;
                 numLightDirectionX.Enabled = HasDirection;
                 numLightDirectionY.Enabled = HasDirection;
             }
