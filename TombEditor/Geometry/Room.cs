@@ -1959,13 +1959,13 @@ namespace TombEditor.Geometry
                     {
                         case LightType.Light:
                         case LightType.Shadow:
-                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.Out * 1024.0f)
+                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                             {
                                 // Get the distance between light and vertex
                                 float distance = Math.Abs((position - light.Position).Length());
 
                                 // If distance is greater than light out radius, then skip this light
-                                if (distance > light.Out * 1024.0f)
+                                if (distance > light.OuterRange * 1024.0f)
                                     continue;
 
                                 // Calculate light diffuse value
@@ -1985,7 +1985,7 @@ namespace TombEditor.Geometry
                                 }
 
                                 // Calculate the attenuation
-                                var attenuaton = (light.Out * 1024.0f - distance) / (light.Out * 1024.0f - light.In * 1024.0f);
+                                var attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
                                 if (attenuaton > 1.0f)
                                     attenuaton = 1.0f;
                                 if (attenuaton <= 0.0f)
@@ -2000,7 +2000,7 @@ namespace TombEditor.Geometry
                             }
                             break;
                         case LightType.Effect:
-                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.Out * 1024.0f)
+                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                             {
                                 int x1 = (int)(Math.Floor(light.Position.X / 1024.0f) * 1024);
                                 int z1 = (int)(Math.Floor(light.Position.Z / 1024.0f) * 1024);
@@ -2061,7 +2061,7 @@ namespace TombEditor.Geometry
                             }
                             break;
                         case LightType.Spot:
-                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.Cutoff * 1024.0f)
+                            if (Math.Abs(Vector3.Distance(position, light.Position)) + 64.0f <= light.OuterRange * 1024.0f)
                             {
                                 // Calculate the ray from light to vertex
                                 var lightVector = position - light.Position;
@@ -2072,7 +2072,7 @@ namespace TombEditor.Geometry
                                 float distance = Math.Abs((position - light.Position).Length());
 
                                 // If distance is greater than light length, then skip this light
-                                if (distance > light.Cutoff * 1024.0f)
+                                if (distance > light.OuterRange * 1024.0f)
                                     continue;
 
                                 // Calculate the light direction
@@ -2086,8 +2086,8 @@ namespace TombEditor.Geometry
 
                                 // Calculate the cosines values for In, Out
                                 double d = -Vector3.Dot(lightVector, lightDirection);
-                                double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.In));
-                                double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.Out));
+                                double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.InnerAngle));
+                                double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
 
                                 if (d < cosO2)
                                     continue;
@@ -2108,8 +2108,8 @@ namespace TombEditor.Geometry
                                     continue;
 
                                 float attenuation = 1.0f;
-                                if (distance >= light.Len * 1024.0f)
-                                    attenuation = 1.0f - (distance - light.Len * 1024.0f) / (light.Cutoff * 1024.0f - light.Len * 1024.0f);
+                                if (distance >= light.InnerRange * 1024.0f)
+                                    attenuation = 1.0f - (distance - light.InnerRange * 1024.0f) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
 
                                 if (attenuation > 1.0f)
                                     attenuation = 1.0f;

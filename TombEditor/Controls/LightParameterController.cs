@@ -14,10 +14,10 @@ namespace TombEditor.Controls
     public enum LightParameter
     {
         Intensity,
-        In,
-        Out,
-        Len,
-        CutOff,
+        InnerRange,
+        OuterRange,
+        InnerAngle,
+        OuterAngle,
         DirectionX,
         DirectionY
     }
@@ -108,8 +108,8 @@ namespace TombEditor.Controls
                     }
                     else if (light.Type == LightType.Effect)
                     {
-                        _minValue = -4.0f;
-                        _maxValue = 4.0f;
+                        _minValue = -16.0f;
+                        _maxValue = 16.0f;
                     }
                     else
                     {
@@ -119,95 +119,55 @@ namespace TombEditor.Controls
 
                     _step = 0.03f;
                     _fastStep = 0.12f;
-
                     _decimals = 2;
-
                     break;
 
-                case LightParameter.In:
+                case LightParameter.InnerRange:
                     _minValue = 0.0f;
                     _maxValue = (light.Type == LightType.Spot ? 89.0f : 40.0f);
-
-                    if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
-                    {
-                        _step = 0.03f;
-                        _fastStep = 1.0f;
-
-                        _decimals = 2;
-                    }
-                    else
-                    {
-                        _step = 1.0f;
-                        _fastStep = 10.0f;
-
-                        _decimals = 0;
-                    }
-
+                    _step = 0.03f;
+                    _fastStep = 1.0f;
+                    _decimals = 2;
                     break;
 
-                case LightParameter.Out:
+                case LightParameter.OuterRange:
                     _minValue = 0.0f;
                     _maxValue = (light.Type == LightType.Spot ? 89.0f : 40.0f);
-
-                    if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
-                    {
-                        _step = 0.03f;
-                        _fastStep = 1.0f;
-
-                        _decimals = 2;
-                    }
-                    else
-                    {
-                        _step = 1.0f;
-                        _fastStep = 10.0f;
-
-                        _decimals = 0;
-                    }
-
-                    break;
-
-                case LightParameter.Len:
-                    _minValue = 0.0f;
-                    _maxValue = 40.0f;
-
                     _step = 0.03f;
                     _fastStep = 1.0f;
-
                     _decimals = 2;
-
                     break;
 
-                case LightParameter.CutOff:
+                case LightParameter.InnerAngle:
                     _minValue = 0.0f;
-                    _maxValue = 40.0f;
-
-                    _step = 0.03f;
-                    _fastStep = 1.0f;
-
+                    _maxValue = 90.0f;
+                    _step = 1.0f;
+                    _fastStep = 10.0f;
                     _decimals = 2;
+                    break;
 
+                case LightParameter.OuterAngle:
+                    _minValue = 0.0f;
+                    _maxValue = 90.0f;
+                    _step = 1.0f;
+                    _fastStep = 10.0f;
+                    _decimals = 2;
                     break;
 
                 case LightParameter.DirectionX:
                     _minValue = -90.0f;
                     _maxValue = 90.0f;
-
                     _step = 1.0f;
                     _fastStep = 10.0f;
-
                     _decimals = 0;
-
                     break;
 
                 case LightParameter.DirectionY:
                     _minValue = 0.0f;
                     _maxValue = 359.0f;
-
                     _step = 1.0f;
                     _fastStep = 10.0f;
-
                     _decimals = 0;
-
                     break;
             }
         }
@@ -309,28 +269,28 @@ namespace TombEditor.Controls
                     light.Intensity = _value;
                     break;
 
-                case LightParameter.In:
-                    if (light.In == _value)
+                case LightParameter.InnerRange:
+                    if (light.InnerRange == _value)
                         return;
-                    light.In = _value;
+                    light.InnerRange = _value;
                     break;
 
-                case LightParameter.Out:
-                    if (light.Out == _value)
+                case LightParameter.OuterRange:
+                    if (light.OuterRange == _value)
                         return;
-                    light.Out = _value;
+                    light.OuterRange = _value;
                     break;
 
-                case LightParameter.Len:
-                    if (light.Len == _value)
+                case LightParameter.InnerAngle:
+                    if (light.InnerAngle == _value)
                         return;
-                    light.Len = _value;
+                    light.InnerAngle = _value;
                     break;
 
-                case LightParameter.CutOff:
-                    if (light.Cutoff == _value)
+                case LightParameter.OuterAngle:
+                    if (light.OuterAngle == _value)
                         return;
-                    light.Cutoff = _value;
+                    light.OuterAngle = _value;
                     break;
 
                 case LightParameter.DirectionX:

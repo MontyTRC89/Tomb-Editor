@@ -417,20 +417,20 @@ namespace TombEditor.Compilers
                 {
                     case LightType.Light:
                         newLight.LightType = 1;
-                        newLight.In = light.In * 1024.0f;
-                        newLight.Out = light.Out * 1024.0f;
+                        newLight.In = light.InnerRange * 1024.0f;
+                        newLight.Out = light.OuterRange * 1024.0f;
                         break;
                     case LightType.Shadow:
                         newLight.LightType = 3;
-                        newLight.In = light.In * 1024.0f;
-                        newLight.Out = light.Out * 1024.0f;
+                        newLight.In = light.InnerRange * 1024.0f;
+                        newLight.Out = light.OuterRange * 1024.0f;
                         break;
                     case LightType.Spot:
                         newLight.LightType = 2;
-                        newLight.In = (float)Math.Cos(MathUtil.DegreesToRadians(light.In));
-                        newLight.Out = (float)Math.Cos(MathUtil.DegreesToRadians(light.Out));
-                        newLight.Length = light.Len * 1024.0f;
-                        newLight.CutOff = light.Cutoff * 1024.0f;
+                        newLight.In = (float)Math.Cos(MathUtil.DegreesToRadians(light.InnerAngle));
+                        newLight.Out = (float)Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
+                        newLight.Length = light.InnerRange * 1024.0f;
+                        newLight.CutOff = light.OuterRange * 1024.0f;
                         newLight.DirectionX = -direction.X;
                         newLight.DirectionY = direction.Y;
                         newLight.DirectionZ = -direction.Z;
@@ -447,8 +447,8 @@ namespace TombEditor.Compilers
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
-                        newLight.In = light.In * 1024;
-                        newLight.Out = light.Out * 1024;
+                        newLight.In = light.InnerRange * 1024;
+                        newLight.Out = light.OuterRange * 1024;
                         break;
                     case LightType.Effect:
                         continue;
