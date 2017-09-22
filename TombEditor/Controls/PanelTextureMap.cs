@@ -361,6 +361,9 @@ namespace TombEditor.Controls
         {
             base.OnMouseWheel(e);
 
+            if (!(VisibleTexture?.IsAvailable ?? false))
+                return;
+
             Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
             ViewScale *= (float)Math.Exp(e.Delta * Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
             MoveToFixedPoint(e.Location, FixedPointInWorld);
