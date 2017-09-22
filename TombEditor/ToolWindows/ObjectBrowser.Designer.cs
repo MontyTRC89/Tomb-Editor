@@ -24,7 +24,7 @@
             this.panelItem = new TombEditor.Controls.PanelRenderingItem();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.panelHeader = new System.Windows.Forms.Panel();
-            this.comboItems = new DarkUI.Controls.DarkComboBox(this.components);
+            this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.panelHeaderRight = new System.Windows.Forms.Panel();
             this.butItemsNext = new DarkUI.Controls.DarkButton();
             this.butAddItem = new DarkUI.Controls.DarkButton();
@@ -33,7 +33,6 @@
             this.panelRightTop = new System.Windows.Forms.Panel();
             this.panelRightBottom = new System.Windows.Forms.Panel();
             this.panelViewer = new System.Windows.Forms.Panel();
-            this.lblLoadHelper = new DarkUI.Controls.DarkLabel();
             this.panelHeader.SuspendLayout();
             this.panelHeaderRight.SuspendLayout();
             this.panelHeaderLeft.SuspendLayout();
@@ -105,7 +104,7 @@
             this.panelItem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelItem.Location = new System.Drawing.Point(2, 2);
             this.panelItem.Name = "panelItem";
-            this.panelItem.Size = new System.Drawing.Size(229, 217);
+            this.panelItem.Size = new System.Drawing.Size(213, 203);
             this.panelItem.TabIndex = 62;
             // 
             // colorDialog
@@ -122,7 +121,7 @@
             this.panelHeader.Location = new System.Drawing.Point(0, 25);
             this.panelHeader.Name = "panelHeader";
             this.panelHeader.Padding = new System.Windows.Forms.Padding(1, 2, 0, 0);
-            this.panelHeader.Size = new System.Drawing.Size(300, 27);
+            this.panelHeader.Size = new System.Drawing.Size(284, 27);
             this.panelHeader.TabIndex = 72;
             // 
             // comboItems
@@ -137,7 +136,7 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(31, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(208, 24);
+            this.comboItems.Size = new System.Drawing.Size(192, 24);
             this.comboItems.TabIndex = 66;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             // 
@@ -146,7 +145,7 @@
             this.panelHeaderRight.Controls.Add(this.butItemsNext);
             this.panelHeaderRight.Controls.Add(this.butAddItem);
             this.panelHeaderRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelHeaderRight.Location = new System.Drawing.Point(239, 2);
+            this.panelHeaderRight.Location = new System.Drawing.Point(223, 2);
             this.panelHeaderRight.Name = "panelHeaderRight";
             this.panelHeaderRight.Size = new System.Drawing.Size(61, 25);
             this.panelHeaderRight.TabIndex = 76;
@@ -185,9 +184,9 @@
             this.panelRight.Controls.Add(this.panelRightTop);
             this.panelRight.Controls.Add(this.panelRightBottom);
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelRight.Location = new System.Drawing.Point(233, 52);
+            this.panelRight.Location = new System.Drawing.Point(217, 52);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(67, 221);
+            this.panelRight.Size = new System.Drawing.Size(67, 207);
             this.panelRight.TabIndex = 73;
             // 
             // panelRightTop
@@ -205,7 +204,7 @@
             this.panelRightBottom.Controls.Add(this.butFindItem);
             this.panelRightBottom.Controls.Add(this.butResetSearch);
             this.panelRightBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelRightBottom.Location = new System.Drawing.Point(0, 165);
+            this.panelRightBottom.Location = new System.Drawing.Point(0, 151);
             this.panelRightBottom.Name = "panelRightBottom";
             this.panelRightBottom.Size = new System.Drawing.Size(67, 56);
             this.panelRightBottom.TabIndex = 1;
@@ -213,41 +212,29 @@
             // panelViewer
             // 
             this.panelViewer.AutoSize = true;
-            this.panelViewer.Controls.Add(this.lblLoadHelper);
             this.panelViewer.Controls.Add(this.panelItem);
             this.panelViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelViewer.Location = new System.Drawing.Point(0, 52);
             this.panelViewer.Name = "panelViewer";
             this.panelViewer.Padding = new System.Windows.Forms.Padding(2);
-            this.panelViewer.Size = new System.Drawing.Size(233, 221);
+            this.panelViewer.Size = new System.Drawing.Size(217, 207);
             this.panelViewer.TabIndex = 74;
-            // 
-            // lblLoadHelper
-            // 
-            this.lblLoadHelper.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLoadHelper.ForeColor = System.Drawing.Color.DarkGray;
-            this.lblLoadHelper.Location = new System.Drawing.Point(2, 2);
-            this.lblLoadHelper.Name = "lblLoadHelper";
-            this.lblLoadHelper.Size = new System.Drawing.Size(229, 217);
-            this.lblLoadHelper.TabIndex = 0;
-            this.lblLoadHelper.Text = "Click here to load WAD";
-            this.lblLoadHelper.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblLoadHelper.Click += new System.EventHandler(this.lblLoadHelper_Click);
             // 
             // ObjectBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.Controls.Add(this.panelViewer);
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.panelHeader);
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Object Browser";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 264);
+            this.MinimumSize = new System.Drawing.Size(284, 170);
             this.Name = "ObjectBrowser";
             this.SerializationKey = "ObjectBrowser";
-            this.Size = new System.Drawing.Size(300, 273);
+            this.Size = new System.Drawing.Size(284, 259);
             this.panelHeader.ResumeLayout(false);
             this.panelHeaderRight.ResumeLayout(false);
             this.panelHeaderLeft.ResumeLayout(false);
@@ -280,6 +267,5 @@
         private System.Windows.Forms.Panel panelRightBottom;
         private System.Windows.Forms.Panel panelRightTop;
         private System.Windows.Forms.Panel panelViewer;
-        private DarkUI.Controls.DarkLabel lblLoadHelper;
     }
 }

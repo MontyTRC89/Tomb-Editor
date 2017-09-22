@@ -16,7 +16,6 @@
         private void InitializeComponent()
         {
             this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
-            this.lblLoadHelper = new DarkUI.Controls.DarkLabel();
             this.panelTextureTools = new System.Windows.Forms.Panel();
             this.butBump = new DarkUI.Controls.DarkButton();
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
@@ -26,24 +25,11 @@
             // 
             // panelTextureMap
             // 
-            this.panelTextureMap.Controls.Add(this.lblLoadHelper);
             this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(738, 763);
+            this.panelTextureMap.Size = new System.Drawing.Size(288, 733);
             this.panelTextureMap.TabIndex = 9;
-            // 
-            // lblLoadHelper
-            // 
-            this.lblLoadHelper.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblLoadHelper.ForeColor = System.Drawing.Color.DarkGray;
-            this.lblLoadHelper.Location = new System.Drawing.Point(0, 0);
-            this.lblLoadHelper.Name = "lblLoadHelper";
-            this.lblLoadHelper.Size = new System.Drawing.Size(736, 761);
-            this.lblLoadHelper.TabIndex = 2;
-            this.lblLoadHelper.Text = "Click here to load textures";
-            this.lblLoadHelper.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblLoadHelper.Click += new System.EventHandler(this.lblLoadHelper_Click);
             // 
             // panelTextureTools
             // 
@@ -100,8 +86,7 @@
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "TexturePanel";
             this.SerializationKey = "TexturePanel";
-            this.Size = new System.Drawing.Size(738, 819);
-            this.panelTextureMap.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(288, 819);
             this.panelTextureTools.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -114,6 +99,5 @@
         private DarkUI.Controls.DarkButton butBump;
         private DarkUI.Controls.DarkButton butAnimationRanges;
         private DarkUI.Controls.DarkButton butTextureSounds;
-        private DarkUI.Controls.DarkLabel lblLoadHelper;
     }
 }

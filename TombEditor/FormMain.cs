@@ -51,15 +51,28 @@ namespace TombEditor
             _editor.EditorEventRaised += EditorEventRaised;
             _editor.Level = Level.CreateSimpleLevel();
 
-            InitializeWindow();
-            PopulateDockPanel();
+            // Calculate the sizes at runtime since they actually depend on the choosen layout.
+            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
+            MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
+
+            // Restore window settings.
+            WindowState = (_editor.Configuration.Window_Maximized == true ? FormWindowState.Maximized : FormWindowState.Normal);
+            Size = _editor.Configuration.Window_Size;
+            Location = _editor.Configuration.Window_Position;
+
+            // Hook window added/removed events.
+            dockArea.ContentAdded += ToolWindow_Added;
+            dockArea.ContentRemoved += ToolWindow_Removed;
+
+            // DockPanel message filters for drag and resize.
+            Application.AddMessageFilter(dockArea.DockContentDragFilter);
+            Application.AddMessageFilter(dockArea.DockResizeFilter);
+
+            dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
 
             // Initialize panels
             MainView.Initialize(_deviceManager);
             ObjectBrowser.Initialize(_deviceManager);
-            TexturePanel.Initialize();
-            Lighting.Initialize();
-            Palette.Initialize();
             
             // Initialize the geometry importer class
             GeometryImporterExporter.Initialize(_deviceManager);
@@ -77,27 +90,6 @@ namespace TombEditor
             if (disposing && (components != null))
                 components.Dispose();
             base.Dispose(disposing);
-        }
-
-        private void InitializeWindow()
-        {
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
-
-            // Restore window settings.
-            WindowState = (_editor.Configuration.Window_Maximized == true ? FormWindowState.Maximized : FormWindowState.Normal);
-            Size = _editor.Configuration.Window_Size;
-            Location = _editor.Configuration.Window_Position;
-        }
-
-        private void PopulateDockPanel()
-        {
-            // DockPanel message filters for drag and resize.
-            Application.AddMessageFilter(dockArea.DockContentDragFilter);
-            Application.AddMessageFilter(dockArea.DockResizeFilter);
-
-            dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
         }
 
         private DarkDockContent FindDockContentByKey(string key)
@@ -179,7 +171,6 @@ namespace TombEditor
             if (WindowState != FormWindowState.Maximized)
                 _editor.Configuration.Window_Size = Size;
             _editor.Configuration.Window_Position = Location;
-            _editor.Configuration.Window_Layout = dockArea.GetDockPanelState();
             _editor.Configuration.Window_Maximized = (WindowState == FormWindowState.Maximized);
 
             base.OnClosed(e);
@@ -768,8 +759,6 @@ namespace TombEditor
 
         private void restoreWindowLayoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dockArea.RemoveContent();
-            dockArea.RestoreDockPanelState(Configuration.Window_LayoutDefault, FindDockContentByKey);
         }
 
         // Only for debugging purposes...
@@ -853,6 +842,89 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+        }
+
+        private void saveCurrentLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Configuration.Window_Layout = dockArea.GetDockPanelState();
+        }
+
+        private void restoreDefaultLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dockArea.RemoveContent();
+            dockArea.RestoreDockPanelState(Configuration.Window_LayoutDefault, FindDockContentByKey);
+        }
+
+        private void reloadLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dockArea.RemoveContent();
+            dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
+        }
+
+        private void sectorOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(SectorOptions);
+        }
+
+        private void roomOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(RoomOptions);
+        }
+
+        private void objectBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ObjectBrowser);
+        }
+
+        private void triggerListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(TriggerList);
+        }
+
+        private void lightingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(Lighting);
+        }
+
+        private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(Palette);
+        }
+
+        private void texturePanelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(TexturePanel);
+        }
+
+        private void ToolWindow_Toggle(DarkToolWindow toolWindow)
+        {
+            if (toolWindow.DockPanel == null)
+                dockArea.AddContent(toolWindow);
+            else
+                dockArea.RemoveContent(toolWindow);
+        }
+
+        private void ToolWindow_BuildMenu()
+        {
+            sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(SectorOptions);
+            roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
+            objectBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectBrowser);
+            triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
+            lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
+            paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
+            texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
+        }
+
+        private void ToolWindow_Added(object sender, DockContentEventArgs e)
+        {
+            if (dockArea.Contains(e.Content))
+                ToolWindow_BuildMenu();
+        }
+
+        private void ToolWindow_Removed(object sender, DockContentEventArgs e)
+        {
+            if (!dockArea.Contains(e.Content))
+                ToolWindow_BuildMenu();
         }
     }
 }

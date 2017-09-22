@@ -82,6 +82,7 @@
             this.lstTriggers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.lstTriggers.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstTriggers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.lstTriggers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lstTriggers.ForeColor = System.Drawing.Color.White;
             this.lstTriggers.FormattingEnabled = true;
             this.lstTriggers.IntegralHeight = false;

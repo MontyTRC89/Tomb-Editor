@@ -441,6 +441,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Editor\sky.png" />
+    <None Include="Resources\tick_new.png" />
     <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
     <None Include="Editor\arrow_ne_se.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

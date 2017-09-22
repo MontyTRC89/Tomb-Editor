@@ -24,6 +24,15 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+
+            // For each control bind its light parameter
+            numLightIntensity.LightParameter = LightParameter.Intensity;
+            numLightIn.LightParameter = LightParameter.In;
+            numLightOut.LightParameter = LightParameter.Out;
+            numLightLen.LightParameter = LightParameter.Len;
+            numLightCutoff.LightParameter = LightParameter.CutOff;
+            numLightDirectionX.LightParameter = LightParameter.DirectionX;
+            numLightDirectionY.LightParameter = LightParameter.DirectionY;
         }
 
         protected override void Dispose(bool disposing)
@@ -33,18 +42,6 @@ namespace TombEditor.ToolWindows
             if (disposing && (components != null))
                 components.Dispose();
             base.Dispose(disposing);
-        }
-
-        public void Initialize()
-        {
-            // For each control bind its light parameter
-            numLightIntensity.LightParameter = LightParameter.Intensity;
-            numLightIn.LightParameter = LightParameter.In;
-            numLightOut.LightParameter = LightParameter.Out;
-            numLightLen.LightParameter = LightParameter.Len;
-            numLightCutoff.LightParameter = LightParameter.CutOff;
-            numLightDirectionX.LightParameter = LightParameter.DirectionX;
-            numLightDirectionY.LightParameter = LightParameter.DirectionY;
         }
 
         private void EditorEventRaised(IEditorEvent obj)

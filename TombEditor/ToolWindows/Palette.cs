@@ -22,19 +22,7 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-        }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                _editor.EditorEventRaised -= EditorEventRaised;
-            if (disposing && (components != null))
-                components.Dispose();
-            base.Dispose(disposing);
-        }
-
-        public void Initialize()
-        {
             // Update palette
             lightPalette.SelectedColorChanged += delegate
             {
@@ -45,6 +33,15 @@ namespace TombEditor.ToolWindows
                 _editor.SelectedRoom.UpdateCompletely();
                 _editor.ObjectChange(light);
             };
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= EditorEventRaised;
+            if (disposing && (components != null))
+                components.Dispose();
+            base.Dispose(disposing);
         }
 
         private void EditorEventRaised(IEditorEvent obj)

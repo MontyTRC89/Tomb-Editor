@@ -216,7 +216,10 @@ namespace TombEditor.Controls
             _startPos = null;
 
             if (!(VisibleTexture?.IsAvailable ?? false))
+            {
+                EditorActions.LoadTextures(Parent);
                 return;
+            }
 
             switch (e.Button)
             {
@@ -392,6 +395,13 @@ namespace TombEditor.Controls
                     });
 
                 OnPaintSelection(e);
+            }
+            else
+            {
+                e.Graphics.DrawString("Click here to load textures.",
+                    Font, System.Drawing.Brushes.DarkGray,
+                    ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
 
             // Draw border next to scroll bars

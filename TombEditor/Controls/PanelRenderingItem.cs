@@ -3,6 +3,7 @@ using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -55,6 +56,9 @@ namespace TombEditor.Controls
                     ResetCamera();
                 Invalidate();
             }
+
+            if (obj is Editor.LoadedWadsChangedEvent)
+                Invalidate();
         }
 
         public void InitializePanel(DeviceManager deviceManager)
@@ -108,7 +112,7 @@ namespace TombEditor.Controls
         {
             if (DesignMode)
                 return;
-
+            
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
@@ -198,7 +202,16 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Draw();
+            if (_editor.Level.Settings.WadFilePath == null)
+            {
+                e.Graphics.Clear(Parent.BackColor);
+                e.Graphics.DrawString("Click here to load WAD.",
+                    Font, System.Drawing.Brushes.DarkGray,
+                    ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+            }
+            else
+                Draw();
         }
 
         protected override void OnResize(EventArgs e)
@@ -210,7 +223,12 @@ namespace TombEditor.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown(e);
+            if (_editor.Level.Settings.WadFilePath == null)
+            {
+                EditorActions.LoadWad(Parent);
+                return;
+            }
+                base.OnMouseDown(e);
             
             _lastX = e.X;
             _lastY = e.Y;

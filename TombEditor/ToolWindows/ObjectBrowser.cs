@@ -42,7 +42,7 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update available items combo box
-            if ((obj is Editor.LoadedWadsChangedEvent))
+            if (obj is Editor.LoadedWadsChangedEvent)
             {
                 comboItems.Items.Clear();
 
@@ -73,12 +73,6 @@ namespace TombEditor.ToolWindows
             {
                 ItemInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as ItemInstance;
                 panelStaticMeshColor.BackColor = itemInstance == null ? System.Drawing.Color.Black : itemInstance.Color.ToWinFormsColor();
-            }
-
-            if (obj is Editor.LoadedWadsChangedEvent)
-            {
-                lblLoadHelper.Visible = (_editor.Level.Wad == null);
-                panelItem.Visible = (_editor.Level.Wad != null);
             }
         }
 

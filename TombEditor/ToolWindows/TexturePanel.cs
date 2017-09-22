@@ -21,6 +21,9 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+
+            panelTextureMap.Configuration = _editor.Configuration;
+            panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
         }
 
         protected override void Dispose(bool disposing)
@@ -30,12 +33,6 @@ namespace TombEditor.ToolWindows
             if (disposing && (components != null))
                 components.Dispose();
             base.Dispose(disposing);
-        }
-
-        public void Initialize()
-        {
-            panelTextureMap.Configuration = _editor.Configuration;
-            panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -51,9 +48,6 @@ namespace TombEditor.ToolWindows
             // Center texture on texture map
             if (obj is Editor.SelectTextureAndCenterViewEvent)
                 panelTextureMap.ShowTexture(((Editor.SelectTextureAndCenterViewEvent)obj).Texture);
-
-            if (obj is Editor.LoadedTexturesChangedEvent)
-                lblLoadHelper.Visible = (panelTextureMap.VisibleTexture == null);
         }
 
         private void butTextureSounds_Click(object sender, EventArgs e)

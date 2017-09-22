@@ -34,7 +34,7 @@ namespace TombEditor
             this.components = new System.ComponentModel.Container();
             this.textureMap = new TombEditor.FormTextureSounds.PanelTextureMapForSounds();
             this.butAssignSound = new DarkUI.Controls.DarkButton();
-            this.comboSounds = new DarkUI.Controls.DarkComboBox(this.components);
+            this.comboSounds = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
