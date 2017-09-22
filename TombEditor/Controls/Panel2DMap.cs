@@ -116,13 +116,10 @@ namespace TombEditor.Controls
                     _roomMouseClicked = DoPicking(clickPos);
                     if (_roomMouseClicked == null)
                         return;
-
-                    _editor.SelectedRoom = _roomMouseClicked;
+                    
+                    _editor.SelectRoomAndResetCamera(_roomMouseClicked);
                     _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
                     _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
-
-                    // Update state
-                    _editor.SelectedRoom = _editor.SelectedRoom;
                     break;
 
                 case MouseButtons.Right:
