@@ -48,10 +48,29 @@ namespace WadTool
 
             var node = treeSourceWad.SelectedNodes[0];
 
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
-
+            if (node.Tag == null || 
+                (node.Tag.GetType() != typeof(WadMoveable) && 
+                 node.Tag.GetType() != typeof(WadStatic) && 
+                 node.Tag.GetType() != typeof(WadSprite))) return;
+            
             panel3D.CurrentWad = _tool.SourceWad;
-            panel3D.CurrentObject = (WadObject)node.Tag;
+
+            if (node.Tag.GetType() == typeof(WadMoveable))
+            {
+                var moveable = (WadMoveable)node.Tag;
+                panel3D.CurrentObject = _tool.SourceWad.DirectXMoveables[moveable.ObjectID];
+            }
+            else if (node.Tag.GetType() == typeof(WadStatic))
+            {
+                var staticMesh = (WadStatic)node.Tag;
+                panel3D.CurrentObject = _tool.SourceWad.DirectXStatics[staticMesh.ObjectID];
+            }
+            else
+            {
+                var sprite = (WadSprite)node.Tag;
+                panel3D.CurrentObject = sprite;
+            }
+
             panel3D.Invalidate();
         }
 
@@ -65,9 +84,12 @@ namespace WadTool
             if (treeDestWad.SelectedNodes.Count == 0) return;
 
             var node = treeDestWad.SelectedNodes[0];
-            var isMoveable = node.Tag.GetType() == typeof(WadMoveable);
+            var isMoveable = node.Tag?.GetType() == typeof(WadMoveable);
 
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
+            if (node.Tag == null ||
+                (node.Tag.GetType() != typeof(WadMoveable) &&
+                 node.Tag.GetType() != typeof(WadStatic) &&
+                 node.Tag.GetType() != typeof(WadSprite))) return;
 
             // Load sounds
             treeSounds.Nodes.Clear();
@@ -97,7 +119,23 @@ namespace WadTool
             }
 
             panel3D.CurrentWad = _tool.DestinationWad;
-            panel3D.CurrentObject = (WadObject)node.Tag;
+
+            if (node.Tag.GetType() == typeof(WadMoveable))
+            {
+                var moveable = (WadMoveable)node.Tag;
+                panel3D.CurrentObject = _tool.DestinationWad.DirectXMoveables[moveable.ObjectID];
+            }
+            else if (node.Tag.GetType() == typeof(WadStatic))
+            {
+                var staticMesh = (WadStatic)node.Tag;
+                panel3D.CurrentObject = _tool.DestinationWad.DirectXStatics[staticMesh.ObjectID];
+            }
+            else
+            {
+                var sprite = (WadSprite)node.Tag;
+                panel3D.CurrentObject = sprite;
+            }
+
             panel3D.Invalidate();
         }
 
@@ -151,6 +189,30 @@ namespace WadTool
                 nodeStatic.Tag = staticMesh.Value;
 
                 treeDestWad.Nodes[1].Nodes.Add(nodeStatic);
+            }
+
+            var nodeSprites = new DarkUI.Controls.DarkTreeNode("Sprites");
+            treeDestWad.Nodes.Add(nodeSprites);
+
+            foreach (var sequence in _tool.DestinationWad.SpriteSequences)
+            {
+                var nodeSequence = new DarkUI.Controls.DarkTreeNode(sequence.ToString());
+                nodeSequence.Tag = sequence;
+
+                treeDestWad.Nodes[2].Nodes.Add(nodeSequence);
+
+                int spriteIndex = 0;
+                int currentNode = treeDestWad.Nodes[2].Nodes.Count - 1;
+
+                foreach (var sprite in sequence.Sprites)
+                {
+                    var nodeSprite= new DarkUI.Controls.DarkTreeNode("Sprite #" + spriteIndex);
+                    nodeSprite.Tag = sprite;
+
+                    treeDestWad.Nodes[2].Nodes[currentNode].Nodes.Add(nodeSprite);
+
+                    spriteIndex++;
+                }
             }
         }
 

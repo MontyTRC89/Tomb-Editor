@@ -252,7 +252,7 @@ namespace TombLib.Wad
                         }
 
                     // Create the texture
-                    var texture = new WadTexture();
+                    var texture = new WadSprite();
                     texture.Image = spritePage;
                     texture.UpdateHash();
 
