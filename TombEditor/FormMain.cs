@@ -84,7 +84,11 @@ namespace TombEditor
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
+                Application.RemoveMessageFilter(dockArea.DockContentDragFilter);
+                Application.RemoveMessageFilter(dockArea.DockResizeFilter);
                 _editor.EditorEventRaised -= EditorEventRaised;
+            }
             if (disposing && (components != null))
                 components.Dispose();
             base.Dispose(disposing);
