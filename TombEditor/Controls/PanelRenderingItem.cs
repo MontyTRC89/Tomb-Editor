@@ -202,7 +202,7 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_editor.Level.Settings.WadFilePath == null)
+            if (_editor?.Level?.Settings?.WadFilePath == null)
             {
                 e.Graphics.Clear(Parent.BackColor);
                 e.Graphics.DrawString("Click here to load WAD.",
@@ -223,7 +223,7 @@ namespace TombEditor.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (_editor.Level.Settings.WadFilePath == null)
+            if (_editor?.Level?.Settings?.WadFilePath == null)
             {
                 EditorActions.LoadWad(Parent);
                 return;
