@@ -55,9 +55,9 @@ namespace TombEditor.ToolWindows
 
             // Update the room property controls
             if ((obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.RoomPropertiesChangedEvent))
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
-                Room room = ((IEditorRoomChangedEvent)obj).Room;
+                Room room = _editor.SelectedRoom;
                 if (obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
@@ -317,6 +317,7 @@ namespace TombEditor.ToolWindows
                     return;
 
                 _editor.SelectedRoom.Name = form.Value;
+                _editor.RoomPropertiesChange(_editor.SelectedRoom);
                 _editor.RoomListChange();
             }
         }
@@ -330,34 +331,12 @@ namespace TombEditor.ToolWindows
 
         private void butRoomUp_Click(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.Position += new Vector3(0.0f, 1.0f, 0.0f);
-
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.SelectedRoom.CalculateLightingForThisRoom();
-            _editor.SelectedRoom.UpdateBuffers();
-
-            foreach (var portal in _editor.SelectedRoom.Portals)
-            {
-                portal.AdjoiningRoom.BuildGeometry();
-                portal.AdjoiningRoom.CalculateLightingForThisRoom();
-                portal.AdjoiningRoom.UpdateBuffers();
-            }
+            EditorActions.MoveRooms(new Vector3(0.0f, 1.0f, 0.0f), new Room[] { _editor.SelectedRoom });
         }
 
         private void butRoomDown_Click(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.Position += new Vector3(0.0f, -1.0f, 0.0f);
-
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.SelectedRoom.CalculateLightingForThisRoom();
-            _editor.SelectedRoom.UpdateBuffers();
-
-            foreach (var portal in _editor.SelectedRoom.Portals)
-            {
-                portal.AdjoiningRoom.BuildGeometry();
-                portal.AdjoiningRoom.CalculateLightingForThisRoom();
-                portal.AdjoiningRoom.UpdateBuffers();
-            }
+            EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), new Room[] { _editor.SelectedRoom });
         }
     }
 }

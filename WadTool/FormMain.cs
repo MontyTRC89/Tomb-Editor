@@ -23,10 +23,7 @@ namespace WadTool
 
             _tool = WadToolClass.Instance;
             _tool.Initialize();
-
-            // Load sounds
-            OriginalSoundsDefinitions.LoadSounds(File.OpenRead("Sounds\\sounds.txt"));
-
+            
             panel3D.InitializePanel(_tool.Device);
         }
 
