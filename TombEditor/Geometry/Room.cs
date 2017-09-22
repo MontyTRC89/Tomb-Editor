@@ -2033,13 +2033,7 @@ namespace TombEditor.Geometry
                                 }
 
                                 // Calculate the light direction
-                                var lightDirection = Vector3.Zero;
-
-                                lightDirection.X = (float)(Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(light.RotationY)));
-                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.RotationX)));
-                                lightDirection.Z = (float)(Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(light.RotationY)));
-
-                                lightDirection.Normalize();
+                                var lightDirection = light.GetDirection();
 
                                 // calcolo la luce diffusa
                                 float diffuse = -Vector3.Dot(lightDirection, normal);
@@ -2065,7 +2059,6 @@ namespace TombEditor.Geometry
                             {
                                 // Calculate the ray from light to vertex
                                 var lightVector = position - light.Position;
-                                lightVector.Y = -lightVector.Y;
                                 lightVector.Normalize();
 
                                 // Get the distance between light and vertex
@@ -2076,16 +2069,10 @@ namespace TombEditor.Geometry
                                     continue;
 
                                 // Calculate the light direction
-                                var lightDirection = Vector3.Zero;
-
-                                lightDirection.X = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Sin(MathUtil.DegreesToRadians(light.RotationY)));
-                                lightDirection.Y = (float)(Math.Sin(MathUtil.DegreesToRadians(light.RotationX)));
-                                lightDirection.Z = (float)(-Math.Cos(MathUtil.DegreesToRadians(light.RotationX)) * Math.Cos(MathUtil.DegreesToRadians(light.RotationY)));
-
-                                lightDirection.Normalize();
+                                var lightDirection = light.GetDirection();
 
                                 // Calculate the cosines values for In, Out
-                                double d = -Vector3.Dot(lightVector, lightDirection);
+                                double d = Vector3.Dot(lightVector, lightDirection);
                                 double cosI2 = Math.Cos(MathUtil.DegreesToRadians(light.InnerAngle));
                                 double cosO2 = Math.Cos(MathUtil.DegreesToRadians(light.OuterAngle));
 
