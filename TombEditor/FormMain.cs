@@ -49,10 +49,10 @@ namespace TombEditor
 
             // For each control bind its light parameter
             numLightIntensity.LightParameter = LightParameter.Intensity;
-            numLightIn.LightParameter = LightParameter.In;
-            numLightOut.LightParameter = LightParameter.Out;
-            numLightLen.LightParameter = LightParameter.Len;
-            numLightCutoff.LightParameter = LightParameter.CutOff;
+            numLightIn.LightParameter = LightParameter.InnerRange;
+            numLightOut.LightParameter = LightParameter.OuterRange;
+            numLightLen.LightParameter = LightParameter.InnerAngle;
+            numLightCutoff.LightParameter = LightParameter.OuterAngle;
             numLightDirectionX.LightParameter = LightParameter.DirectionX;
             numLightDirectionY.LightParameter = LightParameter.DirectionY;
             
@@ -340,10 +340,10 @@ namespace TombEditor
                     cbLightCastsShadows.Checked = light.CastsShadows;
                     cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
                     cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
-                    numLightIn.Value = light.In;
-                    numLightOut.Value = light.Out;
-                    numLightLen.Value = light.Len;
-                    numLightCutoff.Value = light.Cutoff;
+                    numLightIn.Value = light.InnerRange;
+                    numLightOut.Value = light.OuterRange;
+                    numLightLen.Value = light.InnerAngle;
+                    numLightCutoff.Value = light.OuterAngle;
                     numLightDirectionX.Value = light.RotationX;
                     numLightDirectionY.Value = light.RotationY;
                 }

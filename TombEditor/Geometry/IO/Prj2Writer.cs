@@ -407,10 +407,10 @@ namespace TombEditor.Geometry.IO
                         writer.Write(instance.Position);
                         writer.Write(instance.Intensity);
                         writer.Write(instance.Color);
-                        writer.Write(instance.In);
-                        writer.Write(instance.Out);
-                        writer.Write(instance.Len);
-                        writer.Write(instance.Cutoff);
+                        writer.Write(instance.InnerRange);
+                        writer.Write(instance.OuterRange);
+                        writer.Write(instance.InnerAngle);
+                        writer.Write(instance.OuterAngle);
                         writer.Write(instance.RotationX);
                         writer.Write(instance.RotationY);
                         writer.Write(instance.Enabled);

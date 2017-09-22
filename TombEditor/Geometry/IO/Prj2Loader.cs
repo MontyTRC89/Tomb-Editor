@@ -462,10 +462,10 @@ namespace TombEditor.Geometry.IO
                         light.Position = reader.ReadVector3();
                         light.Intensity = reader.ReadSingle();
                         light.Color = reader.ReadVector3();
-                        light.In = reader.ReadSingle();
-                        light.Out = reader.ReadSingle();
-                        light.Len = reader.ReadSingle();
-                        light.Cutoff = reader.ReadSingle();
+                        light.InnerRange = reader.ReadSingle();
+                        light.OuterRange = reader.ReadSingle();
+                        light.InnerAngle = reader.ReadSingle();
+                        light.OuterAngle = reader.ReadSingle();
                         var rotationX = reader.ReadSingle();
                         var rotationY = reader.ReadSingle();
                         light.SetArbitaryRotationsYX(rotationY, rotationX);

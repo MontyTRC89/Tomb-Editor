@@ -13,10 +13,10 @@ namespace TombEditor.Geometry
         public LightType Type { get; }
         public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         public float Intensity { get; set; } = 0.5f;
-        public float In { get; set; } = 1.0f;
-        public float Out { get; set; } = 5.0f;
-        public float Len { get; set; } = 2.0f;
-        public float Cutoff { get; set; } = 3.0f;
+        public float InnerRange { get; set; } = 1.0f;
+        public float OuterRange { get; set; } = 5.0f;
+        public float InnerAngle { get; set; } = 20.0f;
+        public float OuterAngle { get; set; } = 25.0f;
         public bool Enabled { get; set; } = true;
         public bool CastsShadows { get; set; } = true;
         public bool IsDynamicallyUsed { get; set; } = true;
@@ -48,13 +48,9 @@ namespace TombEditor.Geometry
                     Intensity *= -1;
                     CastsShadows = false;
                     break;
-                case LightType.Spot:
-                    In = 20.0f;
-                    Out = 25.0f;
-                    break;
                 case LightType.Effect:
-                    In = 0.99f;
-                    Out = 1.0f;
+                    InnerRange = 0.99f;
+                    OuterRange = 1.0f;
                     IsDynamicallyUsed = false;
                     break;
                 case LightType.FogBulb:

@@ -140,6 +140,7 @@
             this.butItemsNext = new DarkUI.Controls.DarkButton();
             this.butItemsBack = new DarkUI.Controls.DarkButton();
             this.butAddItem = new DarkUI.Controls.DarkButton();
+            this.panelItem = new TombEditor.Controls.PanelRenderingItem();
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butDeleteRoom = new DarkUI.Controls.DarkButton();
@@ -151,15 +152,24 @@
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
             this.panelTextureTools = new System.Windows.Forms.Panel();
             this.darkButton16 = new DarkUI.Controls.DarkButton();
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.cbLightIsDynamicallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightCastsShadows = new DarkUI.Controls.DarkCheckBox();
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
+            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
+            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
+            this.numLightOut = new TombEditor.Controls.LightParameterController();
+            this.numLightIn = new TombEditor.Controls.LightParameterController();
+            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
+            this.numLightLen = new TombEditor.Controls.LightParameterController();
+            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
             this.panelLightColor = new System.Windows.Forms.Panel();
             this.butAddTrigger = new DarkUI.Controls.DarkButton();
             this.lstTriggers = new DarkUI.Controls.DarkListBox(this.components);
@@ -232,24 +242,14 @@
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
-            this.lightPalette = new TombEditor.Controls.PanelPalette();
-            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
-            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
-            this.numLightOut = new TombEditor.Controls.LightParameterController();
-            this.numLightIn = new TombEditor.Controls.LightParameterController();
-            this.numLightCutoff = new TombEditor.Controls.LightParameterController();
-            this.numLightLen = new TombEditor.Controls.LightParameterController();
-            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
-            this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
-            this.panelItem = new TombEditor.Controls.PanelRenderingItem();
             this.menuStrip.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panelTextureTools.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -1632,6 +1632,14 @@
             this.butAddItem.TabIndex = 27;
             this.butAddItem.Click += new System.EventHandler(this.butAddItem_Click);
             // 
+            // panelItem
+            // 
+            this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelItem.Location = new System.Drawing.Point(12, 501);
+            this.panelItem.Name = "panelItem";
+            this.panelItem.Size = new System.Drawing.Size(196, 203);
+            this.panelItem.TabIndex = 26;
+            // 
             // butRoomDown
             // 
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.RoomLower_16;
@@ -1742,6 +1750,14 @@
             this.panel3.Size = new System.Drawing.Size(287, 836);
             this.panel3.TabIndex = 27;
             // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTextureMap.Location = new System.Drawing.Point(0, 0);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(287, 805);
+            this.panelTextureMap.TabIndex = 0;
+            // 
             // panelTextureTools
             // 
             this.panelTextureTools.Controls.Add(this.darkButton16);
@@ -1832,6 +1848,14 @@
             this.panel4.Size = new System.Drawing.Size(1305, 109);
             this.panel4.TabIndex = 28;
             // 
+            // lightPalette
+            // 
+            this.lightPalette.Location = new System.Drawing.Point(661, 4);
+            this.lightPalette.Name = "lightPalette";
+            this.lightPalette.Size = new System.Drawing.Size(643, 99);
+            this.lightPalette.TabIndex = 50;
+            this.lightPalette.TabStop = false;
+            // 
             // cbLightIsDynamicallyUsed
             // 
             this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1875,6 +1899,83 @@
             this.cbLightEnabled.Size = new System.Drawing.Size(15, 22);
             this.cbLightEnabled.TabIndex = 60;
             this.cbLightEnabled.CheckedChanged += new System.EventHandler(this.cbLightEnabled_CheckedChanged);
+            // 
+            // numLightDirectionY
+            // 
+            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionY.Enabled = false;
+            this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightDirectionY.Location = new System.Drawing.Point(525, 80);
+            this.numLightDirectionY.Name = "numLightDirectionY";
+            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
+            this.numLightDirectionY.TabIndex = 58;
+            this.numLightDirectionY.Value = 0F;
+            // 
+            // numLightDirectionX
+            // 
+            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
+            this.numLightDirectionX.Enabled = false;
+            this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightDirectionX.Location = new System.Drawing.Point(525, 55);
+            this.numLightDirectionX.Name = "numLightDirectionX";
+            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
+            this.numLightDirectionX.TabIndex = 57;
+            this.numLightDirectionX.Value = 0F;
+            // 
+            // numLightOut
+            // 
+            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
+            this.numLightOut.Enabled = false;
+            this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightOut.Location = new System.Drawing.Point(421, 80);
+            this.numLightOut.Name = "numLightOut";
+            this.numLightOut.Size = new System.Drawing.Size(60, 22);
+            this.numLightOut.TabIndex = 56;
+            this.numLightOut.Value = 0F;
+            // 
+            // numLightIn
+            // 
+            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIn.Enabled = false;
+            this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightIn.Location = new System.Drawing.Point(421, 55);
+            this.numLightIn.Name = "numLightIn";
+            this.numLightIn.Size = new System.Drawing.Size(60, 22);
+            this.numLightIn.TabIndex = 55;
+            this.numLightIn.Value = 0F;
+            // 
+            // numLightCutoff
+            // 
+            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
+            this.numLightCutoff.Enabled = false;
+            this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightCutoff.Location = new System.Drawing.Point(525, 30);
+            this.numLightCutoff.Name = "numLightCutoff";
+            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
+            this.numLightCutoff.TabIndex = 54;
+            this.numLightCutoff.Value = 0F;
+            // 
+            // numLightLen
+            // 
+            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
+            this.numLightLen.Enabled = false;
+            this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightLen.Location = new System.Drawing.Point(525, 5);
+            this.numLightLen.Name = "numLightLen";
+            this.numLightLen.Size = new System.Drawing.Size(60, 22);
+            this.numLightLen.TabIndex = 53;
+            this.numLightLen.Value = 0F;
+            // 
+            // numLightIntensity
+            // 
+            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
+            this.numLightIntensity.Enabled = false;
+            this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
+            this.numLightIntensity.Location = new System.Drawing.Point(421, 30);
+            this.numLightIntensity.Name = "numLightIntensity";
+            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
+            this.numLightIntensity.TabIndex = 52;
+            this.numLightIntensity.Value = 0F;
             // 
             // panelLightColor
             // 
@@ -1990,7 +2091,7 @@
             this.darkLabel9.Name = "darkLabel9";
             this.darkLabel9.Size = new System.Drawing.Size(51, 22);
             this.darkLabel9.TabIndex = 34;
-            this.darkLabel9.Text = "Cutoff";
+            this.darkLabel9.Text = "Out α";
             this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel23
@@ -2045,7 +2146,7 @@
             this.darkLabel10.Name = "darkLabel10";
             this.darkLabel10.Size = new System.Drawing.Size(51, 22);
             this.darkLabel10.TabIndex = 32;
-            this.darkLabel10.Text = "Len";
+            this.darkLabel10.Text = "In α";
             this.darkLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel8
@@ -2056,7 +2157,7 @@
             this.darkLabel8.Name = "darkLabel8";
             this.darkLabel8.Size = new System.Drawing.Size(51, 22);
             this.darkLabel8.TabIndex = 30;
-            this.darkLabel8.Text = "Out";
+            this.darkLabel8.Text = "Out d";
             this.darkLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel7
@@ -2067,7 +2168,7 @@
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(51, 22);
             this.darkLabel7.TabIndex = 28;
-            this.darkLabel7.Text = "In";
+            this.darkLabel7.Text = "In d";
             this.darkLabel7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel6
@@ -2687,107 +2788,6 @@
             this.panel2DGrid.Size = new System.Drawing.Size(220, 220);
             this.panel2DGrid.TabIndex = 81;
             // 
-            // lightPalette
-            // 
-            this.lightPalette.Location = new System.Drawing.Point(661, 4);
-            this.lightPalette.Name = "lightPalette";
-            this.lightPalette.Size = new System.Drawing.Size(643, 99);
-            this.lightPalette.TabIndex = 50;
-            this.lightPalette.TabStop = false;
-            // 
-            // numLightDirectionY
-            // 
-            this.numLightDirectionY.BackColor = System.Drawing.Color.DimGray;
-            this.numLightDirectionY.Enabled = false;
-            this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightDirectionY.Location = new System.Drawing.Point(525, 80);
-            this.numLightDirectionY.Name = "numLightDirectionY";
-            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionY.TabIndex = 58;
-            this.numLightDirectionY.Value = 0F;
-            // 
-            // numLightDirectionX
-            // 
-            this.numLightDirectionX.BackColor = System.Drawing.Color.DimGray;
-            this.numLightDirectionX.Enabled = false;
-            this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightDirectionX.Location = new System.Drawing.Point(525, 55);
-            this.numLightDirectionX.Name = "numLightDirectionX";
-            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionX.TabIndex = 57;
-            this.numLightDirectionX.Value = 0F;
-            // 
-            // numLightOut
-            // 
-            this.numLightOut.BackColor = System.Drawing.Color.DimGray;
-            this.numLightOut.Enabled = false;
-            this.numLightOut.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightOut.Location = new System.Drawing.Point(421, 80);
-            this.numLightOut.Name = "numLightOut";
-            this.numLightOut.Size = new System.Drawing.Size(60, 22);
-            this.numLightOut.TabIndex = 56;
-            this.numLightOut.Value = 0F;
-            // 
-            // numLightIn
-            // 
-            this.numLightIn.BackColor = System.Drawing.Color.DimGray;
-            this.numLightIn.Enabled = false;
-            this.numLightIn.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightIn.Location = new System.Drawing.Point(421, 55);
-            this.numLightIn.Name = "numLightIn";
-            this.numLightIn.Size = new System.Drawing.Size(60, 22);
-            this.numLightIn.TabIndex = 55;
-            this.numLightIn.Value = 0F;
-            // 
-            // numLightCutoff
-            // 
-            this.numLightCutoff.BackColor = System.Drawing.Color.DimGray;
-            this.numLightCutoff.Enabled = false;
-            this.numLightCutoff.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightCutoff.Location = new System.Drawing.Point(525, 30);
-            this.numLightCutoff.Name = "numLightCutoff";
-            this.numLightCutoff.Size = new System.Drawing.Size(60, 22);
-            this.numLightCutoff.TabIndex = 54;
-            this.numLightCutoff.Value = 0F;
-            // 
-            // numLightLen
-            // 
-            this.numLightLen.BackColor = System.Drawing.Color.DimGray;
-            this.numLightLen.Enabled = false;
-            this.numLightLen.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightLen.Location = new System.Drawing.Point(525, 5);
-            this.numLightLen.Name = "numLightLen";
-            this.numLightLen.Size = new System.Drawing.Size(60, 22);
-            this.numLightLen.TabIndex = 53;
-            this.numLightLen.Value = 0F;
-            // 
-            // numLightIntensity
-            // 
-            this.numLightIntensity.BackColor = System.Drawing.Color.DimGray;
-            this.numLightIntensity.Enabled = false;
-            this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightIntensity.Location = new System.Drawing.Point(421, 30);
-            this.numLightIntensity.Name = "numLightIntensity";
-            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
-            this.numLightIntensity.TabIndex = 52;
-            this.numLightIntensity.Value = 0F;
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(0, 0);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(287, 805);
-            this.panelTextureMap.TabIndex = 0;
-            // 
-            // panelItem
-            // 
-            this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelItem.Location = new System.Drawing.Point(12, 501);
-            this.panelItem.Name = "panelItem";
-            this.panelItem.Size = new System.Drawing.Size(196, 203);
-            this.panelItem.TabIndex = 26;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2818,11 +2818,11 @@
             this.panelTextureTools.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

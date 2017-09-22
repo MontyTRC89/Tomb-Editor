@@ -496,13 +496,9 @@ namespace TombEditor.Geometry.IO
                                     {
                                         case 0x4000:
                                             lightType = LightType.Light;
-                                            lightIn /= 1024.0f;
-                                            lightOut /= 1024.0f;
                                             break;
                                         case 0x6000:
                                             lightType = LightType.Shadow;
-                                            lightIn /= 1024.0f;
-                                            lightOut /= 1024.0f;
                                             break;
                                         case 0x4200:
                                             lightType = LightType.Sun;
@@ -512,30 +508,36 @@ namespace TombEditor.Geometry.IO
                                             break;
                                         case 0x4100:
                                             lightType = LightType.Spot;
-                                            lightLen /= 1024.0f;
-                                            lightCut /= 1024.0f;
                                             break;
                                         case 0x4020:
                                             lightType = LightType.FogBulb;
-                                            lightIn /= 1024.0f;
-                                            lightOut /= 1024.0f;
                                             break;
                                         default:
-                                            throw new NotSupportedException("Unknown light type found inside *.prj file.");
+                                            progressReporter.ReportWarn("Unknown light type " + objectType + " found inside *.prj file.");
+                                            continue;
                                     }
 
                                     var light = new Light(lightType)
                                     {
                                         Position = position,
                                         Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
-                                        Cutoff = lightCut,
-                                        Len = lightLen,
                                         Enabled = lightOn == 0x01,
-                                        In = lightIn,
-                                        Out = lightOut,
+                                        InnerRange = lightIn / 1024.0f,
+                                        OuterRange = lightOut / 1024.0f,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
+
+                                    // Import light rotation
                                     light.SetArbitaryRotationsYX(lightY + 180, -lightX);
+
+                                    // Spot light's have the inner and outer range swapped with angle in winroomedit
+                                    if (lightType == LightType.Spot)
+                                    {
+                                        light.InnerRange = lightLen / 1024.0f;
+                                        light.OuterRange = lightCut / 1024.0f;
+                                        light.OuterAngle = lightOut;
+                                        light.InnerAngle = lightIn;
+                                    }
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
