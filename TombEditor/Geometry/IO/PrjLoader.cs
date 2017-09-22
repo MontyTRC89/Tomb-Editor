@@ -535,7 +535,7 @@ namespace TombEditor.Geometry.IO
                                         Out = lightOut,
                                         Intensity = lightIntensity / 8192.0f,
                                     };
-                                    light.SetArbitaryRotationsYX(lightY, lightX);
+                                    light.SetArbitaryRotationsYX(lightY + 180, -lightX);
                                     room.AddObject(level, light);
                                     break;
                                 case 0x4c00:
