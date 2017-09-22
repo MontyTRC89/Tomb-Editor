@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using TombEditor.Geometry;
 using TombLib.Utils;
 
@@ -14,6 +15,7 @@ namespace TombEditor.Compilers.Util
 
         // Typical level textures are to big to use them directly
         // Therefore the texture can be cut into pieces of 256² maximum size. 
+        [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TextureView : IEquatable<TextureView>
         {
             public Texture Texture;

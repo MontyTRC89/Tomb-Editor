@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TombEditor.Geometry;
@@ -232,6 +233,7 @@ namespace TombEditor.Compilers.Util
             return result;
         }
 
+        [StructLayout(LayoutKind.Sequential, Pack = 2)]
         private unsafe struct SavedObjectTexture
 		{
 			public ushort TextureID;
