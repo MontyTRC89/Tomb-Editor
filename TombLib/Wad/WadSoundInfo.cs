@@ -21,7 +21,7 @@ namespace TombLib.Wad
         public bool FlagN { get; set; }
         public bool RandomizePitch { get; set; }
         public bool RandomizeGain { get; set; }
-        public byte Loop { get; set; }
+        public WadSoundLoopType Loop { get; set; }
         public Hash Hash { get { return _hash; } }
 
         private Hash _hash;
@@ -50,7 +50,7 @@ namespace TombLib.Wad
                 writer.Write(FlagN);
                 writer.Write(RandomizePitch);
                 writer.Write(RandomizeGain);
-                writer.Write(Loop);
+                writer.Write((byte)Loop);
 
                 foreach (var sample in WaveSounds)
                     writer.Write(sample.WaveData);

@@ -289,7 +289,7 @@ namespace TombLib.Wad
                 newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0);
                 newInfo.RandomizeGain = ((oldInfo.Characteristics & 0x4000) != 0);
                 newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
-                newInfo.Loop = (byte)(oldInfo.Characteristics & 0x03);
+                newInfo.Loop = (WadSoundLoopType)(oldInfo.Characteristics & 0x03);
 
                 int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
 
@@ -304,7 +304,7 @@ namespace TombLib.Wad
                     {
                         using (var reader = new BinaryReader(File.OpenRead(fileName)))
                         {
-                            var sound = new WadSound(reader.ReadBytes((int)reader.BaseStream.Length));
+                            var sound = new WadSound(oldWad.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
                             if (wad.WaveSounds.ContainsKey(sound.Hash))
                             {
                                 newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);

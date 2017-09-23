@@ -178,8 +178,10 @@ namespace TombLib.Wad
                 uint numWaves = reader.ReadUInt32();
                 for (int i = 0; i < numWaves; i++)
                 {
-                    uint waveSize = reader.ReadUInt32();
-                    var wave = new WadSound(reader.ReadBytes((int)waveSize));
+                    var waveName = reader.ReadStringUTF8();
+                    var waveSize = reader.ReadUInt32();
+
+                    var wave = new WadSound(waveName, reader.ReadBytes((int)waveSize));
                     wave.UpdateHash();
 
                     wad.WaveSounds.Add(wave.Hash, wave);
@@ -377,7 +379,7 @@ namespace TombLib.Wad
                     sound.Volume = reader.ReadByte();
                     sound.Range = reader.ReadByte();
                     sound.Pitch = reader.ReadByte();
-                    sound.Loop = reader.ReadByte();
+                    sound.Loop = (WadSoundLoopType)reader.ReadByte();
                     sound.FlagN = reader.ReadBoolean();
                     sound.RandomizeGain = reader.ReadBoolean();
                     sound.RandomizePitch = reader.ReadBoolean();
@@ -588,6 +590,8 @@ namespace TombLib.Wad
                 foreach (var wave in wavesList)
                 {
                     uint waveSize = (uint)wave.WaveData.Length;
+
+                    writer.WriteStringUTF8(wave.Name);
                     writer.Write(waveSize);
                     writer.Write(wave.WaveData);
                 }
@@ -762,7 +766,7 @@ namespace TombLib.Wad
                     writer.Write(sound.Volume);
                     writer.Write(sound.Range);
                     writer.Write(sound.Pitch);
-                    writer.Write(sound.Loop);
+                    writer.Write((byte)sound.Loop);
                     writer.Write(sound.FlagN);
                     writer.Write(sound.RandomizeGain);
                     writer.Write(sound.RandomizePitch);

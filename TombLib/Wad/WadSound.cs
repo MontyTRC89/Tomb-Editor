@@ -10,21 +10,23 @@ namespace TombLib.Wad
 {
     public class WadSound : IEquatable<WadSound>
     {
-        public byte[] WaveData { get { return _wave; } }
+        public string Name { get; private set; }
+        public byte[] WaveData { get; }
         public Hash Hash { get { return _hash; } }
 
-        private byte[] _wave;
         private Hash _hash;
 
-        public WadSound(byte[] data)
+        public WadSound(string name, byte[] data)
         {
-            _wave = data;
+            WaveData = data;
+            Name = name;
+
             UpdateHash();
         }
 
         public Hash UpdateHash()
         {
-            _hash = Hash.FromByteArray(_wave);
+            _hash = Hash.FromByteArray(WaveData);
             return _hash;
         }
 
@@ -35,7 +37,7 @@ namespace TombLib.Wad
 
         public WadSound Clone()
         {
-            return new WadSound(_wave);
+            return new WadSound(Name, WaveData);
         }
     }
 }

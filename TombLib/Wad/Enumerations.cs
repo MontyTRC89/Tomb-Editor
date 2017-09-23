@@ -59,4 +59,12 @@ namespace TombLib.Wad
         Normals,
         PrecalculatedGrayShades
     }
+
+    public enum WadSoundLoopType : byte
+    {
+        None = 0,
+        W = 1,
+        R = 2,
+        L = 3
+    }
 }
