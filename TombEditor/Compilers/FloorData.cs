@@ -223,9 +223,9 @@ namespace TombEditor.Compilers
 
                             // First, we fix the sector height
                             if (block.Type == BlockType.Wall)
-                                sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - 0x0f);
+                                sector.Floor = (sbyte)-(room.Position.Y + 0x0f);
                             else
-                                sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
+                                sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
 
                             if (block.FloorDiagonalSplit == DiagonalSplit.XnZn ||
                                 block.FloorDiagonalSplit == DiagonalSplit.XpZp)
@@ -384,8 +384,7 @@ namespace TombEditor.Compilers
                                 if (!Block.IsQuad(q0, q1, q2, q3))
                                 {
                                     // First, we fix the sector height
-                                    sector.Floor =
-                                        (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
+                                    sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
 
                                     // Then we have to find the axis of the triangulation
                                     var min = block.FloorMin;
@@ -666,9 +665,9 @@ namespace TombEditor.Compilers
 
                                 // First, we fix the sector height
                                 if (block.Type == BlockType.Wall)
-                                    sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - 0x0f);
+                                    sector.Floor = (sbyte)-(room.Position.Y + 0x0f);
                                 else
-                                    sector.Floor = (sbyte)(tempRoom.Info.YBottom / 256.0f - block.FloorMax);
+                                    sector.Floor = (sbyte)-(room.Position.Y + block.FloorMax);
 
                                 if (block.CeilingDiagonalSplit == DiagonalSplit.XnZn ||
                                     block.CeilingDiagonalSplit == DiagonalSplit.XpZp)
