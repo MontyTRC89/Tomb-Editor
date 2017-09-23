@@ -20,9 +20,8 @@ namespace TombEditor.Controls
 {
     public partial class PanelTextureMap : Panel
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Configuration Configuration { get; set; }
-
+        private Editor _editor;
+        
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public float MaxTextureSize { get; set; } = 255;
@@ -55,8 +54,11 @@ namespace TombEditor.Controls
 
         public PanelTextureMap()
         {
-            BorderStyle = BorderStyle.FixedSingle;
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
 
+            // Change default statew
+            BorderStyle = BorderStyle.FixedSingle;
             DoubleBuffered = true;
 
             // Scroll bars
@@ -78,10 +80,18 @@ namespace TombEditor.Controls
         {
             if (disposing)
             {
+                _editor.EditorEventRaised -= EditorEventRaised;
                 _hScrollBar.Dispose();
                 _vScrollBar.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            // Reset texture map
+            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
+                ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
         }
 
         protected override void OnResize(EventArgs eventargs)
@@ -105,7 +115,7 @@ namespace TombEditor.Controls
             ViewPosition = (min + max) * 0.5f;
             float requiredScaleX = Width / (max.X - min.X);
             float requiredScaleY = Height / (max.Y - min.Y);
-            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * Configuration.TextureMap_TextureAreaToViewRelativeSize;
+            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * _editor.Configuration.TextureMap_TextureAreaToViewRelativeSize;
 
             LimitPosition();
         }
@@ -216,7 +226,10 @@ namespace TombEditor.Controls
             _startPos = null;
 
             if (!(VisibleTexture?.IsAvailable ?? false))
+            {
+                EditorActions.LoadTextures(Parent);
                 return;
+            }
 
             switch (e.Button)
             {
@@ -317,7 +330,7 @@ namespace TombEditor.Controls
                         if (ModifierKeys.HasFlag(Keys.Control))
                         { // Zoom
                             float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
-                            ViewScale *= (float)Math.Exp(Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
+                            ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
                         }
                         else
                         { // Movement
@@ -346,20 +359,16 @@ namespace TombEditor.Controls
             }
             _viewMoveMouseTexCoord = null;
         }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            // Make this control able to receive scroll and key board events...
-            base.OnMouseEnter(e);
-            Focus();
-        }
-
+        
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
 
+            if (!(VisibleTexture?.IsAvailable ?? false))
+                return;
+
             Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
             MoveToFixedPoint(e.Location, FixedPointInWorld);
         }
 
@@ -392,6 +401,13 @@ namespace TombEditor.Controls
                     });
 
                 OnPaintSelection(e);
+            }
+            else
+            {
+                e.Graphics.DrawString("Click here to load textures.",
+                    Font, System.Drawing.Brushes.DarkGray,
+                    ClientRectangle,
+                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
 
             // Draw border next to scroll bars

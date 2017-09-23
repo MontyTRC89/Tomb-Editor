@@ -32,7 +32,7 @@ namespace TombEditor
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.comboStrength = new DarkUI.Controls.DarkComboBox(this.components);
+            this.comboStrength = new DarkUI.Controls.DarkComboBox();
             this.label5 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();

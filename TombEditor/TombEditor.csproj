@@ -256,10 +256,58 @@
     <Compile Include="Geometry\SoundInstance.cs" />
     <Compile Include="Gizmo.cs" />
     <Compile Include="ListExtensions.cs" />
+    <Compile Include="ToolWindows\Lighting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\Lighting.Designer.cs">
+      <DependentUpon>Lighting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\MainView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\MainView.Designer.cs">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\Palette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\Palette.Designer.cs">
+      <DependentUpon>Palette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\TexturePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\TexturePanel.Designer.cs">
+      <DependentUpon>TexturePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\TriggerList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\TriggerList.Designer.cs">
+      <DependentUpon>TriggerList.cs</DependentUpon>
+    </Compile>
     <Compile Include="RowAnimatedTexture.cs" />
     <Compile Include="TestLevel3.cs" />
     <Compile Include="TestLevel.cs" />
     <Compile Include="TombLauncher.cs" />
+    <Compile Include="ToolWindows\RoomOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\RoomOptions.Designer.cs">
+      <DependentUpon>RoomOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ObjectBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ObjectBrowser.Designer.cs">
+      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\SectorOptions.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\SectorOptions.Designer.cs">
+      <DependentUpon>SectorOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Utils.cs" />
     <Compile Include="Controls\Panel2DMap.cs">
       <SubType>Component</SubType>
@@ -285,6 +333,21 @@
     <Compile Include="Geometry\StaticInstance.cs" />
     <Compile Include="Geometry\TriggerInstance.cs" />
     <Compile Include="TexturePackerTest.cs" />
+    <EmbeddedResource Include="ToolWindows\Lighting.resx">
+      <DependentUpon>Lighting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\MainView.resx">
+      <DependentUpon>MainView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ObjectBrowser.resx">
+      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\Palette.resx">
+      <DependentUpon>Palette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
+      <DependentUpon>SectorOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Editor\font.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -321,6 +384,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMoveable.resx">
       <DependentUpon>FormMoveable.cs</DependentUpon>
@@ -339,6 +403,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormTrigger.resx">
       <DependentUpon>FormTrigger.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\RoomOptions.resx">
+      <DependentUpon>RoomOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\TexturePanel.resx">
+      <DependentUpon>TexturePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\TriggerList.resx">
+      <DependentUpon>TriggerList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -368,6 +441,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Editor\sky.png" />
+    <None Include="Resources\tick_new.png" />
     <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
     <None Include="Editor\arrow_ne_se.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
