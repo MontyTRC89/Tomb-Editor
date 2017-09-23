@@ -86,13 +86,13 @@
             this.butAddNewWave.Padding = new System.Windows.Forms.Padding(5);
             this.butAddNewWave.Size = new System.Drawing.Size(111, 23);
             this.butAddNewWave.TabIndex = 13;
-            this.butAddNewWave.Text = "Add new WAVE";
+            this.butAddNewWave.Text = "Add new WAV";
             this.butAddNewWave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddNewWave.Click += new System.EventHandler(this.butAddNewWave_Click);
             // 
             // openFileDialogWave
             // 
-            this.openFileDialogWave.FileName = "WAVE audio (*.wav)|*.wav";
+            this.openFileDialogWave.Filter = "WAVE audio (*.wav)|*.wav";
             this.openFileDialogWave.Title = "Add new WAVE";
             // 
             // butPlaySound
@@ -123,7 +123,7 @@
             this.MinimizeBox = false;
             this.Name = "FormSelectWave";
             this.ShowInTaskbar = false;
-            this.Text = "Select wave sample";
+            this.Text = "Select WAV sample";
             this.Load += new System.EventHandler(this.FormSelectWave_Load);
             this.ResumeLayout(false);
 

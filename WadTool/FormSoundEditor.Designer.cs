@@ -316,6 +316,7 @@
             this.butDeleteSound.TabIndex = 13;
             this.butDeleteSound.Text = "Delete sound";
             this.butDeleteSound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butDeleteSound.Click += new System.EventHandler(this.butDeleteSound_Click);
             // 
             // darkLabel8
             // 
@@ -323,9 +324,9 @@
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel8.Location = new System.Drawing.Point(273, 338);
             this.darkLabel8.Name = "darkLabel8";
-            this.darkLabel8.Size = new System.Drawing.Size(83, 13);
+            this.darkLabel8.Size = new System.Drawing.Size(76, 13);
             this.darkLabel8.TabIndex = 37;
-            this.darkLabel8.Text = "WAVE samples:";
+            this.darkLabel8.Text = "WAV samples:";
             // 
             // butAddNewWave
             // 
