@@ -305,10 +305,20 @@ namespace TombLib.Wad
                         using (var reader = new BinaryReader(File.OpenRead(fileName)))
                         {
                             var sound = new WadSound(reader.ReadBytes((int)reader.BaseStream.Length));
-                            newInfo.WaveSounds.Add(sound);
+                            if (wad.WaveSounds.ContainsKey(sound.Hash))
+                            {
+                                newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                            }
+                            else
+                            {
+                                wad.WaveSounds.Add(sound.Hash, sound);
+                                newInfo.WaveSounds.Add(sound);
+                            }
                         }
                     }
                 }
+
+                newInfo.UpdateHash();
 
                 wad.SoundInfo.Add((ushort)i, newInfo);
             }

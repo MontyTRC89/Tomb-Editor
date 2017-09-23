@@ -32,5 +32,10 @@ namespace TombLib.Wad
         {
             return (Hash == other.Hash);
         }
+
+        public WadSound Clone()
+        {
+            return new WadSound(_wave);
+        }
     }
 }

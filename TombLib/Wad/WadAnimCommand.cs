@@ -22,5 +22,16 @@ namespace TombLib.Wad
         {
             _type = type;
         }
+
+        public WadAnimCommand Clone()
+        {
+            var command = new WadAnimCommand(Type);
+
+            command.Parameter1 = Parameter1;
+            command.Parameter2 = Parameter2;
+            command.Parameter3 = Parameter3;
+
+            return command;
+        }
     }
 }
