@@ -237,7 +237,7 @@ namespace TombEditor.ToolWindows
                     break;
             }
 
-            _editor.SelectedRoom.UpdateCompletely();
+            light.Room.UpdateCompletely();
             _editor.ObjectChange(light);
         }
 
@@ -252,8 +252,8 @@ namespace TombEditor.ToolWindows
                 return;
 
             setLightValue(light, newValue.Value);
-            _editor.SelectedRoom.CalculateLightingForThisRoom();
-            _editor.SelectedRoom.UpdateBuffers();
+            light.Room.CalculateLightingForThisRoom();
+            light.Room.UpdateBuffers();
             _editor.ObjectChange(light);
         }
 
