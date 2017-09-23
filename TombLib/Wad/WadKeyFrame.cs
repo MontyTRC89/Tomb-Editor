@@ -16,5 +16,19 @@ namespace TombLib.Wad
         {
             Angles = new List<WadKeyFrameRotation>();
         }
+
+        public WadKeyFrame Clone()
+        {
+            var keyframe = new WadKeyFrame();
+
+            keyframe.BoundingBox = new BoundingBox(new Vector3(BoundingBox.Minimum.X, BoundingBox.Minimum.Y, BoundingBox.Minimum.Z),
+                                                   new Vector3(BoundingBox.Maximum.X, BoundingBox.Maximum.Y, BoundingBox.Maximum.Z));
+            keyframe.Offset = new Vector3(Offset.X, Offset.Y, Offset.Z);
+
+            foreach (var angle in Angles)
+                keyframe.Angles.Add(angle.Clone());
+
+            return keyframe;
+        }
     }
 }

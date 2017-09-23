@@ -58,6 +58,25 @@ namespace TombLib.Wad
                     wad.Textures.Add(texture.Hash, texture);
                 }
 
+                // Read sprites
+                uint numSprites = reader.ReadUInt32();
+                for (int i = 0; i < numSprites; i++)
+                {
+                    var texture = new WadSprite();
+                    texture.Image = ImageC.FromStreamRaw(reader.BaseStream, reader.ReadInt32(), reader.ReadInt32());
+
+                    // Check for other chunks
+                    chunkType = (WadChunkType)reader.ReadUInt16();
+                    if (chunkType != WadChunkType.NoExtraChunk)
+                    {
+                        // TODO: logic for reading in the future other chunks
+                    }
+
+                    texture.UpdateHash();
+
+                    wad.SpriteTextures.Add(texture.Hash, texture);
+                }
+
                 // Read meshes
                 uint numMeshes = reader.ReadUInt32();
                 for (int i = 0; i < numMeshes; i++)
@@ -154,6 +173,16 @@ namespace TombLib.Wad
 
                     mesh.UpdateHash();
                     wad.Meshes.Add(mesh.Hash, mesh);
+                }
+
+                uint numWaves = reader.ReadUInt32();
+                for (int i = 0; i < numWaves; i++)
+                {
+                    uint waveSize = reader.ReadUInt32();
+                    var wave = new WadSound(reader.ReadBytes((int)waveSize));
+                    wave.UpdateHash();
+
+                    wad.WaveSounds.Add(wave.Hash, wave);
                 }
 
                 // Read moveables
@@ -353,12 +382,11 @@ namespace TombLib.Wad
                     sound.RandomizeGain = reader.ReadBoolean();
                     sound.RandomizePitch = reader.ReadBoolean();
 
-                    uint numWaves = reader.ReadUInt32();
-                    for (int j = 0; j < numWaves; j++)
+                    uint numWaveSounds = reader.ReadUInt16();
+                    for (int j = 0; j < numWaveSounds; j++)
                     {
-                        uint waveSize = reader.ReadUInt32();
-                        var wave = new WadSound(reader.ReadBytes((int)waveSize));
-                        sound.WaveSounds.Add(wave);
+                        ushort waveIndex = reader.ReadUInt16();
+                        sound.WaveSounds.Add(wad.WaveSounds.ElementAt(waveIndex).Value);
                     }
 
                     // Check for other chunks
@@ -367,30 +395,14 @@ namespace TombLib.Wad
                     {
                         // TODO: logic for reading in the future other chunks
                     }
+
+                    sound.UpdateHash();
 
                     wad.SoundInfo.Add(soundId, sound);
                 }
 
                 // Read sprites
                 byte[] spritesMagicWord = reader.ReadBytes(_spritesMagicWord.Length);
-
-                uint numSprites = reader.ReadUInt32();
-                for (int i = 0; i < numSprites; i++)
-                {
-                    var texture = new WadSprite();
-                    texture.Image = ImageC.FromStreamRaw(reader.BaseStream, reader.ReadInt32(), reader.ReadInt32());
-
-                    // Check for other chunks
-                    chunkType = (WadChunkType)reader.ReadUInt16();
-                    if (chunkType != WadChunkType.NoExtraChunk)
-                    {
-                        // TODO: logic for reading in the future other chunks
-                    }
-
-                    texture.UpdateHash();
-
-                    wad.SpriteTextures.Add(texture.Hash, texture);
-                }
 
                 uint numSequences = reader.ReadUInt32();
                 for (int i = 0; i < numSequences; i++)
@@ -445,6 +457,10 @@ namespace TombLib.Wad
                 meshesList.Add(mesh);
             }
 
+            var wavesList = new List<WadSound>();
+            foreach (var wave in wad.WaveSounds)
+                wavesList.Add(wave.Value);
+
             using (var writer = new BinaryWriterEx(stream))
             {
                 // Write magic word
@@ -466,6 +482,27 @@ namespace TombLib.Wad
                     // No more data, in future we can expand the structure using chunks
                     chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
                     writer.Write(chunkMagicWord);
+                }
+
+                // Write sprites
+                var spritesList = new List<WadTexture>();
+
+                uint numSpritesTextures = (uint)wad.SpriteTextures.Count;
+                writer.Write(numSpritesTextures);
+
+                for (int i = 0; i < wad.SpriteTextures.Count; i++)
+                {
+                    var texture = wad.SpriteTextures.ElementAt(i).Value;
+
+                    writer.Write(texture.Width);
+                    writer.Write(texture.Height);
+                    texture.Image.WriteToStreamRaw(writer.BaseStream);
+
+                    // No more data, in future we can expand the structure using chunks
+                    chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
+                    writer.Write(chunkMagicWord);
+
+                    spritesList.Add(texture);
                 }
 
                 // Store number of meshes
@@ -543,6 +580,16 @@ namespace TombLib.Wad
                     // No more data, in future we can expand the structure using chunks
                     chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
                     writer.Write(chunkMagicWord);
+                }
+
+                // Store wave sounds
+                uint numWaves = (uint)wavesList.Count;
+                writer.Write(numWaves);
+                foreach (var wave in wavesList)
+                {
+                    uint waveSize = (uint)wave.WaveData.Length;
+                    writer.Write(waveSize);
+                    writer.Write(wave.WaveData);
                 }
 
                 // Store number of moveables
@@ -720,14 +767,13 @@ namespace TombLib.Wad
                     writer.Write(sound.RandomizeGain);
                     writer.Write(sound.RandomizePitch);
 
-                    uint numWaves = (uint)sound.WaveSounds.Count;
-                    writer.Write(numWaves);
+                    ushort numWaveSounds = (ushort)sound.WaveSounds.Count;
+                    writer.Write(numWaveSounds);
 
                     foreach (var wave in sound.WaveSounds)
                     {
-                        uint waveSize = (uint)wave.WaveData.Length;
-                        writer.Write(waveSize);
-                        writer.Write(wave.WaveData);
+                        ushort waveIndex = (ushort)wavesList.IndexOf(wave);
+                        writer.Write(waveIndex);
                     }
 
                     // No more data, in future we can expand the structure using chunks
@@ -736,27 +782,6 @@ namespace TombLib.Wad
                 }
 
                 writer.Write(_spritesMagicWord);
-
-                // Write sprites
-                var spritesList = new List<WadTexture>();
-
-                uint numSpritesTextures = (uint)wad.SpriteTextures.Count;
-                writer.Write(numSpritesTextures);
-
-                for (int i = 0; i < wad.SpriteTextures.Count; i++)
-                {
-                    var texture = wad.SpriteTextures.ElementAt(i).Value;
-
-                    writer.Write(texture.Width);
-                    writer.Write(texture.Height);
-                    texture.Image.WriteToStreamRaw(writer.BaseStream);
-
-                    // No more data, in future we can expand the structure using chunks
-                    chunkMagicWord = (ushort)WadChunkType.NoExtraChunk;
-                    writer.Write(chunkMagicWord);
-
-                    spritesList.Add(texture);
-                }
 
                 uint numSpritesSequences = (uint)wad.SpriteSequences.Count;
                 writer.Write(numSpritesSequences);
