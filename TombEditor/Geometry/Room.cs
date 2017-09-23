@@ -495,7 +495,7 @@ namespace TombEditor.Geometry
                     
                     // Floor polygons
                     RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
-                    BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsY,
+                    BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsZ,
                         BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType);
 
                     // Ceiling polygons
@@ -503,7 +503,7 @@ namespace TombEditor.Geometry
                     int startCeilingPolygons = sectorVertices.Count;
 
                     RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
-                    BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsY,
+                    BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsZ,
                         BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType);
 
                     // Change vertices order for ceiling polygons
@@ -2172,7 +2172,7 @@ namespace TombEditor.Geometry
 
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    if (Blocks[x, z].IsFloor)
+                    if (!Blocks[x, z].IsAnyWall)
                         max = Math.Max(max, Blocks[x, z].CeilingMax);
 
             return max;
@@ -2189,7 +2189,7 @@ namespace TombEditor.Geometry
 
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
-                    if (Blocks[x, z].IsFloor)
+                    if (!Blocks[x, z].IsAnyWall)
                         min = Math.Min(min, Blocks[x, z].FloorMin);
 
             return min;
@@ -2338,7 +2338,7 @@ namespace TombEditor.Geometry
                 for (int x = 0; x < NumXSectors; x++)
                 {
                     var b = Blocks[x, z];
-                    if (b.IsFloor)
+                    if (!b.IsAnyWall)
                         for (int i = 0; i < 4; i++)
                             lowest = Math.Min(lowest, b.QAFaces[i]);
                 }
@@ -2436,62 +2436,83 @@ namespace TombEditor.Geometry
             ///<summary>Gives how the block geometrically behaves regarding portals</summary>
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
         };
-
-
-        private RoomConnectionType CalculateRoomConnectionType(Room adjoiningRoom, short[] thisHeights, short[] adjoiningHeights)
+        
+        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
         {
-            bool matchesAtXnYn = (Position.Y + thisHeights[Block.FaceXnZn]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXnZn]);
-            bool matchesAtXpYn = (Position.Y + thisHeights[Block.FaceXpZn]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXpZn]);
-            bool matchesAtXnYp = (Position.Y + thisHeights[Block.FaceXnZp]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXnZp]);
-            bool matchesAtXpYp = (Position.Y + thisHeights[Block.FaceXpZp]) == (adjoiningRoom.Position.Y + adjoiningHeights[Block.FaceXpZp]);
-            if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp)
-                return RoomConnectionType.FullPortal;
-            else if (!matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp)
-                return RoomConnectionType.TriangularPortalXpZp;
-            else if (matchesAtXnYn && !matchesAtXpYn && matchesAtXnYp && matchesAtXpYp)
-                return RoomConnectionType.TriangularPortalXnZp;
-            else if (matchesAtXnYn && matchesAtXpYn && !matchesAtXnYp && matchesAtXpYp)
-                return RoomConnectionType.TriangularPortalXpZn;
-            else if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && !matchesAtXpYp)
-                return RoomConnectionType.TriangularPortalXnZn;
-            else
+            // Evaluate force floor solid
+            if (blockAbove.ForceFloorSolid)
                 return RoomConnectionType.NoPortal;
+
+            // Check walls
+            DiagonalSplit aboveDiagonalSplit = blockAbove.FloorDiagonalSplit;
+            DiagonalSplit belowDiagonalSplit = blockBelow.CeilingDiagonalSplit;
+            if (blockAbove.IsAnyWall && (aboveDiagonalSplit == DiagonalSplit.None))
+                return RoomConnectionType.NoPortal;
+            if (blockBelow.IsAnyWall && (belowDiagonalSplit == DiagonalSplit.None))
+                return RoomConnectionType.NoPortal;
+            if (blockBelow.IsAnyWall && blockAbove.IsAnyWall && (aboveDiagonalSplit != belowDiagonalSplit))
+                return RoomConnectionType.NoPortal;
+
+            // Gather split data
+            bool belowSplitXEqualsZ = blockBelow.CeilingSplitDirectionIsXEqualsZReal;
+            bool aboveSplitXEqualsZ = blockAbove.FloorSplitDirectionIsXEqualsZReal;
+            bool belowIsQuad = blockBelow.CeilingIsQuad;
+            bool aboveIsQuad = blockAbove.FloorIsQuad;
+
+            // Check where the geometry matches to create a portal
+            if (belowIsQuad || aboveIsQuad || (belowSplitXEqualsZ == aboveSplitXEqualsZ))
+            {
+                bool matchesAtXnYn = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXnZn]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXnZn]);
+                bool matchesAtXpYn = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXpZn]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXpZn]);
+                bool matchesAtXnYp = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXnZp]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXnZp]);
+                bool matchesAtXpYp = (roomBelow.Position.Y + blockBelow.WSFaces[Block.FaceXpZp]) == (roomAbove.Position.Y + blockAbove.QAFaces[Block.FaceXpZp]);
+
+                if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && !(blockAbove.IsAnyWall || blockBelow.IsAnyWall))
+                    return RoomConnectionType.FullPortal;
+                if ((belowIsQuad || belowSplitXEqualsZ) && (aboveIsQuad || aboveSplitXEqualsZ))
+                {
+                    if (matchesAtXnYn && matchesAtXnYp && matchesAtXpYp && (aboveDiagonalSplit == DiagonalSplit.XpZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXnZp;
+                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXpYp && (aboveDiagonalSplit == DiagonalSplit.XnZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXpZn;
+                }
+                if ((belowIsQuad || !belowSplitXEqualsZ) && (aboveIsQuad || !aboveSplitXEqualsZ))
+                {
+                    if (matchesAtXpYn && matchesAtXnYp && matchesAtXpYp && (aboveDiagonalSplit == DiagonalSplit.XnZn || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXpZp;
+                    if (matchesAtXnYn && matchesAtXpYn && matchesAtXnYp && (aboveDiagonalSplit == DiagonalSplit.XpZp || !(blockAbove.IsAnyWall || blockBelow.IsAnyWall)))
+                        return RoomConnectionType.TriangularPortalXnZn;
+                }
+            }
+            return RoomConnectionType.NoPortal;
         }
 
         public RoomConnectionInfo GetFloorRoomConnectionInfo(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
-            if ((block.FloorPortal == null) || block.IsAnyWall || block.ForceFloorSolid)
-                return new RoomConnectionInfo();
-
-            Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-            DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
-            Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
-            if ((adjoiningBlock.CeilingPortal == null) || adjoiningBlock.IsAnyWall)
-                return new RoomConnectionInfo();
-
-            if (block.FloorDiagonalSplit != adjoiningBlock.CeilingDiagonalSplit)
-                return new RoomConnectionInfo();
-
-            return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, block.QAFaces, adjoiningBlock.WSFaces));
+            if (block.FloorPortal != null)
+            {
+                Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
+                DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
+                if (adjoiningBlock.CeilingPortal != null)
+                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningBlock, block));
+            }
+            return new RoomConnectionInfo();
         }
 
         public RoomConnectionInfo GetCeilingRoomConnectionInfo(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
-            if ((block.CeilingPortal == null) || block.IsAnyWall)
-                return new RoomConnectionInfo();
-
-            Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
-            DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
-            Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
-            if ((adjoiningBlock.FloorPortal == null) || adjoiningBlock.IsAnyWall || adjoiningBlock.ForceFloorSolid)
-                return new RoomConnectionInfo();
-
-            if (block.CeilingDiagonalSplit != adjoiningBlock.FloorDiagonalSplit)
-                return new RoomConnectionInfo();
-
-            return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(adjoiningRoom, block.WSFaces, adjoiningBlock.QAFaces));
+            if (block.CeilingPortal != null)
+            {
+                Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
+                DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
+                if (adjoiningBlock.FloorPortal != null)
+                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, block, adjoiningBlock));
+            }
+            return new RoomConnectionInfo();
         }
 
         public void SmartBuildGeometry(Rectangle area)

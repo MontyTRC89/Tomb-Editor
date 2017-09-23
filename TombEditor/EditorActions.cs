@@ -1272,7 +1272,7 @@ namespace TombEditor
                 if (new Rectangle(1, 1, room.NumXSectors - 2, room.NumZSectors - 2).Contains(area))
                     for (int z = area.Top; z <= area.Bottom; ++z)
                         for (int x = area.Left; x <= area.Right; ++x)
-                            if (room.Blocks[x, z].IsFloor)
+                            if (!room.Blocks[x, z].IsAnyWall)
                                 couldBeFloorCeilingPortal = true;
                 
                 foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))

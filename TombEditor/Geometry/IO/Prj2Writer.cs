@@ -196,8 +196,8 @@ namespace TombEditor.Geometry.IO
                             
                             writer.Write((ushort)b.FloorDiagonalSplit);
                             writer.Write((ushort)b.CeilingDiagonalSplit);
-                            writer.Write(b.FloorSplitDirectionIsXEqualsY);
-                            writer.Write(b.CeilingSplitDirectionIsXEqualsY);
+                            writer.Write(b.FloorSplitDirectionIsXEqualsZ);
+                            writer.Write(b.CeilingSplitDirectionIsXEqualsZ);
 
                             for (int f = 0; f < 29; f++)
                             {

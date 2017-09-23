@@ -414,7 +414,7 @@ namespace TombEditor.Compilers
                                     // The real floor split of the sector
                                     int function;
 
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {
@@ -805,7 +805,7 @@ namespace TombEditor.Compilers
                                     // decide if apply the height correction to both triangles or just one of them.
                                     // Function must be decided looking at portals.
 
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                                         {

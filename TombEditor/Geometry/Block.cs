@@ -133,9 +133,7 @@ namespace TombEditor.Geometry
         {
             return _faceTextures[(int)face];
         }
-
-        public bool IsFloor => Type == BlockType.Floor;
-
+        
         public bool IsAnyWall => Type != BlockType.Floor;
 
         public IEnumerable<Portal> Portals
@@ -206,7 +204,7 @@ namespace TombEditor.Geometry
             return -1;
         }
 
-        public bool FloorSplitDirectionIsXEqualsY
+        public bool FloorSplitDirectionIsXEqualsZ
         {
             get
             {
@@ -246,12 +244,12 @@ namespace TombEditor.Geometry
             }
             set
             {
-                if (value != FloorSplitDirectionIsXEqualsY)
+                if (value != FloorSplitDirectionIsXEqualsZ)
                     FloorSplitDirectionToggled = !FloorSplitDirectionToggled;
             }
         }
 
-        public bool CeilingSplitDirectionIsXEqualsY
+        public bool CeilingSplitDirectionIsXEqualsZ
         {
             get
             {
@@ -291,8 +289,50 @@ namespace TombEditor.Geometry
             }
             set
             {
-                if (value != CeilingSplitDirectionIsXEqualsY)
+                if (value != CeilingSplitDirectionIsXEqualsZ)
                     CeilingSplitDirectionToggled = !CeilingSplitDirectionToggled;
+            }
+        }
+
+        /// <summary>Checks for FloorDiagonalSplit and takes priority</summary>
+        public bool FloorSplitDirectionIsXEqualsZReal
+        {
+            get
+            {
+                switch (FloorDiagonalSplit)
+                {
+                    case DiagonalSplit.XnZn:
+                    case DiagonalSplit.XpZp:
+                        return false;
+                    case DiagonalSplit.XpZn:
+                    case DiagonalSplit.XnZp:
+                        return true;
+                    case DiagonalSplit.None:
+                        return FloorSplitDirectionIsXEqualsZ;
+                    default:
+                        throw new ApplicationException("\"FloorDiagonalSplit\" in unknown state.");
+                }
+            }
+        }
+
+        /// <summary>Checks for CeilingDiagonalSplit and takes priority</summary>
+        public bool CeilingSplitDirectionIsXEqualsZReal
+        {
+            get
+            {
+                switch (CeilingDiagonalSplit)
+                {
+                    case DiagonalSplit.XnZn:
+                    case DiagonalSplit.XpZp:
+                        return false;
+                    case DiagonalSplit.XpZn:
+                    case DiagonalSplit.XnZp:
+                        return true;
+                    case DiagonalSplit.None:
+                        return CeilingSplitDirectionIsXEqualsZ;
+                    default:
+                        throw new ApplicationException("\"CeilingDiagonalSplit\" in unknown state.");
+                }
             }
         }
 
