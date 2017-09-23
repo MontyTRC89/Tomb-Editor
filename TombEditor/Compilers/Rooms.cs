@@ -58,10 +58,10 @@ namespace TombEditor.Compilers
                 Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
                 {
-                    X = (int)(room.Position.X * 1024.0f),
-                    Z = (int)(room.Position.Z * 1024.0f),
-                    YTop = (int)(-room.Position.Y * 256.0f - room.GetHighestCorner() * 256.0f),
-                    YBottom = (int)(-room.Position.Y * 256.0f)
+                    X = (int)(room.WorldPos.X),
+                    Z = (int)(room.WorldPos.Z),
+                    YTop = (int)-(room.WorldPos.Y + room.GetHighestCorner() * 256.0f),
+                    YBottom = (int)-(room.WorldPos.Y + room.GetLowestCorner() * 256.0f)
                 },
                 NumXSectors = room.NumXSectors,
                 NumZSectors = room.NumZSectors,
