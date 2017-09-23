@@ -351,7 +351,7 @@ namespace TombLib.Wad
 
                 newMoveable.ObjectID = destination;
                 newMoveable.Offset = new Vector3(moveable.Offset.X, moveable.Offset.Y, moveable.Offset.Z);
-                
+
                 // Add mesh trees
                 foreach (var link in moveable.Links)
                     newMoveable.Links.Add(link.Clone());
@@ -397,7 +397,7 @@ namespace TombLib.Wad
             if (isMoveable)
             {
                 var newMoveable = (WadMoveable)newObject;
-                                
+
                 foreach (var animation in newMoveable.Animations)
                 {
                     foreach (var command in animation.AnimCommands)
@@ -425,7 +425,7 @@ namespace TombLib.Wad
 
                                             SoundInfo.Add(soundId, newSoundInfo);
                                             soundsRemapTable.Add(soundId, soundId);
-                                            
+
                                             // Add wave files or get them if they exist
                                             for (int k = 0; k < newSoundInfo.WaveSounds.Count; k++)
                                             {
@@ -475,7 +475,7 @@ namespace TombLib.Wad
                                             var newSoundInfo = srcWad.SoundInfo[soundId].Clone();
                                             SoundInfo.Add(freeId, newSoundInfo);
                                             soundsRemapTable.Add(soundId, freeId);
-                                            
+
                                             // Add waves
                                             for (int k = 0; k < newSoundInfo.WaveSounds.Count; k++)
                                             {
@@ -588,6 +588,92 @@ namespace TombLib.Wad
             SpriteSequences.Remove(sequence);
 
             return true;
+        }
+
+        public bool DeleteSound(ushort soundId)
+        {
+            // Get the first available sound
+            int found = -1;
+            for (int i = 0; i < 370; i++)
+                if (i != soundId && SoundInfo.ContainsKey((ushort)i))
+                {
+                    found = i;
+                    break;
+                }
+
+            foreach (var moveable in Moveables)
+            {
+                foreach (var animation in moveable.Value.Animations)
+                {
+                    foreach (var command in animation.AnimCommands)
+                    {
+                        if (command.Type == WadAnimCommandType.PlaySound)
+                        {
+                            ushort currentSoundId = (ushort)(command.Parameter2 & 0x3fff);
+                            if (soundId == currentSoundId)
+                            {
+                                // Remap current sound
+                                command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + (ushort)found);
+                            }
+                        }
+                    }
+                }
+            }
+
+            SoundInfo.Remove(soundId);
+
+            return true;
+        }
+
+        public List<WadMoveable> GetAllMoveablesReferencingSound(ushort soundId)
+        {
+            var moveables = new List<WadMoveable>();
+
+            foreach (var moveable in Moveables)
+            {
+                foreach (var animation in moveable.Value.Animations)
+                {
+                    foreach (var command in animation.AnimCommands)
+                    {
+                        if (command.Type == TombLib.Wad.WadAnimCommandType.PlaySound)
+                        {
+                            ushort currentSoundId = (ushort)(command.Parameter2 & 0x3fff);
+                            if (soundId == currentSoundId)
+                            {
+                                if (!moveables.Contains(moveable.Value))
+                                    moveables.Add(moveable.Value);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return moveables;
+        }
+
+        public void CleanUnusedWaveSounds()
+        {
+            var wavesToRemove = new List<WadSound>();
+
+            foreach (var wave in WaveSounds)
+            {
+                bool found = false;
+
+                foreach (var soundInfo in SoundInfo)
+                {
+                    if (soundInfo.Value.WaveSounds.Contains(wave.Value))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found)
+                    wavesToRemove.Add(wave.Value);
+            }
+
+            foreach (var wave in wavesToRemove)
+                WaveSounds.Remove(wave.Hash);
         }
     }
 }

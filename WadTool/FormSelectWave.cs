@@ -95,13 +95,7 @@ namespace WadTool
             var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
             var wave = (WadSound)item.Tag;
 
-            using (var stream = new MemoryStream(wave.WaveData))
-            {
-                using (var player = new SoundPlayer(stream))
-                {
-                    player.Play();
-                }
-            }
+            wave.Play();
         }
     }
 }

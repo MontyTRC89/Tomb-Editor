@@ -86,9 +86,7 @@ namespace TombEditor
             {
                 try
                 {
-                    var stream = new MemoryStream(sound.WaveSounds[0].WaveData);
-                    SoundPlayer player = new SoundPlayer(stream);
-                    player.Play();
+                    sound.WaveSounds[0].Play();
                 }
                 catch (Exception exc)
                 {

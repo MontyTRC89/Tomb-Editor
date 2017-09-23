@@ -93,7 +93,7 @@ namespace WadTool
 
             if (lstWaves.Items.Count == 0)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must add at least one WAVE sample", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkUI.Forms.DarkMessageBox.ShowError("You must add at least one WAV sample", "Error", DarkUI.Forms.DarkDialogButton.Ok);
                 return;
             }
 
@@ -164,12 +164,12 @@ namespace WadTool
                 var wave = (WadSound)item.Tag;
                 if (wave.Hash == form.SelectedWave.Hash)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("This WAVE sample is already present in this sound info", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkUI.Forms.DarkMessageBox.ShowError("This WAV sample is already present in this sound info", "Error", DarkUI.Forms.DarkDialogButton.Ok);
                     return;
                 }
             }
 
-            // Add the new WAVE sample
+            // Add the new WAV sample
             var newItem = new DarkUI.Controls.DarkListItem(form.SelectedWave.Name);
             newItem.Tag = form.SelectedWave;
             lstWaves.Items.Add(newItem);
@@ -177,7 +177,18 @@ namespace WadTool
 
         private void butDeleteWave_Click(object sender, EventArgs e)
         {
+            if (lstWaves.SelectedIndices.Count == 0) return;
 
+            var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
+            var wave = (WadSound)item.Tag;
+
+            // Ask to the user the permission to delete WAV
+            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                   "Are you really sure to delete '" + wave.Name + "'? The WAV sample will be removed from this sound but not from Wad2 file until some sound is referencing it",
+                   "Delete WAV", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                return;
+
+            lstWaves.Items.Remove(item);
         }
 
         private void butPlaySound_Click(object sender, EventArgs e)
@@ -187,13 +198,48 @@ namespace WadTool
             var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
             var wave = (WadSound)item.Tag;
 
-            using (var stream = new MemoryStream(wave.WaveData))
+            wave.Play();
+        }
+
+        private void butDeleteSound_Click(object sender, EventArgs e)
+        {
+            if (lstSoundInfos.SelectedIndices.Count == 0) return;
+
+            var item = lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]];
+            var soundInfo = _tool.DestinationWad.SoundInfo[(ushort)item.Tag];
+            var soundIdToRemove = (ushort)item.Tag;
+
+            // Get all moveables that are using this sound
+            var moveables = _tool.DestinationWad.GetAllMoveablesReferencingSound(soundIdToRemove);
+
+            if (moveables.Count != 0)
             {
-                using (var player = new SoundPlayer(stream))
-                {
-                    player.Play();
-                }
+                var stringMoveables = "";
+                foreach (var mov in moveables)
+                    stringMoveables += mov.ToString() + Environment.NewLine;
+
+                // Ask to the user the permission to delete WAV
+                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                       "Are you really sure to delete '" + soundInfo.Name + "'? The following moveables are referincing " +
+                       "this sound and their animation commands will be remapped to the first available sound: " + Environment.NewLine +
+                       stringMoveables,
+                       "Delete sound", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    return;
             }
+            else
+            {
+                // Ask to the user the permission to delete WAV
+                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                       "Are you really sure to delete '" + soundInfo.Name + "'?",
+                       "Delete sound", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    return;
+            }
+
+            // Delete the sound and remap anim commands
+            _tool.DestinationWad.DeleteSound(soundIdToRemove);
+
+            ReloadSoundInfos();
+            _currentSound = -1;
         }
     }
 }

@@ -445,6 +445,9 @@ namespace TombLib.Wad
             ushort chunkMagicWord;
             uint chunkSize;
 
+            // Do some resource cleaning
+            wad.CleanUnusedWaveSounds();
+
             var texturesList = new List<WadTexture>();
             for (int i = 0; i < wad.Textures.Count; i++)
             {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using System.IO;
+using System.Media;
 
 namespace TombLib.Wad
 {
@@ -38,6 +39,17 @@ namespace TombLib.Wad
         public WadSound Clone()
         {
             return new WadSound(Name, WaveData);
+        }
+
+        public void Play()
+        {
+            using (var stream = new MemoryStream(WaveData))
+            {
+                using (var player = new SoundPlayer(stream))
+                {
+                    player.Play();
+                }
+            }
         }
     }
 }

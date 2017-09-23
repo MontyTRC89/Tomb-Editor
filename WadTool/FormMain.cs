@@ -451,13 +451,7 @@ namespace WadTool
 
             var currentSound = (WadSound)node.Tag;
 
-            using (var stream = new MemoryStream(currentSound.WaveData))
-            {
-                using (var player = new SoundPlayer(stream))
-                {
-                    player.Play();
-                }
-            }
+            currentSound.Play();
         }
 
         private void convertWADToWad2ToolStripMenuItem_Click(object sender, EventArgs e)
