@@ -91,6 +91,7 @@
             this.lstTriggers.Name = "lstTriggers";
             this.lstTriggers.Size = new System.Drawing.Size(275, 276);
             this.lstTriggers.TabIndex = 56;
+            this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
             // 
             // TriggerList
             // 
