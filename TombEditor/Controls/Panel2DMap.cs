@@ -244,14 +244,7 @@ namespace TombEditor.Controls
             }
             _currentlyEditedDepthProbeIndex = null;
         }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            // Make this control able to receive scroll and key board events...
-            base.OnMouseEnter(e);
-            Focus();
-        }
-
+        
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);

@@ -54,7 +54,6 @@ namespace TombEditor
             MinimumSize = new Size(484, 173) + (Size - ClientSize);
 
             // Initialize texture map
-            textureMap.Configuration = _editor.Configuration;
             textureMap.MaxTextureSize = float.PositiveInfinity;
             if (_editor.SelectedTexture.TextureIsInvisble)
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);

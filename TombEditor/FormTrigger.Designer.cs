@@ -34,8 +34,8 @@ namespace TombEditor
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormTrigger));
             this.label1 = new DarkUI.Controls.DarkLabel();
-            this.comboType = new DarkUI.Controls.DarkComboBox(this.components);
-            this.comboTargetType = new DarkUI.Controls.DarkComboBox(this.components);
+            this.comboType = new DarkUI.Controls.DarkComboBox();
+            this.comboTargetType = new DarkUI.Controls.DarkComboBox();
             this.label2 = new DarkUI.Controls.DarkLabel();
             this.label3 = new DarkUI.Controls.DarkLabel();
             this.tbParameter = new DarkUI.Controls.DarkTextBox();
@@ -49,7 +49,7 @@ namespace TombEditor
             this.cbOneShot = new DarkUI.Controls.DarkCheckBox();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
-            this.comboParameter = new DarkUI.Controls.DarkComboBox(this.components);
+            this.comboParameter = new DarkUI.Controls.DarkComboBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
