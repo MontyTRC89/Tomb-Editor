@@ -894,7 +894,7 @@ namespace TombEditor.Controls
                 }
 
             // Check room geometry
-            var roomIntersectInfo = room.RayIntersectsGeometry(ray);
+            var roomIntersectInfo = room.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
             if ((roomIntersectInfo != null) && ((result == null) || (roomIntersectInfo.Value.Distance < result.Distance)))
                 result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.Pos, roomIntersectInfo.Value.Face);
 
