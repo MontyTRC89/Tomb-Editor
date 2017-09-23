@@ -105,51 +105,41 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is a floor portal
-                        if (block.FloorPortal != null)
+                        if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                         {
-                            // Setup portal only if current sector is not solid and opacity if different from 1
-                            if (floorPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                            {
-                                var portal = block.FloorPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                if (roomIndex >= 254)
-                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
-                                sector.RoomBelow = checked((byte)roomIndex);
-                            }
-                            else
-                            {
-                                sector.RoomBelow = 255;
-                            }
+                            var portal = block.FloorPortal;
+                            int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            if (roomIndex >= 254)
+                                throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                            sector.RoomBelow = checked((byte)roomIndex);
+                        }
+                        else
+                        {
+                            sector.RoomBelow = 255;
                         }
 
                         // If sector is a ceiling portal
-                        if (block.CeilingPortal != null)
+                        if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
                         {
-                            //  Setup portal only if current sector is not solid and opacity if different from 1
-                            if (ceilingPortalInfo.TraversableType != Room.RoomConnectionType.NoPortal)
-                            {
-                                var portal = block.CeilingPortal;
-                                int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                if (roomIndex >= 254)
-                                    throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
-                                sector.RoomAbove = checked((byte)roomIndex);
-                            }
-                            else
-                            {
-                                sector.RoomAbove = 255;
-                            }
+                            var portal = block.CeilingPortal;
+                            int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
+                            if (roomIndex >= 254)
+                                throw new ApplicationException("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                            sector.RoomAbove = checked((byte)roomIndex);
+                        }
+                        else
+                        {
+                            sector.RoomAbove = 255;
                         }
 
                         // If sector is a wall portal
                         if (block.WallPortal != null)
                         {
-                            var portal = block.WallPortal;
-
                             // Only if the portal is not a Toggle Opacity 1
                             if (block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                             {
                                 const ushort data1 = 0x8001;
-                                var data2 = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom];
+                                var data2 = (ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
 
                                 tempFloorData.Add(data1);
                                 tempFloorData.Add(data2);
@@ -181,7 +171,7 @@ namespace TombEditor.Compilers
                         var lastFloorDataFunction = (ushort)tempCodes.Count;
 
                         // If sector is Death
-                        if ((block.Flags & BlockFlags.DeathFire) == BlockFlags.DeathFire)
+                        if (block.Flags.HasFlag(BlockFlags.DeathFire))
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;
                             tempCodes.Add(0x05);
