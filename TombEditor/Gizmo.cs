@@ -105,13 +105,9 @@ namespace TombEditor
         {
             if ((!DrawGizmo) || (_axis == GizmoAxis.None))
                 return false;
-
-            // For picking, I'll check first sphere/cubes bounding boxes and then eventually
-            Room room = _editor.SelectedRoom;
-
+            
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = Ray.GetPickRay(x, y, _device.Viewport,
-                Matrix.Translation(room.WorldPos) * viewProjection);
+            Ray ray = Ray.GetPickRay(x, y, _device.Viewport, viewProjection);
 
             Vector3 newPos = Position;
             switch (_axis)
@@ -142,7 +138,8 @@ namespace TombEditor
                     break;
             }
 
-            EditorActions.MoveObject(_editor.SelectedRoom, _editor.SelectedObject as PositionBasedObjectInstance, newPos, modifierKeys);
+            EditorActions.MoveObject(_editor.SelectedObject.Room, _editor.SelectedObject as PositionBasedObjectInstance, 
+                newPos - _editor.SelectedObject.Room.WorldPos, modifierKeys);
             return true;
         }
 
@@ -182,7 +179,7 @@ namespace TombEditor
 
             var model = Matrix.Scaling(_editor.Configuration.Gizmo_Size) * 
                         Matrix.Translation(Position) *
-                        Matrix.Translation(_editor.SelectedRoom.WorldPos);
+                        Matrix.Translation(_editor.SelectedObject.Room.WorldPos);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 
             // X axis
@@ -209,9 +206,8 @@ namespace TombEditor
             _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
             // X axis sphere
-            model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) * 
-                    Matrix.Translation(Position + Vector3.UnitX * _editor.Configuration.Gizmo_Size) *
-                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
+            model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) *
+                    Matrix.Translation(Position + Vector3.UnitX * _editor.Configuration.Gizmo_Size);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_red);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -220,8 +216,7 @@ namespace TombEditor
 
             // Y axis sphere
             model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) *
-                    Matrix.Translation(Position + Vector3.UnitY * _editor.Configuration.Gizmo_Size) *
-                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
+                    Matrix.Translation(Position + Vector3.UnitY * _editor.Configuration.Gizmo_Size);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_green);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -230,8 +225,7 @@ namespace TombEditor
 
             // Z axis sphere
             model = Matrix.Scaling(_editor.Configuration.Gizmo_TranslationSphereSize) *
-                    Matrix.Translation(Position - Vector3.UnitZ * _editor.Configuration.Gizmo_Size) *
-                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
+                    Matrix.Translation(Position - Vector3.UnitZ * _editor.Configuration.Gizmo_Size);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_blue);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -244,8 +238,7 @@ namespace TombEditor
             _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
 
             model = Matrix.Scaling(_editor.Configuration.Gizmo_CenterCubeSize) *
-                    Matrix.Translation(Position) *
-                    Matrix.Translation(_editor.SelectedRoom.WorldPos);
+                    Matrix.Translation(Position);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
             solidEffect.Parameters["Color"].SetValue(_yellow);
             solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -257,6 +250,13 @@ namespace TombEditor
 
         private bool DrawGizmo => _editor.SelectedObject is PositionBasedObjectInstance;
 
-        private Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position;
+        private Vector3 Position
+        {
+            get
+            {
+                var obj = (PositionBasedObjectInstance)_editor.SelectedObject;
+                return obj.Position + obj.Room.WorldPos;
+            }
+        }
     }
 }
