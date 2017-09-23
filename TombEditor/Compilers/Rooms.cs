@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using TombLib.Utils;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace TombEditor.Compilers
 {
@@ -541,7 +542,7 @@ namespace TombEditor.Compilers
                     if (!Block.IsQuad(q0, q1, q2, q3) && block.FloorIfQuadSlopeX == 0 &&
                         block.FloorIfQuadSlopeZ == 0)
                     {
-                        if (!block.FloorSplitDirectionIsXEqualsY)
+                        if (!block.FloorSplitDirectionIsXEqualsZ)
                         {
                             aux.LowestFloor = (sbyte)(-room.Position.Y - Math.Min(block.QAFaces[Block.FaceXnZp],
                                                            block.QAFaces[Block.FaceXpZn]));
@@ -559,112 +560,235 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(Room room, IEnumerable<Portal> tempIdPortals, tr_room newRoom)
+        private void ConvertPortals(Room room, IEnumerable<Portal> portals, tr_room newRoom)
         {
-            foreach (var portal in tempIdPortals)
+            foreach (var portal in portals)
             {
-                // Choose which block faces will actually matter for the dimensions of this portal
-                int[] relevantDirections;
                 switch (portal.Direction)
                 {
                     case PortalDirection.WallPositiveZ:
-                        relevantDirections = new int[] { Block.FaceXnZn, Block.FaceXpZn };
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXnZn, Block.FaceXpZn);
                         break;
                     case PortalDirection.WallPositiveX:
-                        relevantDirections = new int[] { Block.FaceXnZn, Block.FaceXnZp };
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXnZn, Block.FaceXnZp);
                         break;
                     case PortalDirection.WallNegativeZ:
-                        relevantDirections = new int[] { Block.FaceXpZp, Block.FaceXnZp };
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXpZp, Block.FaceXnZp);
                         break;
                     case PortalDirection.WallNegativeX:
-                        relevantDirections = new int[] { Block.FaceXpZp, Block.FaceXpZn };
+                        ConvertWallPortal(room, portal, newRoom.Portals, Block.FaceXpZp, Block.FaceXpZn);
                         break;
                     case PortalDirection.Floor:
-                        relevantDirections = new int[] { 0, 1, 2, 3 };
+                        ConvertFloorCeilingPortal(room, portal, newRoom.Portals, false);
                         break;
                     case PortalDirection.Ceiling:
-                        relevantDirections = new int[] { 0, 1, 2, 3 };
+                        ConvertFloorCeilingPortal(room, portal, newRoom.Portals, true);
                         break;
                     default:
                         throw new ApplicationException("Unknown PortalDirection");
                 }
+            }
+        }
 
-                // Calculate dimensions of portal
-                float yMin = float.MaxValue;
-                float yMax = float.MinValue;
-                for (int z = portal.Area.Top; z <= portal.Area.Bottom; ++z)
-                    for (int x = portal.Area.Left; x <= portal.Area.Right; ++x)
+        private void ConvertWallPortal(Room room, Portal portal, List<tr_room_portal> outPortals, params int[] relevantDirections)
+        {
+            // Calculate dimensions of portal
+            float yMin = float.MaxValue;
+            float yMax = float.MinValue;
+            for (int z = portal.Area.Top; z <= portal.Area.Bottom; ++z)
+                for (int x = portal.Area.Left; x <= portal.Area.Right; ++x)
+                {
+                    Block block = room.Blocks[x, z];
+                    foreach (int relevantDirection in relevantDirections)
                     {
-                        Block block = room.Blocks[x, z];
-                        foreach (int relevantDirection in relevantDirections)
-                        {
-                            float floor = 256.0f * block.QAFaces[relevantDirection] + room.WorldPos.Y;
-                            float ceiling = 256.0f * block.WSFaces[relevantDirection] + room.WorldPos.Y;
-                            yMin = Math.Min(yMin, Math.Min(floor, ceiling));
-                            yMax = Math.Max(yMax, Math.Max(floor, ceiling));
+                        float floor = 256.0f * block.QAFaces[relevantDirection] + room.WorldPos.Y;
+                        float ceiling = 256.0f * block.WSFaces[relevantDirection] + room.WorldPos.Y;
+                        yMin = Math.Min(yMin, Math.Min(floor, ceiling));
+                        yMax = Math.Max(yMax, Math.Max(floor, ceiling));
+                    }
+                }
+            yMin = (float)Math.Floor(yMin);
+            yMax = (float)Math.Ceiling(yMax);
+
+            float xMin = portal.Area.X * 1024.0f;
+            float xMax = (portal.Area.Right + 1) * 1024.0f;
+            float zMin = portal.Area.Y * 1024.0f;
+            float zMax = (portal.Area.Bottom + 1) * 1024.0f;
+
+            // Determine normal and portal vertices
+            tr_vertex[] portalVertices = new tr_vertex[4];
+            tr_vertex normal;
+            switch (portal.Direction)
+            {
+                case PortalDirection.WallPositiveZ:
+                    normal = new tr_vertex(0, 0, -1);
+                    portalVertices[0] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMax - 1024));
+                    portalVertices[1] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMax - 1024));
+                    portalVertices[2] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMax - 1024));
+                    portalVertices[3] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMax - 1024));
+                    break;
+                case PortalDirection.WallPositiveX:
+                    normal = new tr_vertex(-1, 0, 0);
+                    portalVertices[0] = new tr_vertex((short)(xMax - 1024), (short)-yMin, (short)zMax);
+                    portalVertices[1] = new tr_vertex((short)(xMax - 1024), (short)-yMax, (short)zMax);
+                    portalVertices[2] = new tr_vertex((short)(xMax - 1024), (short)-yMax, (short)zMin);
+                    portalVertices[3] = new tr_vertex((short)(xMax - 1024), (short)-yMin, (short)zMin);
+                    break;
+                case PortalDirection.WallNegativeZ:
+                    normal = new tr_vertex(0, 0, 1);
+                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + 1024));
+                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + 1024));
+                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + 1024));
+                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + 1024));
+                    break;
+                case PortalDirection.WallNegativeX:
+                    normal = new tr_vertex(1, 0, 0);
+                    portalVertices[0] = new tr_vertex((short)(xMin + 1024), (short)-yMin, (short)zMin);
+                    portalVertices[1] = new tr_vertex((short)(xMin + 1024), (short)-yMax, (short)zMin);
+                    portalVertices[2] = new tr_vertex((short)(xMin + 1024), (short)-yMax, (short)zMax);
+                    portalVertices[3] = new tr_vertex((short)(xMin + 1024), (short)-yMin, (short)zMax);
+                    break;
+                default:
+                    throw new ApplicationException("Unknown PortalDirection");
+            }
+
+            // Create portal
+            outPortals.Add(new tr_room_portal
+            {
+                AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
+                Vertices = portalVertices,
+                Normal = normal
+            });
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 2)]
+        private struct PortalPlane
+        {
+            public short SlopeX;
+            public short SlopeZ;
+            public int Height;
+
+            public int EvaluateHeight(int x, int z)
+            {
+                return Height + x * SlopeX + z * SlopeZ;
+            }
+
+            public PortalPlane(int ankerX, short ankerY, int ankerZ, int slopeX, int slopeZ)
+            {
+                SlopeX = (short)slopeX;
+                SlopeZ = (short)slopeZ;
+                Height = ankerY - ankerX * slopeX - ankerZ * slopeZ;
+            }
+
+            public static unsafe bool FastEquals(PortalPlane first, PortalPlane second)
+            {
+                return (*(ulong*)(&first) == *(ulong*)(&second));
+            }
+        }
+        
+        private void AddPortalPlane(List<PortalPlane> portalPlanes, List<SharpDX.Rectangle> portalAreas, int x, int z, PortalPlane portalPlane)
+        {
+            // Try to extend an existing portal plane
+            for (int i = 0; i < portalPlanes.Count; ++i)
+                if (PortalPlane.FastEquals(portalPlanes[i], portalPlane))
+                {
+                    var area = portalAreas[i];
+                    area.Left = Math.Min(area.Left, x);
+                    area.Right = Math.Max(area.Right, x);
+                    area.Top = Math.Min(area.Top, z);
+                    area.Bottom = Math.Max(area.Bottom, z);
+                    portalAreas[i] = area;
+                    return;
+                }
+
+            // Add new portal plane
+            portalPlanes.Add(portalPlane);
+            portalAreas.Add(new SharpDX.Rectangle(x, z, x, z));
+        }
+
+        private void ConvertFloorCeilingPortal(Room room, Portal portal, List<tr_room_portal> outPortals, bool isCeiling)
+        {
+            // Construct planes that contain all portal sectors
+            List<PortalPlane> portalPlanes = new List<PortalPlane>();
+            List<SharpDX.Rectangle> portalAreas = new List<SharpDX.Rectangle>();
+            for (int z = portal.Area.Top; z <= portal.Area.Bottom; ++z)
+                for (int x = portal.Area.Left; x <= portal.Area.Right; ++x)
+                {
+                    Block block = room.Blocks[x, z];
+                    Room.RoomConnectionInfo roomConnectionInfo = isCeiling ?
+                        room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)) :
+                        room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
+                    
+                    if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
+                    {
+                        short[] heights = isCeiling ? block.WSFaces : block.QAFaces;
+                        short XnZn = heights[Block.FaceXnZn];
+                        short XpZn = heights[Block.FaceXpZn];
+                        short XnZp = heights[Block.FaceXnZp];
+                        short XpZp = heights[Block.FaceXpZp];
+                        if (Block.IsQuad(XnZn, XpZn, XnZp, XpZp))
+                        { // Diagonal is split, one face
+                            AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZn - XnZn, XnZp - XnZn));
+                        }
+                        else if (isCeiling ? block.CeilingSplitDirectionIsXEqualsZ : block.FloorSplitDirectionIsXEqualsZ)
+                        { // Diagonal is split X = Y
+                            if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZp)
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZp - XnZp, XnZp - XnZn));
+                            if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXpZn)
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZn - XnZn, XpZp - XpZn));
+                        }
+                        else
+                        { // Diagonal is split X = -Y
+                            if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZn)
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, XnZn, z, XpZn - XnZn, XnZp - XnZn));
+                            if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXpZp)
+                                AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x + 1, XpZp, z + 1, XpZp - XnZp, XpZp - XpZn));
                         }
                     }
-                yMin = (float)Math.Floor(yMin);
-                yMax = (float)Math.Ceiling(yMax);
-
-                float xMin = portal.Area.X * 1024.0f;
-                float xMax = (portal.Area.Right + 1) * 1024.0f;
-                float zMin = portal.Area.Y * 1024.0f;
-                float zMax = (portal.Area.Bottom + 1) * 1024.0f;
-
-                // Determine normal and portal vertices
-                tr_vertex normal;
-                tr_vertex[] portalVertices = new tr_vertex[4];
-                switch (portal.Direction)
-                {
-                    case PortalDirection.WallPositiveZ:
-                        normal = new tr_vertex(0, 0, -1);
-                        portalVertices[0] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMax - 1024));
-                        portalVertices[1] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMax - 1024));
-                        portalVertices[2] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMax - 1024));
-                        portalVertices[3] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMax - 1024));
-                        break;
-                    case PortalDirection.WallPositiveX:
-                        normal = new tr_vertex(-1, 0, 0);
-                        portalVertices[0] = new tr_vertex((short)(xMax - 1024), (short)-yMin, (short)zMax);
-                        portalVertices[1] = new tr_vertex((short)(xMax - 1024), (short)-yMax, (short)zMax);
-                        portalVertices[2] = new tr_vertex((short)(xMax - 1024), (short)-yMax, (short)zMin);
-                        portalVertices[3] = new tr_vertex((short)(xMax - 1024), (short)-yMin, (short)zMin);
-                        break;
-                    case PortalDirection.WallNegativeZ:
-                        normal = new tr_vertex(0, 0, 1);
-                        portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)(zMin + 1023));
-                        portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)(zMin + 1023));
-                        portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)(zMin + 1023));
-                        portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)(zMin + 1023));
-                        break;
-                    case PortalDirection.WallNegativeX:
-                        normal = new tr_vertex(1, 0, 0);
-                        portalVertices[0] = new tr_vertex((short)(xMin + 1023), (short)-yMin, (short)zMin);
-                        portalVertices[1] = new tr_vertex((short)(xMin + 1023), (short)-yMax, (short)zMin);
-                        portalVertices[2] = new tr_vertex((short)(xMin + 1023), (short)-yMax, (short)zMax);
-                        portalVertices[3] = new tr_vertex((short)(xMin + 1023), (short)-yMin, (short)zMax);
-                        break;
-                    case PortalDirection.Floor:
-                        normal = new tr_vertex(0, -1, 0);
-                        portalVertices[0] = new tr_vertex((short)xMax, (short)-yMin, (short)zMin);
-                        portalVertices[1] = new tr_vertex((short)xMin, (short)-yMin, (short)zMin);
-                        portalVertices[2] = new tr_vertex((short)xMin, (short)-yMin, (short)zMax);
-                        portalVertices[3] = new tr_vertex((short)xMax, (short)-yMin, (short)zMax);
-                        break;
-                    case PortalDirection.Ceiling:
-                        normal = new tr_vertex(0, 1, 0);
-                        portalVertices[0] = new tr_vertex((short)xMax, (short)-yMax, (short)zMax);
-                        portalVertices[1] = new tr_vertex((short)xMin, (short)-yMax, (short)zMax);
-                        portalVertices[2] = new tr_vertex((short)xMin, (short)-yMax, (short)zMin);
-                        portalVertices[3] = new tr_vertex((short)xMax, (short)-yMax, (short)zMin);
-                        break;
-                    default:
-                        throw new ApplicationException("Unknown PortalDirection");
                 }
 
-                // Create portal
-                newRoom.Portals.Add(new tr_room_portal
+            // Add portals for all planes in the portal
+            for (int i = 0; i < portalPlanes.Count; ++i)
+            {
+                PortalPlane portalPlane = portalPlanes[i];
+                SharpDX.Rectangle portalArea = portalAreas[i];
+
+                float xMin = portalArea.X * 1024.0f;
+                float xMax = (portalArea.Right + 1) * 1024.0f;
+                float zMin = portalArea.Y * 1024.0f;
+                float zMax = (portalArea.Bottom + 1) * 1024.0f;
+
+                float yAtXMinZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X, portalArea.Y)) * 256;
+                float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.Right + 1, portalArea.Y)) * 256;
+                float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X, portalArea.Bottom + 1)) * 256;
+                float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.Right + 1, portalArea.Bottom + 1)) * 256;
+                
+                // Choose portal coordinates
+                tr_vertex[] portalVertices = new tr_vertex[4];
+                tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
+                if (isCeiling)
+                {
+                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
+                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
+                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
+                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
+                    normal = new tr_vertex(portalPlane.SlopeX, 4, portalPlane.SlopeZ);
+                }
+                else
+                {
+                    portalVertices[0] = new tr_vertex((short)xMax, (short)-yAtXMaxZMax, (short)zMax);
+                    portalVertices[1] = new tr_vertex((short)xMin, (short)-yAtXMinZMax, (short)zMax);
+                    portalVertices[2] = new tr_vertex((short)xMin, (short)-yAtXMinZMin, (short)zMin);
+                    portalVertices[3] = new tr_vertex((short)xMax, (short)-yAtXMaxZMin, (short)zMin);
+                    normal = new tr_vertex((short)-portalPlane.SlopeX, -4, (short)-portalPlane.SlopeZ);
+                }
+
+                // Make the normal vector as short as possible
+                while (((normal.X % 2) == 0) && ((normal.Y % 2) == 0) && ((normal.Z % 2) == 0))
+                    normal = new tr_vertex((short)(normal.X / 2), (short)(normal.Y / 2), (short)(normal.Z / 2));
+
+                // Add portal
+                outPortals.Add(new tr_room_portal
                 {
                     AdjoiningRoom = (ushort)_roomsRemappingDictionary[portal.AdjoiningRoom],
                     Vertices = portalVertices,
