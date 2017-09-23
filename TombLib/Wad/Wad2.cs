@@ -28,6 +28,7 @@ namespace TombLib.Wad
         public SortedDictionary<uint, WadMoveable> Moveables { get; private set; }
         public SortedDictionary<uint, WadStatic> Statics { get; private set; }
         public SortedDictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
+        public Dictionary<Hash, WadSound> WaveSounds { get; private set; }
         public List<WadSpriteSequence> SpriteSequences { get; private set; }
         public Dictionary<Hash, WadSprite> SpriteTextures { get; private set; }
         public string FileName { get; set; }
@@ -116,6 +117,7 @@ namespace TombLib.Wad
             SoundInfo = new SortedDictionary<ushort, WadSoundInfo>();
             SpriteSequences = new List<WadSpriteSequence>();
             SpriteTextures = new Dictionary<Hash, WadSprite>();
+            WaveSounds = new Dictionary<Hash, WadSound>();
         }
 
         public Wad2(GraphicsDevice device) : this()
@@ -125,14 +127,18 @@ namespace TombLib.Wad
 
         public static string[] OfficialSoundNames { get { return _officialSoundNames; } }
 
-        public short[] FixedSounds
+        public static ushort[] MandatorySounds
         {
             get
             {
-                return new short[] {0, 2, 6, 7, 8, 9, 10, 17, 19, 27, 30, 31, 33, 35, 36, 37, 49, 60,
-                                    68, 79, 105, 106, 107, 108, 109,
-                                    110, 111, 113, 114, 115, 116, 118, 121, 148, 149, 150, 163, 182, 183, 185, 186,
-                                    199, 235, 270, 288, 290, 291, 292, 293, 293, 325, 339, 340, 344, 347, 351, 368};
+                return new ushort[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 17, 18, 19, 24, 26, 27, 28, 29, 30, 31, 32,
+                                      33, 32, 35, 36, 37, 39, 41, 42, 43, 44, 45, 46, 47, 49, 51, 52, 53, 54,
+                                      55, 56, 70, 71, 72, 75, 77, 78, 82, 83, 85, 95, 105, 
+                                      107, 108, 109, 111, 112, 114, 116, 117, 118, 121,
+                                      123, 124, 125, 136, 143, 145, 150, 182, 189, 192,
+                                      215, 220, 235, 251, 255, 269, 285, 288, 290, 291, 
+                                      292, 294, 315, 326, 327, 339, 340, 345, 347, 348, 
+                                      349, 350, 351, 369 };
             }
         }
 

@@ -20,5 +20,10 @@ namespace TombLib.Wad
             _opcode = opcode;
             _offset = offset;
         }
+
+        public WadLink Clone()
+        {
+            return new WadLink(Opcode, new Vector3(Offset.X, Offset.Y, Offset.Z));
+        }
     }
 }

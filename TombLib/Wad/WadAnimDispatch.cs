@@ -12,5 +12,17 @@ namespace TombLib.Wad
         public ushort OutFrame { get; set; }
         public ushort NextAnimation { get; set; }
         public ushort NextFrame { get; set; }
+
+        public WadAnimDispatch Clone()
+        {
+            var dispatch = new WadAnimDispatch();
+
+            dispatch.InFrame = InFrame;
+            dispatch.OutFrame = OutFrame;
+            dispatch.NextAnimation = NextAnimation;
+            dispatch.NextFrame = NextFrame;
+
+            return dispatch;
+        }
     }
 }

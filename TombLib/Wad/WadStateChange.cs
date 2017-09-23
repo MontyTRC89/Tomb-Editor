@@ -17,5 +17,19 @@ namespace TombLib.Wad
         {
             Dispatches = new List<WadAnimDispatch>();
         }
+
+        public WadStateChange Clone()
+        {
+            var stateChange = new WadStateChange();
+
+            stateChange.StateId = StateId;
+            stateChange.NumDispatches = NumDispatches;
+            stateChange.Dispatches = new List<WadAnimDispatch>();
+
+            foreach (var dispatch in Dispatches)
+                stateChange.Dispatches.Add(dispatch.Clone());
+
+            return stateChange;
+        }
     }
 }

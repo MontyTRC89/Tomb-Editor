@@ -9,10 +9,10 @@ namespace TombLib.Wad
 {
     public class WadKeyFrameRotation
     {
-        public WadKeyFrameRotationAxis Axis;
-        public int X;
-        public int Y;
-        public int Z;
+        public WadKeyFrameRotationAxis Axis { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Z { get; set; }
 
         // I store angles in the old way because passing between int and floats cause a loss of precision
         // This property builds the DirectX rotation matrix from these angles
@@ -54,6 +54,18 @@ namespace TombLib.Wad
 
                 return matrix;
             }
+        }
+
+        public WadKeyFrameRotation Clone()
+        {
+            var rotation = new WadKeyFrameRotation();
+
+            rotation.Axis = Axis;
+            rotation.X = X;
+            rotation.Y = Y;
+            rotation.Z = Z;
+
+            return rotation;
         }
     }
 }

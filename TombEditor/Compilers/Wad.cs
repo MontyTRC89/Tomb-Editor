@@ -79,7 +79,7 @@ namespace TombEditor.Compilers
                     newMesh.Lights = new short[oldMesh.VerticesShades.Count];
 
                     for (int j = 0; j < oldMesh.VerticesShades.Count; j++)
-                    { 
+                    {
                         newMesh.Lights[j] = oldMesh.VerticesShades[j];
 
                         currentMeshSize += 2;
@@ -255,7 +255,7 @@ namespace TombEditor.Compilers
                                     rotation16 = (short)((angle.X << 4) | ((angle.Y & 0xfc0) >> 6));
                                     tempKeyFrames.Add(rotation16);
 
-                                    rotation16= (short)(((angle.Y & 0x3f) << 10) | (angle.Z & 0x3ff));
+                                    rotation16 = (short)(((angle.Y & 0x3f) << 10) | (angle.Z & 0x3ff));
                                     tempKeyFrames.Add(rotation16);
 
                                     currentKeyFrameSize += 2;
@@ -281,7 +281,7 @@ namespace TombEditor.Compilers
 
                                     tempKeyFrames.Add(rotation16);
                                     //Console.WriteLine(rotation16.ToString("X"));
-                                    
+
                                     currentKeyFrameSize += 1;
 
                                     break;
@@ -293,7 +293,7 @@ namespace TombEditor.Compilers
 
                                     tempKeyFrames.Add(rotation16);
                                     //Console.WriteLine(rotation16.ToString("X"));
-                                    
+
                                     currentKeyFrameSize += 1;
 
                                     break;
@@ -305,7 +305,7 @@ namespace TombEditor.Compilers
                         {
                             for (int p = 0; p < (maxKeyFrameSize - currentKeyFrameSize); p++)
                             {
-                                tempKeyFrames.Add(0);                                
+                                tempKeyFrames.Add(0);
                             }
 
                             currentKeyFrameSize += maxKeyFrameSize - currentKeyFrameSize;
@@ -313,7 +313,7 @@ namespace TombEditor.Compilers
 
                         int endFrame = tempKeyFrames.Count;
 
-                        if (mmm==0)
+                        if (mmm == 0)
                         {
                             for (int jjj = baseFrame; jjj < endFrame; jjj++)
                                 Console.WriteLine(tempKeyFrames[jjj].ToString("X"));
@@ -330,7 +330,7 @@ namespace TombEditor.Compilers
                 }
             }
 
-            for (int i=0;i<wad.Moveables.Count;i++)
+            for (int i = 0; i < wad.Moveables.Count; i++)
             {
                 var oldMoveable = wad.Moveables.ElementAt(i).Value;
                 var newMoveable = new tr_moveable();
@@ -371,7 +371,7 @@ namespace TombEditor.Compilers
                     newAnimation.StateID = (animation.StateId);
 
                     int index = oldMoveable.Animations.ReferenceIndexOf(animation);
-                    if (index>0)
+                    if (index > 0)
                     {
                         ushort frameBase = 0; // oldMoveable.Animations[oldMoveable.Animations.ReferenceIndexOf(animation)].FrameBase;
                         for (int k = 0; k < index; k++) frameBase += oldMoveable.Animations[k].RealNumberOfFrames;
@@ -446,7 +446,7 @@ namespace TombEditor.Compilers
                         {
                             var newAnimDispatch = new tr_anim_dispatch();
 
-                            newAnimDispatch.Low = (ushort)(dispatch.InFrame+newAnimation.FrameStart);
+                            newAnimDispatch.Low = (ushort)(dispatch.InFrame + newAnimation.FrameStart);
                             newAnimDispatch.High = (ushort)(dispatch.OutFrame + newAnimation.FrameStart);
                             newAnimDispatch.NextAnimation = (ushort)(dispatch.NextAnimation + lastAnimation);
                             newAnimDispatch.NextFrame = (ushort)(dispatch.NextFrame);
@@ -480,7 +480,7 @@ namespace TombEditor.Compilers
                     tempMeshTrees.Add((int)-meshTree.Offset.Y);
                     tempMeshTrees.Add((int)meshTree.Offset.Z);
                 }
-                
+
                 foreach (var mesh in oldMoveable.Meshes)
                 {
                     tempMeshPointers.Add((uint)_tempMeshPointers[mesh]);
@@ -490,7 +490,7 @@ namespace TombEditor.Compilers
             }
 
             // Adjust NextFrame of each Animation
-            for (int i=0;i<tempAnimations.Count;i++)
+            for (int i = 0; i < tempAnimations.Count; i++)
             {
                 var animation = tempAnimations[i];
                 animation.NextFrame += tempAnimations[animation.NextAnimation].FrameStart;
@@ -506,7 +506,7 @@ namespace TombEditor.Compilers
             }
 
             // Convert static meshes
-            for (int i=0;i<wad.Statics.Count;i++)
+            for (int i = 0; i < wad.Statics.Count; i++)
             {
                 var oldStaticMesh = wad.Statics.ElementAt(i).Value;
                 var newStaticMesh = new tr_staticmesh();
@@ -534,8 +534,8 @@ namespace TombEditor.Compilers
                 };
 
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
-               newStaticMesh.Mesh = (ushort)tempMeshPointers.Count;
-                
+                newStaticMesh.Mesh = (ushort)tempMeshPointers.Count;
+
                 tempStaticMeshes.Add(newStaticMesh);
 
                 tempMeshPointers.Add((uint)_tempMeshPointers[oldStaticMesh.Mesh]);
@@ -593,7 +593,7 @@ namespace TombEditor.Compilers
             }
 
             n = 0;
-            for  (int jj=0;jj<tempMeshTrees.Count;jj+=4)
+            for (int jj = 0; jj < tempMeshTrees.Count; jj += 4)
             {
                 writer.WriteLine("MeshTree #" + jj);
                 writer.WriteLine("    Op: " + tempMeshTrees[jj + 0]);
@@ -619,7 +619,7 @@ namespace TombEditor.Compilers
                 writer.WriteLine("Mesh #" + n);
                 writer.WriteLine("    Vertices: " + mesh.NumVertices);
                 writer.WriteLine("    Normals: " + mesh.NumNormals);
-                writer.WriteLine("    Polygons: " + (mesh.NumTexturedQuads+mesh.NumTexturedTriangles));
+                writer.WriteLine("    Polygons: " + (mesh.NumTexturedQuads + mesh.NumTexturedTriangles));
                 writer.WriteLine("    MeshPointer: " + mesh.MeshPointer);
                 writer.WriteLine();
 
