@@ -21,10 +21,7 @@ namespace TombEditor.Controls
     public partial class PanelTextureMap : Panel
     {
         private Editor _editor;
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Configuration Configuration { get; set; }
-
+        
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public float MaxTextureSize { get; set; } = 255;
@@ -57,8 +54,11 @@ namespace TombEditor.Controls
 
         public PanelTextureMap()
         {
-            BorderStyle = BorderStyle.FixedSingle;
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
 
+            // Change default statew
+            BorderStyle = BorderStyle.FixedSingle;
             DoubleBuffered = true;
 
             // Scroll bars
@@ -74,9 +74,6 @@ namespace TombEditor.Controls
 
             Controls.Add(_vScrollBar);
             Controls.Add(_hScrollBar);
-
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
         }
 
         protected override void Dispose(bool disposing)
@@ -92,8 +89,8 @@ namespace TombEditor.Controls
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            // Update drawing
-            if (obj is Editor.LoadedTexturesChangedEvent) 
+            // Reset texture map
+            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
                 ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
         }
 
@@ -118,7 +115,7 @@ namespace TombEditor.Controls
             ViewPosition = (min + max) * 0.5f;
             float requiredScaleX = Width / (max.X - min.X);
             float requiredScaleY = Height / (max.Y - min.Y);
-            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * Configuration.TextureMap_TextureAreaToViewRelativeSize;
+            ViewScale = Math.Min(requiredScaleX, requiredScaleY) * _editor.Configuration.TextureMap_TextureAreaToViewRelativeSize;
 
             LimitPosition();
         }
@@ -333,7 +330,7 @@ namespace TombEditor.Controls
                         if (ModifierKeys.HasFlag(Keys.Control))
                         { // Zoom
                             float relativeDeltaY = (e.Location.Y - _lastMousePosition.Y) / (float)Height;
-                            ViewScale *= (float)Math.Exp(Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
+                            ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedMouseZoom * relativeDeltaY);
                         }
                         else
                         { // Movement
@@ -371,7 +368,7 @@ namespace TombEditor.Controls
                 return;
 
             Vector2 FixedPointInWorld = FromVisualCoord(e.Location);
-            ViewScale *= (float)Math.Exp(e.Delta * Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
+            ViewScale *= (float)Math.Exp(e.Delta * _editor.Configuration.TextureMap_NavigationSpeedMouseWheelZoom);
             MoveToFixedPoint(e.Location, FixedPointInWorld);
         }
 

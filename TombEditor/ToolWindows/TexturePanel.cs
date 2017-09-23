@@ -21,8 +21,7 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            panelTextureMap.Configuration = _editor.Configuration;
+            
             panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
         }
 
@@ -40,10 +39,6 @@ namespace TombEditor.ToolWindows
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
                 panelTextureMap.SelectedTexture = ((Editor.SelectedTexturesChangedEvent)obj).Current;
-
-            // Reset texture map
-            if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
-                panelTextureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
 
             // Center texture on texture map
             if (obj is Editor.SelectTextureAndCenterViewEvent)
