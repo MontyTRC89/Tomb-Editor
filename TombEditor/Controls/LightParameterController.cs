@@ -45,9 +45,6 @@ namespace TombEditor.Controls
         private Color _backgroundColor = Color.FromArgb(69, 73, 74);
         private Color _borderColor = Color.Gainsboro;
 
-        private SolidBrush _backgroundBrush;
-        private Pen _borderPen;
-
         private float _value;
         private float _minValue;
         private float _maxValue;
@@ -64,9 +61,6 @@ namespace TombEditor.Controls
             InitializeComponent();
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            _backgroundBrush = new SolidBrush(_backgroundColor);
-            _borderPen = new Pen(_borderColor);
         }
 
         protected override void Dispose(bool disposing)

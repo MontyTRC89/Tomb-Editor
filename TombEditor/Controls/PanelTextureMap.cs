@@ -20,6 +20,8 @@ namespace TombEditor.Controls
 {
     public partial class PanelTextureMap : Panel
     {
+        private Editor _editor;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
 
@@ -72,16 +74,27 @@ namespace TombEditor.Controls
 
             Controls.Add(_vScrollBar);
             Controls.Add(_hScrollBar);
+
+            _editor = Editor.Instance;
+            _editor.EditorEventRaised += EditorEventRaised;
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
+                _editor.EditorEventRaised -= EditorEventRaised;
                 _hScrollBar.Dispose();
                 _vScrollBar.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            // Update drawing
+            if (obj is Editor.LoadedTexturesChangedEvent) 
+                ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
         }
 
         protected override void OnResize(EventArgs eventargs)
