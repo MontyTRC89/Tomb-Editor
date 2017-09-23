@@ -205,8 +205,8 @@ namespace TombEditor.Geometry.IO
                         
                         b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
                         b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
-                        b.FloorSplitDirectionIsXEqualsY = reader.ReadBoolean();
-                        b.CeilingSplitDirectionIsXEqualsY = reader.ReadBoolean();
+                        b.FloorSplitDirectionIsXEqualsZ = reader.ReadBoolean();
+                        b.CeilingSplitDirectionIsXEqualsZ = reader.ReadBoolean();
 
                         for (int f = 0; f < 29; f++)
                         {

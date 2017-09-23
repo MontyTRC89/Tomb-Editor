@@ -1404,7 +1404,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1420,7 +1420,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1448,7 +1448,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1464,7 +1464,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1492,7 +1492,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1508,7 +1508,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1536,7 +1536,7 @@ namespace TombEditor.Geometry.IO
                                     texture.TexCoord1 = uv[2];
                                     texture.TexCoord2 = uv[0];
 
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1552,7 +1552,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1582,7 +1582,7 @@ namespace TombEditor.Geometry.IO
                             {
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1598,7 +1598,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1626,7 +1626,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1642,7 +1642,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1670,7 +1670,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1686,7 +1686,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
@@ -1714,7 +1714,7 @@ namespace TombEditor.Geometry.IO
 
                                 if (isFloor)
                                 {
-                                    if (!block.FloorSplitDirectionIsXEqualsY)
+                                    if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
                                             txtRot += 2;
@@ -1730,7 +1730,7 @@ namespace TombEditor.Geometry.IO
                                 }
                                 else if (isCeiling)
                                 {
-                                    if (!block.CeilingSplitDirectionIsXEqualsY)
+                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
                                             txtRot += 2;
