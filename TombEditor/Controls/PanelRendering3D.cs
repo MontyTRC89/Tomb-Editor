@@ -1034,8 +1034,7 @@ namespace TombEditor.Controls
                     continue;
                 }*/
 
-                Matrix model = Matrix.Translation(light.Position) *
-                               Matrix.Translation(room.WorldPos);
+                Matrix model = Matrix.Translation(room.WorldPos + light.Position);
                 solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 
                 if (light.Type == LightType.Light)
@@ -1070,27 +1069,23 @@ namespace TombEditor.Controls
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow)
                     {
-                        Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * Matrix.Translation(light.Position) *
-                                       Matrix.Translation(room.WorldPos);
+                        Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * Matrix.Translation(room.WorldPos + light.Position);
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-                        _device.DrawIndexed(PrimitiveType.TriangleList,
-                            _littleSphere.IndexBuffer.ElementCount);
+                        _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                     }
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow ||
                         light.Type == LightType.FogBulb)
                     {
-                        Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * Matrix.Translation(light.Position) *
-                                       Matrix.Translation(room.WorldPos);
+                        Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * Matrix.Translation(room.WorldPos + light.Position);
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
                         solidEffect.CurrentTechnique.Passes[0].Apply();
-                        _device.DrawIndexed(PrimitiveType.TriangleList,
-                            _littleSphere.IndexBuffer.ElementCount);
+                        _device.DrawIndexed(PrimitiveType.TriangleList,  _littleSphere.IndexBuffer.ElementCount);
                     }
                 }
                 else if (light.Type == LightType.Spot)
@@ -1107,8 +1102,7 @@ namespace TombEditor.Controls
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.RotationX)) *
                                       Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.RotationY));
                     Matrix Model = Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation *
-                                   Matrix.Translation(light.Position) *
-                                   Matrix.Translation(room.WorldPos);
+                                   Matrix.Translation(room.WorldPos + light.Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(Model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -1121,8 +1115,7 @@ namespace TombEditor.Controls
                     float cutoffScaleW = MathUtil.DegreesToRadians(light.OuterAngle) / coneAngle * cutoffScaleH;
 
                     Matrix model2 = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation *
-                                    Matrix.Translation(light.Position) *
-                                    Matrix.Translation(room.WorldPos);
+                                    Matrix.Translation(room.WorldPos + light.Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model2 * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -1138,8 +1131,7 @@ namespace TombEditor.Controls
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.RotationX)) *
                                       Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.RotationY));
 
-                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Position) *
-                                   Matrix.Translation(room.WorldPos);
+                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(room.WorldPos + light.Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -1152,9 +1144,7 @@ namespace TombEditor.Controls
                 // Object position
                 message += "\n" + GetObjectPositionString(room, light);
 
-                Matrix modelViewProjection =
-                    Matrix.Translation(room.WorldPos) *
-                    viewProjection;
+                Matrix modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
                 Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, modelViewProjection);
@@ -1189,9 +1179,7 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Matrix modelViewProjection =
-                        Matrix.Translation(room.WorldPos) *
-                        viewProjection;
+                    Matrix modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                         _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
@@ -1204,9 +1192,7 @@ namespace TombEditor.Controls
                     AddObjectHeightLine(viewProjection, room, instance.Position);
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) *
-                               Matrix.Translation(room.WorldPos);
-
+                Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1231,9 +1217,7 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    var modelViewProjection =
-                        Matrix.Translation(room.WorldPos) *
-                        viewProjection;
+                    var modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                         _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
@@ -1249,8 +1233,7 @@ namespace TombEditor.Controls
                     AddFlybyPath(flyby.Sequence);
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) *
-                               Matrix.Translation(room.WorldPos);
+                Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1273,9 +1256,7 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    var modelViewProjection =
-                        Matrix.Translation(room.WorldPos) *
-                        viewProjection;
+                    var modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                         _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
@@ -1288,8 +1269,7 @@ namespace TombEditor.Controls
                     AddObjectHeightLine(viewProjection, room, instance.Position);
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) *
-                               Matrix.Translation(room.WorldPos);
+                Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1319,9 +1299,7 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Matrix modelViewProjection =
-                        Matrix.Translation(room.WorldPos) *
-                        viewProjection;
+                    Matrix modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
                     Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                         _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, modelViewProjection);
@@ -1334,8 +1312,7 @@ namespace TombEditor.Controls
                     AddObjectHeightLine(viewProjection, room, instance.Position);
                 }
 
-                Matrix model = Matrix.Translation(instance.Position) *
-                               Matrix.Translation(room.WorldPos);
+                Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(color);
 
@@ -1363,9 +1340,7 @@ namespace TombEditor.Controls
                         // Object position
                         message += "\n" + GetObjectPositionString(room, instance);
 
-                        var modelViewProjection =
-                            Matrix.Translation(room.WorldPos) *
-                            viewProjection;
+                        var modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
                         Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                             _device.Viewport.MinDepth,
                             _device.Viewport.MaxDepth, modelViewProjection);
@@ -1378,8 +1353,7 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(viewProjection, room, instance.Position);
                     }
 
-                    Matrix model = Matrix.Translation(instance.Position) *
-                                   Matrix.Translation(room.WorldPos);
+                    Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
                     effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     effect.Parameters["Color"].SetValue(color);
 
@@ -1407,8 +1381,7 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(viewProjection, room, instance.Position);
                     }
 
-                    Matrix model = Matrix.Translation(instance.Position) *
-                                   Matrix.Translation(room.WorldPos);
+                    Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
                     effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     effect.Parameters["Color"].SetValue(color);
 
@@ -1431,7 +1404,7 @@ namespace TombEditor.Controls
 
                 Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, flyby.GetRotationXRadians()) * Matrix.RotationAxis(Vector3.UnitY, flyby.GetRotationYRadians());
 
-                Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Position) * Matrix.Translation(_editor.SelectedRoom.WorldPos);
+                Matrix model = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation * Matrix.Translation(flyby.Room.WorldPos + flyby.Position);
                 effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                 effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -1486,11 +1459,9 @@ namespace TombEditor.Controls
                     SkinnedMesh mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
-
-                    var theRoom = instance.Room;
-
+                    
                     world = model.AnimationTransforms[i] * Matrix.RotationY(MathUtil.DegreesToRadians(instance.RotationY)) *
-                                Matrix.Translation(instance.Position) * Matrix.Translation(theRoom.WorldPos);
+                                Matrix.Translation(instance.Room.WorldPos + instance.Position);
                     worldDebug = Matrix.Translation(room.WorldPos);
 
                     skinnedModelEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
@@ -1564,10 +1535,8 @@ namespace TombEditor.Controls
 
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
-
-                    var theRoom = modelInfo.Room;
-
-                    world = Matrix.Translation(modelInfo.Position) * Matrix.Translation(theRoom.WorldPos);
+                    
+                    world = Matrix.Translation(modelInfo.Room.WorldPos + modelInfo.Position);
                     worldDebug = Matrix.Translation(room.WorldPos);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
@@ -1655,16 +1624,13 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    var theRoom = instance.Room;
-
                     StaticMesh mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
                     world = Matrix.RotationY(MathUtil.DegreesToRadians(instance.RotationY)) *
-                            Matrix.Translation(instance.Position) *
-                            Matrix.Translation(theRoom.WorldPos);
-                    worldDebug = Matrix.Translation(theRoom.WorldPos);
+                            Matrix.Translation(instance.Room.WorldPos + instance.Position);
+                    worldDebug = Matrix.Translation(instance.Room.WorldPos);
 
                     staticMeshEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
