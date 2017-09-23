@@ -202,7 +202,7 @@ namespace TombEditor.Compilers
                         if (wadInfo.FlagN) characteristics |= 0x1000;
                         if (wadInfo.RandomizePitch) characteristics |= 0x2000;
                         if (wadInfo.RandomizeGain) characteristics |= 0x4000;
-                        characteristics |= wadInfo.Loop;
+                        characteristics |= (byte)wadInfo.Loop;
 
                         soundInfo.Characteristics = characteristics;
 

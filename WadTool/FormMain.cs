@@ -450,11 +450,13 @@ namespace WadTool
             if (node.Tag == null || node.Tag.GetType() != typeof(WadSound)) return;
 
             var currentSound = (WadSound)node.Tag;
-            var stream = new MemoryStream(currentSound.WaveData);
 
-            using (var player = new SoundPlayer(stream))
+            using (var stream = new MemoryStream(currentSound.WaveData))
             {
-                player.Play();
+                using (var player = new SoundPlayer(stream))
+                {
+                    player.Play();
+                }
             }
         }
 
@@ -477,6 +479,12 @@ namespace WadTool
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void butSoundEditor_Click(object sender, EventArgs e)
+        {
+            var form = new FormSoundEditor();
+            form.ShowDialog();
         }
     }
 }
