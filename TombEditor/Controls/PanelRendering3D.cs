@@ -1320,7 +1320,7 @@ namespace TombEditor.Controls
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
             }
 
-            /*if (_editor.SelectedRoom != null)
+            if (_editor.SelectedRoom != null)
             {
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
@@ -1388,7 +1388,7 @@ namespace TombEditor.Controls
                     effect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
-            }*/
+            }
 
             _device.SetVertexBuffer(_cone.VertexBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
