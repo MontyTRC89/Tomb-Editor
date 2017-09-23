@@ -340,6 +340,7 @@
             // 
             this.numIntensity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numIntensity.DecimalPlaces = 2;
+            this.numIntensity.Enabled = false;
             this.numIntensity.ForeColor = System.Drawing.Color.Gainsboro;
             this.numIntensity.Increment = new decimal(new int[] {
             3,
@@ -363,6 +364,7 @@
             // 
             this.numInnerRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numInnerRange.DecimalPlaces = 2;
+            this.numInnerRange.Enabled = false;
             this.numInnerRange.ForeColor = System.Drawing.Color.Gainsboro;
             this.numInnerRange.Increment = new decimal(new int[] {
             3,
@@ -386,6 +388,7 @@
             // 
             this.numOuterRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numOuterRange.DecimalPlaces = 2;
+            this.numOuterRange.Enabled = false;
             this.numOuterRange.ForeColor = System.Drawing.Color.Gainsboro;
             this.numOuterRange.Increment = new decimal(new int[] {
             3,
@@ -409,6 +412,7 @@
             // 
             this.numInnerAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numInnerAngle.DecimalPlaces = 2;
+            this.numInnerAngle.Enabled = false;
             this.numInnerAngle.ForeColor = System.Drawing.Color.Gainsboro;
             this.numInnerAngle.IncrementAlternate = new decimal(new int[] {
             10,
@@ -427,6 +431,7 @@
             // 
             this.numOuterAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numOuterAngle.DecimalPlaces = 2;
+            this.numOuterAngle.Enabled = false;
             this.numOuterAngle.ForeColor = System.Drawing.Color.Gainsboro;
             this.numOuterAngle.IncrementAlternate = new decimal(new int[] {
             10,
@@ -445,6 +450,7 @@
             // 
             this.numDirectionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numDirectionX.DecimalPlaces = 2;
+            this.numDirectionX.Enabled = false;
             this.numDirectionX.ForeColor = System.Drawing.Color.Gainsboro;
             this.numDirectionX.IncrementAlternate = new decimal(new int[] {
             10,
@@ -473,6 +479,7 @@
             // 
             this.numDirectionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numDirectionY.DecimalPlaces = 2;
+            this.numDirectionY.Enabled = false;
             this.numDirectionY.ForeColor = System.Drawing.Color.Gainsboro;
             this.numDirectionY.IncrementAlternate = new decimal(new int[] {
             10,
