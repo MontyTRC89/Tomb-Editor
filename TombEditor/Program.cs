@@ -3,6 +3,7 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.Windows.Forms;
+using DarkUI.Win32;
 
 namespace TombEditor
 {
@@ -41,6 +42,7 @@ namespace TombEditor
             //new TombEngine.TombRaider4Level(@"D:\Eigenes\Spiele\TR\Levelbau\Levels\Junglelevel\data\Level0000.tr4").Load("");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.AddMessageFilter(new ControlScrollFilter());
             Application.Run(new FormMain());
         }
     }

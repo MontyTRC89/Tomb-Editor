@@ -6,8 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
+using TombEditor.Compilers;
 using TombEditor.Geometry;
+using TombEditor.Geometry.IO;
 using TombLib.Utils;
+
 
 namespace TombEditor
 {
@@ -1637,6 +1640,163 @@ namespace TombEditor
             // Update the UI
             if (_editor.SelectedRoom == room)
                 _editor.SelectedRoom = newRoom; //Don't center
+        }
+
+        public static void SplitRoom()
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
+        public static void CopyRoom()
+        {
+            if (!EditorActions.CheckForRoomAndBlockSelection())
+                return;
+            EditorActions.CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+        }
+
+        public static bool CheckForRoomAndBlockSelection()
+        {
+            if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
+                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return false;
+            }
+            return true;
+        }
+
+        public static bool BuildLevel(bool autoCloseWhenDone)
+        {
+            Level level = _editor.Level;
+            string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
+
+            using (var form = new FormOperationDialog("Build *.tr4 level", autoCloseWhenDone, (progressReporter) =>
+                new LevelCompilerTr4(level, fileName, progressReporter).CompileLevel()))
+            {
+                form.ShowDialog();
+                return form.DialogResult != DialogResult.Cancel;
+            }
+        }
+
+        public static void BuildLevelAndPlay()
+        {
+            if (!EditorActions.BuildLevel(true))
+                return;
+
+            TombLauncher.Launch(_editor.Level.Settings);
+        }
+
+        public static void LoadTextures(IWin32Window owner)
+        {
+            var settings = _editor.Level.Settings;
+            string path = ResourceLoader.BrowseTextureFile(settings, settings.TextureFilePath, owner);
+            if (settings.TextureFilePath == path)
+                return;
+
+            settings.TextureFilePath = path;
+            _editor.LoadedTexturesChange();
+        }
+
+        public static void LoadWad(IWin32Window owner)
+        {
+            var settings = _editor.Level.Settings;
+            string path = ResourceLoader.BrowseObjectFile(settings, settings.WadFilePath, owner);
+            if (path == settings.WadFilePath)
+                return;
+
+            settings.WadFilePath = path;
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(_editor.Level.Wad);
+        }
+
+        public static void UnloadWad()
+        {
+            _editor.Level.Settings.WadFilePath = null;
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(null);
+        }
+
+        public static void ReloadWad()
+        {
+            _editor.Level.ReloadWad();
+            _editor.LoadedWadsChange(null);
+        }
+
+        public static void TextureWalls()
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+        }
+
+        public static void TextureFloor()
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+        }
+
+        public static void TextureCeiling()
+        {
+            if (_editor.SelectedRoom == null)
+                return;
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+        }
+
+        public static void Paste()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
+        }
+
+        public static void Copy(IWin32Window parent)
+        {
+            var instance = _editor.SelectedObject as PositionBasedObjectInstance;
+            if (instance == null)
+            {
+                MessageBox.Show(parent, "You have to select an object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            Clipboard.Copy(instance);
+        }
+
+        public static void Clone(IWin32Window parent)
+        {
+            EditorActions.Copy(parent);
+            _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
+        }
+
+        public static void AddCamera()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
+        }
+
+        public static void AddFlybyCamera()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
+        }
+
+        public static void AddSoundSource()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
+        }
+
+        public static void AddSink()
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
+        }
+
+        public static void ShowTextureSoundsDialog(IWin32Window parent)
+        {
+            using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
+                form.ShowDialog(parent);
+        }
+
+        public static void ShowAnimationRangesDialog(IWin32Window parent)
+        {
+            using (FormAnimatedTextures form = new FormAnimatedTextures())
+                form.ShowDialog(parent);
         }
 
         public static void MoveRooms(Vector3 positionDelta, IEnumerable<Room> rooms)
