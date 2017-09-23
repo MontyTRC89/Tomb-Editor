@@ -824,7 +824,7 @@ namespace TombEditor.Controls
             foreach (var instance in room.Objects)
                 if (instance is Light)
                 {
-                    BoundingSphere sphere = new BoundingSphere(instance.Position, _littleSphereRadius);
+                    BoundingSphere sphere = new BoundingSphere(room.WorldPos + instance.Position, _littleSphereRadius);
                     if (ray.Intersects(ref sphere, out distance) && ((result == null) || (distance < result.Distance)))
                         result = new PickingResultObject(distance, instance);
                 }
@@ -841,18 +841,20 @@ namespace TombEditor.Controls
                             SkinnedMesh mesh = model.Meshes[j];
                             Matrix world = model.AnimationTransforms[j] *
                                            Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.RotationY)) *
-                                           Matrix.Translation(modelInfo.Position);
+                                           Matrix.Translation(room.WorldPos + modelInfo.Position);
                             DoMeshPicking(ref result, ray, instance, mesh, world);
                         }
                     }
                     else
                     {
-                        BoundingBox box = new BoundingBox(modelInfo.Position - new Vector3(_littleCubeRadius), modelInfo.Position + new Vector3(_littleCubeRadius));
+                        BoundingBox box = new BoundingBox(
+                            room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius), 
+                            room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
                         if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else if (instance is ItemInstance)
+                else if (instance is StaticInstance)
                 {
                     StaticInstance modelInfo = (StaticInstance)instance;
                     if (_editor?.Level?.Wad?.DirectXStatics?.ContainsKey(modelInfo.WadObjectId) ?? false)
@@ -861,12 +863,14 @@ namespace TombEditor.Controls
 
                         StaticMesh mesh = model.Meshes[0];
                         Matrix world = Matrix.RotationY(MathUtil.DegreesToRadians(modelInfo.RotationY)) *
-                                       Matrix.Translation(modelInfo.Position);
+                                       Matrix.Translation(room.WorldPos + modelInfo.Position);
                         DoMeshPicking(ref result, ray, instance, mesh, world);
                     }
                     else
                     {
-                        BoundingBox box = new BoundingBox(modelInfo.Position - new Vector3(_littleCubeRadius), modelInfo.Position + new Vector3(_littleCubeRadius));
+                        BoundingBox box = new BoundingBox(
+                            room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
+                            room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
                         if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                             result = new PickingResultObject(distance, instance);
                     }
@@ -874,16 +878,17 @@ namespace TombEditor.Controls
                 else if (instance is RoomGeometryInstance)
                 {
                     var geometry = (RoomGeometryInstance)instance;
-                    BoundingBox box = new BoundingBox(instance.Position + geometry.Model.BoundingBox.Minimum,
-                                                      instance.Position + geometry.Model.BoundingBox.Maximum);
+                    BoundingBox box = new BoundingBox(
+                        room.WorldPos + instance.Position + geometry.Model.BoundingBox.Minimum,
+                        room.WorldPos + instance.Position + geometry.Model.BoundingBox.Maximum);
                     if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                         result = new PickingResultObject(distance, instance);
                 }
                 else
                 {
                     BoundingBox box = new BoundingBox(
-                        instance.Position - new Vector3(_littleCubeRadius),
-                        instance.Position + new Vector3(_littleCubeRadius));
+                        room.WorldPos + instance.Position - new Vector3(_littleCubeRadius),
+                        room.WorldPos + instance.Position + new Vector3(_littleCubeRadius));
                     if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                         result = new PickingResultObject(distance, instance);
                 }
@@ -902,9 +907,7 @@ namespace TombEditor.Controls
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
             // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = Ray.GetPickRay((int)Math.Round(x), (int)Math.Round(y), new ViewportF(0, 0, Width, Height),
-                Matrix.Translation(_editor.SelectedRoom.WorldPos) * viewProjection);
-
+            Ray ray = Ray.GetPickRay((int)Math.Round(x), (int)Math.Round(y), new ViewportF(0, 0, Width, Height), viewProjection);
             return DoPicking(ray);
         }
 
@@ -1069,7 +1072,7 @@ namespace TombEditor.Controls
 
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow)
                     {
-                        Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * Matrix.Translation(room.WorldPos + light.Position);
+                        Matrix model = Matrix.Scaling(light.InnerRange * 2.0f) * Matrix.Translation(light.Room.WorldPos + light.Position);
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -1080,7 +1083,7 @@ namespace TombEditor.Controls
                     if (light.Type == LightType.Light || light.Type == LightType.Shadow ||
                         light.Type == LightType.FogBulb)
                     {
-                        Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * Matrix.Translation(room.WorldPos + light.Position);
+                        Matrix model = Matrix.Scaling(light.OuterRange * 2.0f) * Matrix.Translation(light.Room.WorldPos + light.Position);
                         solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                         solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -1102,7 +1105,7 @@ namespace TombEditor.Controls
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.RotationX)) *
                                       Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.RotationY));
                     Matrix Model = Matrix.Scaling(lenScaleW, lenScaleW, lenScaleH) * rotation *
-                                   Matrix.Translation(room.WorldPos + light.Position);
+                                   Matrix.Translation(light.Room.WorldPos + light.Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(Model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -1115,7 +1118,7 @@ namespace TombEditor.Controls
                     float cutoffScaleW = MathUtil.DegreesToRadians(light.OuterAngle) / coneAngle * cutoffScaleH;
 
                     Matrix model2 = Matrix.Scaling(cutoffScaleW, cutoffScaleW, cutoffScaleH) * rotation *
-                                    Matrix.Translation(room.WorldPos + light.Position);
+                                    Matrix.Translation(light.Room.WorldPos + light.Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model2 * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
@@ -1131,7 +1134,7 @@ namespace TombEditor.Controls
                     Matrix rotation = Matrix.RotationAxis(-Vector3.UnitX, MathUtil.DegreesToRadians(light.RotationX)) *
                                       Matrix.RotationAxis(Vector3.UnitY, MathUtil.DegreesToRadians(light.RotationY));
 
-                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(room.WorldPos + light.Position);
+                    Matrix model = Matrix.Scaling(0.01f, 0.01f, 1.0f) * rotation * Matrix.Translation(light.Room.WorldPos + light.Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
@@ -1142,16 +1145,16 @@ namespace TombEditor.Controls
                 string message = "Light";
 
                 // Object position
-                message += "\n" + GetObjectPositionString(room, light);
+                message += "\n" + GetObjectPositionString(light.Room, light);
 
-                Matrix modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
+                Matrix modelViewProjection = Matrix.Translation(light.Room.WorldPos) * viewProjection;
                 Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, modelViewProjection);
                 Debug.AddString(message, screenPos);
 
                 // Add the line height of the object
-                AddObjectHeightLine(viewProjection, room, light.Position);
+                AddObjectHeightLine(viewProjection, light.Room, light.Position);
             }
 
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
