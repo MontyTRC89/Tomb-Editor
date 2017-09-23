@@ -19,13 +19,6 @@
             this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightCastsShadows = new DarkUI.Controls.DarkCheckBox();
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
-            this.numLightDirectionY = new TombEditor.Controls.LightParameterController();
-            this.numLightDirectionX = new TombEditor.Controls.LightParameterController();
-            this.numLightOuterRange = new TombEditor.Controls.LightParameterController();
-            this.numLightInnerRange = new TombEditor.Controls.LightParameterController();
-            this.numLightOuterAngle = new TombEditor.Controls.LightParameterController();
-            this.numLightInnerAngle = new TombEditor.Controls.LightParameterController();
-            this.numLightIntensity = new TombEditor.Controls.LightParameterController();
             this.panelLightColor = new System.Windows.Forms.Panel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
@@ -47,6 +40,20 @@
             this.butAddPointLight = new DarkUI.Controls.DarkButton();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.numIntensity = new DarkUI.Controls.DarkNumericUpDown();
+            this.numInnerRange = new DarkUI.Controls.DarkNumericUpDown();
+            this.numOuterRange = new DarkUI.Controls.DarkNumericUpDown();
+            this.numInnerAngle = new DarkUI.Controls.DarkNumericUpDown();
+            this.numOuterAngle = new DarkUI.Controls.DarkNumericUpDown();
+            this.numDirectionX = new DarkUI.Controls.DarkNumericUpDown();
+            this.numDirectionY = new DarkUI.Controls.DarkNumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInnerAngle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOuterAngle)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDirectionX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDirectionY)).BeginInit();
             this.SuspendLayout();
             // 
             // cbLightIsDynamicallyUsed
@@ -92,91 +99,6 @@
             this.cbLightEnabled.Size = new System.Drawing.Size(15, 22);
             this.cbLightEnabled.TabIndex = 89;
             this.cbLightEnabled.CheckedChanged += new System.EventHandler(this.cbLightEnabled_CheckedChanged);
-            // 
-            // numLightDirectionY
-            // 
-            this.numLightDirectionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightDirectionY.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightDirectionY.Enabled = false;
-            this.numLightDirectionY.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightDirectionY.Location = new System.Drawing.Point(302, 102);
-            this.numLightDirectionY.Name = "numLightDirectionY";
-            this.numLightDirectionY.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionY.TabIndex = 88;
-            this.numLightDirectionY.Value = 0F;
-            // 
-            // numLightDirectionX
-            // 
-            this.numLightDirectionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightDirectionX.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightDirectionX.Enabled = false;
-            this.numLightDirectionX.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightDirectionX.Location = new System.Drawing.Point(302, 77);
-            this.numLightDirectionX.Name = "numLightDirectionX";
-            this.numLightDirectionX.Size = new System.Drawing.Size(60, 22);
-            this.numLightDirectionX.TabIndex = 87;
-            this.numLightDirectionX.Value = 0F;
-            // 
-            // numLightOuterRange
-            // 
-            this.numLightOuterRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightOuterRange.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightOuterRange.Enabled = false;
-            this.numLightOuterRange.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightOuterRange.Location = new System.Drawing.Point(198, 102);
-            this.numLightOuterRange.Name = "numLightOuterRange";
-            this.numLightOuterRange.Size = new System.Drawing.Size(60, 22);
-            this.numLightOuterRange.TabIndex = 86;
-            this.numLightOuterRange.Value = 0F;
-            // 
-            // numLightInnerRange
-            // 
-            this.numLightInnerRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightInnerRange.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightInnerRange.Enabled = false;
-            this.numLightInnerRange.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightInnerRange.Location = new System.Drawing.Point(198, 77);
-            this.numLightInnerRange.Name = "numLightInnerRange";
-            this.numLightInnerRange.Size = new System.Drawing.Size(60, 22);
-            this.numLightInnerRange.TabIndex = 85;
-            this.numLightInnerRange.Value = 0F;
-            // 
-            // numLightOuterAngle
-            // 
-            this.numLightOuterAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightOuterAngle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightOuterAngle.Enabled = false;
-            this.numLightOuterAngle.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightOuterAngle.Location = new System.Drawing.Point(302, 52);
-            this.numLightOuterAngle.Name = "numLightOuterAngle";
-            this.numLightOuterAngle.Size = new System.Drawing.Size(60, 22);
-            this.numLightOuterAngle.TabIndex = 84;
-            this.numLightOuterAngle.Value = 0F;
-            // 
-            // numLightInnerAngle
-            // 
-            this.numLightInnerAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightInnerAngle.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightInnerAngle.Enabled = false;
-            this.numLightInnerAngle.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightInnerAngle.Location = new System.Drawing.Point(302, 27);
-            this.numLightInnerAngle.Name = "numLightInnerAngle";
-            this.numLightInnerAngle.Size = new System.Drawing.Size(60, 22);
-            this.numLightInnerAngle.TabIndex = 83;
-            this.numLightInnerAngle.Value = 0F;
-            // 
-            // numLightIntensity
-            // 
-            this.numLightIntensity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.numLightIntensity.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numLightIntensity.Enabled = false;
-            this.numLightIntensity.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.numLightIntensity.LightParameter = TombEditor.Controls.LightParameter.Intensity;
-            this.numLightIntensity.Location = new System.Drawing.Point(198, 52);
-            this.numLightIntensity.Name = "numLightIntensity";
-            this.numLightIntensity.Size = new System.Drawing.Size(60, 22);
-            this.numLightIntensity.TabIndex = 82;
-            this.numLightIntensity.Value = 0F;
             // 
             // panelLightColor
             // 
@@ -414,21 +336,182 @@
             this.colorDialog.AnyColor = true;
             this.colorDialog.FullOpen = true;
             // 
+            // numIntensity
+            // 
+            this.numIntensity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numIntensity.DecimalPlaces = 2;
+            this.numIntensity.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numIntensity.Increment = new decimal(new int[] {
+            3,
+            0,
+            0,
+            131072});
+            this.numIntensity.IncrementAlternate = new decimal(new int[] {
+            12,
+            0,
+            0,
+            131072});
+            this.numIntensity.Location = new System.Drawing.Point(198, 52);
+            this.numIntensity.MousewheelSingleIncrement = true;
+            this.numIntensity.Name = "numIntensity";
+            this.numIntensity.Size = new System.Drawing.Size(60, 22);
+            this.numIntensity.TabIndex = 93;
+            this.numIntensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numIntensity.ValueChanged += new System.EventHandler(this.numIntensity_ValueChanged);
+            // 
+            // numInnerRange
+            // 
+            this.numInnerRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numInnerRange.DecimalPlaces = 2;
+            this.numInnerRange.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numInnerRange.Increment = new decimal(new int[] {
+            3,
+            0,
+            0,
+            131072});
+            this.numInnerRange.IncrementAlternate = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numInnerRange.Location = new System.Drawing.Point(198, 78);
+            this.numInnerRange.MousewheelSingleIncrement = true;
+            this.numInnerRange.Name = "numInnerRange";
+            this.numInnerRange.Size = new System.Drawing.Size(60, 22);
+            this.numInnerRange.TabIndex = 94;
+            this.numInnerRange.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numInnerRange.ValueChanged += new System.EventHandler(this.numInnerRange_ValueChanged);
+            // 
+            // numOuterRange
+            // 
+            this.numOuterRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numOuterRange.DecimalPlaces = 2;
+            this.numOuterRange.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numOuterRange.Increment = new decimal(new int[] {
+            3,
+            0,
+            0,
+            131072});
+            this.numOuterRange.IncrementAlternate = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numOuterRange.Location = new System.Drawing.Point(198, 103);
+            this.numOuterRange.MousewheelSingleIncrement = true;
+            this.numOuterRange.Name = "numOuterRange";
+            this.numOuterRange.Size = new System.Drawing.Size(60, 22);
+            this.numOuterRange.TabIndex = 95;
+            this.numOuterRange.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numOuterRange.ValueChanged += new System.EventHandler(this.numOuterRange_ValueChanged);
+            // 
+            // numInnerAngle
+            // 
+            this.numInnerAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numInnerAngle.DecimalPlaces = 2;
+            this.numInnerAngle.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numInnerAngle.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numInnerAngle.Location = new System.Drawing.Point(302, 27);
+            this.numInnerAngle.MousewheelSingleIncrement = true;
+            this.numInnerAngle.Name = "numInnerAngle";
+            this.numInnerAngle.Size = new System.Drawing.Size(60, 22);
+            this.numInnerAngle.TabIndex = 96;
+            this.numInnerAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numInnerAngle.ValueChanged += new System.EventHandler(this.numInnerAngle_ValueChanged);
+            // 
+            // numOuterAngle
+            // 
+            this.numOuterAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numOuterAngle.DecimalPlaces = 2;
+            this.numOuterAngle.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numOuterAngle.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numOuterAngle.Location = new System.Drawing.Point(302, 52);
+            this.numOuterAngle.MousewheelSingleIncrement = true;
+            this.numOuterAngle.Name = "numOuterAngle";
+            this.numOuterAngle.Size = new System.Drawing.Size(60, 22);
+            this.numOuterAngle.TabIndex = 97;
+            this.numOuterAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numOuterAngle.ValueChanged += new System.EventHandler(this.numOuterAngle_ValueChanged);
+            // 
+            // numDirectionX
+            // 
+            this.numDirectionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numDirectionX.DecimalPlaces = 2;
+            this.numDirectionX.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numDirectionX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numDirectionX.Location = new System.Drawing.Point(302, 77);
+            this.numDirectionX.Maximum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+            this.numDirectionX.Minimum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            -2147483648});
+            this.numDirectionX.MousewheelSingleIncrement = true;
+            this.numDirectionX.Name = "numDirectionX";
+            this.numDirectionX.Size = new System.Drawing.Size(60, 22);
+            this.numDirectionX.TabIndex = 98;
+            this.numDirectionX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numDirectionX.ValueChanged += new System.EventHandler(this.numDirectionX_ValueChanged);
+            // 
+            // numDirectionY
+            // 
+            this.numDirectionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numDirectionY.DecimalPlaces = 2;
+            this.numDirectionY.ForeColor = System.Drawing.Color.Gainsboro;
+            this.numDirectionY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numDirectionY.Location = new System.Drawing.Point(302, 102);
+            this.numDirectionY.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.numDirectionY.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.numDirectionY.MousewheelSingleIncrement = true;
+            this.numDirectionY.Name = "numDirectionY";
+            this.numDirectionY.Size = new System.Drawing.Size(60, 22);
+            this.numDirectionY.TabIndex = 99;
+            this.numDirectionY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numDirectionY.ValueChanged += new System.EventHandler(this.numDirectionY_ValueChanged);
+            // 
             // Lighting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.numDirectionY);
+            this.Controls.Add(this.numDirectionX);
+            this.Controls.Add(this.numOuterAngle);
+            this.Controls.Add(this.numInnerAngle);
+            this.Controls.Add(this.numOuterRange);
+            this.Controls.Add(this.numInnerRange);
+            this.Controls.Add(this.numIntensity);
             this.Controls.Add(this.cbLightIsDynamicallyUsed);
             this.Controls.Add(this.cbLightIsStaticallyUsed);
             this.Controls.Add(this.cbLightCastsShadows);
             this.Controls.Add(this.cbLightEnabled);
-            this.Controls.Add(this.numLightDirectionY);
-            this.Controls.Add(this.numLightDirectionX);
-            this.Controls.Add(this.numLightOuterRange);
-            this.Controls.Add(this.numLightInnerRange);
-            this.Controls.Add(this.numLightOuterAngle);
-            this.Controls.Add(this.numLightInnerAngle);
-            this.Controls.Add(this.numLightIntensity);
             this.Controls.Add(this.panelLightColor);
             this.Controls.Add(this.darkLabel12);
             this.Controls.Add(this.darkLabel13);
@@ -456,6 +539,13 @@
             this.Name = "Lighting";
             this.SerializationKey = "Lighting";
             this.Size = new System.Drawing.Size(442, 128);
+            ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numInnerAngle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numOuterAngle)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDirectionX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numDirectionY)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -466,13 +556,6 @@
         private DarkUI.Controls.DarkCheckBox cbLightIsStaticallyUsed;
         private DarkUI.Controls.DarkCheckBox cbLightCastsShadows;
         private DarkUI.Controls.DarkCheckBox cbLightEnabled;
-        private Controls.LightParameterController numLightDirectionY;
-        private Controls.LightParameterController numLightDirectionX;
-        private Controls.LightParameterController numLightOuterRange;
-        private Controls.LightParameterController numLightInnerRange;
-        private Controls.LightParameterController numLightOuterAngle;
-        private Controls.LightParameterController numLightInnerAngle;
-        private Controls.LightParameterController numLightIntensity;
         private System.Windows.Forms.Panel panelLightColor;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkLabel darkLabel13;
@@ -494,5 +577,12 @@
         private DarkUI.Controls.DarkButton butAddPointLight;
         private DarkUI.Controls.DarkLabel darkLabel5;
         private System.Windows.Forms.ColorDialog colorDialog;
+        private DarkUI.Controls.DarkNumericUpDown numIntensity;
+        private DarkUI.Controls.DarkNumericUpDown numInnerRange;
+        private DarkUI.Controls.DarkNumericUpDown numOuterRange;
+        private DarkUI.Controls.DarkNumericUpDown numInnerAngle;
+        private DarkUI.Controls.DarkNumericUpDown numOuterAngle;
+        private DarkUI.Controls.DarkNumericUpDown numDirectionX;
+        private DarkUI.Controls.DarkNumericUpDown numDirectionY;
     }
 }
