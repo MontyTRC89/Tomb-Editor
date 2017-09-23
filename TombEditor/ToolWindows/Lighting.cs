@@ -24,15 +24,6 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            // For each control bind its light parameter
-            numLightIntensity.LightParameter = LightParameter.Intensity;
-            numLightInnerRange.LightParameter = LightParameter.InnerRange;
-            numLightOuterRange.LightParameter = LightParameter.OuterRange;
-            numLightInnerAngle.LightParameter = LightParameter.InnerAngle;
-            numLightOuterAngle.LightParameter = LightParameter.OuterAngle;
-            numLightDirectionX.LightParameter = LightParameter.DirectionX;
-            numLightDirectionY.LightParameter = LightParameter.DirectionY;
         }
 
         protected override void Dispose(bool disposing)
@@ -54,10 +45,11 @@ namespace TombEditor.ToolWindows
 
                 bool IsLight = false;
                 bool HasInOutRange = false;
-                bool HasLenCutoffRange = false;
+                bool HasInOutAngle = false;
                 bool HasDirection = false;
                 bool CanCastShadows = false;
                 bool CanIlluminateStaticAndDynamicGeometry = false;
+
                 if (light != null)
                 {
                     IsLight = true;
@@ -67,64 +59,186 @@ namespace TombEditor.ToolWindows
                             HasInOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
+                            butAddPointLight.Focus();
                             break;
 
                         case LightType.Shadow:
                             HasInOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
+                            butAddShadow.Focus();
                             break;
 
                         case LightType.Effect:
+                            HasInOutRange = true;
+                            butAddEffectLight.Focus();
+                            break;
+
                         case LightType.FogBulb:
                             HasInOutRange = true;
+                            butAddFogBulb.Focus();
                             break;
 
                         case LightType.Spot:
                             HasInOutRange = true;
-                            HasLenCutoffRange = true;
+                            HasInOutAngle = true;
                             HasDirection = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
+                            butAddSpotLight.Focus();
                             break;
 
                         case LightType.Sun:
                             HasDirection = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
+                            butAddSun.Focus();
                             break;
                     }
 
+                    ChangeControlProperties(light.Type);
+
                     panelLightColor.BackColor = new Vector4(light.Color, 1.0f).ToWinFormsColor();
-                    numLightIntensity.Value = light.Intensity;
+                    numIntensity.Value = (decimal)light.Intensity;
+
+                    if (HasInOutRange)
+                    {
+                        numInnerRange.Value = (decimal)light.InnerRange;
+                        numOuterRange.Value = (decimal)light.OuterRange;
+                    }
+                    else
+                    {
+                        numInnerRange.Value = 0;
+                        numOuterRange.Value = 0;
+                    }
+                    if (HasInOutAngle)
+                    {
+                        numInnerAngle.Value = (decimal)light.InnerAngle;
+                        numOuterAngle.Value = (decimal)light.OuterAngle;
+                    }
+                    else
+                    {
+                        numInnerAngle.Value = 0;
+                        numOuterAngle.Value = 0;
+                    }
+                    if (HasDirection)
+                    {
+                        numDirectionX.Value = (decimal)light.RotationX;
+                        numDirectionY.Value = (decimal)light.RotationY;
+                    }
+                    else
+                    {
+                        numDirectionX.Value = 0;
+                        numDirectionY.Value = 0;
+                    }
+
                     cbLightEnabled.Checked = light.Enabled;
                     cbLightCastsShadows.Checked = light.CastsShadows;
                     cbLightIsDynamicallyUsed.Checked = light.IsDynamicallyUsed;
                     cbLightIsStaticallyUsed.Checked = light.IsStaticallyUsed;
-                    numLightInnerRange.Value = light.InnerRange;
-                    numLightOuterRange.Value = light.OuterRange;
-                    numLightInnerAngle.Value = light.InnerAngle;
-                    numLightOuterAngle.Value = light.OuterAngle;
-                    numLightDirectionX.Value = light.RotationX;
-                    numLightDirectionY.Value = light.RotationY;
                 }
                 else
+                {
                     panelLightColor.BackColor = System.Drawing.Color.FromArgb(60, 63, 65);
+                    numIntensity.Value = 0;
+                    numInnerRange.Value = 0;
+                    numOuterRange.Value = 0;
+                    numInnerAngle.Value = 0;
+                    numOuterAngle.Value = 0;
+                    numDirectionX.Value = 0;
+                    numDirectionY.Value = 0;
+                    cbLightEnabled.Checked = false;
+                    cbLightCastsShadows.Checked = false;
+                    cbLightIsDynamicallyUsed.Checked = false;
+                    cbLightIsStaticallyUsed.Checked = false;
+                }
 
                 // Set enabled state
                 panelLightColor.Enabled = IsLight;
-                numLightIntensity.Enabled = IsLight;
                 cbLightEnabled.Enabled = IsLight;
                 cbLightCastsShadows.Enabled = CanCastShadows;
                 cbLightIsDynamicallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateStaticAndDynamicGeometry;
-                numLightInnerRange.Enabled = HasInOutRange;
-                numLightOuterRange.Enabled = HasInOutRange;
-                numLightInnerAngle.Enabled = HasLenCutoffRange;
-                numLightOuterAngle.Enabled = HasLenCutoffRange;
-                numLightDirectionX.Enabled = HasDirection;
-                numLightDirectionY.Enabled = HasDirection;
+                numIntensity.Enabled = IsLight;
+                numInnerRange.Enabled = HasInOutRange;
+                numOuterRange.Enabled = HasInOutRange;
+                numInnerAngle.Enabled = HasInOutAngle;
+                numOuterAngle.Enabled = HasInOutAngle;
+                numDirectionX.Enabled = HasDirection;
+                numDirectionY.Enabled = HasDirection;
             }
+        }
+
+        public void ChangeControlProperties(LightType _lightType)
+        {
+            numIntensity.Minimum = 0.0M;
+            numIntensity.Maximum = 1.0M;
+            numInnerRange.Maximum = 40.0M;
+            numOuterRange.Maximum = 40.0M;
+
+
+            switch (_lightType)
+            {
+                case LightType.Shadow:
+                    numIntensity.Minimum = -1.0M;
+                    numIntensity.Maximum = 0.0M;
+                    break;
+
+                case LightType.Effect:
+                    numIntensity.Minimum = -16.0M;
+                    numIntensity.Maximum = 16.0M;
+                    break;
+
+                case LightType.Spot:
+                    numInnerRange.Maximum = 89.0M;
+                    numOuterRange.Maximum = 89.0M;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        public void UpdateParameter(decimal value, LightParameter parameter)
+        {
+            Light light = _editor.SelectedObject as Light;
+            if (light == null)
+                return;
+
+            switch (parameter)
+            {
+                default:
+                case LightParameter.Intensity:
+                    light.Intensity = (float)value;
+                    break;
+
+                case LightParameter.InnerRange:
+                    light.InnerRange = (float)value;
+                    break;
+
+                case LightParameter.OuterRange:
+                    light.OuterRange = (float)value;
+                    break;
+
+                case LightParameter.InnerAngle:
+                    light.InnerAngle = (float)value;
+                    break;
+
+                case LightParameter.OuterAngle:
+                    light.OuterAngle = (float)value;
+                    break;
+
+                case LightParameter.RotationX:
+                    light.RotationX = (float)((light.Type == LightType.Spot || light.Type == LightType.Sun) ? (value >= 360.0M ? value - 360.0M : value) : value);
+                    break;
+
+                case LightParameter.RotationY:
+                    light.RotationY = (float)((light.Type == LightType.Spot || light.Type == LightType.Sun) ? (value < 0.0M ? 360.0M + value : (value >= 360.0M ? value - 360.0M : value)) : value);
+                    break;
+            }
+
+            _editor.SelectedRoom.UpdateCompletely();
+            _editor.ObjectChange(light);
         }
 
         private void UpdateLight<T>(Func<Light, T> getLightValue, Action<Light, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
@@ -207,6 +321,41 @@ namespace TombEditor.ToolWindows
         private void butAddFogBulb_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceLight, LightType = LightType.FogBulb };
+        }
+
+        private void numIntensity_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numIntensity.Value, LightParameter.Intensity);
+        }
+
+        private void numInnerRange_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numInnerRange.Value, LightParameter.InnerRange);
+        }
+
+        private void numOuterRange_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numOuterRange.Value, LightParameter.OuterRange);
+        }
+
+        private void numInnerAngle_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numInnerAngle.Value, LightParameter.InnerAngle);
+        }
+
+        private void numOuterAngle_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numOuterAngle.Value, LightParameter.OuterAngle);
+        }
+
+        private void numDirectionX_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numDirectionX.Value, LightParameter.RotationX);
+        }
+
+        private void numDirectionY_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateParameter(numDirectionY.Value, LightParameter.RotationY);
         }
     }
 }
