@@ -675,5 +675,19 @@ namespace TombLib.Wad
             foreach (var wave in wavesToRemove)
                 WaveSounds.Remove(wave.Hash);
         }
+
+        public ushort GetFirstFreeSoundSlot()
+        {
+            // Get the first available sound
+            ushort found = UInt16.MaxValue;
+            for (int i = 0; i < 370; i++)
+                if (!SoundInfo.ContainsKey((ushort)i))
+                {
+                    found = (ushort)i;
+                    break;
+                }
+
+            return found;
+        }
     }
 }
