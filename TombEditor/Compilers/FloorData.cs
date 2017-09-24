@@ -11,9 +11,9 @@ namespace TombEditor.Compilers
         private void BuildFloorData()
         {
             ReportProgress(70, "Building floordata");
-            
+
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
-            var tempFloorData = new List<ushort> { 0 | 0x8000 };
+            _floorData.Add(0x8000);
 
             for (var i = 0; i < _level.Rooms.Length; i++)
             {
@@ -41,10 +41,10 @@ namespace TombEditor.Compilers
                         Room.RoomConnectionInfo floorPortalInfo = room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
                         Room.RoomConnectionInfo ceilingPortalInfo = room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
 
-                        var baseFloorData = (ushort)tempFloorData.Count;
+                        var baseFloorData = (ushort)_floorData.Count;
 
-                        // If a sector is a wall and this room is a water room, 
-                        // It must be checked before if on the neighbour sector if there's a ceiling portal 
+                        // If a sector is a wall and this room is a water room,
+                        // It must be checked before if on the neighbour sector if there's a ceiling portal
                         // because eventually a vertical portal will be added
                         Room isWallWithCeilingPortal = null;
                         foreach (var portal in ceilingPortals)
@@ -81,8 +81,8 @@ namespace TombEditor.Compilers
                             const ushort data1 = 0x8001;
                             var data2 = (ushort)_roomsRemappingDictionary[isWallWithCeilingPortal];
 
-                            tempFloorData.Add(data1);
-                            tempFloorData.Add(data2);
+                            _floorData.Add(data1);
+                            _floorData.Add(data2);
 
                             // Update current sector
                             sector.FloorDataIndex = baseFloorData;
@@ -141,8 +141,8 @@ namespace TombEditor.Compilers
                                 const ushort data1 = 0x8001;
                                 var data2 = (ushort)_roomsRemappingDictionary[block.WallPortal.AdjoiningRoom];
 
-                                tempFloorData.Add(data1);
-                                tempFloorData.Add(data2);
+                                _floorData.Add(data1);
+                                _floorData.Add(data2);
 
                                 if (block.WallPortal.Opacity == PortalOpacity.TraversableFaces)
                                 {
@@ -241,8 +241,8 @@ namespace TombEditor.Compilers
                                     function = 0x07;
                                 }
 
-                                // Diagonal steps and walls are the simplest case. All corner heights are zero 
-                                // except eventually the right angle on the top face. Corrections t1 and t2 
+                                // Diagonal steps and walls are the simplest case. All corner heights are zero
+                                // except eventually the right angle on the top face. Corrections t1 and t2
                                 // are simple to calculate
                                 if (block.FloorDiagonalSplit == DiagonalSplit.XnZn)
                                 {
@@ -421,10 +421,10 @@ namespace TombEditor.Compilers
                                             function = 0x07;
                                         }
 
-                                        // Prepare four vectors that are vertices of a square from 0, 0 to 1024, 1024 and 
-                                        // with variable corner heights. For calculating the right t1 and t2 values, we 
-                                        // must know also the fourth point of the square that contains the triangle 
-                                        // we are trying to correct. I simply intersect a very long ray with the plane 
+                                        // Prepare four vectors that are vertices of a square from 0, 0 to 1024, 1024 and
+                                        // with variable corner heights. For calculating the right t1 and t2 values, we
+                                        // must know also the fourth point of the square that contains the triangle
+                                        // we are trying to correct. I simply intersect a very long ray with the plane
                                         // passing through the triangle and I can obtain in this way the height of the fourth corner.
                                         // This height then is used in different ways
                                         var p00 = new Vector3(0, h00 * 256, 0);
@@ -472,7 +472,7 @@ namespace TombEditor.Compilers
                                         else if ((h01 == maxHeight || h00 == maxHeight || h10 == maxHeight) &&
                                                  h11 < h00)
                                         {
-                                            // Case 2: h00 is highest corner and h11 is lower than h00. Typical example, when you raise of one click 
+                                            // Case 2: h00 is highest corner and h11 is lower than h00. Typical example, when you raise of one click
                                             // one corner of a sector (simplest case)
                                             var p = new Plane(p01, p11, p10);
 
@@ -486,7 +486,7 @@ namespace TombEditor.Compilers
 
                                             var maxTriangle = Math.Max(Math.Max(h01, h11), h10);
 
-                                            // There are two cases (1.jpg and 2.jpg). The fourth point height can be lower than max height 
+                                            // There are two cases (1.jpg and 2.jpg). The fourth point height can be lower than max height
                                             // of the triangle or higher.
                                             if (distance <= maxTriangle)
                                             {
@@ -502,7 +502,7 @@ namespace TombEditor.Compilers
                                         else if ((h01 == maxHeight || h11 == maxHeight || h10 == maxHeight) &&
                                                  h00 < h11)
                                         {
-                                            // Case 3: similar to case 2, but the opposite 
+                                            // Case 3: similar to case 2, but the opposite
                                             var p = new Plane(p01, p10, p00);
 
                                             float distance;
@@ -789,8 +789,8 @@ namespace TombEditor.Compilers
                                     // The real ceiling split of the sector
                                     int function;
 
-                                    // Now, for each of the two possible splits, apply the algorithm described by meta2tr and 
-                                    // TRosettaStone 3. I've simply managed some cases by hand. The difficult task is to 
+                                    // Now, for each of the two possible splits, apply the algorithm described by meta2tr and
+                                    // TRosettaStone 3. I've simply managed some cases by hand. The difficult task is to
                                     // decide if apply the height correction to both triangles or just one of them.
                                     // Function must be decided looking at portals.
 
@@ -1247,7 +1247,7 @@ namespace TombEditor.Compilers
                         {
                             // Mark the end of the list
                             tempCodes[lastFloorDataFunction] |= 0x8000;
-                            tempFloorData.AddRange(tempCodes);
+                            _floorData.AddRange(tempCodes);
                         }
 
                         // Update the sector
@@ -1255,10 +1255,8 @@ namespace TombEditor.Compilers
                     }
                 }
             }
-
-            _floorData = tempFloorData.ToArray();
-
-            ReportProgress(80, "    Floordata size: " + _floorData.Length * 2 + " bytes");
+            
+            ReportProgress(80, "    Floordata size: " + _floorData.Count * 2 + " bytes");
         }
     }
 }

@@ -11,18 +11,12 @@ namespace TombEditor.Compilers
 {
     public partial class LevelCompilerTr4
     {
-        private Dictionary<WadMesh, int> _tempMeshPointers;
+        private Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
 
-        private void ConvertWadMeshes()
+        private void ConvertWadMeshes(Wad2 wad)
         {
             ReportProgress(11, "Converting WAD meshes to TR4 format");
-
-            var wad = _level.Wad;
-
-            _tempMeshPointers = new Dictionary<WadMesh, int>();
-            _meshes = new tr_mesh[wad.Meshes.Count];
-
-            ReportProgress(12, "    Number of meshes: " + wad.Meshes.Count);
+            ReportProgress(11, "    Number of meshes: " + wad.Meshes.Count);
 
             int currentMeshSize = 0;
             int totalMeshSize = 0;
@@ -161,32 +155,18 @@ namespace TombEditor.Compilers
 
                 newMesh.MeshSize = currentMeshSize;
                 newMesh.MeshPointer = totalMeshSize;
-                _tempMeshPointers.Add(oldMesh, totalMeshSize);
+                __meshPointers.Add(oldMesh, totalMeshSize);
 
                 totalMeshSize += currentMeshSize;
 
-                _meshes[i] = newMesh;
+                _meshes.Add(newMesh);
             }
         }
 
-        public void ConvertWad2DataToTr4()
+        public void ConvertWad2DataToTr4(Wad2 wad)
         {
-            var tempAnimations = new List<tr_animation>();
-            var tempDispatches = new List<tr_anim_dispatch>();
-            var tempStateChanges = new List<tr_state_change>();
-            var tempAnimCommands = new List<ushort>();
-            var tempMoveables = new List<tr_moveable>();
-            var tempStaticMeshes = new List<tr_staticmesh>();
-            var tempKeyFrames = new List<short>();
-            var tempMeshPointers = new List<uint>();
-            var tempMeshTrees = new List<int>();
-
-            var wad = _level.Wad;
-
             int lastAnimation = 0;
             int lastKeyFrame = 0;
-            int lastAnimCommand = 0;
-            int lastStateChange = 0;
             int lastAnimDispatch = 0;
             int lastMeshTree = 0;
             int lastMeshPointer = 0;
@@ -224,20 +204,20 @@ namespace TombEditor.Compilers
                     foreach (var keyframe in animation.KeyFrames)
                     {
                         currentKeyFrameSize = 0;
-                        int baseFrame = tempKeyFrames.Count;
+                        int baseFrame = _frames.Count;
 
-                        tempKeyFrames.Add((short)keyframe.BoundingBox.Minimum.X);
-                        tempKeyFrames.Add((short)keyframe.BoundingBox.Maximum.X);
-                        tempKeyFrames.Add((short)-keyframe.BoundingBox.Minimum.Y);
-                        tempKeyFrames.Add((short)-keyframe.BoundingBox.Maximum.Y);
-                        tempKeyFrames.Add((short)keyframe.BoundingBox.Minimum.Z);
-                        tempKeyFrames.Add((short)keyframe.BoundingBox.Maximum.Z);
+                        _frames.Add((short)keyframe.BoundingBox.Minimum.X);
+                        _frames.Add((short)keyframe.BoundingBox.Maximum.X);
+                        _frames.Add((short)-keyframe.BoundingBox.Minimum.Y);
+                        _frames.Add((short)-keyframe.BoundingBox.Maximum.Y);
+                        _frames.Add((short)keyframe.BoundingBox.Minimum.Z);
+                        _frames.Add((short)keyframe.BoundingBox.Maximum.Z);
 
                         currentKeyFrameSize += 6;
 
-                        tempKeyFrames.Add((short)keyframe.Offset.X);
-                        tempKeyFrames.Add((short)-keyframe.Offset.Y);
-                        tempKeyFrames.Add((short)keyframe.Offset.Z);
+                        _frames.Add((short)keyframe.Offset.X);
+                        _frames.Add((short)-keyframe.Offset.Y);
+                        _frames.Add((short)keyframe.Offset.Z);
 
                         currentKeyFrameSize += 3;
 
@@ -253,10 +233,10 @@ namespace TombEditor.Compilers
                             {
                                 case WadKeyFrameRotationAxis.ThreeAxes:
                                     rotation16 = (short)((angle.X << 4) | ((angle.Y & 0xfc0) >> 6));
-                                    tempKeyFrames.Add(rotation16);
+                                    _frames.Add(rotation16);
 
                                     rotation16 = (short)(((angle.Y & 0x3f) << 10) | (angle.Z & 0x3ff));
-                                    tempKeyFrames.Add(rotation16);
+                                    _frames.Add(rotation16);
 
                                     currentKeyFrameSize += 2;
 
@@ -267,7 +247,7 @@ namespace TombEditor.Compilers
                                     rotX = (short)angle.X;
                                     rotation16 |= rotX;
 
-                                    tempKeyFrames.Add(rotation16);
+                                    _frames.Add(rotation16);
                                     //Console.WriteLine(rotation16.ToString("X"));
 
                                     currentKeyFrameSize += 1;
@@ -279,7 +259,7 @@ namespace TombEditor.Compilers
                                     rotY = (short)angle.Y;
                                     rotation16 |= rotY;
 
-                                    tempKeyFrames.Add(rotation16);
+                                    _frames.Add(rotation16);
                                     //Console.WriteLine(rotation16.ToString("X"));
 
                                     currentKeyFrameSize += 1;
@@ -291,7 +271,7 @@ namespace TombEditor.Compilers
                                     rotZ = (short)angle.Z;
                                     rotation16 += rotZ;
 
-                                    tempKeyFrames.Add(rotation16);
+                                    _frames.Add(rotation16);
                                     //Console.WriteLine(rotation16.ToString("X"));
 
                                     currentKeyFrameSize += 1;
@@ -305,18 +285,18 @@ namespace TombEditor.Compilers
                         {
                             for (int p = 0; p < (maxKeyFrameSize - currentKeyFrameSize); p++)
                             {
-                                tempKeyFrames.Add(0);
+                                _frames.Add(0);
                             }
 
                             currentKeyFrameSize += maxKeyFrameSize - currentKeyFrameSize;
                         }
 
-                        int endFrame = tempKeyFrames.Count;
+                        int endFrame = _frames.Count;
 
                         if (mmm == 0)
                         {
                             for (int jjj = baseFrame; jjj < endFrame; jjj++)
-                                Console.WriteLine(tempKeyFrames[jjj].ToString("X"));
+                                Console.WriteLine(_frames[jjj].ToString("X"));
                             Console.WriteLine("----------------------------");
                         }
 
@@ -362,8 +342,8 @@ namespace TombEditor.Compilers
                     newAnimation.AccelLateral = animation.LateralAcceleration;
                     newAnimation.FrameStart = (ushort)(animation.FrameStart);
                     newAnimation.FrameEnd = (ushort)(animation.FrameEnd);
-                    newAnimation.AnimCommand = (ushort)(tempAnimCommands.Count);
-                    newAnimation.StateChangeOffset = (ushort)(tempStateChanges.Count);
+                    newAnimation.AnimCommand = (ushort)(_animCommands.Count);
+                    newAnimation.StateChangeOffset = (ushort)(_stateChanges.Count);
                     newAnimation.NumAnimCommands = (ushort)animation.AnimCommands.Count;
                     newAnimation.NumStateChanges = (ushort)animation.StateChanges.Count;
                     newAnimation.NextAnimation = (ushort)(animation.NextAnimation + lastAnimation);
@@ -389,45 +369,45 @@ namespace TombEditor.Compilers
                         switch (command.Type)
                         {
                             case WadAnimCommandType.PositionReference:
-                                tempAnimCommands.Add(0x01);
+                                _animCommands.Add(0x01);
 
-                                tempAnimCommands.Add(command.Parameter1);
-                                tempAnimCommands.Add(command.Parameter2);
-                                tempAnimCommands.Add(command.Parameter3);
+                                _animCommands.Add(command.Parameter1);
+                                _animCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter3);
 
                                 break;
 
                             case WadAnimCommandType.JumpReference:
-                                tempAnimCommands.Add(0x02);
+                                _animCommands.Add(0x02);
 
-                                tempAnimCommands.Add(command.Parameter1);
-                                tempAnimCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter1);
+                                _animCommands.Add(command.Parameter2);
 
                                 break;
 
                             case WadAnimCommandType.EmptyHands:
-                                tempAnimCommands.Add(0x03);
+                                _animCommands.Add(0x03);
 
                                 break;
 
                             case WadAnimCommandType.KillEntity:
-                                tempAnimCommands.Add(0x04);
+                                _animCommands.Add(0x04);
 
                                 break;
 
                             case WadAnimCommandType.PlaySound:
-                                tempAnimCommands.Add(0x05);
+                                _animCommands.Add(0x05);
 
-                                tempAnimCommands.Add(command.Parameter1);
-                                tempAnimCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter1);
+                                _animCommands.Add(command.Parameter2);
 
                                 break;
 
                             case WadAnimCommandType.FlipEffect:
-                                tempAnimCommands.Add(0x06);
+                                _animCommands.Add(0x06);
 
-                                tempAnimCommands.Add(command.Parameter1);
-                                tempAnimCommands.Add(command.Parameter2);
+                                _animCommands.Add(command.Parameter1);
+                                _animCommands.Add(command.Parameter2);
 
                                 break;
                         }
@@ -451,15 +431,15 @@ namespace TombEditor.Compilers
                             newAnimDispatch.NextAnimation = (ushort)(dispatch.NextAnimation + lastAnimation);
                             newAnimDispatch.NextFrame = (ushort)(dispatch.NextFrame);
 
-                            tempDispatches.Add(newAnimDispatch);
+                            _animDispatches.Add(newAnimDispatch);
                         }
 
                         lastAnimDispatch += stateChange.Dispatches.Count;
 
-                        tempStateChanges.Add(newStateChange);
+                        _stateChanges.Add(newStateChange);
                     }
 
-                    tempAnimations.Add(newAnimation);
+                    _animations.Add(newAnimation);
 
                     numAnimations++;
                     numAnimCommands += animation.AnimCommands.Count;
@@ -469,40 +449,40 @@ namespace TombEditor.Compilers
                 lastAnimation += numAnimations;
                 lastKeyFrame += numKeyFrames;
 
-                newMoveable.MeshTree = (uint)tempMeshTrees.Count;
-                newMoveable.StartingMesh = (ushort)tempMeshPointers.Count;
+                newMoveable.MeshTree = (uint)_meshTrees.Count;
+                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
                 // Now build mesh pointers and mesh trees
                 foreach (var meshTree in oldMoveable.Links)
                 {
-                    tempMeshTrees.Add((int)meshTree.Opcode);
-                    tempMeshTrees.Add((int)meshTree.Offset.X);
-                    tempMeshTrees.Add((int)-meshTree.Offset.Y);
-                    tempMeshTrees.Add((int)meshTree.Offset.Z);
+                    _meshTrees.Add((int)meshTree.Opcode);
+                    _meshTrees.Add((int)meshTree.Offset.X);
+                    _meshTrees.Add((int)-meshTree.Offset.Y);
+                    _meshTrees.Add((int)meshTree.Offset.Z);
                 }
 
                 foreach (var mesh in oldMoveable.Meshes)
                 {
-                    tempMeshPointers.Add((uint)_tempMeshPointers[mesh]);
+                    _meshPointers.Add((uint)__meshPointers[mesh]);
                 }
 
-                tempMoveables.Add(newMoveable);
+                _moveables.Add(newMoveable);
             }
 
             // Adjust NextFrame of each Animation
-            for (int i = 0; i < tempAnimations.Count; i++)
+            for (int i = 0; i < _animations.Count; i++)
             {
-                var animation = tempAnimations[i];
-                animation.NextFrame += tempAnimations[animation.NextAnimation].FrameStart;
-                tempAnimations[i] = animation;
+                var animation = _animations[i];
+                animation.NextFrame += _animations[animation.NextAnimation].FrameStart;
+                _animations[i] = animation;
             }
 
             // Adjust NextFrame of each AnimDispatch
-            for (int i = 0; i < tempDispatches.Count; i++)
+            for (int i = 0; i < _animDispatches.Count; i++)
             {
-                var dispatch = tempDispatches[i];
-                dispatch.NextFrame += tempAnimations[dispatch.NextAnimation].FrameStart;
-                tempDispatches[i] = dispatch;
+                var dispatch = _animDispatches[i];
+                dispatch.NextFrame += _animations[dispatch.NextAnimation].FrameStart;
+                _animDispatches[i] = dispatch;
             }
 
             // Convert static meshes
@@ -534,28 +514,18 @@ namespace TombEditor.Compilers
                 };
 
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
-                newStaticMesh.Mesh = (ushort)tempMeshPointers.Count;
+                newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
-                tempStaticMeshes.Add(newStaticMesh);
+                _staticMeshes.Add(newStaticMesh);
 
-                tempMeshPointers.Add((uint)_tempMeshPointers[oldStaticMesh.Mesh]);
+                _meshPointers.Add((uint)__meshPointers[oldStaticMesh.Mesh]);
             }
-
-            _animations = tempAnimations.ToArray();
-            _meshPointers = tempMeshPointers.ToArray();
-            _meshTrees = tempMeshTrees.ToArray();
-            _stateChanges = tempStateChanges.ToArray();
-            _animDispatches = tempDispatches.ToArray();
-            _animCommands = tempAnimCommands.ToArray();
-            _frames = tempKeyFrames.ToArray();
-            _moveables = tempMoveables.ToArray();
-            _staticMeshes = tempStaticMeshes.ToArray();
 
             if (File.Exists("Wad.txt")) File.Delete("Wad.txt");
 
             StreamWriter writer = new StreamWriter(File.OpenWrite("Wad.txt"));
             int n = 0;
-            foreach (var anim in tempAnimations)
+            foreach (var anim in _animations)
             {
                 writer.WriteLine("Anim #" + n);
                 writer.WriteLine("    KeyframeOffset: " + anim.FrameOffset);
@@ -580,7 +550,7 @@ namespace TombEditor.Compilers
             }
 
             n = 0;
-            foreach (var dispatch in tempDispatches)
+            foreach (var dispatch in _animDispatches)
             {
                 writer.WriteLine("AnimDispatch #" + n);
                 writer.WriteLine("    In: " + dispatch.Low);
@@ -593,22 +563,22 @@ namespace TombEditor.Compilers
             }
 
             n = 0;
-            for (int jj = 0; jj < tempMeshTrees.Count; jj += 4)
+            for (int jj = 0; jj < _meshTrees.Count; jj += 4)
             {
                 writer.WriteLine("MeshTree #" + jj);
-                writer.WriteLine("    Op: " + tempMeshTrees[jj + 0]);
-                writer.WriteLine("    X: " + tempMeshTrees[jj + 1]);
-                writer.WriteLine("    Y: " + tempMeshTrees[jj + 2]);
-                writer.WriteLine("    Z: " + tempMeshTrees[jj + 3]);
+                writer.WriteLine("    Op: " + _meshTrees[jj + 0]);
+                writer.WriteLine("    X: " + _meshTrees[jj + 1]);
+                writer.WriteLine("    Y: " + _meshTrees[jj + 2]);
+                writer.WriteLine("    Z: " + _meshTrees[jj + 3]);
                 writer.WriteLine();
 
                 n++;
             }
 
             n = 0;
-            for (int jj = 0; jj < tempMeshPointers.Count; jj++)
+            for (int jj = 0; jj < _meshPointers.Count; jj++)
             {
-                writer.WriteLine("MeshPointer #" + jj + ": " + tempMeshPointers[jj]);
+                writer.WriteLine("MeshPointer #" + jj + ": " + _meshPointers[jj]);
 
                 n++;
             }
