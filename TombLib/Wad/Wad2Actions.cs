@@ -668,12 +668,74 @@ namespace TombLib.Wad
                     }
                 }
 
-                if (found)
+                if (!found)
                     wavesToRemove.Add(wave.Value);
             }
 
             foreach (var wave in wavesToRemove)
                 WaveSounds.Remove(wave.Hash);
+        }
+
+        public void CleanUnusedSprites()
+        {
+            var spritesToRemove = new List<WadSprite>();
+
+            foreach (var sprite in SpriteTextures)
+            {
+                bool found = false;
+
+                foreach (var sequence in SpriteSequences)
+                {
+                    foreach (var spr in sequence.Sprites)
+                    {
+                        if (spr.Hash == sprite.Key)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found)
+                    spritesToRemove.Add(sprite.Value);
+            }
+
+            foreach (var sprite in spritesToRemove)
+            {
+                sprite.Dispose();
+                SpriteTextures.Remove(sprite.Hash);
+            }
+        }
+
+        public void CleanUnusedTextures()
+        {
+            var texturesToRemove = new List<WadTexture>();
+
+            foreach (var texture in Textures)
+            {
+                bool found = false;
+
+                foreach (var mesh in Meshes)
+                {
+                    foreach (var poly in mesh.Value.Polys)
+                    {
+                        if (poly.Texture != null && poly.Texture.Hash == texture.Key)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found)
+                    texturesToRemove.Add(texture.Value);
+            }
+
+            foreach (var texture in texturesToRemove)
+                Textures.Remove(texture.Hash);
+
+            // Rebuild atlas
+            RebuildTextureAtlas();
         }
 
         public ushort GetFirstFreeSoundSlot()

@@ -446,6 +446,8 @@ namespace TombLib.Wad
             uint chunkSize;
 
             // Do some resource cleaning
+            wad.CleanUnusedTextures();
+            wad.CleanUnusedSprites();
             wad.CleanUnusedWaveSounds();
 
             var texturesList = new List<WadTexture>();
