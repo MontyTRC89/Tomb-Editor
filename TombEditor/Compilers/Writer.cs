@@ -30,7 +30,7 @@ namespace TombEditor.Compilers
                     }
 
                     // Write floordata
-                    var numFloorData = (uint)_floorData.Length;
+                    var numFloorData = (uint)_floorData.Count;
                     writer.Write(numFloorData);
                     writer.WriteBlockArray(_floorData);
 
@@ -41,7 +41,7 @@ namespace TombEditor.Compilers
                     writer.Write(numMeshData);
                     var totalMeshSize = 0;
 
-                    for (var i = 0; i < _meshes.Length; i++)
+                    for (var i = 0; i < _meshes.Count; i++)
                     {
                         var meshSize = _meshes[i].WriteTr4(writer);
                         totalMeshSize += (int)meshSize;
@@ -57,32 +57,32 @@ namespace TombEditor.Compilers
                     writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                     // Write mesh pointers
-                    writer.Write((uint)_meshPointers.Length);
+                    writer.Write((uint)_meshPointers.Count);
                     writer.WriteBlockArray(_meshPointers);
 
                     // Write animations' data
-                    writer.Write((uint)_animations.Length);
+                    writer.Write((uint)_animations.Count);
                     writer.WriteBlockArray(_animations);
 
-                    writer.Write((uint)_stateChanges.Length);
+                    writer.Write((uint)_stateChanges.Count);
                     writer.WriteBlockArray(_stateChanges);
 
-                    writer.Write((uint)_animDispatches.Length);
+                    writer.Write((uint)_animDispatches.Count);
                     writer.WriteBlockArray(_animDispatches);
 
-                    writer.Write((uint)_animCommands.Length);
+                    writer.Write((uint)_animCommands.Count);
                     writer.WriteBlockArray(_animCommands);
 
-                    writer.Write((uint)_meshTrees.Length);
+                    writer.Write((uint)_meshTrees.Count);
                     writer.WriteBlockArray(_meshTrees);
 
-                    writer.Write((uint)_frames.Length);
+                    writer.Write((uint)_frames.Count);
                     writer.WriteBlockArray(_frames);
 
-                    writer.Write((uint)_moveables.Length);
+                    writer.Write((uint)_moveables.Count);
                     writer.WriteBlockArray(_moveables);
 
-                    writer.Write((uint)_staticMeshes.Length);
+                    writer.Write((uint)_staticMeshes.Count);
                     writer.WriteBlockArray(_staticMeshes);
 
                     // SPR block
@@ -95,13 +95,13 @@ namespace TombEditor.Compilers
                     writer.WriteBlockArray(_spriteSequences);
 
                     // Write camera, flyby and sound sources
-                    writer.Write((uint)_cameras.Length);
+                    writer.Write((uint)_cameras.Count);
                     writer.WriteBlockArray(_cameras);
 
-                    writer.Write((uint)_flyByCameras.Length);
+                    writer.Write((uint)_flyByCameras.Count);
                     writer.WriteBlockArray(_flyByCameras);
 
-                    writer.Write((uint)_soundSources.Length);
+                    writer.Write((uint)_soundSources.Count);
                     writer.WriteBlockArray(_soundSources);
 
                     // Write pathfinding data
@@ -135,12 +135,12 @@ namespace TombEditor.Compilers
                     // Write animated textures
                     // ReSharper disable once SuggestVarOrType_BuiltInTypes
                     int numAnimatedTexture = 1;
-                    for (var i = 0; i < _animatedTextures.Length; i++)
-                        numAnimatedTexture += _animatedTextures.Length + 1;
+                    for (var i = 0; i < _animatedTextures.Count; i++)
+                        numAnimatedTexture += _animatedTextures.Count + 1;
 
                     writer.Write((uint)numAnimatedTexture);
-                    writer.Write((ushort)_animatedTextures.Length);
-                    for (var i = 0; i < _animatedTextures.Length; i++)
+                    writer.Write((ushort)_animatedTextures.Count);
+                    for (var i = 0; i < _animatedTextures.Count; i++)
                     {
                         writer.Write((ushort)(_animatedTextures[i].Textures.GetLength(0)));
 
@@ -156,10 +156,10 @@ namespace TombEditor.Compilers
                     _objectTextureManager.WriteObjectTexturesForTr4(writer);
 
                     // Write items and AI objects
-                    writer.Write((uint)_items.Length);
+                    writer.Write((uint)_items.Count);
                     writer.WriteBlockArray(_items);
 
-                    writer.Write((uint)_aiItems.Length);
+                    writer.Write((uint)_aiItems.Count);
                     writer.WriteBlockArray(_aiItems);
 
                     const short numDemo = 0;
@@ -182,8 +182,7 @@ namespace TombEditor.Compilers
                     }
 
                     // Write sound details
-                    _numSoundDetails = (uint)_level.Wad.SoundInfo.Count;
-                    writer.Write(_numSoundDetails);
+                    writer.Write((uint)_level.Wad.SoundInfo.Count);
 
                     short lastSample = 0;
 
@@ -430,7 +429,7 @@ namespace TombEditor.Compilers
                 }
 
                 // Write floordata
-                var numFloorData = (uint)_floorData.Length;
+                var numFloorData = (uint)_floorData.Count;
                 writer.Write(numFloorData);
                 writer.WriteBlockArray(_floorData);
 
@@ -441,7 +440,7 @@ namespace TombEditor.Compilers
                 writer.Write(numMeshData);
                 var totalMeshSize = 0;
 
-                for (var i = 0; i < _meshes.Length; i++)
+                for (var i = 0; i < _meshes.Count; i++)
                 {
                     var meshSize = _meshes[i].WriteTr3(writer);
                     totalMeshSize += (int)meshSize;
@@ -457,35 +456,35 @@ namespace TombEditor.Compilers
                 writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
 
                 // Write mesh pointers
-                writer.Write((uint)_meshPointers.Length);
+                writer.Write((uint)_meshPointers.Count);
                 writer.WriteBlockArray(_meshPointers);
 
                 // Write animations' data
-                writer.Write((uint)_animations.Length);
+                writer.Write((uint)_animations.Count);
                 foreach (var anim in _animations)
                 {
                     anim.Write(writer);
                 }
 
-                writer.Write((uint)_stateChanges.Length);
+                writer.Write((uint)_stateChanges.Count);
                 writer.WriteBlockArray(_stateChanges);
 
-                writer.Write((uint)_animDispatches.Length);
+                writer.Write((uint)_animDispatches.Count);
                 writer.WriteBlockArray(_animDispatches);
 
-                writer.Write((uint)_animCommands.Length);
+                writer.Write((uint)_animCommands.Count);
                 writer.WriteBlockArray(_animCommands);
 
-                writer.Write((uint)_meshTrees.Length);
+                writer.Write((uint)_meshTrees.Count);
                 writer.WriteBlockArray(_meshTrees);
 
-                writer.Write((uint)_frames.Length);
+                writer.Write((uint)_frames.Count);
                 writer.WriteBlockArray(_frames);
 
-                writer.Write((uint)_moveables.Length);
+                writer.Write((uint)_moveables.Count);
                 writer.WriteBlockArray(_moveables);
 
-                writer.Write((uint)_staticMeshes.Length);
+                writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
                 // SPR block
@@ -502,10 +501,10 @@ namespace TombEditor.Compilers
                 writer.WriteBlockArray(SpriteSequences);
                 */
                 // Write camera, flyby and sound sources
-                writer.Write((uint)_cameras.Length);
+                writer.Write((uint)_cameras.Count);
                 writer.WriteBlockArray(_cameras);
 
-                writer.Write((uint)_soundSources.Length);
+                writer.Write((uint)_soundSources.Count);
                 writer.WriteBlockArray(_soundSources);
 
                 // Write pathfinding data
@@ -540,13 +539,13 @@ namespace TombEditor.Compilers
 
                 // Write animated textures
                 int numAnimatedTextures = 1; // Offset by 1
-                for (var i = 0; i < _animatedTextures.Length; i++)
+                for (var i = 0; i < _animatedTextures.Count; i++)
                     numAnimatedTextures += _animatedTextures[i].Textures.Length;
                 writer.Write((uint)numAnimatedTextures);
 
-                writer.Write((short)_animatedTextures.Length);
+                writer.Write((short)_animatedTextures.Count);
 
-                for (var i = 0; i < _animatedTextures.Length; i++)
+                for (var i = 0; i < _animatedTextures.Count; i++)
                 {
                     writer.Write((short)(_animatedTextures[i].Textures.Length));
 
@@ -559,11 +558,11 @@ namespace TombEditor.Compilers
 
                 // Write object textures
                 _objectTextureManager.WriteObjectTexturesForTr4(writer);
-                if (0 == 0 * _items.Length)
+                if (0 == 0 * _items.Count)
                     throw new NotSupportedException("WriteObjectTexturesForTr4 needs small adjustments for tr3.");
 
                 // Write items and AI objects
-                writer.Write((uint)_items.Length);
+                writer.Write((uint)_items.Count);
                 writer.WriteBlockArray(_items);
 
                 var lightmap = new byte[8192];
@@ -574,8 +573,8 @@ namespace TombEditor.Compilers
                 writer.Write(numDemo);
 
                 // Write sound data
-                byte[] sfxBuffer;
-               /* using (var readerSounds = new BinaryReaderEx(new FileStream(
+                /*byte[] sfxBuffer;
+                using (var readerSounds = new BinaryReaderEx(new FileStream(
                         @"Graphics\Wads\" + _level.Wad.OriginalWad.BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
                     sfxBuffer = readerSounds.ReadBytes((int)readerSounds.BaseStream.Length);
@@ -584,7 +583,7 @@ namespace TombEditor.Compilers
                     _numSoundDetails = (uint)readerSounds.ReadInt16();
                 }*/
 
-               // writer.WriteBlockArray(sfxBuffer);
+                // writer.WriteBlockArray(sfxBuffer);
 
                 writer.Flush();
             }

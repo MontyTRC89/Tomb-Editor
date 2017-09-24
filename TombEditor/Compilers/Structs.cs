@@ -14,7 +14,7 @@ namespace TombEditor.Compilers
         public byte Green;
         public byte Blue;
     }
-    
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_vertex
     {
@@ -183,7 +183,7 @@ namespace TombEditor.Compilers
         public ushort Intensity2;
         public ushort ObjectID;
     }
-    
+
     public class tr_room
     {
         public tr_room_info Info;
@@ -208,7 +208,7 @@ namespace TombEditor.Compilers
 
         // Helper data
         public TrSectorAux[,] AuxSectors;
-        
+
         public List<Room> ReachableRooms;
         public bool Visited;
         public bool Flipped;
@@ -221,16 +221,16 @@ namespace TombEditor.Compilers
             writer.WriteBlock(Info);
 
             var offset = writer.BaseStream.Position;
-            
+
             writer.Write((int)0);
-            
+
             writer.Write((ushort)Vertices.Count);
             writer.WriteBlockArray(Vertices);
-            
+
             writer.Write((ushort)Quads.Count);
             for (var k = 0; k < Quads.Count; k++)
                 Quads[k].Write(writer);
-            
+
             writer.Write((ushort)Triangles.Count);
             for (var k = 0; k < Triangles.Count; k++)
                 Triangles[k].Write(writer);
@@ -439,7 +439,7 @@ namespace TombEditor.Compilers
         public int X;
         public int Y;
         public int Z;
-        public short Angle;
+        public ushort Angle;
         public short Intensity1;
         public short Ocb;
         public ushort Flags;
@@ -531,35 +531,7 @@ namespace TombEditor.Compilers
         public byte Xmin;
         public byte Xmax;
         public short TrueFloor;
-        public short OverlapIndex;
-    }
-
-    public struct tr_box_aux
-    {
-        public byte Zmin;
-        public byte Zmax;
-        public byte Xmin;
-        public byte Xmax;
-        public short TrueFloor;
-        public short OverlapIndex;
-        public bool IsolatedBox;
-        public bool NotWalkableBox;
-        public bool Monkey;
-        public bool Jump;
-        public short Room;
-        public bool Portal;
-        public bool Flag0x02;
-        public bool Flag0x04;
-    }
-
-    public struct tr_overlap_aux
-    {
-        public int MainBox;
-        public int Box;
-        public bool Skeleton;
-        public bool Monkey;
-        public bool EndOfList;
-        public bool IsEdge;
+        public ushort OverlapIndex;
     }
 
     public class TrSectorAux
@@ -612,7 +584,7 @@ namespace TombEditor.Compilers
         public byte Pitch;
         public ushort Characteristics;
     }
-    
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_camera
     {
@@ -638,9 +610,10 @@ namespace TombEditor.Compilers
         public int X;
         public int Y;
         public int Z;
-        public ushort OCB;
+        public short OCB;
         public ushort Flags;
-        public int Angle;
+        public ushort Angle;
+        public ushort Unkown;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
