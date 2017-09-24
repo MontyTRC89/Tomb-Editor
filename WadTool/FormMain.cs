@@ -477,8 +477,33 @@ namespace WadTool
 
         private void butSoundEditor_Click(object sender, EventArgs e)
         {
+            if (_tool.DestinationWad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must load a destination Wad2 file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
             var form = new FormSoundEditor();
             form.ShowDialog();
+        }
+
+        private void spriteEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butSpriteEditor_Click(null, null);
+        }
+
+        private void butSpriteEditor_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must load a destination Wad2 file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            var form = new FormSpriteSequencesEditor();
+            form.ShowDialog();
+
+            UpdateDestinationWad2UI();
         }
     }
 }

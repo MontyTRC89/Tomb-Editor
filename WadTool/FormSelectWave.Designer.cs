@@ -32,9 +32,9 @@
             this.lstWaves = new DarkUI.Controls.DarkListView();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
-            this.butAddNewWave = new DarkUI.Controls.DarkButton();
             this.openFileDialogWave = new System.Windows.Forms.OpenFileDialog();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
+            this.butAddNewWave = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
@@ -78,18 +78,6 @@
             this.butOK.Text = "OK";
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
-            // butAddNewWave
-            // 
-            this.butAddNewWave.Image = global::WadTool.Properties.Resources.plus_math_16;
-            this.butAddNewWave.Location = new System.Drawing.Point(153, 379);
-            this.butAddNewWave.Name = "butAddNewWave";
-            this.butAddNewWave.Padding = new System.Windows.Forms.Padding(5);
-            this.butAddNewWave.Size = new System.Drawing.Size(111, 23);
-            this.butAddNewWave.TabIndex = 13;
-            this.butAddNewWave.Text = "Add new WAV";
-            this.butAddNewWave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddNewWave.Click += new System.EventHandler(this.butAddNewWave_Click);
-            // 
             // openFileDialogWave
             // 
             this.openFileDialogWave.Filter = "WAVE audio (*.wav)|*.wav";
@@ -107,6 +95,18 @@
             this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butPlaySound.Click += new System.EventHandler(this.butPlaySound_Click);
             // 
+            // butAddNewWave
+            // 
+            this.butAddNewWave.Image = global::WadTool.Properties.Resources.plus_math_16;
+            this.butAddNewWave.Location = new System.Drawing.Point(153, 379);
+            this.butAddNewWave.Name = "butAddNewWave";
+            this.butAddNewWave.Padding = new System.Windows.Forms.Padding(5);
+            this.butAddNewWave.Size = new System.Drawing.Size(111, 23);
+            this.butAddNewWave.TabIndex = 13;
+            this.butAddNewWave.Text = "Add new WAV";
+            this.butAddNewWave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAddNewWave.Click += new System.EventHandler(this.butAddNewWave_Click);
+            // 
             // FormSelectWave
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -123,6 +123,7 @@
             this.MinimizeBox = false;
             this.Name = "FormSelectWave";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Select WAV sample";
             this.Load += new System.EventHandler(this.FormSelectWave_Load);
             this.ResumeLayout(false);

@@ -13,7 +13,7 @@ namespace TombLib.Wad
     {
         public uint ObjectID { get; set; }
         public List<WadSprite> Sprites { get; private set; }
-     
+
         public WadSpriteSequence()
         {
             Sprites = new List<WadSprite>();
@@ -21,15 +21,10 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            switch (ObjectID)
-            {
-                case 460: return "Sky Graphics";
-                case 463: return "Default Sprites";
-                case 464: return "Misc Sprites";
-                case 494: return "NG Custom Sprites";
-                default: return "Unknown Sprites";
-
-            }
+            if (ObjectNames.SpriteSequenceSlots.ContainsKey(ObjectID))
+                return ObjectNames.SpriteSequenceSlots[ObjectID];
+            else
+                return "Unknown Sprites";
         }
     }
 }
