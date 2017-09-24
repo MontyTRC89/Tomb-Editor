@@ -59,11 +59,7 @@ namespace TombEditor.Geometry.IO
             public PortalDirection _direction;
             public short _oppositePortalId;
             public short _thisPortalId;
-            public bool _memberOfFlippedRoom;
-            public short _room;
             public short _prjRealRoom;
-            public short _tempId;
-            public bool _adjusted;
         }
 
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
@@ -762,7 +758,7 @@ namespace TombEditor.Geometry.IO
                         {
                             if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
                             {
-                                progressReporter.ReportWarn("A portal in room '" + prjPortal._room + "' refers to an invalid opposite portal.");
+                                progressReporter.ReportWarn("A portal in room '" + tempRooms[prjPortal._prjRealRoom] + "' refers to an invalid opposite portal.");
                                 continue;
                             }
 

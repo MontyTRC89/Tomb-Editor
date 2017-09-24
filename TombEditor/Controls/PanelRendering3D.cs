@@ -179,8 +179,7 @@ namespace TombEditor.Controls
         private bool _doSectorSelection = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
-        private Texture2D _skyTexture;
-        
+
         // Gizmo
         private Gizmo _gizmo;
 

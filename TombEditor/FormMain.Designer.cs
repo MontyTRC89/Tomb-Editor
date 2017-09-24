@@ -1136,15 +1136,10 @@
         private System.Windows.Forms.ToolStripMenuItem roomsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem itemsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem texturesToolStripMenuItem;
-        private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkButton butDeleteRoom;
         private DarkUI.Controls.DarkButton butEditRoomName;
         private DarkUI.Controls.DarkButton butRoomDown;
-        private DarkUI.Controls.DarkLabel darkLabel3;
-        private System.Windows.Forms.Panel panelRoomAmbientLight;
         private DarkUI.Controls.DarkStatusStrip statusStrip;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
