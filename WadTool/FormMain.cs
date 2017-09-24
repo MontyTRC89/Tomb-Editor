@@ -505,5 +505,35 @@ namespace WadTool
 
             UpdateDestinationWad2UI();
         }
+
+        private void addNewSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad == null)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must load a destination Wad2 file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            var sequence = new WadSpriteSequence();
+
+            var form = new FormSpriteEditor();
+            form.SpriteSequence = sequence;
+            if (form.ShowDialog() == DialogResult.Cancel) return;
+
+            _tool.DestinationWad.SpriteSequences.Add(form.SpriteSequence);
+
+            UpdateDestinationWad2UI();
+        }
+
+        private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _tool.DestinationWad.CreateNewStaticMeshFromExternalModel("low-poly-wooden-door.obj", 300.0f);
+            UpdateDestinationWad2UI();
+        }
+
+        private void debugAction1ToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            _tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
+        }
     }
 }
