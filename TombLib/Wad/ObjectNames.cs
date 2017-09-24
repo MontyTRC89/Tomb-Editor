@@ -54,5 +54,20 @@ namespace TombLib.Wad
                 return _staticNames;
             }
         }
+
+        public static Dictionary<uint, string> SpriteSequenceSlots
+        {
+            get
+            {
+                var slots = new Dictionary<uint, string>();
+
+                slots.Add(460, "Sky Graphics");
+                slots.Add(463, "Default Sprites");
+                slots.Add(464, "Misc Sprites");
+                slots.Add(494, "NG Custom Sprites");
+
+                return slots;
+            }
+        }
     }
 }

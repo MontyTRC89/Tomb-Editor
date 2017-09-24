@@ -383,6 +383,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap small_icons_161 {
+            get {
+                object obj = ResourceManager.GetObject("small_icons-161", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap software_installer_16 {
             get {
                 object obj = ResourceManager.GetObject("software_installer-16", resourceCulture);
