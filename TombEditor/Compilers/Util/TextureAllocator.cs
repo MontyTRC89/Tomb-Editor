@@ -14,7 +14,7 @@ namespace TombEditor.Compilers.Util
         public const int OutputTextureHeight = 256;
 
         // Typical level textures are to big to use them directly
-        // Therefore the texture can be cut into pieces of 256² maximum size. 
+        // Therefore the texture can be cut into pieces of 256² maximum size.
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct TextureView : IEquatable<TextureView>
         {
@@ -32,11 +32,16 @@ namespace TombEditor.Compilers.Util
                 Height = height;
             }
 
+            public static implicit operator TextureView(Texture texture)
+            {
+                return new TextureView(texture, 0, 0, texture.Image.Width, texture.Image.Height);
+            }
+
             // Custom implementation of these because default implementation is *insanely* slow.
             // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
             public static unsafe bool operator ==(TextureView first, TextureView second)
             {
-                return (first.Texture == second.Texture) && 
+                return (first.Texture == second.Texture) &&
                     (*(ulong*)(&first.PosX) == *(ulong*)(&second.PosX)) &&
                     (*(ulong*)(&first.Width) == *(ulong*)(&second.Width));
             }
@@ -92,7 +97,7 @@ namespace TombEditor.Compilers.Util
                 int secondArea = second.Width * second.Height;
                 if (firstArea != secondArea)
                     return (firstArea > secondArea) ? 1 : -1; //Bigger textures first!
-                
+
                 return 0;
             }
         }
@@ -162,7 +167,7 @@ namespace TombEditor.Compilers.Util
 
                 //Write texture data...
                 PackNextUsedTexture:
-                resultingTextures[usedTexturePackInfo.OutputTextureID].CopyFrom(usedTexturePackInfo.Pos.X, usedTexturePackInfo.Pos.Y, 
+                resultingTextures[usedTexturePackInfo.OutputTextureID].CopyFrom(usedTexturePackInfo.Pos.X, usedTexturePackInfo.Pos.Y,
                     usedTexture.Texture.Image, usedTexture.PosX, usedTexture.PosY, usedTexture.Width, usedTexture.Height);
                 _usedTexturePackInfos[UsedTextureIndex] = usedTexturePackInfo;
             }
@@ -211,8 +216,8 @@ namespace TombEditor.Compilers.Util
                 }
                 else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y + 128
-                    return GetOrAllocateTextureIDForPageAt(ref texture, 
-                        (startX / pageWidth) * pageWidth, 
+                    return GetOrAllocateTextureIDForPageAt(ref texture,
+                        (startX / pageWidth) * pageWidth,
                         ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight);
                 }
             }
@@ -220,14 +225,14 @@ namespace TombEditor.Compilers.Util
             { // Try to pack into a page that is at multiple of 256 on X + 128
                 if ((startY / pageHeight) == (endY / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y
-                    return GetOrAllocateTextureIDForPageAt(ref texture, 
+                    return GetOrAllocateTextureIDForPageAt(ref texture,
                         ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
                         (startY / pageHeight) * pageHeight, pageWidth, pageHeight);
                 }
                 else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y + 128
-                    return GetOrAllocateTextureIDForPageAt(ref texture, 
-                        ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2, 
+                    return GetOrAllocateTextureIDForPageAt(ref texture,
+                        ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
                         ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight);
                 }
             }

@@ -16,7 +16,7 @@ namespace TombEditor.Compilers
     public sealed partial class LevelCompilerTr4
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         private void PrepareTextures()
         {
             List<ImageC> packedTextures = _objectTextureManager.PackTextures(_progressReporter);
@@ -69,13 +69,13 @@ namespace TombEditor.Compilers
             // Read font texture
             string fontFileName = _level.Settings.FontTextureFileNameAbsoluteOrDefault;
             ReportProgress(19, "Reading font texture: " + fontFileName);
-            image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName)); 
+            image.CopyFrom(0, 0, Geometry.IO.ResourceLoader.LoadRawExtraTexture(fontFileName));
 
             // Read sky texture
             string skyFileName = _level.Settings.SkyTextureFileNameAbsoluteOrDefault;
             ReportProgress(18, "Reading sky texture: " + skyFileName);
             image.CopyFrom(0, 256, Geometry.IO.ResourceLoader.LoadRawExtraTexture(skyFileName));
-                
+
             return image.ToRawStream();
         }
 
@@ -84,63 +84,14 @@ namespace TombEditor.Compilers
             ReportProgress(9, "Building sprites");
             //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
-            // Collect all sprites and sort them
-            List<WadSprite> packedTextures = _level.Wad.SpriteTextures.Values.ToList();
-            packedTextures.Sort(new ComparerWadTextures());
+            // Add all sprites to the texture packer
+            var textureAllocator = new Util.TextureAllocator();
+            var spriteTextureIDs = new Dictionary<Hash, int>();
+            foreach (var sprite in _level.Wad.SpriteTextures)
+                spriteTextureIDs.Add(sprite.Key, textureAllocator.GetOrAllocateTextureID(sprite.Value));
 
-            // Pack the textures in pages of 256x256
-            List<ImageC> texturePages = new List<ImageC>();
-            ImageC currentTexture = ImageC.CreateNew(256, 256);
-            RectPackerSimpleStack packer = new RectPackerSimpleStack(256, 256);
-            List<WadTexture> currentTextures = new List<WadTexture>();
-            WadTexture texture = new WadTexture();
-
-            for (int processedTexture = 0; processedTexture <= packedTextures.Count; ++processedTexture)
-            {
-                RectPacker.Point? point = null;
-                if (processedTexture < packedTextures.Count)
-                {
-                    texture = packedTextures[processedTexture];
-                    point = packer.TryAdd(texture.Width, texture.Height);
-                }
-
-                // If no more textures can be added, it's time to end current page
-                if (!point.HasValue || processedTexture == packedTextures.Count)
-                {
-                    foreach (var textureToSave in currentTextures)
-                    {
-                        int startX = (int)textureToSave.PositionInPackedTexture.X;
-                        int startY = (int)textureToSave.PositionInPackedTexture.Y;
-
-                        for (int y = 0; y < textureToSave.Height; y++)
-                        {
-                            for (int x = 0; x < textureToSave.Width; x++)
-                            {
-                                var color = textureToSave.Image.GetPixel(x, y);
-                                currentTexture.SetPixel(startX + x, startY + y, color);
-                            }
-                        }
-                    }
-
-                    // Add the 256x256 page to the list
-                    texturePages.Add(currentTexture);
-
-                    if (processedTexture == packedTextures.Count) break;
-
-                    // Create new packer and texture
-                    packer = new RectPackerSimpleStack(256, 256);
-                    currentTexture = ImageC.CreateNew(256, 256);
-                    currentTextures = new List<WadTexture>();
-                    
-                    // Pack in new texture
-                    point = packer.TryAdd(texture.Width, texture.Height);
-                }
-
-                texture.PositionInPackedTexture = new Vector2(point.Value.X, point.Value.Y);
-                texture.Tile = (ushort)texturePages.Count;
-
-                currentTextures.Add(texture);
-            }
+            // Pack textures
+            List<ImageC> texturePages = textureAllocator.PackTextures();
 
             // Now build data structures
             var tempSequences = new List<tr_sprite_sequence>();
@@ -154,93 +105,32 @@ namespace TombEditor.Compilers
                 newSequence.ObjectID = (int)oldSequence.ObjectID;
                 newSequence.Offset = (short)lastOffset;
 
-                lastOffset += oldSequence.Sprites.Count;
-
                 foreach (var oldTexture in oldSequence.Sprites)
                 {
+                    var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Hash]);
                     var newTexture = new tr_sprite_texture();
 
-                    newTexture.TopSide = (short)oldTexture.PositionInPackedTexture.Y;
-                    newTexture.LeftSide = (short)oldTexture.PositionInPackedTexture.X;
+                    newTexture.TopSide = (short)packInfo.Pos.Y;
+                    newTexture.LeftSide = (short)packInfo.Pos.X;
                     newTexture.X = (byte)newTexture.LeftSide;
                     newTexture.Y = (byte)newTexture.TopSide;
                     newTexture.Width = (ushort)((oldTexture.Width - 1) * 256);
                     newTexture.Height = (ushort)((oldTexture.Height - 1) * 256);
                     newTexture.RightSide = (short)(newTexture.LeftSide + (oldTexture.Width - 1));
                     newTexture.BottomSide = (short)(newTexture.TopSide + (oldTexture.Height - 1));
-                    newTexture.Tile = (ushort)(pagesBeforeSprites + oldTexture.Tile);
+                    newTexture.Tile = (ushort)(pagesBeforeSprites + packInfo.OutputTextureID);
 
                     tempSprites.Add(newTexture);
                 }
 
                 tempSequences.Add(newSequence);
+                lastOffset += oldSequence.Sprites.Count;
             }
 
-            _spriteSequences = tempSequences.ToArray();
-            _spriteTextures = tempSprites.ToArray();
+            _spriteSequences = tempSequences;
+            _spriteTextures = tempSprites;
 
             return texturePages;
-
-            // TODO: to remove
-            /*
-             using (var reader = new BinaryReaderEx(new FileStream(
-                _level.Wad.OriginalWad.BasePath + Path.DirectorySeparatorChar + _level.Wad.OriginalWad.BaseName + ".swd",
-                FileMode.Open, FileAccess.Read, FileShare.Read)))
-            {
-                // Version
-                reader.ReadUInt32();
-
-                //Sprite texture array
-                _spriteTextures = new tr_sprite_texture[reader.ReadUInt32()];
-                for (int i = 0; i < _spriteTextures.Length; i++)
-                {
-                    byte[] buffer;
-                    reader.ReadBlockArray(out buffer, 16);
-
-                    _spriteTextures[i] = new tr_sprite_texture
-                    {
-                        Tile = (ushort)(pagesBeforeSprites), // TODO use correct page offset here.
-                        X = buffer[0],
-                        Y = buffer[1],
-                        Width = (ushort)(buffer[5] * 256),
-                        Height = (ushort)(buffer[7] * 256),
-                        LeftSide = buffer[0],
-                        TopSide = buffer[1],
-                        RightSide = (short)(buffer[0] + buffer[5] + 1),
-                        BottomSide = (short)(buffer[1] + buffer[7] + 1)
-                    };
-                }
-
-                // Unknown value
-                int spriteDataSize = reader.ReadInt32();
-
-                // Load the real sprite texture data
-                int numSpriteTexturePages = spriteDataSize / (65536 * 3);
-                if ((spriteDataSize % (65536 * 3)) != 0)
-                    numSpriteTexturePages++;
-                
-                for (int i = 0; i < numSpriteTexturePages; ++i)
-                {
-                    var spritePage = ImageC.CreateNew(256, 256);
-                    for (int y = 0; y < 256; y++)
-                        for (int x = 0; x < 256; x++)
-                        {
-                            byte r = reader.ReadByte();
-                            byte g = reader.ReadByte();
-                            byte b = reader.ReadByte();
-
-                            if (r == 255 & g == 0 && b == 255)
-                                spritePage.SetPixel(x, y, 0, 0, 0, 0);
-                            else
-                                spritePage.SetPixel(x, y, b, g, r, 255);
-                        }
-                    texturePages.Add(spritePage);
-                }
-
-                // Sprite sequences
-                reader.ReadBlockArray(out _spriteSequences, reader.ReadUInt32());
-            }
-            return texturePages;*/
         }
 
         private static byte[] PackTextureMap32To16Bit(IReadOnlyList<byte> map, int width, int height)
