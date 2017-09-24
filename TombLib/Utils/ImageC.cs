@@ -182,7 +182,7 @@ namespace TombLib.Utils
             using (var convertedBitmap = new Bitmap(image.Width, image.Height))
             {
                 using (var g = System.Drawing.Graphics.FromImage(convertedBitmap))
-                    g.DrawImageUnscaled(image, 0, 0);
+                    g.DrawImage(image, 0, 0, image.Width, image.Height);
                 return FromSystemDrawingBitmapMatchingPixelFormat(convertedBitmap);
             }
         }

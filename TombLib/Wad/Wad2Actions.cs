@@ -1,6 +1,9 @@
-﻿using SharpDX;
+﻿using Assimp;
+using SharpDX;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -750,6 +753,153 @@ namespace TombLib.Wad
                 }
 
             return found;
+        }
+
+        public uint GetFirstFreeStaticMesh()
+        {
+            // Get the first available sound
+            uint found = UInt32.MaxValue;
+            for (int i = 0; i < Statics.Count; i++)
+                if (!Statics.ContainsKey((uint)i))
+                {
+                    found = (uint)i;
+                    break;
+                }
+
+            return found;
+        }
+
+        public void CreateNewStaticMeshFromExternalModel(string fileName, float scale = 1000.0f)
+        {
+            uint objectId = GetFirstFreeStaticMesh();
+
+            var mesh = ImportWadMeshFromExternalModel(fileName, scale);
+
+            var staticMesh = new WadStatic();
+
+            staticMesh.ObjectID = objectId;
+            staticMesh.Mesh = mesh;
+            staticMesh.VisibilityBox = mesh.BoundingBox;
+            staticMesh.CollisionBox = mesh.BoundingBox;
+
+            Statics.Add(objectId, staticMesh);
+
+            // Reload DirectX data
+            PrepareDataForDirectX();
+        }
+
+        public WadMesh ImportWadMeshFromExternalModel(string fileName, float scale = 1000.0f)
+        {
+            // Use Assimp.NET for importing model
+            AssimpContext context = new AssimpContext();
+            Scene scene = context.ImportFile(fileName, PostProcessPreset.TargetRealTimeMaximumQuality);
+
+            var newMesh = new WadMesh();
+            var textureFiles = new Dictionary<int, string>();
+            var meshTextures = new Dictionary<int, WadTexture>();
+
+            // Create the list of textures to load
+            for (int i = 0; i < scene.Materials.Count; i++)
+            {
+                var mat = scene.Materials[i];
+
+                var diffusePath = (mat.HasTextureDiffuse ? mat.TextureDiffuse.FilePath : null);
+                if (diffusePath == null || diffusePath == "") continue;
+
+                if (!textureFiles.ContainsValue(diffusePath))
+                    textureFiles.Add(i, diffusePath);
+            }
+
+            // Now load them into the Wad2
+            foreach (var textureFile in textureFiles)
+            {
+                var texture = new WadTexture();
+                var image = ImageC.FromFile(textureFile.Value);
+                texture.Image = image;
+                texture.UpdateHash();
+
+                if (!Textures.ContainsKey(texture.Hash))
+                    Textures.Add(texture.Hash, texture);
+
+                meshTextures.Add(textureFile.Key, Textures[texture.Hash]);
+            }
+
+            var minVertex = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            var maxVertex = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+
+            var lastBaseVertex = 0;
+
+            // Loop for each mesh loaded in scene
+            foreach (var mesh in scene.Meshes)
+            {
+                if (!meshTextures.ContainsKey(mesh.MaterialIndex)) continue;
+
+                var faceTexture = meshTextures[mesh.MaterialIndex];
+
+                bool hasTexCoords = mesh.HasTextureCoords(0);
+
+                // Source data
+                List<Vector3D> positions = mesh.Vertices;
+                List<Vector3D> texCoords = mesh.TextureCoordinateChannels[0];
+
+                var vertices = new List<Vector3>();
+                var uv = new List<Vector2>();
+
+                for (int i = 0; i < mesh.VertexCount; i++)
+                {
+                    var position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z) * scale;
+                    vertices.Add(position);
+
+                    // Add now positions and shades to the new mesh
+                    newMesh.VerticesPositions.Add(position);
+                    newMesh.VerticesShades.Add(0);
+
+                    // Track min & max vertex for bounding box
+                    if (position.X <= minVertex.X && position.Y <= minVertex.Y && position.Z <= minVertex.Z)
+                        minVertex = position;
+
+                    if (position.X >= maxVertex.X && position.Y >= maxVertex.Y && position.Z >= maxVertex.Z)
+                        maxVertex = position;
+
+                    // Add texture coordinates
+                    uv.Add(new Vector2(texCoords[i].X, 1.0f - texCoords[i].Y) * faceTexture.Width);
+                }
+
+                // Add polygons
+                foreach (var face in mesh.Faces)
+                {
+                    var poly = new WadPolygon(WadPolygonShape.Triangle);
+
+                    poly.Indices.Add(lastBaseVertex + face.Indices[0]);
+                    poly.Indices.Add(lastBaseVertex + face.Indices[1]);
+                    poly.Indices.Add(lastBaseVertex + face.Indices[2]);
+
+                    poly.UV.Add(uv[face.Indices[0]]);
+                    poly.UV.Add(uv[face.Indices[1]]);
+                    poly.UV.Add(uv[face.Indices[2]]);
+
+                    poly.Texture = faceTexture;
+
+                    newMesh.Polys.Add(poly);
+                }
+
+                lastBaseVertex = (int)newMesh.VerticesPositions.Count;
+            }
+
+            // Set the bounding box
+            newMesh.BoundingBox = new BoundingBox(minVertex, maxVertex);
+
+            // Calculate bounding sphere
+            var centre = (minVertex + maxVertex) / 2.0f;
+            var radius = (maxVertex - centre).Length();
+            newMesh.BoundingSphere = new BoundingSphere(centre, radius);
+
+            newMesh.UpdateHash();
+
+            if (!Meshes.ContainsKey(newMesh.Hash))
+                Meshes.Add(newMesh.Hash, newMesh);
+
+            return Meshes[newMesh.Hash];
         }
     }
 }
