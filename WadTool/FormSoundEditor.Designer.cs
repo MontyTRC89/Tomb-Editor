@@ -245,6 +245,7 @@
             this.butSaveChanges.TabIndex = 36;
             this.butSaveChanges.Text = "Save changes";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butSaveChanges.Visible = false;
             this.butSaveChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
             // 
             // comboId

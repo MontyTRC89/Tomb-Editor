@@ -47,7 +47,28 @@ namespace WadTool
 
         private void butAddNewSound_Click(object sender, EventArgs e)
         {
+            ushort newSoundId = _tool.DestinationWad.GetFirstFreeSoundSlot();
+            if (newSoundId == UInt16.MaxValue)
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You soundmap is already full", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
 
+            _currentSound = -1;
+            comboId.SelectedIndex = newSoundId;
+
+            tbName.Text = "NEW_SOUND";
+            tbChance.Text = "0";
+            tbVolume.Text = "0";
+            tbRange.Text = "8";
+            tbPitch.Text = "0";
+            cbFlagN.Checked = false;
+            cbRandomizeGain.Checked = false;
+            cbRandomizePitch.Checked = false;
+
+            lstWaves.Items.Clear();
+
+            butSaveChanges.Visible = true;
         }
 
         private void lstSoundInfos_MouseClick(object sender, MouseEventArgs e)
@@ -60,7 +81,7 @@ namespace WadTool
 
             // Fill the UI
             tbName.Text = soundInfo.Name;
-            tbChance.Text = soundInfo.Pitch.ToString();
+            tbChance.Text = soundInfo.Chance.ToString();
             tbVolume.Text = soundInfo.Volume.ToString();
             tbRange.Text = soundInfo.Range.ToString();
             tbPitch.Text = soundInfo.Pitch.ToString();
@@ -79,6 +100,8 @@ namespace WadTool
             }
 
             _currentSound = (ushort)item.Tag;
+
+            butSaveChanges.Visible = true;
         }
 
         private void butSaveChanges_Click(object sender, EventArgs e)
@@ -98,22 +121,25 @@ namespace WadTool
             }
 
             // Remap anim commands
-            var oldSoundId = (ushort)_currentSound;
+            var oldSoundId = _currentSound;
             var newSoundId = (ushort)comboId.SelectedIndex;
 
-            foreach (var moveable in _tool.DestinationWad.Moveables)
+            if (oldSoundId != -1)
             {
-                foreach (var animation in moveable.Value.Animations)
+                foreach (var moveable in _tool.DestinationWad.Moveables)
                 {
-                    foreach (var command in animation.AnimCommands)
+                    foreach (var animation in moveable.Value.Animations)
                     {
-                        if (command.Type == TombLib.Wad.WadAnimCommandType.PlaySound)
+                        foreach (var command in animation.AnimCommands)
                         {
-                            ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
-                            if (soundId == oldSoundId)
+                            if (command.Type == TombLib.Wad.WadAnimCommandType.PlaySound)
                             {
-                                // Remap current sound
-                                command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + newSoundId);
+                                ushort soundId = (ushort)(command.Parameter2 & 0x3fff);
+                                if (soundId == oldSoundId)
+                                {
+                                    // Remap current sound
+                                    command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + newSoundId);
+                                }
                             }
                         }
                     }
@@ -121,7 +147,12 @@ namespace WadTool
             }
 
             // Get the current sound info
-            var soundInfo = _tool.DestinationWad.SoundInfo[oldSoundId];
+            WadSoundInfo soundInfo;
+
+            if (oldSoundId == -1)
+                soundInfo = new WadSoundInfo();
+            else
+                soundInfo = _tool.DestinationWad.SoundInfo[(ushort)oldSoundId];
 
             // Save changes
             soundInfo.Chance = Byte.Parse(tbChance.Text);
@@ -138,17 +169,25 @@ namespace WadTool
             foreach (var item in lstWaves.Items)
                 soundInfo.WaveSounds.Add((WadSound)item.Tag);
 
-            // Eventually move sound to another slot
-            if (oldSoundId != newSoundId)
+            if (oldSoundId == -1)
             {
-                _tool.DestinationWad.SoundInfo.Remove(oldSoundId);
                 _tool.DestinationWad.SoundInfo.Add(newSoundId, soundInfo);
 
                 ReloadSoundInfos();
             }
             else
             {
-                lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]].Text = oldSoundId + ": " + tbName.Text;
+                if (oldSoundId != newSoundId)
+                {
+                    _tool.DestinationWad.SoundInfo.Remove((ushort)oldSoundId);
+                    _tool.DestinationWad.SoundInfo.Add(newSoundId, soundInfo);
+
+                    ReloadSoundInfos();
+                }
+                else
+                {
+                    lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]].Text = oldSoundId + ": " + tbName.Text;
+                }
             }
         }
 
