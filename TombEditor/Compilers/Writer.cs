@@ -10,7 +10,7 @@ namespace TombEditor.Compilers
     public sealed partial class LevelCompilerTr4
     {
         private void WriteLevelTr4()
-        {            
+        {
             // Now begin to compile the geometry block in a MemoryStream
             using (var geometryDataBuffer = new MemoryStream())
             {
@@ -88,10 +88,10 @@ namespace TombEditor.Compilers
                     // SPR block
                     writer.WriteBlockArray(new byte[] { 0x53, 0x50, 0x52 });
 
-                    writer.Write((uint)_spriteTextures.Length);
+                    writer.Write((uint)_spriteTextures.Count);
                     writer.WriteBlockArray(_spriteTextures);
 
-                    writer.Write((uint)_spriteSequences.Length);
+                    writer.Write((uint)_spriteSequences.Count);
                     writer.WriteBlockArray(_spriteSequences);
 
                     // Write camera, flyby and sound sources
@@ -249,7 +249,7 @@ namespace TombEditor.Compilers
                     int textureMiscUncompressedSize = -1;
                     byte[] geometryData = null;
                     int geometryDataUncompressedSize = -1;
-                        
+
                     using (Task Texture32task = Task.Factory.StartNew(() =>
                     {
                         texture32 = ZLib.CompressData(_texture32Data);
@@ -273,7 +273,7 @@ namespace TombEditor.Compilers
                         geometryDataUncompressedSize = (int)(geometryDataBuffer.Length);
                     }))
                         Task.WaitAll(Texture32task, Texture16task, textureMiscTask, GeometryDataTask);
-                    
+
                     // Write data
                     ReportProgress(97, "Writing compressed data to file.");
 
@@ -309,7 +309,7 @@ namespace TombEditor.Compilers
 
         private bool WriteLevelTr3()
         {
-           
+
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {

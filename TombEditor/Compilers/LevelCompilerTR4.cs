@@ -41,9 +41,9 @@ namespace TombEditor.Compilers
         private short[] _frames;
         private tr_moveable[] _moveables;
         private tr_staticmesh[] _staticMeshes;
-        
-        private tr_sprite_texture[] _spriteTextures;
-        private tr_sprite_sequence[] _spriteSequences;
+
+        private List<tr_sprite_texture> _spriteTextures;
+        private List<tr_sprite_sequence> _spriteSequences;
         private tr_camera[] _cameras;
         private tr4_flyby_camera[] _flyByCameras;
         private tr_sound_source[] _soundSources;
@@ -59,7 +59,7 @@ namespace TombEditor.Compilers
 
         // texture data
         private Util.ObjectTextureManager _objectTextureManager = new Util.ObjectTextureManager();
-        
+
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
         private Dictionary<CameraInstance, int> _cameraTable;
@@ -67,10 +67,10 @@ namespace TombEditor.Compilers
         private Dictionary<MoveableInstance, int> _aiObjectsTable;
         private Dictionary<SoundSourceInstance, int> _soundSourcesTable;
         private Dictionary<FlybyCameraInstance, int> _flybyTable;
-        
+
         private byte[] _bufferSamples;
-        
-        public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter) 
+
+        public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
         {}
 
@@ -121,7 +121,7 @@ namespace TombEditor.Compilers
 
             _bufferSamples = stream.ToArray();
         }
-        
+
         public void CompileLevel()
         {
             var watch = new Stopwatch();
@@ -131,12 +131,12 @@ namespace TombEditor.Compilers
 
             if (_level.Wad == null)
                 throw new NotSupportedException("A wad must be loaded to compile to *.tr4.");
-            
+
             // Prepare level data in parallel to the sounds
             using (Task task1 = Task.Factory.StartNew(PrepareLevelData))
                 using (Task task2 = Task.Factory.StartNew(PrepareSound))
                     Task.WaitAll(task1, task2);
-            
+
             //Write the final level
             WriteLevelTr4();
 
@@ -280,7 +280,7 @@ namespace TombEditor.Compilers
             ReportProgress(45, "    Number of flyby cameras: " + tempFlyby.Count);
             ReportProgress(45, "    Number of sinks: " + _sinkTable.Count);
         }
-  
+
         private static tr_room_sector GetSector(tr_room room, int x, int z)
         {
             return room.Sectors[room.NumZSectors * x + z];
@@ -503,7 +503,7 @@ namespace TombEditor.Compilers
                 x += (int)(room.Position.X - sector.FloorPortal.AdjoiningRoom.Position.X);
                 z += (int)(room.Position.Z - sector.FloorPortal.AdjoiningRoom.Position.Z);
                 room = sector.FloorPortal.AdjoiningRoom;
-            } 
+            }
         }
 
         private short GetMostDownFloor(Room room, int x, int z)
