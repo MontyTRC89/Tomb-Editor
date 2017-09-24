@@ -21,7 +21,7 @@ namespace TombLib.Wad
         {
             Wad2 wad = new Wad2();
             WadChunkType chunkType;
-            
+
             using (var reader = new BinaryReaderEx(stream))
             {
                 byte[] version = reader.ReadBytes(_magicWord.Length);
@@ -236,7 +236,7 @@ namespace TombLib.Wad
                         animation.FrameStart = reader.ReadUInt16();
                         animation.FrameEnd = reader.ReadUInt16();
                         animation.RealNumberOfFrames = reader.ReadUInt16();
-                        
+
                         uint numKeyframes = reader.ReadUInt32();
                         for (int k = 0; k < numKeyframes; k++)
                         {
@@ -443,7 +443,6 @@ namespace TombLib.Wad
         public static bool SaveToStream(Wad2 wad, Stream stream)
         {
             ushort chunkMagicWord;
-            uint chunkSize;
 
             // Do some resource cleaning
             wad.CleanUnusedTextures();
@@ -454,7 +453,7 @@ namespace TombLib.Wad
             for (int i = 0; i < wad.Textures.Count; i++)
             {
                 var texture = wad.Textures.ElementAt(i).Value;
-                texturesList.Add(texture); 
+                texturesList.Add(texture);
             }
 
             var meshesList = new List<WadMesh>();
@@ -656,7 +655,7 @@ namespace TombLib.Wad
                         writer.Write(animation.FrameStart);
                         writer.Write(animation.FrameEnd);
                         writer.Write(animation.RealNumberOfFrames);
-                        
+
                         // Write keyframes
                         uint numKeyframes = (uint)animation.KeyFrames.Count;
                         writer.Write(numKeyframes);

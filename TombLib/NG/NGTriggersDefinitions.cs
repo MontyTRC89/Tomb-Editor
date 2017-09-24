@@ -67,7 +67,7 @@ namespace TombLib.NG
                             FlipEffectTriggers.Add(trigger.Id, trigger);
                         }
                     }
-                }                
+                }
             }
 
             return true;
