@@ -13,45 +13,45 @@ using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {
+    public struct PrjFace
+    {
+        public short _txtType;
+        public short _txtIndex;
+        public byte _txtFlags;
+        public byte _txtRotation;
+        public byte _txtTriangle;
+    }
+
+    public struct PrjBlock
+    {
+        public PrjFace[] _faces;
+        public PortalOpacity _floorOpacity;
+        public PortalOpacity _ceilingOpacity;
+        public PortalOpacity _wallOpacity;
+        public bool _hasNoCollisionFloor;
+        public bool _hasNoCollisionCeiling;
+    }
+
+    public struct PrjFlipInfo
+    {
+        public short _baseRoom;
+        public short _flipRoom;
+        public short _group;
+    }
+
+    public struct PrjTexInfo
+    {
+        public byte _x;
+        public short _y;
+        public byte _width;
+        public byte _height;
+    }
+
     public class PrjLoader
     {
         private static readonly Encoding _encodingCodepageWindows = Encoding.GetEncoding(1252);
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
-        private struct PrjFlipInfo
-        {
-            public short _baseRoom;
-            public short _flipRoom;
-            public short _group;
-        }
-
-        private struct PrjFace
-        {
-            public short _txtType;
-            public short _txtIndex;
-            public byte _txtFlags;
-            public byte _txtRotation;
-            public byte _txtTriangle;
-        }
-
-        private struct PrjBlock
-        {
-            public PrjFace[] _faces;
-            public PortalOpacity _floorOpacity;
-            public PortalOpacity _ceilingOpacity;
-            public PortalOpacity _wallOpacity;
-            public bool _hasNoCollisionFloor;
-            public bool _hasNoCollisionCeiling;
-        }
-
-        private struct PrjTexInfo
-        {
-            public byte _x;
-            public short _y;
-            public byte _width;
-            public byte _height;
-        }
-
+        
         private struct PrjPortal
         {
             //public Room _room;
@@ -1112,11 +1112,14 @@ namespace TombEditor.Geometry.IO
                         var room = level.Rooms[i];
                         if (room == null)
                             continue;
+
                         
                         for (int z = 0; z < room.NumZSectors; z++)
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
                                 var prjBlock = tempRooms[i][x, z];
+
+                                room.Blocks[x, z].PrjBlock = prjBlock;
 
                                 // 0: BLOCK_TEX_FLOOR
                                 LoadTextureArea(room, x, z, BlockFace.Floor, texture, tempTextures, prjBlock._faces[0]);
@@ -1570,12 +1573,12 @@ namespace TombEditor.Geometry.IO
                         }
                         else // ===========================================================================================
                         {
-                            texture.TexCoord0 = uv[0];
-                            texture.TexCoord1 = uv[1];
-                            texture.TexCoord2 = uv[3];
-
                             if (prjFace._txtTriangle == 0)
                             {
+                                texture.TexCoord0 = uv[0];
+                                texture.TexCoord1 = uv[1];
+                                texture.TexCoord2 = uv[3];
+
                                 if (isFloor)
                                 {
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
@@ -1778,6 +1781,8 @@ namespace TombEditor.Geometry.IO
                         if (face != BlockFace.Floor && face != BlockFace.FloorTriangle2 &&
                             face != BlockFace.Ceiling && face != BlockFace.CeilingTriangle2)
                             txtRot--;
+                        else
+                            txtRot++;
 
                         for (int rot = 0; rot < txtRot; rot++)
                         {

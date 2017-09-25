@@ -111,6 +111,12 @@
     <Compile Include="FormSpriteSequencesEditor.Designer.cs">
       <DependentUpon>FormSpriteSequencesEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormStaticMeshEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormStaticMeshEditor.Designer.cs">
+      <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WadToolClass.cs" />
@@ -131,6 +137,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormSpriteSequencesEditor.resx">
       <DependentUpon>FormSpriteSequencesEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormStaticMeshEditor.resx">
+      <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
