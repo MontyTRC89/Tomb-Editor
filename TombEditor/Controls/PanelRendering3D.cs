@@ -474,12 +474,15 @@ namespace TombEditor.Controls
         {
             base.OnResize(e);
             if (_presenter != null && ClientSize.Width != 0 && ClientSize.Height != 0)
+            {
                 _presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                Invalidate();
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            // I intercept arrow keys here otherwise they would processed by the form and 
+            // I intercept arrow keys here otherwise they would processed by the form and
             // camera would move only if Panel3D is focused
             switch (keyData)
             {
@@ -516,7 +519,7 @@ namespace TombEditor.Controls
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -847,7 +850,7 @@ namespace TombEditor.Controls
                     else
                     {
                         BoundingBox box = new BoundingBox(
-                            room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius), 
+                            room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
                             room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
                         if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                             result = new PickingResultObject(distance, instance);
@@ -1029,7 +1032,7 @@ namespace TombEditor.Controls
 
                     Matrix model = Matrix.Translation(light.Position) * Matrix.Translation(Utils.PositionInWorldCoordinates(_editor.Level.Rooms[room].Position));
                     effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                      
+
                     effect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.LineList, 49);
 
@@ -1378,7 +1381,7 @@ namespace TombEditor.Controls
 
                         string message = instance.ToString();
                         message += "\nUnavailable " + instance.ItemType.ToString();
-                        
+
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
                     }
@@ -1461,7 +1464,7 @@ namespace TombEditor.Controls
                     SkinnedMesh mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
-                    
+
                     world = model.AnimationTransforms[i] * Matrix.RotationY(MathUtil.DegreesToRadians(instance.RotationY)) *
                                 Matrix.Translation(instance.Room.WorldPos + instance.Position);
                     worldDebug = Matrix.Translation(room.WorldPos);
@@ -1537,7 +1540,7 @@ namespace TombEditor.Controls
 
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
-                    
+
                     world = Matrix.Translation(modelInfo.Room.WorldPos + modelInfo.Position);
                     worldDebug = Matrix.Translation(room.WorldPos);
 
@@ -1683,7 +1686,7 @@ namespace TombEditor.Controls
 
             SkinnedModel skinnedModel = _editor.Level.Wad.DirectXMoveables[459];
             skinnedModel.BuildAnimationPose(skinnedModel.Animations[0].KeyFrames[0]);
-                        
+
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skinnedModel.VertexBuffer));
 
             /*_device.SetVertexBuffer(0, _skyVertexBuffer);
@@ -1758,7 +1761,7 @@ namespace TombEditor.Controls
 
         private void CollectRoomsToDraw(Room room)
         {
-            // New iterative version of the function 
+            // New iterative version of the function
             Vector3 cameraPosition = Camera.GetPosition();
 
             Stack<Room> stackRooms = new Stack<Room>();
@@ -2388,7 +2391,7 @@ namespace TombEditor.Controls
                 int xMax = Math.Max(_editor.SelectedSectors.Start.X, _editor.SelectedSectors.End.X);
                 int zMin = Math.Min(_editor.SelectedSectors.Start.Y, _editor.SelectedSectors.End.Y);
                 int zMax = Math.Max(_editor.SelectedSectors.Start.Y, _editor.SelectedSectors.End.Y);
-                
+
                 if (face < (BlockFace)10)
                 {
                     _roomEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 80.0f / 255.0f, 0.0f, 1.0f));
