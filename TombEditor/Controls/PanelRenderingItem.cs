@@ -90,7 +90,7 @@ namespace TombEditor.Controls
         {
             Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -105,14 +105,14 @@ namespace TombEditor.Controls
         {
             if (DesignMode)
                 return;
-            
+
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
 
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            
+
             if ((_editor.ChosenItem == null) || (_editor?.Level?.Wad == null))
             {
                 _device.Present();
@@ -156,7 +156,7 @@ namespace TombEditor.Controls
             {
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.Id];
                 SkinnedModel skin = model;
-                
+
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
                 _device.SetVertexBuffer(0, model.VertexBuffer);
@@ -189,7 +189,7 @@ namespace TombEditor.Controls
 
             _device.Present();
         }
-        
+
         protected override void OnPaintBackground(PaintEventArgs e)
         { }
 
@@ -211,7 +211,10 @@ namespace TombEditor.Controls
         {
             base.OnResize(e);
             if (Presenter != null)
+            {
                 Presenter.Resize(ClientSize.Width, ClientSize.Height, SharpDX.DXGI.Format.B8G8R8A8_UNorm);
+                Invalidate();
+            }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -222,7 +225,7 @@ namespace TombEditor.Controls
                 return;
             }
                 base.OnMouseDown(e);
-            
+
             _lastX = e.X;
             _lastY = e.Y;
         }
