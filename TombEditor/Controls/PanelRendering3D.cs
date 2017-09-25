@@ -1144,7 +1144,7 @@ namespace TombEditor.Controls
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
-                string message = "Light";
+                string message = light.Type + " Light";
 
                 // Object position
                 message += "\n" + GetObjectPositionString(light.Room, light);
