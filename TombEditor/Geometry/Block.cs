@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using TombEditor.Geometry.IO;
 using TombLib.Utils;
 
 namespace TombEditor.Geometry
@@ -91,7 +92,9 @@ namespace TombEditor.Geometry
         public Portal FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public Portal WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public Portal CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
-        
+
+        public PrjBlock PrjBlock { get; set; }
+
         public Block(int floor, int ceiling)
         {
             for (int i = 0; i < 4; i++)

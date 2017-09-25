@@ -657,18 +657,18 @@ namespace TombEditor.Geometry
             else if (diagonalSplitXEqualsY || (portalMode == RoomConnectionType.TriangularPortalXnZp) || (portalMode == RoomConnectionType.TriangularPortalXpZn))
             {
                 if (portalMode != RoomConnectionType.TriangularPortalXnZp)
-                    AddTriangle(x, z, face1,
+                    AddTriangle(x, z, face2,
                         new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
                         new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
                         new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
-                        Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                        Blocks[x, z].GetFaceTexture(face2), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
 
                 if (portalMode != RoomConnectionType.TriangularPortalXpZn)
-                    AddTriangle(x, z, face2,
+                    AddTriangle(x, z, face1,
                         new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                         new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
                         new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
-                        Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
+                        Blocks[x, z].GetFaceTexture(face1), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
             }
             else
             {
