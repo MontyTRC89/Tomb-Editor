@@ -63,6 +63,7 @@
   <ItemGroup>
     <Reference Include="AssimpNet, Version=3.3.2.0, Culture=neutral, PublicKeyToken=3edc10cb77b1bca2, processorArchitecture=MSIL">
       <HintPath>..\packages\AssimpNet.3.3.2\lib\net45\AssimpNet.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
       <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
@@ -99,7 +100,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Xml.Linq" />
@@ -134,6 +137,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\DepthBar.cs" />
+    <Compile Include="Controls\ImportedGeometryManager.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ImportedGeometryManager.designer.cs">
+      <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -152,6 +161,12 @@
     </Compile>
     <Compile Include="FormChooseRoom.Designer.cs">
       <DependentUpon>FormChooseRoom.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormImportedGeometry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormImportedGeometry.Designer.cs">
+      <DependentUpon>FormImportedGeometry.cs</DependentUpon>
     </Compile>
     <Compile Include="FormLevelSettings.cs">
       <SubType>Form</SubType>
@@ -221,10 +236,11 @@
     </Compile>
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
-    <Compile Include="Geometry\GeometryImporter.cs" />
+    <Compile Include="Geometry\ImportedGeometry.cs" />
+    <Compile Include="Geometry\RoomGeometryExporter.cs" />
     <Compile Include="Geometry\IO\Prj2Chunks.cs" />
     <Compile Include="Geometry\LevelSettings.cs" />
-    <Compile Include="Geometry\RoomGeometryInstance.cs" />
+    <Compile Include="Geometry\ImportedGeometryInstance.cs" />
     <Compile Include="Geometry\TextureSound.cs" />
     <Compile Include="IProgressReporter.cs" />
     <Compile Include="Geometry\IO\ResourceLoader.cs" />
@@ -318,6 +334,12 @@
     <Compile Include="Geometry\StaticInstance.cs" />
     <Compile Include="Geometry\TriggerInstance.cs" />
     <Compile Include="TexturePackerTest.cs" />
+    <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
+      <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormImportedGeometry.resx">
+      <DependentUpon>FormImportedGeometry.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\Lighting.resx">
       <DependentUpon>Lighting.cs</DependentUpon>
     </EmbeddedResource>
@@ -731,7 +753,7 @@
   <Import Project="..\packages\AssimpNet.3.3.2\build\AssimpNet.targets" Condition="Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ErrorText>Questo progetto fa riferimento a uno o più pacchetti NuGet che non sono presenti in questo computer. Usare lo strumento di ripristino dei pacchetti NuGet per scaricarli. Per altre informazioni, vedere http://go.microsoft.com/fwlink/?LinkID=322105. Il file mancante è {0}.</ErrorText>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.3.3.2\build\AssimpNet.targets'))" />
   </Target>

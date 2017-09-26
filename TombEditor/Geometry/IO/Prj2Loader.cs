@@ -15,7 +15,7 @@ namespace TombEditor.Geometry.IO
     public static class Prj2Loader
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
             using (Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -26,7 +26,7 @@ namespace TombEditor.Geometry.IO
                 byte[] magicNumber = reader.ReadBytes(Prj2Chunks.MagicNumber.Length);
                 if (!magicNumber.SequenceEqual(Prj2Chunks.MagicNumber))
                     throw new NotSupportedException("The header of the *.prj2 file was unrecognizable. Most likely it is not a *.prj2 file.");
-                    
+
                 // Check file version
                 uint version = reader.ReadUInt32();
                 switch (version)
@@ -91,8 +91,7 @@ namespace TombEditor.Geometry.IO
                     return false;
                 return true;
             });
-            level.Settings = settings;
-            level.ReloadObjectsTry();
+            level.ApplyNewLevelSettings(settings);
             return true;
         }
 
@@ -100,7 +99,7 @@ namespace TombEditor.Geometry.IO
         {
             if (idOuter != Prj2Chunks.Textures)
                 return false;
-            
+
             ChunkProcessing.ParseChunks(streamOuter, (stream, id, chunkSize) => LoadLevelTexture(stream, id, settings));
             return true;
         }
@@ -146,12 +145,15 @@ namespace TombEditor.Geometry.IO
         public static bool LoadRooms(BinaryReaderEx reader, ChunkID idOuter, Level level)
         {
             if (idOuter != Prj2Chunks.Rooms)
-                return true;
-            
+                return false;
+
+            int TODO_LoadRooms;
+
+            /*
             var modelsList = new Dictionary<uint, string>();
 
             Prj2ChunkType chunkType;
-            
+
             // Read imported geometry
             uint numImportedGeometry = reader.ReadUInt32();
             for (int i = 0; i < numImportedGeometry; i++)
@@ -202,7 +204,7 @@ namespace TombEditor.Geometry.IO
                             b.WSFaces[j] = reader.ReadInt16();
                         for (int j = 0; j < 4; j++)
                             b.RFFaces[j] = reader.ReadInt16();
-                        
+
                         b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
                         b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
                         b.FloorSplitDirectionIsXEqualsZ = reader.ReadBoolean();
@@ -254,7 +256,7 @@ namespace TombEditor.Geometry.IO
                         room.Blocks[x, z] = b;
                     }
                 }
-                
+
                 room.AmbientLight = reader.ReadVector4();
                 room.AlternateGroup = reader.ReadInt16();
                 room.Prj2AlternateRoomIndex = reader.ReadInt32();
@@ -287,7 +289,7 @@ namespace TombEditor.Geometry.IO
 
                 level.Rooms[i] = room;
             }
-            
+
             // Read portals
             uint numPortals = reader.ReadUInt32();
             for (int i = 0; i < numPortals; i++)
@@ -331,7 +333,7 @@ namespace TombEditor.Geometry.IO
                 {
                     case Prj2ObjectType.Moveable:
                         var moveable = new MoveableInstance();
-                        
+
                         moveable.WadObjectId = reader.ReadUInt32();
                         moveable.Position = reader.ReadVector3();
                         moveable.RotationY = reader.ReadSingle();
@@ -356,7 +358,7 @@ namespace TombEditor.Geometry.IO
 
                     case Prj2ObjectType.Static:
                         var staticMesh = new StaticInstance();
-                        
+
                         staticMesh.WadObjectId = reader.ReadUInt32();
                         staticMesh.Position = reader.ReadVector3();
                         staticMesh.RotationY = reader.ReadSingle();
@@ -378,7 +380,7 @@ namespace TombEditor.Geometry.IO
 
                     case Prj2ObjectType.Camera:
                         var camera = new CameraInstance();
-                        
+
                         camera.Position = reader.ReadVector3();
                         camera.Fixed = reader.ReadBoolean();
 
@@ -396,7 +398,7 @@ namespace TombEditor.Geometry.IO
 
                     case Prj2ObjectType.FlybyCamera:
                         var flybyCamera = new FlybyCameraInstance();
-                        
+
                         flybyCamera.Position = reader.ReadVector3();
                         flybyCamera.Flags = reader.ReadUInt16();
                         flybyCamera.Number = reader.ReadUInt16();
@@ -422,7 +424,7 @@ namespace TombEditor.Geometry.IO
 
                     case Prj2ObjectType.Sink:
                         var sink = new SinkInstance();
-                        
+
                         sink.Position = reader.ReadVector3();
                         sink.Strength = reader.ReadInt16();
 
@@ -440,7 +442,7 @@ namespace TombEditor.Geometry.IO
 
                     case Prj2ObjectType.SoundSource:
                         var sound = new SoundSourceInstance();
-                        
+
                         sound.Position = reader.ReadVector3();
                         sound.SoundId = reader.ReadInt16();
                         sound.Flags = reader.ReadInt16();
@@ -494,7 +496,7 @@ namespace TombEditor.Geometry.IO
                         if (!modelsList.ContainsKey(model))
                             continue;
 
-                        var importedGeometry = new RoomGeometryInstance();
+                        var importedGeometry = new ImportedGeometryInstance();
                         importedGeometry.Position = pos;
                         importedGeometry.Model = GeometryImporterExporter.Models[modelsList[model]];
 
@@ -549,7 +551,7 @@ namespace TombEditor.Geometry.IO
 
                 level.Rooms[roomIndex].AddObject(level, trigger);
             }
-            
+
             // Check for other chunks
             chunkType = (Prj2ChunkType)reader.ReadUInt16();
             if (chunkType != Prj2ChunkType.NoExtraChunk)
@@ -567,10 +569,10 @@ namespace TombEditor.Geometry.IO
                 if (level.Rooms[i].Prj2AlternateBaseRoomIndex != -1)
                     level.Rooms[i].AlternateBaseRoom = level.Rooms[level.Rooms[i].Prj2AlternateBaseRoomIndex];
             }
-            
+
             // Now build the real geometry and update DirectX buffers
             foreach (var room in level.Rooms.Where(room => room != null))
-                room.UpdateCompletely();
+                room.UpdateCompletely();*/
 
             return true;
         }

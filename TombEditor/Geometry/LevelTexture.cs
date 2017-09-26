@@ -6,7 +6,7 @@ using TombLib.Utils;
 
 namespace TombEditor.Geometry
 {
-    public class LevelTexture : Texture
+    public class LevelTexture : Texture, IEquatable<LevelTexture>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public const float TextureSoundGranularity = 64.0f;
@@ -72,7 +72,7 @@ namespace TombEditor.Geometry
                 ImageLoadException = exc;
             }
         }
-        
+
         public void SetPath(LevelSettings settings, string path)
         {
             Path = path;
@@ -144,6 +144,20 @@ namespace TombEditor.Geometry
                         newTextureSounds[x, y] = _textureSounds[x, y];
                 _textureSounds = newTextureSounds;
             }
+        }
+
+        public bool Equals(LevelTexture other) => base.Equals(other);
+
+        public static bool AreListsEqual(List<LevelTexture> first, List<LevelTexture> second)
+        {
+            if (first.Count != second.Count)
+                return false;
+
+            for (int i = 0; i < first.Count; ++i)
+                if (!first[i].Equals(second[i]))
+                    return false;
+
+            return true;
         }
     }
 }

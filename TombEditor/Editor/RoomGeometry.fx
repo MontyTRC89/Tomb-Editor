@@ -20,12 +20,13 @@ bool TextureEnabled;
 
 Texture2D Texture;
 sampler TextureSampler;
+float2 ReciprocalTextureSize;
 
 PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
 	output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
-	output.UV = input.UV;
+	output.UV = input.UV * ReciprocalTextureSize;
 	output.Shade = input.Shade;
 	return output;
 }
@@ -36,7 +37,7 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel = float4(input.UV.x, input.UV.y, input.UV.x, 1.0f);
-	
+
 	if (TextureEnabled)
 		pixel = Texture.Sample(TextureSampler, input.UV);
 

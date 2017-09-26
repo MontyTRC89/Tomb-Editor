@@ -19,13 +19,13 @@ namespace TombEditor
         public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public SpriteFont Font { get; set; }
-        
+
         public DeviceManager()
         {
             Device = GraphicsDevice.New(DriverType.Hardware, SharpDX.Direct3D11.DeviceCreationFlags.None, FeatureLevel.Level_10_0);
 
             string resourcePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
-            
+
             // Load effects
             IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor", "*.fx");
             foreach (string fileName in effectFiles)

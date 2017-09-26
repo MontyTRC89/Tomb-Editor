@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace TombEditor.Geometry
 {
+    using ImportedGeometryUpdateInfo = KeyValuePair<ImportedGeometry, ImportedGeometryInfo>;
+
     public enum VariableType
     {
         [Description("The directory of the *.prj2 file.")]
@@ -45,7 +47,7 @@ namespace TombEditor.Geometry
         public const string VariableEnd = ")";
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
-        public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.  
+        public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
         public string WadFilePath { get; set; } = null; // Can be null if no object file is loaded.
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
@@ -61,19 +63,18 @@ namespace TombEditor.Geometry
         public bool GameExecutableSuppressAskingForOptions { get; set; } = true;
         public bool IgnoreMissingSounds { get; set; } = false;
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
+        public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
 
         public LevelSettings Clone()
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
             result.SoundPaths = SoundPaths.ConvertAll((soundPath) => soundPath.Clone());
             result.Textures = Textures.ConvertAll((texture) => (LevelTexture)(texture.Clone()));
+            result.ImportedGeometries = ImportedGeometries.ConvertAll((importedGeometry) => (ImportedGeometry)(importedGeometry.Clone()));
             return result;
         }
 
-        object ICloneable.Clone()
-        {
-            return Clone();
-        }
+        object ICloneable.Clone() => Clone();
 
         public static string VariableCreate(VariableType type)
         {
@@ -122,7 +123,7 @@ namespace TombEditor.Geometry
 
                 // Parse variable
                 VariableType variableType;
-                if ((!Enum.TryParse<VariableType>(variableName, out variableType)) ||
+                if ((!Enum.TryParse(variableName, out variableType)) ||
                     excluded.Contains(variableType))
                 {
                     startIndex = endIndex + VariableEnd.Length;
@@ -234,6 +235,42 @@ namespace TombEditor.Geometry
                 fileStream.Read(result, 0, result.GetLength(0));
                 return result;
             }
+        }
+
+        public void ImportedGeometryUpdate(IEnumerable<ImportedGeometryUpdateInfo> geometriesToUpdate)
+        {
+            var absolutePathTextureLookup = new Dictionary<string, TombLib.Utils.Texture>();
+
+            // Add level textures to lookup
+            foreach (LevelTexture levelTexture in Textures)
+            {
+                string absolutePath = MakeAbsolute(levelTexture.Path);
+                if (!absolutePathTextureLookup.ContainsKey(absolutePath))
+                    absolutePathTextureLookup.Add(absolutePath, levelTexture);
+            }
+
+            // Add other imported geometry texture to lookup
+            foreach (ImportedGeometry importedGeometry in ImportedGeometries)
+                foreach (ImportedGeometryTexture importedGeometryTexture in importedGeometry.Textures)
+                    if (!absolutePathTextureLookup.ContainsKey(importedGeometryTexture.AbsolutePath))
+                        absolutePathTextureLookup.Add(importedGeometryTexture.AbsolutePath, importedGeometryTexture);
+
+            // Load geometries
+            foreach (ImportedGeometryUpdateInfo geometryToUpdate in geometriesToUpdate)
+                geometryToUpdate.Key.Update(this, absolutePathTextureLookup, geometryToUpdate.Value);
+        }
+
+        public void ImportedGeometryUpdate(ImportedGeometry geometry, ImportedGeometryInfo info)
+        {
+            ImportedGeometryUpdate(new ImportedGeometryUpdateInfo[] { new ImportedGeometryUpdateInfo(geometry, info) });
+        }
+
+        public ImportedGeometry ImportedGeometryFromID(ImportedGeometry.UniqueIDType uniqueID)
+        {
+            foreach (ImportedGeometry importedGeometry in ImportedGeometries)
+                if (importedGeometry.UniqueID == uniqueID)
+                    return importedGeometry;
+            return null;
         }
     }
 }

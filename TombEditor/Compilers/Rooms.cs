@@ -19,7 +19,7 @@ namespace TombEditor.Compilers
         private void BuildRooms()
         {
             ReportProgress(20, "Building rooms");
-            
+
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
@@ -38,7 +38,7 @@ namespace TombEditor.Compilers
             {
                 _tempRooms.Add(room, BuildRoom(room));
             }
-            
+
             ReportProgress(25, "    Number of rooms: " + _roomsUnmapping.Count);
 
             MatchPortalVertexColors();
@@ -98,7 +98,7 @@ namespace TombEditor.Compilers
             if (room.FlagDamage)
                 newRoom.Flags |= 0x1000;
 
-            // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of 
+            // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of
             // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
             var waterPortals = new List<Portal>();
 
@@ -172,7 +172,7 @@ namespace TombEditor.Compilers
 
             if (room.FlagMist)
                 newRoom.WaterScheme += (byte)room.MistLevel;
-            
+
             // Generate geometry
             {
                 // Add room geometry
@@ -225,9 +225,14 @@ namespace TombEditor.Compilers
 
                 // Add geometry imported objects
                 int geometryVertexIndexBase = roomVertices.Count;
-                foreach (var geometry in room.Objects.OfType<RoomGeometryInstance>())
-                    foreach (var mesh in geometry.Model.Meshes)
-                        for (int j = 0; j < mesh.VertexCount; j++)
+                foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
+                {
+                    if (geometry.Model?.DirectXModel == null)
+                        continue;
+
+                    foreach (var mesh in geometry.Model.DirectXModel.Meshes)
+                    {
+                        for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
                             var trVertex = new tr_room_vertex();
                             trVertex.Position = new tr_vertex
@@ -242,6 +247,36 @@ namespace TombEditor.Compilers
 
                             roomVertices.Add(trVertex);
                         }
+
+                        for (int j = 0; j < mesh.Indices.Count; j += 3)
+                        {
+                            var triangle = new tr_face3();
+
+                            ushort index0 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 0]);
+                            ushort index1 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 1]);
+                            ushort index2 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 2]);
+
+                            triangle.Texture = 20;
+
+                            // TODO Move texture area into the mesh
+                            TextureArea texture;
+                            texture.DoubleSided = false;
+                            texture.BlendMode = BlendMode.Normal;
+                            texture.Texture = mesh.Texture;
+                            texture.TexCoord0 = mesh.Vertices[mesh.Indices[j + 0]].UV;
+                            texture.TexCoord1 = mesh.Vertices[mesh.Indices[j + 1]].UV;
+                            texture.TexCoord2 = mesh.Vertices[mesh.Indices[j + 2]].UV;
+                            texture.TexCoord3 = new Vector2();
+
+                            Util.ObjectTextureManager.Result result;
+                            lock (_objectTextureManager)
+                                result = _objectTextureManager.AddTexture(texture, true, true);
+                            roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
+                        }
+
+                        geometryVertexIndexBase += mesh.Vertices.Count;
+                    }
+                }
 
                 // Assign water effects
                 if (room.FlagWater)
@@ -291,40 +326,6 @@ namespace TombEditor.Compilers
                     }
                 }
 
-
-                // Add imported geometry faces
-                foreach (var geometry in room.Objects.OfType<RoomGeometryInstance>())
-                    foreach (var mesh in geometry.Model.Meshes)
-                    {
-                        for (int j = 0; j < mesh.IndexCount; j += 3)
-                        {
-                            var triangle = new tr_face3();
-
-                            ushort index0 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 0]);
-                            ushort index1 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 1]);
-                            ushort index2 = (ushort)(geometryVertexIndexBase + mesh.Indices[j + 2]);
-
-                            triangle.Texture = 20;
-
-                            // TODO Move texture area into the mesh
-                            TextureArea texture;
-                            texture.DoubleSided = false;
-                            texture.BlendMode = BlendMode.Normal;
-                            texture.Texture = null; // TODO Give geometry objects real textures
-                            texture.TexCoord0 = mesh.Vertices[mesh.Indices[j + 0]].UV;
-                            texture.TexCoord1 = mesh.Vertices[mesh.Indices[j + 1]].UV;
-                            texture.TexCoord2 = mesh.Vertices[mesh.Indices[j + 2]].UV;
-                            texture.TexCoord3 = new Vector2();
-
-                            Util.ObjectTextureManager.Result result;
-                            lock (_objectTextureManager)
-                                result = _objectTextureManager.AddTexture(texture, true, true);
-                            roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
-                        }
-
-                        geometryVertexIndexBase += mesh.VertexCount;
-                    }
-
                 newRoom.Vertices = roomVertices;
                 newRoom.Quads = roomQuads;
                 newRoom.Triangles = roomTriangles;
@@ -372,7 +373,7 @@ namespace TombEditor.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, 
+        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary,
             List<tr_room_vertex> roomVertices, List<Portal> waterPortals, Vector3 Position, Vector4 Color)
         {
             tr_room_vertex trVertex;
@@ -534,7 +535,7 @@ namespace TombEditor.Compilers
                         sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
                         sector.Ceiling = (sbyte)(-room.Position.Y - block.CeilingMin);
                     }
-                    
+
                     aux.LowestFloor = (sbyte)(-room.Position.Y - block.FloorMin);
                     var q0 = block.QAFaces[Block.FaceXnZp];
                     var q1 = block.QAFaces[Block.FaceXpZp];
@@ -687,7 +688,7 @@ namespace TombEditor.Compilers
                 return (*(ulong*)(&first) == *(ulong*)(&second));
             }
         }
-        
+
         private void AddPortalPlane(List<PortalPlane> portalPlanes, List<SharpDX.Rectangle> portalAreas, int x, int z, PortalPlane portalPlane)
         {
             // Try to extend an existing portal plane
@@ -720,7 +721,7 @@ namespace TombEditor.Compilers
                     Room.RoomConnectionInfo roomConnectionInfo = isCeiling ?
                         room.GetCeilingRoomConnectionInfo(new DrawingPoint(x, z)) :
                         room.GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
-                    
+
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
                         short[] heights = isCeiling ? block.WSFaces : block.QAFaces;
@@ -764,7 +765,7 @@ namespace TombEditor.Compilers
                 float yAtXMaxZMin = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.Right + 1, portalArea.Y)) * 256;
                 float yAtXMinZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.X, portalArea.Bottom + 1)) * 256;
                 float yAtXMaxZMax = (room.Position.Y + portalPlane.EvaluateHeight(portalArea.Right + 1, portalArea.Bottom + 1)) * 256;
-                
+
                 // Choose portal coordinates
                 tr_vertex[] portalVertices = new tr_vertex[4];
                 tr_vertex normal = new tr_vertex((short)-portalPlane.SlopeX, 4, (short)-portalPlane.SlopeZ);
@@ -798,10 +799,10 @@ namespace TombEditor.Compilers
                 });
             }
         }
-        
+
         private void MatchPortalVertexColors()
         {
-            // Match vertex colors on portal 
+            // Match vertex colors on portal
             // Operate on final vertices here because:
             //   - We don't want to change the lighting of rooms on output
             //   - Geometry objects should also be make use of this.
@@ -947,7 +948,7 @@ namespace TombEditor.Compilers
             color *= 16.0f;
             color += new Vector4(0.5f); // Round correctly
             color = Vector4.Min(new Vector4(31), Vector4.Max(new Vector4(0), color));
-            
+
             ushort tmp = 0;
             tmp |= (ushort)((ushort)(color.X) << 10);
             tmp |= (ushort)((ushort)(color.Y) << 5);

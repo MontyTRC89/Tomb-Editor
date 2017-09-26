@@ -17,8 +17,8 @@ namespace TombEditor.Geometry
         public const short MaxNumberOfRooms = 512;
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; //Rooms in level
         public Wad2 Wad { get; private set; }
-        public LevelSettings Settings { get; set; } = new LevelSettings();
-        
+        public LevelSettings Settings { get; private set; } = new LevelSettings();
+
         public static Level CreateSimpleLevel()
         {
             logger.Info("Creating new empty level");
@@ -64,12 +64,12 @@ namespace TombEditor.Geometry
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
         }
-        
+
         public void Dispose()
         {
             UnloadWad();
         }
-        
+
         private void UnloadWad()
         {
             logger.Info("Reseting wad");
@@ -130,7 +130,7 @@ namespace TombEditor.Geometry
                 }
             }
         }
-        
+
         public void ReloadObjectsTry()
         {
             try
@@ -182,9 +182,49 @@ namespace TombEditor.Geometry
             var objectsToRemove = room.AnyObjects.ToList();
             foreach (var instance in objectsToRemove)
                 room.RemoveObject(this, instance);
-            
+
             // Remove all references to this room
             Rooms[roomIndex] = null;
         }
+
+        public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)
+        {
+            LevelSettings oldSettings = Settings;
+            Settings = newSettings;
+
+            // Imported geometry
+            {
+                // Reuse old imported geometry objects to keep references up to date
+                var oldLookup = new Dictionary<ImportedGeometry.UniqueIDType, ImportedGeometry>();
+                foreach (ImportedGeometry oldImportedGeometry in oldSettings.ImportedGeometries)
+                    oldLookup.Add(oldImportedGeometry.UniqueID, oldImportedGeometry);
+                for (int i = 0; i < newSettings.ImportedGeometries.Count; ++i)
+                {
+                    ImportedGeometry newImportedGeometry = newSettings.ImportedGeometries[i];
+                    ImportedGeometry oldImportedGeometry;
+                    if (oldLookup.TryGetValue(newImportedGeometry.UniqueID, out oldImportedGeometry))
+                    {
+                        oldImportedGeometry.Assign(newImportedGeometry);
+                        newSettings.ImportedGeometries[i] = oldImportedGeometry;
+                        oldLookup.Remove(oldImportedGeometry.UniqueID); // The same object shouldn't be matched multiple times.
+                    }
+                }
+
+                // Reset imported geometry objects if any objects are now missing
+                if (oldLookup.Count != 0)
+                    foreach (Room room in Rooms.Where(room => room != null))
+                        foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
+                            if (oldLookup.ContainsKey(instance.Model.UniqueID))
+                            {
+                                instance.Model = null;
+                                objectChangedNotification(instance);
+                            }
+            }
+
+            // Update wads if necessary
+            if (newSettings.MakeAbsolute(newSettings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
+                ReloadObjectsTry();
+        }
+        public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });
     }
 }
