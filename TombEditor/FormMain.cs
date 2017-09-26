@@ -20,17 +20,17 @@ namespace TombEditor
     {
         // Dockable tool windows are placed on actual dock panel at runtime.
 
-        private ToolWindows.MainView MainView           = new ToolWindows.MainView();
-        private ToolWindows.TriggerList TriggerList     = new ToolWindows.TriggerList();
-        private ToolWindows.RoomOptions RoomOptions     = new ToolWindows.RoomOptions();
+        private ToolWindows.MainView MainView = new ToolWindows.MainView();
+        private ToolWindows.TriggerList TriggerList = new ToolWindows.TriggerList();
+        private ToolWindows.RoomOptions RoomOptions = new ToolWindows.RoomOptions();
         private ToolWindows.ObjectBrowser ObjectBrowser = new ToolWindows.ObjectBrowser();
         private ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
-        private ToolWindows.Lighting Lighting           = new ToolWindows.Lighting();
-        private ToolWindows.Palette Palette             = new ToolWindows.Palette();
-        private ToolWindows.TexturePanel TexturePanel   = new ToolWindows.TexturePanel();
-        
+        private ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
+        private ToolWindows.Palette Palette = new ToolWindows.Palette();
+        private ToolWindows.TexturePanel TexturePanel = new ToolWindows.TexturePanel();
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         private bool _pressedZorY = false;
         private Editor _editor;
         private DeviceManager _deviceManager = new DeviceManager();
@@ -38,7 +38,7 @@ namespace TombEditor
         public FormMain()
         {
             InitializeComponent();
-            
+
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
 
@@ -70,16 +70,12 @@ namespace TombEditor
             // Initialize panels
             MainView.Initialize(_deviceManager);
             ObjectBrowser.Initialize(_deviceManager);
-            
-            // Initialize the geometry importer class
-            GeometryImporterExporter.Initialize(_deviceManager);
-
 
             this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
             logger.Info("Tomb Editor is ready :)");
         }
-        
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -97,15 +93,25 @@ namespace TombEditor
         {
             switch (key)
             {
-                case "MainView"     : return MainView;
-                case "TriggerList"  : return TriggerList;
-                case "Lighting"     : return Lighting;
-                case "Palette"      : return Palette;
-                case "ObjectBrowser": return ObjectBrowser;
-                case "RoomOptions"  : return RoomOptions;
-                case "SectorOptions": return SectorOptions;
-                case "TexturePanel" : return TexturePanel;
-                default: logger.Warn("Unknown tool window '" + key + "' in configuration."); return null;
+                case "MainView":
+                    return MainView;
+                case "TriggerList":
+                    return TriggerList;
+                case "Lighting":
+                    return Lighting;
+                case "Palette":
+                    return Palette;
+                case "ObjectBrowser":
+                    return ObjectBrowser;
+                case "RoomOptions":
+                    return RoomOptions;
+                case "SectorOptions":
+                    return SectorOptions;
+                case "TexturePanel":
+                    return TexturePanel;
+                default:
+                    logger.Warn("Unknown tool window '" + key + "' in configuration.");
+                    return null;
             }
         }
 
@@ -212,7 +218,7 @@ namespace TombEditor
 
                 case Keys.V: // Paste
                     if (e.Control)
-                        EditorActions.Paste();
+                        _editor.Action = new EditorAction { Action = EditorActionType.Paste };
                     break;
 
                 case Keys.B: // Stamp
@@ -243,7 +249,7 @@ namespace TombEditor
                             EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
                     break;
 
-                case Keys.Right: 
+                case Keys.Right:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
                             EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
@@ -357,18 +363,18 @@ namespace TombEditor
         protected override void OnLostFocus(EventArgs e)
         {
             base.OnLostFocus(e);
-            
+
             EditorAction action = _editor.Action;
             action.RelocateCameraActive = false;
             _editor.Action = action;
             _pressedZorY = false;
         }
-        
+
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.LoadTextures(this);
         }
-        
+
         private void unloadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             foreach (var texture in _editor.Level.Settings.Textures)
@@ -384,17 +390,17 @@ namespace TombEditor
 
         private void textureFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TextureFloor();
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void textureCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TextureCeiling();
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void textureWallsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TextureWalls();
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void importConvertTextureToPng_Click(object sender, EventArgs e)
@@ -411,7 +417,7 @@ namespace TombEditor
                 DarkUI.Forms.DarkMessageBox.ShowError("The texture that should be converted to *.png could not be loaded. " + texture.ImageLoadException.Message, "Error");
                 return;
             }
-            
+
             string currentTexturePath = _editor.Level.Settings.MakeAbsolute(texture.Path);
             string pngFilePath = Path.Combine(Path.GetDirectoryName(currentTexturePath), Path.GetFileNameWithoutExtension(currentTexturePath) + ".png");
 
@@ -438,7 +444,7 @@ namespace TombEditor
         {
             EditorActions.UnloadWad();
         }
-        
+
         private void reloadWadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.ReloadWad();
@@ -446,22 +452,27 @@ namespace TombEditor
 
         private void addCameraToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.AddCamera();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
+        }
+
+        private void addImportedGeometryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
         }
 
         private void addFlybyCameraToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.AddFlybyCamera();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
         }
 
         private void addSinkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.AddSink();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
 
         private void addSoundSourceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.AddSoundSource();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
         }
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -485,7 +496,7 @@ namespace TombEditor
                     "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc, "Error");
             }
         }
-        
+
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Choose actions
@@ -526,7 +537,7 @@ namespace TombEditor
             }
             if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
                 return;
-            
+
             try
             {
                 Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
@@ -666,7 +677,7 @@ namespace TombEditor
         {
             ObjectBrowser.ResetSearch();
         }
-        
+
         private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection())
@@ -697,7 +708,7 @@ namespace TombEditor
             }
         }
 
-        
+
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveAsToolStripMenuItem_Click(sender, e);
@@ -725,7 +736,7 @@ namespace TombEditor
 
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.Paste();
+            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
         }
 
         private void stampToolStripMenuItem_Click(object sender, EventArgs e)
@@ -742,7 +753,7 @@ namespace TombEditor
         {
             EditorActions.CreateRoomAboveOrBelow(_editor.SelectedRoom, (room) => room.GetLowestCorner() - 12, 12);
         }
-        
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to exit?",
@@ -751,18 +762,18 @@ namespace TombEditor
 
             Close();
         }
-    
+
         private void levelSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (FormLevelSettings form = new FormLevelSettings(_editor))
                 form.ShowDialog(this);
         }
-        
+
         // Only for debugging purposes...
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //level.Load(""); 
+            //level.Load("");
             var level = new TombRaider4Level("e:\\trle\\data\\tut1.tr4");
             level.Load("originale");
 
@@ -816,24 +827,24 @@ namespace TombEditor
         private void debugAction3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Wad2.SaveToStream(_editor.Level.Wad, File.OpenWrite("E:\\test.wad2"));
-         Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
-            //GeometryImporterExporter.ExportRoomToObj(_editor.SelectedRoom, "room.obj");
+            Wad2.LoadFromStream(File.OpenRead("E:\\test.wad2"));
+            //RoomGeometryExporter.ExportRoomToObj(_editor.SelectedRoom, "room.obj");
         }
 
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //   _editor.Level.)
-            GeometryImporterExporter.LoadModel("low-poly-wooden-door.obj");
-            RoomGeometryInstance instance = new RoomGeometryInstance(); // 0, _editor.SelectedRoom);
+            /*RoomGeometryExporter.LoadModel("low-poly-wooden-door.obj");
+            ImportedGeometryInstance instance = new ImportedGeometryInstance();
               instance.Model = GeometryImporterExporter.Models["low-poly-wooden-door.obj"];
               instance.Position = new Vector3(4096, 512, 4096);
-            _editor.SelectedRoom.AddObject(_editor.Level, instance);
-
-          /*  GeometryImporterExporter.LoadModel("room.obj", 1.0f);
-            RoomGeometryInstance instance = new RoomGeometryInstance();
-            instance.Model = GeometryImporterExporter.Models["room.obj"];
-            instance.Position = new Vector3(4096, 512, 4096);
             _editor.SelectedRoom.AddObject(_editor.Level, instance);*/
+
+            /*  GeometryImporterExporter.LoadModel("room.obj", 1.0f);
+              RoomGeometryInstance instance = new RoomGeometryInstance();
+              instance.Model = GeometryImporterExporter.Models["room.obj"];
+              instance.Position = new Vector3(4096, 512, 4096);
+              _editor.SelectedRoom.AddObject(_editor.Level, instance);*/
         }
 
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)

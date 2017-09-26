@@ -84,11 +84,14 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu = new DarkUI.Controls.DarkContextMenu();
             this.pathVariablesDataGridViewContextMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
+            this.darkLabel11 = new DarkUI.Controls.DarkLabel();
+            this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1.SuspendLayout();
             this.panel10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
@@ -106,6 +109,7 @@
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
+            this.panel12.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -113,34 +117,36 @@
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.panel10, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 8);
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 10);
             this.tableLayoutPanel1.Controls.Add(this.panel4, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.panel5, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.panel6, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel7, 0, 7);
+            this.tableLayoutPanel1.Controls.Add(this.panel7, 0, 8);
             this.tableLayoutPanel1.Controls.Add(this.panel8, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.panel9, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.panel11, 0, 11);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.panel11, 0, 12);
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.panel12, 0, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 12;
+            this.tableLayoutPanel1.RowCount = 13;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(592, 773);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(792, 973);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // panel10
@@ -154,7 +160,7 @@
             this.panel10.Controls.Add(this.darkLabel10);
             this.panel10.Location = new System.Drawing.Point(3, 292);
             this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(586, 143);
+            this.panel10.Size = new System.Drawing.Size(786, 168);
             this.panel10.TabIndex = 6;
             // 
             // soundsIgnoreMissingSounds
@@ -172,11 +178,10 @@
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundDataGridViewControls.Enabled = false;
-            this.soundDataGridViewControls.Location = new System.Drawing.Point(491, 40);
+            this.soundDataGridViewControls.Location = new System.Drawing.Point(691, 40);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(92, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.NewName = "New";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(92, 100);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(92, 125);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
@@ -192,7 +197,7 @@
             this.soundDataGridView.Location = new System.Drawing.Point(19, 40);
             this.soundDataGridView.Name = "soundDataGridView";
             this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(466, 98);
+            this.soundDataGridView.Size = new System.Drawing.Size(666, 123);
             this.soundDataGridView.TabIndex = 2;
             this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
             this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
@@ -228,15 +233,15 @@
             this.panel2.Controls.Add(this.gameLevelFilePathBut);
             this.panel2.Controls.Add(this.darkLabel2);
             this.panel2.Controls.Add(this.gameLevelFilePathTxt);
-            this.panel2.Location = new System.Drawing.Point(3, 498);
+            this.panel2.Location = new System.Drawing.Point(3, 697);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(586, 41);
+            this.panel2.Size = new System.Drawing.Size(786, 41);
             this.panel2.TabIndex = 2;
             // 
             // gameLevelFilePathBut
             // 
             this.gameLevelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameLevelFilePathBut.Location = new System.Drawing.Point(491, 15);
+            this.gameLevelFilePathBut.Location = new System.Drawing.Point(691, 15);
             this.gameLevelFilePathBut.Name = "gameLevelFilePathBut";
             this.gameLevelFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.gameLevelFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -262,7 +267,7 @@
             this.gameLevelFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gameLevelFilePathTxt.Location = new System.Drawing.Point(19, 15);
             this.gameLevelFilePathTxt.Name = "gameLevelFilePathTxt";
-            this.gameLevelFilePathTxt.Size = new System.Drawing.Size(466, 20);
+            this.gameLevelFilePathTxt.Size = new System.Drawing.Size(666, 20);
             this.gameLevelFilePathTxt.TabIndex = 2;
             this.gameLevelFilePathTxt.TextChanged += new System.EventHandler(this.gameLevelFilePathTxt_TextChanged);
             // 
@@ -275,9 +280,9 @@
             this.panel3.Controls.Add(this.gameExecutableFilePathBut);
             this.panel3.Controls.Add(this.darkLabel3);
             this.panel3.Controls.Add(this.gameExecutableFilePathTxt);
-            this.panel3.Location = new System.Drawing.Point(3, 545);
+            this.panel3.Location = new System.Drawing.Point(3, 744);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(586, 41);
+            this.panel3.Size = new System.Drawing.Size(786, 41);
             this.panel3.TabIndex = 3;
             // 
             // gameExecutableSuppressAskingForOptionsCheckBox
@@ -293,7 +298,7 @@
             // gameExecutableFilePathBut
             // 
             this.gameExecutableFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(491, 15);
+            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(691, 15);
             this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
             this.gameExecutableFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -319,7 +324,7 @@
             this.gameExecutableFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 15);
             this.gameExecutableFilePathTxt.Name = "gameExecutableFilePathTxt";
-            this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(466, 20);
+            this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(666, 20);
             this.gameExecutableFilePathTxt.TabIndex = 2;
             this.gameExecutableFilePathTxt.TextChanged += new System.EventHandler(this.gameExecutableFilePathTxt_TextChanged);
             // 
@@ -333,13 +338,13 @@
             this.panel4.Controls.Add(this.textureFilePathTxt);
             this.panel4.Location = new System.Drawing.Point(3, 50);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(586, 41);
+            this.panel4.Size = new System.Drawing.Size(786, 41);
             this.panel4.TabIndex = 2;
             // 
             // textureFilePathBut
             // 
             this.textureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureFilePathBut.Location = new System.Drawing.Point(491, 15);
+            this.textureFilePathBut.Location = new System.Drawing.Point(691, 15);
             this.textureFilePathBut.Name = "textureFilePathBut";
             this.textureFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.textureFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -365,7 +370,7 @@
             this.textureFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.textureFilePathTxt.Location = new System.Drawing.Point(19, 15);
             this.textureFilePathTxt.Name = "textureFilePathTxt";
-            this.textureFilePathTxt.Size = new System.Drawing.Size(466, 20);
+            this.textureFilePathTxt.Size = new System.Drawing.Size(666, 20);
             this.textureFilePathTxt.TabIndex = 2;
             this.textureFilePathTxt.TextChanged += new System.EventHandler(this.textureFilePathTxt_TextChanged);
             // 
@@ -379,13 +384,13 @@
             this.panel5.Controls.Add(this.wadFilePathTxt);
             this.panel5.Location = new System.Drawing.Point(3, 97);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(586, 41);
+            this.panel5.Size = new System.Drawing.Size(786, 41);
             this.panel5.TabIndex = 2;
             // 
             // wadFilePathBut
             // 
             this.wadFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.wadFilePathBut.Location = new System.Drawing.Point(491, 15);
+            this.wadFilePathBut.Location = new System.Drawing.Point(691, 15);
             this.wadFilePathBut.Name = "wadFilePathBut";
             this.wadFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.wadFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -411,7 +416,7 @@
             this.wadFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.wadFilePathTxt.Location = new System.Drawing.Point(19, 15);
             this.wadFilePathTxt.Name = "wadFilePathTxt";
-            this.wadFilePathTxt.Size = new System.Drawing.Size(466, 20);
+            this.wadFilePathTxt.Size = new System.Drawing.Size(666, 20);
             this.wadFilePathTxt.TabIndex = 2;
             this.wadFilePathTxt.TextChanged += new System.EventHandler(this.wadFilePathTxt_TextChanged);
             // 
@@ -425,13 +430,13 @@
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Location = new System.Drawing.Point(3, 3);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(586, 41);
+            this.panel6.Size = new System.Drawing.Size(786, 41);
             this.panel6.TabIndex = 2;
             // 
             // levelFilePathBut
             // 
             this.levelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.levelFilePathBut.Location = new System.Drawing.Point(491, 15);
+            this.levelFilePathBut.Location = new System.Drawing.Point(691, 15);
             this.levelFilePathBut.Name = "levelFilePathBut";
             this.levelFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.levelFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -457,7 +462,7 @@
             this.levelFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.levelFilePathTxt.Location = new System.Drawing.Point(19, 15);
             this.levelFilePathTxt.Name = "levelFilePathTxt";
-            this.levelFilePathTxt.Size = new System.Drawing.Size(466, 20);
+            this.levelFilePathTxt.Size = new System.Drawing.Size(666, 20);
             this.levelFilePathTxt.TabIndex = 2;
             this.levelFilePathTxt.TextChanged += new System.EventHandler(this.levelFilePathTxt_TextChanged);
             // 
@@ -469,15 +474,15 @@
             this.panel7.Controls.Add(this.gameDirectoryBut);
             this.panel7.Controls.Add(this.darkLabel7);
             this.panel7.Controls.Add(this.gameDirectoryTxt);
-            this.panel7.Location = new System.Drawing.Point(3, 451);
+            this.panel7.Location = new System.Drawing.Point(3, 650);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(586, 41);
+            this.panel7.Size = new System.Drawing.Size(786, 41);
             this.panel7.TabIndex = 2;
             // 
             // gameDirectoryBut
             // 
             this.gameDirectoryBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameDirectoryBut.Location = new System.Drawing.Point(491, 15);
+            this.gameDirectoryBut.Location = new System.Drawing.Point(691, 15);
             this.gameDirectoryBut.Name = "gameDirectoryBut";
             this.gameDirectoryBut.Padding = new System.Windows.Forms.Padding(5);
             this.gameDirectoryBut.Size = new System.Drawing.Size(92, 20);
@@ -503,7 +508,7 @@
             this.gameDirectoryTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gameDirectoryTxt.Location = new System.Drawing.Point(19, 15);
             this.gameDirectoryTxt.Name = "gameDirectoryTxt";
-            this.gameDirectoryTxt.Size = new System.Drawing.Size(466, 20);
+            this.gameDirectoryTxt.Size = new System.Drawing.Size(666, 20);
             this.gameDirectoryTxt.TabIndex = 2;
             this.gameDirectoryTxt.TextChanged += new System.EventHandler(this.gameDirectoryTxt_TextChanged);
             // 
@@ -520,7 +525,7 @@
             this.panel8.Controls.Add(this.fontTextureFilePathTxt);
             this.panel8.Location = new System.Drawing.Point(3, 144);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(586, 68);
+            this.panel8.Size = new System.Drawing.Size(786, 68);
             this.panel8.TabIndex = 2;
             // 
             // fontTextureFilePathPicPreview
@@ -529,7 +534,7 @@
             this.fontTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
             this.fontTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.TransparentBackground;
             this.fontTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fontTextureFilePathPicPreview.Location = new System.Drawing.Point(453, 2);
+            this.fontTextureFilePathPicPreview.Location = new System.Drawing.Point(653, 2);
             this.fontTextureFilePathPicPreview.Name = "fontTextureFilePathPicPreview";
             this.fontTextureFilePathPicPreview.Size = new System.Drawing.Size(32, 32);
             this.fontTextureFilePathPicPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -539,7 +544,7 @@
             // fontTextureFilePathBut
             // 
             this.fontTextureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.fontTextureFilePathBut.Location = new System.Drawing.Point(491, 40);
+            this.fontTextureFilePathBut.Location = new System.Drawing.Point(691, 40);
             this.fontTextureFilePathBut.Name = "fontTextureFilePathBut";
             this.fontTextureFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.fontTextureFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -586,7 +591,7 @@
             this.fontTextureFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fontTextureFilePathTxt.Location = new System.Drawing.Point(187, 40);
             this.fontTextureFilePathTxt.Name = "fontTextureFilePathTxt";
-            this.fontTextureFilePathTxt.Size = new System.Drawing.Size(298, 20);
+            this.fontTextureFilePathTxt.Size = new System.Drawing.Size(498, 20);
             this.fontTextureFilePathTxt.TabIndex = 2;
             this.fontTextureFilePathTxt.TextChanged += new System.EventHandler(this.fontTextureFilePathTxt_TextChanged);
             // 
@@ -603,7 +608,7 @@
             this.panel9.Controls.Add(this.skyTextureFilePathTxt);
             this.panel9.Location = new System.Drawing.Point(3, 218);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(586, 68);
+            this.panel9.Size = new System.Drawing.Size(786, 68);
             this.panel9.TabIndex = 2;
             // 
             // skyTextureFilePathPicPreview
@@ -612,7 +617,7 @@
             this.skyTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
             this.skyTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.TransparentBackground;
             this.skyTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.skyTextureFilePathPicPreview.Location = new System.Drawing.Point(453, 2);
+            this.skyTextureFilePathPicPreview.Location = new System.Drawing.Point(653, 2);
             this.skyTextureFilePathPicPreview.Name = "skyTextureFilePathPicPreview";
             this.skyTextureFilePathPicPreview.Size = new System.Drawing.Size(32, 32);
             this.skyTextureFilePathPicPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -622,7 +627,7 @@
             // skyTextureFilePathBut
             // 
             this.skyTextureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.skyTextureFilePathBut.Location = new System.Drawing.Point(491, 40);
+            this.skyTextureFilePathBut.Location = new System.Drawing.Point(691, 40);
             this.skyTextureFilePathBut.Name = "skyTextureFilePathBut";
             this.skyTextureFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.skyTextureFilePathBut.Size = new System.Drawing.Size(92, 20);
@@ -669,7 +674,7 @@
             this.skyTextureFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.skyTextureFilePathTxt.Location = new System.Drawing.Point(187, 40);
             this.skyTextureFilePathTxt.Name = "skyTextureFilePathTxt";
-            this.skyTextureFilePathTxt.Size = new System.Drawing.Size(298, 20);
+            this.skyTextureFilePathTxt.Size = new System.Drawing.Size(498, 20);
             this.skyTextureFilePathTxt.TabIndex = 2;
             this.skyTextureFilePathTxt.TextChanged += new System.EventHandler(this.skyTextureFilePathTxt_TextChanged);
             // 
@@ -681,15 +686,15 @@
             this.panel11.Controls.Add(this.butApply);
             this.panel11.Controls.Add(this.butOk);
             this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(3, 741);
+            this.panel11.Location = new System.Drawing.Point(3, 940);
             this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(586, 29);
+            this.panel11.Size = new System.Drawing.Size(786, 30);
             this.panel11.TabIndex = 5;
             // 
             // butApply
             // 
             this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Location = new System.Drawing.Point(181, 2);
+            this.butApply.Location = new System.Drawing.Point(381, 3);
             this.butApply.Name = "butApply";
             this.butApply.Padding = new System.Windows.Forms.Padding(5);
             this.butApply.Size = new System.Drawing.Size(130, 24);
@@ -700,7 +705,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(317, 2);
+            this.butOk.Location = new System.Drawing.Point(517, 3);
             this.butOk.Name = "butOk";
             this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(130, 24);
@@ -711,7 +716,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Location = new System.Drawing.Point(453, 2);
+            this.butCancel.Location = new System.Drawing.Point(653, 3);
             this.butCancel.Name = "butCancel";
             this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(130, 24);
@@ -726,9 +731,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.darkLabel1);
             this.panel1.Controls.Add(this.pathVariablesDataGridView);
-            this.panel1.Location = new System.Drawing.Point(3, 592);
+            this.panel1.Location = new System.Drawing.Point(3, 791);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(586, 143);
+            this.panel1.Size = new System.Drawing.Size(786, 143);
             this.panel1.TabIndex = 5;
             // 
             // darkLabel1
@@ -756,9 +761,18 @@
             this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
             this.pathVariablesDataGridView.RowHeadersWidth = 41;
             this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.pathVariablesDataGridView.Size = new System.Drawing.Size(466, 125);
+            this.pathVariablesDataGridView.Size = new System.Drawing.Size(666, 125);
             this.pathVariablesDataGridView.TabIndex = 2;
             this.pathVariablesDataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pathVariablesDataGridView_CellMouseDown);
+            // 
+            // pathVariablesDataGridViewNameColumn
+            // 
+            this.pathVariablesDataGridViewNameColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
+            this.pathVariablesDataGridViewNameColumn.HeaderText = "Placeholder";
+            this.pathVariablesDataGridViewNameColumn.MinimumWidth = 50;
+            this.pathVariablesDataGridViewNameColumn.Name = "pathVariablesDataGridViewNameColumn";
+            this.pathVariablesDataGridViewNameColumn.ReadOnly = true;
+            this.pathVariablesDataGridViewNameColumn.Width = 120;
             // 
             // pathVariablesDataGridViewContextMenu
             // 
@@ -771,27 +785,12 @@
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
+            this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
             this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
-            // 
-            // pathToolTip
-            // 
-            this.pathToolTip.AutoPopDelay = 32000;
-            this.pathToolTip.InitialDelay = 300;
-            this.pathToolTip.ReshowDelay = 100;
-            this.pathToolTip.ShowAlways = true;
-            // 
-            // pathVariablesDataGridViewNameColumn
-            // 
-            this.pathVariablesDataGridViewNameColumn.ContextMenuStrip = this.pathVariablesDataGridViewContextMenu;
-            this.pathVariablesDataGridViewNameColumn.HeaderText = "Placeholder";
-            this.pathVariablesDataGridViewNameColumn.MinimumWidth = 50;
-            this.pathVariablesDataGridViewNameColumn.Name = "pathVariablesDataGridViewNameColumn";
-            this.pathVariablesDataGridViewNameColumn.ReadOnly = true;
-            this.pathVariablesDataGridViewNameColumn.Width = 120;
             // 
             // pathVariablesDataGridViewValueColumn
             // 
@@ -801,11 +800,51 @@
             this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
             this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
+            // panel12
+            // 
+            this.panel12.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel12.Controls.Add(this.importedGeometryManager);
+            this.panel12.Controls.Add(this.darkLabel11);
+            this.panel12.Location = new System.Drawing.Point(3, 466);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(786, 168);
+            this.panel12.TabIndex = 2;
+            // 
+            // importedGeometryManager
+            // 
+            this.importedGeometryManager.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.importedGeometryManager.LevelSettings = null;
+            this.importedGeometryManager.Location = new System.Drawing.Point(19, 17);
+            this.importedGeometryManager.Name = "importedGeometryManager";
+            this.importedGeometryManager.SelectedImportedGeometry = null;
+            this.importedGeometryManager.Size = new System.Drawing.Size(767, 151);
+            this.importedGeometryManager.TabIndex = 2;
+            // 
+            // darkLabel11
+            // 
+            this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel11.Location = new System.Drawing.Point(2, 0);
+            this.darkLabel11.Name = "darkLabel11";
+            this.darkLabel11.Size = new System.Drawing.Size(381, 24);
+            this.darkLabel11.TabIndex = 1;
+            this.darkLabel11.Text = "All imported geometries associated with this project:";
+            // 
+            // pathToolTip
+            // 
+            this.pathToolTip.AutoPopDelay = 32000;
+            this.pathToolTip.InitialDelay = 300;
+            this.pathToolTip.ReshowDelay = 100;
+            this.pathToolTip.ShowAlways = true;
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(592, 773);
+            this.ClientSize = new System.Drawing.Size(792, 973);
             this.Controls.Add(this.tableLayoutPanel1);
             this.MinimizeBox = false;
             this.Name = "FormLevelSettings";
@@ -838,6 +877,7 @@
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
+            this.panel12.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -903,5 +943,8 @@
         private DarkUI.Controls.DarkCheckBox gameExecutableSuppressAskingForOptionsCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
+        private System.Windows.Forms.Panel panel12;
+        private DarkUI.Controls.DarkLabel darkLabel11;
+        private Controls.ImportedGeometryManager importedGeometryManager;
     }
 }

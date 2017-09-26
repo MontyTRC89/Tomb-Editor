@@ -12,7 +12,16 @@ namespace TombEditor
 
     public enum EditorActionType
     {
-        None, PlaceItem, PlaceLight, PlaceCamera, PlaceFlyByCamera, PlaceSoundSource, PlaceSink, Paste, Stamp
+        None,
+        PlaceItem,
+        PlaceLight,
+        PlaceCamera,
+        PlaceImportedGeometry,
+        PlaceFlyByCamera,
+        PlaceSoundSource,
+        PlaceSink,
+        Paste,
+        Stamp
     }
 
     public struct EditorAction
@@ -87,7 +96,7 @@ namespace TombEditor
         {
             return Start.GetHashCode() ^ (End.GetHashCode() * unchecked((int)3062904283)) ^ (Arrow.GetHashCode() * 1334740973);
         }
-        
+
         // The rectangle is (-1, -1, -1, 1) when nothing is selected.
         // The "Right" and "Bottom" point of the rectangle is inclusive.
         public SharpDX.Rectangle Area
@@ -127,13 +136,13 @@ namespace TombEditor
 
         public static bool operator ==(TextureSelection first, TextureSelection second)
         {
-            return (first.Index == second.Index) && (first.Triangle == second.Triangle) && 
+            return (first.Index == second.Index) && (first.Triangle == second.Triangle) &&
                 (first.Invisible == second.Invisible) && (first.DoubleSided == second.DoubleSided) && (first.Transparent == second.Transparent);
         }
 
         public static bool operator !=(TextureSelection first, TextureSelection second)
         {
-            return (first.Index != second.Index) || (first.Triangle != second.Triangle) || 
+            return (first.Index != second.Index) || (first.Triangle != second.Triangle) ||
                 (first.Invisible != second.Invisible) || (first.DoubleSided != second.DoubleSided) || (first.Transparent != second.Transparent);
         }
 
@@ -144,7 +153,7 @@ namespace TombEditor
 
         public override int GetHashCode()
         {
-            return Index.GetHashCode() ^ (Triangle.GetHashCode() * unchecked((int)3062904283)) ^ 
+            return Index.GetHashCode() ^ (Triangle.GetHashCode() * unchecked((int)3062904283)) ^
                 (Invisible ? 0x5d5edef6 : 0) ^ (DoubleSided ? 0x07b4bc1e : 0) ^ (Transparent ? 0x1d5ff7db : 0);
         }
     }

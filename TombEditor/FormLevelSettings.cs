@@ -96,7 +96,7 @@ namespace TombEditor
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(592, 773) + (Size - ClientSize);
+            MinimumSize = new Size(592, 1000) + (Size - ClientSize);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.SoundPaths)
@@ -110,7 +110,7 @@ namespace TombEditor
             soundDataGridView.DataSource = soundDataGridViewDataSource;
             soundDataGridViewControls.DataGridView = soundDataGridView;
             soundDataGridViewControls.CreateNewRow = soundDataGridViewCreateNewRow;
-            
+
             // Initialize picture previews
             _correctColor = gameLevelFilePathTxt.BackColor;
             _wrongColor = _correctColor.MixWith(Color.DarkRed, 0.55);
@@ -122,6 +122,8 @@ namespace TombEditor
             _pictureTooltip.SetToolTip(skyTextureFilePathPicPreview, "Sky Preview");
             components.Add(_pictureTooltip);
 
+            // Initialize imported geometry manager
+            importedGeometryManager.LevelSettings = _levelSettings;
 
             // Populate variable list
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
@@ -129,11 +131,11 @@ namespace TombEditor
                 {
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
                 }
-            
+
             // Initialize controls
             UpdateDialog();
         }
-        
+
         private void UpdateDialog()
         {
             levelFilePathTxt.Text = _levelSettings.LevelFilePath;
@@ -184,7 +186,7 @@ namespace TombEditor
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
             pathToolTip.SetToolTip(gameExecutableFilePathTxt, gameExecutableFilePath);
-        
+
             // Load previews
             string fontPath = _levelSettings.FontTextureFileNameAbsoluteOrDefault;
             pathToolTip.SetToolTip(fontTextureFilePathTxt, fontPath);
@@ -472,7 +474,7 @@ namespace TombEditor
                 UpdateDialog();
             }
         }
-        
+
         // Game executable
         private void gameExecutableFilePathTxt_TextChanged(object sender, EventArgs e)
         {
@@ -491,7 +493,7 @@ namespace TombEditor
                 UpdateDialog();
             }
         }
-        
+
         private void gameExecutableSuppressAskingForOptionsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.GameExecutableSuppressAskingForOptions = gameExecutableSuppressAskingForOptionsCheckBox.Checked;
@@ -510,7 +512,7 @@ namespace TombEditor
 
         private void pathVariablesDataGridViewContextMenuCopy_Click(object sender, EventArgs e)
         {
-            string text = (pathVariablesDataGridView.SelectedCells.Count == 0) ? "" : 
+            string text = (pathVariablesDataGridView.SelectedCells.Count == 0) ? "" :
                 pathVariablesDataGridView.SelectedCells[0].Value.ToString();
             System.Windows.Forms.Clipboard.SetText(text);
         }

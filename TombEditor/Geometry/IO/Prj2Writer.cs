@@ -129,6 +129,9 @@ namespace TombEditor.Geometry.IO
             ChunkProcessing.WriteChunk(streamOuter, Prj2Chunks.Rooms, (writer, id) =>
             {
                 // Collect all shared lists so we can save references as indices
+
+                int TODO_WriteRooms;
+                /*
                 var portalsList = new List<Portal>();
                 var triggersList = new List<TriggerInstance>();
                 var objectsList = new List<ObjectInstance>();
@@ -424,9 +427,9 @@ namespace TombEditor.Geometry.IO
                         // No more data, in future we can expand the structure using chunks
                         writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                     }
-                    else if (o is RoomGeometryInstance)
+                    else if (o is ImportedGeometryInstance)
                     {
-                        var instance = (RoomGeometryInstance)o;
+                        var instance = (ImportedGeometryInstance)o;
                         writer.Write((ushort)Prj2ObjectType.RoomGeometry);
                         writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
                         writer.Write(instance.Position);
@@ -462,11 +465,11 @@ namespace TombEditor.Geometry.IO
                     // No more data, in future we can expand the structure using chunks
                     writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
                 }
-                
+
                 // No more data, in future we can expand the structure using chunks
                 writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
 
-                ChunkProcessing.WriteChunkEnd(writer);
+                ChunkProcessing.WriteChunkEnd(writer);*/
             }, long.MaxValue);
         }
 

@@ -31,7 +31,7 @@ namespace TombEditor.Geometry
         public Vector4 Color { get; set; } = new Vector4(1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
 
         public abstract ItemType ItemType { get; }
-        
+
         public override string ToString()
         {
             return ItemType.ToString() +
@@ -60,7 +60,7 @@ namespace TombEditor.Geometry
             IsStatic = isStatic;
             Id = id;
         }
-        
+
         public static bool operator ==(ItemType first, ItemType second)
         {
             return (first.IsStatic == second.IsStatic) && (first.Id == second.Id);

@@ -17,7 +17,7 @@ namespace TombEditor
     public static class EditorActions
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         private static Editor _editor = Editor.Instance;
 
         public static void SmartBuildGeometry(Room room, Rectangle area)
@@ -81,7 +81,7 @@ namespace TombEditor
                     room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment);
                     room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn,  increment);
                 }
-                
+
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
                     room.GetBlockTry(area.X - 1, z)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment);
@@ -582,7 +582,7 @@ namespace TombEditor
         }
 
         public static void AddTrigger(Room room, Rectangle area, IWin32Window parent)
-        { 
+        {
             var trigger = new TriggerInstance(area);
 
             // Initialize trigger with selected object if the selected object makes sense in the trigger context.
@@ -606,7 +606,7 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.TargetObj = _editor.SelectedObject;
             }
-            
+
             // Display form
             using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj)))
             {
@@ -652,7 +652,7 @@ namespace TombEditor
             Block block = room.Blocks[(int)x, (int)z];
             if (block.IsAnyWall)
                 return;
-    
+
             // Update position
             instance.Position = pos;
 
@@ -718,6 +718,13 @@ namespace TombEditor
             {
                 using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))
                     formFlyby.ShowDialog(owner);
+                _editor.ObjectChange(instance);
+            }
+            else if (instance is ImportedGeometryInstance)
+            {
+                using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
+                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.Cancel)
+                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
                 _editor.ObjectChange(instance);
             }
             else if (instance is SinkInstance)
@@ -791,7 +798,7 @@ namespace TombEditor
                 _editor.SelectedObject = null;
             _editor.ObjectChange(null);
         }
-        
+
         public static void RotateTexture(Room room, DrawingPoint pos, BlockFace face)
         {
             Block blocks = room.GetBlock(pos);
@@ -925,7 +932,7 @@ namespace TombEditor
                 room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance);
         }
-        
+
         public static void DeleteRoom(Room room)
         {
             // Check if is the last room
@@ -979,7 +986,7 @@ namespace TombEditor
             if (DarkUI.Forms.DarkMessageBox.ShowWarning("Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
                 " Do you want to continue?", "Crop room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
                 return;
-            
+
             // Resize room
             room.Resize(_editor.Level, newArea.Width + 1, newArea.Height + 1,
                 (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), new DrawingPoint(newArea.X, newArea.Y));
@@ -994,7 +1001,7 @@ namespace TombEditor
             _editor.RoomPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(room);
         }
-        
+
         public static void SetDiagonalFloorSplit(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)
@@ -1195,7 +1202,7 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
         }
-        
+
         public static void SetWall(Room room, Rectangle area)
         {
             for (int x = area.X; x <= area.Right; x++)
@@ -1274,7 +1281,7 @@ namespace TombEditor
                         for (int x = area.Left; x <= area.Right; ++x)
                             if (!room.Blocks[x, z].IsAnyWall)
                                 couldBeFloorCeilingPortal = true;
-                
+
                 foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
                 {
                     if (neighborRoom == room)
@@ -1334,7 +1341,7 @@ namespace TombEditor
             Room destination = candidates[0].Item2;
             if (destination.Flipped)
                 throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
-            
+
             // Create portals
             Portal portal = new Portal(area, destinationDirection, destination);
             Portal oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
@@ -1365,7 +1372,7 @@ namespace TombEditor
             for (int x = 1; x < area.Width - 1; x++)
                 for (int z = 1; z < area.Height - 1; z++)
                     newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
-            
+
             newRoom.UpdateCompletely();
 
             _editor.Level.Rooms[found] = newRoom;
@@ -1407,14 +1414,14 @@ namespace TombEditor
             // Duplicate portals
             //var duplicatedPortals = new Dictionary<Portal, Portal>();
 
-            // TODO: portals of flipped rooms must be the same of portals of original room. 
+            // TODO: portals of flipped rooms must be the same of portals of original room.
             // Eventually new added portals between flipped rooms are owned only by flipped rooms. (MontyTRC)
             /*foreach (var p in room.Portals)
                 duplicatedPortals.Add(p, (Portal)p.Clone());*/
 
             string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
             var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
-            
+
             for (int x = 0; x < room.NumXSectors; x++)
                 for (int z = 0; z < room.NumZSectors; z++)
                 {
@@ -1443,11 +1450,11 @@ namespace TombEditor
 
             _editor.Level.Rooms[freeRoomIndex] = newRoom;
             _editor.RoomListChange();
-            
+
             room.AlternateGroup = AlternateGroup;
             room.AlternateRoom = newRoom;
             _editor.RoomPropertiesChange(room);
-            
+
             newRoom.AlternateGroup = AlternateGroup;
             newRoom.AlternateBaseRoom = room;
             _editor.RoomPropertiesChange(newRoom);
@@ -1471,7 +1478,7 @@ namespace TombEditor
 
             _editor.Level.DeleteRoom(room.AlternateRoom);
             _editor.RoomListChange();
-            
+
             room.AlternateRoom = null;
             room.AlternateGroup = -1;
             _editor.RoomPropertiesChange(room);
@@ -1489,7 +1496,7 @@ namespace TombEditor
             for (int x = 0; x <= area.Width; x++)
                 for (int z = 0; z <= area.Height; z++)
                     for (int i = 0; i < 4; ++i)
-                        room.Blocks[area.X + x, area.Y + z].QAFaces[i] += 
+                        room.Blocks[area.X + x, area.Y + z].QAFaces[i] +=
                             (short)Math.Round(changes[x + Block.FaceX[i], z + Block.FaceZ[i]]);
 
             SmartBuildGeometry(room, area);
@@ -1636,7 +1643,7 @@ namespace TombEditor
 
             // Build the geometry of the new room
             newRoom.UpdateCompletely();
-            
+
             // Update the UI
             if (_editor.SelectedRoom == room)
                 _editor.SelectedRoom = newRoom; //Don't center
@@ -1644,16 +1651,16 @@ namespace TombEditor
 
         public static void SplitRoom()
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!CheckForRoomAndBlockSelection())
                 return;
-            EditorActions.SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         public static void CopyRoom()
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!CheckForRoomAndBlockSelection())
                 return;
-            EditorActions.CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         public static bool CheckForRoomAndBlockSelection()
@@ -1682,7 +1689,7 @@ namespace TombEditor
 
         public static void BuildLevelAndPlay()
         {
-            if (!EditorActions.BuildLevel(true))
+            if (!BuildLevel(true))
                 return;
 
             TombLauncher.Launch(_editor.Level.Settings);
@@ -1724,32 +1731,6 @@ namespace TombEditor
             _editor.LoadedWadsChange(null);
         }
 
-        public static void TextureWalls()
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
-        }
-
-        public static void TextureFloor()
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
-        }
-
-        public static void TextureCeiling()
-        {
-            if (_editor.SelectedRoom == null)
-                return;
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
-        }
-
-        public static void Paste()
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
-        }
-
         public static void Copy(IWin32Window parent)
         {
             var instance = _editor.SelectedObject as PositionBasedObjectInstance;
@@ -1763,28 +1744,8 @@ namespace TombEditor
 
         public static void Clone(IWin32Window parent)
         {
-            EditorActions.Copy(parent);
+            Copy(parent);
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
-        }
-
-        public static void AddCamera()
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
-        }
-
-        public static void AddFlybyCamera()
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
-        }
-
-        public static void AddSoundSource()
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
-        }
-
-        public static void AddSink()
-        {
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
 
         public static void ShowTextureSoundsDialog(IWin32Window parent)
@@ -1829,7 +1790,7 @@ namespace TombEditor
                  room.UpdateCompletely();
                 _editor.RoomSectorPropertiesChange(room);
             }
-            
+
             foreach (Room room in roomsToMove)
                 _editor.RoomGeometryChange(room);
         }

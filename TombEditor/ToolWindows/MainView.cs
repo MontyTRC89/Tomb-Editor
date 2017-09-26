@@ -143,16 +143,17 @@ namespace TombEditor.ToolWindows
 
         private void butTextureFloor_Click(object sender, EventArgs e)
         {
-            EditorActions.TextureFloor();
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void butTextureCeiling_Click(object sender, EventArgs e)
         {
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void butTextureWalls_Click(object sender, EventArgs e)
         {
-            EditorActions.TextureWalls();
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
         }
 
         private void butAdditiveBlending_Click(object sender, EventArgs e)
@@ -186,26 +187,26 @@ namespace TombEditor.ToolWindows
                 return;
             }
             EditorActions.SetPortalOpacity(_editor.SelectedRoom, portal, opacity);
-        } 
+        }
 
         private void butAddCamera_Click(object sender, EventArgs e)
         {
-            EditorActions.AddCamera();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceCamera };
         }
 
         private void butAddFlybyCamera_Click(object sender, EventArgs e)
         {
-            EditorActions.AddFlybyCamera();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceFlyByCamera };
         }
 
         private void butAddSoundSource_Click(object sender, EventArgs e)
         {
-            EditorActions.AddSoundSource();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
         }
 
         private void butAddSink_Click(object sender, EventArgs e)
         {
-            EditorActions.AddSink();
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceSink };
         }
 
         private void butCompileLevel_Click(object sender, EventArgs e)
@@ -215,7 +216,7 @@ namespace TombEditor.ToolWindows
 
         private void butCompileLevelAndPlay_Click(object sender, EventArgs e)
         {
-            
+            EditorActions.BuildLevelAndPlay();
         }
 
         private void butDrawHorizon_Click(object sender, EventArgs e)
@@ -255,7 +256,7 @@ namespace TombEditor.ToolWindows
 
         private void butPaste_Click(object sender, EventArgs e)
         {
-            EditorActions.Paste();
+            _editor.Action = new EditorAction { Action = EditorActionType.Paste };
         }
 
         private void butClone_Click(object sender, EventArgs e)

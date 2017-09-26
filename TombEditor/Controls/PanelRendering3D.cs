@@ -195,7 +195,7 @@ namespace TombEditor.Controls
         // Items to draw
         private readonly List<MoveableInstance> _moveablesToDraw = new List<MoveableInstance>();
         private readonly List<StaticInstance> _staticsToDraw = new List<StaticInstance>();
-        private List<RoomGeometryInstance> RoomGeometryToDraw;
+        private readonly List<ImportedGeometryInstance> _roomGeometryToDraw = new List<ImportedGeometryInstance>();
 
         // Debug lines
         private Buffer<EditorVertex> _objectHeightLineVertexBuffer;
@@ -245,7 +245,8 @@ namespace TombEditor.Controls
                 (obj is Editor.SelectedRoomChangedEvent) ||
                 (obj is Editor.ModeChangedEvent) ||
                 (obj is Editor.LoadedWadsChangedEvent) ||
-                (obj is Editor.LoadedTexturesChangedEvent))
+                (obj is Editor.LoadedTexturesChangedEvent) ||
+                (obj is Editor.LoadedImportedGeometriesChangedEvent))
             {
                 if (_editor.Mode != EditorMode.Map2D)
                     Invalidate();
@@ -262,6 +263,7 @@ namespace TombEditor.Controls
                     case EditorActionType.Paste:
                     case EditorActionType.PlaceCamera:
                     case EditorActionType.PlaceFlyByCamera:
+                    case EditorActionType.PlaceImportedGeometry:
                     case EditorActionType.PlaceItem:
                     case EditorActionType.PlaceLight:
                     case EditorActionType.PlaceSink:
@@ -588,6 +590,13 @@ namespace TombEditor.Controls
                             _editor.Action = EditorAction.None;
                         }
                         break;
+                    case EditorActionType.PlaceImportedGeometry:
+                        if (newPicking is PickingResultBlock)
+                        {
+                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, new ImportedGeometryInstance());
+                            _editor.Action = EditorAction.None;
+                        }
+                        break;
                     case EditorActionType.PlaceSoundSource:
                         if (newPicking is PickingResultBlock)
                         {
@@ -881,12 +890,13 @@ namespace TombEditor.Controls
                             result = new PickingResultObject(distance, instance);
                     }
                 }
-                else if (instance is RoomGeometryInstance)
+                else if (instance is ImportedGeometryInstance)
                 {
-                    var geometry = (RoomGeometryInstance)instance;
-                    BoundingBox box = new BoundingBox(
-                        room.WorldPos + instance.Position + geometry.Model.BoundingBox.Minimum,
-                        room.WorldPos + instance.Position + geometry.Model.BoundingBox.Maximum);
+                    var geometry = (ImportedGeometryInstance)instance;
+
+                    BoundingBox box = geometry.Model?.DirectXModel?.BoundingBox ?? new BoundingBox(new Vector3(-128), new Vector3(128));
+                    box.Minimum += room.WorldPos + instance.Position;
+                    box.Maximum += room.WorldPos + instance.Position;
                     if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                         result = new PickingResultObject(distance, instance);
                 }
@@ -1386,6 +1396,43 @@ namespace TombEditor.Controls
                         string message = instance.ToString();
                         message += "\nUnavailable " + instance.ItemType.ToString();
 
+                        var modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
+                        Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                            _device.Viewport.MinDepth,
+                            _device.Viewport.MaxDepth, modelViewProjection);
+                        Debug.AddString(message, screenPos);
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(viewProjection, room, instance.Position);
+                    }
+
+                    Matrix model = Matrix.Translation(room.WorldPos + instance.Position);
+                    effect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    effect.Parameters["Color"].SetValue(color);
+
+                    effect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+                foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
+                {
+                    if (instance.Model?.DirectXModel != null)
+                        continue;
+
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = new Vector4(1.0f, 0.4f, 0.4f, 1.0f);
+                        _device.SetRasterizerState(_rasterizerWireframe);
+
+                        var modelViewProjection = Matrix.Translation(room.WorldPos) * viewProjection;
+                        Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
+                            _device.Viewport.MinDepth,
+                            _device.Viewport.MaxDepth, modelViewProjection);
+                        Debug.AddString(instance.ToString(), screenPos);
+
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
                     }
@@ -1516,12 +1563,15 @@ namespace TombEditor.Controls
 
             Effect geometryEffect = _deviceManager.Effects["RoomGeometry"];
 
-            RoomGeometryInstance _lastObject = null;
+            ImportedGeometryInstance _lastObject = null;
 
-            for (int k = 0; k < RoomGeometryToDraw.Count; k++)
+            for (int k = 0; k < _roomGeometryToDraw.Count; k++)
             {
-                RoomGeometryInstance modelInfo = RoomGeometryToDraw[k];
-                RoomGeometryModel model = modelInfo.Model;
+                ImportedGeometryInstance modelInfo = _roomGeometryToDraw[k];
+                if (modelInfo.Model?.DirectXModel == null)
+                    continue;
+
+                ImportedGeometry.Model model = modelInfo.Model.DirectXModel;
 
                 //Debug.NumMoveables++;
 
@@ -1532,14 +1582,13 @@ namespace TombEditor.Controls
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    RoomGeometryMesh mesh = model.Meshes[i];
+                    ImportedGeometryMesh mesh = model.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
                     if (k == 0 && i == 0)
                     {
-                        _device.SetVertexInputLayout(
-                            VertexInputLayout.FromBuffer<RoomGeometryVertex>(0, mesh.VertexBuffer));
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
                     }
 
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -1553,7 +1602,16 @@ namespace TombEditor.Controls
                     if (mesh.Texture != null)
                     {
                         geometryEffect.Parameters["TextureEnabled"].SetValue(true);
-                        geometryEffect.Parameters["Texture"].SetResource(mesh.Texture);
+                        if (mesh.Texture is ImportedGeometryTexture)
+                        {
+                            geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)mesh.Texture).DirectXTexture);
+                            geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / mesh.Texture.Image.Width, 1.0f / mesh.Texture.Image.Height));
+                        }
+                        else
+                        {
+                            geometryEffect.Parameters["Texture"].SetResource(_textureAtlas);
+                            geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
+                        }
                         geometryEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
                     }
                     else
@@ -1562,7 +1620,7 @@ namespace TombEditor.Controls
                     }
 
                     geometryEffect.Techniques[0].Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.IndexCount, mesh.BaseIndex);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, mesh.Indices.Count, mesh.BaseIndex);
 
                     Debug.NumVerticesRooms += mesh.NumIndices;
                     Debug.NumTrianglesRooms += mesh.NumIndices / 3;
@@ -1750,13 +1808,13 @@ namespace TombEditor.Controls
         {
             _moveablesToDraw.Clear();
             _staticsToDraw.Clear();
-            RoomGeometryToDraw = new List<RoomGeometryInstance>();
+            _roomGeometryToDraw.Clear();
 
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
                 _moveablesToDraw.AddRange(_roomsToDraw[i].Objects.OfType<MoveableInstance>());
                 _staticsToDraw.AddRange(_roomsToDraw[i].Objects.OfType<StaticInstance>());
-                RoomGeometryToDraw.AddRange(_roomsToDraw[i].Objects.OfType<RoomGeometryInstance>());
+                _roomGeometryToDraw.AddRange(_roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>());
             }
 
             _moveablesToDraw.Sort(new ComparerMoveables(_editor.Level.Rooms));

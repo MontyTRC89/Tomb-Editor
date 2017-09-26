@@ -20,7 +20,7 @@ namespace TombEditor
 
     public interface IEditorObjectChangedEvent : IEditorEvent
     {
-        object Object { get; }
+        ObjectInstance Object { get; }
     }
 
     public class Editor
@@ -84,10 +84,11 @@ namespace TombEditor
                 ResetCamera();
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
+                LoadedImportedGeometriesChange();
                 LevelFileNameChange();
             }
         }
-        
+
         public class ActionChangedEvent : IEditorProperyChangedEvent
         {
             public EditorAction Previous { get; set; }
@@ -175,7 +176,7 @@ namespace TombEditor
                 return true;
             return (SelectedRoom != null) && (roomEvent.Room == SelectedRoom);
         }
-        
+
         public class SelectedObjectChangedEvent : IEditorProperyChangedEvent
         {
             public ObjectInstance Previous { get; set; }
@@ -268,7 +269,14 @@ namespace TombEditor
         {
             RaiseEvent(new LoadedTexturesChangedEvent { });
         }
-        
+
+        // This is invoked if the loaded imported geometries changed for the level.
+        public class LoadedImportedGeometriesChangedEvent : IEditorEvent { }
+        public void LoadedImportedGeometriesChange()
+        {
+            RaiseEvent(new LoadedImportedGeometriesChangedEvent { });
+        }
+
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomTextureChangedEvent : IEditorRoomChangedEvent
@@ -301,12 +309,12 @@ namespace TombEditor
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
         // "null" can be passed, if it is not determinable what room changed.
-        public class RoomListChangedEvent : IEditorEvent { } 
+        public class RoomListChangedEvent : IEditorEvent { }
         public void RoomListChange()
         {
             RaiseEvent(new RoomListChangedEvent { });
         }
-        
+
         // This is invoked for all changes to room flags, "Reverbration", ...
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomPropertiesChangedEvent : IEditorRoomChangedEvent
@@ -328,14 +336,14 @@ namespace TombEditor
         {
             RaiseEvent(new RoomSectorPropertiesChangedEvent { Room = room });
         }
-        
+
         // This is invoked for all changes to objects. (eg changing a light, changing a movable, moving a static, ...)
         // "null" can be passed, if it is not determinable what object changed.
         public class ObjectChangedEvent : IEditorObjectChangedEvent
         {
-            public object Object { get; set; }
+            public ObjectInstance Object { get; set; }
         }
-        public void ObjectChange(object object_)
+        public void ObjectChange(ObjectInstance object_)
         {
             RaiseEvent(new ObjectChangedEvent { Object = object_ });
         }
@@ -351,7 +359,7 @@ namespace TombEditor
         }
 
         // Center the camera inside the current room.
-        public class ResetCameraEvent : IEditorCameraEvent {}
+        public class ResetCameraEvent : IEditorCameraEvent { }
         public void ResetCamera()
         {
             RaiseEvent(new ResetCameraEvent { });
@@ -393,23 +401,32 @@ namespace TombEditor
 
         // Call this methode to easily change the settings of the level.
         // All required update methods will be invoked automatically.
-        public void UpdateLevelSettings(LevelSettings settings)
+        public void UpdateLevelSettings(LevelSettings newSettings)
         {
-            if ((_level == null) || settings == null)
+            if ((_level == null) || newSettings == null)
                 return;
-            LevelSettings oldSettings = _level.Settings;
-            _level.Settings = settings;
+
+            // Determine what will change when the new settings are applied
+            // This has to be done now, because the old state will be lost after the new settings are applied
+            bool importedGeometryChanged = !ImportedGeometry.AreListsEqual(newSettings.ImportedGeometries, _level.Settings.ImportedGeometries);
+            bool texturesChanged = !LevelTexture.AreListsEqual(newSettings.Textures, _level.Settings.Textures);
+            bool wadsChanged = newSettings.MakeAbsolute(newSettings.WadFilePath) != _level.Settings.MakeAbsolute(_level.Settings.WadFilePath);
+            bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
+
+            // Update the current settings
+            _level.ApplyNewLevelSettings(newSettings, (instance) => ObjectChange(instance));
 
             // Update state
-            LoadedTexturesChange();
+            if (importedGeometryChanged)
+                LoadedImportedGeometriesChange();
 
-            if (settings.MakeAbsolute(settings.WadFilePath) != oldSettings.MakeAbsolute(oldSettings.WadFilePath))
-            {
-                _level.ReloadObjectsTry();
+            if (texturesChanged)
+                LoadedTexturesChange();
+
+            if (wadsChanged)
                 LoadedWadsChange(_level.Wad);
-            }
 
-            if (settings.MakeAbsolute(settings.LevelFilePath) != oldSettings.MakeAbsolute(oldSettings.LevelFilePath))
+            if (levelFilenameChanged)
                 LevelFileNameChange();
         }
 

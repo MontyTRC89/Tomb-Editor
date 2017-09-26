@@ -29,23 +29,16 @@ namespace TombEditor.Controls
                     value.SelectionChanged += dataGridView_SelectionChanged;
             }
         }
-        
-        // Must return a suitable object if data binding is used, other a DataGridViewRow object must be returned. 
+
+        // Must return a suitable object if data binding is used, other a DataGridViewRow object must be returned.
         public Func<object> CreateNewRow;
-
-        public string NewName
-        {
-            get { return butNew.Text; }
-            set { butNew.Text = value; }
-        }
-
-
+        public Func<bool> DeleteRowCheckIfCancel = () => false;
 
         public DarkDataGridViewControls()
         {
             InitializeComponent();
         }
-        
+
         private void butNew_Click(object sender, EventArgs e)
         {
             // Create new row
@@ -66,7 +59,10 @@ namespace TombEditor.Controls
             if (DataGridView.SelectedRows.Count <= 0)
                 return;
 
-            // Get sorted selection 
+            if (DeleteRowCheckIfCancel())
+                return;
+
+            // Get sorted selection
             List<int> selectedRowIndices = DataGridView.SelectedRows.Cast<DataGridViewRow>().Select(row => row.Index).ToList();
             selectedRowIndices.Sort();
             selectedRowIndices.Reverse();
@@ -86,7 +82,7 @@ namespace TombEditor.Controls
             if (DataGridView.SelectedRows.Count <= 0)
                 return;
 
-            // Get sorted selection 
+            // Get sorted selection
             List<int> selectedRowIndices = DataGridView.SelectedRows.Cast<DataGridViewRow>().Select(row => row.Index).ToList();
             selectedRowIndices.Sort();
 
@@ -134,6 +130,34 @@ namespace TombEditor.Controls
             butUp.Enabled = DataGridView.SelectedRows.Count > 0;
             butDown.Enabled = DataGridView.SelectedRows.Count > 0;
             butDelete.Enabled = DataGridView.SelectedRows.Count > 0;
+        }
+
+        [DefaultValue("New")]
+        public string NewName
+        {
+            get { return butNew.Text; }
+            set { butNew.Text = value; }
+        }
+
+        [DefaultValue(true)]
+        public bool AllowUserMove
+        {
+            get { return butDown.Visible; }
+            set { butDown.Visible = butUp.Visible = value; }
+        }
+
+        [DefaultValue(true)]
+        public bool AllowUserDelete
+        {
+            get { return butDelete.Visible; }
+            set { butDelete.Visible = value; }
+        }
+
+        [DefaultValue(true)]
+        public bool AllowUserNew
+        {
+            get { return butNew.Visible; }
+            set { butNew.Visible = value; }
         }
     }
 }
