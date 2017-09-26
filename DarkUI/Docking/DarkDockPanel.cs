@@ -284,6 +284,7 @@ namespace DarkUI.Docking
 
                         groupState.VisibleContent = content.DockGroup.VisibleContent.SerializationKey;
                         groupState.Order = content.DockGroup.Order;
+                        groupState.Size = content.DockGroup.Size;
                     }
                 }
             }
@@ -332,11 +333,17 @@ namespace DarkUI.Docking
                         previousContent = content;
 
                         if (group.VisibleContent == contentKey)
+                        {
                             visibleContent = content;
+                        }
                     }
 
                     if (visibleContent != null)
+                    {
                         visibleContent.Select();
+                        visibleContent.DockGroup.Size = group.Size;
+                    }
+
                 }
             }
         }
