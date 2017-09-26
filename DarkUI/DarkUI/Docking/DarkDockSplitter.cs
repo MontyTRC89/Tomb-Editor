@@ -111,19 +111,21 @@ namespace DarkUI.Docking
 
         public void Move(Point difference)
         {
+            int newSize = 0;
+
             switch (_splitterType)
             {
                 case DarkSplitterType.Left:
-                    _control.Width += difference.X;
+                    _control.SetBounds(_control.Bounds.X - difference.X, _control.Bounds.Y, _control.Bounds.Width + difference.X, _control.Bounds.Height);
                     break;
                 case DarkSplitterType.Right:
-                    _control.Width -= difference.X;
+                    _control.SetBounds(_control.Bounds.X, _control.Bounds.Y, _control.Bounds.Width - difference.X, _control.Bounds.Height);
                     break;
                 case DarkSplitterType.Top:
-                    _control.Height += difference.Y;
+                    _control.SetBounds(_control.Bounds.X, _control.Bounds.Y - difference.Y, _control.Bounds.Width, _control.Bounds.Height + difference.Y);
                     break;
                 case DarkSplitterType.Bottom:
-                    _control.Height -= difference.Y;
+                    _control.SetBounds(_control.Bounds.X, _control.Bounds.Y, _control.Bounds.Width, _control.Bounds.Height - difference.Y);
                     break;
             }
 
