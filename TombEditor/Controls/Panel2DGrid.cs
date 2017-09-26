@@ -15,8 +15,8 @@ namespace TombEditor.Controls
 {
     public class Panel2DGrid : Panel
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger(); 
-        
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         private bool _doSectorSelection = false;
         private Editor _editor;
         private static readonly Pen _gridPen = Pens.Black;
@@ -41,15 +41,14 @@ namespace TombEditor.Controls
         private static readonly Brush _messageBackground = new SolidBrush(Color.Yellow);
         private static readonly Pen _messagePen = Pens.Black;
         private const float _textMargin = 2.0f;
-        private float _gridStep => Math.Min(Width, Height) / Room.MaxRoomDimensions;
+        private float _gridSize => Math.Min(ClientSize.Width, ClientSize.Height);
+        private float _gridStep => _gridSize / Room.MaxRoomDimensions;
 
         public Panel2DGrid()
         {
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-            this.UpdateStyles();
+            DoubleBuffered = true;
         }
 
         protected override void Dispose(bool disposing)
@@ -58,7 +57,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised -= EditorEventRaised;
             base.Dispose(disposing);
         }
-        
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update drawing
@@ -83,27 +82,37 @@ namespace TombEditor.Controls
             return (e.Previous is SectorBasedObjectInstance) || (e.Current is SectorBasedObjectInstance);
         }
 
-        private RectangleF getVisualRoomArea()
+        private RectangleF getVisualAreaTotal()
+        {
+            return new RectangleF(
+                (ClientSize.Width - _gridSize) * 0.5f,
+                (ClientSize.Height - _gridSize) * 0.5f,
+                _gridSize,
+                _gridSize);
+        }
+
+        private RectangleF getVisualAreaRoom()
         {
             Room currentRoom = _editor.SelectedRoom;
+            RectangleF totalArea = getVisualAreaTotal();
+
             return new RectangleF(
-                _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumXSectors) / 2),
-                _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumZSectors) / 2),
+                totalArea.X + _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumXSectors) / 2),
+                totalArea.Y + _gridStep * ((Room.MaxRoomDimensions - currentRoom.NumZSectors) / 2),
                 _gridStep * currentRoom.NumXSectors,
                 _gridStep * currentRoom.NumZSectors);
         }
 
-        public PointF toVisualCoord(SharpDX.DrawingPoint point)
+        public PointF toVisualCoord(SharpDX.DrawingPoint sectorCoord)
         {
-            RectangleF roomArea = getVisualRoomArea();
-            return new PointF(point.X * _gridStep + roomArea.X, roomArea.Bottom - (point.Y + 1) * _gridStep);
+            RectangleF roomArea = getVisualAreaRoom();
+            return new PointF(sectorCoord.X * _gridStep + roomArea.X, roomArea.Bottom - (sectorCoord.Y + 1) * _gridStep);
         }
 
-        public RectangleF ToVisualCoord(SharpDX.Rectangle area)
+        public RectangleF ToVisualCoord(SharpDX.Rectangle sectorArea)
         {
-            RectangleF roomArea = getVisualRoomArea();
-            PointF convertedPoint0 = toVisualCoord(new SharpDX.DrawingPoint(area.Left, area.Top));
-            PointF convertedPoint1 = toVisualCoord(new SharpDX.DrawingPoint(area.Right, area.Bottom));
+            PointF convertedPoint0 = toVisualCoord(new SharpDX.DrawingPoint(sectorArea.Left, sectorArea.Top));
+            PointF convertedPoint1 = toVisualCoord(new SharpDX.DrawingPoint(sectorArea.Right, sectorArea.Bottom));
             return RectangleF.FromLTRB(
                 Math.Min(convertedPoint0.X, convertedPoint1.X), Math.Min(convertedPoint0.Y, convertedPoint1.Y),
                 Math.Max(convertedPoint0.X, convertedPoint1.X) + _gridStep, Math.Max(convertedPoint0.Y, convertedPoint1.Y) + _gridStep);
@@ -111,16 +120,16 @@ namespace TombEditor.Controls
 
         public SharpDX.DrawingPoint FromVisualCoord(PointF point)
         {
-            RectangleF roomArea = getVisualRoomArea();
+            RectangleF roomArea = getVisualAreaRoom();
             return new SharpDX.DrawingPoint(
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumXSectors - 1, (point.X - roomArea.X) / _gridStep)),
                 (int)Math.Max(0, Math.Min(_editor.SelectedRoom.NumZSectors - 1, (roomArea.Bottom - point.Y) / _gridStep)));
         }
-        
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            
+
             if ((_editor == null) || (_editor.SelectedRoom == null))
                 return;
 
@@ -138,7 +147,7 @@ namespace TombEditor.Controls
             // Choose action
             if (e.Button == MouseButtons.Left)
             {
-                if ((selectedSectorObject != null) && 
+                if ((selectedSectorObject != null) &&
                     (selectedSectorObject.Room == _editor.SelectedRoom) &&
                     selectedSectorObject.Area.Contains(sectorPos))
                 {
@@ -180,7 +189,7 @@ namespace TombEditor.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            
+
             if ((_editor?.SelectedRoom == null) || _editor.Action.RelocateCameraActive)
                 return;
 
@@ -198,32 +207,27 @@ namespace TombEditor.Controls
         protected override void OnResize(EventArgs eventargs)
         {
             base.OnResize(eventargs);
-
-            if (Width < Height)
-                Height = Width;
-            else
-                Width = Height;
-
-            Invalidate(); // FIXME: Didn't help!
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             try
             {
-                e.Graphics.Clear(Color.White);
-
                 if ((_editor == null) || (_editor.SelectedRoom == null))
                     return;
 
                 Room currentRoom = _editor.SelectedRoom;
-                RectangleF roomArea = getVisualRoomArea();
-                
+                RectangleF totalArea = getVisualAreaTotal();
+                RectangleF roomArea = getVisualAreaRoom();
+
+                e.Graphics.FillRectangle(Brushes.White, totalArea);
+
                 // Draw tiles
                 for (int x = 0; x < currentRoom.NumXSectors; x++)
                     for (int z = 0; z < currentRoom.NumZSectors; z++)
                     {
-                        RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep + 1, _gridStep + 1);
+                        RectangleF rectangle = new RectangleF(roomArea.X + x * _gridStep, roomArea.Y + (currentRoom.NumZSectors - 1 - z) * _gridStep, _gridStep, _gridStep);
                         Block block = currentRoom.Blocks[x, z];
 
                         // Draw floor tile
@@ -265,12 +269,12 @@ namespace TombEditor.Controls
                             e.Graphics.DrawRectangle(_triggerTriggererPen, beetleTriggerRectangle);
                     }
 
-                // Draw black grid lines           
-                for (float x = 0; x < Width; x += _gridStep)
-                    e.Graphics.DrawLine(_gridPen, x, 0, x, 320);
+                // Draw black grid lines
+                for (int x = 0; x <= Room.MaxRoomDimensions; ++x)
+                    e.Graphics.DrawLine(_gridPen, totalArea.X + x * _gridStep, totalArea.Y, totalArea.X + x * _gridStep, totalArea.Y + _gridSize);
 
-                for (float y = 0; y < Height; y += _gridStep)
-                    e.Graphics.DrawLine(_gridPen, 0, y, 320, y);
+                for (int y = 0; y <= Room.MaxRoomDimensions; ++y)
+                    e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * _gridStep, totalArea.X + _gridSize, totalArea.Y + y * _gridStep);
 
                 // Draw selection
                 if (_editor.SelectedSectors.Valid)
@@ -293,7 +297,7 @@ namespace TombEditor.Controls
 
         private void DrawMessage(PaintEventArgs e, string text, RectangleF visualArea)
         {
-            SizeF textSize = e.Graphics.MeasureString(text, _font, this.Width, StringFormat.GenericDefault);
+            SizeF textSize = e.Graphics.MeasureString(text, _font, ClientSize.Width, StringFormat.GenericDefault);
             textSize += new SizeF(_textMargin * 2, _textMargin * 2);
 
             // Choose appropriate space that does not occlude 'visualArea' if possible
@@ -309,10 +313,10 @@ namespace TombEditor.Controls
             { // Place message above
                 textRectangle = new RectangleF(new PointF(posX, visualArea.Y - textSize.Height - _textMargin), textSize);
             }
-            
+
             // Move the area so that it is always visible
             textRectangle.Offset(-Math.Min(textRectangle.Left, 0.0f), -Math.Min(textRectangle.Top, 0.0f));
-            textRectangle.Offset(-Math.Max(textRectangle.Right - Width, 0.0f), -Math.Max(textRectangle.Bottom - Height, 0.0f));
+            textRectangle.Offset(-Math.Max(textRectangle.Right - ClientSize.Width, 0.0f), -Math.Max(textRectangle.Bottom - Height, 0.0f));
 
             // Draw the message
             e.Graphics.FillRectangle(_messageBackground, textRectangle);
