@@ -195,6 +195,18 @@ namespace TombEditor.Controls
             _doSectorSelection = false;
         }
 
+        protected override void OnResize(EventArgs eventargs)
+        {
+            base.OnResize(eventargs);
+
+            if (Width < Height)
+                Height = Width;
+            else
+                Width = Height;
+
+            Invalidate(); // FIXME: Didn't help!
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             try
