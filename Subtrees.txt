@@ -8,3 +8,8 @@ Subtree https://github.com/ActuallyaDeviloper/DarkUI
 
     Push
         git subtree push --prefix DarkUI https://github.com/ActuallyaDeviloper/DarkUI.git master
+
+    Push with remote
+        git remote add UpstreamDarkUI https://github.com/ActuallyaDeviloper/DarkUI.git
+        git fetch UpstreamDarkUI
+        git subtree push --prefix DarkUI UpstreamDarkUI master
