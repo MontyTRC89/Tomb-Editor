@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -37,27 +37,27 @@
   <ItemGroup>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.dll</HintPath>
+      <HintPath>..\Libs\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D11, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.Direct3D11.dll</HintPath>
+      <HintPath>..\Libs\SharpDX.Direct3D11.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.DXGI.dll</HintPath>
+      <HintPath>..\Libs\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Toolkit, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.Toolkit.dll</HintPath>
+      <HintPath>..\Libs\SharpDX.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Toolkit.Compiler, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.Toolkit.Compiler.dll</HintPath>
+      <HintPath>..\Libs\SharpDX.Toolkit.Compiler.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Toolkit.Graphics, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SharpDX.Toolkit.Graphics.dll</HintPath>
+      <HintPath>..\Libs\SharpDX.Toolkit.Graphics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
