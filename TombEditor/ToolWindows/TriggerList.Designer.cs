@@ -32,7 +32,7 @@
             this.panelTriggerTools.Controls.Add(this.butEditTrigger);
             this.panelTriggerTools.Controls.Add(this.butDeleteTrigger);
             this.panelTriggerTools.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelTriggerTools.Location = new System.Drawing.Point(0, 305);
+            this.panelTriggerTools.Location = new System.Drawing.Point(0, 143);
             this.panelTriggerTools.Name = "panelTriggerTools";
             this.panelTriggerTools.Size = new System.Drawing.Size(279, 31);
             this.panelTriggerTools.TabIndex = 57;
@@ -40,7 +40,7 @@
             // butAddTrigger
             // 
             this.butAddTrigger.Image = global::TombEditor.Properties.Resources.plus_math_16;
-            this.butAddTrigger.Location = new System.Drawing.Point(3, 3);
+            this.butAddTrigger.Location = new System.Drawing.Point(3, 4);
             this.butAddTrigger.Name = "butAddTrigger";
             this.butAddTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
@@ -50,7 +50,7 @@
             // butEditTrigger
             // 
             this.butEditTrigger.Image = global::TombEditor.Properties.Resources.edit_16;
-            this.butEditTrigger.Location = new System.Drawing.Point(33, 3);
+            this.butEditTrigger.Location = new System.Drawing.Point(33, 4);
             this.butEditTrigger.Name = "butEditTrigger";
             this.butEditTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butEditTrigger.Size = new System.Drawing.Size(24, 24);
@@ -74,7 +74,7 @@
             this.panelTriggerList.Location = new System.Drawing.Point(0, 25);
             this.panelTriggerList.Name = "panelTriggerList";
             this.panelTriggerList.Padding = new System.Windows.Forms.Padding(2);
-            this.panelTriggerList.Size = new System.Drawing.Size(279, 280);
+            this.panelTriggerList.Size = new System.Drawing.Size(279, 118);
             this.panelTriggerList.TabIndex = 58;
             // 
             // lstTriggers
@@ -89,7 +89,7 @@
             this.lstTriggers.ItemHeight = 18;
             this.lstTriggers.Location = new System.Drawing.Point(2, 2);
             this.lstTriggers.Name = "lstTriggers";
-            this.lstTriggers.Size = new System.Drawing.Size(275, 276);
+            this.lstTriggers.Size = new System.Drawing.Size(275, 114);
             this.lstTriggers.TabIndex = 56;
             this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
             // 
@@ -103,9 +103,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Triggers";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "TriggerList";
             this.SerializationKey = "TriggerList";
-            this.Size = new System.Drawing.Size(279, 336);
+            this.Size = new System.Drawing.Size(279, 174);
             this.panelTriggerTools.ResumeLayout(false);
             this.panelTriggerList.ResumeLayout(false);
             this.ResumeLayout(false);

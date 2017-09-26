@@ -90,7 +90,7 @@
             // butItemsBack
             // 
             this.butItemsBack.Image = global::TombEditor.Properties.Resources.angle_left_16;
-            this.butItemsBack.Location = new System.Drawing.Point(2, 0);
+            this.butItemsBack.Location = new System.Drawing.Point(1, 0);
             this.butItemsBack.Name = "butItemsBack";
             this.butItemsBack.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsBack.Size = new System.Drawing.Size(24, 24);
@@ -134,9 +134,9 @@
             this.comboItems.ForeColor = System.Drawing.Color.White;
             this.comboItems.FormattingEnabled = true;
             this.comboItems.ItemHeight = 18;
-            this.comboItems.Location = new System.Drawing.Point(31, 2);
+            this.comboItems.Location = new System.Drawing.Point(29, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(192, 24);
+            this.comboItems.Size = new System.Drawing.Size(196, 24);
             this.comboItems.TabIndex = 66;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             // 
@@ -145,15 +145,15 @@
             this.panelHeaderRight.Controls.Add(this.butItemsNext);
             this.panelHeaderRight.Controls.Add(this.butAddItem);
             this.panelHeaderRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelHeaderRight.Location = new System.Drawing.Point(223, 2);
+            this.panelHeaderRight.Location = new System.Drawing.Point(225, 2);
             this.panelHeaderRight.Name = "panelHeaderRight";
-            this.panelHeaderRight.Size = new System.Drawing.Size(61, 25);
+            this.panelHeaderRight.Size = new System.Drawing.Size(59, 25);
             this.panelHeaderRight.TabIndex = 76;
             // 
             // butItemsNext
             // 
             this.butItemsNext.Image = global::TombEditor.Properties.Resources.angle_right_16;
-            this.butItemsNext.Location = new System.Drawing.Point(5, 0);
+            this.butItemsNext.Location = new System.Drawing.Point(3, 0);
             this.butItemsNext.Name = "butItemsNext";
             this.butItemsNext.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsNext.Size = new System.Drawing.Size(24, 24);
@@ -163,7 +163,7 @@
             // butAddItem
             // 
             this.butAddItem.Image = global::TombEditor.Properties.Resources.plus_math_16;
-            this.butAddItem.Location = new System.Drawing.Point(35, 0);
+            this.butAddItem.Location = new System.Drawing.Point(33, 0);
             this.butAddItem.Name = "butAddItem";
             this.butAddItem.Padding = new System.Windows.Forms.Padding(5);
             this.butAddItem.Size = new System.Drawing.Size(24, 24);
@@ -176,7 +176,7 @@
             this.panelHeaderLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelHeaderLeft.Location = new System.Drawing.Point(1, 2);
             this.panelHeaderLeft.Name = "panelHeaderLeft";
-            this.panelHeaderLeft.Size = new System.Drawing.Size(30, 25);
+            this.panelHeaderLeft.Size = new System.Drawing.Size(28, 25);
             this.panelHeaderLeft.TabIndex = 75;
             // 
             // panelRight
@@ -231,7 +231,7 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Object Browser";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 259);
+            this.MinimumSize = new System.Drawing.Size(237, 168);
             this.Name = "ObjectBrowser";
             this.SerializationKey = "ObjectBrowser";
             this.Size = new System.Drawing.Size(284, 259);

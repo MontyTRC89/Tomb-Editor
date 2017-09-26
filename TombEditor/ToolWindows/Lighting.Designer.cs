@@ -104,7 +104,7 @@
             // 
             this.panelLightColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelLightColor.Enabled = false;
-            this.panelLightColor.Location = new System.Drawing.Point(198, 27);
+            this.panelLightColor.Location = new System.Drawing.Point(198, 28);
             this.panelLightColor.Name = "panelLightColor";
             this.panelLightColor.Size = new System.Drawing.Size(60, 22);
             this.panelLightColor.TabIndex = 69;
@@ -246,7 +246,7 @@
             // 
             this.butAddFogBulb.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddFogBulb.Image = global::TombEditor.Properties.Resources.Fog_16;
-            this.butAddFogBulb.Location = new System.Drawing.Point(77, 101);
+            this.butAddFogBulb.Location = new System.Drawing.Point(77, 102);
             this.butAddFogBulb.Name = "butAddFogBulb";
             this.butAddFogBulb.Padding = new System.Windows.Forms.Padding(5);
             this.butAddFogBulb.Size = new System.Drawing.Size(68, 23);
@@ -259,7 +259,7 @@
             // 
             this.butAddEffectLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddEffectLight.Image = global::TombEditor.Properties.Resources.Effect_16;
-            this.butAddEffectLight.Location = new System.Drawing.Point(77, 72);
+            this.butAddEffectLight.Location = new System.Drawing.Point(77, 73);
             this.butAddEffectLight.Name = "butAddEffectLight";
             this.butAddEffectLight.Padding = new System.Windows.Forms.Padding(5);
             this.butAddEffectLight.Size = new System.Drawing.Size(68, 23);
@@ -272,7 +272,7 @@
             // 
             this.butAddSpotLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddSpotLight.Image = global::TombEditor.Properties.Resources.Spotlight_16;
-            this.butAddSpotLight.Location = new System.Drawing.Point(77, 43);
+            this.butAddSpotLight.Location = new System.Drawing.Point(77, 44);
             this.butAddSpotLight.Name = "butAddSpotLight";
             this.butAddSpotLight.Padding = new System.Windows.Forms.Padding(5);
             this.butAddSpotLight.Size = new System.Drawing.Size(68, 23);
@@ -285,7 +285,7 @@
             // 
             this.butAddSun.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddSun.Image = global::TombEditor.Properties.Resources.sun_16;
-            this.butAddSun.Location = new System.Drawing.Point(3, 101);
+            this.butAddSun.Location = new System.Drawing.Point(3, 102);
             this.butAddSun.Name = "butAddSun";
             this.butAddSun.Padding = new System.Windows.Forms.Padding(5);
             this.butAddSun.Size = new System.Drawing.Size(68, 23);
@@ -298,7 +298,7 @@
             // 
             this.butAddShadow.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddShadow.Image = global::TombEditor.Properties.Resources.Shadow_16;
-            this.butAddShadow.Location = new System.Drawing.Point(3, 72);
+            this.butAddShadow.Location = new System.Drawing.Point(3, 73);
             this.butAddShadow.Name = "butAddShadow";
             this.butAddShadow.Padding = new System.Windows.Forms.Padding(5);
             this.butAddShadow.Size = new System.Drawing.Size(68, 23);
@@ -311,7 +311,7 @@
             // 
             this.butAddPointLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddPointLight.Image = global::TombEditor.Properties.Resources.LightPoint_16;
-            this.butAddPointLight.Location = new System.Drawing.Point(3, 43);
+            this.butAddPointLight.Location = new System.Drawing.Point(3, 44);
             this.butAddPointLight.Name = "butAddPointLight";
             this.butAddPointLight.Padding = new System.Windows.Forms.Padding(5);
             this.butAddPointLight.Size = new System.Drawing.Size(68, 23);
@@ -325,7 +325,7 @@
             this.darkLabel5.AutoSize = true;
             this.darkLabel5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(0, 27);
+            this.darkLabel5.Location = new System.Drawing.Point(1, 27);
             this.darkLabel5.Name = "darkLabel5";
             this.darkLabel5.Size = new System.Drawing.Size(55, 13);
             this.darkLabel5.TabIndex = 61;
@@ -352,7 +352,7 @@
             0,
             0,
             131072});
-            this.numIntensity.Location = new System.Drawing.Point(198, 52);
+            this.numIntensity.Location = new System.Drawing.Point(198, 53);
             this.numIntensity.MousewheelSingleIncrement = true;
             this.numIntensity.Name = "numIntensity";
             this.numIntensity.Size = new System.Drawing.Size(60, 22);
@@ -419,7 +419,7 @@
             0,
             0,
             0});
-            this.numInnerAngle.Location = new System.Drawing.Point(302, 27);
+            this.numInnerAngle.Location = new System.Drawing.Point(302, 28);
             this.numInnerAngle.MousewheelSingleIncrement = true;
             this.numInnerAngle.Name = "numInnerAngle";
             this.numInnerAngle.Size = new System.Drawing.Size(60, 22);
@@ -438,7 +438,7 @@
             0,
             0,
             0});
-            this.numOuterAngle.Location = new System.Drawing.Point(302, 52);
+            this.numOuterAngle.Location = new System.Drawing.Point(302, 53);
             this.numOuterAngle.MousewheelSingleIncrement = true;
             this.numOuterAngle.Name = "numOuterAngle";
             this.numOuterAngle.Size = new System.Drawing.Size(60, 22);
@@ -457,7 +457,7 @@
             0,
             0,
             0});
-            this.numDirectionX.Location = new System.Drawing.Point(302, 77);
+            this.numDirectionX.Location = new System.Drawing.Point(302, 78);
             this.numDirectionX.Maximum = new decimal(new int[] {
             90,
             0,
@@ -486,7 +486,7 @@
             0,
             0,
             0});
-            this.numDirectionY.Location = new System.Drawing.Point(302, 102);
+            this.numDirectionY.Location = new System.Drawing.Point(302, 103);
             this.numDirectionY.Maximum = new decimal(new int[] {
             360,
             0,
