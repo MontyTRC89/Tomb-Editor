@@ -34,9 +34,9 @@
             this.panel10 = new System.Windows.Forms.Panel();
             this.soundsIgnoreMissingSounds = new DarkUI.Controls.DarkCheckBox();
             this.soundDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
-            this.soundDataGridView = new TombEditor.Controls.DarkDataGridView();
+            this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.soundDataGridViewColumnSearch = new TombEditor.Controls.DarkDataGridViewButtonColumn();
+            this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.gameLevelFilePathBut = new DarkUI.Controls.DarkButton();
@@ -83,7 +83,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.pathVariablesDataGridView = new TombEditor.Controls.DarkDataGridView();
+            this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.pathVariablesDataGridViewContextMenu = new DarkUI.Controls.DarkContextMenu();
             this.pathVariablesDataGridViewContextMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -895,10 +895,10 @@
         private System.Windows.Forms.ToolStripMenuItem pathVariablesDataGridViewContextMenuCopy;
         private System.Windows.Forms.ToolTip pathToolTip;
         private Controls.DarkDataGridViewControls soundDataGridViewControls;
-        private Controls.DarkDataGridView soundDataGridView;
+        private DarkUI.Controls.DarkDataGridView soundDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
-        private Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
-        private Controls.DarkDataGridView pathVariablesDataGridView;
+        private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
+        private DarkUI.Controls.DarkDataGridView pathVariablesDataGridView;
         private DarkUI.Controls.DarkCheckBox soundsIgnoreMissingSounds;
         private DarkUI.Controls.DarkCheckBox gameExecutableSuppressAskingForOptionsCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
