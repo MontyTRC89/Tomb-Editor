@@ -28,7 +28,7 @@
             this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(288, 733);
+            this.panelTextureMap.Size = new System.Drawing.Size(288, 765);
             this.panelTextureMap.TabIndex = 9;
             // 
             // panelTextureTools
@@ -37,9 +37,9 @@
             this.panelTextureTools.Controls.Add(this.butAnimationRanges);
             this.panelTextureTools.Controls.Add(this.butTextureSounds);
             this.panelTextureTools.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelTextureTools.Location = new System.Drawing.Point(0, 788);
+            this.panelTextureTools.Location = new System.Drawing.Point(0, 790);
             this.panelTextureTools.Name = "panelTextureTools";
-            this.panelTextureTools.Size = new System.Drawing.Size(738, 31);
+            this.panelTextureTools.Size = new System.Drawing.Size(288, 29);
             this.panelTextureTools.TabIndex = 10;
             // 
             // butBump
@@ -67,10 +67,10 @@
             // butTextureSounds
             // 
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTextureSounds.Location = new System.Drawing.Point(4, 4);
+            this.butTextureSounds.Location = new System.Drawing.Point(2, 4);
             this.butTextureSounds.Name = "butTextureSounds";
             this.butTextureSounds.Padding = new System.Windows.Forms.Padding(5);
-            this.butTextureSounds.Size = new System.Drawing.Size(101, 23);
+            this.butTextureSounds.Size = new System.Drawing.Size(103, 23);
             this.butTextureSounds.TabIndex = 0;
             this.butTextureSounds.Text = "Texture sounds";
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
@@ -84,6 +84,7 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Right;
             this.DockText = "Texture Panel";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "TexturePanel";
             this.SerializationKey = "TexturePanel";
             this.Size = new System.Drawing.Size(288, 819);

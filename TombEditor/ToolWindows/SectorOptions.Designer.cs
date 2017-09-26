@@ -40,10 +40,10 @@
             // 
             this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
-            this.butDiagonalWall.Location = new System.Drawing.Point(189, 254);
+            this.butDiagonalWall.Location = new System.Drawing.Point(193, 254);
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalWall.Size = new System.Drawing.Size(92, 23);
+            this.butDiagonalWall.Size = new System.Drawing.Size(88, 23);
             this.butDiagonalWall.TabIndex = 108;
             this.butDiagonalWall.Text = "Diag. Wall";
             this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -53,10 +53,10 @@
             // 
             this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalCeiling.Location = new System.Drawing.Point(95, 254);
+            this.butDiagonalCeiling.Location = new System.Drawing.Point(98, 254);
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
             this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalCeiling.Size = new System.Drawing.Size(85, 23);
+            this.butDiagonalCeiling.Size = new System.Drawing.Size(89, 23);
             this.butDiagonalCeiling.TabIndex = 107;
             this.butDiagonalCeiling.Text = "Diag. CE";
             this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -66,10 +66,10 @@
             // 
             this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
-            this.butDiagonalFloor.Location = new System.Drawing.Point(5, 254);
+            this.butDiagonalFloor.Location = new System.Drawing.Point(3, 254);
             this.butDiagonalFloor.Name = "butDiagonalFloor";
             this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalFloor.Size = new System.Drawing.Size(85, 23);
+            this.butDiagonalFloor.Size = new System.Drawing.Size(89, 23);
             this.butDiagonalFloor.TabIndex = 106;
             this.butDiagonalFloor.Text = "Diag. FL";
             this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -307,10 +307,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Left;
             this.DockText = "Sector Options";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(284, 284);
+            this.MinimumSize = new System.Drawing.Size(284, 280);
             this.Name = "SectorOptions";
             this.SerializationKey = "SectorOptions";
-            this.Size = new System.Drawing.Size(284, 284);
+            this.Size = new System.Drawing.Size(284, 280);
             this.ResumeLayout(false);
 
         }

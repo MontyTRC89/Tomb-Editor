@@ -68,7 +68,8 @@ namespace TombEditor
                         {
                             Contents = new List<string> { "MainView" },
                             VisibleContent = "MainView",
-                            Order = 0
+                            Order = 0,
+                            Size = new Size(0 ,0)
                         }
                     }
                 },
@@ -82,25 +83,29 @@ namespace TombEditor
                         {
                             Contents = new List<string> { "SectorOptions" },
                             VisibleContent = "SectorOptions",
-                            Order = 0
+                            Order = 0,
+                            Size = new Size(285,280)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "RoomOptions" },
                             VisibleContent = "RoomOptions",
-                            Order = 1
+                            Order = 1,
+                            Size = new Size(285,211)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "ObjectBrowser" },
                             VisibleContent = "ObjectBrowser",
-                            Order = 2
+                            Order = 2,
+                            Size = new Size(285,259)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "TriggerList" },
                             VisibleContent = "TriggerList",
-                            Order = 3
+                            Order = 3,
+                            Size = new Size(285,174)
                         }
                     }
                 },
@@ -114,7 +119,8 @@ namespace TombEditor
                         {
                             Contents = new List<string> { "TexturePanel" },
                             VisibleContent = "TexturePanel",
-                            Order = 0
+                            Order = 0,
+                            Size = new Size(285,700)
                         }
                     }
                 },
@@ -128,13 +134,15 @@ namespace TombEditor
                         {
                             Contents = new List<string> { "Lighting" },
                             VisibleContent = "Lighting",
-                            Order = 0
+                            Order = 0,
+                            Size = new Size(442,134)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "Palette" },
                             VisibleContent = "Palette",
-                            Order = 1
+                            Order = 1,
+                            Size = new Size(645,134)
                         }
                     }
                 }
