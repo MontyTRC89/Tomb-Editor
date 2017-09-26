@@ -130,9 +130,6 @@
     <Compile Include="Controls\DarkDataGridViewControls.Designer.cs">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DarkDataGridView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\DarkScrollBarC.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -321,9 +318,6 @@
     <Compile Include="Geometry\StaticInstance.cs" />
     <Compile Include="Geometry\TriggerInstance.cs" />
     <Compile Include="TexturePackerTest.cs" />
-    <EmbeddedResource Include="Controls\DarkDataGridView.resx">
-      <DependentUpon>DarkDataGridView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\Lighting.resx">
       <DependentUpon>Lighting.cs</DependentUpon>
     </EmbeddedResource>

@@ -8,15 +8,12 @@ using System.Windows.Forms;
 using static System.Windows.Forms.DataGridView;
 using System.Collections;
 using System.Drawing.Design;
-using DarkUI.Controls;
 
-// See also:
-//https://github.com/RobinPerris/DarkUI/blob/master/DarkUI/Controls/DarkScrollBase.cs
-using static DarkUI.Controls.DarkScrollBase;
 using System.Reflection;
 using System.Drawing.Drawing2D;
+using DarkUI.Config;
 
-namespace TombEditor.Controls
+namespace DarkUI.Controls
 {
     public partial class DarkDataGridView : UserControl, ISupportInitialize
     {
@@ -42,12 +39,12 @@ namespace TombEditor.Controls
             return new DataGridViewCellStyle
             {
                 // Darker colors:
-                // BackColor = isOdd ? DarkUI.Config.Colors.MediumBackground : DarkUI.Config.Colors.DarkBackground,
-                BackColor = isHeader ? DarkUI.Config.Colors.MediumBackground :
-                        (isOdd ? DarkUI.Config.Colors.GreyBackground : DarkUI.Config.Colors.HeaderBackground),
-                ForeColor = DarkUI.Config.Colors.LightText,
-                SelectionBackColor = isFocused ? DarkUI.Config.Colors.BlueSelection : DarkUI.Config.Colors.GreySelection,
-                SelectionForeColor = DarkUI.Config.Colors.LightText,
+                // BackColor = isOdd ? Colors.MediumBackground : Colors.DarkBackground,
+                BackColor = isHeader ? Colors.MediumBackground :
+                        (isOdd ? Colors.GreyBackground : Colors.HeaderBackground),
+                ForeColor = Colors.LightText,
+                SelectionBackColor = isFocused ? Colors.BlueSelection : Colors.GreySelection,
+                SelectionForeColor = Colors.LightText,
             };
         }
 
@@ -62,7 +59,7 @@ namespace TombEditor.Controls
         public DarkDataGridView()
         {
             Name = "DarkDataGridView";
-            OutlineColor = DarkUI.Config.Colors.LightBorder;
+            OutlineColor = Colors.LightBorder;
 
             // Configure inner data grid view
             _base.Name = "baseView";
@@ -76,11 +73,11 @@ namespace TombEditor.Controls
             _base.ScrollBars = ScrollBars.None;
             _base.EnableHeadersVisualStyles = false;
             _base.AllowDrop = true;
-            _dataGridViewDoubleBuffered.SetValue(_base, true);
+            _dataGridViewDoubleBuffered.SetValue(_base, true, null);
 
-            _base.BackgroundColor = DarkUI.Config.Colors.GreyBackground;
+            _base.BackgroundColor = Colors.GreyBackground;
             _base.BackColor = _base.BackgroundColor;
-            _base.GridColor = DarkUI.Config.Colors.DarkBorder;
+            _base.GridColor = Colors.DarkBorder;
             _base.DefaultCellStyle = _cellStyleUnfocusedEven;
             _base.AlternatingRowsDefaultCellStyle = _cellStyleUnfocusedOdd;
             _base.ColumnHeadersDefaultCellStyle = _cellStyleHeader;
@@ -106,12 +103,12 @@ namespace TombEditor.Controls
             _base.Scroll += BaseScrolled;
 
             // Configure scroll bars
-            _vScrollBar.BackColor = DarkUI.Config.Colors.MediumBackground;
+            _vScrollBar.BackColor = Colors.MediumBackground;
             _vScrollBar.Minimum = 0;
             _vScrollBar.Maximum = 0;
             _vScrollBar.ValueChanged += _vScrollBar_ValueChanged;
 
-            _hScrollBar.BackColor = DarkUI.Config.Colors.MediumBackground;
+            _hScrollBar.BackColor = Colors.MediumBackground;
             _hScrollBar.Minimum = 0;
             _hScrollBar.Maximum = 0;
             _hScrollBar.ValueChanged += _hScrollBar_ValueChanged;
@@ -221,7 +218,7 @@ namespace TombEditor.Controls
             else
                 return cellBounds.Y;
         }
-        
+
         private void BaseMouseMove(object sender, MouseEventArgs e)
         {
             if (AllowUserToDragDropRows && !IsCurrentCellInEditMode &&
@@ -241,7 +238,7 @@ namespace TombEditor.Controls
 
         private void BaseDragEnter(object sender, DragEventArgs e)
         {
-            // Don't call the base to not cancel the drag drop operation 
+            // Don't call the base to not cancel the drag drop operation
             e.Effect = DragDropEffects.All;
         }
 
@@ -362,7 +359,7 @@ namespace TombEditor.Controls
         {
             _base.FirstDisplayedScrollingRowIndex = Math.Max(0, Math.Min(_base.Rows.Count - 1, e.Value));
         }
-    
+
         private void BaseScrolled(object sender, ScrollEventArgs e)
         {
             if (_hScrollBar.Value != _base.HorizontalScrollingOffset)
@@ -403,7 +400,7 @@ namespace TombEditor.Controls
                     return result;
                 ++result;
             }
-            
+
             return result;
         }
 
@@ -455,7 +452,7 @@ namespace TombEditor.Controls
 
                     // Update layout
                     _base.Bounds = baseBounds;
-                    
+
                     if (rowScrollVisible)
                         _vScrollBar.Bounds = vScrollBarBounds;
                     _vScrollBar.Visible = rowScrollVisible;
@@ -492,14 +489,14 @@ namespace TombEditor.Controls
                 return totalColumnsWidth;
             }
         }
-        
+
         [ReadOnly(true)]
         public Color OutlineColor
         {
             get { return base.BackColor; }
             set { base.BackColor = value; }
         }
-        
+
         [DefaultValue(ScrollBars.Both)]
         public ScrollBars ScrollBars
         {
@@ -512,7 +509,7 @@ namespace TombEditor.Controls
                 UpdateScrollBarLayout();
             }
         }
-        
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DataGridViewCell this[int columnIndex, int rowIndex]
@@ -1024,7 +1021,7 @@ namespace TombEditor.Controls
         private bool? _enabled;
 
         [Browsable(false)]
-        public ButtonState ButtonState => (ButtonState)_buttonState.GetValue(this);
+        public ButtonState ButtonState => (ButtonState)_buttonState.GetValue(this, null);
 
         [DefaultValue(false)]
         public bool Enabled
@@ -1103,21 +1100,21 @@ namespace TombEditor.Controls
 
             // Choose button colors
             Color textColor = cellStyle.ForeColor;
-            Color borderColor = DarkUI.Config.Colors.GreySelection;
-            Color fillColor = DarkUI.Config.Colors.GreyBackground;
+            Color borderColor = Colors.GreySelection;
+            Color fillColor = Colors.GreyBackground;
 
             if (DataGridView.Focused && (DataGridView.CurrentCellAddress == new Point(ColumnIndex, rowIndex)))
-                borderColor = DarkUI.Config.Colors.BlueHighlight; //Selection
-            
+                borderColor = Colors.BlueHighlight; //Selection
+
             if (ButtonState.HasFlag(ButtonState.Inactive) || !Enabled)
             {
-                fillColor = DarkUI.Config.Colors.DarkGreySelection;
-                textColor = DarkUI.Config.Colors.DisabledText;
+                fillColor = Colors.DarkGreySelection;
+                textColor = Colors.DisabledText;
             }
             else if (ButtonState.HasFlag(ButtonState.Checked) || ButtonState.HasFlag(ButtonState.Pushed))
-                fillColor = DarkUI.Config.Colors.DarkBackground;
+                fillColor = Colors.DarkBackground;
             else if (_mouseCurserCell == rowIndex) // Hover
-                fillColor = DarkUI.Config.Colors.LighterBackground;
+                fillColor = Colors.LighterBackground;
 
             // Paint button
             Rectangle contentBounds = new Rectangle(cellBounds.X + _padding.Left, cellBounds.Y + _padding.Top,
