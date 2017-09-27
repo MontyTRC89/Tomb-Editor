@@ -76,7 +76,7 @@ namespace TombLib.Graphics
             //new Vector3(0, 150, 0), Vector3.Up); 
             Matrix View = Matrix.LookAtLH(GetPosition(), Target, up);
             float aspectRatio = width / height;
-            Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 10.0f, 100000.0f);
+            Matrix Projection = Matrix.PerspectiveFovLH(FieldOfView, aspectRatio, 20.0f, 1000000.0f);
             return View * Projection;
         }
 
