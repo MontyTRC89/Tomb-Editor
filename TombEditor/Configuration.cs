@@ -18,7 +18,7 @@ namespace TombEditor
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
-        public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 200.0f;
+        public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
@@ -27,7 +27,7 @@ namespace TombEditor
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.17f;
         public float Rendering3D_NavigationSpeedKeyZoom { get; set; } = 3000.0f;
         public float Rendering3D_NavigationSpeedMouseWheelZoom { get; set; } = 25.0f;
-        public float Rendering3D_NavigationSpeedMouseZoom { get; set; } = 46000.0f;
+        public float Rendering3D_NavigationSpeedMouseZoom { get; set; } = 72000.0f;
         public float Rendering3D_NavigationSpeedMouseTranslate { get; set; } = 22000.0f;
         public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 2.2f;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
@@ -36,12 +36,12 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
 
         public float Map2D_NavigationSpeedMouseWheelZoom { get; set; } = 0.001f;
-        public float Map2D_NavigationSpeedMouseZoom { get; set; } = 5.0f;
+        public float Map2D_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
 
         public float TextureMap_NavigationSpeedMouseWheelZoom { get; set; } = 0.0015f;
-        public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 5.0f;
+        public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
 
         public float Gizmo_Size { get; set; } = 1024.0f;
