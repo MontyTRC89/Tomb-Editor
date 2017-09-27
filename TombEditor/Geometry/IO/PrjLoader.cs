@@ -1388,12 +1388,24 @@ namespace TombEditor.Geometry.IO
                     int txtRot = prjFace._txtRotation + 1;
                     int rotationForWallTriangles = 1;
 
+                    int rot1 = 3;
+                    int rot2 = 1;
+                    int rot3 = 2;
+                    int rot4 = 1;
+
+                    int rotCeiling1 = 2;
+                    int rotCeiling2 = 1;
+                    int rotCeiling3 = 3;
+                    int rotCeiling4 = 1;
+
+                    bool isFlipped = (prjFace._txtFlags & 0x80) != 0;
+
                     if (room.GetFaceVertexRange(x, z, face).Count == 3)
                     {
                         txtRot = txtRot % 3;
 
                         // If face is flipped
-                        if ((prjFace._txtFlags & 0x80) != 0)
+                        if (isFlipped)
                         {
                             if (prjFace._txtTriangle == 0)
                             {
@@ -1406,15 +1418,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1422,15 +1437,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1450,15 +1468,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1466,15 +1487,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1494,15 +1518,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1510,15 +1537,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1529,24 +1559,27 @@ namespace TombEditor.Geometry.IO
 
                             if (prjFace._txtTriangle == 2)
                             {
+                                texture.TexCoord0 = uv[3];
+                                texture.TexCoord1 = uv[2];
+                                texture.TexCoord2 = uv[0];
+
                                 if (isFloor)
                                 {
-                                    texture.TexCoord0 = uv[3];
-                                    texture.TexCoord1 = uv[2];
-                                    texture.TexCoord2 = uv[0];
-
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1554,15 +1587,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1584,15 +1620,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1600,15 +1639,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1628,15 +1670,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1644,15 +1689,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1672,15 +1720,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1688,15 +1739,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1716,15 +1770,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.FloorSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Floor)
-                                            txtRot += 2;
+                                            txtRot += rot1;
 
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Floor)
+                                            txtRot += rot3;
+
                                         if (face == BlockFace.FloorTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rot4;
                                     }
                                 }
                                 else if (isCeiling)
@@ -1732,15 +1789,18 @@ namespace TombEditor.Geometry.IO
                                     if (!block.CeilingSplitDirectionIsXEqualsZ)
                                     {
                                         if (face == BlockFace.Ceiling)
-                                            txtRot += 2;
+                                            txtRot += rotCeiling1;
 
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling2;
                                     }
                                     else
                                     {
+                                        if (face == BlockFace.Ceiling)
+                                            txtRot += rotCeiling3;
+
                                         if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += 1;
+                                            txtRot += rotCeiling4;
                                     }
                                 }
                                 else
@@ -1750,8 +1810,17 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        txtRot += 1;
+                        if (!isCeiling)
+                            txtRot += 1;
+
                         txtRot = (sbyte)(txtRot % 3);
+
+                        if (isCeiling)
+                        {
+                            var temp3 = texture.TexCoord1;
+                            texture.TexCoord1 = texture.TexCoord0;
+                            texture.TexCoord0 = temp3;
+                        }
 
                         for (int rot = 0; rot < txtRot; rot++)
                         {
@@ -1762,11 +1831,12 @@ namespace TombEditor.Geometry.IO
                         }
 
                         texture.TexCoord3 = texture.TexCoord2;
+
                     }
                     else
                     {
                         // Apply flipping
-                        if ((prjFace._txtFlags & 0x80) != 0)
+                        if (isFlipped)
                         {
                             var temp = uv[0];
                             uv[0] = uv[1];
@@ -1782,7 +1852,14 @@ namespace TombEditor.Geometry.IO
                             face != BlockFace.Ceiling && face != BlockFace.CeilingTriangle2)
                             txtRot--;
                         else
-                            txtRot++;
+                        {
+                            if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
+                                txtRot++;
+                            else
+                                txtRot--;
+                        }
+
+                        txtRot %= 4;
 
                         for (int rot = 0; rot < txtRot; rot++)
                         {
@@ -1797,6 +1874,14 @@ namespace TombEditor.Geometry.IO
                         texture.TexCoord1 = uv[1];
                         texture.TexCoord2 = uv[2];
                         texture.TexCoord3 = uv[3];
+
+                        if (isCeiling)
+                        {
+                            texture.TexCoord0 = uv[1];
+                            texture.TexCoord1 = uv[0];
+                            texture.TexCoord2 = uv[3];
+                            texture.TexCoord3 = uv[2];
+                        }
                     }
 
                     block.SetFaceTexture(face, texture);
