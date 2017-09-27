@@ -76,6 +76,28 @@ namespace TombEditor
                 },
                 new DockRegionState
                 {
+                    Area = DarkDockArea.Bottom,
+                    Size = new Size(1007, 134),
+                    Groups = new List<DockGroupState>
+                    {
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "Lighting" },
+                            VisibleContent = "Lighting",
+                            Order = 0,
+                            Size = new Size(442,134)
+                        },
+                        new DockGroupState
+                        {
+                            Contents = new List<string> { "Palette" },
+                            VisibleContent = "Palette",
+                            Order = 1,
+                            Size = new Size(645,134)
+                        }
+                    }
+                },
+                new DockRegionState
+                {
                     Area = DarkDockArea.Left,
                     Size = new Size(286, 893),
                     Groups = new List<DockGroupState>
@@ -122,28 +144,6 @@ namespace TombEditor
                             VisibleContent = "TexturePanel",
                             Order = 0,
                             Size = new Size(285,700)
-                        }
-                    }
-                },
-                new DockRegionState
-                {
-                    Area = DarkDockArea.Bottom,
-                    Size = new Size(1007, 134),
-                    Groups = new List<DockGroupState>
-                    {
-                        new DockGroupState
-                        {
-                            Contents = new List<string> { "Lighting" },
-                            VisibleContent = "Lighting",
-                            Order = 0,
-                            Size = new Size(442,134)
-                        },
-                        new DockGroupState
-                        {
-                            Contents = new List<string> { "Palette" },
-                            VisibleContent = "Palette",
-                            Order = 1,
-                            Size = new Size(645,134)
                         }
                     }
                 }
