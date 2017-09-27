@@ -713,15 +713,16 @@ namespace TombEditor.Controls
             if (ClientRectangle.Contains(PointToClient(MousePosition)))
                 switch (e.Button)
                 {
+                    case MouseButtons.Middle:
                     case MouseButtons.Right:
                         // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                         float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                         float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
-                        if ((ModifierKeys & Keys.Control) == Keys.Control)
-                            Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
-                        else if ((ModifierKeys & Keys.Shift) == Keys.Shift)
-                            Camera.MoveCameraPlane(new Vector3(-relativeDeltaX, -relativeDeltaY, 0) *
+                        if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
+                            Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
                                 _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
+                        else if((ModifierKeys & Keys.Control) == Keys.Control)
+                            Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                         else
                             Camera.Rotate(
                                 relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
