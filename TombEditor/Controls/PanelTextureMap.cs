@@ -21,7 +21,7 @@ namespace TombEditor.Controls
     public partial class PanelTextureMap : Panel
     {
         private Editor _editor;
-        
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public float MaxTextureSize { get; set; } = 255;
@@ -100,12 +100,12 @@ namespace TombEditor.Controls
             UpdateScrollBars();
             Invalidate();
         }
-        
+
         public void ShowTexture(TextureArea area)
         {
             if (!(area.Texture is LevelTexture))
                 return;
-            
+
             VisibleTexture = (LevelTexture)(area.Texture);
             SelectedTexture = area;
 
@@ -188,7 +188,7 @@ namespace TombEditor.Controls
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
             texCoord /= RoundingPrecision;
-            if ((RoundingPrecision >= 64.0f) && rectangularSelection) 
+            if ((RoundingPrecision >= 64.0f) && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -198,7 +198,7 @@ namespace TombEditor.Controls
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
             texCoord *= RoundingPrecision;
             texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
-                
+
             return texCoord;
         }
 
@@ -206,7 +206,7 @@ namespace TombEditor.Controls
         {
             Vector2 texCoordStartQuantized = Quantize(texCoordStart, texCoordStart.X > texCoordEnd.X, texCoordStart.Y > texCoordEnd.Y, true);
             Vector2 texCoordEndQuantized = Quantize(texCoordEnd, !(texCoordStart.X > texCoordEnd.X), !(texCoordStart.Y > texCoordEnd.Y), true);
-            
+
             texCoordEndQuantized = Vector2.Min(texCoordStartQuantized + new Vector2(MaxTextureSize),
                 Vector2.Max(texCoordStartQuantized - new Vector2(MaxTextureSize), texCoordEndQuantized));
 
@@ -218,7 +218,7 @@ namespace TombEditor.Controls
             selectedTexture.Texture = VisibleTexture;
             SelectedTexture = selectedTexture;
         }
-        
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -230,6 +230,9 @@ namespace TombEditor.Controls
                 EditorActions.LoadTextures(Parent);
                 return;
             }
+
+            //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
+            Capture = true; // Capture mouse for zoom and panning
 
             switch (e.Button)
             {
@@ -295,10 +298,10 @@ namespace TombEditor.Controls
                         }
                         Vector2 texCoordMinBounds = texCoordMax - new Vector2(MaxTextureSize);
                         Vector2 texCoordMaxBounds = texCoordMin + new Vector2(MaxTextureSize);
-                        
+
                         //Move texture coord
                         Vector2 newTextureCoord = FromVisualCoord(e.Location);
-                        
+
                         float minArea = float.PositiveInfinity;
                         TextureArea minAreaTextureArea = currentTexture;
                         for (int i = 0; i < 4; ++i)
@@ -358,8 +361,9 @@ namespace TombEditor.Controls
                     break;
             }
             _viewMoveMouseTexCoord = null;
+            Capture = false;
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -505,7 +509,7 @@ namespace TombEditor.Controls
             ViewScale = 1.0f;
             Invalidate();
         }
-        
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public TextureArea SelectedTexture

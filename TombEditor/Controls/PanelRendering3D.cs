@@ -535,6 +535,9 @@ namespace TombEditor.Controls
             _lastMousePosition = e.Location;
             _doSectorSelection = false;
 
+            //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
+            Capture = true; // Capture mouse for zoom and panning
+
             if (e.Button == MouseButtons.Left)
             {
                 // Do picking on the scene
@@ -710,53 +713,52 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if (ClientRectangle.Contains(PointToClient(MousePosition)))
-                switch (e.Button)
-                {
-                    case MouseButtons.Middle:
-                    case MouseButtons.Right:
-                        // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                        float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
-                        float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
-                        if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
-                            Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
-                                _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
-                        else if((ModifierKeys & Keys.Control) == Keys.Control)
-                            Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
-                        else
-                            Camera.Rotate(
-                                relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
-                                -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
+            switch (e.Button)
+            {
+                case MouseButtons.Middle:
+                case MouseButtons.Right:
+                    // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                    float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
+                    float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
+                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
+                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
+                            _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
+                    else if ((ModifierKeys & Keys.Control) == Keys.Control)
+                        Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                    else
+                        Camera.Rotate(
+                            relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
+                            -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
-                        Invalidate();
-                        break;
+                    Invalidate();
+                    break;
 
-                    case MouseButtons.Left:
-                        if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys))
-                        { } // Process gizmo
-                        else if (_doSectorSelection)
-                        { // Calculate block selection
-                            PickingResult newPicking = DoPicking(e.X, e.Y);
-                            if (newPicking is PickingResultBlock)
+                case MouseButtons.Left:
+                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys))
+                    { } // Process gizmo
+                    else if (_doSectorSelection)
+                    { // Calculate block selection
+                        PickingResult newPicking = DoPicking(e.X, e.Y);
+                        if (newPicking is PickingResultBlock)
+                        {
+                            _editor.SelectedSectors = new SectorSelection
                             {
-                                _editor.SelectedSectors = new SectorSelection
-                                {
-                                    Start = _editor.SelectedSectors.Start,
-                                    End = new SharpDX.DrawingPoint(
-                                            ((PickingResultBlock)newPicking).Pos.X,
-                                            ((PickingResultBlock)newPicking).Pos.Y)
-                                };
-                            }
+                                Start = _editor.SelectedSectors.Start,
+                                End = new SharpDX.DrawingPoint(
+                                        ((PickingResultBlock)newPicking).Pos.X,
+                                        ((PickingResultBlock)newPicking).Pos.Y)
+                            };
                         }
-                        else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
-                        { // Texture editing
-                            PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
+                    }
+                    else if ((_editor.Mode == EditorMode.FaceEdit) && (_editor.Action.Action == EditorActionType.None))
+                    { // Texture editing
+                        PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
 
-                            if (newPicking != null)
-                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
-                        }
-                        break;
-                }
+                        if (newPicking != null)
+                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                    }
+                    break;
+            }
 
             _lastMousePosition = e.Location;
         }
@@ -767,6 +769,7 @@ namespace TombEditor.Controls
 
             _doSectorSelection = false;
             _gizmo.SetGizmoAxis(GizmoAxis.None);
+            Capture = false;
         }
 
         private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix world) where T : struct, IVertex
