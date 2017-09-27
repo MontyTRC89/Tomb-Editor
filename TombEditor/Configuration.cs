@@ -32,7 +32,7 @@ namespace TombEditor
         public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 2.2f;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
-        public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
