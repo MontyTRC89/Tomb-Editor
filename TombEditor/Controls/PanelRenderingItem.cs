@@ -224,7 +224,7 @@ namespace TombEditor.Controls
                 EditorActions.LoadWad(Parent);
                 return;
             }
-                base.OnMouseDown(e);
+            base.OnMouseDown(e);
 
             _lastX = e.X;
             _lastY = e.Y;
@@ -234,22 +234,25 @@ namespace TombEditor.Controls
         {
             base.OnMouseMove(e);
 
-            if (e.Button == MouseButtons.Right)
+            switch (e.Button)
             {
-                // Use height for X coordinate because the camera FOV per pixel is defined by the height.
-                float deltaX = (e.X - _lastX) / (float)Height;
-                float deltaY = (e.Y - _lastY) / (float)Height;
+                case MouseButtons.Right:
+                case MouseButtons.Middle:
+                    // Use height for X coordinate because the camera FOV per pixel is defined by the height.
+                    float deltaX = (e.X - _lastX) / (float)Height;
+                    float deltaY = (e.Y - _lastY) / (float)Height;
 
-                _lastX = e.X;
-                _lastY = e.Y;
+                    _lastX = e.X;
+                    _lastY = e.Y;
 
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);
-                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
-                else
-                    Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate);
-                Invalidate();
+                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
+                        Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+                    else if ((ModifierKeys & Keys.Control) == Keys.Control)
+                        Camera.Zoom(-deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                    else
+                        Camera.Rotate(deltaX * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate, -deltaY * _editor.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                    Invalidate();
+                    break;
             }
         }
     }
