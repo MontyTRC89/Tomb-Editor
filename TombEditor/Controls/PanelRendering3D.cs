@@ -2085,7 +2085,7 @@ namespace TombEditor.Controls
             Debug.Fps = fps;
 
             // Draw debug info
-            Debug.Draw(_deviceManager, _editor.SelectedObject?.ToString());
+            Debug.Draw(_deviceManager, _editor.SelectedObject?.ToString(), _editor.Configuration.Rendering3D_TextColor);
 
             _device.Present();
 

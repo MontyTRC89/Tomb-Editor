@@ -33,7 +33,6 @@ namespace TombEditor
             NumTrianglesObjects = 0;
             NumMoveables = 0;
             NumStaticMeshes = 0;
-            //SelectedItem = "";
             Strings = new List<DebugString>();
         }
 
@@ -45,7 +44,7 @@ namespace TombEditor
             Strings.Add(str);
         }
 
-        public static void Draw(DeviceManager deviceManager, string selectedItem)
+        public static void Draw(DeviceManager deviceManager, string selectedItem, Vector4 textColor)
         {
             SpriteBatch batch = new SpriteBatch(deviceManager.Device);
             batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
@@ -57,7 +56,7 @@ namespace TombEditor
 
             for (int i = 0; i < Strings.Count; i++)
             {
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, Color.White);
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, new Color(textColor));
             }
 
             batch.End();
