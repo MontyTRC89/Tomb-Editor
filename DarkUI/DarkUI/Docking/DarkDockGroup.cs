@@ -84,14 +84,13 @@ namespace DarkUI.Docking
             }
 
             _contents.Add(dockContent);
+            _tabs.Add(dockContent, new DarkDockTab(dockContent));
 
             var _size = CalculateGroupSize();
 
             Controls.Add(dockContent);
 
             dockContent.DockTextChanged += DockContent_DockTextChanged;
-
-            _tabs.Add(dockContent, new DarkDockTab(dockContent));
 
             if (VisibleContent == null)
             {
@@ -110,6 +109,8 @@ namespace DarkUI.Docking
             _tabArea.AddMenuItem(menuItem);
 
             Size = _size;
+
+            UpdateTabArea();
         }
 
         public void RemoveContent(DarkDockContent dockContent)
@@ -150,6 +151,8 @@ namespace DarkUI.Docking
             _tabArea.RemoveMenuItem(menuItem);
 
             Size = CalculateGroupSize();
+
+            UpdateTabArea();
         }
 
         public List<DarkDockContent> GetContents()
@@ -229,48 +232,44 @@ namespace DarkUI.Docking
             if (DockArea == DarkDockArea.Document)
                 return DockRegion.Size;
 
-                // Calculate maximum size among all elements of group.
+            Size maxSize = new Size(0, 0);
 
             if (_contents.Count > 0)
             {
-                int maxSize = 0;
-                int maxMinSize = 0;
+                Size maxMinSize = new Size(Consts.ToolWindowHeaderSize, Consts.ToolWindowHeaderSize);
 
-                switch (DockArea)
+                if(DockArea != DarkDockArea.Bottom && _contents.Count > 1)
+                    maxMinSize.Height += Consts.ToolWindowTabAreaSize;
+
+                foreach (var currContent in _contents)
                 {
-                    default:
-                        break;
+                    switch (DockArea)
+                    {
+                        default:
+                            break;
 
-                    case DarkDockArea.Left:
-                    case DarkDockArea.Right:
-                        foreach (var currContent in _contents)
-                        {
-                            if (currContent.Size.Height > maxSize)
-                                maxSize = currContent.Size.Height;
+                        case DarkDockArea.Left:
+                        case DarkDockArea.Right:
+                            if (currContent.Size.Height > maxSize.Height)
+                                maxSize.Height = currContent.Size.Height;
+                            break;
 
-                            if (currContent.MinimumSize.Height > maxMinSize)
-                                maxMinSize = currContent.MinimumSize.Height;
-                        }
+                        case DarkDockArea.Bottom:
+                            if (currContent.Size.Width > maxSize.Width)
+                                maxSize.Width = currContent.Size.Width;
+                            break;
+                    }
 
-                        MinimumSize = new Size(0, maxMinSize);
-                        return new Size(0, maxSize);
-
-                    case DarkDockArea.Bottom:
-                        foreach (var currContent in _contents)
-                        {
-                            if (currContent.Size.Width > maxSize)
-                                maxSize = currContent.Size.Width;
-
-                            if (currContent.MinimumSize.Width > maxMinSize)
-                                maxMinSize = currContent.MinimumSize.Width;
-                        }
-
-                        MinimumSize = new Size(maxMinSize, 0);
-                        return new Size(maxSize, 0);
+                    if (currContent.MinimumSize.Height > maxMinSize.Height)
+                        maxMinSize.Height = currContent.MinimumSize.Height;
+                    if (currContent.MinimumSize.Width > maxMinSize.Width)
+                        maxMinSize.Width = currContent.MinimumSize.Width;
                 }
+
+                MinimumSize = maxMinSize;
             }
 
-            return new Size(0, 0);
+            return maxSize;
         }
 
         private void BuildTabs()
