@@ -34,6 +34,7 @@ namespace TombEditor
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
         public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
+        public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
         public float Map2D_NavigationSpeedMouseWheelZoom { get; set; } = 0.001f;
         public float Map2D_NavigationSpeedMouseZoom { get; set; } = 7.5f;
@@ -197,7 +198,7 @@ namespace TombEditor
         {
             return Load(GetDefaultPath());
         }
-        
+
         public static Configuration LoadOrUseDefault()
         {
             try
