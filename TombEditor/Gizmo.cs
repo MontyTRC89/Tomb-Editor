@@ -178,8 +178,7 @@ namespace TombEditor
             var solidEffect = _deviceManager.Effects["Solid"];
 
             var model = Matrix.Scaling(_editor.Configuration.Gizmo_Size) * 
-                        Matrix.Translation(Position) *
-                        Matrix.Translation(_editor.SelectedObject.Room.WorldPos);
+                        Matrix.Translation(Position);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 
             // X axis
