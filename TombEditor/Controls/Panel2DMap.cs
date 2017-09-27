@@ -62,7 +62,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised -= EditorEventRaised;
             base.Dispose(disposing);
         }
-        
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update drawing
@@ -109,6 +109,9 @@ namespace TombEditor.Controls
 
             _lastMousePosition = e.Location;
 
+            //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
+            Capture = true; // Capture mouse for zoom and panning
+
             switch (e.Button)
             {
                 case MouseButtons.Left:
@@ -116,7 +119,7 @@ namespace TombEditor.Controls
                     _roomMouseClicked = DoPicking(clickPos);
                     if (_roomMouseClicked == null)
                         return;
-                    
+
                     _editor.SelectRoomAndResetCamera(_roomMouseClicked);
                     _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRoom);
                     _roomMouseOffset = clickPos - _roomMouseClicked.SectorPos.ToVec2();
@@ -185,7 +188,7 @@ namespace TombEditor.Controls
 
             // Update depth bar...
             _depthBar.MouseMove(e, Size);
-            RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the curser. 
+            RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the curser.
             Invalidate(new Rectangle((int)area.X, (int)area.Y, (int)area.Width, (int)area.Height));
 
             if (!_editor.Action.RelocateCameraActive)
@@ -243,8 +246,9 @@ namespace TombEditor.Controls
                     break;
             }
             _currentlyEditedDepthProbeIndex = null;
+            Capture = false;
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -287,7 +291,7 @@ namespace TombEditor.Controls
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        
+
         protected override void OnPaint(PaintEventArgs e)
         {
             if ((_editor == null) || (_editor.Level == null))
@@ -331,7 +335,7 @@ namespace TombEditor.Controls
                         ToVisualCoord(new Vector2(0, y)), ToVisualCoord(new Vector2(Level.MaxSectorCoord, y)));
 
                 // Draw visible rooms
-                foreach (Room room in sortedRoomList) 
+                foreach (Room room in sortedRoomList)
                     if (_depthBar.CheckRoom(room)) // Check if the room fits the depth bar criterion
                         DrawRoom(e, room, currentRangeMin, currentRangeMax, true, true);
 
@@ -400,7 +404,7 @@ namespace TombEditor.Controls
                     brush = _roomsNormalBelowBrush;
                 if ((room.Position.Y + room.GetLowestCorner()) >= currentRangeMax)
                     brush = _roomsNormalAboveBrush;
-                
+
                 if (room == _editor.SelectedRoom)
                     brush = (_roomsToMove == null) ? _roomsSelectionBrush : _roomsDragBrush;
                 else if ((_roomsToMove != null) && _roomsToMove.Contains(room))

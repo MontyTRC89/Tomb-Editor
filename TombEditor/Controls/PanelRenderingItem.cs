@@ -219,21 +219,23 @@ namespace TombEditor.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
+            base.OnMouseDown(e);
             if (_editor?.Level?.Settings?.WadFilePath == null)
             {
                 EditorActions.LoadWad(Parent);
                 return;
             }
-            base.OnMouseDown(e);
 
             _lastX = e.X;
             _lastY = e.Y;
+
+            //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
+            Capture = true; // Capture mouse for zoom and panning
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-
             switch (e.Button)
             {
                 case MouseButtons.Right:
@@ -254,6 +256,12 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            Capture = false;
         }
     }
 }
