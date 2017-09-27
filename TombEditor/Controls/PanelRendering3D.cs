@@ -2082,17 +2082,14 @@ namespace TombEditor.Controls
             _gizmo.Draw(viewProjection);
 
             _watch.Stop();
-            long mils = _watch.ElapsedMilliseconds;
-            float fps = (mils != 0 ? 1000 / mils : 60);
-
-            Debug.Fps = fps;
+            Debug.Fps = 1.0 / _watch.Elapsed.TotalSeconds;
 
             // Draw debug info
             Debug.Draw(_deviceManager, _editor.SelectedObject?.ToString(), _editor.Configuration.Rendering3D_TextColor);
 
             _device.Present();
 
-            logger.Debug($"Draw Call! {mils}ms");
+            logger.Debug("Draw Call! " + _watch.Elapsed.TotalSeconds + "ms");
         }
 
         private void DrawSelectedFogBulb()

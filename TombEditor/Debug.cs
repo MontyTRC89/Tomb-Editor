@@ -14,7 +14,7 @@ namespace TombEditor
 
     public class Debug
     {
-        public static float Fps { get; set; }
+        public static double Fps { get; set; }
         public static long NumRooms { get; set; }
         public static long NumVerticesRooms { get; set; }
         public static long NumTrianglesRooms { get; set; }
