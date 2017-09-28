@@ -593,13 +593,12 @@ namespace TombEditor.Geometry.IO
                         short flipRoom = reader.ReadInt16();
                         short flags1 = reader.ReadInt16();
                         byte waterLevel = reader.ReadByte();
-                        byte mistLevel = reader.ReadByte();
-                        byte reflectionLevel = reader.ReadByte();
+                        byte mistOrReflectionLevel = reader.ReadByte();
+                        byte reverb = reader.ReadByte();
                         short flags2 = reader.ReadInt16();
 
                         room.WaterLevel = waterLevel;
-                        room.MistLevel = mistLevel;
-                        room.ReflectionLevel = reflectionLevel;
+                        room.Reverberation = (Reverberation)reverb;
 
                         if (flipRoom != -1)
                         {
@@ -614,9 +613,15 @@ namespace TombEditor.Geometry.IO
                         }
 
                         if ((flags1 & 0x0200) != 0)
+                        {
                             room.FlagReflection = true;
+                            room.ReflectionLevel = mistOrReflectionLevel;
+                        }
                         if ((flags1 & 0x0100) != 0)
+                        {
                             room.FlagMist = true;
+                            room.MistLevel = mistOrReflectionLevel;
+                        }
                         if ((flags1 & 0x0080) != 0)
                             room.FlagQuickSand = true;
                         if ((flags1 & 0x0020) != 0)
