@@ -77,7 +77,7 @@ namespace TombEditor
                 new DockRegionState
                 {
                     Area = DarkDockArea.Bottom,
-                    Size = new Size(1007, 134),
+                    Size = new Size(1007, 128),
                     Groups = new List<DockGroupState>
                     {
                         new DockGroupState
@@ -85,14 +85,14 @@ namespace TombEditor
                             Contents = new List<string> { "Lighting" },
                             VisibleContent = "Lighting",
                             Order = 0,
-                            Size = new Size(442,134)
+                            Size = new Size(442,128)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "Palette" },
                             VisibleContent = "Palette",
                             Order = 1,
-                            Size = new Size(645,134)
+                            Size = new Size(645,128)
                         }
                     }
                 },
@@ -114,7 +114,7 @@ namespace TombEditor
                             Contents = new List<string> { "RoomOptions" },
                             VisibleContent = "RoomOptions",
                             Order = 1,
-                            Size = new Size(284,211)
+                            Size = new Size(284,192)
                         },
                         new DockGroupState
                         {
