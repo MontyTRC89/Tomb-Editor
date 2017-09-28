@@ -28,7 +28,7 @@
             this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(288, 765);
+            this.panelTextureMap.Size = new System.Drawing.Size(284, 765);
             this.panelTextureMap.TabIndex = 9;
             // 
             // panelTextureTools
@@ -39,16 +39,16 @@
             this.panelTextureTools.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelTextureTools.Location = new System.Drawing.Point(0, 790);
             this.panelTextureTools.Name = "panelTextureTools";
-            this.panelTextureTools.Size = new System.Drawing.Size(288, 29);
+            this.panelTextureTools.Size = new System.Drawing.Size(284, 29);
             this.panelTextureTools.TabIndex = 10;
             // 
             // butBump
             // 
             this.butBump.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBump.Location = new System.Drawing.Point(220, 4);
+            this.butBump.Location = new System.Drawing.Point(216, 4);
             this.butBump.Name = "butBump";
             this.butBump.Padding = new System.Windows.Forms.Padding(5);
-            this.butBump.Size = new System.Drawing.Size(64, 23);
+            this.butBump.Size = new System.Drawing.Size(65, 23);
             this.butBump.TabIndex = 2;
             this.butBump.Text = "Bump";
             this.butBump.Visible = false;
@@ -56,7 +56,7 @@
             // butAnimationRanges
             // 
             this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAnimationRanges.Location = new System.Drawing.Point(111, 4);
+            this.butAnimationRanges.Location = new System.Drawing.Point(109, 4);
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Padding = new System.Windows.Forms.Padding(5);
             this.butAnimationRanges.Size = new System.Drawing.Size(103, 23);
@@ -84,10 +84,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Right;
             this.DockText = "Texture Panel";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(100, 100);
+            this.MinimumSize = new System.Drawing.Size(284, 100);
             this.Name = "TexturePanel";
             this.SerializationKey = "TexturePanel";
-            this.Size = new System.Drawing.Size(288, 819);
+            this.Size = new System.Drawing.Size(284, 819);
             this.panelTextureTools.ResumeLayout(false);
             this.ResumeLayout(false);
 
