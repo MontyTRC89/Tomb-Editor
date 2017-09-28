@@ -622,14 +622,23 @@ namespace TombEditor.Geometry.IO
                             room.FlagMist = true;
                             room.MistLevel = mistOrReflectionLevel;
                         }
-                        if ((flags1 & 0x0080) != 0)
-                            room.FlagQuickSand = true;
-                        if ((flags1 & 0x0020) != 0)
-                            room.FlagOutside = true;
-                        if ((flags1 & 0x0008) != 0)
-                            room.FlagHorizon = true;
+
                         if ((flags1 & 0x0001) != 0)
                             room.FlagWater = true;
+                        if ((flags1 & 0x0004) != 0)
+                            room.FlagQuickSand = true;
+                        if ((flags1 & 0x0008) != 0)
+                            room.FlagHorizon = true;
+                        if ((flags1 & 0x0020) != 0)
+                            room.FlagOutside = true;
+                        if ((flags1 & 0x0080) != 0)
+                            room.FlagNoLensflare = true;
+                        if ((flags1 & 0x0400) != 0)
+                            room.FlagSnow = true;
+                        if ((flags1 & 0x0800) != 0)
+                            room.FlagRain = true;
+                        if ((flags1 & 0x1000) != 0)
+                            room.FlagDamage = true;
 
                         var tempBlocks = new PrjBlock[numXBlocks, numZBlocks];
                         for (int x = 0; x < room.NumXSectors; x++)

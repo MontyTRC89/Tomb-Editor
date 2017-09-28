@@ -251,6 +251,7 @@ namespace TombEditor.Geometry.IO
                     writer.Write(r.FlagHorizon);
                     writer.Write(r.FlagMist);
                     writer.Write(r.FlagOutside);
+                    writer.Write(r.FlagNoLensflare);
                     writer.Write(r.FlagRain);
                     writer.Write(r.FlagReflection);
                     writer.Write(r.FlagSnow);

@@ -264,6 +264,7 @@ namespace TombEditor.Geometry.IO
                 room.FlagHorizon = reader.ReadBoolean();
                 room.FlagMist = reader.ReadBoolean();
                 room.FlagOutside = reader.ReadBoolean();
+                room.FlagNoLensflare = reader.ReadBoolean();
                 room.FlagRain = reader.ReadBoolean();
                 room.FlagReflection = reader.ReadBoolean();
                 room.FlagSnow = reader.ReadBoolean();

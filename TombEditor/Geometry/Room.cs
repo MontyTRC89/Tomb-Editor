@@ -47,6 +47,7 @@ namespace TombEditor.Geometry
         public bool FlagQuickSand { get; set; }
         public bool FlagOutside { get; set; }
         public bool FlagHorizon { get; set; }
+        public bool FlagNoLensflare { get; set; }
         public bool ExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
 
