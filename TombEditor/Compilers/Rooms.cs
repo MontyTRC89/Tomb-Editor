@@ -79,11 +79,13 @@ namespace TombEditor.Compilers
 
             if (room.FlagWater)
                 newRoom.Flags |= 0x01;
-            if (room.FlagOutside)
-                newRoom.Flags |= 0x20;
+            if (room.FlagQuickSand)
+                newRoom.Flags |= 0x04;
             if (room.FlagHorizon)
                 newRoom.Flags |= 0x08;
-            if (room.FlagQuickSand)
+            if (room.FlagOutside)
+                newRoom.Flags |= 0x20;
+            if (room.FlagNoLensflare)
                 newRoom.Flags |= 0x80;
             if (room.FlagMist)
                 newRoom.Flags |= 0x100;

@@ -83,6 +83,7 @@ namespace TombEditor.ToolWindows
                 cbFlagDamage.Checked = room.FlagDamage;
                 cbFlagOutside.Checked = room.FlagOutside;
                 cbHorizon.Checked = room.FlagHorizon;
+                cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.ExcludeFromPathFinding;
                 
                 comboFlipMap.Enabled = !(room.Flipped && (room.AlternateRoom == null));
@@ -337,6 +338,12 @@ namespace TombEditor.ToolWindows
         private void butRoomDown_Click(object sender, EventArgs e)
         {
             EditorActions.MoveRooms(new Vector3(0.0f, -1.0f, 0.0f), new Room[] { _editor.SelectedRoom });
+        }
+
+        private void cbNoLensflare_CheckedChanged(object sender, EventArgs e)
+        {
+            _editor.SelectedRoom.FlagNoLensflare = cbNoLensflare.Checked;
+            _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
     }
 }
