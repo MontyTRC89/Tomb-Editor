@@ -13,7 +13,7 @@ namespace TombEditor
         Y,
         Z
     }
-    
+
     public class PickingResultGizmo : Controls.PickingResult
     {
         public GizmoAxis Axis { get; set; }
@@ -57,11 +57,11 @@ namespace TombEditor
             _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
 
             // Initialize the gizmo geometry
-            var v0 = new EditorVertex {Position = new Vector3(0.0f, 0.0f, 0.0f)};
-            var vX = new EditorVertex {Position = new Vector3(1.0f, 0.0f, 0.0f)};
-            var vY = new EditorVertex {Position = new Vector3(0.0f, 1.0f, 0.0f)};
-            var vZ = new EditorVertex {Position = new Vector3(0.0f, 0.0f, -1.0f)};
-            var vertices = new[] {v0, vX, v0, vY, v0, vZ};
+            var v0 = new EditorVertex { Position = new Vector3(0.0f, 0.0f, 0.0f) };
+            var vX = new EditorVertex { Position = new Vector3(1.0f, 0.0f, 0.0f) };
+            var vY = new EditorVertex { Position = new Vector3(0.0f, 1.0f, 0.0f) };
+            var vZ = new EditorVertex { Position = new Vector3(0.0f, 0.0f, -1.0f) };
+            var vertices = new[] { v0, vX, v0, vY, v0, vZ };
 
             _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New
                 (_device, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
@@ -99,13 +99,13 @@ namespace TombEditor
         {
             _axis = axis;
         }
-        
+
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
         public bool MouseMoved(Matrix viewProjection, int x, int y, Keys modifierKeys)
         {
             if ((!DrawGizmo) || (_axis == GizmoAxis.None))
                 return false;
-            
+
             // First get the ray in 3D space from X, Y mouse coordinates
             Ray ray = Ray.GetPickRay(x, y, _device.Viewport, viewProjection);
 
@@ -138,7 +138,7 @@ namespace TombEditor
                     break;
             }
 
-            EditorActions.MoveObject(_editor.SelectedObject.Room, _editor.SelectedObject as PositionBasedObjectInstance, 
+            EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
                 newPos - _editor.SelectedObject.Room.WorldPos, modifierKeys);
             return true;
         }
@@ -177,7 +177,7 @@ namespace TombEditor
 
             var solidEffect = _deviceManager.Effects["Solid"];
 
-            var model = Matrix.Scaling(_editor.Configuration.Gizmo_Size) * 
+            var model = Matrix.Scaling(_editor.Configuration.Gizmo_Size) *
                         Matrix.Translation(Position);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
 

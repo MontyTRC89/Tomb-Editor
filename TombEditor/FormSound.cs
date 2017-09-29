@@ -17,7 +17,7 @@ namespace TombEditor
     public partial class FormSound : DarkUI.Forms.DarkForm
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         private SoundSourceInstance _soundSource;
         private Wad2 _wad;
         private Editor _editor;
@@ -30,7 +30,7 @@ namespace TombEditor
             _editor = Editor.Instance;
 
             InitializeComponent();
-            
+
             foreach (var sound in _editor.Level.Wad.SoundInfo)
             {
                 var item = new DarkUI.Controls.DarkListItem(sound.Value.Name);
@@ -57,7 +57,7 @@ namespace TombEditor
             DialogResult = DialogResult.Cancel;
             this.Close();
         }
-        
+
         private void butOK_Click(object sender, EventArgs e)
         {
             _soundSource.SoundId = (short)_selectedSound;
@@ -69,7 +69,7 @@ namespace TombEditor
             codeBits |= (byte)(cbBit4.Checked ? (1 << 3) : 0);
             codeBits |= (byte)(cbBit5.Checked ? (1 << 4) : 0);
             _soundSource.CodeBits = codeBits;
-            
+
             DialogResult = DialogResult.OK;
             this.Close();
         }

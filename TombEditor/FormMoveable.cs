@@ -14,7 +14,7 @@ namespace TombEditor
     public partial class FormMoveable : DarkForm
     {
         private MoveableInstance _movable;
-        
+
         public FormMoveable(MoveableInstance movable)
         {
             _movable = movable;
@@ -29,12 +29,6 @@ namespace TombEditor
 
         private void FormObject_Load(object sender, EventArgs e)
         {
-            if (!Utils.IsValidNumber(tbOCB.Text))
-            {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for OCB", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_movable.CodeBits & (1 << 1)) != 0;
             cbBit3.Checked = (_movable.CodeBits & (1 << 2)) != 0;
@@ -52,7 +46,7 @@ namespace TombEditor
             short ocb;
             if (!short.TryParse(tbOCB.Text, out ocb))
             {
-                MessageBox.Show("The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show("The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

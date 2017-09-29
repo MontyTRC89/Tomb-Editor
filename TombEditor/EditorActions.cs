@@ -626,12 +626,12 @@ namespace TombEditor
             return new Vector3(512.0f, 128.0f, 512.0f);
         }
 
-        public static void MoveObject(Room room, PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
+        public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
         {
-            MoveObject(room, instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
+            MoveObject(instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
         }
 
-        public static void MoveObject(Room room, PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
+        public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
         {
             if (instance == null)
                 return;
@@ -645,11 +645,11 @@ namespace TombEditor
             float x = (float)Math.Floor(pos.X / 1024.0f);
             float z = (float)Math.Floor(pos.Z / 1024.0f);
 
-            if ((x < 0.0f) || (x > (room.NumXSectors - 1)) ||
-                (z < 0.0f) || (z > (room.NumZSectors - 1)))
+            if ((x < 0.0f) || (x > (instance.Room.NumXSectors - 1)) ||
+                (z < 0.0f) || (z > (instance.Room.NumZSectors - 1)))
                 return;
 
-            Block block = room.Blocks[(int)x, (int)z];
+            Block block = instance.Room.Blocks[(int)x, (int)z];
             if (block.IsAnyWall)
                 return;
 
@@ -659,8 +659,8 @@ namespace TombEditor
             // Update state
             if (instance is Light)
             {
-                room.CalculateLightingForThisRoom();
-                room.UpdateBuffers();
+                instance.Room.CalculateLightingForThisRoom();
+                instance.Room.UpdateBuffers();
             }
             _editor.ObjectChange(instance);
         }
@@ -672,7 +672,7 @@ namespace TombEditor
             Roll
         };
 
-        public static void RotateObject(Room room, ObjectInstance instance, RotationAxis axis, float angleInDegrees)
+        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees)
         {
             switch (axis)
             {
@@ -696,11 +696,11 @@ namespace TombEditor
                     break;
             }
             if (instance is Light)
-                room.UpdateCompletely();
+                instance.Room.UpdateCompletely();
             _editor.ObjectChange(instance);
         }
 
-        public static void EditObject(Room room, ObjectInstance instance, IWin32Window owner)
+        public static void EditObject(ObjectInstance instance, IWin32Window owner)
         {
             if (instance is MoveableInstance)
             {
@@ -720,11 +720,10 @@ namespace TombEditor
                     formFlyby.ShowDialog(owner);
                 _editor.ObjectChange(instance);
             }
-            else if (instance is ImportedGeometryInstance)
+            else if (instance is CameraInstance)
             {
-                using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
-                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.Cancel)
-                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
+                using (var formCamera = new FormCamera((CameraInstance)instance))
+                    formCamera.ShowDialog(owner);
                 _editor.ObjectChange(instance);
             }
             else if (instance is SinkInstance)
@@ -745,11 +744,18 @@ namespace TombEditor
                     formTrigger.ShowDialog(owner);
                 _editor.ObjectChange(instance);
             }
+            else if (instance is ImportedGeometryInstance)
+            {
+                using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
+                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.Cancel)
+                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
+                _editor.ObjectChange(instance);
+            }
         }
 
-        public static void DeleteObjectWithWarning(Room room, ObjectInstance instance, IWin32Window owner)
+        public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
-            if (room.Flipped && (instance is Portal))
+            if (instance.Room.Flipped && (instance is Portal))
             {
                 DarkMessageBox.Show(owner, "You can't delete portals of a flipped room", "Error", MessageBoxIcon.Error);
                 return;
@@ -759,20 +765,20 @@ namespace TombEditor
                     "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            DeleteObject(room, instance);
+            DeleteObject(instance);
         }
 
-        public static void DeleteObject(Room room, ObjectInstance instance)
+        public static void DeleteObject(ObjectInstance instance)
         {
-            room.RemoveObject(_editor.Level, instance);
+            instance.Room.RemoveObject(_editor.Level, instance);
             if (instance is Light)
-                room.UpdateCompletely();
+                instance.Room.UpdateCompletely();
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
-                _editor.RoomSectorPropertiesChange(room);
+                _editor.RoomSectorPropertiesChange(instance.Room);
             if (instance is Light)
-                room.UpdateCompletely();
+                instance.Room.UpdateCompletely();
 
             // Remove triggers pointing to that object
             foreach (var r in _editor.Level.Rooms)

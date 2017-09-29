@@ -85,14 +85,14 @@ namespace TombEditor.ToolWindows
         {
             if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
                 return;
-            EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject, this);
+            EditorActions.EditObject(_editor.SelectedObject, this);
         }
 
         private void butDeleteTrigger_Click(object sender, EventArgs e)
         {
             if ((_editor.SelectedRoom == null) || !(_editor.SelectedObject is TriggerInstance))
                 return;
-            EditorActions.DeleteObject(_editor.SelectedRoom, _editor.SelectedObject);
+            EditorActions.DeleteObject(_editor.SelectedObject);
         }
 
         private void lstTriggers_SelectedIndexChanged(object sender, EventArgs e)

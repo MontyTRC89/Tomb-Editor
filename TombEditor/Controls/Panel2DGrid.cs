@@ -159,7 +159,7 @@ namespace TombEditor.Controls
                     }
                     else if (selectedSectorObject is TriggerInstance)
                     { // Open trigger options
-                        EditorActions.EditObject(_editor.SelectedRoom, selectedSectorObject, this.Parent);
+                        EditorActions.EditObject(selectedSectorObject, this.Parent);
                     }
                 }
                 else
