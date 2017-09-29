@@ -31,7 +31,7 @@ namespace TombEditor
         {
             if (!Utils.IsValidNumber(tbOCB.Text))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for OCB", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for OCB", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
