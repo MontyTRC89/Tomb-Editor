@@ -231,7 +231,7 @@ namespace TombEditor
                     if (_editor.SelectedRoom == null)
                         return;
                     if (_editor.SelectedObject != null)
-                        EditorActions.DeleteObjectWithWarning(_editor.SelectedRoom, _editor.SelectedObject, this);
+                        EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
                     break;
 
                 case Keys.T: // Add trigger
@@ -241,31 +241,31 @@ namespace TombEditor
 
                 case Keys.O: // Show options dialog
                     if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                        EditorActions.EditObject(_editor.SelectedRoom, _editor.SelectedObject, this);
+                        EditorActions.EditObject(_editor.SelectedObject, this);
                     break;
 
                 case Keys.Left:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
                     break;
 
                 case Keys.Right:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
                     break;
 
                 case Keys.Up:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.X, 1);
+                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
                     break;
 
                 case Keys.Down:
                     if (e.Control) // Rotate objects with cones
                         if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
                     break;
 
                 case Keys.Q:
@@ -300,7 +300,7 @@ namespace TombEditor
 
                 case Keys.R: // Rotate object
                     if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedRoom, _editor.SelectedObject, EditorActions.RotationAxis.Y, e.Shift ? 5.0f : 45.0f);
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, e.Shift ? 5.0f : 45.0f);
                     else if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(e.Shift ? 4 : 1), e.Control);
                     break;

@@ -715,7 +715,7 @@ namespace TombEditor.Controls
 
             PickingResult newPicking = DoPicking(e.X, e.Y);
             if (newPicking is PickingResultObject)
-                EditorActions.EditObject(_editor.SelectedRoom, ((PickingResultObject)newPicking).ObjectInstance, this.Parent);
+                EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

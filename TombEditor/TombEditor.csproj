@@ -156,6 +156,12 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
+    <Compile Include="FormCamera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCamera.Designer.cs">
+      <DependentUpon>FormCamera.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormChooseRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -336,6 +342,9 @@
     <Compile Include="TexturePackerTest.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCamera.resx">
+      <DependentUpon>FormCamera.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormImportedGeometry.resx">
       <DependentUpon>FormImportedGeometry.cs</DependentUpon>
