@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +14,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormSoundEditor : DarkUI.Forms.DarkForm
+    public partial class FormSoundEditor : DarkForm
     {
         private WadToolClass _tool;
         private int _currentSound = -1;
@@ -48,9 +49,9 @@ namespace WadTool
         private void butAddNewSound_Click(object sender, EventArgs e)
         {
             ushort newSoundId = _tool.DestinationWad.GetFirstFreeSoundSlot();
-            if (newSoundId == UInt16.MaxValue)
+            if (newSoundId == ushort.MaxValue)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You soundmap is already full", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You soundmap is already full", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -110,13 +111,13 @@ namespace WadTool
             if (comboId.SelectedIndex != _currentSound &&
                 _tool.DestinationWad.SoundInfo.ContainsKey((ushort)comboId.SelectedIndex))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("The selected slot is already assigned to another sound", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "The selected slot is already assigned to another sound", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (lstWaves.Items.Count == 0)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must add at least one WAV sample", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must add at least one WAV sample", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -203,7 +204,7 @@ namespace WadTool
                 var wave = (WadSound)item.Tag;
                 if (wave.Hash == form.SelectedWave.Hash)
                 {
-                    DarkUI.Forms.DarkMessageBox.ShowError("This WAV sample is already present in this sound info", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkMessageBox.Show(this, "This WAV sample is already present in this sound info", "Error", MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -222,9 +223,9 @@ namespace WadTool
             var wave = (WadSound)item.Tag;
 
             // Ask to the user the permission to delete WAV
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(this,
                    "Are you really sure to delete '" + wave.Name + "'? The WAV sample will be removed from this sound but not from Wad2 file until some sound is referencing it",
-                   "Delete WAV", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                   "Delete WAV", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             lstWaves.Items.Remove(item);
@@ -258,19 +259,19 @@ namespace WadTool
                     stringMoveables += mov.ToString() + Environment.NewLine;
 
                 // Ask to the user the permission to delete WAV
-                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                if (DarkMessageBox.Show(this,
                        "Are you really sure to delete '" + soundInfo.Name + "'? The following moveables are referincing " +
                        "this sound and their animation commands will be remapped to the first available sound: " + Environment.NewLine +
                        stringMoveables,
-                       "Delete sound", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                       "Delete sound", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
             else
             {
                 // Ask to the user the permission to delete WAV
-                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                if (DarkMessageBox.Show(this,
                        "Are you really sure to delete '" + soundInfo.Name + "'?",
-                       "Delete sound", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                       "Delete sound", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +14,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormSpriteEditor : DarkUI.Forms.DarkForm
+    public partial class FormSpriteEditor : DarkForm
     {
         public WadSpriteSequence SpriteSequence { get; set; }
 
@@ -116,9 +117,9 @@ namespace WadTool
             if (lstSprites.SelectedIndices.Count == 0) return;
 
             // Ask to the user the permission to delete sprite
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(this,
                    "Are you really sure to delete sprite #" + lstSprites.SelectedIndices[0] + "?",
-                   "Delete sprite", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                   "Delete sprite", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             // Get the current sprite
@@ -147,13 +148,13 @@ namespace WadTool
         {
             uint objectId = ObjectNames.SpriteSequenceSlots.ElementAt(comboSlot.SelectedIndex).Key;
 
-            // Check for already existing sequence 
+            // Check for already existing sequence
             if (objectId != SpriteSequence.ObjectID)
             {
                 foreach (var seq in _tool.DestinationWad.SpriteSequences)
                     if (seq.ObjectID == objectId)
                     {
-                        DarkUI.Forms.DarkMessageBox.ShowError("The selected slot is already assigned to another sprite sequence", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                        DarkMessageBox.Show(this, "The selected slot is already assigned to another sprite sequence", "Error", MessageBoxIcon.Error);
                         return;
                     }
             }

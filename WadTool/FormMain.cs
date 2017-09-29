@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +14,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormMain : DarkUI.Forms.DarkForm
+    public partial class FormMain : DarkForm
     {
         private WadToolClass _tool;
 
@@ -23,7 +24,7 @@ namespace WadTool
 
             _tool = WadToolClass.Instance;
             _tool.Initialize();
-            
+
             panel3D.InitializePanel(_tool.Device);
         }
 
@@ -44,15 +45,17 @@ namespace WadTool
 
         private void treeSourceWad_MouseClick(object sender, MouseEventArgs e)
         {
-            if (treeSourceWad.SelectedNodes.Count == 0) return;
+            if (treeSourceWad.SelectedNodes.Count == 0)
+                return;
 
             var node = treeSourceWad.SelectedNodes[0];
 
-            if (node.Tag == null || 
-                (node.Tag.GetType() != typeof(WadMoveable) && 
-                 node.Tag.GetType() != typeof(WadStatic) && 
-                 node.Tag.GetType() != typeof(WadSprite))) return;
-            
+            if (node.Tag == null ||
+                (node.Tag.GetType() != typeof(WadMoveable) &&
+                 node.Tag.GetType() != typeof(WadStatic) &&
+                 node.Tag.GetType() != typeof(WadSprite)))
+                return;
+
             panel3D.CurrentWad = _tool.SourceWad;
 
             if (node.Tag.GetType() == typeof(WadMoveable))
@@ -81,7 +84,8 @@ namespace WadTool
 
         private void treeDestWad_MouseClick(object sender, MouseEventArgs e)
         {
-            if (treeDestWad.SelectedNodes.Count == 0) return;
+            if (treeDestWad.SelectedNodes.Count == 0)
+                return;
 
             var node = treeDestWad.SelectedNodes[0];
             var isMoveable = node.Tag?.GetType() == typeof(WadMoveable);
@@ -89,7 +93,8 @@ namespace WadTool
             if (node.Tag == null ||
                 (node.Tag.GetType() != typeof(WadMoveable) &&
                  node.Tag.GetType() != typeof(WadStatic) &&
-                 node.Tag.GetType() != typeof(WadSprite))) return;
+                 node.Tag.GetType() != typeof(WadSprite)))
+                return;
 
             // Load sounds
             treeSounds.Nodes.Clear();
@@ -144,16 +149,19 @@ namespace WadTool
             // Open the file dialog
             openFileDialogWad.Filter = "Tomb Editor Wad2 (*.wad2)|*.wad2";
             openFileDialogWad.Title = "Open destination Wad2";
-            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel) return;
+            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
+                return;
 
             // Load the Wad2
             string fileName = openFileDialogWad.FileName.ToLower();
             using (var stream = File.OpenRead(fileName))
             {
                 var newWad = Wad2.LoadFromStream(stream);
-                if (newWad == null) return;
+                if (newWad == null)
+                    return;
 
-                if (_tool.DestinationWad != null) _tool.DestinationWad.Dispose();
+                if (_tool.DestinationWad != null)
+                    _tool.DestinationWad.Dispose();
 
                 newWad.FileName = openFileDialogWad.FileName;
                 newWad.GraphicsDevice = _tool.Device;
@@ -206,7 +214,7 @@ namespace WadTool
 
                 foreach (var sprite in sequence.Sprites)
                 {
-                    var nodeSprite= new DarkUI.Controls.DarkTreeNode("Sprite #" + spriteIndex);
+                    var nodeSprite = new DarkUI.Controls.DarkTreeNode("Sprite #" + spriteIndex);
                     nodeSprite.Tag = sprite;
 
                     treeDestWad.Nodes[2].Nodes[currentNode].Nodes.Add(nodeSprite);
@@ -221,7 +229,8 @@ namespace WadTool
             // Open the file dialog
             openFileDialogWad.Filter = "Tomb Raider WAD (*.wad)|*.wad|Tomb Editor Wad2 (*.wad2)|*.wad2";
             openFileDialogWad.Title = "Open source WAD/Wad2";
-            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel) return;
+            if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
+                return;
 
             // Load the WAD/Wad2
             string fileName = openFileDialogWad.FileName.ToLower();
@@ -231,9 +240,11 @@ namespace WadTool
                 originalWad.LoadWad(fileName);
 
                 var newWad = WadOperations.ConvertTr4Wad(originalWad);
-                if (newWad == null) return;
+                if (newWad == null)
+                    return;
 
-                if (_tool.SourceWad != null) _tool.SourceWad.Dispose();
+                if (_tool.SourceWad != null)
+                    _tool.SourceWad.Dispose();
 
                 newWad.GraphicsDevice = _tool.Device;
                 newWad.PrepareDataForDirectX();
@@ -244,9 +255,11 @@ namespace WadTool
                 using (var stream = File.OpenRead(fileName))
                 {
                     var newWad = Wad2.LoadFromStream(stream);
-                    if (newWad == null) return;
+                    if (newWad == null)
+                        return;
 
-                    if (_tool.SourceWad != null) _tool.SourceWad.Dispose();
+                    if (_tool.SourceWad != null)
+                        _tool.SourceWad.Dispose();
 
                     newWad.FileName = openFileDialogWad.FileName;
                     newWad.GraphicsDevice = _tool.Device;
@@ -285,14 +298,16 @@ namespace WadTool
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load or create a new destination Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             // Get the selected object
-            if (treeSourceWad.SelectedNodes.Count == 0) return;
+            if (treeSourceWad.SelectedNodes.Count == 0)
+                return;
             var node = treeSourceWad.SelectedNodes[0];
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
+            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic)))
+                return;
 
             var currentObject = (WadObject)node.Tag;
             var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
@@ -301,12 +316,12 @@ namespace WadTool
             if (isMoveable && _tool.DestinationWad.Moveables.ContainsKey(currentObject.ObjectID) ||
                 !isMoveable && _tool.DestinationWad.Statics.ContainsKey(currentObject.ObjectID))
             {
-                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
-                   "Destination Wad2 already contains '" +currentObject.ToString() + "'. Do you want to overwrite it?",
-                   "Copy object", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                if (DarkMessageBox.Show(this,
+                   "Destination Wad2 already contains '" + currentObject.ToString() + "'. Do you want to overwrite it?",
+                   "Copy object", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
-                
+
             // Copy the object
             _tool.DestinationWad.AddObject(currentObject, _tool.SourceWad, currentObject.ObjectID);
 
@@ -320,18 +335,20 @@ namespace WadTool
         private void butDeleteObject_Click(object sender, EventArgs e)
         {
             // Get the selected object
-            if (treeDestWad.SelectedNodes.Count == 0) return;
+            if (treeDestWad.SelectedNodes.Count == 0)
+                return;
             var node = treeDestWad.SelectedNodes[0];
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
+            if (!(node.Tag is WadMoveable || node.Tag is WadStatic))
+                return;
 
             var currentObject = (WadObject)node.Tag;
-            var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
+            var isMoveable = currentObject is WadMoveable;
 
             // Ask to the user the permission to delete object
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(this,
                    "Are you really sure to delete '" + currentObject.ToString() + "'?",
-                   "Delete object", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
-                    return;           
+                   "Delete object", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
 
             // Delete the object
             _tool.DestinationWad.DeleteObject(currentObject);
@@ -345,9 +362,9 @@ namespace WadTool
 
         private void butSave_Click(object sender, EventArgs e)
         {
-            if (_tool.DestinationWad==null)
+            if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You don't have a valid opened Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You don't have a valid opened Wad2", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -360,7 +377,7 @@ namespace WadTool
             }
             catch (Exception exc)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Unable to save Wad2: " + exc.Message, "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "Unable to save Wad2: " + exc.Message, "Error", MessageBoxIcon.Error);
             }
         }
 
@@ -368,11 +385,12 @@ namespace WadTool
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You don't have a valid opened Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You don't have a valid opened Wad2", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel) return;
+            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
+                return;
 
             try
             {
@@ -383,7 +401,7 @@ namespace WadTool
             }
             catch (Exception exc)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Unable to save Wad2: " + exc.Message, "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "Unable to save Wad2: " + exc.Message, "Error", MessageBoxIcon.Error);
             }
         }
 
@@ -396,14 +414,16 @@ namespace WadTool
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load or create a new destination Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             // Get the selected object
-            if (treeSourceWad.SelectedNodes.Count == 0) return;
+            if (treeSourceWad.SelectedNodes.Count == 0)
+                return;
             var node = treeSourceWad.SelectedNodes[0];
-            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic))) return;
+            if (node.Tag == null || (node.Tag.GetType() != typeof(WadMoveable) && node.Tag.GetType() != typeof(WadStatic)))
+                return;
 
             var currentObject = (WadObject)node.Tag;
             var isMoveable = (currentObject.GetType() == typeof(WadMoveable));
@@ -411,7 +431,8 @@ namespace WadTool
             // Ask for the new slot
             var form = new FormSelectSlot();
             form.IsMoveable = isMoveable;
-            if (form.ShowDialog() != DialogResult.OK) return;
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
 
             var objectId = form.ObjectId;
             var objectName = form.ObjectName;
@@ -420,9 +441,9 @@ namespace WadTool
             if (isMoveable && _tool.DestinationWad.Moveables.ContainsKey(objectId) ||
                 !isMoveable && _tool.DestinationWad.Statics.ContainsKey(objectId))
             {
-                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                if (DarkMessageBox.Show(this,
                    "Destination Wad2 already contains '" + objectName + "'. Do you want to overwrite it?",
-                   "Copy object", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                   "Copy object", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
 
@@ -440,14 +461,16 @@ namespace WadTool
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load or create a new destination Wad2", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load or create a new destination Wad2", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             // Get the selected sound
-            if (treeSounds.SelectedNodes.Count == 0) return;
+            if (treeSounds.SelectedNodes.Count == 0)
+                return;
             var node = treeSounds.SelectedNodes[0];
-            if (node.Tag == null || node.Tag.GetType() != typeof(WadSound)) return;
+            if (node.Tag == null || node.Tag.GetType() != typeof(WadSound))
+                return;
 
             var currentSound = (WadSound)node.Tag;
 
@@ -458,11 +481,12 @@ namespace WadTool
         {
             if (_tool.SourceWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load a source WAD file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load a source WAD file", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel) return;
+            if (saveFileDialogWad2.ShowDialog() == DialogResult.Cancel)
+                return;
 
             using (var stream = new FileStream(saveFileDialogWad2.FileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
@@ -472,14 +496,14 @@ namespace WadTool
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void butSoundEditor_Click(object sender, EventArgs e)
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load a destination Wad2 file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load a destination Wad2 file", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -496,7 +520,7 @@ namespace WadTool
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load a destination Wad2 file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load a destination Wad2 file", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -510,7 +534,7 @@ namespace WadTool
         {
             if (_tool.DestinationWad == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must load a destination Wad2 file", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "You must load a destination Wad2 file", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -518,7 +542,8 @@ namespace WadTool
 
             var form = new FormSpriteEditor();
             form.SpriteSequence = sequence;
-            if (form.ShowDialog() == DialogResult.Cancel) return;
+            if (form.ShowDialog() == DialogResult.Cancel)
+                return;
 
             _tool.DestinationWad.SpriteSequences.Add(form.SpriteSequence);
 

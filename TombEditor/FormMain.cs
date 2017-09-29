@@ -13,6 +13,7 @@ using TombLib.Wad;
 using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
+using DarkUI.Forms;
 
 namespace TombEditor
 {
@@ -186,9 +187,9 @@ namespace TombEditor
 
         private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(this,
                     "Your project will be lost. Do you really want to create a new project?",
-                    "New project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    "New project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             _editor.Level = Level.CreateSimpleLevel();
         }
@@ -407,14 +408,14 @@ namespace TombEditor
         {
             if ((_editor.Level == null) || (_editor.Level.Settings.Textures.Count == 0))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Currently there is no texture loaded to convert it.", "No texture loaded");
+                DarkMessageBox.Show(this, "Currently there is no texture loaded to convert it.", "No texture loaded", MessageBoxIcon.Error);
                 return;
             }
 
             LevelTexture texture = _editor.Level.Settings.Textures[0];
             if (texture.ImageLoadException != null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("The texture that should be converted to *.png could not be loaded. " + texture.ImageLoadException.Message, "Error");
+                DarkMessageBox.Show(this, "The texture that should be converted to *.png could not be loaded. " + texture.ImageLoadException.Message, "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -423,14 +424,14 @@ namespace TombEditor
 
             if (File.Exists(pngFilePath))
             {
-                if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+                if (DarkMessageBox.Show(this,
                         "There is already a file at \"" + pngFilePath + "\". Continue and overwrite the file?",
-                        "File exist already", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                        "File exist already", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
             }
             texture.Image.Save(pngFilePath);
 
-            DarkUI.Forms.DarkMessageBox.ShowInformation("TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success");
+            DarkMessageBox.Show(this, "TGA texture map was converted to PNG without errors and saved at \"" + pngFilePath + "\".", "Success", MessageBoxIcon.Information);
             texture.SetPath(_editor.Level.Settings, pngFilePath);
             _editor.LoadedTexturesChange();
         }
@@ -477,9 +478,9 @@ namespace TombEditor
 
         private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
-                    "Your project will be lost. Do you really want to open an existing project?",
-                    "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            if (DarkMessageBox.Show(this,
+                    "Your project will be lost. Do you really want to open another project file?",
+                    "Open project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
@@ -492,17 +493,16 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to open \"" + openFileDialogPRJ2.FileName + "\"");
-                DarkUI.Forms.DarkMessageBox.ShowError(
-                    "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc, "Error");
+                DarkMessageBox.Show(this, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc, "Error", MessageBoxIcon.Error);
             }
         }
 
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Choose actions
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(this,
                     "Your project will be lost. Do you really want to open an existing project?",
-                    "Open project", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    "Open project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             if (openFileDialogPRJ.ShowDialog(this) != DialogResult.OK)
@@ -547,7 +547,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to save to \"" + saveFileDialogPRJ2.FileName + "\".");
-                DarkUI.Forms.DarkMessageBox.ShowError("There was an error while saving project file. Exception: " + exc, "Error");
+                DarkMessageBox.Show(this, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
             }
         }
 
@@ -573,97 +573,97 @@ namespace TombEditor
 
         private void smoothRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void smoothRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SmoothRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void smoothRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void smoothRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SmoothRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void sharpRandomFloorUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SharpRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void sharpRandomFloorDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SharpRandomFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void sharpRandomCeilingUpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SharpRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, 1);
         }
 
         private void sharpRandomCeilingDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.SharpRandomCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, -1);
         }
 
         private void butFlattenFloor_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butFlattenCeiling_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void flattenFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.FlattenFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void flattenCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.FlattenCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void gridWallsIn3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (EditorActions.CheckForRoomAndBlockSelection())
+            if (EditorActions.CheckForRoomAndBlockSelection(this))
                 EditorActions.GridWalls3(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void gridWallsIn5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.GridWalls5(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
@@ -680,7 +680,7 @@ namespace TombEditor
 
         private void moveLaraToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
 
             // Search for first Lara and remove her
@@ -716,17 +716,17 @@ namespace TombEditor
 
         private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
 
         private void splitRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.SplitRoom();
+            EditorActions.SplitRoom(this);
         }
 
         private void copyRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.CopyRoom();
+            EditorActions.CopyRoom(this);
         }
 
         private void copyToolStripMenuItem_Click(object sender, EventArgs e)
@@ -756,8 +756,8 @@ namespace TombEditor
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Your project will be lost. Do you really want to exit?",
-                    "Exit", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            if (DarkMessageBox.Show(this, "Your project will be lost. Do you really want to exit?",
+                    "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             Close();

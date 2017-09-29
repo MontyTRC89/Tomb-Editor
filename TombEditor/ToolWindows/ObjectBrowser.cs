@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
 using TombLib.Wad;
+using DarkUI.Forms;
 
 namespace TombEditor.ToolWindows
 {
@@ -28,7 +29,7 @@ namespace TombEditor.ToolWindows
         public void Initialize(DeviceManager _deviceManager)
         {
             panelItem.InitializePanel(_deviceManager);
-        }            
+        }
 
         protected override void Dispose(bool disposing)
         {
@@ -80,7 +81,7 @@ namespace TombEditor.ToolWindows
         {
             ItemType? result = _editor.ChosenItem;
             if (result == null)
-                DarkUI.Forms.DarkMessageBox.ShowError("Select an item first", "Error");
+                DarkMessageBox.Show(this, "Select an item first", "Error", MessageBoxIcon.Error);
             return result;
         }
 
@@ -101,7 +102,7 @@ namespace TombEditor.ToolWindows
 
             // Show result
             if (instance == null)
-                DarkUI.Forms.DarkMessageBox.ShowInformation("No object of the selected item type found.", "No object found");
+                DarkMessageBox.Show(this, "No object of the selected item type found.", "No object found", MessageBoxIcon.Information);
             else
                 _editor.ShowObject(instance);
         }
@@ -134,7 +135,7 @@ namespace TombEditor.ToolWindows
 
             if ((!currentItem.Value.IsStatic) && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't add moveables to a flipped room", "Error");
+                DarkMessageBox.Show(this, "You can't add moveables to a flipped room", "Error", MessageBoxIcon.Information);
                 return;
             }
 

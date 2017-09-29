@@ -73,10 +73,10 @@ namespace TombEditor.ToolWindows
                 lstTriggers.SelectedItem = (trigger != null) && lstTriggers.Items.Contains(trigger) ? trigger : null;
             }
         }
-        
+
         private void butAddTrigger_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
             EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
@@ -97,9 +97,9 @@ namespace TombEditor.ToolWindows
 
         private void lstTriggers_SelectedIndexChanged(object sender, EventArgs e)
         {
-                if ((_editor.SelectedRoom == null) || (lstTriggers.SelectedItem == null))
-                    return;
-                _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem);
+            if ((_editor.SelectedRoom == null) || (lstTriggers.SelectedItem == null))
+                return;
+            _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem);
         }
     }
 }

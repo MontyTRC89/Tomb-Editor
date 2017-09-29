@@ -85,7 +85,7 @@ namespace TombEditor.ToolWindows
                 cbHorizon.Checked = room.FlagHorizon;
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.ExcludeFromPathFinding;
-                
+
                 comboFlipMap.Enabled = !(room.Flipped && (room.AlternateRoom == null));
                 comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
             }
@@ -114,7 +114,7 @@ namespace TombEditor.ToolWindows
             // Delete flipped room
             if (comboFlipMap.SelectedIndex == 0 && room.Flipped)
             {
-                EditorActions.AlternateRoomDisable(room);
+                EditorActions.AlternateRoomDisableWithWarning(room, this);
                 return;
             }
 
@@ -291,19 +291,19 @@ namespace TombEditor.ToolWindows
 
         private void butCropRoom_Click(object sender, EventArgs e)
         {
-            if (!EditorActions.CheckForRoomAndBlockSelection())
+            if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
 
         private void butSplitRoom_Click(object sender, EventArgs e)
         {
-            EditorActions.SplitRoom();
+            EditorActions.SplitRoom(this);
         }
 
         private void butCopyRoom_Click(object sender, EventArgs e)
         {
-            EditorActions.CopyRoom();
+            EditorActions.CopyRoom(this);
         }
 
         private void butEditRoomName_Click(object sender, EventArgs e)
@@ -327,7 +327,7 @@ namespace TombEditor.ToolWindows
         {
             if (_editor.SelectedRoom == null)
                 return;
-            EditorActions.DeleteRoom(_editor.SelectedRoom);
+            EditorActions.DeleteRoom(_editor.SelectedRoom, this);
         }
 
         private void butRoomUp_Click(object sender, EventArgs e)
