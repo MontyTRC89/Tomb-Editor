@@ -210,8 +210,8 @@ namespace TombEditor
             {
                 if (!Utils.IsValidNumber(tbParameter.Text))
                 {
-                    DarkMessageBox.ShowWarning("You must insert a valid value for parameter",
-                                                            "Save trigger", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkMessageBox.Show(this, "You must insert a valid value for parameter",
+                                        "Save trigger", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
