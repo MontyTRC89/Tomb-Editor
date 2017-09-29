@@ -465,7 +465,9 @@ namespace TombEditor.Controls
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
-        { }
+        {
+            // Don't paint the background
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -721,6 +723,7 @@ namespace TombEditor.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+            Focus(); // Enable keyboard interaction
 
             switch (e.Button)
             {
