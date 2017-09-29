@@ -127,13 +127,6 @@ namespace TombEditor.Geometry
                 Vector3 minVertex = new Vector3(float.MaxValue);
                 Vector3 maxVertex = new Vector3(float.MinValue);
 
-                float xMin = float.MaxValue;
-                float yMin = float.MaxValue;
-                float zMin = float.MaxValue;
-                float xMax = float.MinValue;
-                float yMax = float.MinValue;
-                float zMax = float.MinValue;
-                
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in scene.Meshes)
                 {
@@ -143,7 +136,6 @@ namespace TombEditor.Geometry
                     Assimp.Material material = scene.Materials[mesh.MaterialIndex];
                     if (material != null && material.HasTextureDiffuse)
                         modelMesh.Texture = GetOrAddTexture(absolutePathTextureLookup, importedGeometryDirectory, material.TextureDiffuse.FilePath);
-
 
                     // Determine primitive type (should be always triangle)
                     if (mesh.PrimitiveType != Assimp.PrimitiveType.Triangle)
@@ -161,20 +153,8 @@ namespace TombEditor.Geometry
                         ImportedGeometryVertex v = new ImportedGeometryVertex();
 
                         v.Position = new Vector3(positions[i].X, positions[i].Y, positions[i].Z) * info.Scale;
-
-                        if (v.Position.X < xMin)
-                            xMin = v.Position.X;
-                        if (v.Position.Y < yMin)
-                            yMin = v.Position.Y;
-                        if (v.Position.Z < zMin)
-                            zMin = v.Position.Z;
-
-                        if (v.Position.X > xMax)
-                            xMax = v.Position.X;
-                        if (v.Position.Y > yMax)
-                            yMax = v.Position.Y;
-                        if (v.Position.Z > zMax)
-                            zMax = v.Position.Z;
+                        minVertex = Vector3.Min(minVertex, v.Position);
+                        maxVertex = Vector3.Max(maxVertex, v.Position);
 
                         if (hasTexCoords)
                         {
@@ -192,9 +172,6 @@ namespace TombEditor.Geometry
                     // Add mesh to the model
                     DirectXModel.Meshes.Add(modelMesh);
                 }
-
-                minVertex = new Vector3(xMin, yMin, zMin);
-                maxVertex = new Vector3(xMax, yMax, zMax);
 
                 // Set the bounding box
                 DirectXModel.BoundingBox = new BoundingBox(minVertex, maxVertex);
