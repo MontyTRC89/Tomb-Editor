@@ -497,7 +497,7 @@ namespace TombEditor.Geometry
                     // Floor polygons
                     RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsZ,
-                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType);
+                        BlockFace.Floor, BlockFace.FloorTriangle2, floorPortalInfo.VisualType, true);
 
                     // Ceiling polygons
                     var sectorVertices = _sectorVertices[x, z];
@@ -505,14 +505,14 @@ namespace TombEditor.Geometry
 
                     RoomConnectionInfo ceilingPortalInfo = GetCeilingRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, ws0, ws1, ws2, ws3, Blocks[x, z].CeilingDiagonalSplit, Blocks[x, z].CeilingSplitDirectionIsXEqualsZ,
-                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType);
+                        BlockFace.Ceiling, BlockFace.CeilingTriangle2, ceilingPortalInfo.VisualType, false);
 
                     // Change vertices order for ceiling polygons
                     for (int i = startCeilingPolygons; i < sectorVertices.Count; i += 3)
                     {
-                        var tempVertex = sectorVertices[i + 2];
-                        sectorVertices[i + 2] = sectorVertices[i];
-                        sectorVertices[i] = tempVertex;
+                        var tempVertex = sectorVertices[i + 0];
+                        sectorVertices[i + 0] = sectorVertices[i + 1];
+                        sectorVertices[i + 1] = tempVertex;
                     }
                 }
             }
@@ -527,7 +527,7 @@ namespace TombEditor.Geometry
                 }
         }
 
-        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY, BlockFace face1, BlockFace face2, RoomConnectionType portalMode)
+        private void BuildFloorOrCeilingFace(int x, int z, int h0, int h1, int h2, int h3, DiagonalSplit splitType, bool diagonalSplitXEqualsY, BlockFace face1, BlockFace face2, RoomConnectionType portalMode, bool isFloor)
         {
             BlockType blockType = Blocks[x, z].Type;
 
@@ -621,18 +621,18 @@ namespace TombEditor.Geometry
 
                         if (portalMode != RoomConnectionType.TriangularPortalXnZp && blockType != BlockType.Wall)
                             AddTriangle(x, z, face1,
-                                new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
                                 new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                                new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
                                 Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
 
                         break;
                     case DiagonalSplit.XpZp:
                         if (portalMode != RoomConnectionType.TriangularPortalXnZn)
                             AddTriangle(x, z, face2,
+                                new Vector3(x * 1024.0f, h3 * 256.0f, (z + 1) * 1024.0f),
                                 new Vector3((x + 1) * 1024.0f, h3 * 256.0f, z * 1024.0f),
                                 new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
-                                new Vector3(x * 1024.0f, h3 * 256.0f, (z + 1) * 1024.0f),
                                 Blocks[x, z].GetFaceTexture(face2), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), false);
 
                         if (portalMode != RoomConnectionType.TriangularPortalXpZp && blockType != BlockType.Wall)
@@ -649,11 +649,11 @@ namespace TombEditor.Geometry
             else if (Block.IsQuad(h0, h1, h2, h3) && (portalMode == RoomConnectionType.NoPortal))
             {
                 AddRectangle(x, z, face1,
+                    new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
                     new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                     new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
-                    new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
-                    Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                    Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f));
             }
             else if (diagonalSplitXEqualsY || (portalMode == RoomConnectionType.TriangularPortalXnZp) || (portalMode == RoomConnectionType.TriangularPortalXpZn))
             {
@@ -666,19 +666,19 @@ namespace TombEditor.Geometry
 
                 if (portalMode != RoomConnectionType.TriangularPortalXpZn)
                     AddTriangle(x, z, face1,
-                        new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
                         new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
                         new Vector3(x * 1024.0f, h3 * 256.0f, z * 1024.0f),
-                        Blocks[x, z].GetFaceTexture(face1), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), true);
+                        new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
+                        Blocks[x, z].GetFaceTexture(face1), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f), true);
             }
             else
             {
                 if (portalMode != RoomConnectionType.TriangularPortalXpZp)
                     AddTriangle(x, z, face1,
+                        new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
                         new Vector3(x * 1024.0f, h0 * 256.0f, (z + 1) * 1024.0f),
                         new Vector3((x + 1) * 1024.0f, h1 * 256.0f, (z + 1) * 1024.0f),
-                        new Vector3((x + 1) * 1024.0f, h2 * 256.0f, z * 1024.0f),
-                        Blocks[x, z].GetFaceTexture(face1), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), false);
+                        Blocks[x, z].GetFaceTexture(face1), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
 
                 if (portalMode != RoomConnectionType.TriangularPortalXnZn)
                     AddTriangle(x, z, face2,
@@ -736,6 +736,18 @@ namespace TombEditor.Geometry
                     middleFace = BlockFace.PositiveZ_Middle;
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
+
+                    if (qA < fA) qA = fA;
+                    if (qB < fB) qB = fB;
+
+                    if (qA > cA) qA = cA;
+                    if (qB > cB) qB = cB;
+
+                    if (wA < fA) wA = fA;
+                    if (wB < fB) wB = fB;
+
+                    if (wA > cA) wA = cA;
+                    if (wB > cB) wB = cB;
 
                     if (Blocks[x, z].WallPortal != null)
                     {
@@ -858,6 +870,18 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
+                    if (qA < fA) qA = fA;
+                    if (qB < fB) qB = fB;
+
+                    if (qA > cA) qA = cA;
+                    if (qB > cB) qB = cB;
+
+                    if (wA < fA) wA = fA;
+                    if (wB < fB) wB = fB;
+
+                    if (wA > cA) wA = cA;
+                    if (wB > cB) wB = cB;
+
                     if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.WallPositiveZ);
@@ -978,6 +1002,18 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
 
+                    if (qA < fA) qA = fA;
+                    if (qB < fB) qB = fB;
+
+                    if (qA > cA) qA = cA;
+                    if (qB > cB) qB = cB;
+
+                    if (wA < fA) wA = fA;
+                    if (wB < fB) wB = fB;
+
+                    if (wA > cA) wA = cA;
+                    if (wB > cB) wB = cB;
+
                     if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
@@ -998,8 +1034,8 @@ namespace TombEditor.Geometry
 
                         int wAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].WSFaces[2];
                         int wBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].WSFaces[1];
-                        wA = (int)Position.Y + Blocks[1, z].WSFaces[1];
-                        wB = (int)Position.Y + Blocks[1, z].WSFaces[2];
+                        wA = (int)Position.Y + Blocks[1, z].WSFaces[3];
+                        wB = (int)Position.Y + Blocks[1, z].WSFaces[0];
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
@@ -1296,6 +1332,18 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
 
+                    if (qA < fA) qA = fA;
+                    if (qB < fB) qB = fB;
+
+                    if (qA > cA) qA = cA;
+                    if (qB > cB) qB = cB;
+
+                    if (wA < fA) wA = fA;
+                    if (wB < fB) wB = fB;
+
+                    if (wA > cA) wA = cA;
+                    if (wB > cB) wB = cB;
+
                     if (Blocks[x, z].WallPortal != null)
                     {
                         var portal = FindPortal(x, z, PortalDirection.WallPositiveX);
@@ -1555,16 +1603,16 @@ namespace TombEditor.Geometry
 
             else if (yA != yD && yB == yC)
                 AddTriangle(x, z, middleFace,
-                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                    new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f), 
+                    new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                    new Vector3(xA * 1024.0f, yD * 256.0f, zA * 1024.0f),
                     face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
 
             else if (yA == yD && yB != yC)
                 AddTriangle(x, z, middleFace,
-                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                     new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                     new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                    new Vector3(xB * 1024.0f, yC * 256.0f, zB * 1024.0f),
                     face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
         }
 

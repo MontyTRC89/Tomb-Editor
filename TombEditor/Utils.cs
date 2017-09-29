@@ -6,6 +6,7 @@ using System.IO;
 using NLog;
 using System.Drawing;
 using TombEditor.Geometry;
+using System.Globalization;
 
 namespace TombEditor
 {
@@ -300,6 +301,12 @@ namespace TombEditor
                 // and prompt the user for the file path.
             }
             return filename;
+        }
+
+        public static bool IsValidNumber(string number)
+        {
+            double num;
+            return double.TryParse(number, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out num);
         }
     }
 }

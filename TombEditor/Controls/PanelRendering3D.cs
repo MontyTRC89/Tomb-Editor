@@ -2486,7 +2486,7 @@ namespace TombEditor.Controls
                 }
 
                 // Portals
-                if (face < (BlockFace)25)
+                /*if (face < (BlockFace)25)
                 {
                     if (room.Blocks[x, z].WallPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
@@ -2502,7 +2502,7 @@ namespace TombEditor.Controls
                 {
                     if (room.Blocks[x, z].CeilingPortal != null)
                         _roomEffect.Parameters["Color"].SetValue(GetSharpdDXColor(System.Drawing.Color.Yellow));
-                }
+                }*/
 
                 // attivo le coordinate UV dell'editor a prescindere
                 _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(true);

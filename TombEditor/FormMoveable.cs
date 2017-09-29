@@ -29,6 +29,12 @@ namespace TombEditor
 
         private void FormObject_Load(object sender, EventArgs e)
         {
+            if (!Utils.IsValidNumber(tbOCB.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for OCB", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
             cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_movable.CodeBits & (1 << 1)) != 0;
             cbBit3.Checked = (_movable.CodeBits & (1 << 2)) != 0;

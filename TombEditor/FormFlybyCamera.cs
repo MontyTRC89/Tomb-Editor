@@ -60,6 +60,55 @@ namespace TombEditor
 
         private void butOK_Click(object sender, EventArgs e)
         {
+            // Check inputs
+            if (!Utils.IsValidNumber(tbSequence.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for sequence", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbNumber.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for number", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbTimer.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for timer", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbSpeed.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for speed", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbFOV.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for FOV", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbRoll.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for roll", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbRotationX.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for rotation X", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
+            if (!Utils.IsValidNumber(tbRotationY.Text))
+            {
+                DarkUI.Forms.DarkMessageBox.ShowError("You must insert a valid value for rotation Y", "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                return;
+            }
+
             ushort flags = 0;
             flags |= (ushort)(cbBit0.Checked ? (1 << 0) : 0);
             flags |= (ushort)(cbBit1.Checked ? (1 << 1) : 0);
@@ -78,7 +127,7 @@ namespace TombEditor
             flags |= (ushort)(cbBit14.Checked ? (1 << 14) : 0);
             flags |= (ushort)(cbBit15.Checked ? (1 << 15) : 0);
             _flyByCamera.Flags = flags;
-
+            
             _flyByCamera.Sequence = byte.Parse(tbSequence.Text);
             _flyByCamera.Number = byte.Parse(tbNumber.Text);
             _flyByCamera.Timer = short.Parse(tbTimer.Text);
