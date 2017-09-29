@@ -1399,17 +1399,18 @@ namespace TombEditor.Geometry.IO
                     texture.TexCoord2 = new Vector2(0);
                     texture.TexCoord3 = new Vector2(0);
 
-                    int txtRot = prjFace._txtRotation + 1;
-                    int rotationForWallTriangles = 1;
+                    int txtRot = prjFace._txtRotation;
 
-                    int rot1 = 3;
-                    int rot2 = 1;
+                    int rotationForWallTriangles = 2;
+
+                    int rot1 = 2;
+                    int rot2 = 2;
                     int rot3 = 2;
-                    int rot4 = 1;
+                    int rot4 = 2;
 
-                    int rotCeiling1 = 2;
+                    int rotCeiling1 = 1; 
                     int rotCeiling2 = 1;
-                    int rotCeiling3 = 3;
+                    int rotCeiling3 = 1;
                     int rotCeiling4 = 1;
 
                     bool isFlipped = (prjFace._txtFlags & 0x80) != 0;
@@ -1824,24 +1825,32 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        if (!isCeiling)
-                            txtRot += 1;
-
+                        txtRot += 1;
                         txtRot = (sbyte)(txtRot % 3);
 
                         if (isCeiling)
                         {
-                            var temp3 = texture.TexCoord1;
+                            var temp4 = texture.TexCoord1;
                             texture.TexCoord1 = texture.TexCoord0;
-                            texture.TexCoord0 = temp3;
-                        }
+                            texture.TexCoord0 = temp4;
 
-                        for (int rot = 0; rot < txtRot; rot++)
+                            for (int rot = 0; rot < txtRot; rot++)
+                            {
+                                var temp3 = texture.TexCoord2;
+                                texture.TexCoord2 = texture.TexCoord0;
+                                texture.TexCoord0 = texture.TexCoord1;
+                                texture.TexCoord1 = temp3;
+                            }
+                        }
+                        else
                         {
-                            var temp3 = texture.TexCoord2;
-                            texture.TexCoord2 = texture.TexCoord1;
-                            texture.TexCoord1 = texture.TexCoord0;
-                            texture.TexCoord0 = temp3;
+                            for (int rot = 0; rot < txtRot; rot++)
+                            {
+                                var temp3 = texture.TexCoord2;
+                                texture.TexCoord2 = texture.TexCoord1;
+                                texture.TexCoord1 = texture.TexCoord0;
+                                texture.TexCoord0 = temp3;
+                            }
                         }
 
                         texture.TexCoord3 = texture.TexCoord2;
@@ -1862,17 +1871,7 @@ namespace TombEditor.Geometry.IO
                         }
 
                         // Adjust rotation only for vertical faces
-                        if (face != BlockFace.Floor && face != BlockFace.FloorTriangle2 &&
-                            face != BlockFace.Ceiling && face != BlockFace.CeilingTriangle2)
-                            txtRot--;
-                        else
-                        {
-                            if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
-                                txtRot++;
-                            else
-                                txtRot--;
-                        }
-
+                        if (isFloor || isCeiling) txtRot += 3;
                         txtRot %= 4;
 
                         for (int rot = 0; rot < txtRot; rot++)

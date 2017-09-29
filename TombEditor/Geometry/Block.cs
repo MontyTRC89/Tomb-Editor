@@ -227,11 +227,11 @@ namespace TombEditor.Geometry
                     default:
                         int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-
-                        if (max == h1 && max == h3)
-                            return !FloorSplitDirectionToggled;
-                        if (max == h2 && max == h4)
+                        
+                        if (min == h1 && min == h3)
                             return FloorSplitDirectionToggled;
+                        if (min == h2 && min == h4)
+                            return !FloorSplitDirectionToggled;
 
                         if (min == h1 && max == h3)
                             return !FloorSplitDirectionToggled;
@@ -242,7 +242,7 @@ namespace TombEditor.Geometry
                         if (min == h4 && max == h2)
                             return FloorSplitDirectionToggled;
 
-                        return FloorSplitDirectionToggled;
+                        return !FloorSplitDirectionToggled;
                 }
             }
             set
@@ -274,9 +274,9 @@ namespace TombEditor.Geometry
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
 
                         if (max == h1 && max == h3)
-                            return !CeilingSplitDirectionToggled;
-                        if (max == h2 && max == h4)
                             return CeilingSplitDirectionToggled;
+                        if (max == h2 && max == h4)
+                            return !CeilingSplitDirectionToggled;
 
                         if (min == h1 && max == h3)
                             return !CeilingSplitDirectionToggled;
