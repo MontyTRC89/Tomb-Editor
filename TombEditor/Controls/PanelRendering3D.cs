@@ -1557,7 +1557,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawRoomGeometry(Matrix viewProjection)
+        private void DrawRoomImportedGeometry(Matrix viewProjection)
         {
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -1598,6 +1598,10 @@ namespace TombEditor.Controls
                     worldDebug = Matrix.Translation(room.WorldPos);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
+
+                    geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                    if (_editor.SelectedObject == modelInfo)
+                        geometryEffect.Parameters["Color"].SetValue(_selectionColor);
 
                     if (mesh.Texture != null)
                     {
@@ -1642,9 +1646,6 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, modelInfo.Position);
-
-                    // Add the bounding box
-                    _boundingBoxesToDraw.Add(new BoundingBoxToDraw(model.BoundingBox, modelInfo.Position, false));
                 }
 
                 _lastObject = modelInfo;
@@ -1726,9 +1727,6 @@ namespace TombEditor.Controls
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
-
-                    // Add the bounding box
-                    _boundingBoxesToDraw.Add(new BoundingBoxToDraw(model.Meshes[0].BoundingBox, instance.Position, false));
                 }
 
                 _lastObject = instance;
@@ -2106,7 +2104,7 @@ namespace TombEditor.Controls
             // Draw room geometry imported
             if (_editor != null && _editor.Level != null)
             {
-                DrawRoomGeometry(viewProjection);
+                DrawRoomImportedGeometry(viewProjection);
             }
 
             // Set some common parameters of the shader
