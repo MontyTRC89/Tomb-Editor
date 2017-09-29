@@ -10,7 +10,7 @@ using TombEditor.Compilers;
 using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
 using TombLib.Utils;
-
+using DarkUI.Forms;
 
 namespace TombEditor
 {
@@ -751,12 +751,12 @@ namespace TombEditor
         {
             if (room.Flipped && (instance is Portal))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't delete portals of a flipped room", "Error");
+                DarkMessageBox.Show(owner, "You can't delete portals of a flipped room", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete " + instance.ToString() + "?",
-                    "Confirm delete", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance.ToString() + "?",
+                    "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             DeleteObject(room, instance);
@@ -933,13 +933,13 @@ namespace TombEditor
             _editor.ObjectChange(instance);
         }
 
-        public static void DeleteRoom(Room room)
+        public static void DeleteRoom(Room room, IWin32Window owner)
         {
             // Check if is the last room
             int roomCount = _editor.Level.Rooms.Count(r => r != null);
             if (roomCount <= 1)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You must have at least one room in your level", "Error");
+                DarkMessageBox.Show(owner, "You must have at least one room in your level", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -947,15 +947,15 @@ namespace TombEditor
             int portalCount = room.Portals.Count();
             if (portalCount != 0)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
+                DarkMessageBox.Show(owner, "You can't delete a room with portals to other rooms.", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             // Ask for confirmation
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(owner,
                     "Do you really want to delete this room? All objects inside room will be deleted and " +
                     "triggers pointing to them will be removed.",
-                    "Delete room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                    "Delete room", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
             {
                 return;
             }
@@ -969,22 +969,22 @@ namespace TombEditor
             _editor.RoomListChange();
         }
 
-        public static void CropRoom(Room room, Rectangle newArea)
+        public static void CropRoom(Room room, Rectangle newArea, IWin32Window owner)
         {
             if (room.Flipped)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't crop a flipped room yet :(", "Error");
+                DarkMessageBox.Show(owner, "You can't crop a flipped room yet :(", "Error", MessageBoxIcon.Error);
                 return;
             }
             newArea = newArea.Inflate(1);
             if ((newArea.Width + 1) > Room.MaxRoomDimensions ||
                 (newArea.Height + 1) > Room.MaxRoomDimensions)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("The selected area exceeds the maximum room size.", "Error");
+                DarkMessageBox.Show(owner,  "The selected area exceeds the maximum room size.", "Error", MessageBoxIcon.Error);
                 return;
             }
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
-                " Do you want to continue?", "Crop room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            if (DarkMessageBox.Show(owner,  "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
+                " Do you want to continue?", "Crop room", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             // Resize room
@@ -1379,11 +1379,11 @@ namespace TombEditor
             _editor.RoomListChange();
         }
 
-        public static void SplitRoom(Room room, Rectangle area)
+        public static void SplitRoom(Room room, Rectangle area, IWin32Window owner)
         {
             if (room.Flipped)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't split a flipped room", "Error");
+                DarkMessageBox.Show(owner, "You can't split a flipped room", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -1460,18 +1460,18 @@ namespace TombEditor
             _editor.RoomPropertiesChange(newRoom);
         }
 
-        public static void AlternateRoomDisable(Room room)
+        public static void AlternateRoomDisableWithWarning(Room room, IWin32Window owner)
         {
             // Check if room has portals
             if (room.Portals.Count() > 0)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You can't delete a room with portals to other rooms.", "Error");
+                DarkMessageBox.Show(owner, "You can't delete a room with portals to other rooms.", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             // Ask for confirmation
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning("Do you really want to delete the flip room?",
-                "Delete flipped room", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+            if (DarkMessageBox.Show(owner, "Do you really want to delete the flip room?",
+                "Delete flipped room", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
             {
                 return;
             }
@@ -1649,26 +1649,26 @@ namespace TombEditor
                 _editor.SelectedRoom = newRoom; //Don't center
         }
 
-        public static void SplitRoom()
+        public static void SplitRoom(IWin32Window owner)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!CheckForRoomAndBlockSelection(owner))
                 return;
-            SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, owner);
         }
 
-        public static void CopyRoom()
+        public static void CopyRoom(IWin32Window owner)
         {
-            if (!CheckForRoomAndBlockSelection())
+            if (!CheckForRoomAndBlockSelection(owner))
                 return;
             CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
-        public static bool CheckForRoomAndBlockSelection()
+        public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
         {
             if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("Please select a valid group of sectors",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(owner, "Please select a valid group of sectors",
+                    "Error", MessageBoxIcon.Error);
                 return false;
             }
             return true;

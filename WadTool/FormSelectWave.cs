@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +14,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormSelectWave : DarkUI.Forms.DarkForm
+    public partial class FormSelectWave : DarkForm
     {
         public WadSound SelectedWave { get; private set; }
 
@@ -66,7 +67,7 @@ namespace WadTool
             // Check if the sound exists
             if (_tool.DestinationWad.WaveSounds.ContainsKey(sound.Hash))
             {
-                DarkUI.Forms.DarkMessageBox.ShowInformation("The selected wave already exists in this Wad2", "Information", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "The selected wave already exists in this Wad2", "Information", MessageBoxIcon.Information);
                 return;
             }
             else

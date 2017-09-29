@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +14,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormSpriteSequencesEditor : DarkUI.Forms.DarkForm
+    public partial class FormSpriteSequencesEditor : DarkForm
     {
         private WadToolClass _tool;
 
@@ -51,9 +52,9 @@ namespace WadTool
             var sequence = (WadSpriteSequence)item.Tag;
 
             // Ask to the user the permission to delete sprite
-            if (DarkUI.Forms.DarkMessageBox.ShowWarning(
+            if (DarkMessageBox.Show(this, 
                    "Are you really sure to delete '" + sequence.ToString() + "'?",
-                   "Delete sequence", DarkUI.Forms.DarkDialogButton.YesNo) != DialogResult.Yes)
+                   "Delete sequence", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             _tool.DestinationWad.DeleteSpriteSequence(sequence);

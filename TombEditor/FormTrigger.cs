@@ -167,7 +167,7 @@ namespace TombEditor
                         if (_trigger.TargetObj == instance)
                             comboParameter.SelectedItem = instance;
                     }
-                
+
                 // Select old item if possible
                 if ((selectedItem != null) && comboParameter.Items.Contains(selectedItem))
                     comboParameter.SelectedItem = selectedItem;
@@ -199,8 +199,7 @@ namespace TombEditor
                 var selectedObject = comboParameter.SelectedItem as ObjectInstance;
                 if (selectedObject == null)
                 {
-                    DarkMessageBox.ShowWarning("You don't have in your project any object of the type that you have required",
-                                                            "Save trigger", DarkUI.Forms.DarkDialogButton.Ok);
+                    DarkMessageBox.Show(this, "You don't have in your project any object of the type that you have required", "Save trigger", MessageBoxIcon.Warning);
                     return;
                 }
 

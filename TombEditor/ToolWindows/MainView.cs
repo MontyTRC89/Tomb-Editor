@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using DarkUI.Docking;
 using TombEditor.Geometry;
 using TombLib.Utils;
-
+using DarkUI.Forms;
 
 namespace TombEditor.ToolWindows
 {
@@ -182,8 +182,7 @@ namespace TombEditor.ToolWindows
             var portal = _editor.SelectedObject as Portal;
             if ((_editor.SelectedRoom == null) || (portal == null))
             {
-                DarkUI.Forms.DarkMessageBox.ShowError("You have to select a portal first",
-                    "Error", DarkUI.Forms.DarkDialogButton.Ok);
+                DarkMessageBox.Show(this, "No portal selected.", "Error", MessageBoxIcon.Error);
                 return;
             }
             EditorActions.SetPortalOpacity(_editor.SelectedRoom, portal, opacity);
