@@ -90,7 +90,7 @@ namespace TombEditor.Controls
         {
             Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
         }
-
+        
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -191,7 +191,9 @@ namespace TombEditor.Controls
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
-        { }
+        {
+            // Don't paint the background
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
