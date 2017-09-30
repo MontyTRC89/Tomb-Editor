@@ -43,10 +43,13 @@ namespace TombEditor
             this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textureMap.FreeSelection = false;
+            this.textureMap.FreeSelectionWithShift = false;
             this.textureMap.Location = new System.Drawing.Point(8, 9);
             this.textureMap.Name = "textureMap";
             this.textureMap.Size = new System.Drawing.Size(577, 727);
             this.textureMap.TabIndex = 0;
+            this.textureMap.TileSelectionSize = 64F;
             // 
             // butAssignSound
             // 
@@ -92,7 +95,7 @@ namespace TombEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(592, 773);
+            this.ClientSize = new System.Drawing.Size(592, 750);
             this.Controls.Add(this.comboSounds);
             this.Controls.Add(this.butAssignSound);
             this.Controls.Add(this.butOk);

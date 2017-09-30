@@ -22,6 +22,19 @@ namespace TombEditor.Controls
     {
         private Editor _editor;
 
+
+        [Category("Behavior")]
+        [Description("Allows free-form texture coordinate selection.")]
+        public bool FreeSelection { get; set; } = true;
+
+        [Category("Behavior")]
+        [Description("Defines if free selection works with shift key or not.")]
+        public bool FreeSelectionWithShift { get; set; } = true;
+
+        [Category("Behavior")]
+        [Description("Determines default tile selection size.")]
+        public float TileSelectionSize { get; set; } = 64.0f;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [ReadOnly(true)]
         public float MaxTextureSize { get; set; } = 255;
@@ -163,14 +176,18 @@ namespace TombEditor.Controls
 
         protected virtual float GetRoundingPrecision()
         {
-            if (ModifierKeys.HasFlag(Keys.Alt))
-                return 0.0f;
-            else if (ModifierKeys.HasFlag(Keys.Control))
-                return 1.0f;
-            else if (ModifierKeys.HasFlag(Keys.Shift))
-                return _editor.Configuration.TextureMap_TileSelectionSize;
-            else
-                return 16.0f;
+            if(FreeSelection == true)
+            {
+                if (ModifierKeys.HasFlag(Keys.Alt))
+                    return 0.0f;
+                else if (ModifierKeys.HasFlag(Keys.Control))
+                    return 1.0f;
+                else if (ModifierKeys.HasFlag(Keys.Shift))
+                    if (FreeSelectionWithShift == true)
+                        return 16.0f;
+            }
+
+            return TileSelectionSize;
         }
 
         protected virtual Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
@@ -241,7 +258,7 @@ namespace TombEditor.Controls
                     var mousePos = FromVisualCoord(e.Location);
 
                     // Check if mouse was on existing texture
-                    if (SelectedTexture.Texture == VisibleTexture)
+                    if (SelectedTexture.Texture == VisibleTexture && FreeSelection == true)
                     {
                         var texCoords = SelectedTexture.TexCoords
                             .Where(texCoordPair => Vector2.Distance(texCoordPair.Value, mousePos) < textureSelectionPointSelectionRadius)
@@ -283,6 +300,9 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
+                    if (FreeSelection == false)
+                        return;
+
                     if (_selectedTexCoordIndex.HasValue)
                     {
                         TextureArea currentTexture = SelectedTexture;
@@ -350,14 +370,16 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
 
-            if (!(VisibleTexture?.IsAvailable ?? false))
+            if (!(VisibleTexture?.IsAvailable ?? false) || (FreeSelection == true && FreeSelectionWithShift == false))
                 return;
 
             switch (e.Button)
             {
                 case MouseButtons.Left:
                     if (_startPos.HasValue)
-                        if (ModifierKeys.HasFlag(Keys.Shift))
+                        if (FreeSelection == false)
+                            SetRectangularTextureWithMouse(FromVisualCoord(e.Location), FromVisualCoord(e.Location));
+                        else if(FreeSelectionWithShift == true && !ModifierKeys.HasFlag(Keys.Shift))
                             SetRectangularTextureWithMouse(_startPos.Value, FromVisualCoord(e.Location));
                     break;
             }
@@ -426,11 +448,11 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
                 case Keys.Up:
-                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                    ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
                 case Keys.Left:
@@ -442,11 +464,11 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
                 case Keys.PageDown:
-                    ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
+                    ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
                     Invalidate();
                     break;
                 case Keys.PageUp:
-                    ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
+                    ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
                     Invalidate();
                     break;
             }

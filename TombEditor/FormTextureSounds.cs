@@ -53,6 +53,9 @@ namespace TombEditor
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(484, 173) + (Size - ClientSize);
 
+            // Set texture panel selection size
+            textureMap.TileSelectionSize = LevelTexture.TextureSoundGranularity;
+
             // Initialize texture map
             textureMap.MaxTextureSize = float.PositiveInfinity;
             if (_editor.SelectedTexture.TextureIsInvisble)
@@ -93,11 +96,6 @@ namespace TombEditor
 
         public class PanelTextureMapForSounds : Controls.PanelTextureMap
         {
-            protected override float GetRoundingPrecision()
-            {
-                return LevelTexture.TextureSoundGranularity;
-            }
-            
             protected override void OnPaintSelection(PaintEventArgs e)
             {
                 var texture = VisibleTexture;

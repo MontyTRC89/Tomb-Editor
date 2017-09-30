@@ -38,13 +38,15 @@ namespace TombEditor.ToolWindows
         {
             if(_editor.Configuration.TextureMap_TileSelectionSize == 128.0f)
                 rbTileSize128.Checked = true;
-            else if(_editor.Configuration.TextureMap_TileSelectionSize == 256.0f)
+            else if (_editor.Configuration.TextureMap_TileSelectionSize == 256.0f)
                 rbTileSize256.Checked = true;
             else
             {
                 rbTileSize64.Checked = true;
                 _editor.Configuration.TextureMap_TileSelectionSize = 64.0f;
             }
+
+            panelTextureMap.TileSelectionSize = _editor.Configuration.TextureMap_TileSelectionSize;
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -76,19 +78,19 @@ namespace TombEditor.ToolWindows
         private void rbTileSize64_CheckedChanged(object sender, EventArgs e)
         {
             if (rbTileSize64.Checked == true)
-                _editor.Configuration.TextureMap_TileSelectionSize = 64.0f;
+                panelTextureMap.TileSelectionSize = 64.0f;
         }
 
         private void rbTileSize128_CheckedChanged(object sender, EventArgs e)
         {
             if (rbTileSize128.Checked == true)
-                _editor.Configuration.TextureMap_TileSelectionSize = 128.0f;
+                panelTextureMap.TileSelectionSize = 128.0f;
         }
 
         private void rbTileSize256_CheckedChanged(object sender, EventArgs e)
         {
             if (rbTileSize256.Checked == true)
-                _editor.Configuration.TextureMap_TileSelectionSize = 256.0f;
+                panelTextureMap.TileSelectionSize = 256.0f;
         }
     }
 }
