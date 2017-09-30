@@ -34,7 +34,7 @@
             this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(284, 732);
+            this.panelTextureMap.Size = new System.Drawing.Size(284, 739);
             this.panelTextureMap.TabIndex = 9;
             // 
             // panelTextureTools
@@ -44,28 +44,29 @@
             this.panelTextureTools.Controls.Add(this.butAnimationRanges);
             this.panelTextureTools.Controls.Add(this.butTextureSounds);
             this.panelTextureTools.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelTextureTools.Location = new System.Drawing.Point(0, 757);
+            this.panelTextureTools.Location = new System.Drawing.Point(0, 764);
             this.panelTextureTools.Name = "panelTextureTools";
-            this.panelTextureTools.Size = new System.Drawing.Size(284, 57);
+            this.panelTextureTools.Size = new System.Drawing.Size(284, 50);
             this.panelTextureTools.TabIndex = 10;
             // 
             // panelTileSizeSelector
             // 
+            this.panelTileSizeSelector.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.panelTileSizeSelector.Controls.Add(this.darkLabel1);
             this.panelTileSizeSelector.Controls.Add(this.rbTileSize256);
             this.panelTileSizeSelector.Controls.Add(this.rbTileSize128);
             this.panelTileSizeSelector.Controls.Add(this.rbTileSize64);
-            this.panelTileSizeSelector.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTileSizeSelector.Location = new System.Drawing.Point(0, 0);
             this.panelTileSizeSelector.Name = "panelTileSizeSelector";
-            this.panelTileSizeSelector.Size = new System.Drawing.Size(284, 31);
+            this.panelTileSizeSelector.Size = new System.Drawing.Size(282, 25);
             this.panelTileSizeSelector.TabIndex = 3;
             // 
             // darkLabel1
             // 
+            this.darkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(22, 9);
+            this.darkLabel1.Location = new System.Drawing.Point(22, 6);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(98, 13);
             this.darkLabel1.TabIndex = 3;
@@ -73,8 +74,9 @@
             // 
             // rbTileSize256
             // 
+            this.rbTileSize256.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbTileSize256.AutoSize = true;
-            this.rbTileSize256.Location = new System.Drawing.Point(218, 8);
+            this.rbTileSize256.Location = new System.Drawing.Point(218, 5);
             this.rbTileSize256.Name = "rbTileSize256";
             this.rbTileSize256.Size = new System.Drawing.Size(43, 17);
             this.rbTileSize256.TabIndex = 2;
@@ -84,8 +86,9 @@
             // 
             // rbTileSize128
             // 
+            this.rbTileSize128.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbTileSize128.AutoSize = true;
-            this.rbTileSize128.Location = new System.Drawing.Point(169, 8);
+            this.rbTileSize128.Location = new System.Drawing.Point(169, 5);
             this.rbTileSize128.Name = "rbTileSize128";
             this.rbTileSize128.Size = new System.Drawing.Size(43, 17);
             this.rbTileSize128.TabIndex = 1;
@@ -95,8 +98,9 @@
             // 
             // rbTileSize64
             // 
+            this.rbTileSize64.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbTileSize64.AutoSize = true;
-            this.rbTileSize64.Location = new System.Drawing.Point(126, 8);
+            this.rbTileSize64.Location = new System.Drawing.Point(126, 5);
             this.rbTileSize64.Name = "rbTileSize64";
             this.rbTileSize64.Size = new System.Drawing.Size(37, 17);
             this.rbTileSize64.TabIndex = 0;
@@ -106,19 +110,21 @@
             // 
             // butBump
             // 
+            this.butBump.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.butBump.Enabled = false;
             this.butBump.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBump.Location = new System.Drawing.Point(217, 31);
+            this.butBump.Location = new System.Drawing.Point(217, 26);
             this.butBump.Name = "butBump";
             this.butBump.Padding = new System.Windows.Forms.Padding(5);
             this.butBump.Size = new System.Drawing.Size(65, 23);
             this.butBump.TabIndex = 2;
             this.butBump.Text = "Bump";
-            this.butBump.Visible = false;
             // 
             // butAnimationRanges
             // 
+            this.butAnimationRanges.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAnimationRanges.Location = new System.Drawing.Point(110, 31);
+            this.butAnimationRanges.Location = new System.Drawing.Point(110, 26);
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Padding = new System.Windows.Forms.Padding(5);
             this.butAnimationRanges.Size = new System.Drawing.Size(103, 23);
@@ -128,8 +134,9 @@
             // 
             // butTextureSounds
             // 
+            this.butTextureSounds.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTextureSounds.Location = new System.Drawing.Point(3, 31);
+            this.butTextureSounds.Location = new System.Drawing.Point(3, 26);
             this.butTextureSounds.Name = "butTextureSounds";
             this.butTextureSounds.Padding = new System.Windows.Forms.Padding(5);
             this.butTextureSounds.Size = new System.Drawing.Size(103, 23);
