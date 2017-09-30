@@ -46,7 +46,7 @@ namespace TombEditor
             short ocb;
             if (!short.TryParse(tbOCB.Text, out ocb))
             {
-                DarkMessageBox.Show("The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
