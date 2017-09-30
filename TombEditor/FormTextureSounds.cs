@@ -10,6 +10,7 @@ using TombEditor.Geometry;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
 using RectangleF = System.Drawing.RectangleF;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -35,7 +36,7 @@ namespace TombEditor
                 new SolidBrush(Color.FromArgb(_alpha, 112, 128, 144)), // 11: Concrete
                 new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 222, 184, 135), Color.FromArgb(_alpha, 205, 133, 63)), // 12: OldWood
                 new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 190, 180, 180), Color.FromArgb(_alpha, 205, 133, 63)), // 13: OldMetal
-                new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 199, 21, 133), Color.FromArgb(_alpha, 255, 0, 255)), // 14: Unknown14 
+                new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 199, 21, 133), Color.FromArgb(_alpha, 255, 0, 255)), // 14: Unknown14
                 new HatchBrush(HatchStyle.WideUpwardDiagonal, Color.FromArgb(_alpha, 138, 43, 226), Color.FromArgb(_alpha, 255, 0, 255))  // 15: Unknown15
             };
         private static readonly Brush _coverBrush = new SolidBrush(Color.FromArgb(128, 15, 15, 200));
@@ -53,11 +54,7 @@ namespace TombEditor
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(484, 173) + (Size - ClientSize);
 
-            // Set texture panel selection size
-            textureMap.TileSelectionSize = LevelTexture.TextureSoundGranularity;
-
             // Initialize texture map
-            textureMap.MaxTextureSize = float.PositiveInfinity;
             if (_editor.SelectedTexture.TextureIsInvisble)
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
             else
@@ -67,13 +64,13 @@ namespace TombEditor
             foreach (TextureSound sound in Enum.GetValues(typeof(TextureSound)))
                 comboSounds.Items.Add(sound);
         }
-        
+
         private void butOk_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             Close();
         }
-        
+
         private void butAssignSound_Click(object sender, EventArgs e)
         {
             if (!(comboSounds.SelectedItem is TextureSound))
@@ -96,6 +93,13 @@ namespace TombEditor
 
         public class PanelTextureMapForSounds : Controls.PanelTextureMap
         {
+            protected override SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
+            {
+                return new SelectionPrecisionType(LevelTexture.TextureSoundGranularity, true);
+            }
+
+            protected override float MaxTextureSize => float.PositiveInfinity;
+
             protected override void OnPaintSelection(PaintEventArgs e)
             {
                 var texture = VisibleTexture;

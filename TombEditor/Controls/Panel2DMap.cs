@@ -26,8 +26,8 @@ namespace TombEditor.Controls
             get { return _viewScale; }
             set
             {
-                if (_viewScale == value || value < 0.05 || value > 80)
-                    return;
+                value = Math.Min(value, _editor.Configuration.Map2D_NavigationMaxZoom);
+                value = Math.Max(value, _editor.Configuration.Map2D_NavigationMinZoom);
                 _viewScale = value;
             }
         }
@@ -284,19 +284,19 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Up:
                     ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
+                    Invalidate();
+                    break;
                 case Keys.Left:
-                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.Right:
-                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.PageDown:

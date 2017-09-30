@@ -36,17 +36,21 @@ namespace TombEditor
         public Vector4 Rendering3D_BackgroundColorFlipRoom { get; set; } = new Vector4(0.13f, 0.13f, 0.13f, 1.0f);
         public Vector4 Rendering3D_TextColor { get; set; } = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
+        public float Map2D_NavigationMinZoom { get; set; } = 0.04f;
+        public float Map2D_NavigationMaxZoom { get; set; } = 500.0f;
         public float Map2D_NavigationSpeedMouseWheelZoom { get; set; } = 0.001f;
         public float Map2D_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float Map2D_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float Map2D_NavigationSpeedKeyMove { get; set; } = 107.0f;
 
+        public float TextureMap_NavigationMinZoom { get; set; } = 0.02f;
+        public float TextureMap_NavigationMaxZoom { get; set; } = 2000.0f;
         public float TextureMap_NavigationSpeedMouseWheelZoom { get; set; } = 0.0015f;
         public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float TextureMap_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
-        public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
+        public float TextureMap_DefaultTileSelectionSize { get; set; } = 64.0f;
         public bool TextureMap_UseAdvancedTexturingByDefault { get; set; } = false;
 
         public float Gizmo_Size { get; set; } = 1024.0f;

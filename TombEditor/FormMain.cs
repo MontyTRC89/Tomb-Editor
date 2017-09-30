@@ -71,7 +71,6 @@ namespace TombEditor
             // Initialize panels
             MainView.Initialize(_deviceManager);
             ObjectBrowser.Initialize(_deviceManager);
-            TexturePanel.Initialize();
 
             this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 

@@ -1,16 +1,18 @@
-﻿namespace TombEditor.ToolWindows
+﻿using TombEditor.Controls;
+
+namespace TombEditor.ToolWindows
 {
     partial class TexturePanel
     {
-        /// <summary> 
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         #region Component Designer generated code
 
-        /// <summary> 
-        /// Required method for Designer support - do not modify 
+        /// <summary>
+        /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
@@ -29,12 +31,20 @@
             this.panelTileSizeSelector.SuspendLayout();
             this.SuspendLayout();
             // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(284, 739);
+            this.panelTextureMap.TabIndex = 9;
+            // 
             // panelTextureTools
             // 
             this.panelTextureTools.Controls.Add(this.panelTileSizeSelector);
             this.panelTextureTools.Controls.Add(this.butBump);
-            this.panelTextureTools.Controls.Add(this.butAnimationRanges);
             this.panelTextureTools.Controls.Add(this.butTextureSounds);
+            this.panelTextureTools.Controls.Add(this.butAnimationRanges);
             this.panelTextureTools.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelTextureTools.Location = new System.Drawing.Point(0, 764);
             this.panelTextureTools.Name = "panelTextureTools";
@@ -102,24 +112,20 @@
             // 
             // butBump
             // 
-            this.butBump.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.butBump.Enabled = false;
-            this.butBump.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butBump.Location = new System.Drawing.Point(217, 26);
+            this.butBump.Location = new System.Drawing.Point(0, 0);
             this.butBump.Name = "butBump";
             this.butBump.Padding = new System.Windows.Forms.Padding(5);
-            this.butBump.Size = new System.Drawing.Size(65, 23);
-            this.butBump.TabIndex = 2;
-            this.butBump.Text = "Bump";
+            this.butBump.Size = new System.Drawing.Size(75, 23);
+            this.butBump.TabIndex = 4;
             // 
             // butAnimationRanges
             // 
             this.butAnimationRanges.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butAnimationRanges.Location = new System.Drawing.Point(110, 26);
+            this.butAnimationRanges.Location = new System.Drawing.Point(3, 27);
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Padding = new System.Windows.Forms.Padding(5);
-            this.butAnimationRanges.Size = new System.Drawing.Size(103, 23);
+            this.butAnimationRanges.Size = new System.Drawing.Size(138, 23);
             this.butAnimationRanges.TabIndex = 1;
             this.butAnimationRanges.Text = "Animation ranges";
             this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
@@ -128,24 +134,13 @@
             // 
             this.butTextureSounds.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTextureSounds.Location = new System.Drawing.Point(3, 26);
+            this.butTextureSounds.Location = new System.Drawing.Point(144, 27);
             this.butTextureSounds.Name = "butTextureSounds";
             this.butTextureSounds.Padding = new System.Windows.Forms.Padding(5);
-            this.butTextureSounds.Size = new System.Drawing.Size(103, 23);
+            this.butTextureSounds.Size = new System.Drawing.Size(138, 23);
             this.butTextureSounds.TabIndex = 0;
             this.butTextureSounds.Text = "Texture sounds";
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
-            // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.FreeSelection = true;
-            this.panelTextureMap.FreeSelectionWithShift = true;
-            this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(284, 739);
-            this.panelTextureMap.TabIndex = 9;
-            this.panelTextureMap.TileSelectionSize = 64F;
             // 
             // TexturePanel
             // 
@@ -169,7 +164,7 @@
 
         #endregion
 
-        private Controls.PanelTextureMap panelTextureMap;
+        private PanelTextureMap panelTextureMap;
         private System.Windows.Forms.Panel panelTextureTools;
         private DarkUI.Controls.DarkButton butBump;
         private DarkUI.Controls.DarkButton butAnimationRanges;
