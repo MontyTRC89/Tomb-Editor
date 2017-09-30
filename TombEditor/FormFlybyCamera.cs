@@ -63,49 +63,49 @@ namespace TombEditor
             // Check inputs
             if (!Utils.IsValidNumber(tbSequence.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for sequence", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for sequence", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbNumber.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for number", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbTimer.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for timer", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for timer", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbSpeed.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for speed", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for speed", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbFOV.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for FOV", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for FOV", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbRoll.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for roll", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for roll", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbRotationX.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for rotation X", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for rotation X", "Error", MessageBoxIcon.Error);
                 return;
             }
 
             if (!Utils.IsValidNumber(tbRotationY.Text))
             {
-                DarkUI.Forms.DarkMessageBox.Show(this, "You must insert a valid value for rotation Y", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DarkMessageBox.Show(this, "You must insert a valid value for rotation Y", "Error", MessageBoxIcon.Error);
                 return;
             }
 

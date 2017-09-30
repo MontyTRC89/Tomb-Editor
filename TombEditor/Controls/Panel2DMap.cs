@@ -185,7 +185,8 @@ namespace TombEditor.Controls
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            Focus(); // Enable keyboard interaction
+            if (!Focused)
+                Focus(); // Enable keyboard interaction
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

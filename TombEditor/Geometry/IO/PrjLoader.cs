@@ -51,7 +51,7 @@ namespace TombEditor.Geometry.IO
     {
         private static readonly Encoding _encodingCodepageWindows = Encoding.GetEncoding(1252);
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         private struct PrjPortal
         {
             //public Room _room;
@@ -264,7 +264,7 @@ namespace TombEditor.Geometry.IO
                                     int green = (objTint & 0x03e0) >> 5;
                                     int blue = (objTint & 0x7c00) >> 10;
                                     Vector4 color = new Vector4(
-                                        (red + (red == 0 ? 0.0f : 0.875f)) / 16.0f, 
+                                        (red + (red == 0 ? 0.0f : 0.875f)) / 16.0f,
                                         (green + (green == 0 ? 0.0f : 0.875f)) / 16.0f,
                                         (blue + (blue == 0 ? 0.0f : 0.875f)) / 16.0f, 1.0f);
 
@@ -832,7 +832,7 @@ namespace TombEditor.Geometry.IO
 
                         progressReporter.ReportProgress(32, "Portals linked");
                     }
-                    
+
                     // Link triggers
                     {
                         progressReporter.ReportProgress(31, "Link triggers");
@@ -1081,7 +1081,7 @@ namespace TombEditor.Geometry.IO
                         reader.ReadInt32();
                     for (int i = 0; i < 256; i++)
                         reader.ReadInt32();
-                    
+
                     for (int i = 0; i < 40; i++)
                     {
                         int defined = reader.ReadInt32();
@@ -1098,7 +1098,7 @@ namespace TombEditor.Geometry.IO
                         {
                             int txtY = j / 4;
                             int txtX = j % 4;
-                            
+
                             AnimatedTexture aTexture = new AnimatedTexture(txtX, txtY, 64, 64);
                             aSet.Textures.Add(aTexture);
                         }
@@ -1127,7 +1127,7 @@ namespace TombEditor.Geometry.IO
                         if (room == null)
                             continue;
 
-                        
+
                         for (int z = 0; z < room.NumZSectors; z++)
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
@@ -1358,8 +1358,6 @@ namespace TombEditor.Geometry.IO
         private static void LoadTextureArea(Room room, int x, int z, BlockFace face, LevelTexture levelTexture, List<PrjTexInfo> tempTextures, PrjFace prjFace)
         {
             Block block = room.Blocks[x, z];
-            bool isFloor = face == BlockFace.Floor || face == BlockFace.FloorTriangle2;
-            bool isCeiling = face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2;
 
             switch (levelTexture == null ? 0 : prjFace._txtType)
             {
@@ -1394,487 +1392,96 @@ namespace TombEditor.Geometry.IO
                     texture.Texture = levelTexture;
                     texture.DoubleSided = (prjFace._txtFlags & 0x04) != 0;
                     texture.BlendMode = (prjFace._txtFlags & 0x08) != 0 ? BlendMode.Additive : BlendMode.Normal;
-                    texture.TexCoord0 = new Vector2(0);
-                    texture.TexCoord1 = new Vector2(0);
-                    texture.TexCoord2 = new Vector2(0);
-                    texture.TexCoord3 = new Vector2(0);
 
-                    int txtRot = prjFace._txtRotation;
+                    // Apply flipping
+                    if ((prjFace._txtFlags & 0x80) != 0)
+                    {
+                        var temp = uv[0];
+                        uv[0] = uv[1];
+                        uv[1] = temp;
 
-                    int rotationForWallTriangles = 2;
+                        temp = uv[2];
+                        uv[2] = uv[3];
+                        uv[3] = temp;
+                    }
 
-                    int rot1 = 2;
-                    int rot2 = 2;
-                    int rot3 = 2;
-                    int rot4 = 2;
-
-                    int rotCeiling1 = 1; 
-                    int rotCeiling2 = 1;
-                    int rotCeiling3 = 1;
-                    int rotCeiling4 = 1;
-
-                    bool isFlipped = (prjFace._txtFlags & 0x80) != 0;
-
+                    ushort rotation = prjFace._txtRotation;
                     if (room.GetFaceVertexRange(x, z, face).Count == 3)
                     {
-                        txtRot = txtRot % 3;
-
-                        // If face is flipped
-                        if (isFlipped)
+                        // Get UV coordinates for polygon
+                        switch (prjFace._txtTriangle)
                         {
-                            if (prjFace._txtTriangle == 0)
-                            {
+                            case 0:
+                                texture.TexCoord0 = uv[0];
+                                texture.TexCoord1 = uv[1];
+                                texture.TexCoord2 = uv[3];
+                                break;
+                            case 1:
                                 texture.TexCoord0 = uv[1];
                                 texture.TexCoord1 = uv[2];
                                 texture.TexCoord2 = uv[0];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-
-                            if (prjFace._txtTriangle == 1)
-                            {
-                                texture.TexCoord0 = uv[0];
+                                break;
+                            case 2:
+                                texture.TexCoord0 = uv[2];
                                 texture.TexCoord1 = uv[3];
                                 texture.TexCoord2 = uv[1];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-
-                            if (prjFace._txtTriangle == 3)
-                            {
-                                texture.TexCoord0 = uv[2];
-                                texture.TexCoord1 = uv[1];
-                                texture.TexCoord2 = uv[3];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-
-                            if (prjFace._txtTriangle == 2)
-                            {
-                                texture.TexCoord0 = uv[3];
-                                texture.TexCoord1 = uv[2];
-                                texture.TexCoord2 = uv[0];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-                        }
-                        else // ===========================================================================================
-                        {
-                            if (prjFace._txtTriangle == 0)
-                            {
-                                texture.TexCoord0 = uv[0];
-                                texture.TexCoord1 = uv[1];
-                                texture.TexCoord2 = uv[3];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-
-                            if (prjFace._txtTriangle == 1)
-                            {
-                                texture.TexCoord0 = uv[1];
-                                texture.TexCoord1 = uv[2];
-                                texture.TexCoord2 = uv[0];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-
-                            if (prjFace._txtTriangle == 3)
-                            {
+                                break;
+                            case 3:
                                 texture.TexCoord0 = uv[3];
                                 texture.TexCoord1 = uv[0];
                                 texture.TexCoord2 = uv[2];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
-
-                            if (prjFace._txtTriangle == 2)
-                            {
-                                texture.TexCoord0 = uv[2];
-                                texture.TexCoord1 = uv[3];
-                                texture.TexCoord2 = uv[1];
-
-                                if (isFloor)
-                                {
-                                    if (!block.FloorSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot1;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Floor)
-                                            txtRot += rot3;
-
-                                        if (face == BlockFace.FloorTriangle2)
-                                            txtRot += rot4;
-                                    }
-                                }
-                                else if (isCeiling)
-                                {
-                                    if (!block.CeilingSplitDirectionIsXEqualsZ)
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling1;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling2;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling)
-                                            txtRot += rotCeiling3;
-
-                                        if (face == BlockFace.CeilingTriangle2)
-                                            txtRot += rotCeiling4;
-                                    }
-                                }
-                                else
-                                {
-                                    txtRot += rotationForWallTriangles;
-                                }
-                            }
+                                break;
+                            default:
+                                logger.Warn("Unknown texture triangle selection " + prjFace._txtTriangle);
+                                block.SetFaceTexture(face, new TextureArea { });
+                                return;
                         }
 
-                        txtRot += 1;
-                        txtRot = (sbyte)(txtRot % 3);
-
-                        if (isCeiling)
+                        // Fix floor and ceiling texturing in our coordinate system
+                        if (face == BlockFace.Floor)
                         {
-                            var temp4 = texture.TexCoord1;
+                            rotation += block.FloorSplitDirectionIsXEqualsZ ? (byte)1 : (byte)2;
+                        }
+                        else if (face == BlockFace.Ceiling)
+                        {
+                            var temp = texture.TexCoord2;
+                            texture.TexCoord2 = texture.TexCoord0;
+                            texture.TexCoord0 = temp;
+
+                            rotation += block.CeilingSplitDirectionIsXEqualsZ ? (byte)2 : (byte)1;
+                            rotation = (ushort)(3000 - rotation); // Change of rotation direction
+                        }
+                        else if (face == BlockFace.CeilingTriangle2)
+                        {
+                            var temp = texture.TexCoord2;
+                            texture.TexCoord2 = texture.TexCoord0;
+                            texture.TexCoord0 = temp;
+
+                            rotation = (ushort)(3000 - rotation); // Change of rotation direction
+                        }
+
+                        // Apply rotation
+                        rotation %= 3;
+                        for (int rot = 0; rot < rotation; rot++)
+                        {
+                            var temp = texture.TexCoord2;
+                            texture.TexCoord2 = texture.TexCoord1;
                             texture.TexCoord1 = texture.TexCoord0;
-                            texture.TexCoord0 = temp4;
-
-                            for (int rot = 0; rot < txtRot; rot++)
-                            {
-                                var temp3 = texture.TexCoord2;
-                                texture.TexCoord2 = texture.TexCoord0;
-                                texture.TexCoord0 = texture.TexCoord1;
-                                texture.TexCoord1 = temp3;
-                            }
-                        }
-                        else
-                        {
-                            for (int rot = 0; rot < txtRot; rot++)
-                            {
-                                var temp3 = texture.TexCoord2;
-                                texture.TexCoord2 = texture.TexCoord1;
-                                texture.TexCoord1 = texture.TexCoord0;
-                                texture.TexCoord0 = temp3;
-                            }
+                            texture.TexCoord0 = temp;
                         }
 
+                        // Set third texture coordinate to something
                         texture.TexCoord3 = texture.TexCoord2;
-
                     }
                     else
                     {
-                        // Apply flipping
-                        if (isFlipped)
-                        {
-                            var temp = uv[0];
-                            uv[0] = uv[1];
-                            uv[1] = temp;
+                        // Fix floor and ceiling texturing in our coordinate system
+                        if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
+                            rotation += 2;
 
-                            temp = uv[2];
-                            uv[2] = uv[3];
-                            uv[3] = temp;
-                        }
-
-                        // Adjust rotation only for vertical faces
-                        if (isFloor || isCeiling) txtRot += 3;
-                        txtRot %= 4;
-
-                        for (int rot = 0; rot < txtRot; rot++)
+                        // Apply rotation
+                        rotation %= 4;
+                        for (int rot = 0; rot < rotation; rot++)
                         {
                             var temp = uv[3];
                             uv[3] = uv[2];
@@ -1883,17 +1490,20 @@ namespace TombEditor.Geometry.IO
                             uv[0] = temp;
                         }
 
-                        texture.TexCoord0 = uv[0];
-                        texture.TexCoord1 = uv[1];
-                        texture.TexCoord2 = uv[2];
-                        texture.TexCoord3 = uv[3];
-
-                        if (isCeiling)
+                        // Assign texture coordinates
+                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
                         {
                             texture.TexCoord0 = uv[1];
                             texture.TexCoord1 = uv[0];
                             texture.TexCoord2 = uv[3];
                             texture.TexCoord3 = uv[2];
+                        }
+                        else
+                        {
+                            texture.TexCoord0 = uv[0];
+                            texture.TexCoord1 = uv[1];
+                            texture.TexCoord2 = uv[2];
+                            texture.TexCoord3 = uv[3];
                         }
                     }
 
@@ -1901,7 +1511,7 @@ namespace TombEditor.Geometry.IO
                     return;
             }
         }
-        
+
         private static Rectangle GetArea(Room room, int roomBorder, int objPosX, int objPosZ, int objSizeX, int objSizeZ)
         {
             int startX = Math.Max(roomBorder, Math.Min(room.NumXSectors - 1 - roomBorder, objPosX));
