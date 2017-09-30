@@ -18,26 +18,9 @@ using Color = System.Drawing.Color;
 
 namespace TombEditor.Controls
 {
-    public partial class PanelTextureMap : Panel
+    public class PanelTextureMap : Panel
     {
         private Editor _editor;
-
-
-        [Category("Behavior")]
-        [Description("Allows free-form texture coordinate selection.")]
-        public bool FreeSelection { get; set; } = true;
-
-        [Category("Behavior")]
-        [Description("Defines if free selection works with shift key or not.")]
-        public bool FreeSelectionWithShift { get; set; } = true;
-
-        [Category("Behavior")]
-        [Description("Determines default tile selection size.")]
-        public float TileSelectionSize { get; set; } = 64.0f;
-
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [ReadOnly(true)]
-        public float MaxTextureSize { get; set; } = 255;
 
         private LevelTexture _visibleTexture;
         private TextureArea _selectedTexture;
@@ -174,31 +157,40 @@ namespace TombEditor.Controls
             ViewPosition = Vector2.Min(maximum, Vector2.Max(minimum, ViewPosition));
         }
 
-        protected virtual float GetRoundingPrecision()
+        protected struct SelectionPrecisionType
         {
-            if(FreeSelection == true)
+            public float Precision { get; set; }
+            public bool SelectFullTileAutomatically { get; set; }
+            public SelectionPrecisionType(float precision, bool selectFullTileAutomatically)
             {
-                if (ModifierKeys.HasFlag(Keys.Alt))
-                    return 0.0f;
-                else if (ModifierKeys.HasFlag(Keys.Control))
-                    return 1.0f;
-                else if (ModifierKeys.HasFlag(Keys.Shift))
-                    if (FreeSelectionWithShift == true)
-                        return 16.0f;
+                Precision = precision;
+                SelectFullTileAutomatically = selectFullTileAutomatically;
             }
-
-            return TileSelectionSize;
         }
 
-        protected virtual Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
+        protected virtual SelectionPrecisionType GetSelectionPrecision(bool rectangularSelection)
         {
-            float RoundingPrecision = GetRoundingPrecision();
-            if (RoundingPrecision == 0.0f)
+            if (ModifierKeys.HasFlag(Keys.Alt))
+                return new SelectionPrecisionType(0.0f, false);
+            else if (ModifierKeys.HasFlag(Keys.Control))
+                return new SelectionPrecisionType(1.0f, false);
+            else if (ModifierKeys.HasFlag(Keys.Shift) == rectangularSelection)
+                return new SelectionPrecisionType(16.0f, false);
+            else
+                return new SelectionPrecisionType(TileSelectionSize, true);
+        }
+
+        protected virtual float MaxTextureSize { get; } = 255;
+
+        private Vector2 Quantize(Vector2 texCoord, bool endX, bool endY, bool rectangularSelection)
+        {
+            var selectionPrecision = GetSelectionPrecision(rectangularSelection);
+            if (selectionPrecision.Precision == 0.0f)
                 return texCoord;
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
-            texCoord /= RoundingPrecision;
-            if ((RoundingPrecision >= 64.0f) && rectangularSelection)
+            texCoord /= selectionPrecision.Precision;
+            if ((selectionPrecision.Precision >= 64.0f) && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -206,7 +198,7 @@ namespace TombEditor.Controls
             }
             else
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
-            texCoord *= RoundingPrecision;
+            texCoord *= selectionPrecision.Precision;
             texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
 
             return texCoord;
@@ -258,7 +250,7 @@ namespace TombEditor.Controls
                     var mousePos = FromVisualCoord(e.Location);
 
                     // Check if mouse was on existing texture
-                    if (SelectedTexture.Texture == VisibleTexture && FreeSelection == true)
+                    if (SelectedTexture.Texture == VisibleTexture)
                     {
                         var texCoords = SelectedTexture.TexCoords
                             .Where(texCoordPair => Vector2.Distance(texCoordPair.Value, mousePos) < textureSelectionPointSelectionRadius)
@@ -300,9 +292,6 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    if (FreeSelection == false)
-                        return;
-
                     if (_selectedTexCoordIndex.HasValue)
                     {
                         TextureArea currentTexture = SelectedTexture;
@@ -370,16 +359,14 @@ namespace TombEditor.Controls
         {
             base.OnMouseUp(e);
 
-            if (!(VisibleTexture?.IsAvailable ?? false) || (FreeSelection == true && FreeSelectionWithShift == false))
+            if (!(VisibleTexture?.IsAvailable ?? false))
                 return;
 
             switch (e.Button)
             {
                 case MouseButtons.Left:
                     if (_startPos.HasValue)
-                        if (FreeSelection == false)
-                            SetRectangularTextureWithMouse(FromVisualCoord(e.Location), FromVisualCoord(e.Location));
-                        else if(FreeSelectionWithShift == true && !ModifierKeys.HasFlag(Keys.Shift))
+                        if (GetSelectionPrecision(true).SelectFullTileAutomatically)
                             SetRectangularTextureWithMouse(_startPos.Value, FromVisualCoord(e.Location));
                     break;
             }
@@ -448,19 +435,19 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Up:
                     ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                    Invalidate();
+                    break;
                 case Keys.Left:
-                    ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.Right:
-                    ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.PageDown:
@@ -550,7 +537,9 @@ namespace TombEditor.Controls
             get { return _viewScale; }
             set
             {
-                if (_viewScale == value || value < 0.05 || value > 80)
+                value = Math.Min(value, _editor.Configuration.TextureMap_NavigationMaxZoom);
+                value = Math.Max(value, _editor.Configuration.TextureMap_NavigationMinZoom);
+                if (_viewScale == value)
                     return;
                 _viewScale = value;
                 UpdateScrollBars();
@@ -595,5 +584,9 @@ namespace TombEditor.Controls
         }
 
         public event EventHandler<EventArgs> SelectedTextureChanged;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [ReadOnly(true)]
+        public float TileSelectionSize { get; set; } = 64.0f;
     }
 }

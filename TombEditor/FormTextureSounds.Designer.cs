@@ -43,8 +43,6 @@ namespace TombEditor
             this.textureMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureMap.FreeSelection = false;
-            this.textureMap.FreeSelectionWithShift = false;
             this.textureMap.Location = new System.Drawing.Point(8, 9);
             this.textureMap.Name = "textureMap";
             this.textureMap.Size = new System.Drawing.Size(577, 727);
