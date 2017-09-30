@@ -70,8 +70,7 @@
 // contributors exclude the implied warranties of merchantability, fitness for a
 // particular purpose and non-infringement.
 
-
-using TombEditor.Geometry;
+using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
@@ -80,7 +79,7 @@ namespace SharpDX.Toolkit.Graphics
         /// <summary>
         /// A cube has six faces, each one pointing in a different direction.
         /// </summary>
-        public struct Cube
+        public struct LinesCube
         {
             private const int CubeFaceCount = 6;
 
@@ -109,68 +108,45 @@ namespace SharpDX.Toolkit.Graphics
             /// <param name="size">The size.</param>
             /// <param name="toLeftHanded">if set to <c>true</c> vertices and indices will be transformed to left handed. Default is true.</param>
             /// <returns>A cube.</returns>
-            public static GeometricPrimitive New(GraphicsDevice device, float size = 1.0f, bool toLeftHanded = false)
+            public static GeometricPrimitive New(GraphicsDevice device)
             {
-                var vertices = new EditorVertex[CubeFaceCount * 4];
-                var indices = new int[CubeFaceCount * 6];
-
-                size /= 2.0f;
-
-                int vertexCount = 0;
-                int indexCount = 0;
-                // Create each face in turn.
-                for (int i = 0; i < CubeFaceCount; i++)
+                SolidVertex v1 = new SolidVertex();
+                v1.Position = new Vector3(-128.0f, -128.0f, -128.0f);
+                
+                SolidVertex v2 = new SolidVertex();
+                v2.Position = new Vector3(128.0f, -128.0f, -128.0f);
+                
+                SolidVertex v3 = new SolidVertex();
+                v3.Position = new Vector3(128.0f, -128.0f, 128.0f);
+                
+                SolidVertex v4 = new SolidVertex();
+                v4.Position = new Vector3(-128.0f, -128.0f, 128.0f);
+                
+                SolidVertex v5 = new SolidVertex();
+                v5.Position = new Vector3(-128.0f, 128.0f, -128.0f);
+                
+                SolidVertex v6 = new SolidVertex();
+                v6.Position = new Vector3(128.0f, 128.0f, -128.0f);
+                
+                SolidVertex v7 = new SolidVertex();
+                v7.Position = new Vector3(128.0f, 128.0f, 128.0f);
+                
+                SolidVertex v8 = new SolidVertex();
+                v8.Position = new Vector3(-128.0f, 128.0f, 128.0f);
+                
+                var vertices = new SolidVertex[] { v1, v2, v3, v4, v5, v6, v7, v8 };
+                var indices = new short[]
                 {
-                    Vector3 normal = faceNormals[i];
-
-                    // Get two vectors perpendicular both to the face normal and to each other.
-                    Vector3 basis = (i >= 4) ? Vector3.UnitZ : Vector3.UnitY;
-
-                    Vector3 side1;
-                    Vector3.Cross(ref normal, ref basis, out side1);
-
-                    Vector3 side2;
-                    Vector3.Cross(ref normal, ref side1, out side2);
-
-                    // Six indices (two triangles) per face.
-                    int vbase = i * 4;
-                    indices[indexCount++] = (vbase + 2);
-                    indices[indexCount++] = (vbase + 1);
-                    indices[indexCount++] = (vbase + 0);
-
-                    indices[indexCount++] = (vbase + 3);
-                    indices[indexCount++] = (vbase + 2);
-                    indices[indexCount++] = (vbase + 0);
-
-                    // Four vertices per face.
-                    EditorVertex v1 = new TombEditor.Geometry.EditorVertex();
-                    v1.Position = (normal - side1 - side2) * size;
-                    v1.Normal = normal;
-                    v1.UV = (normal.Y == 0 ? textureCoordinates[0] : textureCoordinates[0]);
-
-                    EditorVertex v2 = new TombEditor.Geometry.EditorVertex();
-                    v2.Position = (normal - side1 + side2) * size;
-                    v2.Normal = normal;
-                    v2.UV = (normal.Y == 0 ? textureCoordinates[1] : textureCoordinates[0]);
-
-                    EditorVertex v3 = new TombEditor.Geometry.EditorVertex();
-                    v3.Position = (normal + side1 + side2) * size;
-                    v3.Normal = normal;
-                    v3.UV = (normal.Y == 0 ? textureCoordinates[2] : textureCoordinates[0]);
-
-                    EditorVertex v4 = new TombEditor.Geometry.EditorVertex();
-                    v4.Position = (normal + side1 - side2) * size;
-                    v4.Normal = normal;
-                    v4.UV = (normal.Y == 0 ? textureCoordinates[3] : textureCoordinates[0]);
-
-                    vertices[vertexCount++] = v1;
-                    vertices[vertexCount++] = v2;
-                    vertices[vertexCount++] = v3;
-                    vertices[vertexCount++] = v4;
-                }
+                    4, 5, 5, 1, 1, 0, 0, 4,
+                    5, 6, 6, 2, 2, 1, 1, 5,
+                    2, 6, 6, 7, 7, 3, 3, 2,
+                    7, 4, 4, 0, 0, 3, 3, 7,
+                    7, 6, 6, 5, 5, 4, 4, 7,
+                    0, 1, 1, 2, 2, 3, 3, 0
+                };
 
                 // Create the primitive object.
-                return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Cube" };
+                return new GeometricPrimitive(device, vertices, indices, false) { Name = "Cube" };
             }
         }
     }

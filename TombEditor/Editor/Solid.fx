@@ -1,10 +1,6 @@
 ﻿struct VertexInputType
 {
 	float3 Position : POSITION0;
-	float2 UV : TEXCOORD0;
-	float3 Normal : NORMAL0;
-	float4 Color : COLOR0;
-	float2 EditorUV : TEXCOORD1;
 };
 
 struct PixelInputType

@@ -70,97 +70,99 @@
 // contributors exclude the implied warranties of merchantability, fitness for a
 // particular purpose and non-infringement.
 
-using System;
-using TombEditor.Geometry;
+
+using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
     public partial class GeometricPrimitive
     {
         /// <summary>
-        /// A sphere primitive.
+        /// A cube has six faces, each one pointing in a different direction.
         /// </summary>
-        public struct Sphere
+        public struct Cube
         {
+            private const int CubeFaceCount = 6;
+
+            private static readonly Vector3[] faceNormals = new Vector3[CubeFaceCount]
+                {
+                    new Vector3(0, 0, 1),
+                    new Vector3(0, 0, -1),
+                    new Vector3(1, 0, 0),
+                    new Vector3(-1, 0, 0),
+                    new Vector3(0, 1, 0),
+                    new Vector3(0, -1, 0),
+                };
+
+            private static readonly Vector2[] textureCoordinates = new Vector2[4]
+                {
+                    new Vector2(1, 0),
+                    new Vector2(1, 1),
+                    new Vector2(0, 1),
+                    new Vector2(0, 0),
+                };
+
             /// <summary>
-            /// Creates a sphere primitive.
+            /// Creates a cube with six faces each one pointing in a different direction.
             /// </summary>
             /// <param name="device">The device.</param>
-            /// <param name="diameter">The diameter.</param>
-            /// <param name="tessellation">The tessellation.</param>
+            /// <param name="size">The size.</param>
             /// <param name="toLeftHanded">if set to <c>true</c> vertices and indices will be transformed to left handed. Default is true.</param>
-            /// <returns>A sphere primitive.</returns>
-            /// <exception cref="System.ArgumentOutOfRangeException">tessellation;Must be >= 3</exception>
-            public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, int tessellation = 16, bool toLeftHanded = false)
+            /// <returns>A cube.</returns>
+            public static GeometricPrimitive New(GraphicsDevice device, float size = 1.0f, bool toLeftHanded = false)
             {
-                if (tessellation < 3)
-                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
+                var vertices = new SolidVertex[CubeFaceCount * 4];
+                var indices = new int[CubeFaceCount * 6];
 
-                int verticalSegments = tessellation;
-                int horizontalSegments = tessellation * 2;
-
-                var vertices = new EditorVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
-                var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
-
-                float radius = diameter / 2;
+                size /= 2.0f;
 
                 int vertexCount = 0;
-                // Create rings of vertices at progressively higher latitudes.
-                for (int i = 0; i <= verticalSegments; i++)
-                {
-                    float v = 1.0f - (float)i / verticalSegments;
-
-                    var latitude = (float)((i * Math.PI / verticalSegments) - Math.PI / 2.0);
-                    var dy = (float)Math.Sin(latitude);
-                    var dxz = (float)Math.Cos(latitude);
-
-                    // Create a single ring of vertices at this latitude.
-                    for (int j = 0; j <= horizontalSegments; j++)
-                    {
-                        float u = (float)j / horizontalSegments;
-
-                        var longitude = (float)(j * 2.0 * Math.PI / horizontalSegments);
-                        var dx = (float)Math.Sin(longitude);
-                        var dz = (float)Math.Cos(longitude);
-
-                        dx *= dxz;
-                        dz *= dxz;
-
-                        var normal = new Vector3(dx, dy, dz);
-                        var textureCoordinate = new Vector2(u, v);
-
-                        EditorVertex vertex = new TombEditor.Geometry.EditorVertex();
-                        vertex.Position = normal * radius;
-                        vertex.Normal = normal;
-                        vertex.UV = textureCoordinate;
-
-                        vertices[vertexCount++] = vertex;
-                    }
-                }
-
-                // Fill the index buffer with triangles joining each pair of latitude rings.
-                int stride = horizontalSegments + 1;
-
                 int indexCount = 0;
-                for (int i = 0; i < verticalSegments; i++)
+                // Create each face in turn.
+                for (int i = 0; i < CubeFaceCount; i++)
                 {
-                    for (int j = 0; j <= horizontalSegments; j++)
-                    {
-                        int nextI = i + 1;
-                        int nextJ = (j + 1) % stride;
+                    Vector3 normal = faceNormals[i];
 
-                        indices[indexCount++] = (i * stride + nextJ);
-                        indices[indexCount++] = (nextI * stride + j);
-                        indices[indexCount++] = (i * stride + j);
+                    // Get two vectors perpendicular both to the face normal and to each other.
+                    Vector3 basis = (i >= 4) ? Vector3.UnitZ : Vector3.UnitY;
 
-                        indices[indexCount++] = (nextI * stride + nextJ);
-                        indices[indexCount++] = (nextI * stride + j);
-                        indices[indexCount++] = (i * stride + nextJ);
-                    }
+                    Vector3 side1;
+                    Vector3.Cross(ref normal, ref basis, out side1);
+
+                    Vector3 side2;
+                    Vector3.Cross(ref normal, ref side1, out side2);
+
+                    // Six indices (two triangles) per face.
+                    int vbase = i * 4;
+                    indices[indexCount++] = (vbase + 2);
+                    indices[indexCount++] = (vbase + 1);
+                    indices[indexCount++] = (vbase + 0);
+
+                    indices[indexCount++] = (vbase + 3);
+                    indices[indexCount++] = (vbase + 2);
+                    indices[indexCount++] = (vbase + 0);
+
+                    // Four vertices per face.
+                    SolidVertex v1 = new SolidVertex();
+                    v1.Position = (normal - side1 - side2) * size;
+                   
+                    SolidVertex v2 = new SolidVertex();
+                    v2.Position = (normal - side1 + side2) * size;
+                    
+                    SolidVertex v3 = new SolidVertex();
+                    v3.Position = (normal + side1 + side2) * size;
+                    
+                    SolidVertex v4 = new SolidVertex();
+                    v4.Position = (normal + side1 - side2) * size;
+                   
+                    vertices[vertexCount++] = v1;
+                    vertices[vertexCount++] = v2;
+                    vertices[vertexCount++] = v3;
+                    vertices[vertexCount++] = v4;
                 }
 
                 // Create the primitive object.
-                return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Sphere" };
+                return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Cube" };
             }
         }
     }

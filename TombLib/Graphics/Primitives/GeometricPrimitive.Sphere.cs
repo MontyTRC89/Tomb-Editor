@@ -70,92 +70,95 @@
 // contributors exclude the implied warranties of merchantability, fitness for a
 // particular purpose and non-infringement.
 
-
-using TombEditor.Geometry;
+using System;
+using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
     public partial class GeometricPrimitive
     {
         /// <summary>
-        /// A cube has six faces, each one pointing in a different direction.
+        /// A sphere primitive.
         /// </summary>
-        public struct LinesCube
+        public struct Sphere
         {
-            private const int CubeFaceCount = 6;
-
-            private static readonly Vector3[] faceNormals = new Vector3[CubeFaceCount]
-                {
-                    new Vector3(0, 0, 1),
-                    new Vector3(0, 0, -1),
-                    new Vector3(1, 0, 0),
-                    new Vector3(-1, 0, 0),
-                    new Vector3(0, 1, 0),
-                    new Vector3(0, -1, 0),
-                };
-
-            private static readonly Vector2[] textureCoordinates = new Vector2[4]
-                {
-                    new Vector2(1, 0),
-                    new Vector2(1, 1),
-                    new Vector2(0, 1),
-                    new Vector2(0, 0),
-                };
-
             /// <summary>
-            /// Creates a cube with six faces each one pointing in a different direction.
+            /// Creates a sphere primitive.
             /// </summary>
             /// <param name="device">The device.</param>
-            /// <param name="size">The size.</param>
+            /// <param name="diameter">The diameter.</param>
+            /// <param name="tessellation">The tessellation.</param>
             /// <param name="toLeftHanded">if set to <c>true</c> vertices and indices will be transformed to left handed. Default is true.</param>
-            /// <returns>A cube.</returns>
-            public static GeometricPrimitive New(GraphicsDevice device)
+            /// <returns>A sphere primitive.</returns>
+            /// <exception cref="System.ArgumentOutOfRangeException">tessellation;Must be >= 3</exception>
+            public static GeometricPrimitive New(GraphicsDevice device, float diameter = 1.0f, int tessellation = 16, bool toLeftHanded = false)
             {
-                EditorVertex v1 = new TombEditor.Geometry.EditorVertex();
-                v1.Position = new Vector3(-128.0f, -128.0f, -128.0f);
-                v1.UV = Vector2.Zero;
+                if (tessellation < 3)
+                    throw new ArgumentOutOfRangeException("tessellation", "Must be >= 3");
 
-                EditorVertex v2 = new TombEditor.Geometry.EditorVertex();
-                v2.Position = new Vector3(128.0f, -128.0f, -128.0f);
-                v2.UV = Vector2.Zero;
+                int verticalSegments = tessellation;
+                int horizontalSegments = tessellation * 2;
 
-                EditorVertex v3 = new TombEditor.Geometry.EditorVertex();
-                v3.Position = new Vector3(128.0f, -128.0f, 128.0f);
-                v3.UV = Vector2.Zero;
+                var vertices = new SolidVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
+                var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
 
-                EditorVertex v4 = new TombEditor.Geometry.EditorVertex();
-                v4.Position = new Vector3(-128.0f, -128.0f, 128.0f);
-                v4.UV = Vector2.Zero;
+                float radius = diameter / 2;
 
-                EditorVertex v5 = new TombEditor.Geometry.EditorVertex();
-                v5.Position = new Vector3(-128.0f, 128.0f, -128.0f);
-                v5.UV = Vector2.Zero;
-
-                EditorVertex v6 = new TombEditor.Geometry.EditorVertex();
-                v6.Position = new Vector3(128.0f, 128.0f, -128.0f);
-                v6.UV = Vector2.Zero;
-
-                EditorVertex v7 = new TombEditor.Geometry.EditorVertex();
-                v7.Position = new Vector3(128.0f, 128.0f, 128.0f);
-                v7.UV = Vector2.Zero;
-
-                EditorVertex v8 = new TombEditor.Geometry.EditorVertex();
-                v8.Position = new Vector3(-128.0f, 128.0f, 128.0f);
-                v8.UV = Vector2.Zero;
-
-                var vertices = new EditorVertex[] { v1, v2, v3, v4, v5, v6, v7, v8 };
-                var indices = new short[]
+                int vertexCount = 0;
+                // Create rings of vertices at progressively higher latitudes.
+                for (int i = 0; i <= verticalSegments; i++)
                 {
-                    4, 5, 5, 1, 1, 0, 0, 4,
-                    5, 6, 6, 2, 2, 1, 1, 5,
-                    2, 6, 6, 7, 7, 3, 3, 2,
-                    7, 4, 4, 0, 0, 3, 3, 7,
-                    7, 6, 6, 5, 5, 4, 4, 7,
-                    0, 1, 1, 2, 2, 3, 3, 0
-                };
+                    float v = 1.0f - (float)i / verticalSegments;
+
+                    var latitude = (float)((i * Math.PI / verticalSegments) - Math.PI / 2.0);
+                    var dy = (float)Math.Sin(latitude);
+                    var dxz = (float)Math.Cos(latitude);
+
+                    // Create a single ring of vertices at this latitude.
+                    for (int j = 0; j <= horizontalSegments; j++)
+                    {
+                        float u = (float)j / horizontalSegments;
+
+                        var longitude = (float)(j * 2.0 * Math.PI / horizontalSegments);
+                        var dx = (float)Math.Sin(longitude);
+                        var dz = (float)Math.Cos(longitude);
+
+                        dx *= dxz;
+                        dz *= dxz;
+
+                        var normal = new Vector3(dx, dy, dz);
+                        var textureCoordinate = new Vector2(u, v);
+
+                        SolidVertex vertex = new SolidVertex();
+                        vertex.Position = normal * radius;
+
+                        vertices[vertexCount++] = vertex;
+                    }
+                }
+
+                // Fill the index buffer with triangles joining each pair of latitude rings.
+                int stride = horizontalSegments + 1;
+
+                int indexCount = 0;
+                for (int i = 0; i < verticalSegments; i++)
+                {
+                    for (int j = 0; j <= horizontalSegments; j++)
+                    {
+                        int nextI = i + 1;
+                        int nextJ = (j + 1) % stride;
+
+                        indices[indexCount++] = (i * stride + nextJ);
+                        indices[indexCount++] = (nextI * stride + j);
+                        indices[indexCount++] = (i * stride + j);
+
+                        indices[indexCount++] = (nextI * stride + nextJ);
+                        indices[indexCount++] = (nextI * stride + j);
+                        indices[indexCount++] = (i * stride + nextJ);
+                    }
+                }
 
                 // Create the primitive object.
-                return new GeometricPrimitive(device, vertices, indices, false) { Name = "Cube" };
+                return new GeometricPrimitive(device, vertices, indices, toLeftHanded) { Name = "Sphere" };
             }
         }
     }

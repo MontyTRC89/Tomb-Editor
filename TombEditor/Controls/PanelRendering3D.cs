@@ -15,11 +15,6 @@ using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
-    public abstract class PickingResult
-    {
-        public float Distance { get; set; }
-    };
-
     public partial class PanelRendering3D : Panel
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
@@ -376,7 +371,7 @@ namespace TombEditor.Controls
                 };
 
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
-            _gizmo = new Gizmo(_editor, deviceManager);
+            _gizmo = new Gizmo(deviceManager.Device, deviceManager.Effects["Solid"]);
 
             ResetCamera();
 
@@ -752,8 +747,9 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Left:
-                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y, Control.ModifierKeys))
-                    { } // Process gizmo
+                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
+                    {                    
+                    } // Process gizmo
                     else if (_doSectorSelection)
                     { // Calculate block selection
                         PickingResult newPicking = DoPicking(e.X, e.Y);
