@@ -128,17 +128,17 @@ namespace TombEditor.ToolWindows
 
         private void butOpacityNone_Click(object sender, EventArgs e)
         {
-            SetPortalOpacity(PortalOpacity.None);
+            EditorActions.SetPortalOpacity(PortalOpacity.None, this);
         }
 
         private void butOpacitySolidFaces_Click(object sender, EventArgs e)
         {
-            SetPortalOpacity(PortalOpacity.SolidFaces);
+            EditorActions.SetPortalOpacity(PortalOpacity.SolidFaces, this);
         }
 
         private void butOpacityTraversableFaces_Click(object sender, EventArgs e)
         {
-            SetPortalOpacity(PortalOpacity.TraversableFaces);
+            EditorActions.SetPortalOpacity(PortalOpacity.TraversableFaces, this);
         }
 
         private void butTextureFloor_Click(object sender, EventArgs e)
@@ -175,17 +175,6 @@ namespace TombEditor.ToolWindows
             var selectedTexture = _editor.SelectedTexture;
             selectedTexture.Texture = TextureInvisible.Instance;
             _editor.SelectedTexture = selectedTexture;
-        }
-
-        private void SetPortalOpacity(PortalOpacity opacity)
-        {
-            var portal = _editor.SelectedObject as Portal;
-            if ((_editor.SelectedRoom == null) || (portal == null))
-            {
-                DarkMessageBox.Show(this, "No portal selected.", "Error", MessageBoxIcon.Error);
-                return;
-            }
-            EditorActions.SetPortalOpacity(_editor.SelectedRoom, portal, opacity);
         }
 
         private void butAddCamera_Click(object sender, EventArgs e)
