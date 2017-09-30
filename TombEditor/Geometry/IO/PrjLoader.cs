@@ -629,6 +629,8 @@ namespace TombEditor.Geometry.IO
                             room.FlagQuickSand = true;
                         if ((flags1 & 0x0008) != 0)
                             room.FlagHorizon = true;
+                        if ((flags1 & 0x0010) != 0)
+                            room.FlagDamage = true;
                         if ((flags1 & 0x0020) != 0)
                             room.FlagOutside = true;
                         if ((flags1 & 0x0080) != 0)
@@ -637,8 +639,6 @@ namespace TombEditor.Geometry.IO
                             room.FlagSnow = true;
                         if ((flags1 & 0x0800) != 0)
                             room.FlagRain = true;
-                        if ((flags1 & 0x1000) != 0)
-                            room.FlagDamage = true;
 
                         var tempBlocks = new PrjBlock[numXBlocks, numZBlocks];
                         for (int x = 0; x < room.NumXSectors; x++)

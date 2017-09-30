@@ -78,25 +78,25 @@ namespace TombEditor.Compilers
             // Room flags
 
             if (room.FlagWater)
-                newRoom.Flags |= 0x01;
+                newRoom.Flags |= 0x0001;
             if (room.FlagQuickSand)
-                newRoom.Flags |= 0x04;
+                newRoom.Flags |= 0x0004;
             if (room.FlagHorizon)
-                newRoom.Flags |= 0x08;
-            if (room.FlagOutside)
-                newRoom.Flags |= 0x20;
-            if (room.FlagNoLensflare)
-                newRoom.Flags |= 0x80;
-            if (room.FlagMist)
-                newRoom.Flags |= 0x100;
-            if (room.FlagReflection)
-                newRoom.Flags |= 0x200;
-            if (room.FlagSnow)
-                newRoom.Flags |= 0x400;
-            if (room.FlagRain)
-                newRoom.Flags |= 0x800;
+                newRoom.Flags |= 0x0008;
             if (room.FlagDamage)
-                newRoom.Flags |= 0x1000;
+                newRoom.Flags |= 0x0010;
+            if (room.FlagOutside)
+                newRoom.Flags |= 0x0020;
+            if (room.FlagNoLensflare)
+                newRoom.Flags |= 0x0080;
+            if (room.FlagMist)
+                newRoom.Flags |= 0x0100;
+            if (room.FlagReflection)
+                newRoom.Flags |= 0x0200;
+            if (room.FlagSnow)
+                newRoom.Flags |= 0x0400;
+            if (room.FlagRain)
+                newRoom.Flags |= 0x0800;
 
             // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of
             // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
