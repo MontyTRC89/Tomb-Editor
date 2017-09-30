@@ -87,25 +87,11 @@ namespace TombEditor.Controls
             base.Dispose(disposing);
         }
 
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            if (!Focused)
-                Focus(); // Enable keyboard interaction
-        }
-
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Reset texture map
             if ((obj is Editor.LevelChangedEvent) || (obj is Editor.LoadedTexturesChangedEvent))
                 ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
-        }
-
-        protected override void OnResize(EventArgs eventargs)
-        {
-            base.OnResize(eventargs);
-            UpdateScrollBars();
-            Invalidate();
         }
 
         public void ShowTexture(TextureArea area)
@@ -182,7 +168,7 @@ namespace TombEditor.Controls
             else if (ModifierKeys.HasFlag(Keys.Control))
                 return 1.0f;
             else if (ModifierKeys.HasFlag(Keys.Shift))
-                return 64.0f;
+                return _editor.Configuration.TextureMap_TileSelectionSize;
             else
                 return 16.0f;
         }
@@ -224,6 +210,14 @@ namespace TombEditor.Controls
             selectedTexture.TexCoord3 = texCoordEndQuantized;
             selectedTexture.Texture = VisibleTexture;
             SelectedTexture = selectedTexture;
+        }
+
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+
+            if (!Focused)
+                Focus(); // Enable keyboard interaction
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -426,6 +420,52 @@ namespace TombEditor.Controls
                 e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
         }
 
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Down:
+                    ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                    Invalidate();
+                    break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                    Invalidate();
+                    break;
+                case Keys.Left:
+                    ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.Right:
+                    ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    Invalidate();
+                    break;
+                case Keys.PageDown:
+                    ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
+                    Invalidate();
+                    break;
+                case Keys.PageUp:
+                    ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
+                    Invalidate();
+                    break;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            return false; // Prevent any control in the same group from taking focus
+        }
+
+        protected override void OnResize(EventArgs eventargs)
+        {
+            base.OnResize(eventargs);
+            UpdateScrollBars();
+            Invalidate();
+        }
+
         protected virtual void OnPaintSelection(PaintEventArgs e)
         {
             // Draw selection
@@ -488,7 +528,7 @@ namespace TombEditor.Controls
             get { return _viewScale; }
             set
             {
-                if (_viewScale == value)
+                if (_viewScale == value || value < 0.05 || value > 80)
                     return;
                 _viewScale = value;
                 UpdateScrollBars();

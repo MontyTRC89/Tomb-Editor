@@ -71,6 +71,7 @@ namespace TombEditor
             // Initialize panels
             MainView.Initialize(_deviceManager);
             ObjectBrowser.Initialize(_deviceManager);
+            TexturePanel.Initialize();
 
             this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
@@ -183,15 +184,6 @@ namespace TombEditor
 
             base.OnClosed(e);
             _editor.Configuration.SaveTry();
-        }
-
-        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (DarkMessageBox.Show(this,
-                    "Your project will be lost. Do you really want to create a new project?",
-                    "New project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-            _editor.Level = Level.CreateSimpleLevel();
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -369,6 +361,15 @@ namespace TombEditor
             action.RelocateCameraActive = false;
             _editor.Action = action;
             _pressedZorY = false;
+        }
+
+        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (DarkMessageBox.Show(this,
+                    "Your project will be lost. Do you really want to create a new project?",
+                    "New project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+            _editor.Level = Level.CreateSimpleLevel();
         }
 
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -707,7 +708,6 @@ namespace TombEditor
                 _editor.ObjectChange(lara);
             }
         }
-
 
         private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
