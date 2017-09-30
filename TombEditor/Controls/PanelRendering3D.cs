@@ -720,10 +720,15 @@ namespace TombEditor.Controls
                 EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            Focus(); // Enable keyboard interaction
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            Focus(); // Enable keyboard interaction
 
             switch (e.Button)
             {
