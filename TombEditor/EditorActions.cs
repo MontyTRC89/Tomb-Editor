@@ -581,7 +581,7 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void AddTrigger(Room room, Rectangle area, IWin32Window parent)
+        public static void AddTrigger(Room room, Rectangle area, IWin32Window owner)
         {
             var trigger = new TriggerInstance(area);
 
@@ -610,7 +610,7 @@ namespace TombEditor
             // Display form
             using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj)))
             {
-                if (formTrigger.ShowDialog(parent) != DialogResult.OK)
+                if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                     return;
                 room.AddObject(_editor.Level, trigger);
             }
@@ -1363,13 +1363,6 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(destination);
         }
 
-        public static void SetPortalOpacity(Room room, Portal portal, PortalOpacity opacity)
-        {
-            portal.Opacity = opacity;
-            room.UpdateCompletely();
-            _editor.ObjectChange(portal);
-        }
-
         public static void CopyRoom(Room room, Rectangle area)
         {
             int found = _editor.Level.GetFreeRoomIndex();
@@ -1737,33 +1730,47 @@ namespace TombEditor
             _editor.LoadedWadsChange(null);
         }
 
-        public static void Copy(IWin32Window parent)
+        public static void Copy(IWin32Window owner)
         {
             var instance = _editor.SelectedObject as PositionBasedObjectInstance;
             if (instance == null)
             {
-                MessageBox.Show(parent, "You have to select an object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                DarkMessageBox.Show(owner, "You have to select an object before you can copy it.", "No object selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             Clipboard.Copy(instance);
         }
 
-        public static void Clone(IWin32Window parent)
+        public static void Clone(IWin32Window owner)
         {
-            Copy(parent);
+            Copy(owner);
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
         }
 
-        public static void ShowTextureSoundsDialog(IWin32Window parent)
+        public static void ShowTextureSoundsDialog(IWin32Window owner)
         {
             using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
-                form.ShowDialog(parent);
+                form.ShowDialog(owner);
         }
 
-        public static void ShowAnimationRangesDialog(IWin32Window parent)
+        public static void ShowAnimationRangesDialog(IWin32Window owner)
         {
             using (FormAnimatedTextures form = new FormAnimatedTextures())
-                form.ShowDialog(parent);
+                form.ShowDialog(owner);
+        }
+
+        public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
+        {
+            var portal = _editor.SelectedObject as Portal;
+            if ((_editor.SelectedRoom == null) || (portal == null))
+            {
+                DarkMessageBox.Show(owner, "No portal selected.", "Error", MessageBoxIcon.Error);
+                return;
+            }
+
+            portal.Opacity = opacity;
+            _editor.SelectedRoom.UpdateCompletely();
+            _editor.ObjectChange(portal);
         }
 
         public static void MoveRooms(Vector3 positionDelta, IEnumerable<Room> rooms)
