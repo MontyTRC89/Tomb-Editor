@@ -21,7 +21,7 @@ namespace TombEditor
             _editor = Editor.Instance;
         }
 
-        public override bool DrawGizmo
+        protected override bool DrawGizmo
         { 
             get
             {
@@ -29,7 +29,7 @@ namespace TombEditor
             }
         }
 
-        public override Vector3 Position
+        protected override Vector3 Position
         {
             get
             {
@@ -38,13 +38,21 @@ namespace TombEditor
             }
         }
 
-        public override void DoGizmoAction(Vector3 newPos)
+        protected override void DoGizmoAction(Vector3 newPos)
         {
-            EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
-                                     newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
+            switch (Action)
+            {
+                case GizmoAction.Translate:
+                    EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
+                                             newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
+                    break;
+                case GizmoAction.Rotate:
+                case GizmoAction.Scale:
+                    break;
+            }            
         }
 
-        public override GizmoAction Action => GizmoAction.Translate;
+        protected override GizmoAction Action => GizmoAction.Translate;
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;
 

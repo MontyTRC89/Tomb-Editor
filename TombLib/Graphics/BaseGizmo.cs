@@ -255,11 +255,11 @@ namespace TombLib.Graphics
             _device.SetDepthStencilState(_depthStencilStateDefault);
         }
 
-        public abstract void DoGizmoAction(Vector3 newPos);
+        protected abstract void DoGizmoAction(Vector3 newPos);
 
-        public abstract bool DrawGizmo { get; }
-        public abstract Vector3 Position { get; }
-        public abstract GizmoAction Action { get; }
+        protected abstract bool DrawGizmo { get; }
+        protected abstract Vector3 Position { get; }
+        protected abstract GizmoAction Action { get; }
         protected abstract float CentreCubeSize { get; }
         protected abstract float TranslationSphereSize { get; }
         protected abstract float Size { get; }
