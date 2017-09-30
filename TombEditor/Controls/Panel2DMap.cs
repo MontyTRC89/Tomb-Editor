@@ -185,7 +185,8 @@ namespace TombEditor.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            Focus(); // Enable keyboard interaction
+            if (!Focused)
+                Focus(); // Enable keyboard interaction
 
             // Update depth bar...
             _depthBar.MouseMove(e, Size);
