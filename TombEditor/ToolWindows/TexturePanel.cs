@@ -36,21 +36,14 @@ namespace TombEditor.ToolWindows
 
         public void Initialize()
         {
-            switch(_editor.Configuration.TextureMap_TileSelectionSize)
+            if(_editor.Configuration.TextureMap_TileSelectionSize == 128.0f)
+                rbTileSize128.Checked = true;
+            else if(_editor.Configuration.TextureMap_TileSelectionSize == 256.0f)
+                rbTileSize256.Checked = true;
+            else
             {
-                case 64.0f:
-                    rbTileSize64.Checked = true;
-                    break;
-                case 128.0f:
-                    rbTileSize128.Checked = true;
-                    break;
-                case 256.0f:
-                    rbTileSize256.Checked = true;
-                    break;
-                default:
-                    rbTileSize64.Checked = true;
-                    _editor.Configuration.TextureMap_TileSelectionSize = 64.0f;
-                    break;
+                rbTileSize64.Checked = true;
+                _editor.Configuration.TextureMap_TileSelectionSize = 64.0f;
             }
         }
 
