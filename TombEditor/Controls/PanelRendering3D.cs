@@ -1584,6 +1584,7 @@ namespace TombEditor.Controls
 
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
+                Matrix scale = Matrix.Scaling(model.Scale);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
@@ -1599,8 +1600,8 @@ namespace TombEditor.Controls
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
 
-                    world = Matrix.Translation(modelInfo.Room.WorldPos + modelInfo.Position);
-                    worldDebug = Matrix.Translation(room.WorldPos);
+                    world = scale * Matrix.Translation(modelInfo.Room.WorldPos + modelInfo.Position);
+                    worldDebug = scale * Matrix.Translation(room.WorldPos);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 

@@ -1,5 +1,6 @@
 ﻿using SharpDX;
 using System;
+using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {

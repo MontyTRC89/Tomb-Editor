@@ -11,6 +11,7 @@ using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
 using TombLib.Utils;
 using DarkUI.Forms;
+using TombLib.Graphics;
 
 namespace TombEditor
 {
