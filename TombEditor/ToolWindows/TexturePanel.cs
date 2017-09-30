@@ -34,6 +34,26 @@ namespace TombEditor.ToolWindows
             base.Dispose(disposing);
         }
 
+        public void Initialize()
+        {
+            switch(_editor.Configuration.TextureMap_TileSelectionSize)
+            {
+                case 64.0f:
+                    rbTileSize64.Checked = true;
+                    break;
+                case 128.0f:
+                    rbTileSize128.Checked = true;
+                    break;
+                case 256.0f:
+                    rbTileSize256.Checked = true;
+                    break;
+                default:
+                    rbTileSize64.Checked = true;
+                    _editor.Configuration.TextureMap_TileSelectionSize = 64.0f;
+                    break;
+            }
+        }
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update texture map
@@ -58,6 +78,24 @@ namespace TombEditor.ToolWindows
         private void lblLoadHelper_Click(object sender, EventArgs e)
         {
             EditorActions.LoadTextures(this.Parent);
+        }
+
+        private void rbTileSize64_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbTileSize64.Checked == true)
+                _editor.Configuration.TextureMap_TileSelectionSize = 64.0f;
+        }
+
+        private void rbTileSize128_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbTileSize128.Checked == true)
+                _editor.Configuration.TextureMap_TileSelectionSize = 128.0f;
+        }
+
+        private void rbTileSize256_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbTileSize256.Checked == true)
+                _editor.Configuration.TextureMap_TileSelectionSize = 256.0f;
         }
     }
 }

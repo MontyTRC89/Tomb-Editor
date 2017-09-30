@@ -18,8 +18,20 @@ namespace TombEditor.Controls
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Vector2 ViewPosition { get; set; } = new Vector2(60.0f, 60.0f);
+
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public float ViewScale { get; set; } = 6.0f;
+        public float ViewScale
+        {
+            get { return _viewScale; }
+            set
+            {
+                if (_viewScale == value || value < 0.05 || value > 80)
+                    return;
+                _viewScale = value;
+            }
+        }
+        private float _viewScale = 6.0f;
 
         private DepthBar _depthBar;
         private Editor _editor;
@@ -78,17 +90,17 @@ namespace TombEditor.Controls
 
         public void ResetView()
         {
-            ViewPosition = (new Vector2(Width, Height) * 0.5f - new Vector2(16.0f)) / ViewScale;
+            ViewPosition = (new Vector2(Width, Height) * 0.5f - new Vector2(16.0f)) / _viewScale;
         }
 
         public Vector2 FromVisualCoord(PointF pos)
         {
-            return new Vector2((pos.X - Width * 0.5f) / ViewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / ViewScale + ViewPosition.Y);
+            return new Vector2((pos.X - Width * 0.5f) / _viewScale + ViewPosition.X, (Height * 0.5f - pos.Y) / _viewScale + ViewPosition.Y);
         }
 
         public PointF ToVisualCoord(Vector2 pos)
         {
-            return new PointF((pos.X - ViewPosition.X) * ViewScale + Width * 0.5f, Height * 0.5f - (pos.Y - ViewPosition.Y) * ViewScale);
+            return new PointF((pos.X - ViewPosition.X) * _viewScale + Width * 0.5f, Height * 0.5f - (pos.Y - ViewPosition.Y) * _viewScale);
         }
 
         private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint)
@@ -272,19 +284,19 @@ namespace TombEditor.Controls
             switch (keyData)
             {
                 case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Up:
                     ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
                     Invalidate();
                     break;
+                case Keys.Up:
+                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
+                    Invalidate();
+                    break;
                 case Keys.Left:
-                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.Right:
-                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
                     Invalidate();
                     break;
                 case Keys.PageDown:
@@ -403,7 +415,7 @@ namespace TombEditor.Controls
                 for (int j = 0; j < rectangles.Count; ++j)
                     rectangles[j] = new RectangleF(
                         ToVisualCoord(new Vector2(rectangles[j].X + room.SectorPos.X, rectangles[j].Bottom + room.SectorPos.Y)),
-                        new SizeF(rectangles[j].Width * ViewScale, rectangles[j].Height * ViewScale));
+                        new SizeF(rectangles[j].Width * _viewScale, rectangles[j].Height * _viewScale));
 
                 // Draw the rectangular stripes
                 Brush brush = _roomsNormalBrush;

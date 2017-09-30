@@ -43,7 +43,10 @@ namespace TombEditor
 
         public float TextureMap_NavigationSpeedMouseWheelZoom { get; set; } = 0.0015f;
         public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 7.5f;
+        public float TextureMap_NavigationSpeedKeyZoom { get; set; } = 0.17f;
+        public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
+        public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
 
         public float Gizmo_Size { get; set; } = 1024.0f;
         public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
