@@ -475,7 +475,7 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
-        protected virtual bool DrawTriangle { get; } => false;
+        protected virtual bool DrawTriangle => true;
 
         protected virtual void OnPaintSelection(PaintEventArgs e)
         {
@@ -494,11 +494,13 @@ namespace TombEditor.Controls
 
                 // Draw fill color
                 e.Graphics.FillPolygon(textureSelectionBrush, new PointF[] { points[0], points[2], points[3] });
-                e.Graphics.FillPolygon(textureSelectionBrushTriangle, new PointF[] { points[0], points[1], points[2] });
+                if (DrawTriangle)
+                    e.Graphics.FillPolygon(textureSelectionBrushTriangle, new PointF[] { points[0], points[1], points[2] });
 
                 // Draw outlines
                 e.Graphics.DrawPolygon(textureSelectionPen, points);
-                e.Graphics.DrawPolygon(textureSelectionPenTriangle, new PointF[] { points[0], points[1], points[2] });
+                if (DrawTriangle)
+                    e.Graphics.DrawPolygon(textureSelectionPenTriangle, new PointF[] { points[0], points[1], points[2] });
 
                 for (int i = 0; i < 4; ++i)
                 {
