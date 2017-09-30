@@ -1,12 +1,19 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
-    public class ImportedGeometryInstance : PositionBasedObjectInstance
+    public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable
     {
         public ImportedGeometry Model { get; set; }
+        public float Scale { get; set; }
+
+        public ImportedGeometryInstance()
+        {
+            Scale = 1.0f;
+        }
 
         public override ObjectInstance Clone()
         {

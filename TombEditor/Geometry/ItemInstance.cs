@@ -1,6 +1,7 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using TombLib.Graphics;
 using TombLib.Wad;
 
 namespace TombEditor.Geometry

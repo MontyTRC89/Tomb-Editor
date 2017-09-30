@@ -1,5 +1,6 @@
 ﻿using SharpDX;
 using System;
+using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
@@ -52,21 +53,6 @@ namespace TombEditor.Geometry
     public interface IHasScriptID
     {
         ushort? ScriptId { get; set; }
-    };
-
-    public interface IRotateableY
-    {
-        float RotationY { get; set; }
-    };
-
-    public interface IRotateableYX : IRotateableY
-    {
-        float RotationX { get; set; }
-    };
-
-    public interface IRotateableYXRoll : IRotateableYX
-    {
-        float Roll { get; set; }
     };
 
     public static class RotatableExtensions

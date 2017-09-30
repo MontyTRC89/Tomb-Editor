@@ -23,12 +23,35 @@ namespace TombLib.Graphics
     public class PickingResultGizmo : PickingResult
     {
         public GizmoAxis Axis { get; set; }
-        public PickingResultGizmo(float Distance, GizmoAxis axis)
+        public GizmoAction Action { get; set; }
+
+        public PickingResultGizmo(float Distance, GizmoAxis axis, GizmoAction action)
         {
             this.Distance = Distance;
             this.Axis = axis;
+            this.Action = action;
         }
     }
+
+    public interface IScaleable
+    {
+        float Scale { get; set; }
+    };
+
+    public interface IRotateableY
+    {
+        float RotationY { get; set; }
+    };
+
+    public interface IRotateableYX : IRotateableY
+    {
+        float RotationX { get; set; }
+    };
+
+    public interface IRotateableYXRoll : IRotateableYX
+    {
+        float Roll { get; set; }
+    };
 
     public abstract class BaseGizmo
     {
@@ -50,6 +73,8 @@ namespace TombLib.Graphics
         private readonly Color4 _green;
         private readonly Color4 _blue;
         private readonly Color4 _yellow;
+
+        private PickingResultGizmo _lastResult;
 
         public BaseGizmo(GraphicsDevice device, Effect effect)
         {
@@ -157,17 +182,32 @@ namespace TombLib.Graphics
 
             float distance;
 
-            BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * 1024.0f, 64.0f);
+            BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * 1024.0f, TranslationSphereSize / 2.0f);
             if (ray.Intersects(ref sphereX, out distance))
-                return new PickingResultGizmo(distance, GizmoAxis.X);
+                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.X, GizmoAction.Translate));
 
-            BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * 1024.0f, 64.0f);
+            BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * 1024.0f, TranslationSphereSize / 2.0f);
             if (ray.Intersects(ref sphereY, out distance))
-                return new PickingResultGizmo(distance, GizmoAxis.Y);
+                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Y, GizmoAction.Translate));
 
-            BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * 1024.0f, 64.0f);
+            BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * 1024.0f, TranslationSphereSize / 2.0f);
             if (ray.Intersects(ref sphereZ, out distance))
-                return new PickingResultGizmo(distance, GizmoAxis.Z);
+                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Z, GizmoAction.Translate));
+
+            BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                 Position + Vector3.UnitX * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
+            if (ray.Intersects(ref scaleX, out distance))
+                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.X, GizmoAction.Scale));
+
+            BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                 Position + Vector3.UnitY * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
+            if (ray.Intersects(ref scaleY, out distance))
+                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Y, GizmoAction.Scale));
+
+            BoundingBox scaleZ = new BoundingBox(Position + Vector3.UnitZ * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                 Position + Vector3.UnitZ * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
+            if (ray.Intersects(ref scaleZ, out distance))
+                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Z, GizmoAction.Scale));
 
             return null;
         }
@@ -208,11 +248,12 @@ namespace TombLib.Graphics
             _device.Draw(PrimitiveType.LineList, 2, 4);
 
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
             _device.SetVertexBuffer(_sphere.VertexBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
             _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
-            // X axis sphere
+            // X axis translation
             model = Matrix.Scaling(TranslationSphereSize) *
                     Matrix.Translation(Position + Vector3.UnitX * Size);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -221,7 +262,7 @@ namespace TombLib.Graphics
 
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
-            // Y axis sphere
+            // Y axis translation
             model = Matrix.Scaling(TranslationSphereSize) *
                     Matrix.Translation(Position + Vector3.UnitY * Size);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -230,7 +271,7 @@ namespace TombLib.Graphics
 
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
 
-            // Z axis sphere
+            // Z axis translation
             model = Matrix.Scaling(TranslationSphereSize) *
                     Matrix.Translation(Position - Vector3.UnitZ * Size);
             solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -238,6 +279,41 @@ namespace TombLib.Graphics
             solidEffect.CurrentTechnique.Passes[0].Apply();
 
             _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+
+            // Scale
+            if (SupportScale)
+            {
+                _device.SetVertexBuffer(_cube.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cube.VertexBuffer));
+                _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
+
+                // X axis scale
+                model = Matrix.Scaling(ScaleCubeSize) *
+                        Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
+                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                solidEffect.Parameters["Color"].SetValue(_red);
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+
+                // Y axis scale
+                model = Matrix.Scaling(ScaleCubeSize) *
+                        Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
+                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                solidEffect.Parameters["Color"].SetValue(_green);
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+
+                // Z axis scale
+                model = Matrix.Scaling(ScaleCubeSize) *
+                        Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
+                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                solidEffect.Parameters["Color"].SetValue(_blue);
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+            }
 
             // center cube
             _device.SetVertexBuffer(_cube.VertexBuffer);
@@ -255,13 +331,19 @@ namespace TombLib.Graphics
             _device.SetDepthStencilState(_depthStencilStateDefault);
         }
 
+        public GizmoAction Action { get { return (_lastResult != null ? _lastResult.Action : GizmoAction.Translate); } }
+
         protected abstract void DoGizmoAction(Vector3 newPos);
 
         protected abstract bool DrawGizmo { get; }
         protected abstract Vector3 Position { get; }
-        protected abstract GizmoAction Action { get; }
         protected abstract float CentreCubeSize { get; }
         protected abstract float TranslationSphereSize { get; }
+        protected abstract float ScaleCubeSize { get; }
         protected abstract float Size { get; }
+        protected abstract bool SupportScale { get; }
+        protected abstract bool SupportRotationY { get; }
+        protected abstract bool SupportRotationYX { get; }
+        protected abstract bool SupportRotationYXRoll { get; }
     }
 }
