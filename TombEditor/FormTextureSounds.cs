@@ -99,6 +99,7 @@ namespace TombEditor
             }
 
             protected override float MaxTextureSize => float.PositiveInfinity;
+            protected override bool DrawTriangle => false;
 
             protected override void OnPaintSelection(PaintEventArgs e)
             {

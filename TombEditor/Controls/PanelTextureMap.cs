@@ -34,9 +34,9 @@ namespace TombEditor.Controls
         private Point _lastMousePosition;
 
         private static readonly Pen textureSelectionPen = new Pen(Brushes.Yellow, 2.0f) { LineJoin = LineJoin.Round };
-        private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 1.0f) { LineJoin = LineJoin.Round };
-        private static readonly Brush textureSelectionBrush = new SolidBrush(Color.FromArgb(25, textureSelectionPen.Color.R, textureSelectionPen.Color.G, textureSelectionPen.Color.B));
-        private static readonly Brush textureSelectionBrushTriangle = new SolidBrush(Color.FromArgb(25, textureSelectionPenTriangle.Color.R, textureSelectionPenTriangle.Color.G, textureSelectionPenTriangle.Color.B));
+        private static readonly Pen textureSelectionPenTriangle = new Pen(Brushes.Red, 2.0f) { LineJoin = LineJoin.Round };
+        private static readonly Brush textureSelectionBrush = new SolidBrush(Color.FromArgb(21, textureSelectionPen.Color.R, textureSelectionPen.Color.G, textureSelectionPen.Color.B));
+        private static readonly Brush textureSelectionBrushTriangle = new SolidBrush(Color.FromArgb(33, textureSelectionPenTriangle.Color.R, textureSelectionPenTriangle.Color.G, textureSelectionPenTriangle.Color.B));
         private static readonly Brush textureSelectionBrushSelection = Brushes.DeepSkyBlue;
         private const float textureSelectionPointWidth = 6.0f;
         private const float textureSelectionPointSelectionRadius = 13.0f;
@@ -474,6 +474,8 @@ namespace TombEditor.Controls
             UpdateScrollBars();
             Invalidate();
         }
+
+        protected virtual bool DrawTriangle { get; } => false;
 
         protected virtual void OnPaintSelection(PaintEventArgs e)
         {
