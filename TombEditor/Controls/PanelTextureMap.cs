@@ -87,6 +87,12 @@ namespace TombEditor.Controls
             base.Dispose(disposing);
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            Focus(); // Enable keyboard interaction
+        }
+
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Reset texture map
