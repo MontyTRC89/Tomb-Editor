@@ -29,14 +29,6 @@
             this.panelTileSizeSelector.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panelTextureMap
-            // 
-            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
-            this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(284, 739);
-            this.panelTextureMap.TabIndex = 9;
-            // 
             // panelTextureTools
             // 
             this.panelTextureTools.Controls.Add(this.panelTileSizeSelector);
@@ -143,6 +135,17 @@
             this.butTextureSounds.TabIndex = 0;
             this.butTextureSounds.Text = "Texture sounds";
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
+            // 
+            // panelTextureMap
+            // 
+            this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTextureMap.FreeSelection = true;
+            this.panelTextureMap.FreeSelectionWithShift = true;
+            this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
+            this.panelTextureMap.Name = "panelTextureMap";
+            this.panelTextureMap.Size = new System.Drawing.Size(284, 739);
+            this.panelTextureMap.TabIndex = 9;
+            this.panelTextureMap.TileSelectionSize = 64F;
             // 
             // TexturePanel
             // 
