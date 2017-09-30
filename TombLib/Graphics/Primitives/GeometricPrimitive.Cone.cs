@@ -72,7 +72,7 @@
 
 using System;
 using System.Collections.Generic;
-using TombEditor.Geometry;
+using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
@@ -100,17 +100,17 @@ namespace SharpDX.Toolkit.Graphics
                 int verticalSegments = tessellation;
                 int horizontalSegments = tessellation * 2;
 
-                var vertices = new EditorVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
+                var vertices = new SolidVertex[(verticalSegments + 1) * (horizontalSegments + 1)];
                 var indices = new int[(verticalSegments) * (horizontalSegments + 1) * 6];
 
                 float radius = diameter / 2;
 
                 // Vertex of the cone
-                EditorVertex coneVertex = new EditorVertex();
+                SolidVertex coneVertex = new SolidVertex();
                 coneVertex.Position = new Vector3(0.0f, 0.0f, 0.0f);
                 float angle = (float)(2 * Math.PI / tessellation);
 
-                List<EditorVertex> tempVertices = new List<EditorVertex>();
+                List<SolidVertex> tempVertices = new List<SolidVertex>();
                 List<int> tempIndices = new List<int>();
 
                 for (int i = 0; i < verticalSegments; i++)
@@ -119,7 +119,7 @@ namespace SharpDX.Toolkit.Graphics
                     float y = radius * (float)Math.Cos(i * angle);
                     float z = length;
 
-                    EditorVertex v = new EditorVertex();
+                    SolidVertex v = new SolidVertex();
                     v.Position = new Vector3(x, y, z);
 
                     tempVertices.Add(v);
@@ -162,7 +162,7 @@ namespace SharpDX.Toolkit.Graphics
                          var normal = new Vector3(dx, dy, dz);
                          var textureCoordinate = new Vector2(u, v);
 
-                         EditorVertex vertex = new TombEditor.Geometry.EditorVertex();
+                         SolidVertex vertex = new TombEditor.Geometry.SolidVertex();
                          vertex.Position = new Vector4(normal * radius, 1);
                          vertex.Normal = normal;
                          vertex.UV = textureCoordinate;

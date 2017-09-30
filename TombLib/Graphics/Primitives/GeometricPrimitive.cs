@@ -20,7 +20,7 @@
 
 using System;
 using SharpDX.Direct3D;
-using TombEditor.Geometry;
+using TombLib.Graphics;
 
 namespace SharpDX.Toolkit.Graphics
 {
@@ -220,7 +220,7 @@ namespace SharpDX.Toolkit.Graphics
     /// A geometric primitive helper that provides several drawable basic 3D models <see cref="Cube.New"/>, <see cref="Cylinder.New"/>, <see cref="Sphere.New"/>, <see cref="GeoSphere.New"/>, <see cref="Teapot.New"/>, <see cref="Torus.New"/>.
     /// </summary>
     /// <remarks>The vertex format used is <see cref="VertexPositionNormalTexture"/>.</remarks>
-    public partial class GeometricPrimitive : GeometricPrimitive<EditorVertex>
+    public partial class GeometricPrimitive : GeometricPrimitive<SolidVertex>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GeometricPrimitive" /> class.
@@ -230,7 +230,7 @@ namespace SharpDX.Toolkit.Graphics
         /// <param name="indices">The indices described in right handed form.</param>
         /// <param name="toLeftHanded">if set to <c>true</c> vertices and indices will be transformed to left handed. Default is true.</param>
         /// <exception cref="System.InvalidOperationException">Cannot generate more than 65535 indices on feature level HW &lt;= 9.3</exception>
-        public GeometricPrimitive(GraphicsDevice graphicsDevice, EditorVertex[] vertices, short[] indices, bool toLeftHanded = false)
+        public GeometricPrimitive(GraphicsDevice graphicsDevice, SolidVertex[] vertices, short[] indices, bool toLeftHanded = false)
             : base(graphicsDevice, vertices, indices, toLeftHanded)
         {
         }
@@ -243,17 +243,17 @@ namespace SharpDX.Toolkit.Graphics
         /// <param name="indices">The indices.</param>
         /// <param name="toLeftHanded">if set to <c>true</c> vertices and indices will be transformed to left handed. Default is true.</param>
         /// <exception cref="System.InvalidOperationException">Cannot generate more than 65535 indices on feature level HW &lt;= 9.3</exception>
-        public GeometricPrimitive(GraphicsDevice graphicsDevice, EditorVertex[] vertices, int[] indices, bool toLeftHanded = false)
+        public GeometricPrimitive(GraphicsDevice graphicsDevice, SolidVertex[] vertices, int[] indices, bool toLeftHanded = false)
             : base(graphicsDevice, vertices, indices, toLeftHanded)
         {
         }
 
-        protected override void ReverseWinding<TIndex>(EditorVertex[] vertices, TIndex[] indices)
+        protected override void ReverseWinding<TIndex>(SolidVertex[] vertices, TIndex[] indices)
         {
             base.ReverseWinding(vertices, indices);
             for (int i = 0; i < vertices.Length; i++)
             {
-                vertices[i].UV.X = (1.0f - vertices[i].UV.X);
+                //vertices[i].UV.X = (1.0f - vertices[i].UV.X);
             }
         }
     }
