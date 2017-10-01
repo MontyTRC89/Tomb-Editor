@@ -18,9 +18,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.importTRLEPRJToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,6 +66,7 @@
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.addCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addFlybyCameraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addImportedGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSoundSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
@@ -114,14 +115,9 @@
             this.statusStripSelectedRoom = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripGlobalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStripLocalSelectionArea = new System.Windows.Forms.ToolStripStatusLabel();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.openFileDialogPRJ2 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialogPRJ2 = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialogPRJ = new System.Windows.Forms.OpenFileDialog();
             this.darkContextMenu1 = new DarkUI.Controls.DarkContextMenu();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.addImportedGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -151,9 +147,9 @@
             // 
             this.fileToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newProjectToolStripMenuItem,
-            this.openProjectToolStripMenuItem,
-            this.saveProjectToolStripMenuItem,
+            this.newLevelToolStripMenuItem,
+            this.openLevelToolStripMenuItem,
+            this.saveLevelToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.importTRLEPRJToolStripMenuItem,
@@ -167,32 +163,32 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // newProjectToolStripMenuItem
+            // newLevelToolStripMenuItem
             // 
-            this.newProjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.newProjectToolStripMenuItem.Image = global::TombEditor.Properties.Resources.create_new_16;
-            this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.newProjectToolStripMenuItem.Text = "New project";
-            this.newProjectToolStripMenuItem.Click += new System.EventHandler(this.newProjectToolStripMenuItem_Click);
+            this.newLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.newLevelToolStripMenuItem.Image = global::TombEditor.Properties.Resources.create_new_16;
+            this.newLevelToolStripMenuItem.Name = "newLevelToolStripMenuItem";
+            this.newLevelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.newLevelToolStripMenuItem.Text = "New level";
+            this.newLevelToolStripMenuItem.Click += new System.EventHandler(this.newLevelToolStripMenuItem_Click);
             // 
-            // openProjectToolStripMenuItem
+            // openLevelToolStripMenuItem
             // 
-            this.openProjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.openProjectToolStripMenuItem.Image = global::TombEditor.Properties.Resources.opened_folder_16;
-            this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
-            this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.openProjectToolStripMenuItem.Text = "Open project";
-            this.openProjectToolStripMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
+            this.openLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openLevelToolStripMenuItem.Image = global::TombEditor.Properties.Resources.opened_folder_16;
+            this.openLevelToolStripMenuItem.Name = "openLevelToolStripMenuItem";
+            this.openLevelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.openLevelToolStripMenuItem.Text = "Open level";
+            this.openLevelToolStripMenuItem.Click += new System.EventHandler(this.openLevelToolStripMenuItem_Click);
             // 
-            // saveProjectToolStripMenuItem
+            // saveLevelToolStripMenuItem
             // 
-            this.saveProjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.saveProjectToolStripMenuItem.Image = global::TombEditor.Properties.Resources.save_16;
-            this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
-            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.saveProjectToolStripMenuItem.Text = "Save project";
-            this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
+            this.saveLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.saveLevelToolStripMenuItem.Image = global::TombEditor.Properties.Resources.save_16;
+            this.saveLevelToolStripMenuItem.Name = "saveLevelToolStripMenuItem";
+            this.saveLevelToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.saveLevelToolStripMenuItem.Text = "Save level";
+            this.saveLevelToolStripMenuItem.Click += new System.EventHandler(this.saveLevelToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
@@ -607,6 +603,16 @@
             this.addFlybyCameraToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
             this.addFlybyCameraToolStripMenuItem.Text = "Add flyby camera";
             this.addFlybyCameraToolStripMenuItem.Click += new System.EventHandler(this.addFlybyCameraToolStripMenuItem_Click);
+            // 
+            // addImportedGeometryToolStripMenuItem
+            // 
+            this.addImportedGeometryToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.addImportedGeometryToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.addImportedGeometryToolStripMenuItem.Image = global::TombEditor.Properties.Resources.earth_element_16;
+            this.addImportedGeometryToolStripMenuItem.Name = "addImportedGeometryToolStripMenuItem";
+            this.addImportedGeometryToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+            this.addImportedGeometryToolStripMenuItem.Text = "Add imported geometry";
+            this.addImportedGeometryToolStripMenuItem.Click += new System.EventHandler(this.addImportedGeometryToolStripMenuItem_Click);
             // 
             // addSinkToolStripMenuItem
             // 
@@ -1062,24 +1068,6 @@
             this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(350, 16);
             this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // colorDialog
-            // 
-            this.colorDialog.AnyColor = true;
-            this.colorDialog.FullOpen = true;
-            // 
-            // openFileDialogPRJ2
-            // 
-            this.openFileDialogPRJ2.Filter = "Tomb Editor Project (*.prj2)|*.prj2|All files (*.*)|*.*";
-            // 
-            // saveFileDialogPRJ2
-            // 
-            this.saveFileDialogPRJ2.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
-            // 
-            // openFileDialogPRJ
-            // 
-            this.openFileDialogPRJ.Filter = "TRLE PRJ Project (*.prj)|*.prj|All files (*.*)|*.*";
-            this.openFileDialogPRJ.Title = "Import TRLE PRJ";
-            // 
             // darkContextMenu1
             // 
             this.darkContextMenu1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1106,16 +1094,6 @@
             this.panelDockArea.Name = "panelDockArea";
             this.panelDockArea.Size = new System.Drawing.Size(1204, 677);
             this.panelDockArea.TabIndex = 26;
-            // 
-            // addImportedGeometryToolStripMenuItem
-            // 
-            this.addImportedGeometryToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.addImportedGeometryToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addImportedGeometryToolStripMenuItem.Image = global::TombEditor.Properties.Resources.earth_element_16;
-            this.addImportedGeometryToolStripMenuItem.Name = "addImportedGeometryToolStripMenuItem";
-            this.addImportedGeometryToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
-            this.addImportedGeometryToolStripMenuItem.Text = "Add imported geometry";
-            this.addImportedGeometryToolStripMenuItem.Click += new System.EventHandler(this.addImportedGeometryToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1153,9 +1131,9 @@
         private DarkUI.Controls.DarkButton butEditRoomName;
         private DarkUI.Controls.DarkButton butRoomDown;
         private DarkUI.Controls.DarkStatusStrip statusStrip;
-        private System.Windows.Forms.ToolStripMenuItem newProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openProjectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openLevelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem importTRLEPRJToolStripMenuItem;
@@ -1191,13 +1169,9 @@
         private System.Windows.Forms.ToolStripMenuItem textureSoundsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem animationRangesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bumpMappingToolStripMenuItem;
-        private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.ToolStripMenuItem importConvertTextureToPng;
         private System.Windows.Forms.ToolStripMenuItem loadWADToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem9;
-        private System.Windows.Forms.OpenFileDialog openFileDialogPRJ2;
-        private System.Windows.Forms.SaveFileDialog saveFileDialogPRJ2;
-        private System.Windows.Forms.OpenFileDialog openFileDialogPRJ;
         private DarkUI.Controls.DarkContextMenu darkContextMenu1;
         private System.Windows.Forms.ToolStripStatusLabel statusStripSelectedRoom;
         private System.Windows.Forms.ToolStripMenuItem smoothRandomCeilingUpToolStripMenuItem;
