@@ -47,7 +47,16 @@ namespace TombEditor
                                              newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
                     break;
                 case GizmoAction.Rotate:
-                    if (_editor.SelectedObject is IRotateableYXRoll)
+                    angle = MathUtil.RadiansToDegrees(angle);
+
+                    if (Axis == GizmoAxis.X)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, angle);
+                    else if (Axis == GizmoAxis.Y)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
+                    else if (Axis == GizmoAxis.Z)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, angle);
+
+                    /*if (_editor.SelectedObject is IRotateableYXRoll)
                     {
                         //EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
                     }
@@ -59,12 +68,12 @@ namespace TombEditor
                     {
                         angle = MathUtil.RadiansToDegrees(angle);
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
-                    }
+                    }*/
                     break;
                 case GizmoAction.Scale:
                     EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
                     break;
-            }            
+            }
         }
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;

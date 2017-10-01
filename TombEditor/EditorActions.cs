@@ -691,51 +691,23 @@ namespace TombEditor
             switch (axis)
             {
                 case RotationAxis.Y:
-                    IRotateableY rotateableY = instance as IRotateableY;
+                    var rotateableY = instance as IRotateableY;
                     if (rotateableY == null)
                         return;
                     rotateableY.RotationY += angleInDegrees;
                     break;
                 case RotationAxis.X:
-                    IRotateableYX rotateableX = instance as IRotateableYX;
+                    var rotateableX = instance as IRotateableYX;
                     if (rotateableX == null)
                         return;
-                    rotateableX.RotationY += angleInDegrees;
+                    rotateableX.RotationX += angleInDegrees;
                     break;
                 case RotationAxis.Roll:
-                    IRotateableY rotateableRoll = instance as IRotateableY;
+                    var rotateableRoll = instance as IRotateableYXRoll;
                     if (rotateableRoll == null)
                         return;
-                    rotateableRoll.RotationY += angleInDegrees;
+                    rotateableRoll.Roll += angleInDegrees;
                     break;
-            }
-            if (instance is Light)
-                instance.Room.UpdateCompletely();
-            _editor.ObjectChange(instance);
-        }
-
-        public static void RotateObjectAbsolute(ObjectInstance instance, RotationAxis axis, float angleInDegrees)
-        {
-            switch (axis)
-            {
-                case RotationAxis.Y:
-                    IRotateableY rotateableY = instance as IRotateableY;
-                    if (rotateableY == null)
-                        return;
-                    rotateableY.RotationY = angleInDegrees;
-                    break;
-                case RotationAxis.X:
-                    IRotateableYX rotateableX = instance as IRotateableYX;
-                    if (rotateableX == null)
-                        return;
-                    rotateableX.RotationY = angleInDegrees;
-                    break;
-                /*case RotationAxis.Roll:
-                    IRotateableY rotateableRoll = instance as IRotateableY;
-                    if (rotateableRoll == null)
-                        return;
-                    rotateableRoll.RotationY = angleInDegrees;
-                    break;*/
             }
             if (instance is Light)
                 instance.Room.UpdateCompletely();

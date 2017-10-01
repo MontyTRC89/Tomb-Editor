@@ -54,7 +54,7 @@ namespace TombLib.Graphics
 
     public abstract class BaseGizmo
     {
-        private GizmoAxis _axis;
+        protected GizmoAxis _axis;
 
         private readonly RasterizerState _rasterizerWireframe;
         private readonly DepthStencilState _depthStencilState;
@@ -228,7 +228,7 @@ namespace TombLib.Graphics
 
                         // Rotate
                         Vector3 rotationIntersection = Vector3.Zero;
-                        Plane rotationPlane = new Plane(Position, -Vector3.UnitZ);
+                        Plane rotationPlane = new Plane(Position, Vector3.UnitZ);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
 
                         var direction = (rotationIntersection - Position);
@@ -517,6 +517,8 @@ namespace TombLib.Graphics
         }
 
         public GizmoAction Action { get { return (_lastResult != null ? _lastResult.Action : GizmoAction.Translate); } }
+
+        public GizmoAxis Axis { get { return (_lastResult != null ? _lastResult.Axis : GizmoAxis.X); } }
 
         protected abstract void DoGizmoAction(Vector3 newPos, float angle, float scale);
 

@@ -235,12 +235,27 @@ namespace TombEditor.Compilers
                         for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
                             var trVertex = new tr_room_vertex();
+
+                            var position = new Vector3(mesh.Vertices[j].Position.X, 
+                                                       mesh.Vertices[j].Position.Y, 
+                                                       mesh.Vertices[j].Position.Z);
+
+                            // Apply the transform to the vertex
+                            Matrix transform = Matrix.Scaling(geometry.Scale) *
+                                               Matrix.RotationYawPitchRoll(MathUtil.DegreesToRadians(geometry.RotationY),
+                                                                           MathUtil.DegreesToRadians(geometry.RotationX),
+                                                                           MathUtil.DegreesToRadians(geometry.Roll)) *
+                                               Matrix.Translation(geometry.Position);
+
+                            position = Vector3.TransformCoordinate(position, transform);
+
                             trVertex.Position = new tr_vertex
                             {
-                                X = (short)(mesh.Vertices[j].Position.X * geometry.Scale + geometry.Position.X),
-                                Y = (short)-(mesh.Vertices[j].Position.Y * geometry.Scale + room.WorldPos.Y + geometry.Position.Y),
-                                Z = (short)(mesh.Vertices[j].Position.Z * geometry.Scale + geometry.Position.Z)
+                                X = (short)(position.X),
+                                Y = (short)-(position.Y),
+                                Z = (short)(position.Z)
                             };
+
                             trVertex.Lighting1 = 0;
                             trVertex.Lighting2 = 0x4210; // TODO: apply light calculations also to imported geometry
                             trVertex.Attributes = 0;
