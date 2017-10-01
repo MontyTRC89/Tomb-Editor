@@ -1586,6 +1586,9 @@ namespace TombEditor.Controls
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
                 Matrix scale = Matrix.Scaling(modelInfo.Scale);
+                Matrix rotation = Matrix.RotationYawPitchRoll(MathUtil.DegreesToRadians(modelInfo.RotationY),
+                                                              MathUtil.DegreesToRadians(modelInfo.RotationX),
+                                                              MathUtil.DegreesToRadians(modelInfo.Roll));
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
@@ -1601,7 +1604,7 @@ namespace TombEditor.Controls
                     _device.SetVertexBuffer(0, mesh.VertexBuffer);
                     _device.SetIndexBuffer(mesh.IndexBuffer, true);
 
-                    world = scale * Matrix.Translation(modelInfo.Room.WorldPos + modelInfo.Position);
+                    world = scale * rotation * Matrix.Translation(modelInfo.Room.WorldPos + modelInfo.Position);
                     worldDebug = scale * Matrix.Translation(room.WorldPos);
 
                     geometryEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
