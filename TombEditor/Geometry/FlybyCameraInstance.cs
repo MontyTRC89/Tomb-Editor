@@ -1,9 +1,7 @@
-﻿using SharpDX;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
@@ -34,35 +32,35 @@ namespace TombEditor.Geometry
             get { return _fov; }
             set { _fov = Math.Max(0, Math.Min(90, value)); }
         }
-        
+
         /// <summary> Degrees in the range [0, 360) </summary>
         public float Roll
         {
             get { return _roll; }
             set { _roll = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
-        
+
         /// <summary> Degrees in the range [-90, 90] </summary>
         public float RotationX
         {
             get { return _rotationX; }
             set { _rotationX = Math.Max(-90, Math.Min(90, value)); }
         }
-        
+
         /// <summary> Degrees in the range [0, 360) </summary>
         public float RotationY
         {
             get { return _rotationY; }
             set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
-        
+
         public override bool CopyToFlipRooms => false;
 
         public override ObjectInstance Clone()
         {
             return (ObjectInstance)MemberwiseClone();
         }
-        
+
         public override string ToString()
         {
             return "FlyBy " +

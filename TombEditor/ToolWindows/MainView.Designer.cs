@@ -29,7 +29,7 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.butCopy = new System.Windows.Forms.ToolStripButton();
             this.butPaste = new System.Windows.Forms.ToolStripButton();
-            this.butClone = new System.Windows.Forms.ToolStripButton();
+            this.butStamp = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.butOpacityNone = new System.Windows.Forms.ToolStripButton();
             this.butOpacitySolidFaces = new System.Windows.Forms.ToolStripButton();
@@ -74,7 +74,7 @@
             this.toolStripSeparator6,
             this.butCopy,
             this.butPaste,
-            this.butClone,
+            this.butStamp,
             this.toolStripSeparator5,
             this.butOpacityNone,
             this.butOpacitySolidFaces,
@@ -247,6 +247,7 @@
             this.butCopy.Text = "toolStripButton2";
             this.butCopy.ToolTipText = "Copy";
             this.butCopy.Click += new System.EventHandler(this.butCopy_Click);
+            this.butCopy.Enabled = false;
             //
             // butPaste
             //
@@ -261,18 +262,19 @@
             this.butPaste.ToolTipText = "Paste";
             this.butPaste.Click += new System.EventHandler(this.butPaste_Click);
             //
-            // butClone
+            // butStamp
             //
-            this.butClone.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butClone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butClone.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butClone.Image = global::TombEditor.Properties.Resources.rubber_stamp_16;
-            this.butClone.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butClone.Name = "butClone";
-            this.butClone.Size = new System.Drawing.Size(23, 25);
-            this.butClone.Text = "toolStripButton2";
-            this.butClone.ToolTipText = "Stamp";
-            this.butClone.Click += new System.EventHandler(this.butClone_Click);
+            this.butStamp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butStamp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butStamp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butStamp.Image = global::TombEditor.Properties.Resources.rubber_stamp_16;
+            this.butStamp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butStamp.Name = "butStamp";
+            this.butStamp.Size = new System.Drawing.Size(23, 25);
+            this.butStamp.Text = "toolStripButton2";
+            this.butStamp.ToolTipText = "Stamp";
+            this.butStamp.Click += new System.EventHandler(this.butStamp_Click);
+            this.butStamp.Enabled = false;
             //
             // toolStripSeparator5
             //
@@ -348,6 +350,7 @@
             this.butTextureFloor.Text = "toolStripButton4";
             this.butTextureFloor.ToolTipText = "Texture floor";
             this.butTextureFloor.Click += new System.EventHandler(this.butTextureFloor_Click);
+            this.butTextureFloor.Enabled = false;
             //
             // butTextureCeiling
             //
@@ -361,6 +364,7 @@
             this.butTextureCeiling.Text = "toolStripButton5";
             this.butTextureCeiling.ToolTipText = "Texture ceiling";
             this.butTextureCeiling.Click += new System.EventHandler(this.butTextureCeiling_Click);
+            this.butTextureFloor.Enabled = false;
             //
             // butTextureWalls
             //
@@ -374,6 +378,7 @@
             this.butTextureWalls.Text = "toolStripButton6";
             this.butTextureWalls.ToolTipText = "Texture walls";
             this.butTextureWalls.Click += new System.EventHandler(this.butTextureWalls_Click);
+            this.butTextureFloor.Enabled = false;
             //
             // butAdditiveBlending
             //
@@ -562,7 +567,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripButton butCopy;
         private System.Windows.Forms.ToolStripButton butPaste;
-        private System.Windows.Forms.ToolStripButton butClone;
+        private System.Windows.Forms.ToolStripButton butStamp;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton butOpacityNone;
         private System.Windows.Forms.ToolStripButton butOpacitySolidFaces;
