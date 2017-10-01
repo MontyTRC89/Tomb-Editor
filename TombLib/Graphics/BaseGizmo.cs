@@ -25,9 +25,8 @@ namespace TombLib.Graphics
         public GizmoAxis Axis { get; set; }
         public GizmoAction Action { get; set; }
 
-        public PickingResultGizmo(float Distance, GizmoAxis axis, GizmoAction action)
+        public PickingResultGizmo(GizmoAxis axis, GizmoAction action)
         {
-            this.Distance = Distance;
             this.Axis = axis;
             this.Action = action;
         }
@@ -74,7 +73,8 @@ namespace TombLib.Graphics
         private readonly Color4 _blue;
         private readonly Color4 _yellow;
 
-        private PickingResultGizmo _lastResult;
+        protected PickingResultGizmo _lastResult;
+        protected Vector3 _lastIntersectionPoint = Vector3.Zero;
 
         public BaseGizmo(GraphicsDevice device, Effect effect)
         {
@@ -132,45 +132,55 @@ namespace TombLib.Graphics
 
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
         public bool MouseMoved(Matrix viewProjection, int x, int y)
-        {
-            var newPos = Vector3.Zero;
-
+        {            
             if ((!DrawGizmo) || (_axis == GizmoAxis.None))
                 return false;
 
-            // First get the ray in 3D space from X, Y mouse coordinates
-            Ray ray = Ray.GetPickRay(x, y, _device.Viewport, viewProjection);
+            var newPos = Vector3.Zero;
+            float delta = 0;
 
-            newPos = Position;
-            switch (_axis)
+            if (Action == GizmoAction.Translate || Action == GizmoAction.Scale)
             {
-                case GizmoAxis.X:
-                    {
-                        Plane plane = new Plane(newPos, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
-                        newPos.X = intersection.X - 1024.0f;
-                    }
-                    break;
-                case GizmoAxis.Y:
-                    {
-                        Plane plane = new Plane(newPos, Vector3.UnitX);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
-                        newPos.Y = intersection.Y - 1024.0f;
-                    }
-                    break;
-                case GizmoAxis.Z:
-                    {
-                        Plane plane = new Plane(newPos, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
-                        newPos.Z = intersection.Z + 1024.0f;
-                    }
-                    break;
-            }
+                // First get the ray in 3D space from X, Y mouse coordinates
+                Ray ray = Ray.GetPickRay(x, y, _device.Viewport, viewProjection);
 
-            DoGizmoAction(newPos);
+                newPos = Position;
+                switch (_axis)
+                {
+                    case GizmoAxis.X:
+                        {
+                            Plane plane = new Plane(newPos, Vector3.UnitY);
+                            Vector3 intersection;
+                            ray.Intersects(ref plane, out intersection);
+                            newPos.X = intersection.X - 1024.0f;
+                            delta = intersection.X - _lastIntersectionPoint.X;
+                            _lastIntersectionPoint = intersection;
+                        }
+                        break;
+                    case GizmoAxis.Y:
+                        {
+                            Plane plane = new Plane(newPos, Vector3.UnitX);
+                            Vector3 intersection;
+                            ray.Intersects(ref plane, out intersection);
+                            newPos.Y = intersection.Y - 1024.0f;
+                            delta = intersection.Y - _lastIntersectionPoint.Y;
+                            _lastIntersectionPoint = intersection;
+                        }
+                        break;
+                    case GizmoAxis.Z:
+                        {
+                            Plane plane = new Plane(newPos, Vector3.UnitY);
+                            Vector3 intersection;
+                            ray.Intersects(ref plane, out intersection);
+                            newPos.Z = intersection.Z + 1024.0f;
+                            delta = -(intersection.Z - _lastIntersectionPoint.Z);
+                            _lastIntersectionPoint = intersection;
+                        }
+                        break;
+                }
+
+                DoGizmoAction(newPos, delta);
+            }           
 
             return true;
         }
@@ -180,34 +190,32 @@ namespace TombLib.Graphics
             if (!DrawGizmo)
                 return null;
 
-            float distance;
-
             BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * 1024.0f, TranslationSphereSize / 2.0f);
-            if (ray.Intersects(ref sphereX, out distance))
-                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.X, GizmoAction.Translate));
+            if (ray.Intersects(ref sphereX, out _lastIntersectionPoint))
+                return (_lastResult = new PickingResultGizmo(GizmoAxis.X, GizmoAction.Translate));
 
             BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * 1024.0f, TranslationSphereSize / 2.0f);
-            if (ray.Intersects(ref sphereY, out distance))
-                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Y, GizmoAction.Translate));
+            if (ray.Intersects(ref sphereY, out _lastIntersectionPoint))
+                return (_lastResult = new PickingResultGizmo(GizmoAxis.Y, GizmoAction.Translate));
 
             BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * 1024.0f, TranslationSphereSize / 2.0f);
-            if (ray.Intersects(ref sphereZ, out distance))
-                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Z, GizmoAction.Translate));
+            if (ray.Intersects(ref sphereZ, out _lastIntersectionPoint))
+                return (_lastResult = new PickingResultGizmo(GizmoAxis.Z, GizmoAction.Translate));
 
             BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
                                                  Position + Vector3.UnitX * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
-            if (ray.Intersects(ref scaleX, out distance))
-                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.X, GizmoAction.Scale));
+            if (ray.Intersects(ref scaleX, out _lastIntersectionPoint))
+                return (_lastResult = new PickingResultGizmo(GizmoAxis.X, GizmoAction.Scale));
 
             BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
                                                  Position + Vector3.UnitY * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
-            if (ray.Intersects(ref scaleY, out distance))
-                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Y, GizmoAction.Scale));
+            if (ray.Intersects(ref scaleY, out _lastIntersectionPoint))
+                return (_lastResult = new PickingResultGizmo(GizmoAxis.Y, GizmoAction.Scale));
 
-            BoundingBox scaleZ = new BoundingBox(Position + Vector3.UnitZ * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                 Position + Vector3.UnitZ * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
-            if (ray.Intersects(ref scaleZ, out distance))
-                return (_lastResult = new PickingResultGizmo(distance, GizmoAxis.Z, GizmoAction.Scale));
+            BoundingBox scaleZ = new BoundingBox(Position - Vector3.UnitZ * 512.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                 Position - Vector3.UnitZ * 512.0f + new Vector3(ScaleCubeSize / 2.0f));
+            if (ray.Intersects(ref scaleZ, out _lastIntersectionPoint))
+                return (_lastResult = new PickingResultGizmo(GizmoAxis.Z, GizmoAction.Scale));
 
             return null;
         }
@@ -333,7 +341,7 @@ namespace TombLib.Graphics
 
         public GizmoAction Action { get { return (_lastResult != null ? _lastResult.Action : GizmoAction.Translate); } }
 
-        protected abstract void DoGizmoAction(Vector3 newPos);
+        protected abstract void DoGizmoAction(Vector3 newPos, float delta);
 
         protected abstract bool DrawGizmo { get; }
         protected abstract Vector3 Position { get; }
