@@ -38,7 +38,7 @@ namespace TombEditor
             }
         }
 
-        protected override void DoGizmoAction(Vector3 newPos)
+        protected override void DoGizmoAction(Vector3 newPos, float delta)
         {
             switch (Action)
             {
@@ -49,14 +49,7 @@ namespace TombEditor
                 case GizmoAction.Rotate:
                     break;
                 case GizmoAction.Scale:
-                    // Currently scaling is supported only by imported geometry
-                    if (_editor.SelectedObject is ImportedGeometryInstance)
-                    {
-                        float delta = (newPos - Position).Length();
-                        float newScale = delta; // TODO: adjust
-                        var geometry = _editor.SelectedObject as ImportedGeometryInstance;
-                        geometry.Scale += newScale;
-                    }
+                    EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, delta, Control.ModifierKeys);
                     break;
             }            
         }

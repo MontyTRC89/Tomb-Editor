@@ -1584,7 +1584,7 @@ namespace TombEditor.Controls
 
                 Matrix world = Matrix.Identity;
                 Matrix worldDebug = Matrix.Identity;
-                Matrix scale = Matrix.Scaling(model.Scale);
+                Matrix scale = Matrix.Scaling(modelInfo.Scale);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {

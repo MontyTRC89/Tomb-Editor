@@ -627,6 +627,19 @@ namespace TombEditor
             return new Vector3(512.0f, 128.0f, 512.0f);
         }
 
+        public static void ScaleObject(IScaleable instance, float delta, Keys modifierKeys)
+        {
+            float newScale = delta / 1024.0f; // TODO: adjust
+            instance.Scale += newScale;
+
+            // Set some limits to scale
+            // TODO: object risks to be too small and to be not pickable. We should add some size check
+            if (instance.Scale < 1.0f) instance.Scale = 1.0f;
+            if (instance.Scale > 128.0f) instance.Scale = 128.0f;
+
+            _editor.ObjectChange(_editor.SelectedObject);
+        }
+
         public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
         {
             MoveObject(instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
