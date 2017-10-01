@@ -1160,9 +1160,6 @@
             // 
             // statusStrip
             // 
-            this.statusStrip.AutoSize = false;
-            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusStripSelectedRoom,
             this.statusStripGlobalSelectionArea,
@@ -1171,13 +1168,11 @@
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.statusStrip.Size = new System.Drawing.Size(1204, 29);
-            this.statusStrip.SizingGrip = false;
             this.statusStrip.TabIndex = 29;
             this.statusStrip.Text = "statusStrip";
             // 
             // statusStripSelectedRoom
             // 
-            this.statusStripSelectedRoom.AutoSize = false;
             this.statusStripSelectedRoom.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
             this.statusStripSelectedRoom.Name = "statusStripSelectedRoom";
@@ -1186,7 +1181,6 @@
             // 
             // statusStripGlobalSelectionArea
             // 
-            this.statusStripGlobalSelectionArea.AutoSize = false;
             this.statusStripGlobalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
             this.statusStripGlobalSelectionArea.Name = "statusStripGlobalSelectionArea";
@@ -1195,7 +1189,6 @@
             // 
             // statusStripLocalSelectionArea
             // 
-            this.statusStripLocalSelectionArea.AutoSize = false;
             this.statusStripLocalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
             this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
             this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
