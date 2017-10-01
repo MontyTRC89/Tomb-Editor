@@ -38,7 +38,7 @@ namespace TombEditor
             }
         }
 
-        protected override void DoGizmoAction(Vector3 newPos, float delta)
+        protected override void DoGizmoAction(Vector3 newPos, float angle, float scale)
         {
             switch (Action)
             {
@@ -47,9 +47,22 @@ namespace TombEditor
                                              newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
                     break;
                 case GizmoAction.Rotate:
+                    if (_editor.SelectedObject is IRotateableYXRoll)
+                    {
+                        //EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
+                    }
+                    else if (_editor.SelectedObject is IRotateableYX)
+                    {
+                        //EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
+                    }
+                    else
+                    {
+                        angle = MathUtil.RadiansToDegrees(angle);
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
+                    }
                     break;
                 case GizmoAction.Scale:
-                    EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, delta, Control.ModifierKeys);
+                    EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
                     break;
             }            
         }

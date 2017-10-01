@@ -1545,7 +1545,8 @@ namespace TombEditor.Controls
 
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
-
+                    message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
+                    
                     // Add OCB
                     if (instance.Ocb != 0)
                         message += "\nOCB: " + instance.Ocb;
@@ -1726,6 +1727,7 @@ namespace TombEditor.Controls
 
                     // Object position
                     message += "\n" + GetObjectPositionString(_editor.SelectedRoom, instance);
+                    message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -2151,7 +2153,7 @@ namespace TombEditor.Controls
 
             _device.Present();
 
-            logger.Debug("Draw Call! " + _watch.Elapsed.TotalSeconds + "ms");
+            //logger.Debug("Draw Call! " + _watch.Elapsed.TotalSeconds + "ms");
         }
 
         private void DrawSelectedFogBulb()
