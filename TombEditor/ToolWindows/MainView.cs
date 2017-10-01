@@ -45,6 +45,21 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Gray out menu options that do not apply
+            if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                ObjectInstance selectedObject = _editor.SelectedObject;
+                butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
+                butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
+            }
+            if (obj is Editor.SelectedSectorsChangedEvent)
+            {
+                bool validSectorSelection = _editor.SelectedSectors.Valid;
+                butTextureFloor.Enabled = validSectorSelection;
+                butTextureCeiling.Enabled = validSectorSelection;
+                butTextureWalls.Enabled = validSectorSelection;
+            }
+
             // Update editor mode
             if (obj is Editor.ModeChangedEvent)
             {
@@ -247,7 +262,7 @@ namespace TombEditor.ToolWindows
             _editor.Action = new EditorAction { Action = EditorActionType.Paste };
         }
 
-        private void butClone_Click(object sender, EventArgs e)
+        private void butStamp_Click(object sender, EventArgs e)
         {
             EditorActions.Clone(this.ParentForm);
         }

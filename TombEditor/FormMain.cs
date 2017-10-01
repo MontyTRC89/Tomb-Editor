@@ -8,7 +8,6 @@ using SharpDX;
 using System.IO;
 using TombEngine;
 using NLog;
-using TombEditor.Geometry.IO;
 using TombLib.Wad;
 using TombLib.Utils;
 using TombLib.NG;
@@ -110,6 +109,33 @@ namespace TombEditor
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Gray out menu options that do not apply
+            if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                ObjectInstance selectedObject = _editor.SelectedObject;
+                copyToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
+                stampToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
+                deleteToolStripMenuItem.Enabled = selectedObject != null;
+                editToolStripMenuItem.Enabled = selectedObject != null;
+                rotateToolStripMenuItem.Enabled = selectedObject is IRotateableY;
+            }
+            if (obj is Editor.SelectedSectorsChangedEvent)
+            {
+                bool validSectorSelection = _editor.SelectedSectors.Valid;
+                smoothRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
+                smoothRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
+                smoothRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
+                smoothRandomFloorUpToolStripMenuItem.Enabled = validSectorSelection;
+                sharpRandomCeilingDownToolStripMenuItem.Enabled = validSectorSelection;
+                sharpRandomCeilingUpToolStripMenuItem.Enabled = validSectorSelection;
+                sharpRandomFloorDownToolStripMenuItem.Enabled = validSectorSelection;
+                sharpRandomFloorUpToolStripMenuItem.Enabled = validSectorSelection;
+                flattenCeilingToolStripMenuItem.Enabled = validSectorSelection;
+                flattenFloorToolStripMenuItem.Enabled = validSectorSelection;
+                gridWallsIn3ToolStripMenuItem.Enabled = validSectorSelection;
+                gridWallsIn5ToolStripMenuItem.Enabled = validSectorSelection;
+            }
+
             // Update room information on the status strip
             if ((obj is Editor.SelectedRoomChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||

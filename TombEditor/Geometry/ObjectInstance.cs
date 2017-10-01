@@ -4,10 +4,30 @@ using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
+    public interface IScaleable
+    {
+        float Scale { get; set; }
+    };
+
+    public interface IRotateableY
+    {
+        float RotationY { get; set; }
+    };
+
+    public interface IRotateableYX : IRotateableY
+    {
+        float RotationX { get; set; }
+    };
+
+    public interface IRotateableYXRoll : IRotateableYX
+    {
+        float Roll { get; set; }
+    };
+
     public abstract class ObjectInstance : ICloneable
     {
         public Room Room { get; private set; }
-        
+
         public abstract ObjectInstance Clone();
 
         object ICloneable.Clone()
@@ -104,7 +124,7 @@ namespace TombEditor.Geometry
                 rotationX = rotationX - 360;
                 rotationY += 180;
             }
-            
+
             obj.RotationX = rotationX;
             obj.RotationY = rotationY;
         }

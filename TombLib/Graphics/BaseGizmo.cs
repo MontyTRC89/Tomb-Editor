@@ -32,26 +32,6 @@ namespace TombLib.Graphics
         }
     }
 
-    public interface IScaleable
-    {
-        float Scale { get; set; }
-    };
-
-    public interface IRotateableY
-    {
-        float RotationY { get; set; }
-    };
-
-    public interface IRotateableYX : IRotateableY
-    {
-        float RotationX { get; set; }
-    };
-
-    public interface IRotateableYXRoll : IRotateableYX
-    {
-        float Roll { get; set; }
-    };
-
     public abstract class BaseGizmo
     {
         protected GizmoAxis _axis;

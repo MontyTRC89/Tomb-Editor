@@ -1,6 +1,5 @@
 ﻿using SharpDX;
 using System;
-using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
@@ -37,7 +36,7 @@ namespace TombEditor.Geometry
             get { return _rotationX; }
             set { _rotationX = Math.Max(-90, Math.Min(90, value)); }
         }
-        
+
         /// <summary> Degrees in the range [0, 360) </summary>
         public float RotationY
         {
@@ -65,7 +64,7 @@ namespace TombEditor.Geometry
                     break;
             }
         }
-        
+
         public override ObjectInstance Clone()
         {
             return (ObjectInstance)(this.MemberwiseClone());
