@@ -611,7 +611,9 @@ namespace TombEditor.Controls
                     case EditorActionType.Paste:
                         if (newPicking is PickingResultBlock)
                         {
-                            _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
+                            ObjectInstance instance = Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos);
+                            _editor.ObjectChange(instance);
+                            _editor.SelectedObject = instance;
                             _editor.Action = EditorAction.None;
                         }
                         break;
@@ -748,7 +750,7 @@ namespace TombEditor.Controls
 
                 case MouseButtons.Left:
                     if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), e.X, e.Y))
-                    {                    
+                    {
                     } // Process gizmo
                     else if (_doSectorSelection)
                     { // Calculate block selection
@@ -1546,7 +1548,7 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
                     message += "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2);
-                    
+
                     // Add OCB
                     if (instance.Ocb != 0)
                         message += "\nOCB: " + instance.Ocb;
