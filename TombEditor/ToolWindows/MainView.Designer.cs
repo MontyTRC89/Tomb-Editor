@@ -364,7 +364,7 @@
             this.butTextureCeiling.Text = "toolStripButton5";
             this.butTextureCeiling.ToolTipText = "Texture ceiling";
             this.butTextureCeiling.Click += new System.EventHandler(this.butTextureCeiling_Click);
-            this.butTextureFloor.Enabled = false;
+            this.butTextureCeiling.Enabled = false;
             //
             // butTextureWalls
             //
@@ -378,7 +378,7 @@
             this.butTextureWalls.Text = "toolStripButton6";
             this.butTextureWalls.ToolTipText = "Texture walls";
             this.butTextureWalls.Click += new System.EventHandler(this.butTextureWalls_Click);
-            this.butTextureFloor.Enabled = false;
+            this.butTextureWalls.Enabled = false;
             //
             // butAdditiveBlending
             //
