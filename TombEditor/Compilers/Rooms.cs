@@ -237,9 +237,9 @@ namespace TombEditor.Compilers
                             var trVertex = new tr_room_vertex();
                             trVertex.Position = new tr_vertex
                             {
-                                X = (short)(mesh.Vertices[j].Position.X + geometry.Position.X),
-                                Y = (short)-(mesh.Vertices[j].Position.Y + room.WorldPos.Y + geometry.Position.Y),
-                                Z = (short)(mesh.Vertices[j].Position.Z + geometry.Position.Z)
+                                X = (short)(mesh.Vertices[j].Position.X * geometry.Scale + geometry.Position.X),
+                                Y = (short)-(mesh.Vertices[j].Position.Y * geometry.Scale + room.WorldPos.Y + geometry.Position.Y),
+                                Z = (short)(mesh.Vertices[j].Position.Z * geometry.Scale + geometry.Position.Z)
                             };
                             trVertex.Lighting1 = 0;
                             trVertex.Lighting2 = 0x4210; // TODO: apply light calculations also to imported geometry
