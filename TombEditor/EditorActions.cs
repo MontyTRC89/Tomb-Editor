@@ -656,17 +656,20 @@ namespace TombEditor
                 if (precision[i] != 0)
                     pos[i] = ((float)Math.Round(pos[i] / precision[i])) * precision[i];
 
-            // Limit movement area ...
-            float x = (float)Math.Floor(pos.X / 1024.0f);
-            float z = (float)Math.Floor(pos.Z / 1024.0f);
+            // Limit movement area
+            if (!canGoOutsideRoom)
+            {
+                float x = (float)Math.Floor(pos.X / 1024.0f);
+                float z = (float)Math.Floor(pos.Z / 1024.0f);
 
-            if ((x < 0.0f) || (x > (instance.Room.NumXSectors - 1)) ||
-                (z < 0.0f) || (z > (instance.Room.NumZSectors - 1)))
-                return;
+                if ((x < 0.0f) || (x > (instance.Room.NumXSectors - 1)) ||
+                    (z < 0.0f) || (z > (instance.Room.NumZSectors - 1)))
+                    return;
 
-            Block block = instance.Room.Blocks[(int)x, (int)z];
-            if (block.IsAnyWall)
-                return;
+                Block block = instance.Room.Blocks[(int)x, (int)z];
+                if (block.IsAnyWall)
+                    return;
+            }
 
             // Update position
             instance.Position = pos;
@@ -678,6 +681,11 @@ namespace TombEditor
                 instance.Room.UpdateBuffers();
             }
             _editor.ObjectChange(instance);
+        }
+
+        public static void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
+        {
+            MoveObject(instance, instance.Position + pos, precision, canGoOutsideRoom);
         }
 
         public enum RotationAxis

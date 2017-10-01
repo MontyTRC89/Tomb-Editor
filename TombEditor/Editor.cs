@@ -41,6 +41,10 @@ namespace TombEditor
             EditorEventRaised?.Invoke(eventObj);
         }
 
+        public Editor()
+        {
+            Level = Level.CreateSimpleLevel();
+        }
 
         // --- State of the editor ---
         // Unfortunately implementing this pattern is slightly elaborate in C#.
