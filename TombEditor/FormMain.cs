@@ -362,15 +362,6 @@ namespace TombEditor
             _pressedZorY = false;
         }
 
-        private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (DarkMessageBox.Show(this,
-                    "Your project will be lost. Do you really want to create a new project?",
-                    "New project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-            _editor.Level = Level.CreateSimpleLevel();
-        }
-
         private void loadTextureToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.LoadTextures(this);
@@ -476,79 +467,33 @@ namespace TombEditor
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
         }
 
-        private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        private void newLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (DarkMessageBox.Show(this,
-                    "Your project will be lost. Do you really want to open another project file?",
-                    "Open project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    "Your level will be lost. Do you really want to create a new level?",
+                    "New level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
+            _editor.Level = Level.CreateSimpleLevel();
+        }
 
-            if (openFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
-                return;
+        private void saveLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.SaveLevel(this, false);
+        }
 
-            try
-            {
-                _editor.Level = Prj2Loader.LoadFromPrj2(openFileDialogPRJ2.FileName, new ProgressReporterSimple(this));
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Unable to open \"" + openFileDialogPRJ2.FileName + "\"");
-                DarkMessageBox.Show(this, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc, "Error", MessageBoxIcon.Error);
-            }
+        private void openLevelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditorActions.OpenLevel(this);
         }
 
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Choose actions
-            if (DarkMessageBox.Show(this,
-                    "Your project will be lost. Do you really want to open an existing project?",
-                    "Open project", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-
-            if (openFileDialogPRJ.ShowDialog(this) != DialogResult.OK)
-                return;
-            string fileName = openFileDialogPRJ.FileName;
-
-            // Start import process
-            Level newLevel = null;
-            try
-            {
-                using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
-                    newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
-                {
-                    if (form.ShowDialog(this) != DialogResult.OK || newLevel == null)
-                        return;
-                    _editor.Level = newLevel;
-                    newLevel = null;
-                }
-            }
-            finally
-            {
-                newLevel?.Dispose();
-            }
+            EditorActions.OpenLevelPrj(this);
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
-            {
-                saveFileDialogPRJ2.InitialDirectory = Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath);
-                saveFileDialogPRJ2.FileName = Path.GetFileName(_editor.Level.Settings.LevelFilePath);
-            }
-            if (saveFileDialogPRJ2.ShowDialog(this) != DialogResult.OK)
-                return;
-
-            try
-            {
-                Prj2Writer.SaveToPrj2(saveFileDialogPRJ2.FileName, _editor.Level);
-                _editor.Level.Settings.LevelFilePath = saveFileDialogPRJ2.FileName;
-                _editor.LevelFileNameChange();
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Unable to save to \"" + saveFileDialogPRJ2.FileName + "\".");
-                DarkMessageBox.Show(this, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
-            }
+            EditorActions.SaveLevel(this, true);
         }
 
         private void buildLevelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -708,11 +653,6 @@ namespace TombEditor
             }
         }
 
-        private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveAsToolStripMenuItem_Click(sender, e);
-        }
-
         private void cropRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
             EditorActions.CropRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
@@ -755,7 +695,7 @@ namespace TombEditor
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this, "Your project will be lost. Do you really want to exit?",
+            if (DarkMessageBox.Show(this, "Your level will be lost. Do you really want to exit?",
                     "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 

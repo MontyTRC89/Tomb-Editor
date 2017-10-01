@@ -12,6 +12,7 @@ using TombEditor.Geometry.IO;
 using TombLib.Utils;
 using DarkUI.Forms;
 using TombLib.Graphics;
+using System.IO;
 
 namespace TombEditor
 {
@@ -1785,6 +1786,101 @@ namespace TombEditor
             portal.Opacity = opacity;
             _editor.SelectedRoom.UpdateCompletely();
             _editor.ObjectChange(portal);
+        }
+
+        public static void SaveLevel(IWin32Window owner, bool askForPath)
+        {
+            // Show save dialog if necessary
+            if (askForPath || string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                {
+                    saveFileDialog.Filter = "Tomb Editor Project (*.prj2)|*.prj2";
+                    if (!string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath))
+                    {
+                        saveFileDialog.InitialDirectory = Path.GetDirectoryName(_editor.Level.Settings.LevelFilePath);
+                        saveFileDialog.FileName = Path.GetFileName(_editor.Level.Settings.LevelFilePath);
+                    }
+                    if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
+                        return;
+
+                    _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
+                    _editor.LevelFileNameChange();
+                }
+
+            // Save level
+            try
+            {
+                Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
+            }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Unable to save to \"" + _editor.Level.Settings.LevelFilePath + "\".");
+                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
+            }
+        }
+
+        public static void OpenLevel(IWin32Window owner)
+        {
+            if (DarkMessageBox.Show(owner,
+                "Your level will be lost. Do you really want to open another level file?",
+                "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Open Tomb Editor level";
+                openFileDialog.Filter = "Tomb Editor level (*.prj2)|*.prj2|All files (*.*)|*.*";
+                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+
+                // Load level
+                Level newLevel = null;
+                try
+                {
+                    newLevel = Prj2Loader.LoadFromPrj2(openFileDialog.FileName, new ProgressReporterSimple(owner));
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
+                    DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
+                }
+                _editor.Level.Dispose();
+                _editor.Level = newLevel;
+            }
+        }
+
+        public static void OpenLevelPrj(IWin32Window owner)
+        {
+            if (DarkMessageBox.Show(owner,
+                    "Your level will be lost. Do you really want to open another level file?",
+                    "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                return;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Open Tomb Editor level";
+                openFileDialog.Filter = "Winroomedit level (*.prj)|*.prj|All files (*.*)|*.*";
+                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+
+                // Load level
+                Level newLevel = null;
+                try
+                {
+                    using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
+                        newLevel = PrjLoader.LoadFromPrj(openFileDialog.FileName, progressReporter)))
+                    {
+                        if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                            return;
+                        _editor.Level = newLevel;
+                        newLevel = null;
+                    }
+                }
+                finally
+                {
+                    newLevel?.Dispose();
+                }
+            }
         }
 
         public static void MoveRooms(Vector3 positionDelta, IEnumerable<Room> rooms)
