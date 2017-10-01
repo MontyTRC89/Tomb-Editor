@@ -95,6 +95,7 @@
     <Compile Include="Graphics\BaseGizmo.cs" />
     <Compile Include="Graphics\IRenderableObject.cs" />
     <Compile Include="Graphics\PickingResult.cs" />
+    <Compile Include="Graphics\Primitives\GeometricPrimitive.Circle.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Cone.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Cube.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Wad\WadStatic.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Graphics\Primitives\GeometricPrimitive.Cylinder.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

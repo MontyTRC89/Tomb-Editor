@@ -5,10 +5,13 @@ using TombLib.Graphics;
 
 namespace TombEditor.Geometry
 {
-    public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable
+    public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
         public float Scale { get; set; }
+        public float RotationY { get; set; }
+        public float Roll { get; set; }
+        public float RotationX { get; set; }
 
         public ImportedGeometryInstance()
         {
