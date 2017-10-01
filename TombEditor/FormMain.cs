@@ -34,29 +34,22 @@ namespace TombEditor
 
         private bool _pressedZorY = false;
         private Editor _editor;
-        private DeviceManager _deviceManager = new DeviceManager();
+        private DeviceManager _deviceManager = DeviceManager.DefaultDeviceManager;
 
-        public FormMain()
+        public FormMain(Editor editor)
         {
             InitializeComponent();
+            _editor = editor;
+            _editor.EditorEventRaised += EditorEventRaised;
+
+            Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
 
-
-            // Initialize controls
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
-            _editor.Level = Level.CreateSimpleLevel();
-
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
-
-            // Restore window settings.
-            WindowState = (_editor.Configuration.Window_Maximized == true ? FormWindowState.Maximized : FormWindowState.Normal);
-            Size = _editor.Configuration.Window_Size;
-            Location = _editor.Configuration.Window_Position;
 
             // Hook window added/removed events.
             dockArea.ContentAdded += ToolWindow_Added;
@@ -66,13 +59,12 @@ namespace TombEditor
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
             Application.AddMessageFilter(dockArea.DockResizeFilter);
 
-            dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
-
             // Initialize panels
             MainView.Initialize(_deviceManager);
             ObjectBrowser.Initialize(_deviceManager);
 
-            this.Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
+            // Restore window settings
+            LoadWindowLayout(_editor.Configuration);
 
             logger.Info("Tomb Editor is ready :)");
         }
@@ -172,17 +164,39 @@ namespace TombEditor
             }
         }
 
-        protected override void OnClosed(EventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            // Save window configuration.
-            // Window size gets saved only when editor is not in maximized state.
-            if (WindowState != FormWindowState.Maximized)
-                _editor.Configuration.Window_Size = Size;
-            _editor.Configuration.Window_Position = Location;
-            _editor.Configuration.Window_Maximized = (WindowState == FormWindowState.Maximized);
+            switch (e.CloseReason)
+            {
+                case CloseReason.None:
+                case CloseReason.UserClosing:
+                    if (DarkMessageBox.Show(this, "Your level will be lost. Do you really want to exit?",
+                            "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        e.Cancel = true;
+                    break;
+            }
+            base.OnFormClosing(e);
+        }
 
-            base.OnClosed(e);
-            _editor.Configuration.SaveTry();
+        private void LoadWindowLayout(Configuration configuration)
+        {
+            dockArea.RemoveContent();
+            dockArea.RestoreDockPanelState(configuration.Window_Layout, FindDockContentByKey);
+
+            Size = configuration.Window_Size;
+            Location = configuration.Window_Position;
+            WindowState = configuration.Window_Maximized ? FormWindowState.Maximized : FormWindowState.Normal;
+        }
+
+        private void SaveWindowLayout(Configuration configuration)
+        {
+            configuration.Window_Layout = dockArea.GetDockPanelState();
+
+            configuration.Window_Size = Size;
+            configuration.Window_Position = Location;
+            configuration.Window_Maximized = WindowState == FormWindowState.Maximized;
+
+            _editor.ConfigurationChange();
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -203,122 +217,121 @@ namespace TombEditor
                     _editor.SelectedObject = null;
                     break;
 
-                case Keys.C: // Copy
-                    if (e.Control)
-                        EditorActions.Copy(this);
-                    break;
-
-                case Keys.V: // Paste
-                    if (e.Control)
-                        _editor.Action = new EditorAction { Action = EditorActionType.Paste };
-                    break;
-
-                case Keys.B: // Stamp
-                    if (e.Control)
-                        EditorActions.Clone(this);
-                    break;
-
-                case Keys.Delete: // Delete object
-                    if (_editor.SelectedRoom == null)
-                        return;
-                    if (_editor.SelectedObject != null)
-                        EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
-                    break;
-
                 case Keys.T: // Add trigger
-                    if ((_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.SelectedSectors.Valid)
                         EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
                     return;
 
+                case Keys.P: // Add portal
+                    if (e.Modifiers == Keys.None && _editor.SelectedSectors.Valid)
+                        try
+                        {
+                            EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
+                        }
+                        catch (Exception exc)
+                        {
+                            logger.Error(exc, "Unable to create portal");
+                            DarkMessageBox.Show(this, exc.Message, "Unable to create portal", MessageBoxIcon.Error);
+                        }
+                    return;
+
                 case Keys.O: // Show options dialog
-                    if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
+                    if (e.Modifiers == Keys.None && (_editor.SelectedObject != null))
                         EditorActions.EditObject(_editor.SelectedObject, this);
                     break;
 
-                case Keys.Left:
-                    if (e.Control) // Rotate objects with cones
-                        if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                case Keys.Left: // Rotate objects with cones
+                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                    break;
+                case Keys.Right: // Rotate objects with cones
+                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
                     break;
 
-                case Keys.Right:
-                    if (e.Control) // Rotate objects with cones
-                        if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                case Keys.Up:// Rotate objects with cones
+                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
+                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
                     break;
 
-                case Keys.Up:
-                    if (e.Control) // Rotate objects with cones
-                        if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
-                    break;
-
-                case Keys.Down:
-                    if (e.Control) // Rotate objects with cones
-                        if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                case Keys.Down:// Rotate objects with cones
+                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
                     break;
 
                 case Keys.Q:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(e.Shift ? 4 : 1), e.Control);
+                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 256, 0), new Vector3(), true);
                     break;
 
                 case Keys.A:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)-(e.Shift ? 4 : 1), e.Control);
+                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
                     break;
 
                 case Keys.W:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.S:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.E:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.D:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.R: // Rotate object
-                    if ((_editor.SelectedRoom != null) && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, e.Shift ? 5.0f : 45.0f);
-                    else if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(e.Shift ? 4 : 1), e.Control);
+                    if (e.Modifiers == Keys.None)
+                        if ((_editor.SelectedObject != null))
+                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, e.Shift ? 5.0f : 45.0f);
+                        else if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
+                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.F:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.Y: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
                     _pressedZorY = true;
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.H:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.U:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 1, (short)(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.J:
-                    if (_editor.Mode == EditorMode.Geometry && (_editor.SelectedRoom != null) && _editor.SelectedSectors.Valid)
+                    if (ModifierKeys == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 1, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
@@ -326,7 +339,8 @@ namespace TombEditor
                 case Keys.Oemplus:
                 case Keys.Oem3: // US keyboard key for a texture triangle rotation
                 case Keys.Oem5: // German keyboard key for a texture triangle rotation
-                    EditorActions.RotateSelectedTexture();
+                    if (ModifierKeys == Keys.None)
+                        EditorActions.RotateSelectedTexture();
                     break;
             }
 
@@ -465,6 +479,26 @@ namespace TombEditor
         private void addSoundSourceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceSoundSource };
+        }
+
+        private void addPortalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedSectors.Valid)
+                try
+                {
+                    EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
+                }
+                catch (Exception exc)
+                {
+                    logger.Error(exc, "Unable to create portal");
+                    DarkMessageBox.Show(this, exc.Message, "Unable to create portal", MessageBoxIcon.Error);
+                }
+        }
+
+        private void addTriggerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedSectors.Valid)
+                EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
         }
 
         private void newLevelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -673,6 +707,24 @@ namespace TombEditor
             EditorActions.Copy(this);
         }
 
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedObject != null)
+                EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
+        }
+
+        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedObject != null)
+                EditorActions.EditObject(_editor.SelectedObject, this);
+        }
+
+        private void rotateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectedObject != null)
+                EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 45);
+        }
+
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _editor.Action = new EditorAction { Action = EditorActionType.Paste };
@@ -695,10 +747,6 @@ namespace TombEditor
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this, "Your level will be lost. Do you really want to exit?",
-                    "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                return;
-
             Close();
         }
 
@@ -706,6 +754,87 @@ namespace TombEditor
         {
             using (FormLevelSettings form = new FormLevelSettings(_editor))
                 form.ShowDialog(this);
+        }
+
+        private void saveCurrentLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveWindowLayout(_editor.Configuration);
+        }
+
+        private void restoreDefaultLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadWindowLayout(new Configuration());
+        }
+
+        private void reloadLayoutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadWindowLayout(_editor.Configuration);
+        }
+
+        private void sectorOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(SectorOptions);
+        }
+
+        private void roomOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(RoomOptions);
+        }
+
+        private void objectBrowserToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ObjectBrowser);
+        }
+
+        private void triggerListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(TriggerList);
+        }
+
+        private void lightingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(Lighting);
+        }
+
+        private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(Palette);
+        }
+
+        private void texturePanelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(TexturePanel);
+        }
+
+        private void ToolWindow_Toggle(DarkToolWindow toolWindow)
+        {
+            if (toolWindow.DockPanel == null)
+                dockArea.AddContent(toolWindow);
+            else
+                dockArea.RemoveContent(toolWindow);
+        }
+
+        private void ToolWindow_BuildMenu()
+        {
+            sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(SectorOptions);
+            roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
+            objectBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectBrowser);
+            triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
+            lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
+            paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
+            texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
+        }
+
+        private void ToolWindow_Added(object sender, DockContentEventArgs e)
+        {
+            if (dockArea.Contains(e.Content))
+                ToolWindow_BuildMenu();
+        }
+
+        private void ToolWindow_Removed(object sender, DockContentEventArgs e)
+        {
+            if (!dockArea.Contains(e.Content))
+                ToolWindow_BuildMenu();
         }
 
         // Only for debugging purposes...
@@ -789,89 +918,6 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
-        }
-
-        private void saveCurrentLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _editor.Configuration.Window_Layout = dockArea.GetDockPanelState();
-        }
-
-        private void restoreDefaultLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            dockArea.RemoveContent();
-            dockArea.RestoreDockPanelState(Configuration.Window_LayoutDefault, FindDockContentByKey);
-        }
-
-        private void reloadLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            dockArea.RemoveContent();
-            dockArea.RestoreDockPanelState(_editor.Configuration.Window_Layout, FindDockContentByKey);
-        }
-
-        private void sectorOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(SectorOptions);
-        }
-
-        private void roomOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(RoomOptions);
-        }
-
-        private void objectBrowserToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(ObjectBrowser);
-        }
-
-        private void triggerListToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(TriggerList);
-        }
-
-        private void lightingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(Lighting);
-        }
-
-        private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(Palette);
-        }
-
-        private void texturePanelToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToolWindow_Toggle(TexturePanel);
-        }
-
-        private void ToolWindow_Toggle(DarkToolWindow toolWindow)
-        {
-            if (toolWindow.DockPanel == null)
-                dockArea.AddContent(toolWindow);
-            else
-                dockArea.RemoveContent(toolWindow);
-        }
-
-        private void ToolWindow_BuildMenu()
-        {
-            sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(SectorOptions);
-            roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
-            objectBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectBrowser);
-            triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
-            lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
-            paletteToolStripMenuItem.Checked = dockArea.ContainsContent(Palette);
-            texturePanelToolStripMenuItem.Checked = dockArea.ContainsContent(TexturePanel);
-        }
-
-        private void ToolWindow_Added(object sender, DockContentEventArgs e)
-        {
-            if (dockArea.Contains(e.Content))
-                ToolWindow_BuildMenu();
-        }
-
-        private void ToolWindow_Removed(object sender, DockContentEventArgs e)
-        {
-            if (!dockArea.Contains(e.Content))
-                ToolWindow_BuildMenu();
         }
     }
 }

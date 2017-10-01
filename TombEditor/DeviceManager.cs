@@ -13,7 +13,7 @@ namespace TombEditor
     public class DeviceManager
     {
         // to be removed
-        public static DeviceManager DefaultDeviceManager;
+        public static DeviceManager DefaultDeviceManager = new DeviceManager();
 
         public GraphicsDevice Device { get; set; }
         public Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
@@ -50,8 +50,6 @@ namespace TombEditor
             SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
             fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
             Font = SpriteFont.New(Device, fontData);
-
-            DefaultDeviceManager = this;
         }
 
         private Effect LoadEffect(string fileName)
