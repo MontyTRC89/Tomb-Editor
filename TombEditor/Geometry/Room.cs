@@ -737,17 +737,21 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
 
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
+                    // Fix heights only for border walls
+                    if (z == 0)
+                    {
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
 
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
 
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
 
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
+                    }
 
                     if (Blocks[x, z].WallPortal != null)
                     {
@@ -870,17 +874,21 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
+                    // Fix heights only for border walls
+                    if (z == NumZSectors - 1)
+                    {
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
 
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
 
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
 
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
+                    }
 
                     if (Blocks[x, z].WallPortal != null)
                     {
@@ -1002,17 +1010,21 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
 
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
+                    // Fix heights only for border walls
+                    if (x == 0)
+                    {
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
 
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
 
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
 
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
+                    }
 
                     if (Blocks[x, z].WallPortal != null)
                     {
@@ -1332,17 +1344,21 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
 
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
+                    // Fix heights only for border walls
+                    if (x == NumXSectors - 1)
+                    {
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
 
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
 
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
 
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
+                    }
 
                     if (Blocks[x, z].WallPortal != null)
                     {
