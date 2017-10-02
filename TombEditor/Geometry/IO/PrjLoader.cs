@@ -992,7 +992,7 @@ namespace TombEditor.Geometry.IO
                         }
                     }
 
-                    // Read WAD file
+                    // Read WAD path
                     {
                         var stringBuffer = new byte[255];
                         int sb = 0;
@@ -1012,8 +1012,6 @@ namespace TombEditor.Geometry.IO
                         else
                             level.Settings.WadFilePath = level.Settings.MakeRelative(Utils.TryFindAbsolutePath(
                                 level.Settings, Path.ChangeExtension(wadName.Trim('\0', ' '), "wad")), VariableType.LevelDirectory);
-                        ResourceLoader.TryLoadingObjects(level, progressReporter);
-                        progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
                     }
 
                     // Setup paths to customized fonts and the skys
@@ -1033,9 +1031,12 @@ namespace TombEditor.Geometry.IO
                             level.Settings.SkyTextureFilePath = level.Settings.MakeRelative(genericSkyFilePath, VariableType.LevelDirectory);
 
                         string soundPath = Path.Combine(Path.GetDirectoryName(objectFilePath), "../../sound/Samples");
-                        level.Settings.SoundPaths[0].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
-                        level.Settings.IgnoreMissingSounds = true;
+                        level.Settings.OldWadSoundPaths[2].Path = level.Settings.MakeRelative(soundPath, VariableType.LevelDirectory);
                     }
+
+                    // Read WAD file
+                    ResourceLoader.TryLoadingObjects(level, progressReporter);
+                    progressReporter.ReportProgress(60, "Loaded WAD '" + level.Settings.WadFilePath + "'");
 
                     // Write slots
                     const bool writeSlots = false;

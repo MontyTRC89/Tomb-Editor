@@ -18,6 +18,15 @@ namespace WadTool
     {
         private WadToolClass _tool;
 
+        // TODO ask the user for the paths
+        private readonly static List<string> wadSoundPaths =
+            new List<string>
+            {
+                "Sounds",
+                "",
+                Path.Combine(Application.StartupPath, "Sounds")
+            };
+
         public FormMain()
         {
             InitializeComponent();
@@ -29,11 +38,6 @@ namespace WadTool
         }
 
         private void butTest_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
         {
 
         }
@@ -239,7 +243,7 @@ namespace WadTool
                 TR4Wad originalWad = new TR4Wad();
                 originalWad.LoadWad(fileName);
 
-                var newWad = WadOperations.ConvertTr4Wad(originalWad);
+                var newWad = WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths);
                 if (newWad == null)
                     return;
 

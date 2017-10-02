@@ -85,8 +85,6 @@ namespace TombEditor.Geometry.IO
                     (writer, id2) => writer.WriteStringUTF8(settings.GameExecutableFilePath ?? ""));
                 ChunkProcessing.WriteChunk(stream, Prj2Chunks.GameExecutableSuppressAskingForOptions,
                     (writer, id2) => writer.Write(settings.GameExecutableSuppressAskingForOptions));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.IgnoreMissingSounds,
-                    (writer, id2) => writer.Write(settings.IgnoreMissingSounds));
                 WriteLevelTextures(stream, settings.Textures);
                 ChunkProcessing.WriteChunkEnd(stream);
             }, long.MaxValue);

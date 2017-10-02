@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLevelSettings));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel10 = new System.Windows.Forms.Panel();
-            this.soundsIgnoreMissingSounds = new DarkUI.Controls.DarkCheckBox();
             this.soundDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
             this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -154,7 +153,6 @@
             this.panel10.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel10.Controls.Add(this.soundsIgnoreMissingSounds);
             this.panel10.Controls.Add(this.soundDataGridViewControls);
             this.panel10.Controls.Add(this.soundDataGridView);
             this.panel10.Controls.Add(this.darkLabel10);
@@ -162,16 +160,6 @@
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(786, 168);
             this.panel10.TabIndex = 6;
-            // 
-            // soundsIgnoreMissingSounds
-            // 
-            this.soundsIgnoreMissingSounds.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.soundsIgnoreMissingSounds.Location = new System.Drawing.Point(453, 0);
-            this.soundsIgnoreMissingSounds.Name = "soundsIgnoreMissingSounds";
-            this.soundsIgnoreMissingSounds.Size = new System.Drawing.Size(130, 16);
-            this.soundsIgnoreMissingSounds.TabIndex = 4;
-            this.soundsIgnoreMissingSounds.Text = "Ignore missing sounds";
-            this.soundsIgnoreMissingSounds.CheckedChanged += new System.EventHandler(this.soundsIgnoreMissingSounds_CheckedChanged);
             // 
             // soundDataGridViewControls
             // 
@@ -221,7 +209,7 @@
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel10.Location = new System.Drawing.Point(3, 0);
             this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(380, 46);
+            this.darkLabel10.Size = new System.Drawing.Size(420, 46);
             this.darkLabel10.TabIndex = 1;
             this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
             // 
@@ -939,7 +927,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
         private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
         private DarkUI.Controls.DarkDataGridView pathVariablesDataGridView;
-        private DarkUI.Controls.DarkCheckBox soundsIgnoreMissingSounds;
         private DarkUI.Controls.DarkCheckBox gameExecutableSuppressAskingForOptionsCheckBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewNameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
