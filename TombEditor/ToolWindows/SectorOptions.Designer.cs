@@ -15,6 +15,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel2DGrid = new TombEditor.Controls.Panel2DGrid();
             this.panelRight = new System.Windows.Forms.Panel();
             this.butCeiling = new System.Windows.Forms.Button();
