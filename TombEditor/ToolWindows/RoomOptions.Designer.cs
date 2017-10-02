@@ -43,6 +43,7 @@
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butCopyRoom = new DarkUI.Controls.DarkButton();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // cbNoPathfinding
@@ -54,6 +55,7 @@
             this.cbNoPathfinding.Size = new System.Drawing.Size(106, 17);
             this.cbNoPathfinding.TabIndex = 106;
             this.cbNoPathfinding.Text = "No pathfinding";
+            this.toolTip.SetToolTip(this.cbNoPathfinding, "Disable zones and boxes generation");
             this.cbNoPathfinding.CheckedChanged += new System.EventHandler(this.cbNoPathfinding_CheckedChanged);
             // 
             // cbHorizon
@@ -64,6 +66,7 @@
             this.cbHorizon.Size = new System.Drawing.Size(58, 17);
             this.cbHorizon.TabIndex = 105;
             this.cbHorizon.Text = "Skybox";
+            this.toolTip.SetToolTip(this.cbHorizon, "Skybox is visible");
             this.cbHorizon.CheckedChanged += new System.EventHandler(this.cbHorizon_CheckedChanged);
             // 
             // comboFlipMap
@@ -217,6 +220,7 @@
             this.cbFlagOutside.Size = new System.Drawing.Size(54, 17);
             this.cbFlagOutside.TabIndex = 95;
             this.cbFlagOutside.Text = "Wind";
+            this.toolTip.SetToolTip(this.cbFlagOutside, "Affects particles and Lara\'s hair");
             this.cbFlagOutside.CheckedChanged += new System.EventHandler(this.cbFlagOutside_CheckedChanged);
             // 
             // cbFlagCold
@@ -228,6 +232,7 @@
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 94;
             this.cbFlagCold.Text = "Cold";
+            this.toolTip.SetToolTip(this.cbFlagCold, "Room affects cold value (NGLE-only)");
             this.cbFlagCold.CheckedChanged += new System.EventHandler(this.cbFlagCold_CheckedChanged);
             // 
             // cbFlagDamage
@@ -239,6 +244,7 @@
             this.cbFlagDamage.Size = new System.Drawing.Size(68, 17);
             this.cbFlagDamage.TabIndex = 93;
             this.cbFlagDamage.Text = "Damage";
+            this.toolTip.SetToolTip(this.cbFlagDamage, "Room causes damage (NGLE-only)");
             this.cbFlagDamage.CheckedChanged += new System.EventHandler(this.cbFlagDamage_CheckedChanged);
             // 
             // comboRoomType
@@ -329,6 +335,7 @@
             this.butRoomUp.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomUp.Size = new System.Drawing.Size(24, 24);
             this.butRoomUp.TabIndex = 102;
+            this.toolTip.SetToolTip(this.butRoomUp, "Move room up");
             this.butRoomUp.Click += new System.EventHandler(this.butRoomUp_Click);
             // 
             // butRoomDown
@@ -339,16 +346,18 @@
             this.butRoomDown.Padding = new System.Windows.Forms.Padding(5);
             this.butRoomDown.Size = new System.Drawing.Size(24, 24);
             this.butRoomDown.TabIndex = 87;
+            this.toolTip.SetToolTip(this.butRoomDown, "Move room down");
             this.butRoomDown.Click += new System.EventHandler(this.butRoomDown_Click);
             // 
             // butEditRoomName
             // 
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(259, 28);
+            this.butEditRoomName.Location = new System.Drawing.Point(227, 28);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(24, 24);
             this.butEditRoomName.TabIndex = 86;
+            this.toolTip.SetToolTip(this.butEditRoomName, "Edit room name");
             this.butEditRoomName.Click += new System.EventHandler(this.butEditRoomName_Click);
             // 
             // butDeleteRoom
@@ -359,16 +368,18 @@
             this.butDeleteRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteRoom.Size = new System.Drawing.Size(24, 24);
             this.butDeleteRoom.TabIndex = 85;
+            this.toolTip.SetToolTip(this.butDeleteRoom, "Delete room");
             this.butDeleteRoom.Click += new System.EventHandler(this.butDeleteRoom_Click);
             // 
             // butCropRoom
             // 
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(229, 28);
+            this.butCropRoom.Location = new System.Drawing.Point(257, 28);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCropRoom.Size = new System.Drawing.Size(24, 24);
             this.butCropRoom.TabIndex = 84;
+            this.toolTip.SetToolTip(this.butCropRoom, "Crop room");
             this.butCropRoom.Click += new System.EventHandler(this.butCropRoom_Click);
             // 
             // butSplitRoom
@@ -379,6 +390,7 @@
             this.butSplitRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butSplitRoom.Size = new System.Drawing.Size(24, 24);
             this.butSplitRoom.TabIndex = 83;
+            this.toolTip.SetToolTip(this.butSplitRoom, "Split room");
             this.butSplitRoom.Click += new System.EventHandler(this.butSplitRoom_Click);
             // 
             // butCopyRoom
@@ -389,6 +401,7 @@
             this.butCopyRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCopyRoom.Size = new System.Drawing.Size(24, 24);
             this.butCopyRoom.TabIndex = 82;
+            this.toolTip.SetToolTip(this.butCopyRoom, "Copy room");
             this.butCopyRoom.Click += new System.EventHandler(this.butCopyRoom_Click);
             // 
             // cbNoLensflare
@@ -399,7 +412,14 @@
             this.cbNoLensflare.Size = new System.Drawing.Size(88, 17);
             this.cbNoLensflare.TabIndex = 107;
             this.cbNoLensflare.Text = "No lensflare";
+            this.toolTip.SetToolTip(this.cbNoLensflare, "Disable global lensflare");
             this.cbNoLensflare.CheckedChanged += new System.EventHandler(this.cbNoLensflare_CheckedChanged);
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // RoomOptions
             // 
@@ -471,5 +491,6 @@
         private DarkUI.Controls.DarkButton butCopyRoom;
         private System.Windows.Forms.ColorDialog colorDialog;
         private DarkUI.Controls.DarkCheckBox cbNoLensflare;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
