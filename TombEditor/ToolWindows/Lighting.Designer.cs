@@ -24,10 +24,6 @@
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel23 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel24 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
@@ -47,6 +43,7 @@
             this.numOuterAngle = new DarkUI.Controls.DarkNumericUpDown();
             this.numDirectionX = new DarkUI.Controls.DarkNumericUpDown();
             this.numDirectionY = new DarkUI.Controls.DarkNumericUpDown();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).BeginInit();
@@ -58,46 +55,54 @@
             // 
             // cbLightIsDynamicallyUsed
             // 
-            this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsDynamicallyUsed.Enabled = false;
             this.cbLightIsDynamicallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(423, 102);
+            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(368, 103);
             this.cbLightIsDynamicallyUsed.Name = "cbLightIsDynamicallyUsed";
-            this.cbLightIsDynamicallyUsed.Size = new System.Drawing.Size(15, 22);
+            this.cbLightIsDynamicallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsDynamicallyUsed.TabIndex = 92;
+            this.cbLightIsDynamicallyUsed.Text = "Dynamic";
+            this.toolTip.SetToolTip(this.cbLightIsDynamicallyUsed, "Use light for moveables");
             this.cbLightIsDynamicallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsDynamicallyUsed_CheckedChanged);
             // 
             // cbLightIsStaticallyUsed
             // 
-            this.cbLightIsStaticallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightIsStaticallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsStaticallyUsed.Enabled = false;
             this.cbLightIsStaticallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(423, 77);
+            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(368, 78);
             this.cbLightIsStaticallyUsed.Name = "cbLightIsStaticallyUsed";
-            this.cbLightIsStaticallyUsed.Size = new System.Drawing.Size(15, 22);
+            this.cbLightIsStaticallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsStaticallyUsed.TabIndex = 91;
+            this.cbLightIsStaticallyUsed.Text = "Static";
+            this.toolTip.SetToolTip(this.cbLightIsStaticallyUsed, "Use light for room geometry");
             this.cbLightIsStaticallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsStaticallyUsed_CheckedChanged);
             // 
             // cbLightCastsShadows
             // 
-            this.cbLightCastsShadows.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightCastsShadows.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightCastsShadows.Enabled = false;
             this.cbLightCastsShadows.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightCastsShadows.Location = new System.Drawing.Point(423, 52);
+            this.cbLightCastsShadows.Location = new System.Drawing.Point(368, 53);
             this.cbLightCastsShadows.Name = "cbLightCastsShadows";
-            this.cbLightCastsShadows.Size = new System.Drawing.Size(15, 22);
+            this.cbLightCastsShadows.Size = new System.Drawing.Size(70, 22);
             this.cbLightCastsShadows.TabIndex = 90;
+            this.cbLightCastsShadows.Text = "Shadows";
+            this.toolTip.SetToolTip(this.cbLightCastsShadows, "Light casts shadows on room geometry");
             this.cbLightCastsShadows.CheckedChanged += new System.EventHandler(this.cbLightCastsShadows_CheckedChanged);
             // 
             // cbLightEnabled
             // 
-            this.cbLightEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cbLightEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightEnabled.Enabled = false;
             this.cbLightEnabled.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightEnabled.Location = new System.Drawing.Point(423, 27);
+            this.cbLightEnabled.Location = new System.Drawing.Point(368, 28);
             this.cbLightEnabled.Name = "cbLightEnabled";
-            this.cbLightEnabled.Size = new System.Drawing.Size(15, 22);
+            this.cbLightEnabled.Size = new System.Drawing.Size(70, 22);
             this.cbLightEnabled.TabIndex = 89;
+            this.cbLightEnabled.Text = "Enabled";
+            this.toolTip.SetToolTip(this.cbLightEnabled, "Light is enabled");
             this.cbLightEnabled.CheckedChanged += new System.EventHandler(this.cbLightEnabled_CheckedChanged);
             // 
             // panelLightColor
@@ -108,6 +113,7 @@
             this.panelLightColor.Name = "panelLightColor";
             this.panelLightColor.Size = new System.Drawing.Size(60, 22);
             this.panelLightColor.TabIndex = 69;
+            this.toolTip.SetToolTip(this.panelLightColor, "Color of current light");
             this.panelLightColor.Click += new System.EventHandler(this.panelLightColor_Click);
             // 
             // darkLabel12
@@ -153,50 +159,6 @@
             this.darkLabel9.TabIndex = 77;
             this.darkLabel9.Text = "Out α";
             this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // darkLabel23
-            // 
-            this.darkLabel23.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel23.Location = new System.Drawing.Point(362, 102);
-            this.darkLabel23.Name = "darkLabel23";
-            this.darkLabel23.Size = new System.Drawing.Size(55, 22);
-            this.darkLabel23.TabIndex = 75;
-            this.darkLabel23.Text = "Dynamic";
-            this.darkLabel23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // darkLabel24
-            // 
-            this.darkLabel24.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel24.Location = new System.Drawing.Point(359, 78);
-            this.darkLabel24.Name = "darkLabel24";
-            this.darkLabel24.Size = new System.Drawing.Size(58, 22);
-            this.darkLabel24.TabIndex = 74;
-            this.darkLabel24.Text = "Statically";
-            this.darkLabel24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // darkLabel21
-            // 
-            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel21.Location = new System.Drawing.Point(362, 52);
-            this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(55, 22);
-            this.darkLabel21.TabIndex = 72;
-            this.darkLabel21.Text = "Shadows";
-            this.darkLabel21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(366, 27);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(51, 22);
-            this.darkLabel2.TabIndex = 76;
-            this.darkLabel2.Text = "Enabled";
-            this.darkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // darkLabel10
             // 
@@ -253,6 +215,7 @@
             this.butAddFogBulb.TabIndex = 67;
             this.butAddFogBulb.Text = "Fog";
             this.butAddFogBulb.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddFogBulb, "Create new fog bulb");
             this.butAddFogBulb.Click += new System.EventHandler(this.butAddFogBulb_Click);
             // 
             // butAddEffectLight
@@ -279,6 +242,7 @@
             this.butAddSpotLight.TabIndex = 65;
             this.butAddSpotLight.Text = "Spot";
             this.butAddSpotLight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddSpotLight, "Create new directional (spot) light");
             this.butAddSpotLight.Click += new System.EventHandler(this.butAddSpotLight_Click);
             // 
             // butAddSun
@@ -292,6 +256,7 @@
             this.butAddSun.TabIndex = 64;
             this.butAddSun.Text = "Sun";
             this.butAddSun.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddSun, "Create new sun light");
             this.butAddSun.Click += new System.EventHandler(this.butAddSun_Click);
             // 
             // butAddShadow
@@ -305,6 +270,7 @@
             this.butAddShadow.TabIndex = 63;
             this.butAddShadow.Text = "Shadow";
             this.butAddShadow.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddShadow, "Create new shadow");
             this.butAddShadow.Click += new System.EventHandler(this.butAddShadow_Click);
             // 
             // butAddPointLight
@@ -318,6 +284,7 @@
             this.butAddPointLight.TabIndex = 62;
             this.butAddPointLight.Text = "Point";
             this.butAddPointLight.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddPointLight, "Create new point light");
             this.butAddPointLight.Click += new System.EventHandler(this.butAddPointLight_Click);
             // 
             // darkLabel5
@@ -358,6 +325,7 @@
             this.numIntensity.Size = new System.Drawing.Size(60, 22);
             this.numIntensity.TabIndex = 93;
             this.numIntensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numIntensity, "Light intensity");
             this.numIntensity.ValueChanged += new System.EventHandler(this.numIntensity_ValueChanged);
             // 
             // numInnerRange
@@ -382,6 +350,7 @@
             this.numInnerRange.Size = new System.Drawing.Size(60, 22);
             this.numInnerRange.TabIndex = 94;
             this.numInnerRange.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numInnerRange, "Inner radius or distance");
             this.numInnerRange.ValueChanged += new System.EventHandler(this.numInnerRange_ValueChanged);
             // 
             // numOuterRange
@@ -406,6 +375,7 @@
             this.numOuterRange.Size = new System.Drawing.Size(60, 22);
             this.numOuterRange.TabIndex = 95;
             this.numOuterRange.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numOuterRange, "Outer radius or distance");
             this.numOuterRange.ValueChanged += new System.EventHandler(this.numOuterRange_ValueChanged);
             // 
             // numInnerAngle
@@ -425,6 +395,7 @@
             this.numInnerAngle.Size = new System.Drawing.Size(60, 22);
             this.numInnerAngle.TabIndex = 96;
             this.numInnerAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numInnerAngle, "Inner cone angle");
             this.numInnerAngle.ValueChanged += new System.EventHandler(this.numInnerAngle_ValueChanged);
             // 
             // numOuterAngle
@@ -444,6 +415,7 @@
             this.numOuterAngle.Size = new System.Drawing.Size(60, 22);
             this.numOuterAngle.TabIndex = 97;
             this.numOuterAngle.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numOuterAngle, "Outer cone angle");
             this.numOuterAngle.ValueChanged += new System.EventHandler(this.numOuterAngle_ValueChanged);
             // 
             // numDirectionX
@@ -473,6 +445,7 @@
             this.numDirectionX.Size = new System.Drawing.Size(60, 22);
             this.numDirectionX.TabIndex = 98;
             this.numDirectionX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numDirectionX, "Horizontal direction");
             this.numDirectionX.ValueChanged += new System.EventHandler(this.numDirectionX_ValueChanged);
             // 
             // numDirectionY
@@ -502,7 +475,14 @@
             this.numDirectionY.Size = new System.Drawing.Size(60, 22);
             this.numDirectionY.TabIndex = 99;
             this.numDirectionY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.toolTip.SetToolTip(this.numDirectionY, "Vertical direction");
             this.numDirectionY.ValueChanged += new System.EventHandler(this.numDirectionY_ValueChanged);
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // Lighting
             // 
@@ -524,10 +504,6 @@
             this.Controls.Add(this.darkLabel13);
             this.Controls.Add(this.darkLabel11);
             this.Controls.Add(this.darkLabel9);
-            this.Controls.Add(this.darkLabel23);
-            this.Controls.Add(this.darkLabel24);
-            this.Controls.Add(this.darkLabel21);
-            this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.darkLabel10);
             this.Controls.Add(this.darkLabel8);
             this.Controls.Add(this.darkLabel7);
@@ -568,10 +544,6 @@
         private DarkUI.Controls.DarkLabel darkLabel13;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private DarkUI.Controls.DarkLabel darkLabel9;
-        private DarkUI.Controls.DarkLabel darkLabel23;
-        private DarkUI.Controls.DarkLabel darkLabel24;
-        private DarkUI.Controls.DarkLabel darkLabel21;
-        private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkLabel darkLabel10;
         private DarkUI.Controls.DarkLabel darkLabel8;
         private DarkUI.Controls.DarkLabel darkLabel7;
@@ -591,5 +563,6 @@
         private DarkUI.Controls.DarkNumericUpDown numOuterAngle;
         private DarkUI.Controls.DarkNumericUpDown numDirectionX;
         private DarkUI.Controls.DarkNumericUpDown numDirectionY;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

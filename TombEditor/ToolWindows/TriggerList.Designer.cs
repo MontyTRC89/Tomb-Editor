@@ -22,6 +22,7 @@
             this.butDeleteTrigger = new DarkUI.Controls.DarkButton();
             this.panelTriggerList = new System.Windows.Forms.Panel();
             this.lstTriggers = new DarkUI.Controls.DarkListBox(this.components);
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelTriggerTools.SuspendLayout();
             this.panelTriggerList.SuspendLayout();
             this.SuspendLayout();
@@ -45,6 +46,7 @@
             this.butAddTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
             this.butAddTrigger.TabIndex = 56;
+            this.toolTip.SetToolTip(this.butAddTrigger, "Add trigger");
             this.butAddTrigger.Click += new System.EventHandler(this.butAddTrigger_Click);
             // 
             // butEditTrigger
@@ -55,6 +57,7 @@
             this.butEditTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butEditTrigger.Size = new System.Drawing.Size(24, 24);
             this.butEditTrigger.TabIndex = 53;
+            this.toolTip.SetToolTip(this.butEditTrigger, "Edit selected trigger");
             this.butEditTrigger.Click += new System.EventHandler(this.butEditTrigger_Click);
             // 
             // butDeleteTrigger
@@ -65,6 +68,7 @@
             this.butDeleteTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteTrigger.Size = new System.Drawing.Size(24, 24);
             this.butDeleteTrigger.TabIndex = 52;
+            this.toolTip.SetToolTip(this.butDeleteTrigger, "Delete trigger");
             this.butDeleteTrigger.Click += new System.EventHandler(this.butDeleteTrigger_Click);
             // 
             // panelTriggerList
@@ -93,6 +97,12 @@
             this.lstTriggers.TabIndex = 56;
             this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
             // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
+            // 
             // TriggerList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -119,5 +129,6 @@
         private DarkUI.Controls.DarkButton butDeleteTrigger;
         private System.Windows.Forms.Panel panelTriggerList;
         private DarkUI.Controls.DarkListBox lstTriggers;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

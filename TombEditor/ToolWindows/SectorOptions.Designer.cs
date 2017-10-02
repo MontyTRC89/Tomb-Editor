@@ -37,6 +37,7 @@
             this.butDiagonalCeiling = new DarkUI.Controls.DarkButton();
             this.butDiagonalFloor = new DarkUI.Controls.DarkButton();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelRight.SuspendLayout();
             this.panel2DGrid_sub.SuspendLayout();
             this.panelBottom.SuspendLayout();
@@ -68,10 +69,10 @@
             this.panelRight.Controls.Add(this.butFloor);
             this.panelRight.Controls.Add(this.butWall);
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelRight.Location = new System.Drawing.Point(545, 0);
+            this.panelRight.Location = new System.Drawing.Point(226, 0);
             this.panelRight.Name = "panelRight";
             this.panelRight.Padding = new System.Windows.Forms.Padding(2);
-            this.panelRight.Size = new System.Drawing.Size(58, 295);
+            this.panelRight.Size = new System.Drawing.Size(58, 225);
             this.panelRight.TabIndex = 109;
             // 
             // butCeiling
@@ -98,6 +99,7 @@
             this.butClimbPositiveZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
             this.butClimbPositiveZ.TabIndex = 99;
+            this.toolTip.SetToolTip(this.butClimbPositiveZ, "Climb on North side");
             this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
             // 
             // butClimbPositiveX
@@ -108,6 +110,7 @@
             this.butClimbPositiveX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
             this.butClimbPositiveX.TabIndex = 98;
+            this.toolTip.SetToolTip(this.butClimbPositiveX, "Climb on East side");
             this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
             // 
             // butClimbNegativeZ
@@ -118,6 +121,7 @@
             this.butClimbNegativeZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
             this.butClimbNegativeZ.TabIndex = 97;
+            this.toolTip.SetToolTip(this.butClimbNegativeZ, "Climb on South side");
             this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
             // 
             // butClimbNegativeX
@@ -128,6 +132,7 @@
             this.butClimbNegativeX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
             this.butClimbNegativeX.TabIndex = 96;
+            this.toolTip.SetToolTip(this.butClimbNegativeX, "Climb on West side");
             this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
             // 
             // butNotWalkableBox
@@ -143,6 +148,7 @@
             this.butNotWalkableBox.Size = new System.Drawing.Size(24, 24);
             this.butNotWalkableBox.TabIndex = 104;
             this.butNotWalkableBox.Text = "N";
+            this.toolTip.SetToolTip(this.butNotWalkableBox, "Not walkable");
             this.butNotWalkableBox.UseVisualStyleBackColor = false;
             this.butNotWalkableBox.Click += new System.EventHandler(this.butNotWalkableBox_Click);
             // 
@@ -159,6 +165,7 @@
             this.butPortal.Size = new System.Drawing.Size(24, 24);
             this.butPortal.TabIndex = 95;
             this.butPortal.Text = "P";
+            this.toolTip.SetToolTip(this.butPortal, "Portal");
             this.butPortal.UseVisualStyleBackColor = false;
             this.butPortal.Click += new System.EventHandler(this.butPortal_Click);
             // 
@@ -170,6 +177,7 @@
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
             this.butFlagTriggerTriggerer.TabIndex = 102;
             this.butFlagTriggerTriggerer.Text = "T";
+            this.toolTip.SetToolTip(this.butFlagTriggerTriggerer, "Delay trigger until Trigger Triggerer is used");
             this.butFlagTriggerTriggerer.Click += new System.EventHandler(this.butFlagTriggerTriggerer_Click);
             // 
             // butDeath
@@ -185,6 +193,7 @@
             this.butDeath.Size = new System.Drawing.Size(24, 24);
             this.butDeath.TabIndex = 94;
             this.butDeath.Text = "D";
+            this.toolTip.SetToolTip(this.butDeath, "Death");
             this.butDeath.UseVisualStyleBackColor = false;
             this.butDeath.Click += new System.EventHandler(this.butDeath_Click);
             // 
@@ -196,6 +205,7 @@
             this.butForceSolidFloor.Size = new System.Drawing.Size(24, 24);
             this.butForceSolidFloor.TabIndex = 101;
             this.butForceSolidFloor.Text = "Ff";
+            this.toolTip.SetToolTip(this.butForceSolidFloor, "Force solid floor");
             this.butForceSolidFloor.Click += new System.EventHandler(this.butForceSolidFloor_Click);
             // 
             // butMonkey
@@ -211,6 +221,7 @@
             this.butMonkey.Size = new System.Drawing.Size(24, 24);
             this.butMonkey.TabIndex = 93;
             this.butMonkey.Text = "M";
+            this.toolTip.SetToolTip(this.butMonkey, "Monkeyswing");
             this.butMonkey.UseVisualStyleBackColor = false;
             this.butMonkey.Click += new System.EventHandler(this.butMonkey_Click);
             // 
@@ -222,6 +233,7 @@
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
             this.butFlagBeetle.TabIndex = 100;
             this.butFlagBeetle.Text = "B";
+            this.toolTip.SetToolTip(this.butFlagBeetle, "Beetle checkpoint");
             this.butFlagBeetle.Click += new System.EventHandler(this.butFlagBeetle_Click);
             // 
             // butBox
@@ -269,6 +281,7 @@
             this.butWall.Size = new System.Drawing.Size(24, 24);
             this.butWall.TabIndex = 91;
             this.butWall.Text = "W";
+            this.toolTip.SetToolTip(this.butWall, "Wall");
             this.butWall.UseVisualStyleBackColor = false;
             this.butWall.Click += new System.EventHandler(this.butWall_Click);
             // 
@@ -280,7 +293,7 @@
             this.panel2DGrid_sub.Location = new System.Drawing.Point(0, 25);
             this.panel2DGrid_sub.Name = "panel2DGrid_sub";
             this.panel2DGrid_sub.Padding = new System.Windows.Forms.Padding(2, 0, 0, 4);
-            this.panel2DGrid_sub.Size = new System.Drawing.Size(603, 299);
+            this.panel2DGrid_sub.Size = new System.Drawing.Size(284, 229);
             this.panel2DGrid_sub.TabIndex = 111;
             // 
             // butDiagonalWall
@@ -328,11 +341,17 @@
             this.panelBottom.Controls.Add(this.butDiagonalWall);
             this.panelBottom.Controls.Add(this.butDiagonalCeiling);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(0, 324);
+            this.panelBottom.Location = new System.Drawing.Point(0, 254);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Padding = new System.Windows.Forms.Padding(3);
-            this.panelBottom.Size = new System.Drawing.Size(603, 26);
+            this.panelBottom.Size = new System.Drawing.Size(284, 26);
             this.panelBottom.TabIndex = 110;
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 5000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.ReshowDelay = 100;
             // 
             // SectorOptions
             // 
@@ -346,7 +365,7 @@
             this.MinimumSize = new System.Drawing.Size(284, 280);
             this.Name = "SectorOptions";
             this.SerializationKey = "SectorOptions";
-            this.Size = new System.Drawing.Size(603, 350);
+            this.Size = new System.Drawing.Size(284, 280);
             this.panelRight.ResumeLayout(false);
             this.panel2DGrid_sub.ResumeLayout(false);
             this.panelBottom.ResumeLayout(false);
@@ -377,5 +396,6 @@
         private DarkUI.Controls.DarkButton butDiagonalCeiling;
         private DarkUI.Controls.DarkButton butDiagonalFloor;
         private System.Windows.Forms.Panel panelBottom;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
