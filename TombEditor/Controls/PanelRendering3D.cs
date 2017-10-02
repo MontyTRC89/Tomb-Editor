@@ -313,7 +313,7 @@ namespace TombEditor.Controls
                 target = room.WorldPos + room.GetLocalCenter();
 
             // Initialize a new camera
-            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 1000, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
+            Camera = new ArcBallCamera(target, DefaultCameraAngleX, DefaultCameraAngleY, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, DefaultCameraDistance, 2750, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
             Invalidate();
         }
 
