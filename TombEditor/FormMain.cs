@@ -243,10 +243,35 @@ namespace TombEditor
                     _editor.SelectedObject = null;
                     break;
 
+                case Keys.F1: // 2D map mode
+                    if (e.Modifiers == Keys.None)
+                        _editor.Mode = EditorMode.Map2D;
+                    break;
+
+                case Keys.F2: // 3D geometry mode
+                    if (e.Modifiers == Keys.None)
+                        _editor.Mode = EditorMode.Geometry;
+                    break;
+
+                case Keys.F3: // 3D face texturing mode
+                    if (e.Modifiers == Keys.None)
+                        _editor.Mode = EditorMode.FaceEdit;
+                    break;
+
+                case Keys.F4: // 3D lighting mode
+                    if (e.Modifiers == Keys.None)
+                        _editor.Mode = EditorMode.Lighting;
+                    break;
+
+                case Keys.F6: // Reset 3D camera
+                    if (e.Modifiers == Keys.None)
+                        _editor.ResetCamera();
+                    break;
+
                 case Keys.T: // Add trigger
                     if (e.Modifiers == Keys.None && _editor.SelectedSectors.Valid)
                         EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
-                    return;
+                    break;
 
                 case Keys.P: // Add portal
                     if (e.Modifiers == Keys.None && _editor.SelectedSectors.Valid)
@@ -259,11 +284,20 @@ namespace TombEditor
                             logger.Error(exc, "Unable to create portal");
                             DarkMessageBox.Show(this, exc.Message, "Unable to create portal", MessageBoxIcon.Error);
                         }
-                    return;
+                    break;
 
                 case Keys.O: // Show options dialog
                     if (e.Modifiers == Keys.None && (_editor.SelectedObject != null))
                         EditorActions.EditObject(_editor.SelectedObject, this);
+                    break;
+
+                case Keys.V: // Reset texture selection
+                    if (e.Modifiers == Keys.Shift)
+                    {
+                        var texture = _editor.SelectedTexture;
+                        texture.Texture = TextureInvisible.Instance;
+                        _editor.SelectedTexture = texture;
+                    }
                     break;
 
                 case Keys.Left: // Rotate objects with cones
@@ -305,6 +339,15 @@ namespace TombEditor
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)-(e.Shift ? 4 : 1), e.Control);
                     else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
                         EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
+                    else if (e.Modifiers == Keys.Shift)
+                    {
+                        var texture = _editor.SelectedTexture;
+                        if (texture.BlendMode == BlendMode.Additive)
+                            texture.BlendMode = BlendMode.Normal;
+                        else
+                            texture.BlendMode = BlendMode.Additive;
+                        _editor.SelectedTexture = texture;
+                    }
                     break;
 
                 case Keys.W:
@@ -325,6 +368,12 @@ namespace TombEditor
                 case Keys.D:
                     if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)-(e.Shift ? 4 : 1), e.Control);
+                    else if (e.Modifiers == Keys.Shift)
+                    {
+                        var texture = _editor.SelectedTexture;
+                        texture.DoubleSided = !texture.DoubleSided;
+                        _editor.SelectedTexture = texture;
+                    }
                     break;
 
                 case Keys.R: // Rotate object

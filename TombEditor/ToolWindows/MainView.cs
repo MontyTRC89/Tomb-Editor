@@ -59,6 +59,11 @@ namespace TombEditor.ToolWindows
                 butTextureCeiling.Enabled = validSectorSelection;
                 butTextureWalls.Enabled = validSectorSelection;
             }
+            if (obj is Editor.ModeChangedEvent)
+            {
+                EditorMode mode = ((Editor.ModeChangedEvent)obj).Current;
+                butCenterCamera.Enabled = mode != EditorMode.Map2D;
+            }
 
             // Update editor mode
             if (obj is Editor.ModeChangedEvent)
