@@ -564,5 +564,25 @@ namespace WadTool
         {
             _tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
         }
+
+        private void treeDestWad_DoubleClick(object sender, EventArgs e)
+        {
+            // Get the selected sound
+            if (treeDestWad.SelectedNodes.Count == 0)
+                return;
+            var node = treeDestWad.SelectedNodes[0];
+            if (node.Tag == null || node.Tag.GetType() != typeof(WadStatic))
+                return;
+
+            var staticMesh = (WadStatic)node.Tag;
+
+            using (var form = new FormStaticMeshEditor())
+            {
+                form.StaticMesh = staticMesh;
+                if (form.ShowDialog() == DialogResult.Cancel) return;
+
+                UpdateDestinationWad2UI();
+            }
+        }
     }
 }
