@@ -26,6 +26,7 @@ namespace WadTool.Controls
         private float _lastY;
         private SpriteBatch _spriteBatch;
         private Gizmo _gizmo;
+        private GeometricPrimitive _plane;
 
         public void InitializePanel(GraphicsDevice device)
         {
@@ -74,6 +75,7 @@ namespace WadTool.Controls
             _tool = WadToolClass.Instance;
             _spriteBatch = new SpriteBatch(_tool.Device);
             _gizmo = new Gizmo(_tool.Device, _tool.Effects["Solid"]);
+            _plane = GeometricPrimitive.GridPlane.New(_tool.Device, 8, 4);
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
@@ -98,13 +100,11 @@ namespace WadTool.Controls
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
                 _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.White, 1.0f, 0);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.CornflowerBlue, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
+            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
-
-            // Draw the gizmo
-            _gizmo.Draw(viewProjection);
 
             if (StaticMesh != null)
             {
@@ -134,6 +134,21 @@ namespace WadTool.Controls
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                 }
             }
+
+            //_device.SetRasterizerState(_rasterizerWireframe);
+            _device.SetVertexBuffer(0, _plane.VertexBuffer);
+            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
+            _device.SetIndexBuffer(_plane.IndexBuffer, true);
+
+            Effect effect = _tool.Effects["Solid"];
+            effect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+            effect.Parameters["Color"].SetValue(Vector4.One);
+            effect.Techniques[0].Passes[0].Apply();
+            
+            _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+
+            // Draw the gizmo
+            _gizmo.Draw(viewProjection);
 
             _device.Present();
         }

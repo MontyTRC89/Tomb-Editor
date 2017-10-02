@@ -112,28 +112,36 @@ namespace SharpDX.Toolkit.Graphics
             {
                 SolidVertex v1 = new SolidVertex();
                 v1.Position = new Vector3(-128.0f, -128.0f, -128.0f);
-                
+                v1.Color = Vector4.One;
+
                 SolidVertex v2 = new SolidVertex();
                 v2.Position = new Vector3(128.0f, -128.0f, -128.0f);
-                
+                v2.Color = Vector4.One;
+
                 SolidVertex v3 = new SolidVertex();
                 v3.Position = new Vector3(128.0f, -128.0f, 128.0f);
-                
+                v3.Color = Vector4.One;
+
                 SolidVertex v4 = new SolidVertex();
                 v4.Position = new Vector3(-128.0f, -128.0f, 128.0f);
-                
+                v4.Color = Vector4.One;
+
                 SolidVertex v5 = new SolidVertex();
                 v5.Position = new Vector3(-128.0f, 128.0f, -128.0f);
-                
+                v5.Color = Vector4.One;
+
                 SolidVertex v6 = new SolidVertex();
                 v6.Position = new Vector3(128.0f, 128.0f, -128.0f);
-                
+                v6.Color = Vector4.One;
+
                 SolidVertex v7 = new SolidVertex();
                 v7.Position = new Vector3(128.0f, 128.0f, 128.0f);
-                
+                v7.Color = Vector4.One;
+
                 SolidVertex v8 = new SolidVertex();
                 v8.Position = new Vector3(-128.0f, 128.0f, 128.0f);
-                
+                v8.Color = Vector4.One;
+
                 var vertices = new SolidVertex[] { v1, v2, v3, v4, v5, v6, v7, v8 };
                 var indices = new short[]
                 {

@@ -70,10 +70,10 @@ namespace TombLib.Graphics
             _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
 
             // Initialize the gizmo geometry
-            var v0 = new SolidVertex { Position = new Vector3(0.0f, 0.0f, 0.0f) };
-            var vX = new SolidVertex { Position = new Vector3(1.0f, 0.0f, 0.0f) };
-            var vY = new SolidVertex { Position = new Vector3(0.0f, 1.0f, 0.0f) };
-            var vZ = new SolidVertex { Position = new Vector3(0.0f, 0.0f, -1.0f) };
+            var v0 = new SolidVertex { Position = new Vector3(0.0f, 0.0f, 0.0f), Color = Vector4.One };
+            var vX = new SolidVertex { Position = new Vector3(1.0f, 0.0f, 0.0f), Color = Vector4.One };
+            var vY = new SolidVertex { Position = new Vector3(0.0f, 1.0f, 0.0f), Color = Vector4.One };
+            var vZ = new SolidVertex { Position = new Vector3(0.0f, 0.0f, -1.0f), Color = Vector4.One };
             var vertices = new[] { v0, vX, v0, vY, v0, vZ };
 
             _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New

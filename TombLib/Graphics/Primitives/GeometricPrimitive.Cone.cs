@@ -108,6 +108,7 @@ namespace SharpDX.Toolkit.Graphics
                 // Vertex of the cone
                 SolidVertex coneVertex = new SolidVertex();
                 coneVertex.Position = new Vector3(0.0f, 0.0f, 0.0f);
+                coneVertex.Color = Vector4.One;
                 float angle = (float)(2 * Math.PI / tessellation);
 
                 List<SolidVertex> tempVertices = new List<SolidVertex>();
@@ -121,6 +122,7 @@ namespace SharpDX.Toolkit.Graphics
 
                     SolidVertex v = new SolidVertex();
                     v.Position = new Vector3(x, y, z);
+                    v.Color = Vector4.One;
 
                     tempVertices.Add(v);
                 }
