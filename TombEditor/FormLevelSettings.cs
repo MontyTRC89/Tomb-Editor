@@ -85,7 +85,7 @@ namespace TombEditor
         private string fontTextureFilePathPicPreviewCurrentPath;
         private string skyTextureFilePathPicPreviewCurrentPath;
         private PictureTooltip _pictureTooltip;
-        private readonly BindingList<SoundPath> soundDataGridViewDataSource = new BindingList<SoundPath>();
+        private readonly BindingList<OldWadSoundPath> soundDataGridViewDataSource = new BindingList<OldWadSoundPath>();
 
         public FormLevelSettings(Editor editor)
         {
@@ -99,13 +99,13 @@ namespace TombEditor
             MinimumSize = new Size(592, 1000) + (Size - ClientSize);
 
             // Initialize sound path data grid view
-            foreach (var soundPath in _levelSettings.SoundPaths)
+            foreach (var soundPath in _levelSettings.OldWadSoundPaths)
                 soundDataGridViewDataSource.Add(soundPath.Clone());
             soundDataGridViewDataSource.ListChanged += delegate
                 {
-                    _levelSettings.SoundPaths.Clear();
+                    _levelSettings.OldWadSoundPaths.Clear();
                     foreach (var soundPath in soundDataGridViewDataSource)
-                        _levelSettings.SoundPaths.Add(soundPath.Clone());
+                        _levelSettings.OldWadSoundPaths.Add(soundPath.Clone());
                 };
             soundDataGridView.DataSource = soundDataGridViewDataSource;
             soundDataGridViewControls.DataGridView = soundDataGridView;
@@ -144,7 +144,6 @@ namespace TombEditor
             gameDirectoryTxt.Text = _levelSettings.GameDirectory;
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
-            soundsIgnoreMissingSounds.Checked = _levelSettings.IgnoreMissingSounds;
             gameExecutableSuppressAskingForOptionsCheckBox.Checked = _levelSettings.GameExecutableSuppressAskingForOptions;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -413,17 +412,11 @@ namespace TombEditor
         }
 
         // Sound list
-        private void soundsIgnoreMissingSounds_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.IgnoreMissingSounds = soundsIgnoreMissingSounds.Checked;
-            UpdateDialog();
-        }
-
-        private SoundPath soundDataGridViewCreateNewRow()
+        private OldWadSoundPath soundDataGridViewCreateNewRow()
         {
             string result = BrowseFolder(_levelSettings.LevelFilePath, "Select a new sound folder. (Should contain *.wav audio files)", VariableType.LevelDirectory);
             if (result != null)
-                return new SoundPath(result);
+                return new OldWadSoundPath(result);
             return null;
         }
 
@@ -434,8 +427,9 @@ namespace TombEditor
 
             if (e.ColumnIndex == 1)
             {
-                SoundPath path = soundDataGridViewDataSource[e.RowIndex];
-                if (!Directory.Exists(_levelSettings.MakeAbsolute(path.Path)))
+                OldWadSoundPath path = soundDataGridViewDataSource[e.RowIndex];
+                string parsedPath = _levelSettings.ParseVariables(path.Path);
+                if (Path.IsPathRooted(parsedPath) && !Directory.Exists(_levelSettings.MakeAbsolute(path.Path)))
                 {
                     e.CellStyle.BackColor = _wrongColor;
                     e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_wrongColor, 0.4);
@@ -452,7 +446,7 @@ namespace TombEditor
             {
                 string result = BrowseFolder(soundDataGridViewDataSource[e.RowIndex].Path, "Select the sound folder. (Should contain *.wav audio files)", VariableType.LevelDirectory);
                 if (result != null)
-                    soundDataGridViewDataSource[e.RowIndex] = new SoundPath(result);
+                    soundDataGridViewDataSource[e.RowIndex] = new OldWadSoundPath(result);
             }
         }
 

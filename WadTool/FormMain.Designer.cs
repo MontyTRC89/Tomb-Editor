@@ -605,7 +605,6 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Wad Tool";
-            this.Load += new System.EventHandler(this.FormMain_Load);
             this.darkMenuStrip1.ResumeLayout(false);
             this.darkMenuStrip1.PerformLayout();
             this.darkToolStrip1.ResumeLayout(false);

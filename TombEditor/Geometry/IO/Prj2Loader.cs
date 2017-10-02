@@ -84,8 +84,6 @@ namespace TombEditor.Geometry.IO
                 else if (id == Prj2Chunks.GameExecutableSuppressAskingForOptions)
                     settings.GameExecutableSuppressAskingForOptions = stream.ReadBoolean();
                 else if (id == Prj2Chunks.IgnoreMissingSounds)
-                    settings.IgnoreMissingSounds = stream.ReadBoolean();
-                else if (LoadLevelTextures(stream, id, settings))
                     return true;
                 else
                     return false;

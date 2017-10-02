@@ -137,7 +137,7 @@ namespace TombLib.Wad
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct wad_sound_info
     {
-        public ushort Sample;  
+        public ushort Sample;
         public byte Volume;
         public byte Range;
         public byte Chance;
@@ -460,7 +460,7 @@ namespace TombLib.Wad
 
                         var spriteTexture = new wad_sprite_texture
                         {
-                            Tile = buffer[2], 
+                            Tile = buffer[2],
                             X = buffer[0],
                             Y = buffer[1],
                             Width = (ushort)(buffer[5]),
@@ -476,7 +476,7 @@ namespace TombLib.Wad
 
                     // Sprites size
                     int spriteDataSize = readerSprites.ReadInt32();
-                    SpriteData = readerSprites.ReadBytes(spriteDataSize);    
+                    SpriteData = readerSprites.ReadBytes(spriteDataSize);
 
                     uint numSequences = readerSprites.ReadUInt32();
 
@@ -486,11 +486,11 @@ namespace TombLib.Wad
                         wad_sprite_sequence sequence;
                         readerSprites.ReadBlock(out sequence);
                         SpriteSequences.Add(sequence);
-                    }                   
+                    }
                 }
             }
         }
-        
+
         public int GetNextMoveableWithAnimations(int current)
         {
             for (int i = current + 1; i < Moveables.Count; i++)

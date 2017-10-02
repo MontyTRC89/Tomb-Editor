@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace TombEditor.Geometry
 {
+    using TombLib.Wad;
     using ImportedGeometryUpdateInfo = KeyValuePair<ImportedGeometry, ImportedGeometryInfo>;
 
     public enum VariableType
@@ -21,18 +22,18 @@ namespace TombEditor.Geometry
         None,
     }
 
-    public class SoundPath : ICloneable
+    public class OldWadSoundPath : ICloneable
     {
         public string Path { get; set; }
 
-        public SoundPath(string path)
+        public OldWadSoundPath(string path)
         {
             Path = path;
         }
 
-        public SoundPath Clone()
+        public OldWadSoundPath Clone()
         {
-            return (SoundPath)MemberwiseClone();
+            return (OldWadSoundPath)MemberwiseClone();
         }
 
         object ICloneable.Clone()
@@ -51,24 +52,25 @@ namespace TombEditor.Geometry
         public string WadFilePath { get; set; } = null; // Can be null if no object file is loaded.
         public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
         public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
-        public List<SoundPath> SoundPaths { get; set; } = new List<SoundPath>
+        public List<OldWadSoundPath> OldWadSoundPaths { get; set; } = new List<OldWadSoundPath>
             {
-                new SoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sounds"),
-                new SoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds")
+                new OldWadSoundPath("Sounds"),
+                new OldWadSoundPath(""),
+                new OldWadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sounds"),
+                new OldWadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds")
             };
 
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
         public bool GameExecutableSuppressAskingForOptions { get; set; } = true;
-        public bool IgnoreMissingSounds { get; set; } = false;
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
 
         public LevelSettings Clone()
         {
             LevelSettings result = (LevelSettings)MemberwiseClone();
-            result.SoundPaths = SoundPaths.ConvertAll((soundPath) => soundPath.Clone());
+            result.OldWadSoundPaths = OldWadSoundPaths.ConvertAll((soundPath) => soundPath.Clone());
             result.Textures = Textures.ConvertAll((texture) => (LevelTexture)(texture.Clone()));
             result.ImportedGeometries = ImportedGeometries.ConvertAll((importedGeometry) => (ImportedGeometry)(importedGeometry.Clone()));
             return result;
@@ -211,7 +213,7 @@ namespace TombEditor.Geometry
 
         public string LookupSound(string soundName, bool ignoreMissingSounds)
         {
-            foreach (var soundPath in SoundPaths)
+            foreach (var soundPath in OldWadSoundPaths)
             {
                 string realPath = Path.Combine(MakeAbsolute(soundPath.Path), soundName);
                 if (File.Exists(realPath))

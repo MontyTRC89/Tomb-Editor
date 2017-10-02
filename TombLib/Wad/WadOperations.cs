@@ -1,4 +1,5 @@
-﻿using SharpDX;
+﻿using NLog;
+using SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace TombLib.Wad
 {
     public static class WadOperations
     {
-        public static string SamplesPath { get; set; } = "Sounds\\Samples";
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(TR4Wad oldWad)
         {
@@ -80,7 +81,7 @@ namespace TombLib.Wad
             int zMax = Int32.MinValue;
 
             // Create the bounding sphere
-            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.SphereX, oldMesh.SphereY, oldMesh.SphereZ), 
+            mesh.BoundingSphere = new BoundingSphere(new Vector3(oldMesh.SphereX, oldMesh.SphereY, oldMesh.SphereZ),
                                                      oldMesh.Radius);
 
             // Add positions
@@ -176,7 +177,7 @@ namespace TombLib.Wad
             }
         }
 
-        public static Wad2 ConvertTr4Wad(TR4Wad oldWad)
+        public static Wad2 ConvertTr4Wad(TR4Wad oldWad, List<string> soundPaths)
         {
             Wad2 wad = new Wad2();
 
@@ -201,7 +202,7 @@ namespace TombLib.Wad
             }
 
             // Convert sounds
-            ConvertTr4Sounds(wad, oldWad);
+            ConvertTr4Sounds(wad, oldWad, soundPaths);
 
             // Convert sprites
             ConvertTr4Sprites(wad, oldWad);
@@ -270,7 +271,7 @@ namespace TombLib.Wad
             }
         }
 
-        private static void ConvertTr4Sounds(Wad2 wad, TR4Wad oldWad)
+        private static void ConvertTr4Sounds(Wad2 wad, TR4Wad oldWad, List<string> soundPaths)
         {
             for (int i = 0; i < 370; i++)
             {
@@ -296,26 +297,32 @@ namespace TombLib.Wad
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
                 for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
-                    // TODO: use the configured path in editor
-                    string fileName = SamplesPath + "\\" + oldWad.Sounds[j];
-
-                    // If wave sound exists, then load it in memory
-                    if (File.Exists(fileName))
+                    foreach (string soundPath in soundPaths)
                     {
-                        using (var reader = new BinaryReader(File.OpenRead(fileName)))
+                        string fileName = Path.Combine(oldWad.BasePath, soundPath, oldWad.Sounds[j]);
+
+                        // If wave sound exists, then load it in memory
+                        if (File.Exists(fileName))
                         {
-                            var sound = new WadSound(oldWad.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
-                            if (wad.WaveSounds.ContainsKey(sound.Hash))
+                            using (var reader = new BinaryReader(File.OpenRead(fileName)))
                             {
-                                newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                                var sound = new WadSound(oldWad.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
+                                if (wad.WaveSounds.ContainsKey(sound.Hash))
+                                {
+                                    newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                                }
+                                else
+                                {
+                                    wad.WaveSounds.Add(sound.Hash, sound);
+                                    newInfo.WaveSounds.Add(sound);
+                                }
                             }
-                            else
-                            {
-                                wad.WaveSounds.Add(sound.Hash, sound);
-                                newInfo.WaveSounds.Add(sound);
-                            }
+                            goto FoundSound;
                         }
                     }
+                    logger.Warn("Unable to find sample '" + oldWad.Sounds[j] + "' at any of the defined sound paths");
+                    FoundSound:
+                    ;
                 }
 
                 newInfo.UpdateHash();
@@ -351,7 +358,7 @@ namespace TombLib.Wad
             // Build the skeleton
             for (int j = 0; j < meshes.Count - 1; j++)
             {
-                WadLink link = new WadLink((WadLinkOpcode)oldWad.Links[currentLink], 
+                WadLink link = new WadLink((WadLinkOpcode)oldWad.Links[currentLink],
                                            new Vector3(oldWad.Links[currentLink + 1],
                                                        -oldWad.Links[currentLink + 2],
                                                        oldWad.Links[currentLink + 3]));
@@ -404,7 +411,7 @@ namespace TombLib.Wad
                         ad.InFrame = (ushort)(wadAd.Low - anim.FrameStart);
                         ad.OutFrame = (ushort)(wadAd.High - anim.FrameStart);
                         ad.NextAnimation = (ushort)((wadAd.NextAnimation - m.AnimationIndex) % numAnimations);
-                        ad.NextFrame = (ushort)wadAd.NextFrame; 
+                        ad.NextFrame = (ushort)wadAd.NextFrame;
 
                         sc.Dispatches.Add(ad);
                     }

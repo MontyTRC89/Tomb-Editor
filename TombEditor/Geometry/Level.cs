@@ -88,46 +88,33 @@ namespace TombEditor.Geometry
 
             using (var wad = Wad)
             {
-                if (path.ToLower().EndsWith("wad"))
+                var newWad = new Wad2();
+                try
                 {
-                    var newWad = new Wad2();
-
-                    try
+                    if (path.ToLower().EndsWith("wad"))
                     {
+                        List<string> soundPaths = new List<string>();
+                        foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
+                            soundPaths.Add(Settings.ParseVariables(path_.Path));
+
                         var oldWad = new TR4Wad();
                         oldWad.LoadWad(path);
-
-                        newWad = WadOperations.ConvertTr4Wad(oldWad);
-
-                        newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
-                        newWad.PrepareDataForDirectX();
+                        newWad = WadOperations.ConvertTr4Wad(oldWad, soundPaths);
                     }
-                    catch (Exception)
-                    {
-                        newWad?.Dispose();
-                        throw;
-                    }
-
-                    Wad = newWad;
-                }
-                else
-                {
-                    var newWad = new Wad2();
-
-                    try
+                    else
                     {
                         newWad = Wad2.LoadFromStream(File.OpenRead(path));
-                        newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
-                        newWad.PrepareDataForDirectX();
                     }
-                    catch (Exception)
-                    {
-                        newWad?.Dispose();
-                        throw;
-                    }
-
-                    Wad = newWad;
+                    newWad.GraphicsDevice = DeviceManager.DefaultDeviceManager.Device;
+                    newWad.PrepareDataForDirectX();
                 }
+                catch (Exception)
+                {
+                    newWad?.Dispose();
+                    throw;
+                }
+
+                Wad = newWad;
             }
         }
 
