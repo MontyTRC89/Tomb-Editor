@@ -14,7 +14,15 @@ namespace TombLib.Graphics
     {
         [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
+        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 12)]
+        public Vector4 Color;
 
         Vector3 IVertex.Position => Position;
+
+        public SolidVertex(Vector3 pos, Vector4 color)
+        {
+            Position = pos;
+            Color = color;
+        }
     }
 }

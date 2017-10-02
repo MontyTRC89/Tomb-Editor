@@ -145,16 +145,20 @@ namespace SharpDX.Toolkit.Graphics
                     // Four vertices per face.
                     SolidVertex v1 = new SolidVertex();
                     v1.Position = (normal - side1 - side2) * size;
-                   
+                    v1.Color = Vector4.One;
+
                     SolidVertex v2 = new SolidVertex();
                     v2.Position = (normal - side1 + side2) * size;
-                    
+                    v2.Color = Vector4.One;
+
                     SolidVertex v3 = new SolidVertex();
                     v3.Position = (normal + side1 + side2) * size;
-                    
+                    v3.Color = Vector4.One;
+
                     SolidVertex v4 = new SolidVertex();
                     v4.Position = (normal + side1 - side2) * size;
-                   
+                    v4.Color = Vector4.One;
+
                     vertices[vertexCount++] = v1;
                     vertices[vertexCount++] = v2;
                     vertices[vertexCount++] = v3;

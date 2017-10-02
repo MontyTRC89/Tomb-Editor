@@ -138,6 +138,7 @@ namespace SharpDX.Toolkit.Graphics
                     var textureCoordinate = new Vector2(circleVector.X*textureScale.X + 0.5f, circleVector.Z*textureScale.Y + 0.5f);
                     var vertex = new SolidVertex();
                     vertex.Position = position;
+                    vertex.Color = Vector4.One;
                     vertices.Add(vertex);
                 }
             }
@@ -178,9 +179,11 @@ namespace SharpDX.Toolkit.Graphics
 
                     var v1 = new SolidVertex();
                     v1.Position = sideOffset + topOffset;
+                    v1.Color = Vector4.One;
 
                     var v2 = new SolidVertex();
                     v2.Position = sideOffset - topOffset;
+                    v2.Color = Vector4.One;
 
                     vertices.Add(v1);
                     vertices.Add(v2);

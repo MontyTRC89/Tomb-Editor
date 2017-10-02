@@ -1,6 +1,7 @@
 ﻿struct VertexInputType
 {
 	float3 Position : POSITION0;
+	float4 Color : COLOR0;
 };
 
 struct PixelInputType
@@ -18,7 +19,7 @@ PixelInputType VS(VertexInputType input)
 {
 	PixelInputType output;
 	output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
-	output.Color = Color;
+	output.Color = input.Color * Color;
 	return output;
 }
 

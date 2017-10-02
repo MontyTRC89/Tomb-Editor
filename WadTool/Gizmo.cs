@@ -23,13 +23,13 @@ namespace WadTool
 
         protected override Vector3 Position => Vector3.Zero;
 
-        protected override float CentreCubeSize => 256.0f;
+        protected override float CentreCubeSize => 128.0f;
 
-        protected override float TranslationSphereSize => 256.0f;
+        protected override float TranslationSphereSize => 128.0f;
 
-        protected override float ScaleCubeSize => 256.0f;
+        protected override float ScaleCubeSize => 128.0f;
 
-        protected override float Size => 1536.0f;
+        protected override float Size => 1024.0f;
 
         protected override bool SupportScale => true;
 

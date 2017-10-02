@@ -125,6 +125,7 @@ namespace SharpDX.Toolkit.Graphics
 
                     var v1 = new SolidVertex();
                     v1.Position = sideOffset;
+                    v1.Color = Vector4.One;
 
                     vertices.Add(v1);
 

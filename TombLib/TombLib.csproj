@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Cylinder.cs" />
+    <Compile Include="Graphics\Primitives\GeometricPrimitive.GridPlane.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

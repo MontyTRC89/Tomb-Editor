@@ -131,6 +131,7 @@ namespace SharpDX.Toolkit.Graphics
 
                         SolidVertex vertex = new SolidVertex();
                         vertex.Position = normal * radius;
+                        vertex.Color = Vector4.One;
 
                         vertices[vertexCount++] = vertex;
                     }
