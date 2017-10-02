@@ -92,8 +92,8 @@
             this.butAddSoundSource,
             this.butAddSink,
             this.toolStripSeparator3,
-            this.butCompileLevel,
-            this.butCompileLevelAndPlay});
+            this.butCompileLevelAndPlay,
+            this.butCompileLevel});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -110,7 +110,7 @@
             this.but2D.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.but2D.Name = "but2D";
             this.but2D.Size = new System.Drawing.Size(23, 25);
-            this.but2D.Text = "2D map";
+            this.but2D.Text = "2D map (F1)";
             this.but2D.Click += new System.EventHandler(this.but2D_Click);
             //
             // but3D
@@ -125,7 +125,7 @@
             this.but3D.Name = "but3D";
             this.but3D.Size = new System.Drawing.Size(23, 25);
             this.but3D.Text = "toolStripButton1";
-            this.but3D.ToolTipText = "Geometry mode";
+            this.but3D.ToolTipText = "Geometry mode (F2)";
             this.but3D.Click += new System.EventHandler(this.but3D_Click);
             //
             // butFaceEdit
@@ -138,7 +138,7 @@
             this.butFaceEdit.Name = "butFaceEdit";
             this.butFaceEdit.Size = new System.Drawing.Size(23, 25);
             this.butFaceEdit.Text = "toolStripButton3";
-            this.butFaceEdit.ToolTipText = "Face edit";
+            this.butFaceEdit.ToolTipText = "Face edit (F3)";
             this.butFaceEdit.Click += new System.EventHandler(this.butFaceEdit_Click);
             //
             // butLightingMode
@@ -151,7 +151,7 @@
             this.butLightingMode.Name = "butLightingMode";
             this.butLightingMode.Size = new System.Drawing.Size(23, 25);
             this.butLightingMode.Text = "toolStripButton4";
-            this.butLightingMode.ToolTipText = "Lighting mode";
+            this.butLightingMode.ToolTipText = "Lighting mode (F4)";
             this.butLightingMode.Click += new System.EventHandler(this.butLightingMode_Click);
             //
             // butCenterCamera
@@ -164,7 +164,7 @@
             this.butCenterCamera.Name = "butCenterCamera";
             this.butCenterCamera.Size = new System.Drawing.Size(23, 25);
             this.butCenterCamera.Text = "toolStripButton5";
-            this.butCenterCamera.ToolTipText = "Center camera";
+            this.butCenterCamera.ToolTipText = "Center 3D camera (F6)";
             this.butCenterCamera.Click += new System.EventHandler(this.butCenterCamera_Click);
             //
             // butDrawPortals
@@ -174,7 +174,7 @@
             this.butDrawPortals.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawPortals.Image = global::TombEditor.Properties.Resources.door_opened_16;
             this.butDrawPortals.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDrawPortals.Name = "butDrawPortals";
+            this.butDrawPortals.Name = "butDrawPortals (F6)";
             this.butDrawPortals.Size = new System.Drawing.Size(23, 25);
             this.butDrawPortals.Text = "toolStripButton6";
             this.butDrawPortals.ToolTipText = "Draw portals";
@@ -245,7 +245,7 @@
             this.butCopy.Name = "butCopy";
             this.butCopy.Size = new System.Drawing.Size(23, 25);
             this.butCopy.Text = "toolStripButton2";
-            this.butCopy.ToolTipText = "Copy";
+            this.butCopy.ToolTipText = "Copy (Ctrl+C)";
             this.butCopy.Click += new System.EventHandler(this.butCopy_Click);
             this.butCopy.Enabled = false;
             //
@@ -259,7 +259,7 @@
             this.butPaste.Name = "butPaste";
             this.butPaste.Size = new System.Drawing.Size(23, 25);
             this.butPaste.Text = "toolStripButton2";
-            this.butPaste.ToolTipText = "Paste";
+            this.butPaste.ToolTipText = "Paste (Ctrl+V)";
             this.butPaste.Click += new System.EventHandler(this.butPaste_Click);
             //
             // butStamp
@@ -272,7 +272,7 @@
             this.butStamp.Name = "butStamp";
             this.butStamp.Size = new System.Drawing.Size(23, 25);
             this.butStamp.Text = "toolStripButton2";
-            this.butStamp.ToolTipText = "Stamp";
+            this.butStamp.ToolTipText = "Stamp (Ctrl+B)";
             this.butStamp.Click += new System.EventHandler(this.butStamp_Click);
             this.butStamp.Enabled = false;
             //
@@ -348,7 +348,7 @@
             this.butTextureFloor.Name = "butTextureFloor";
             this.butTextureFloor.Size = new System.Drawing.Size(23, 25);
             this.butTextureFloor.Text = "toolStripButton4";
-            this.butTextureFloor.ToolTipText = "Texture floor";
+            this.butTextureFloor.ToolTipText = "Texture floor (Alt+T)";
             this.butTextureFloor.Click += new System.EventHandler(this.butTextureFloor_Click);
             this.butTextureFloor.Enabled = false;
             //
@@ -362,7 +362,7 @@
             this.butTextureCeiling.Name = "butTextureCeiling";
             this.butTextureCeiling.Size = new System.Drawing.Size(23, 25);
             this.butTextureCeiling.Text = "toolStripButton5";
-            this.butTextureCeiling.ToolTipText = "Texture ceiling";
+            this.butTextureCeiling.ToolTipText = "Texture ceiling (Alt+V)";
             this.butTextureCeiling.Click += new System.EventHandler(this.butTextureCeiling_Click);
             this.butTextureCeiling.Enabled = false;
             //
@@ -376,7 +376,7 @@
             this.butTextureWalls.Name = "butTextureWalls";
             this.butTextureWalls.Size = new System.Drawing.Size(23, 25);
             this.butTextureWalls.Text = "toolStripButton6";
-            this.butTextureWalls.ToolTipText = "Texture walls";
+            this.butTextureWalls.ToolTipText = "Texture walls (Alt+U)";
             this.butTextureWalls.Click += new System.EventHandler(this.butTextureWalls_Click);
             this.butTextureWalls.Enabled = false;
             //
@@ -390,7 +390,7 @@
             this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAdditiveBlending.Name = "butAdditiveBlending";
             this.butAdditiveBlending.Size = new System.Drawing.Size(23, 25);
-            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending)";
+            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending) (Shift+A)";
             this.butAdditiveBlending.Click += new System.EventHandler(this.butAdditiveBlending_Click);
             //
             // butDoubleSided
@@ -403,7 +403,7 @@
             this.butDoubleSided.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDoubleSided.Name = "butDoubleSided";
             this.butDoubleSided.Size = new System.Drawing.Size(23, 25);
-            this.butDoubleSided.Text = "Double sided texture";
+            this.butDoubleSided.Text = "Double sided texture (Shift+D)";
             this.butDoubleSided.Click += new System.EventHandler(this.butDoubleSided_Click);
             //
             // butInvisible
@@ -416,7 +416,7 @@
             this.butInvisible.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butInvisible.Name = "butInvisible";
             this.butInvisible.Size = new System.Drawing.Size(23, 25);
-            this.butInvisible.Text = "Invisible face";
+            this.butInvisible.Text = "Invisible face (Shift+V)";
             //
             // toolStripSeparator2
             //
@@ -495,7 +495,7 @@
             this.butCompileLevel.Name = "butCompileLevel";
             this.butCompileLevel.Size = new System.Drawing.Size(23, 25);
             this.butCompileLevel.Text = "toolStripButton1";
-            this.butCompileLevel.ToolTipText = "Build level";
+            this.butCompileLevel.ToolTipText = "Build level (Shift+F5)";
             this.butCompileLevel.Click += new System.EventHandler(this.butCompileLevel_Click);
             //
             // butCompileLevelAndPlay
@@ -508,7 +508,7 @@
             this.butCompileLevelAndPlay.Name = "butCompileLevelAndPlay";
             this.butCompileLevelAndPlay.Size = new System.Drawing.Size(23, 25);
             this.butCompileLevelAndPlay.Text = "toolStripButton2";
-            this.butCompileLevelAndPlay.ToolTipText = "Build level & play";
+            this.butCompileLevelAndPlay.ToolTipText = "Build level & play (F5)";
             this.butCompileLevelAndPlay.Click += new System.EventHandler(this.butCompileLevelAndPlay_Click);
             //
             // panel3D
@@ -587,7 +587,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripButton butCompileLevel;
         private System.Windows.Forms.ToolStripButton butCompileLevelAndPlay;
-        private Controls.PanelRendering3D panel3D;
-        private Controls.Panel2DMap panel2DMap;
+        private TombEditor.Controls.PanelRendering3D panel3D;
+        private TombEditor.Controls.Panel2DMap panel2DMap;
     }
 }
