@@ -352,7 +352,7 @@
             // butEditRoomName
             // 
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(227, 28);
+            this.butEditRoomName.Location = new System.Drawing.Point(229, 28);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Padding = new System.Windows.Forms.Padding(5);
             this.butEditRoomName.Size = new System.Drawing.Size(24, 24);
@@ -374,7 +374,7 @@
             // butCropRoom
             // 
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(257, 28);
+            this.butCropRoom.Location = new System.Drawing.Point(259, 28);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Padding = new System.Windows.Forms.Padding(5);
             this.butCropRoom.Size = new System.Drawing.Size(24, 24);
