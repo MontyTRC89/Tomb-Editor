@@ -63,6 +63,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _3DView_16 {
+            get {
+                object obj = ResourceManager.GetObject("3DView-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap angle_left_16 {
             get {
                 object obj = ResourceManager.GetObject("angle_left-16", resourceCulture);
