@@ -55,20 +55,6 @@ namespace TombEditor
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
                     else if (Axis == GizmoAxis.Z)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, angle);
-
-                    /*if (_editor.SelectedObject is IRotateableYXRoll)
-                    {
-                        //EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
-                    }
-                    else if (_editor.SelectedObject is IRotateableYX)
-                    {
-                        //EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
-                    }
-                    else
-                    {
-                        angle = MathUtil.RadiansToDegrees(angle);
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
-                    }*/
                     break;
                 case GizmoAction.Scale:
                     EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);

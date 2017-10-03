@@ -60,13 +60,17 @@ namespace SharpDX.Toolkit.Graphics
 
                 for (int x = start; x <= end; x += step)
                 {
+                    var color = Vector4.One;
+                    if (x % 1024 != 0) color = new Vector4(0.75f, 0.75f, 0.75f, 1.0f);
+                    if (x == 0) color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
                     var v1 = new SolidVertex();
-                    v1.Position = new Vector3(x, 0.0f, start);
-                    v1.Color = (x % 1024 == 0 ? Vector4.One : new Vector4(0.75f, 0.75f, 0.75f, 1.0f));
+                    v1.Position = new Vector3(x, 0.0f, (x == 0 ? -32768.0f : start));
+                    v1.Color = color;
 
                     var v2 = new SolidVertex();
-                    v2.Position = new Vector3(x, 0.0f, end);
-                    v2.Color = (x % 1024 == 0 ? Vector4.One : new Vector4(0.75f, 0.75f, 0.75f, 1.0f));
+                    v2.Position = new Vector3(x, 0.0f, (x == 0 ? 32768.0f : end));
+                    v2.Color = color;
 
                     vertices.Add(v1);
                     vertices.Add(v2);
@@ -77,13 +81,17 @@ namespace SharpDX.Toolkit.Graphics
 
                 for (int z = start; z <= end; z += step)
                 {
+                    var color = Vector4.One;
+                    if (z % 1024 != 0) color = new Vector4(0.75f, 0.75f, 0.75f, 1.0f);
+                    if (z == 0) color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
                     var v1 = new SolidVertex();
-                    v1.Position = new Vector3(start, 0.0f, z);
-                    v1.Color = (z % 1024 == 0 ? Vector4.One : new Vector4(0.75f, 0.75f, 0.75f, 1.0f));
+                    v1.Position = new Vector3((z == 0 ? -32768.0f : start), 0.0f, z);
+                    v1.Color = color;
 
                     var v2 = new SolidVertex();
-                    v2.Position = new Vector3(end, 0.0f, z);
-                    v2.Color = (z % 1024 == 0 ? Vector4.One : new Vector4(0.75f, 0.75f, 0.75f, 1.0f));
+                    v2.Position = new Vector3((z == 0 ? 32768.0f : end), 0.0f, z);
+                    v2.Color = color;
 
                     vertices.Add(v1);
                     vertices.Add(v2);
@@ -91,7 +99,22 @@ namespace SharpDX.Toolkit.Graphics
                     indices.Add(lastIndex++);
                     indices.Add(lastIndex++);
                 }
-				
+
+                // Add a final Y axis line
+                var vy1 = new SolidVertex();
+                vy1.Position = new Vector3(0.0f, -32768.0f, 0.0f);
+                vy1.Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
+                var vy2 = new SolidVertex();
+                vy2.Position = new Vector3(0.0f, 32768.0f, 0.0f);
+                vy2.Color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+
+                vertices.Add(vy1);
+                vertices.Add(vy2);
+
+                indices.Add(lastIndex++);
+                indices.Add(lastIndex++);
+
                 // Create the primitive object.
                 return new GeometricPrimitive(device, vertices.ToArray(), indices.ToArray(), toLeftHanded) { Name = "Grid"};
             }

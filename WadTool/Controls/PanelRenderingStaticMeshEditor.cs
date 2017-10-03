@@ -25,8 +25,12 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
         private SpriteBatch _spriteBatch;
-        private Gizmo _gizmo;
+        private GizmoStaticMeshEditor _gizmo;
         private GeometricPrimitive _plane;
+
+        public Vector3 StaticPosition { get; set; } = Vector3.Zero;
+        public Vector3 StaticRotation { get; set; } = Vector3.Zero;
+        public float StaticScale { get; set; } = 1.0f;
 
         public void InitializePanel(GraphicsDevice device)
         {
@@ -74,7 +78,7 @@ namespace WadTool.Controls
 
             _tool = WadToolClass.Instance;
             _spriteBatch = new SpriteBatch(_tool.Device);
-            _gizmo = new Gizmo(_tool.Device, _tool.Effects["Solid"]);
+            _gizmo = new GizmoStaticMeshEditor(_tool.Device, _tool.Effects["Solid"], this);
             _plane = GeometricPrimitive.GridPlane.New(_tool.Device, 8, 4);
         }
 
@@ -103,6 +107,7 @@ namespace WadTool.Controls
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.CornflowerBlue, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+            _device.SetBlendState(_device.BlendStates.Opaque);
 
             Matrix viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
 
@@ -111,7 +116,12 @@ namespace WadTool.Controls
                 var model = _tool.DestinationWad.DirectXStatics[StaticMesh.ObjectID];
 
                 Effect mioEffect = _tool.Effects["StaticModel"];
-                mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+
+                var world = Matrix.Scaling(StaticScale) *
+                            Matrix.RotationYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
+                            Matrix.Translation(StaticPosition);
+
+                mioEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
                 mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
@@ -128,14 +138,14 @@ namespace WadTool.Controls
                     _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
                     _device.SetVertexInputLayout(_layout);
                     
-                    mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
+                    mioEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
                     mioEffect.Techniques[0].Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
                 }
             }
 
-            //_device.SetRasterizerState(_rasterizerWireframe);
+            // Draw the grid
             _device.SetVertexBuffer(0, _plane.VertexBuffer);
             _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SolidVertex>(0, _plane.VertexBuffer));
             _device.SetIndexBuffer(_plane.IndexBuffer, true);
@@ -149,6 +159,26 @@ namespace WadTool.Controls
 
             // Draw the gizmo
             _gizmo.Draw(viewProjection);
+
+            // Draw debug strings
+            _spriteBatch.Begin(SpriteSortMode.Immediate, _device.BlendStates.AlphaBlend);
+
+            _spriteBatch.DrawString(_tool.Font,
+                                    "Position: [" + StaticPosition.X + ", " + StaticPosition.Y + ", " + StaticPosition.Z + "]",
+                                    new Vector2(0, 0),
+                                    SharpDX.Color.White);
+            _spriteBatch.DrawString(_tool.Font,
+                                    "Rotation: [" + MathUtil.RadiansToDegrees(StaticRotation.X) + ", " +
+                                                    MathUtil.RadiansToDegrees(StaticRotation.Y) + ", " +
+                                                    MathUtil.RadiansToDegrees(StaticRotation.Z) + "]",
+                                    new Vector2(0, 18),
+                                    SharpDX.Color.White);
+            _spriteBatch.DrawString(_tool.Font,
+                                    "Scale: " + StaticScale,
+                                    new Vector2(0, 36),
+                                    SharpDX.Color.White);
+
+            _spriteBatch.End();
 
             _device.Present();
         }
@@ -172,6 +202,17 @@ namespace WadTool.Controls
         {
             base.OnMouseDown(e);
 
+            Ray ray = Ray.GetPickRay((int)Math.Round((double)e.X), (int)Math.Round((double)e.Y),
+                                     new ViewportF(0, 0, Width, Height), Camera.GetViewProjectionMatrix(Width, Height));
+
+            if (e.Button == MouseButtons.Left)
+            {
+                var result = _gizmo.DoPicking(ray);
+                if (result == null) return;
+                _gizmo.SetGizmoAxis(result.Axis);
+                return;
+            }
+
             _lastX = e.X;
             _lastY = e.Y;
         }
@@ -179,6 +220,11 @@ namespace WadTool.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            if (e.Button == MouseButtons.Left)
+            {
+                _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), (int)e.X, (int)e.Y);
+            }
 
             if (e.Button == MouseButtons.Right)
             {
