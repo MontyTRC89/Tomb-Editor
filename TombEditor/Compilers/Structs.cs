@@ -545,7 +545,7 @@ namespace TombEditor.Compilers
         public bool Portal;
         public bool NotWalkableFloor;
         public Room WallPortal;
-        public Portal FloorPortal;
+        public PortalInstance FloorPortal;
         public short LowestFloor;
     }
 

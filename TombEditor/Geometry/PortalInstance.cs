@@ -15,7 +15,7 @@ namespace TombEditor.Geometry
         TraversableFaces // Called 'Opacity 2' in the old editor
     }
 
-    public class Portal : SectorBasedObjectInstance
+    public class PortalInstance : SectorBasedObjectInstance
     {
         public PortalDirection Direction { get; }
         public Room AdjoiningRoom { get; internal set; }
@@ -25,7 +25,7 @@ namespace TombEditor.Geometry
 
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
 
-        public Portal(Rectangle area, PortalDirection direction, Room adjoiningRoom)
+        public PortalInstance(Rectangle area, PortalDirection direction, Room adjoiningRoom)
             : base(area)
         {
             if (adjoiningRoom == null)
@@ -41,7 +41,7 @@ namespace TombEditor.Geometry
 
         public override SectorBasedObjectInstance Clone(Rectangle newArea)
         {
-            return new Portal(newArea, Direction, AdjoiningRoom);
+            return new PortalInstance(newArea, Direction, AdjoiningRoom);
         }
 
         public override string ToString()
@@ -96,7 +96,7 @@ namespace TombEditor.Geometry
         }
 
         // Usually this should return a portal, but be prepared for the situation that this returns null because in case of problems this might happen.
-        public Portal FindOppositePortal(Room room)
+        public PortalInstance FindOppositePortal(Room room)
         {
             var adjoiningRoomArea = GetOppositePortalArea(Direction, Area).Offset(room.SectorPos).OffsetNeg(AdjoiningRoom.SectorPos);
             if (!new Rectangle(0, 0, AdjoiningRoom.NumXSectors, AdjoiningRoom.NumZSectors).Contains(adjoiningRoomArea.X, adjoiningRoomArea.Y))

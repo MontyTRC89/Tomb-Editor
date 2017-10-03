@@ -1,490 +1,355 @@
-﻿using System;
+﻿using NLog;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using NLog;
 using TombLib.IO;
-using TombLib.Graphics;
+using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
 {
-    public enum Prj2ChunkType : ushort
-    {
-        NoExtraChunk = 0xcdcd
-    }
-
-    public enum Prj2ObjectType : ushort
-    {
-        Moveable,
-        Static,
-        Camera,
-        FlybyCamera,
-        Sink,
-        SoundSource,
-        RoomGeometry,
-        Light
-    }
-
-    public enum Prj2FaceTextureMode : ushort
-    {
-        NoTexture,
-        Texture,
-        InvisibleColor
-    }
-
-    public class Prj2Writer
+    public static class Prj2Writer
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public static void SaveToPrj2(string filename, Level level)
         {
-            using (var stream = new MemoryStream())
-            {
-                var writer = new BinaryWriterEx(stream);
-
-                // Write version
-                writer.Write(Prj2Chunks.MagicNumber);
-                writer.Write(Prj2Chunks.Version);
-
-                // Write level data
-                WriteLevel(writer, level);
-
-                // Write file
-                byte[] projectData = stream.ToArray();
-                using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-                    fileStream.Write(projectData, 0, projectData.Length);
-            }
+            using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, fileStream, ChunkWriter.Compression.None))
+                WriteLevel(chunkIO, level);
         }
 
-        public static void WriteLevel(BinaryWriterEx writer, Level level)
+        private class LevelSettingsIds
+        {
+            public Dictionary<ImportedGeometry, int> ImportedGeometries { get; } = new Dictionary<ImportedGeometry, int>();
+            public Dictionary<LevelTexture, int> LevelTextures { get; } = new Dictionary<LevelTexture, int>();
+        };
+
+        private static void WriteLevel(ChunkWriter chunkIO, Level level)
         {
             // Write settings
-            WriteLevelSettings(writer, level.Settings);
+            LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, level.Settings);
+
+            // Collect rooms to save
+            var rooms = new Dictionary<Room, int>();
+            for (int i = 0; i < level.Rooms.Length; ++i)
+                if (level.Rooms[i] != null)
+                    rooms.Add(level.Rooms[i], i);
 
             // Write rooms
-            WriteRooms(writer, level.Rooms);
+            WriteRooms(chunkIO, rooms, levelSettingIds);
 
-            ChunkProcessing.WriteChunkEnd(writer);
+            chunkIO.WriteChunkEnd();
         }
 
-        public static void WriteLevelSettings(BinaryWriterEx streamOuter, LevelSettings settings)
+        private static LevelSettingsIds WriteLevelSettings(ChunkWriter chunkIO, LevelSettings settings)
         {
-            ChunkProcessing.WriteChunk(streamOuter, Prj2Chunks.Settings, (stream, id) =>
+            var levelSettingIds = new LevelSettingsIds();
+            chunkIO.WriteChunkWithChildren(Prj2Chunks.Settings, () =>
             {
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.WadFilePath,
-                    (writer, id2) => writer.WriteStringUTF8(settings.WadFilePath ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.FontTextureFilePath,
-                    (writer, id2) => writer.WriteStringUTF8(settings.FontTextureFilePath ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.SkyTextureFilePath,
-                    (writer, id2) => writer.WriteStringUTF8(settings.SkyTextureFilePath ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.GameDirectory,
-                    (writer, id2) => writer.WriteStringUTF8(settings.GameDirectory ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.GameLevelFilePath,
-                    (writer, id2) => writer.WriteStringUTF8(settings.GameLevelFilePath ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.GameExecutableFilePath,
-                    (writer, id2) => writer.WriteStringUTF8(settings.GameExecutableFilePath ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.GameExecutableSuppressAskingForOptions,
-                    (writer, id2) => writer.Write(settings.GameExecutableSuppressAskingForOptions));
-                WriteLevelTextures(stream, settings.Textures);
-                ChunkProcessing.WriteChunkEnd(stream);
-            }, long.MaxValue);
-        }
-
-        public static void WriteLevelTextures(BinaryWriterEx streamOuter, List<LevelTexture> textures)
-        {
-            ChunkProcessing.WriteChunk(streamOuter, Prj2Chunks.Textures, (stream, id) =>
-            {
-                foreach (LevelTexture texture in textures)
-                    WriteLevelTexture(stream, texture);
-                ChunkProcessing.WriteChunkEnd(stream);
-            });
-        }
-
-        public static void WriteLevelTexture(BinaryWriterEx streamOuter, LevelTexture texture)
-        {
-            ChunkProcessing.WriteChunk(streamOuter, Prj2Chunks.Texture, (stream, id) =>
-            {
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.TexturePath,
-                    (writer, id2) => writer.WriteStringUTF8(texture.Path ?? ""));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.TextureConvert512PixelsToDoubleRows,
-                    (writer, id2) => writer.Write(texture.Convert512PixelsToDoubleRows));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.TextureReplaceMagentaWithTransparency,
-                    (writer, id2) => writer.Write(texture.ReplaceMagentaWithTransparency));
-                ChunkProcessing.WriteChunk(stream, Prj2Chunks.TextureSounds, (writer, id2) =>
+                chunkIO.WriteChunkString(Prj2Chunks.WadFilePath, settings.WadFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.FontTextureFilePath, settings.FontTextureFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.SkyTextureFilePath, settings.SkyTextureFilePath ?? "");
+                chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPaths, () =>
+                {
+                    foreach (OldWadSoundPath soundPath in settings.OldWadSoundPaths)
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.OldWadSoundPath, () => chunkIO.WriteChunkString(Prj2Chunks.OldWadSoundPathPath, soundPath.Path));
+                });
+                chunkIO.WriteChunkString(Prj2Chunks.GameDirectory, settings.GameDirectory ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.GameLevelFilePath, settings.GameLevelFilePath ?? "");
+                chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
+                chunkIO.WriteChunkBool(Prj2Chunks.GameExecutableSuppressAskingForOptions, settings.GameExecutableSuppressAskingForOptions);
+                chunkIO.WriteChunkWithChildren(Prj2Chunks.Textures, () =>
+                {
+                    int index = 0;
+                    foreach (LevelTexture texture in settings.Textures)
                     {
-                        writer.Write(texture.TextureSoundWidth);
-                        writer.Write(texture.TextureSoundHeight);
-                        for (int y = 0; y < texture.TextureSoundHeight; ++y)
-                            for (int x = 0; x < texture.TextureSoundWidth; ++x)
-                                writer.Write((byte)(texture.GetTextureSound(x, y)));
-                    });
-                ChunkProcessing.WriteChunkEnd(stream);
-            });
-        }
-
-        public static void WriteRooms(BinaryWriterEx streamOuter, IList<Room> rooms)
-        {
-            ChunkProcessing.WriteChunk(streamOuter, Prj2Chunks.Rooms, (writer, id) =>
-            {
-                // Collect all shared lists so we can save references as indices
-
-                int TODO_WriteRooms;
-                /*
-                var portalsList = new List<Portal>();
-                var triggersList = new List<TriggerInstance>();
-                var objectsList = new List<ObjectInstance>();
-                var modelsList = new List<string>();
-
-                foreach (var room in rooms.Where(room => room != null))
-                {
-                    foreach (var trigger in room.Triggers)
-                        if (!triggersList.Contains(trigger))
-                            triggersList.Add(trigger);
-
-                    foreach (var portal in room.Portals)
-                        if (!portalsList.Contains(portal))
-                            portalsList.Add(portal);
-
-                    foreach (var obj in room.Objects)
-                        if (!objectsList.Contains(obj))
-                            objectsList.Add(obj);
-                }
-
-                for (int m = 0; m < GeometryImporterExporter.Models.Count; m++)
-                    modelsList.Add(GeometryImporterExporter.Models.ElementAt(m).Key);
-                // Write imported references
-                uint numModels = (uint)GeometryImporterExporter.Models.Count;
-                writer.Write(numModels);
-                for (int i = 0; i < numModels; i++)
-                {
-                    writer.WriteStringUTF8(GeometryImporterExporter.Models.ElementAt(i).Key);
-                    writer.Write(GeometryImporterExporter.Models.ElementAt(i).Value.Scale);
-                }
-
-                // Write rooms
-                int numRooms = rooms.Count;
-                writer.Write(numRooms);
-                for (int i = 0; i < numRooms; i++)
-                {
-                    var r = rooms[i];
-                    writer.Write(r != null);
-                    if (r == null)
-                        continue;
-
-                    writer.WriteStringUTF8(r.Name);
-                    writer.Write(r.Position);
-                    writer.Write(r.NumXSectors);
-                    writer.Write(r.NumZSectors);
-
-                    for (int z = 0; z < r.NumZSectors; z++)
-                    {
-                        for (int x = 0; x < r.NumXSectors; x++)
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.LevelTexture, () =>
                         {
-                            var b = r.Blocks[x, z];
-
-                            writer.Write((ushort)b.Type);
-                            writer.Write((ushort)b.Flags);
-                            writer.Write((bool)b.ForceFloorSolid);
-
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.QAFaces[n]);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.EDFaces[n]);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.WSFaces[n]);
-                            for (int n = 0; n < 4; n++)
-                                writer.Write(b.RFFaces[n]);
-                            
-                            writer.Write((ushort)b.FloorDiagonalSplit);
-                            writer.Write((ushort)b.CeilingDiagonalSplit);
-                            writer.Write(b.FloorSplitDirectionIsXEqualsZ);
-                            writer.Write(b.CeilingSplitDirectionIsXEqualsZ);
-
-                            for (int f = 0; f < 29; f++)
+                            chunkIO.WriteChunkInt(Prj2Chunks.LevelTextureIndex, index);
+                            chunkIO.WriteChunkString(Prj2Chunks.LevelTexturePath, texture.Path ?? "");
+                            chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows, texture.Convert512PixelsToDoubleRows);
+                            chunkIO.WriteChunkBool(Prj2Chunks.LevelTextureReplaceMagentaWithTransparency, texture.ReplaceMagentaWithTransparency);
+                            chunkIO.WriteChunk(Prj2Chunks.LevelTextureSounds, () =>
                             {
-                                var texture = b.GetFaceTexture((BlockFace)f);
-
-                                var mode = Prj2FaceTextureMode.NoTexture;
-                                if (texture.TextureIsInvisble)
-                                {
-                                    mode = Prj2FaceTextureMode.InvisibleColor;
-                                }
-                                else
-                                {
-                                    if (!texture.TextureIsUnavailable)
-                                        mode = Prj2FaceTextureMode.Texture;
-                                    else
-                                        mode = Prj2FaceTextureMode.NoTexture;
-                                }
-
-                                writer.Write((ushort)mode);
-
-                                if (mode == Prj2FaceTextureMode.Texture)
-                                {
-                                    writer.Write(texture.TexCoord0);
-                                    writer.Write(texture.TexCoord1);
-                                    writer.Write(texture.TexCoord2);
-                                    writer.Write(texture.TexCoord3);
-                                    writer.Write((ushort)texture.BlendMode);
-                                    writer.Write(texture.DoubleSided);
-
-                                    writer.WriteFiller(0x00, 8);
-
-                                    // No more data, in future we can expand the structure using chunks
-                                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                                }
-                            }
-
-                            writer.WriteFiller(0x00, 32);
-
-                            // No more data, in future we can expand the structure using chunks
-                            writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                        }
-                    }
-                    
-                    // Write room properties
-                    writer.Write(r.AmbientLight);
-                    writer.Write(r.AlternateGroup);
-                    writer.Write((r.AlternateRoom != null ? (int)rooms.ReferenceIndexOf(r.AlternateRoom) : (int)-1));
-                    writer.Write((r.AlternateBaseRoom != null ? (int)rooms.ReferenceIndexOf(r.AlternateBaseRoom) : (int)-1));
-                    writer.Write(r.FlagCold);
-                    writer.Write(r.FlagDamage);
-                    writer.Write(r.FlagHorizon);
-                    writer.Write(r.FlagMist);
-                    writer.Write(r.FlagOutside);
-                    writer.Write(r.FlagNoLensflare);
-                    writer.Write(r.FlagRain);
-                    writer.Write(r.FlagReflection);
-                    writer.Write(r.FlagSnow);
-                    writer.Write(r.FlagWater);
-                    writer.Write(r.FlagQuickSand);
-                    writer.Write(r.ExcludeFromPathFinding);
-                    writer.Write(r.WaterLevel);
-                    writer.Write(r.MistLevel);
-                    writer.Write(r.ReflectionLevel);
-                    writer.Write((ushort)r.Reverberation);
-
-                    writer.WriteFiller(0x00, 64);
-
-                    // No more data, in future we can expand the structure using chunks
-                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                }
-
-                // Write portals
-                writer.Write(portalsList.Count);
-                foreach (var p in portalsList)
+                                chunkIO.Raw.Write(texture.TextureSoundWidth);
+                                chunkIO.Raw.Write(texture.TextureSoundHeight);
+                                for (int y = 0; y < texture.TextureSoundHeight; ++y)
+                                    for (int x = 0; x < texture.TextureSoundWidth; ++x)
+                                        chunkIO.Raw.Write((byte)(texture.GetTextureSound(x, y)));
+                            });
+                        });
+                        levelSettingIds.LevelTextures.Add(texture, index++);
+                    };
+                });
+                chunkIO.WriteChunkWithChildren(Prj2Chunks.ImportedGeometries, () =>
                 {
-                    writer.Write((ushort)rooms.ReferenceIndexOf(p.Room));
-                    writer.Write((ushort)rooms.ReferenceIndexOf(p.AdjoiningRoom));
-                    writer.Write((ushort)p.Direction);
-                    writer.Write(p.Area.Left);
-                    writer.Write(p.Area.Top);
-                    writer.Write(p.Area.Right);
-                    writer.Write(p.Area.Bottom);
-                    writer.Write((byte)p.Opacity);
-
-                    writer.WriteFiller(0x00, 16);
-
-
-                    // No more data, in future we can expand the structure using chunks
-                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                }
-
-                // Write objects
-                writer.Write(objectsList.Count);
-                foreach (var o in objectsList)
-                {
-                    if (o is MoveableInstance)
+                    int index = 0;
+                    foreach (ImportedGeometry importedGeometry in settings.ImportedGeometries)
                     {
-                        var instance = (MoveableInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Moveable);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.ItemType.Id);
-                        writer.Write(instance.Position);
-                        writer.Write(instance.RotationY);
-                        writer.Write(instance.RotationYRadians);
-                        writer.Write(instance.Ocb);
-                        writer.Write(instance.Invisible);
-                        writer.Write(instance.ClearBody);
-                        writer.Write(instance.CodeBits);
-                        writer.Write(instance.Color);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ImportedGeometry, () =>
+                        {
+                            chunkIO.WriteChunkInt(Prj2Chunks.ImportedGeometryIndex, index);
+                            chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryName, importedGeometry.Info.Name);
+                            chunkIO.WriteChunkString(Prj2Chunks.ImportedGeometryPath, importedGeometry.Info.Path);
+                            chunkIO.WriteChunkFloat(Prj2Chunks.ImportedGeometryScale, importedGeometry.Info.Scale);
+                        });
+                        levelSettingIds.ImportedGeometries.Add(importedGeometry, index++);
                     }
-                    else if (o is StaticInstance)
-                    {
-                        var instance = (StaticInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Static);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.ItemType.Id);
-                        writer.Write(instance.Position);
-                        writer.Write(instance.RotationY);
-                        writer.Write(instance.RotationYRadians);
-                        writer.Write(instance.Ocb);
-                        writer.Write(instance.Color);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o is CameraInstance)
-                    {
-                        var instance = (CameraInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Camera);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Fixed);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o is FlybyCameraInstance)
-                    {
-                        var instance = (FlybyCameraInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.FlybyCamera);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Flags);
-                        writer.Write(instance.Number);
-                        writer.Write(instance.Sequence);
-                        writer.Write(instance.Roll);
-                        writer.Write(instance.Speed);
-                        writer.Write(instance.Timer);
-                        writer.Write(instance.Fov);
-                        writer.Write(instance.RotationX);
-                        writer.Write(instance.RotationY);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o is SinkInstance)
-                    {
-                        var instance = (SinkInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Sink);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Strength);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o is SoundSourceInstance)
-                    {
-                        var instance = (SoundSourceInstance)o;
-
-                        writer.Write((ushort)Prj2ObjectType.SoundSource);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write(instance.SoundId);
-                        writer.Write(instance.Flags);
-                        writer.Write(instance.CodeBits);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o is Light)
-                    {
-                        var instance = (Light)o;
-
-                        writer.Write((ushort)Prj2ObjectType.Light);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write((ushort)instance.Type);
-                        writer.Write(instance.Position);
-                        writer.Write(instance.Intensity);
-                        writer.Write(instance.Color);
-                        writer.Write(instance.InnerRange);
-                        writer.Write(instance.OuterRange);
-                        writer.Write(instance.InnerAngle);
-                        writer.Write(instance.OuterAngle);
-                        writer.Write(instance.RotationX);
-                        writer.Write(instance.RotationY);
-                        writer.Write(instance.Enabled);
-                        writer.Write(instance.CastsShadows);
-                        writer.Write(instance.IsDynamicallyUsed);
-                        writer.Write(instance.IsStaticallyUsed);
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                    else if (o is ImportedGeometryInstance)
-                    {
-                        var instance = (ImportedGeometryInstance)o;
-                        writer.Write((ushort)Prj2ObjectType.RoomGeometry);
-                        writer.Write((ushort)rooms.ReferenceIndexOf(o.Room));
-                        writer.Write(instance.Position);
-                        writer.Write((uint)modelsList.IndexOf(instance.Model.Name));
-
-                        writer.WriteFiller(0x00, 8);
-
-                        // No more data, in future we can expand the structure using chunks
-                        writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                    }
-                }
-
-                // Write triggers
-                int numTriggers = triggersList.Count;
-                writer.Write(numTriggers);
-                foreach (var t in triggersList)
-                {
-                    writer.Write((ushort)rooms.ReferenceIndexOf(t.Room));
-                    writer.Write(t.Area.Left);
-                    writer.Write(t.Area.Top);
-                    writer.Write(t.Area.Right);
-                    writer.Write(t.Area.Bottom);
-                    writer.Write((ushort)t.TriggerType);
-                    writer.Write((ushort)t.TargetType);
-                    writer.Write(t.TargetData);
-                    writer.Write((t.TargetObj != null ? (int)objectsList.IndexOf(t.TargetObj) : (int)-1));
-                    writer.Write(t.Timer);
-                    writer.Write(t.CodeBits);
-                    writer.Write(t.OneShot);
-
-                    writer.WriteFiller(0x00, 8);
-
-                    // No more data, in future we can expand the structure using chunks
-                    writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-                }
-
-                // No more data, in future we can expand the structure using chunks
-                writer.Write((ushort)Prj2ChunkType.NoExtraChunk);
-
-                ChunkProcessing.WriteChunkEnd(writer);*/
+                });
             }, long.MaxValue);
+
+            return levelSettingIds;
         }
 
-        private class IdResolver<T>
+        private static void WriteRooms(ChunkWriter chunkIO, Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds)
         {
-            private readonly Dictionary<T, int> _idList = new Dictionary<T, int>();
-            public int this[T obj]
+            // Allocate object indices
+            var objectInstanceLookup = new Dictionary<ObjectInstance, int>();
+            foreach (Room room in rooms.Keys)
+                foreach (ObjectInstance objectInstance in room.AnyObjects)
+                    objectInstanceLookup.Add(objectInstance, objectInstanceLookup.Count);
+
+            // Save
+            chunkIO.WriteChunkWithChildren(Prj2Chunks.Rooms, () =>
             {
-                get
-                {
-                    if (obj == null)
-                        return -1;
-                    if (!_idList.ContainsKey(obj))
-                        _idList.Add(obj, _idList.Count);
-                    return _idList[obj];
-                }
-            }
+                foreach (Room room in rooms.Keys)
+                    chunkIO.WriteChunkWithChildren(Prj2Chunks.Room, () =>
+                    {
+                        LEB128.Write(chunkIO.Raw, room.NumXSectors);
+                        LEB128.Write(chunkIO.Raw, room.NumZSectors);
+
+                        // Write basic properties
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomIndex, rooms.TryGetOrDefault(room, -1));
+                        chunkIO.WriteChunkString(Prj2Chunks.RoomName, room.Name);
+                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition, room.Position);
+
+                        // Write sectors
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomSectors, () =>
+                        {
+                            for (int z = 0; z < room.NumZSectors; z++)
+                                for (int x = 0; x < room.NumXSectors; x++)
+                                    chunkIO.WriteChunkWithChildren(Prj2Chunks.Sector, () =>
+                                    {
+                                        chunkIO.Raw.Write((int)(x + z * room.NumXSectors));
+                                        var b = room.Blocks[x, z];
+
+                                        long combinedFlag = (b.IsAnyWall ? 1L : 0) | (b.ForceFloorSolid ? 2L : 0) | ((long)b.Flags << 2);
+                                        chunkIO.WriteChunkInt(Prj2Chunks.SectorProperties, combinedFlag);
+                                        chunkIO.WriteChunk(Prj2Chunks.SectorFloor, () =>
+                                        {
+                                            long flag = (b.FloorSplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.FloorDiagonalSplit << 1);
+                                            LEB128.Write(chunkIO.Raw, flag);
+                                            for (int n = 0; n < 4; n++)
+                                                LEB128.Write(chunkIO.Raw, b.QAFaces[n]);
+                                            for (int n = 0; n < 4; n++)
+                                                LEB128.Write(chunkIO.Raw, b.EDFaces[n]);
+                                        }, LEB128.MaximumSize1Byte);
+                                        chunkIO.WriteChunk(Prj2Chunks.SectorCeiling, () =>
+                                        {
+                                            long flag = (b.CeilingSplitDirectionIsXEqualsZ ? 1L : 0) | ((long)b.CeilingDiagonalSplit << 1);
+                                            LEB128.Write(chunkIO.Raw, flag);
+                                            for (int n = 0; n < 4; n++)
+                                                LEB128.Write(chunkIO.Raw, b.WSFaces[n]);
+                                            for (int n = 0; n < 4; n++)
+                                                LEB128.Write(chunkIO.Raw, b.RFFaces[n]);
+                                        }, LEB128.MaximumSize1Byte);
+                                        for (BlockFace face = 0; face < Block.FaceCount; face++)
+                                        {
+                                            var texture = b.GetFaceTexture(face);
+                                            if (texture.Texture == null)
+                                                continue;
+
+                                            if (texture.Texture is LevelTexture)
+                                            {
+                                                chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture, () =>
+                                                    {
+                                                        int textureIndex = levelSettingIds.LevelTextures[(LevelTexture)texture.Texture];
+
+                                                        LEB128.Write(chunkIO.Raw, (long)face);
+                                                        chunkIO.Raw.Write(texture.TexCoord0);
+                                                        chunkIO.Raw.Write(texture.TexCoord1);
+                                                        chunkIO.Raw.Write(texture.TexCoord2);
+                                                        chunkIO.Raw.Write(texture.TexCoord3);
+                                                        LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
+                                                        LEB128.Write(chunkIO.Raw, textureIndex);
+                                                    }, LEB128.MaximumSize1Byte);
+                                            }
+                                            else if (texture.Texture == TextureInvisible.Instance)
+                                                chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
+                                            else
+                                                throw new NotSupportedException("Unsupported texture type " + texture.Texture.GetType().Name);
+                                        }
+                                    }, LEB128.MaximumSize2Byte);
+                        });
+
+                        // Write room properties
+                        chunkIO.WriteChunkVector4(Prj2Chunks.RoomAmbientLight, room.AmbientLight);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagCold, room.FlagCold);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagDamage, room.FlagDamage);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagHorizon, room.FlagHorizon);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagOutside, room.FlagOutside);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagNoLensflare, room.FlagNoLensflare);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagRain, room.FlagRain);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagSnow, room.FlagSnow);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagQuickSand, room.FlagQuickSand);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagExcludeFromPathFinding, room.FlagExcludeFromPathFinding);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomWaterLevel, room.WaterLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomMistLevel, room.MistLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomReflectionLevel, room.ReflectionLevel);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Reverberation);
+                        if ((room.AlternateRoom != null) && rooms.ContainsKey(room.AlternateRoom))
+                            chunkIO.WriteChunkWithChildren(Prj2Chunks.RoomAlternate, () =>
+                            {
+                                chunkIO.WriteChunkInt(Prj2Chunks.AlternateGroup, room.AlternateGroup);
+                                chunkIO.WriteChunkInt(Prj2Chunks.AlternateRoom, rooms[room.AlternateRoom]);
+                            }, LEB128.MaximumSize1Byte);
+
+                        // Write room objects
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.Objects, () =>
+                        {
+                            foreach (var o in room.AnyObjects)
+                            {
+                                if (o is MoveableInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectMovable, () =>
+                                    {
+                                        var instance = (MoveableInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        chunkIO.Raw.Write(instance.RotationY);
+                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        chunkIO.Raw.Write(instance.WadObjectId);
+                                        chunkIO.Raw.Write(instance.Ocb);
+                                        chunkIO.Raw.Write(instance.Invisible);
+                                        chunkIO.Raw.Write(instance.ClearBody);
+                                        chunkIO.Raw.Write(instance.CodeBits);
+                                        chunkIO.Raw.Write(instance.Color);
+                                    }, LEB128.MaximumSize1Byte);
+                                else if (o is StaticInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectStatic, () =>
+                                    {
+                                        var instance = (StaticInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        chunkIO.Raw.Write(instance.RotationY);
+                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        chunkIO.Raw.Write(instance.WadObjectId);
+                                        chunkIO.Raw.Write(instance.Color);
+                                        chunkIO.Raw.Write(instance.Ocb);
+                                    }, LEB128.MaximumSize1Byte);
+                                else if (o is CameraInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, () =>
+                                    {
+                                        var instance = (CameraInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        chunkIO.Raw.Write(instance.Fixed);
+                                    });
+                                else if (o is FlybyCameraInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, () =>
+                                    {
+                                        var instance = (FlybyCameraInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        chunkIO.Raw.Write(instance.RotationY);
+                                        chunkIO.Raw.Write(instance.RotationX);
+                                        chunkIO.Raw.Write(instance.Roll);
+                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        chunkIO.Raw.Write(instance.Speed);
+                                        chunkIO.Raw.Write(instance.Fov);
+                                        LEB128.Write(chunkIO.Raw, instance.Flags);
+                                        LEB128.Write(chunkIO.Raw, instance.Number);
+                                        LEB128.Write(chunkIO.Raw, instance.Sequence);
+                                        LEB128.Write(chunkIO.Raw, instance.Timer);
+                                    });
+                                else if (o is SinkInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectSink, () =>
+                                    {
+                                        var instance = (SinkInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        LEB128.Write(chunkIO.Raw, instance.ScriptId ?? -1);
+                                        chunkIO.Raw.Write(instance.Strength);
+                                    });
+                                else if (o is SoundSourceInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, () =>
+                                    {
+                                        var instance = (SoundSourceInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        chunkIO.Raw.Write(instance.SoundId);
+                                        chunkIO.Raw.Write(instance.Flags);
+                                        chunkIO.Raw.Write(instance.CodeBits);
+                                    });
+                                else if (o is LightInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectLight, () =>
+                                    {
+                                        var instance = (LightInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        LEB128.Write(chunkIO.Raw, (long)instance.Type);
+                                        chunkIO.Raw.Write(instance.Position);
+                                        chunkIO.Raw.Write(instance.RotationY);
+                                        chunkIO.Raw.Write(instance.RotationX);
+                                        chunkIO.Raw.Write(instance.Intensity);
+                                        chunkIO.Raw.Write(instance.Color);
+                                        chunkIO.Raw.Write(instance.InnerRange);
+                                        chunkIO.Raw.Write(instance.OuterRange);
+                                        chunkIO.Raw.Write(instance.InnerAngle);
+                                        chunkIO.Raw.Write(instance.OuterAngle);
+                                        chunkIO.Raw.Write(instance.Enabled);
+                                        chunkIO.Raw.Write(instance.CastsShadows);
+                                        chunkIO.Raw.Write(instance.IsDynamicallyUsed);
+                                        chunkIO.Raw.Write(instance.IsStaticallyUsed);
+                                    });
+                                else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, () =>
+                                    {
+                                        var instance = (PortalInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Left);
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Top);
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Right);
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
+                                        LEB128.Write(chunkIO.Raw, rooms[instance.AdjoiningRoom]);
+                                        chunkIO.Raw.Write((byte)instance.Direction);
+                                        chunkIO.Raw.Write((byte)instance.Opacity);
+                                    });
+                                else if (o is TriggerInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger, () =>
+                                    {
+                                        var instance = (TriggerInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Left);
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Top);
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Right);
+                                        LEB128.Write(chunkIO.Raw, instance.Area.Bottom);
+                                        LEB128.Write(chunkIO.Raw, (long)instance.TriggerType);
+                                        LEB128.Write(chunkIO.Raw, (long)instance.TargetType);
+                                        LEB128.Write(chunkIO.Raw, instance.TargetData);
+                                        LEB128.Write(chunkIO.Raw, instance.TargetObj == null ? -1 : objectInstanceLookup.TryGetOrDefault(instance.TargetObj, -1));
+                                        LEB128.Write(chunkIO.Raw, instance.Timer);
+                                        LEB128.Write(chunkIO.Raw, instance.CodeBits);
+                                        chunkIO.Raw.Write(instance.OneShot);
+                                    });
+                                else if (o is ImportedGeometryInstance)
+                                    chunkIO.WriteChunk(Prj2Chunks.ObjectImportedGeometry, () =>
+                                    {
+                                        var instance = (ImportedGeometryInstance)o;
+                                        LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                        chunkIO.Raw.Write(instance.Position);
+                                        chunkIO.Raw.Write(instance.RotationY);
+                                        chunkIO.Raw.Write(instance.RotationX);
+                                        chunkIO.Raw.Write(instance.Roll);
+                                        chunkIO.Raw.Write(instance.Scale);
+                                        LEB128.Write(chunkIO.Raw, levelSettingIds.ImportedGeometries[instance.Model]);
+                                    });
+                                else
+                                    logger.Warn("Object " + o + " not supported.");
+                            }
+                        }, long.MaxValue);
+                    }, long.MaxValue);
+            }, long.MaxValue);
         }
     }
 }

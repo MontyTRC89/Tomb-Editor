@@ -513,7 +513,7 @@ namespace TombEditor.Geometry.IO
                                             continue;
                                     }
 
-                                    var light = new Light(lightType)
+                                    var light = new LightInstance(lightType)
                                     {
                                         Position = position,
                                         Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
@@ -597,36 +597,17 @@ namespace TombEditor.Geometry.IO
                         byte reverb = reader.ReadByte();
                         tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
-                        room.WaterLevel = waterLevel;
+                        room.WaterLevel = (flags1 & 0x0001) != 0 ? waterLevel : (byte)0;
                         room.Reverberation = (Reverberation)reverb;
-
-                        if ((flags1 & 0x0200) != 0)
-                        {
-                            room.FlagReflection = true;
-                            room.ReflectionLevel = mistOrReflectionLevel;
-                        }
-                        if ((flags1 & 0x0100) != 0)
-                        {
-                            room.FlagMist = true;
-                            room.MistLevel = mistOrReflectionLevel;
-                        }
-
-                        if ((flags1 & 0x0001) != 0)
-                            room.FlagWater = true;
-                        if ((flags1 & 0x0004) != 0)
-                            room.FlagQuickSand = true;
-                        if ((flags1 & 0x0008) != 0)
-                            room.FlagHorizon = true;
-                        if ((flags1 & 0x0010) != 0)
-                            room.FlagDamage = true;
-                        if ((flags1 & 0x0020) != 0)
-                            room.FlagOutside = true;
-                        if ((flags1 & 0x0080) != 0)
-                            room.FlagNoLensflare = true;
-                        if ((flags1 & 0x0400) != 0)
-                            room.FlagSnow = true;
-                        if ((flags1 & 0x0800) != 0)
-                            room.FlagRain = true;
+                        room.ReflectionLevel = (flags1 & 0x0200) != 0 ? mistOrReflectionLevel : (byte)0;
+                        room.MistLevel = (flags1 & 0x0100) != 0 ? mistOrReflectionLevel : (byte)0;
+                        room.FlagQuickSand = (flags1 & 0x0004) != 0;
+                        room.FlagHorizon = (flags1 & 0x0008) != 0;
+                        room.FlagDamage = (flags1 & 0x0010) != 0;
+                        room.FlagOutside = (flags1 & 0x0020) != 0;
+                        room.FlagNoLensflare = (flags1 & 0x0080) != 0;
+                        room.FlagSnow = (flags1 & 0x0400) != 0;
+                        room.FlagRain = (flags1 & 0x0800) != 0;
 
                         // Read blocks
                         tempRoom._blocks = new PrjBlock[numXBlocks, numZBlocks];
@@ -767,7 +748,7 @@ namespace TombEditor.Geometry.IO
                                 continue;
                             }
                             Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
-                            Portal portal = new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom);
+                            PortalInstance portal = new PortalInstance(prjPortal._area, prjPortal._direction, adjoiningRoom);
 
                             // Figure out opacity of the portal
                             portal.Opacity = PortalOpacity.None;
@@ -781,7 +762,7 @@ namespace TombEditor.Geometry.IO
 
                                     // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                                     // the water flag differs.
-                                    if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 case PortalDirection.Floor:
@@ -792,7 +773,7 @@ namespace TombEditor.Geometry.IO
 
                                     // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
                                     // the water flag differs.
-                                    if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                    if (((room.WaterLevel != 0) != (portal.AdjoiningRoom.WaterLevel != 0)) && (portal.Opacity == PortalOpacity.SolidFaces))
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                                 default:

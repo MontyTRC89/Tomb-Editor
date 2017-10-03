@@ -333,7 +333,7 @@
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </Compile>
     <Compile Include="Geometry\LevelTexture.cs" />
-    <Compile Include="Geometry\Light.cs" />
+    <Compile Include="Geometry\LightInstance.cs" />
     <Compile Include="Geometry\MoveableInstance.cs" />
     <Compile Include="Geometry\StaticInstance.cs" />
     <Compile Include="Geometry\TriggerInstance.cs" />
@@ -370,7 +370,7 @@
     </None>
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\Level.cs" />
-    <Compile Include="Geometry\Portal.cs" />
+    <Compile Include="Geometry\PortalInstance.cs" />
     <Compile Include="Geometry\Room.cs" />
     <Compile Include="Geometry\EditorVertex.cs" />
     <Compile Include="Program.cs" />

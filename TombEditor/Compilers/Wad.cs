@@ -11,6 +11,7 @@ namespace TombEditor.Compilers
 {
     public partial class LevelCompilerTr4
     {
+        private static readonly bool _writeDbgWadTxt = false;
         private Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>();
 
         private void ConvertWadMeshes(Wad2 wad)
@@ -166,10 +167,7 @@ namespace TombEditor.Compilers
         public void ConvertWad2DataToTr4(Wad2 wad)
         {
             int lastAnimation = 0;
-            int lastKeyFrame = 0;
             int lastAnimDispatch = 0;
-            int lastMeshTree = 0;
-            int lastMeshPointer = 0;
 
             // First thing build frames
             var keyframesDictionary = new Dictionary<WadKeyFrame, uint>();
@@ -198,7 +196,8 @@ namespace TombEditor.Compilers
                                 currentKeyFrameSize += 1;
                         }
 
-                        if (currentKeyFrameSize > maxKeyFrameSize) maxKeyFrameSize = currentKeyFrameSize;
+                        if (currentKeyFrameSize > maxKeyFrameSize)
+                            maxKeyFrameSize = currentKeyFrameSize;
                     }
 
                     foreach (var keyframe in animation.KeyFrames)
@@ -316,55 +315,39 @@ namespace TombEditor.Compilers
                 var newMoveable = new tr_moveable();
 
                 newMoveable.Animation = (ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
-                newMoveable.FrameOffset = (uint)lastKeyFrame;
+                newMoveable.FrameOffset = 0;
                 newMoveable.NumMeshes = (ushort)oldMoveable.Meshes.Count;
                 newMoveable.ObjectID = oldMoveable.ObjectID;
-                newMoveable.MeshTree = (uint)lastMeshTree;
-                newMoveable.StartingMesh = (ushort)lastMeshPointer;
-
-                int numAnimations = 0;
-                int numStateChanges = 0;
-                int numAnimCommands = 0;
-                int numKeyFrames = 0;
+                newMoveable.MeshTree = 0;
+                newMoveable.StartingMesh = 0;
 
                 // Add animations
-                foreach (var animation in oldMoveable.Animations)
+                ushort frameBase = 0;
+                for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
+                    var oldAnimation = oldMoveable.Animations[j];
                     var newAnimation = new tr_animation();
 
                     // Setup the final animation
-                    newAnimation.FrameOffset = (uint)animation.KeyFramesOffset;
-                    newAnimation.FrameRate = animation.FrameDuration;
-                    newAnimation.FrameSize = (byte)animation.KeyFramesSize;
-                    newAnimation.Speed = animation.Speed;
-                    newAnimation.Accel = animation.Acceleration;
-                    newAnimation.SpeedLateral = animation.LateralSpeed;
-                    newAnimation.AccelLateral = animation.LateralAcceleration;
-                    newAnimation.FrameStart = (ushort)(animation.FrameStart);
-                    newAnimation.FrameEnd = (ushort)(animation.FrameEnd);
+                    newAnimation.FrameOffset = (uint)oldAnimation.KeyFramesOffset;
+                    newAnimation.FrameRate = oldAnimation.FrameDuration;
+                    newAnimation.FrameSize = (byte)oldAnimation.KeyFramesSize;
+                    newAnimation.Speed = oldAnimation.Speed;
+                    newAnimation.Accel = oldAnimation.Acceleration;
+                    newAnimation.SpeedLateral = oldAnimation.LateralSpeed;
+                    newAnimation.AccelLateral = oldAnimation.LateralAcceleration;
+                    newAnimation.FrameStart = (ushort)(frameBase + oldAnimation.FrameStart);
+                    newAnimation.FrameEnd = (ushort)(frameBase + oldAnimation.FrameEnd);
                     newAnimation.AnimCommand = (ushort)(_animCommands.Count);
                     newAnimation.StateChangeOffset = (ushort)(_stateChanges.Count);
-                    newAnimation.NumAnimCommands = (ushort)animation.AnimCommands.Count;
-                    newAnimation.NumStateChanges = (ushort)animation.StateChanges.Count;
-                    newAnimation.NextAnimation = (ushort)(animation.NextAnimation + lastAnimation);
-                    newAnimation.NextFrame = (ushort)(animation.NextFrame);
-                    newAnimation.StateID = (animation.StateId);
-
-                    int index = oldMoveable.Animations.ReferenceIndexOf(animation);
-                    if (index > 0)
-                    {
-                        ushort frameBase = 0; // oldMoveable.Animations[oldMoveable.Animations.ReferenceIndexOf(animation)].FrameBase;
-                        for (int k = 0; k < index; k++) frameBase += oldMoveable.Animations[k].RealNumberOfFrames;
-
-
-                        newAnimation.FrameStart += frameBase;
-                        newAnimation.FrameEnd += frameBase;
-                    }
-
-                    numKeyFrames += animation.KeyFrames.Count;
+                    newAnimation.NumAnimCommands = (ushort)oldAnimation.AnimCommands.Count;
+                    newAnimation.NumStateChanges = (ushort)oldAnimation.StateChanges.Count;
+                    newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation + lastAnimation);
+                    newAnimation.NextFrame = oldAnimation.NextFrame;
+                    newAnimation.StateID = (oldAnimation.StateId);
 
                     // Add anim commands
-                    foreach (var command in animation.AnimCommands)
+                    foreach (var command in oldAnimation.AnimCommands)
                     {
                         switch (command.Type)
                         {
@@ -414,7 +397,7 @@ namespace TombEditor.Compilers
                     }
 
                     // Add state changes
-                    foreach (var stateChange in animation.StateChanges)
+                    foreach (var stateChange in oldAnimation.StateChanges)
                     {
                         var newStateChange = new tr_state_change();
 
@@ -441,13 +424,9 @@ namespace TombEditor.Compilers
 
                     _animations.Add(newAnimation);
 
-                    numAnimations++;
-                    numAnimCommands += animation.AnimCommands.Count;
-                    numStateChanges += animation.StateChanges.Count;
+                    frameBase += oldAnimation.RealNumberOfFrames;
                 }
-
-                lastAnimation += numAnimations;
-                lastKeyFrame += numKeyFrames;
+                lastAnimation += oldMoveable.Animations.Count;
 
                 newMoveable.MeshTree = (uint)_meshTrees.Count;
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
@@ -521,108 +500,107 @@ namespace TombEditor.Compilers
                 _meshPointers.Add((uint)__meshPointers[oldStaticMesh.Mesh]);
             }
 
-            if (File.Exists("Wad.txt")) File.Delete("Wad.txt");
+            if (_writeDbgWadTxt)
+                using (var fileStream = new FileStream("Wad.txt", FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var writer = new StreamWriter(fileStream))
+                {
+                    int n = 0;
+                    foreach (var anim in _animations)
+                    {
+                        writer.WriteLine("Anim #" + n);
+                        writer.WriteLine("    KeyframeOffset: " + anim.FrameOffset);
+                        writer.WriteLine("    FrameRate: " + anim.FrameRate);
+                        writer.WriteLine("    KeyFrameSize: " + anim.FrameSize);
+                        writer.WriteLine("    FrameStart: " + anim.FrameStart);
+                        writer.WriteLine("    FrameEnd: " + anim.FrameEnd);
+                        writer.WriteLine("    StateChangeOffset: " + anim.StateChangeOffset);
+                        writer.WriteLine("    NumStateChanges: " + anim.NumStateChanges);
+                        writer.WriteLine("    AnimCommand: " + anim.AnimCommand);
+                        writer.WriteLine("    NumAnimCommands: " + anim.NumAnimCommands);
+                        writer.WriteLine("    NextAnimation: " + anim.NextAnimation);
+                        writer.WriteLine("    NextFrame: " + anim.NextFrame);
+                        writer.WriteLine("    StateID: " + anim.StateID);
+                        writer.WriteLine("    Speed: " + anim.Speed.ToString("X"));
+                        writer.WriteLine("    Accel: " + anim.Accel.ToString("X"));
+                        writer.WriteLine("    SpeedLateral: " + anim.SpeedLateral.ToString("X"));
+                        writer.WriteLine("    AccelLateral: " + anim.AccelLateral.ToString("X"));
+                        writer.WriteLine();
 
-            StreamWriter writer = new StreamWriter(File.OpenWrite("Wad.txt"));
-            int n = 0;
-            foreach (var anim in _animations)
-            {
-                writer.WriteLine("Anim #" + n);
-                writer.WriteLine("    KeyframeOffset: " + anim.FrameOffset);
-                writer.WriteLine("    FrameRate: " + anim.FrameRate);
-                writer.WriteLine("    KeyFrameSize: " + anim.FrameSize);
-                writer.WriteLine("    FrameStart: " + anim.FrameStart);
-                writer.WriteLine("    FrameEnd: " + anim.FrameEnd);
-                writer.WriteLine("    StateChangeOffset: " + anim.StateChangeOffset);
-                writer.WriteLine("    NumStateChanges: " + anim.NumStateChanges);
-                writer.WriteLine("    AnimCommand: " + anim.AnimCommand);
-                writer.WriteLine("    NumAnimCommands: " + anim.NumAnimCommands);
-                writer.WriteLine("    NextAnimation: " + anim.NextAnimation);
-                writer.WriteLine("    NextFrame: " + anim.NextFrame);
-                writer.WriteLine("    StateID: " + anim.StateID);
-                writer.WriteLine("    Speed: " + anim.Speed.ToString("X"));
-                writer.WriteLine("    Accel: " + anim.Accel.ToString("X"));
-                writer.WriteLine("    SpeedLateral: " + anim.SpeedLateral.ToString("X"));
-                writer.WriteLine("    AccelLateral: " + anim.AccelLateral.ToString("X"));
-                writer.WriteLine();
+                        n++;
+                    }
 
-                n++;
-            }
+                    n = 0;
+                    foreach (var dispatch in _animDispatches)
+                    {
+                        writer.WriteLine("AnimDispatch #" + n);
+                        writer.WriteLine("    In: " + dispatch.Low);
+                        writer.WriteLine("    Out: " + dispatch.High);
+                        writer.WriteLine("    NextAnimation: " + dispatch.NextAnimation);
+                        writer.WriteLine("    NextFrame: " + dispatch.NextFrame);
+                        writer.WriteLine();
 
-            n = 0;
-            foreach (var dispatch in _animDispatches)
-            {
-                writer.WriteLine("AnimDispatch #" + n);
-                writer.WriteLine("    In: " + dispatch.Low);
-                writer.WriteLine("    Out: " + dispatch.High);
-                writer.WriteLine("    NextAnimation: " + dispatch.NextAnimation);
-                writer.WriteLine("    NextFrame: " + dispatch.NextFrame);
-                writer.WriteLine();
+                        n++;
+                    }
 
-                n++;
-            }
+                    n = 0;
+                    for (int jj = 0; jj < _meshTrees.Count; jj += 4)
+                    {
+                        writer.WriteLine("MeshTree #" + jj);
+                        writer.WriteLine("    Op: " + _meshTrees[jj + 0]);
+                        writer.WriteLine("    X: " + _meshTrees[jj + 1]);
+                        writer.WriteLine("    Y: " + _meshTrees[jj + 2]);
+                        writer.WriteLine("    Z: " + _meshTrees[jj + 3]);
+                        writer.WriteLine();
 
-            n = 0;
-            for (int jj = 0; jj < _meshTrees.Count; jj += 4)
-            {
-                writer.WriteLine("MeshTree #" + jj);
-                writer.WriteLine("    Op: " + _meshTrees[jj + 0]);
-                writer.WriteLine("    X: " + _meshTrees[jj + 1]);
-                writer.WriteLine("    Y: " + _meshTrees[jj + 2]);
-                writer.WriteLine("    Z: " + _meshTrees[jj + 3]);
-                writer.WriteLine();
+                        n++;
+                    }
 
-                n++;
-            }
+                    n = 0;
+                    for (int jj = 0; jj < _meshPointers.Count; jj++)
+                    {
+                        writer.WriteLine("MeshPointer #" + jj + ": " + _meshPointers[jj]);
 
-            n = 0;
-            for (int jj = 0; jj < _meshPointers.Count; jj++)
-            {
-                writer.WriteLine("MeshPointer #" + jj + ": " + _meshPointers[jj]);
+                        n++;
+                    }
 
-                n++;
-            }
+                    n = 0;
+                    foreach (var mesh in _meshes)
+                    {
+                        writer.WriteLine("Mesh #" + n);
+                        writer.WriteLine("    Vertices: " + mesh.NumVertices);
+                        writer.WriteLine("    Normals: " + mesh.NumNormals);
+                        writer.WriteLine("    Polygons: " + (mesh.NumTexturedQuads + mesh.NumTexturedTriangles));
+                        writer.WriteLine("    MeshPointer: " + mesh.MeshPointer);
+                        writer.WriteLine();
 
-            n = 0;
-            foreach (var mesh in _meshes)
-            {
-                writer.WriteLine("Mesh #" + n);
-                writer.WriteLine("    Vertices: " + mesh.NumVertices);
-                writer.WriteLine("    Normals: " + mesh.NumNormals);
-                writer.WriteLine("    Polygons: " + (mesh.NumTexturedQuads + mesh.NumTexturedTriangles));
-                writer.WriteLine("    MeshPointer: " + mesh.MeshPointer);
-                writer.WriteLine();
+                        n++;
+                    }
 
-                n++;
-            }
+                    n = 0;
+                    foreach (var mov in _moveables)
+                    {
+                        writer.WriteLine("Moveable #" + n);
+                        writer.WriteLine("    MeshTree: " + mov.MeshTree);
+                        writer.WriteLine("    MeshPointer: " + mov.StartingMesh);
+                        writer.WriteLine("    AnimationIndex: " + mov.Animation);
+                        writer.WriteLine("    NumMeshes: " + mov.NumMeshes);
+                        writer.WriteLine();
 
-            n = 0;
-            foreach (var mov in _moveables)
-            {
-                writer.WriteLine("Moveable #" + n);
-                writer.WriteLine("    MeshTree: " + mov.MeshTree);
-                writer.WriteLine("    MeshPointer: " + mov.StartingMesh);
-                writer.WriteLine("    AnimationIndex: " + mov.Animation);
-                writer.WriteLine("    NumMeshes: " + mov.NumMeshes);
-                writer.WriteLine();
+                        n++;
+                    }
 
-                n++;
-            }
+                    n = 0;
+                    foreach (var sc in _stateChanges)
+                    {
+                        writer.WriteLine("StateChange #" + n);
+                        writer.WriteLine("    StateID: " + sc.StateID);
+                        writer.WriteLine("    NumAnimDispatches: " + sc.NumAnimDispatches);
+                        writer.WriteLine("    AnimDispatch: " + sc.AnimDispatch);
+                        writer.WriteLine();
 
-            n = 0;
-            foreach (var sc in _stateChanges)
-            {
-                writer.WriteLine("StateChange #" + n);
-                writer.WriteLine("    StateID: " + sc.StateID);
-                writer.WriteLine("    NumAnimDispatches: " + sc.NumAnimDispatches);
-                writer.WriteLine("    AnimDispatch: " + sc.AnimDispatch);
-                writer.WriteLine();
-
-                n++;
-            }
-
-            writer.Flush();
-            writer.Close();
+                        n++;
+                    }
+                }
         }
     }
 }

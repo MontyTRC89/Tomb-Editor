@@ -151,11 +151,11 @@ namespace TombEditor.Controls
                     (selectedSectorObject.Room == _editor.SelectedRoom) &&
                     selectedSectorObject.Area.Contains(sectorPos))
                 {
-                    if (selectedSectorObject is Portal)
+                    if (selectedSectorObject is PortalInstance)
                     {
                         Room room = _editor.SelectedRoom;
-                        _editor.SelectedRoom = ((Portal)selectedSectorObject).AdjoiningRoom;
-                        _editor.SelectedObject = ((Portal)selectedSectorObject).FindOppositePortal(room);
+                        _editor.SelectedRoom = ((PortalInstance)selectedSectorObject).AdjoiningRoom;
+                        _editor.SelectedObject = ((PortalInstance)selectedSectorObject).FindOppositePortal(room);
                     }
                     else if (selectedSectorObject is TriggerInstance)
                     { // Open trigger options
@@ -283,7 +283,7 @@ namespace TombEditor.Controls
                 var instance = _editor.SelectedObject as SectorBasedObjectInstance;
                 if ((instance != null) && (instance.Room == _editor.SelectedRoom))
                 {
-                    Pen pen = instance is Portal ? _selectedPortalPen : _selectedTriggerPen;
+                    Pen pen = instance is PortalInstance ? _selectedPortalPen : _selectedTriggerPen;
                     RectangleF visualArea = ToVisualCoord(instance.Area);
                     e.Graphics.DrawRectangle(pen, visualArea);
                     DrawMessage(e, instance.ToString(), visualArea);
