@@ -101,5 +101,16 @@ namespace TombEditor.ToolWindows
                 return;
             _editor.SelectedObject = (ObjectInstance)(lstTriggers.SelectedItem);
         }
+
+        private void lstTriggers_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int index = lstTriggers.IndexFromPoint(e.Location);
+            if (index != ListBox.NoMatches)
+            {
+                var instance = lstTriggers.Items[index] as ObjectInstance;
+                if (instance != null)
+                    EditorActions.EditObject(instance, this);
+            }
+        }
     }
 }
