@@ -83,12 +83,6 @@ namespace TombEditor.Controls
         }
         private SelectionMode _selectionMode = SelectionMode.None;
 
-        private enum HeightStringType
-        {
-            Normal,
-            Selection,
-        }
-
         public DepthBar(Editor editor)
         {
             _editor = editor;
@@ -280,7 +274,7 @@ namespace TombEditor.Controls
 
                 if (distance > _heightStringFadeDistance)
                 {
-                    DrawHeightString(e, barArea, _outlinePen, depth, HeightStringType.Normal);
+                    DrawHeightString(e, barArea, _outlinePen, depth);
 
                     if(i > 0 && i < _heightStringCount)
                         e.Graphics.DrawLine(_heightLinesBigPen, barArea.Left, posY, barArea.Right, posY);
@@ -293,7 +287,7 @@ namespace TombEditor.Controls
                     var alphaOutlinePen = (Pen)_outlinePen.Clone();
                     alphaOutlinePen.Color = Color.FromArgb((int)(alphaOutlinePen.Color.A * (distance / _heightStringFadeDistance)), alphaOutlinePen.Color.R, alphaOutlinePen.Color.G, alphaOutlinePen.Color.B);
 
-                    DrawHeightString(e, barArea, alphaOutlinePen, depth, HeightStringType.Normal);
+                    DrawHeightString(e, barArea, alphaOutlinePen, depth);
 
                     if (i > 0 && i < _heightStringCount)
                         e.Graphics.DrawLine(alphaPen, barArea.Left, posY, barArea.Right, posY);
@@ -304,8 +298,8 @@ namespace TombEditor.Controls
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 
-            DrawHeightString(e, barArea, _selectionPen, SelectedLimit0, HeightStringType.Selection);
-            DrawHeightString(e, barArea, _selectionPen, SelectedLimit1, HeightStringType.Selection);
+            DrawHeightString(e, barArea, _selectionPen, SelectedLimit0, true);
+            DrawHeightString(e, barArea, _selectionPen, SelectedLimit1, true);
 
             RectangleF selectionRect = new RectangleF(new PointF(barArea.Left + _selectionOutsideOffset + 2, Math.Min(selectedLimit1PosY, selectedLimit0PosY)),
                 new SizeF(barArea.Right - barArea.Left, Math.Abs(selectedLimit0PosY - selectedLimit1PosY)));
@@ -396,31 +390,27 @@ namespace TombEditor.Controls
             }
         }
 
-        private static void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth, HeightStringType type)
+        private static void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth, bool selection = false)
         {
             if (barArea.Contains(e.ClipRectangle))
                 return;
             
             float screenPosY = ToVisualY(barArea, depth);
 
-            switch (type)
+            if (selection)
             {
-                case HeightStringType.Normal:
-                    e.Graphics.DrawLine(pen, barArea.X, screenPosY, barArea.X - _heightStringLineLength, screenPosY);
-                    break;
+                PointF[] heightPolyPoints = new PointF[3];
 
-                case HeightStringType.Selection:
-                    PointF[] heightPolyPoints = new PointF[3];
+                heightPolyPoints[0] = new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY + _heightStringArrowSize / 1.5f);
+                heightPolyPoints[1] = new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY - _heightStringArrowSize / 1.5f);
+                heightPolyPoints[2] = new PointF(barArea.X - 4, screenPosY);
 
-                    heightPolyPoints[0] = new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY + _heightStringArrowSize / 1.5f);
-                    heightPolyPoints[1] = new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY - _heightStringArrowSize / 1.5f);
-                    heightPolyPoints[2] = new PointF(barArea.X - 4, screenPosY);
-
-                    e.Graphics.DrawPolygon(pen, heightPolyPoints);
-                    break;
+                e.Graphics.DrawPolygon(pen, heightPolyPoints);
             }
+            else
+                e.Graphics.DrawLine(pen, barArea.X, screenPosY, barArea.X - _heightStringLineLength, screenPosY);
 
-            string text = string.Format((type == HeightStringType.Normal ? "{0:F1}" : "y = {0:F1}"), depth);
+            string text = string.Format((selection ? "y = {0:F1}" : "{0:F1}"), depth);
 
             RectangleF textArea = new RectangleF(0.0f, screenPosY - _heightStringFont.Height,
                 barArea.X - (_heightStringLineDistance + _heightStringLineLength), _heightStringFont.Height * 2);
