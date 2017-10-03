@@ -152,6 +152,9 @@
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TabbedContainer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Debug.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />

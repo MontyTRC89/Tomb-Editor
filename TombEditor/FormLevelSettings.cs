@@ -96,7 +96,7 @@ namespace TombEditor
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(592, 1000) + (Size - ClientSize);
+            MinimumSize = new Size(678, 331) + (Size - ClientSize);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -131,6 +131,17 @@ namespace TombEditor
                 {
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
                 }
+
+            // Populate options list and select first entry
+            foreach (var tab in optionsContainer.Controls)
+            {
+                var tabPage = (TabPage)tab;
+                optionsList.Items.Add(new DarkListItem(tabPage.Text));
+            }
+            optionsList.SelectItem(0);
+
+            // Hide options container tabs at runtime only
+            optionsContainer.HideTabs();
 
             // Initialize controls
             UpdateDialog();
@@ -526,6 +537,20 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void FormLevelSettings_Load(object sender, EventArgs e)
+        {
+        }
+
+        private void optionsList_Click(object sender, EventArgs e)
+        {
+            optionsContainer.SelectedIndex = optionsList.SelectedIndices.First();
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
 
