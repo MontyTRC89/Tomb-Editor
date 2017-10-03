@@ -120,7 +120,7 @@
     <Compile Include="FormStaticMeshEditor.Designer.cs">
       <DependentUpon>FormStaticMeshEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Gizmo.cs" />
+    <Compile Include="GizmoStaticMeshEditor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WadToolClass.cs" />

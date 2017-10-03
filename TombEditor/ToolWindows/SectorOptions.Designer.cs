@@ -89,6 +89,7 @@
             this.butCeiling.Size = new System.Drawing.Size(24, 24);
             this.butCeiling.TabIndex = 105;
             this.butCeiling.Text = "C";
+            this.toolTip.SetToolTip(this.butCeiling, "Set sector ceiling");
             this.butCeiling.UseVisualStyleBackColor = false;
             this.butCeiling.Click += new System.EventHandler(this.butCeiling_Click);
             // 
@@ -266,6 +267,7 @@
             this.butFloor.Size = new System.Drawing.Size(24, 24);
             this.butFloor.TabIndex = 90;
             this.butFloor.Text = "F";
+            this.toolTip.SetToolTip(this.butFloor, "Set sector floor");
             this.butFloor.UseVisualStyleBackColor = false;
             this.butFloor.Click += new System.EventHandler(this.butFloor_Click);
             // 
