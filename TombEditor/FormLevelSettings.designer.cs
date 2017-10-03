@@ -597,9 +597,9 @@
             // 
             // soundDataGridViewControls
             // 
-            this.soundDataGridViewControls.AllowUserDelete = false;
+            this.soundDataGridViewControls.AllowUserDelete = true;
             this.soundDataGridViewControls.AllowUserMove = false;
-            this.soundDataGridViewControls.AllowUserNew = false;
+            this.soundDataGridViewControls.AllowUserNew = true;
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundDataGridViewControls.Enabled = false;
