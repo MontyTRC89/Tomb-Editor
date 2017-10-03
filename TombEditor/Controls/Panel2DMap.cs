@@ -52,7 +52,7 @@ namespace TombEditor.Controls
         private static readonly Pen _roomPortalPen = new Pen(Color.FromArgb(220, 7, 70, 70), 1) { DashStyle = DashStyle.Dot };
         private static readonly Pen _gridPenThin = new Pen(Color.LightGray, 1);
         private static readonly Pen _gridPenThick = new Pen(Color.LightGray, 3);
-        private const float _probeRadius = 4;
+        private const float _probeRadius = 12;
 
         public Panel2DMap()
         {
@@ -362,9 +362,21 @@ namespace TombEditor.Controls
                 for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
                 {
                     PointF depthProbeVisualPos = ToVisualCoord(_depthBar.DepthProbes[i]);
-                    e.Graphics.DrawLine(DepthBar.ProbePen, depthProbeVisualPos.X - _probeRadius, depthProbeVisualPos.Y - _probeRadius, depthProbeVisualPos.X + _probeRadius, depthProbeVisualPos.Y + _probeRadius);
-                    e.Graphics.DrawLine(DepthBar.ProbePen, depthProbeVisualPos.X - _probeRadius, depthProbeVisualPos.Y + _probeRadius, depthProbeVisualPos.X + _probeRadius, depthProbeVisualPos.Y - _probeRadius);
-                    e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, DepthBar.ProbePen.Brush, new RectangleF(depthProbeVisualPos.X - 500.0f, depthProbeVisualPos.Y - 500.0f, 1000.0f, 500.0f), DepthBar.ProbeStringLayout);
+
+                    RectangleF depthProbeRect = new RectangleF(depthProbeVisualPos.X - _probeRadius / 2, depthProbeVisualPos.Y - _probeRadius / 2, _probeRadius, _probeRadius);
+
+                    e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+                    var crossSize = _probeRadius / 5;
+
+                    e.Graphics.DrawLine(DepthBar.ProbePen, depthProbeVisualPos.X - crossSize, depthProbeVisualPos.Y - crossSize, depthProbeVisualPos.X + crossSize, depthProbeVisualPos.Y + crossSize);
+                    e.Graphics.DrawLine(DepthBar.ProbePen, depthProbeVisualPos.X - crossSize, depthProbeVisualPos.Y + crossSize, depthProbeVisualPos.X + crossSize, depthProbeVisualPos.Y - crossSize);
+
+                    e.Graphics.DrawEllipse(DepthBar.ProbePen, depthProbeRect);
+                    
+                    e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, DepthBar.ProbePen.Brush, new RectangleF(depthProbeVisualPos.X - 500.0f, depthProbeVisualPos.Y - 500.0f - _probeRadius / 2, 1000.0f, 500.0f), DepthBar.ProbeStringLayout);
+
+                    e.Graphics.SmoothingMode = SmoothingMode.Default;
                 }
             }
 
@@ -486,6 +498,12 @@ namespace TombEditor.Controls
             }
 
             return null;
+        }
+
+        protected override void OnResize(EventArgs eventargs)
+        {
+            base.OnResize(eventargs);
+            Invalidate();
         }
     }
 }
