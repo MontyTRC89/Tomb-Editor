@@ -539,10 +539,6 @@ namespace TombEditor
             Close();
         }
 
-        private void FormLevelSettings_Load(object sender, EventArgs e)
-        {
-        }
-
         private void optionsList_Click(object sender, EventArgs e)
         {
             optionsContainer.SelectedIndex = optionsList.SelectedIndices.First();
