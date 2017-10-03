@@ -20,7 +20,7 @@ namespace TombEditor.Geometry
         public PortalDirection Direction { get; }
         public Room AdjoiningRoom { get; internal set; }
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
-        
+
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
 
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
@@ -33,8 +33,6 @@ namespace TombEditor.Geometry
             Direction = direction;
             AdjoiningRoom = adjoiningRoom;
         }
-        
-        public override bool CopyToFlipRooms => false;
 
         public override ObjectInstance Clone()
         {
@@ -96,7 +94,7 @@ namespace TombEditor.Geometry
                     return area;
             }
         }
-        
+
         // Usually this should return a portal, but be prepared for the situation that this returns null because in case of problems this might happen.
         public Portal FindOppositePortal(Room room)
         {

@@ -137,14 +137,6 @@ namespace TombEditor.Geometry
                 texture.Reload(Settings);
         }
 
-        public Room GetOrCreateDummyRoom(int index)
-        {
-            if (index < 0 || index >= Rooms.Length)
-                return null;
-
-            return Rooms[index] ?? (Rooms[index] = new Room(this, 1, 1));
-        }
-
         public int GetFreeRoomIndex()
         {
             // Search the first free room
