@@ -51,7 +51,7 @@ namespace TombEditor.Compilers
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
-                       
+
             for (int flipped = 0; flipped < 2; flipped++)
             {
                 for (int i = 0; i < _level.Rooms.Length; i++)
@@ -67,7 +67,7 @@ namespace TombEditor.Compilers
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
                                 int boxIndex = 0x7ff;
-                                if (!room.ExcludeFromPathFinding)
+                                if (!room.FlagExcludeFromPathFinding)
                                 {
                                     dec_tr_box_aux box = new dec_tr_box_aux();
 
@@ -96,7 +96,7 @@ namespace TombEditor.Compilers
                     }
                 }
 
-                // Originally a FlipAllRooms() function was called. This function swap all base rooms with flipped room. 
+                // Originally a FlipAllRooms() function was called. This function swap all base rooms with flipped room.
                 // I've decided to simply set this global variable to true and, in each case, take the correct room.
                 dec_flipped = true;
             }
@@ -125,11 +125,11 @@ namespace TombEditor.Compilers
 
             i = 0;
 
-            // All boxes beloging to non flipped rooms have both flags set so they can be linked with 
+            // All boxes beloging to non flipped rooms have both flags set so they can be linked with
             // boxes belonging to both rooms of normal-alternate pair.
-            // Instead box of rooms that are member of a normal-alternate pair have just only one flag set, 
+            // Instead box of rooms that are member of a normal-alternate pair have just only one flag set,
             // 0x04 is for normal rooms and 0x02 is for flipped rooms.
-            // This is an hack, because probably both flags were set in this case with the FlipAllRooms() function 
+            // This is an hack, because probably both flags were set in this case with the FlipAllRooms() function
             // That I could not implement because the way Tomb Editor is designed.
             for (int k = 0; k < dec_numBoxes; k++)
             {
@@ -251,7 +251,7 @@ namespace TombEditor.Compilers
                     dec_boxes[i].Xmax == box.Xmax &&
                     dec_boxes[i].Zmin == box.Zmin &&
                     dec_boxes[i].Zmax == box.Zmax &&
-                    dec_boxes[i].TrueFloor == box.TrueFloor && 
+                    dec_boxes[i].TrueFloor == box.TrueFloor &&
                     dec_boxes[i].Water == box.Water)
                 {
                     boxIndex = i;
@@ -313,7 +313,7 @@ namespace TombEditor.Compilers
             if (floor == 0x7fff) return false;
 
             box.Room = dec_currentRoom;
-            box.Water = room.FlagWater;
+            box.Water = room.WaterLevel != 0;
 
             if (dec_flipped)
             {
@@ -643,7 +643,7 @@ namespace TombEditor.Compilers
                     block = room.Blocks[xInRoom, zInRoom];
 
                     // HACK: this code was not inside the original functions but the procedure fails if xInRoom and zInRoom are one of the 4 cornes.
-                    // This happen for example when there are 3 room connected together and the corner is inside the box. 
+                    // This happen for example when there are 3 room connected together and the corner is inside the box.
                     // In this case, there are portals but the function can't travel to neighbour rooms because is stuck in the corner.
                     // For now I assume that the dest X, Z can't be reached.
                     if (xInRoom == 0 && zInRoom == 0 ||
@@ -661,7 +661,7 @@ namespace TombEditor.Compilers
 
                     if (block.WallPortal.Opacity == PortalOpacity.SolidFaces)
                         return false;
-                    
+
                     if (!Dec_IsOutsideOrdBorderRoom(x, z)) break;
                 }
 
@@ -678,7 +678,7 @@ namespace TombEditor.Compilers
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
                     if (adjoiningRoom.AlternateRoom != null && dec_flipped)
                         adjoiningRoom = adjoiningRoom.AlternateRoom;
-                    if (room.FlagWater != adjoiningRoom.FlagWater)
+                    if ((room.WaterLevel != 0) != (adjoiningRoom.WaterLevel != 0))
                         break;
 
                     dec_currentRoom = adjoiningRoom;
@@ -708,7 +708,7 @@ namespace TombEditor.Compilers
             Room room = dec_currentRoom;
 
             // Ignore pathfinding for current room?
-            if (dec_currentRoom.ExcludeFromPathFinding) return 0x7fff;
+            if (dec_currentRoom.FlagExcludeFromPathFinding) return 0x7fff;
 
             int posXblocks = (int)room.Position.X;
             int posZblocks = (int)room.Position.Z;
@@ -730,7 +730,7 @@ namespace TombEditor.Compilers
             // Note that is & 8 because wall and border wall are the only blocks with bit 4 (0x08) set
             if (((block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall) && block.WallPortal == null) ||
-                ((block.WallPortal != null) && (block.WallPortal.Opacity == PortalOpacity.SolidFaces)) || 
+                ((block.WallPortal != null) && (block.WallPortal.Opacity == PortalOpacity.SolidFaces)) ||
                 (block.Flags & BlockFlags.NotWalkableFloor) != 0)
             {
                 dec_q0 = -1;
@@ -773,7 +773,7 @@ namespace TombEditor.Compilers
                 if (adjoiningRoom2.AlternateRoom != null && dec_flipped)
                     adjoiningRoom2 = adjoiningRoom2.AlternateRoom;
 
-                if (room.FlagWater != adjoiningRoom2.FlagWater)
+                if ((room.WaterLevel != 0) != (adjoiningRoom2.WaterLevel != 0))
                     break;
 
                 dec_currentRoom = adjoiningRoom2;
@@ -834,12 +834,12 @@ namespace TombEditor.Compilers
             int floorHeight = meanFloorCornerHeight + (int)room.Position.Y;
             int ceiling = block.CeilingMax + (int)room.Position.Y;
 
-            if (dec_water && room.FlagWater && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
+            if (dec_water && room.WaterLevel != 0 && (ceiling - meanFloorCornerHeight) <= 1 && block.CeilingPortal != null)
             {
                 Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
-                if (!adjoiningRoom3.FlagWater)
+                if (adjoiningRoom3.WaterLevel == 0)
                 {
                     dec_water = false;
                 }
@@ -849,7 +849,7 @@ namespace TombEditor.Compilers
 
             if (slope1 + slope2 + slope4 + slope3 >= 3 || slope1 + slope3 == 2 || slope2 + slope4 == 2)
             {
-                if (dec_water && !room.FlagWater) return 0x7fff;
+                if (dec_water && room.WaterLevel == 0) return 0x7fff;
             }
             else
             {
@@ -861,14 +861,14 @@ namespace TombEditor.Compilers
                     }
                     else
                     {
-                        if (dec_water && !room.FlagWater) return 0x7fff;
+                        if (dec_water && room.WaterLevel == 0) return 0x7fff;
                     }
                 }
                 else
                 {
                     if (slope1 + slope4 == 2 || slope2 + slope3 == 2)
                     {
-                        if (dec_water && !room.FlagWater) return 0x7fff;
+                        if (dec_water && room.WaterLevel == 0) return 0x7fff;
                     }
                 }
             }

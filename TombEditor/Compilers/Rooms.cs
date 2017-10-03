@@ -76,9 +76,6 @@ namespace TombEditor.Compilers
             };
 
             // Room flags
-
-            if (room.FlagWater)
-                newRoom.Flags |= 0x0001;
             if (room.FlagQuickSand)
                 newRoom.Flags |= 0x0004;
             if (room.FlagHorizon)
@@ -89,10 +86,6 @@ namespace TombEditor.Compilers
                 newRoom.Flags |= 0x0020;
             if (room.FlagNoLensflare)
                 newRoom.Flags |= 0x0080;
-            if (room.FlagMist)
-                newRoom.Flags |= 0x0100;
-            if (room.FlagReflection)
-                newRoom.Flags |= 0x0200;
             if (room.FlagSnow)
                 newRoom.Flags |= 0x0400;
             if (room.FlagRain)
@@ -100,78 +93,45 @@ namespace TombEditor.Compilers
 
             // Set the water scheme. I don't know how is calculated, but I have a table of all combinations of
             // water and reflectivity. The water scheme must be set for the TOP room, in water room is 0x00.
-            var waterPortals = new List<Portal>();
+            var waterPortals = new List<PortalInstance>();
 
-            if (!room.FlagWater)
+            if (room.WaterLevel > 0)
+                newRoom.Flags |= 0x0001;
+            if (room.ReflectionLevel > 0)
+                newRoom.Flags |= 0x0200;
+            if (room.WaterLevel <= 0)
             {
-                for (var x = 0; x < room.NumXSectors; x++)
-                {
-                    for (var z = 0; z < room.NumZSectors; z++)
-                    {
-                        if (room.Blocks[x, z].FloorPortal == null)
-                            continue;
-
-                        if (!room.Blocks[x, z].FloorPortal.AdjoiningRoom.FlagWater)
-                            continue;
-
-                        if (!waterPortals.Contains(room.Blocks[x, z].FloorPortal))
-                            waterPortals.Add(room.Blocks[x, z].FloorPortal);
-                    }
-                }
+                foreach (PortalInstance portal in room.Portals)
+                    if ((portal.Direction == PortalDirection.Floor) && (portal.AdjoiningRoom.WaterLevel != 0))
+                        if (!waterPortals.Contains(portal))
+                            waterPortals.Add(portal);
 
                 if (waterPortals.Count > 0)
                 {
                     var waterRoom = waterPortals[0].AdjoiningRoom;
 
-                    if (!room.FlagReflection && waterRoom.WaterLevel == 1)
-                        newRoom.WaterScheme = 0x06;
-                    if (!room.FlagReflection && waterRoom.WaterLevel == 2)
-                        newRoom.WaterScheme = 0x0a;
-                    if (!room.FlagReflection && waterRoom.WaterLevel == 3)
-                        newRoom.WaterScheme = 0x0e;
-                    if (!room.FlagReflection && waterRoom.WaterLevel == 4)
-                        newRoom.WaterScheme = 0x12;
+                    int effectiveReflectionLevel = room.ReflectionLevel;
+                    if (effectiveReflectionLevel <= 0)
+                        effectiveReflectionLevel = 2;
+                    if (effectiveReflectionLevel > 4)
+                        effectiveReflectionLevel = 4;
 
-                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 1)
-                        newRoom.WaterScheme = 0x05;
-                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 1)
-                        newRoom.WaterScheme = 0x06;
-                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 1)
-                        newRoom.WaterScheme = 0x07;
-                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 1)
-                        newRoom.WaterScheme = 0x08;
+                    int effectiveWaterLevel = room.WaterLevel;
+                    if (effectiveWaterLevel < 1)
+                        effectiveWaterLevel = 1;
+                    if (effectiveWaterLevel > 4)
+                        effectiveWaterLevel = 4;
 
-                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 2)
-                        newRoom.WaterScheme = 0x09;
-                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 2)
-                        newRoom.WaterScheme = 0x0a;
-                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 2)
-                        newRoom.WaterScheme = 0x0b;
-                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 2)
-                        newRoom.WaterScheme = 0x0c;
-
-                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 3)
-                        newRoom.WaterScheme = 0x0d;
-                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 3)
-                        newRoom.WaterScheme = 0x0e;
-                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 3)
-                        newRoom.WaterScheme = 0x0f;
-                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 3)
-                        newRoom.WaterScheme = 0x10;
-
-                    if (room.FlagReflection && room.ReflectionLevel == 1 && waterRoom.WaterLevel == 4)
-                        newRoom.WaterScheme = 0x11;
-                    if (room.FlagReflection && room.ReflectionLevel == 2 && waterRoom.WaterLevel == 4)
-                        newRoom.WaterScheme = 0x12;
-                    if (room.FlagReflection && room.ReflectionLevel == 3 && waterRoom.WaterLevel == 4)
-                        newRoom.WaterScheme = 0x13;
-                    if (room.FlagReflection && room.ReflectionLevel == 4 && waterRoom.WaterLevel == 4)
-                        newRoom.WaterScheme = 0x14;
+                    newRoom.WaterScheme = (byte)(effectiveWaterLevel * 4 + effectiveReflectionLevel);
                 }
             }
 
-            if (room.FlagMist)
+            // Setup mist
+            if (room.MistLevel != 0)
+            {
+                newRoom.Flags |= 0x0100;
                 newRoom.WaterScheme += (byte)room.MistLevel;
+            }
 
             // Generate geometry
             {
@@ -186,9 +146,9 @@ namespace TombEditor.Compilers
                 /*var editorRoomVertices = room.GetRoomVertices();
                 for (int i = 0; i < editorRoomVertices.Count; i += 3)
                 {
-                    ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
-                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
-                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                    ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
+                    ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
+                    ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
                     Util.ObjectTextureManager.Result result = _objectTextureManager.AddTexture();
 
                     roomTriangles.Add(new tr_face3 { Vertices = new ushort[3] { vertex0Index, vertex1Index, vertex2Index }, Texture = texture });
@@ -209,9 +169,9 @@ namespace TombEditor.Compilers
 
                             for (int i = range.Start; i < (range.Start + range.Count); i += 3)
                             {
-                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
-                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
-                                ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, waterPortals, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
+                                ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
+                                ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
+                                ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
                                 texture.TexCoord0 = editorRoomVertices[i].UV;
                                 texture.TexCoord1 = editorRoomVertices[i + 1].UV;
                                 texture.TexCoord2 = editorRoomVertices[i + 2].UV;
@@ -236,8 +196,8 @@ namespace TombEditor.Compilers
                         {
                             var trVertex = new tr_room_vertex();
 
-                            var position = new Vector3(mesh.Vertices[j].Position.X, 
-                                                       mesh.Vertices[j].Position.Y, 
+                            var position = new Vector3(mesh.Vertices[j].Position.X,
+                                                       mesh.Vertices[j].Position.Y,
                                                        mesh.Vertices[j].Position.Z);
 
                             // Apply the transform to the vertex
@@ -294,7 +254,7 @@ namespace TombEditor.Compilers
                 }
 
                 // Assign water effects
-                if (room.FlagWater)
+                if (room.WaterLevel != 0)
                 {
                     for (int i = 0; i < roomVertices.Count; ++i)
                     {
@@ -327,7 +287,7 @@ namespace TombEditor.Compilers
                             }
                             else
                             {
-                                if (!room.FlagReflection)
+                                if (room.ReflectionLevel == 0)
                                     continue;
 
                                 if (trVertex.Position.X >= (portal.Area.X - 1) * 1024 && trVertex.Position.X <= (portal.Area.Right + 1) * 1024 &&
@@ -347,7 +307,7 @@ namespace TombEditor.Compilers
             }
 
             // Build portals
-            var tempIdPortals = new List<Portal>();
+            var tempIdPortals = new List<PortalInstance>();
 
             for (var z = 0; z < room.NumZSectors; z++)
             {
@@ -388,8 +348,7 @@ namespace TombEditor.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary,
-            List<tr_room_vertex> roomVertices, List<Portal> waterPortals, Vector3 Position, Vector4 Color)
+        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector4 Color)
         {
             tr_room_vertex trVertex;
             trVertex.Position = new tr_vertex
@@ -416,7 +375,7 @@ namespace TombEditor.Compilers
 
         private static void ConvertLights(Room room, tr_room newRoom)
         {
-            foreach (var light in room.Objects.OfType<Light>().Where(l => l.IsDynamicallyUsed))
+            foreach (var light in room.Objects.OfType<LightInstance>().Where(l => l.IsDynamicallyUsed))
             {
                 var newLight = new tr4_room_light
                 {
@@ -527,13 +486,12 @@ namespace TombEditor.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (!room.FlagWater && (Math.Abs(block.FloorIfQuadSlopeX) == 1 ||
+                    if (room.WaterLevel == 0 && (Math.Abs(block.FloorIfQuadSlopeX) == 1 ||
                                             Math.Abs(block.FloorIfQuadSlopeX) == 2 ||
                                             Math.Abs(block.FloorIfQuadSlopeZ) == 1 ||
                                             Math.Abs(block.FloorIfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (!room.FlagWater && (Math.Abs(block.FloorIfQuadSlopeX) > 2 ||
-                                            Math.Abs(block.FloorIfQuadSlopeZ) > 2))
+                    if (room.WaterLevel == 0 && (Math.Abs(block.FloorIfQuadSlopeX) > 2 || Math.Abs(block.FloorIfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -578,7 +536,7 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertPortals(Room room, IEnumerable<Portal> portals, tr_room newRoom)
+        private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, tr_room newRoom)
         {
             foreach (var portal in portals)
             {
@@ -608,7 +566,7 @@ namespace TombEditor.Compilers
             }
         }
 
-        private void ConvertWallPortal(Room room, Portal portal, List<tr_room_portal> outPortals, params int[] relevantDirections)
+        private void ConvertWallPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, params int[] relevantDirections)
         {
             // Calculate dimensions of portal
             float yMin = float.MaxValue;
@@ -724,7 +682,7 @@ namespace TombEditor.Compilers
             portalAreas.Add(new SharpDX.Rectangle(x, z, x, z));
         }
 
-        private void ConvertFloorCeilingPortal(Room room, Portal portal, List<tr_room_portal> outPortals, bool isCeiling)
+        private void ConvertFloorCeilingPortal(Room room, PortalInstance portal, List<tr_room_portal> outPortals, bool isCeiling)
         {
             // Construct planes that contain all portal sectors
             List<PortalPlane> portalPlanes = new List<PortalPlane>();

@@ -34,12 +34,9 @@ namespace TombEditor.Geometry
         public short AlternateGroup { get; set; } = -1;
 
         public Vector4 AmbientLight { get; set; } = new Vector4(0.25f, 0.25f, 0.25f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
-        public short WaterLevel { get; set; }
-        public short MistLevel { get; set; }
-        public short ReflectionLevel { get; set; }
-        public bool FlagWater { get; set; }
-        public bool FlagReflection { get; set; }
-        public bool FlagMist { get; set; }
+        public byte WaterLevel { get; set; }
+        public byte MistLevel { get; set; }
+        public byte ReflectionLevel { get; set; }
         public bool FlagSnow { get; set; }
         public bool FlagRain { get; set; }
         public bool FlagCold { get; set; }
@@ -48,7 +45,7 @@ namespace TombEditor.Geometry
         public bool FlagOutside { get; set; }
         public bool FlagHorizon { get; set; }
         public bool FlagNoLensflare { get; set; }
-        public bool ExcludeFromPathFinding { get; set; }
+        public bool FlagExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
 
         // Internal data structures
@@ -62,10 +59,6 @@ namespace TombEditor.Geometry
         private VertexRange[,,] _sectorFaceVertexVertexRange;
         private int[,] _sectorAllVerticesOffset;
         private readonly List<EditorVertex> _allVertices = new List<EditorVertex>();
-
-        // Helper data for Prj2 loading
-        internal int Prj2AlternateRoomIndex { get; set; }
-        internal int Prj2AlternateBaseRoomIndex { get; set; }
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
@@ -114,8 +107,8 @@ namespace TombEditor.Geometry
             foreach (var instance in sector_objects)
             {
                 Rectangle instanceNewAreaConstraint = newArea.Inflate(-1);
-                if (instance is Portal)
-                    switch (((Portal)instance).Direction) // Special constraints for portals on walls
+                if (instance is PortalInstance)
+                    switch (((PortalInstance)instance).Direction) // Special constraints for portals on walls
                     {
                         case PortalDirection.WallPositiveZ:
                             if (newArea.Bottom != (oldSectorSize.Y - 1))
@@ -141,8 +134,8 @@ namespace TombEditor.Geometry
                 if (!instance.Area.Intersects(instanceNewAreaConstraint))
                     continue;
                 Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(offset);
-                if (instance is Portal)
-                    AddBidirectionalPortalsToLevel(level, (Portal)instance.Clone(instanceNewArea));
+                if (instance is PortalInstance)
+                    AddBidirectionalPortalsToLevel(level, (PortalInstance)instance.Clone(instanceNewArea));
                 else
                     AddObject(level, instance.Clone(instanceNewArea));
             }
@@ -161,11 +154,11 @@ namespace TombEditor.Geometry
             set { Position = new Vector3(value.X, Position.Y, value.Y); }
         }
 
-        public IEnumerable<Portal> Portals
+        public IEnumerable<PortalInstance> Portals
         {
             get
             { // No LINQ because it is really slow.
-                var portals = new HashSet<Portal>();
+                var portals = new HashSet<PortalInstance>();
                 foreach (var block in Blocks)
                     foreach (var portal in block.Portals)
                         portals.Add(portal);
@@ -493,7 +486,7 @@ namespace TombEditor.Geometry
                         else
                             AddVerticalFaces(x, z, FaceDirection.NegativeX, true, true, false);
                     }
-                    
+
                     // Floor polygons
                     RoomConnectionInfo floorPortalInfo = GetFloorRoomConnectionInfo(new DrawingPoint(x, z));
                     BuildFloorOrCeilingFace(x, z, qa0, qa1, qa2, qa3, Blocks[x, z].FloorDiagonalSplit, Blocks[x, z].FloorSplitDirectionIsXEqualsZ,
@@ -561,16 +554,16 @@ namespace TombEditor.Geometry
                         diagonalSplitXEqualsY = false;
                     break;
             }
-            
+
             //
-            // 1----2    Split 0: 231 413  
+            // 1----2    Split 0: 231 413
             // | \  |    Split 1: 124 342
             // |  \ |
             // 4----3
             //
 
             //
-            // 1----2    Split 0: 231 413  
+            // 1----2    Split 0: 231 413
             // |  / |    Split 1: 124 342
             // | /  |
             // 4----3
@@ -1577,7 +1570,7 @@ namespace TombEditor.Geometry
                         face = Blocks[x, z].GetFaceTexture(rfFace);
 
                         if (rA < yA && rB < yB)
-                            AddRectangle(x, z, rfFace,                                
+                            AddRectangle(x, z, rfFace,
                                 new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                                 new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
                                 new Vector3(xB * 1024.0f, rB * 256.0f, zB * 1024.0f),
@@ -1632,7 +1625,7 @@ namespace TombEditor.Geometry
                     face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
         }
 
-        private Portal FindPortal(int x, int z, PortalDirection type)
+        private PortalInstance FindPortal(int x, int z, PortalDirection type)
         {
             if (Blocks[x, z].WallPortal != null)
                 return Blocks[x, z].WallPortal;
@@ -1990,10 +1983,10 @@ namespace TombEditor.Geometry
         private void CalculateLighting(int x, int z, BlockFace face)
         {
             // No Linq here because it's slow
-            List<Light> lights = new List<Light>();
+            List<LightInstance> lights = new List<LightInstance>();
             foreach (var instance in _objects)
             {
-                Light light = instance as Light;
+                LightInstance light = instance as LightInstance;
                 if (light != null)
                     lights.Add(light);
             }
@@ -2453,10 +2446,10 @@ namespace TombEditor.Geometry
                 _objects.Remove((PositionBasedObjectInstance)instance);
         }
 
-        public Portal AddBidirectionalPortalsToLevel(Level level, Portal portal)
+        public PortalInstance AddBidirectionalPortalsToLevel(Level level, PortalInstance portal)
         {
-            Rectangle oppositeArea = Portal.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-            Portal oppositePortal = new Portal(oppositeArea, Portal.GetOppositeDirection(portal.Direction), this);
+            Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+            PortalInstance oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
 
             AddObject(level, portal);
             try
@@ -2487,10 +2480,10 @@ namespace TombEditor.Geometry
 
         public struct RoomConnectionInfo
         {
-            public Portal Portal { get; }
+            public PortalInstance Portal { get; }
             public RoomConnectionType AnyType { get; }
 
-            public RoomConnectionInfo(Portal portal, RoomConnectionType anyType)
+            public RoomConnectionInfo(PortalInstance portal, RoomConnectionType anyType)
             {
                 Portal = portal;
                 AnyType = anyType;
@@ -2501,7 +2494,7 @@ namespace TombEditor.Geometry
             ///<summary>Gives how the block geometrically behaves regarding portals</summary>
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
         };
-        
+
         public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
         {
             // Evaluate force floor solid
@@ -2589,14 +2582,14 @@ namespace TombEditor.Geometry
 
             // Update adjoining rooms
             HashSet<Room> roomsProcessed = new HashSet<Room>();
-            List<Portal> listOfPortals = Portals.ToList();
+            List<PortalInstance> listOfPortals = Portals.ToList();
             foreach (var portal in listOfPortals)
             {
                 if (!portal.Area.Intersects(area))
                     continue; // This portal is irrelavant since no changes happend in its area
 
                 Rectangle portalArea = portal.Area.Intersect(area);
-                Rectangle otherRoomPortalArea = Portal.GetOppositePortalArea(portal.Direction, portalArea)
+                Rectangle otherRoomPortalArea = PortalInstance.GetOppositePortalArea(portal.Direction, portalArea)
                     .Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
                 portal.AdjoiningRoom.BuildGeometry(otherRoomPortalArea);
                 roomsProcessed.Add(portal.AdjoiningRoom);

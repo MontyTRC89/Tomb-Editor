@@ -677,7 +677,7 @@ namespace TombEditor
             instance.Position = pos;
 
             // Update state
-            if (instance is Light)
+            if (instance is LightInstance)
             {
                 instance.Room.CalculateLightingForThisRoom();
                 instance.Room.UpdateBuffers();
@@ -720,7 +720,7 @@ namespace TombEditor
                     rotateableRoll.Roll += angleInDegrees;
                     break;
             }
-            if (instance is Light)
+            if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
             _editor.ObjectChange(instance);
         }
@@ -780,7 +780,7 @@ namespace TombEditor
 
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
-            if (instance.Room.Flipped && (instance is Portal))
+            if (instance.Room.Flipped && (instance is PortalInstance))
             {
                 DarkMessageBox.Show(owner, "You can't delete portals of a flipped room", "Error", MessageBoxIcon.Error);
                 return;
@@ -796,13 +796,13 @@ namespace TombEditor
         public static void DeleteObject(ObjectInstance instance)
         {
             instance.Room.RemoveObject(_editor.Level, instance);
-            if (instance is Light)
+            if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(instance.Room);
-            if (instance is Light)
+            if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
 
             // Remove triggers pointing to that object
@@ -960,7 +960,7 @@ namespace TombEditor
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
-            if (instance is Light)
+            if (instance is LightInstance)
                 room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance);
         }
@@ -1375,8 +1375,8 @@ namespace TombEditor
                 throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
 
             // Create portals
-            Portal portal = new Portal(area, destinationDirection, destination);
-            Portal oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
+            PortalInstance portal = new PortalInstance(area, destinationDirection, destination);
+            PortalInstance oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
 
             // Update
             room.UpdateCompletely();
@@ -1760,7 +1760,7 @@ namespace TombEditor
 
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
         {
-            var portal = _editor.SelectedObject as Portal;
+            var portal = _editor.SelectedObject as PortalInstance;
             if ((_editor.SelectedRoom == null) || (portal == null))
             {
                 DarkMessageBox.Show(owner, "No portal selected.", "Error", MessageBoxIcon.Error);
@@ -1828,7 +1828,6 @@ namespace TombEditor
                     logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
                     DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
                 }
-                _editor.Level.Dispose();
                 _editor.Level = newLevel;
             }
         }
@@ -1880,7 +1879,7 @@ namespace TombEditor
             foreach (Room room in roomsToMove)
             {
                 bool anyRoomUpdated = false;
-                foreach (Portal portal in room.Portals)
+                foreach (PortalInstance portal in room.Portals)
                     if (!roomsToMove.Contains(portal.AdjoiningRoom))
                     {
                         roomsToUpdate.Add(portal.AdjoiningRoom);

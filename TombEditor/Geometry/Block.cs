@@ -89,9 +89,9 @@ namespace TombEditor.Geometry
         public DiagonalSplit CeilingDiagonalSplit { get; set; } = DiagonalSplit.None;
 
         public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
-        public Portal FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
-        public Portal WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
-        public Portal CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public PortalInstance FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public PortalInstance WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public PortalInstance CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
 
         public Block(int floor, int ceiling)
         {
@@ -137,7 +137,7 @@ namespace TombEditor.Geometry
 
         public bool IsAnyWall => Type != BlockType.Floor;
 
-        public IEnumerable<Portal> Portals
+        public IEnumerable<PortalInstance> Portals
         {
             get
             {

@@ -41,7 +41,7 @@ namespace TombEditor.ToolWindows
             if ((obj is Editor.ObjectChangedEvent) ||
                (obj is Editor.SelectedObjectChangedEvent))
             {
-                var light = _editor.SelectedObject as Light;
+                var light = _editor.SelectedObject as LightInstance;
 
                 bool IsLight = false;
                 bool HasInOutRange = false;
@@ -169,7 +169,7 @@ namespace TombEditor.ToolWindows
 
         public void UpdateParameter(decimal value, LightParameter parameter)
         {
-            Light light = _editor.SelectedObject as Light;
+            LightInstance light = _editor.SelectedObject as LightInstance;
             if (light == null)
                 return;
 
@@ -209,9 +209,9 @@ namespace TombEditor.ToolWindows
             _editor.ObjectChange(light);
         }
 
-        private void UpdateLight<T>(Func<Light, T> getLightValue, Action<Light, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
+        private void UpdateLight<T>(Func<LightInstance, T> getLightValue, Action<LightInstance, T> setLightValue, Func<T, T?> getGuiValue) where T : struct
         {
-            var light = _editor.SelectedObject as Light;
+            var light = _editor.SelectedObject as LightInstance;
             if (light == null)
                 return;
 
