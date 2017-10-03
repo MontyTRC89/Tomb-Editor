@@ -10,56 +10,57 @@ using SharpDX.Toolkit.Graphics;
 using TombLib.IO;
 using Color = System.Drawing.Color;
 using TombLib.Utils;
+using System.Threading.Tasks;
 
 namespace TombEditor.Geometry.IO
 {
-    public struct PrjFace
-    {
-        public short _txtType;
-        public short _txtIndex;
-        public byte _txtFlags;
-        public byte _txtRotation;
-        public byte _txtTriangle;
-    }
-
-    public struct PrjBlock
-    {
-        public PrjFace[] _faces;
-        public PortalOpacity _floorOpacity;
-        public PortalOpacity _ceilingOpacity;
-        public PortalOpacity _wallOpacity;
-        public bool _hasNoCollisionFloor;
-        public bool _hasNoCollisionCeiling;
-    }
-
-    public struct PrjFlipInfo
-    {
-        public short _baseRoom;
-        public short _flipRoom;
-        public short _group;
-    }
-
-    public struct PrjTexInfo
-    {
-        public byte _x;
-        public short _y;
-        public byte _width;
-        public byte _height;
-    }
-
     public class PrjLoader
     {
         private static readonly Encoding _encodingCodepageWindows = Encoding.GetEncoding(1252);
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private struct PrjFace
+        {
+            public short _txtType;
+            public short _txtIndex;
+            public byte _txtFlags;
+            public byte _txtRotation;
+            public byte _txtTriangle;
+        }
+
+        private struct PrjBlock
+        {
+            public PrjFace[] _faces;
+            public PortalOpacity _floorOpacity;
+            public PortalOpacity _ceilingOpacity;
+            public PortalOpacity _wallOpacity;
+            public bool _hasNoCollisionFloor;
+            public bool _hasNoCollisionCeiling;
+        }
+
+        private struct PrjTexInfo
+        {
+            public byte _x;
+            public short _y;
+            public byte _width;
+            public byte _height;
+        }
+
+        private struct PrjRoom
+        {
+            public PrjBlock[,] _blocks;
+            public HashSet<int> _portals;
+            public short _flipRoom;
+            public short _flipGroup;
+        }
 
         private struct PrjPortal
         {
             //public Room _room;
             public Rectangle _area;
             public PortalDirection _direction;
+            public short _thisRoomIndex;
             public short _oppositePortalId;
-            public short _thisPortalId;
-            public short _prjRealRoom;
         }
 
         public static Level LoadFromPrj(string filename, IProgressReporter progressReporter)
@@ -105,16 +106,14 @@ namespace TombEditor.Geometry.IO
                     for (int i = 0; i < Level.MaxNumberOfRooms; ++i)
                         level.Rooms[i] = null;
 
-                    var tempRooms = new Dictionary<int, PrjBlock[,]>();
-                    var flipInfos = new List<PrjFlipInfo>();
+                    var tempRooms = new Dictionary<int, PrjRoom>();
                     var tempPortals = new Dictionary<int, PrjPortal>();
-                    var tempPortalsNew = new List<PrjPortal>();
-                    var tempRoomPortals = new Dictionary<int, List<int>>();
 
                     progressReporter.ReportProgress(2, "Number of rooms: " + numRooms);
 
                     for (int i = 0; i < numRooms; i++)
                     {
+
                         // Room is defined?
                         short defined = reader.ReadInt16();
                         if (defined == 0x01)
@@ -137,34 +136,31 @@ namespace TombEditor.Geometry.IO
                         int zPos = reader.ReadInt32();
                         int yPos2 = reader.ReadInt32();
 
-                        reader.ReadBytes(2);
-                        reader.ReadInt16();
-                        reader.ReadInt16();
+                        reader.ReadBytes(6);
 
                         short numZBlocks = reader.ReadInt16();
                         short numXBlocks = reader.ReadInt16();
                         short posZBlocks = reader.ReadInt16();
                         short posXBlocks = reader.ReadInt16();
 
-                        reader.ReadInt16();
+                        reader.ReadBytes(2);
 
+                        // Create room
                         var room = new Room(level, numXBlocks, numZBlocks, roomName);
                         room.Position = new Vector3(posXBlocks, yPos / -256.0f, posZBlocks);
-                        level.Rooms[i] = room;
+                        var tempRoom = new PrjRoom();
 
+                        // Read portals
                         short numPortals = reader.ReadInt16();
                         var portalThings = new short[numPortals];
 
-                        tempRoomPortals.Add(i, new List<int>());
-
+                        tempRoom._portals = new HashSet<int>();
+                        logger.Debug("    Portals: " + numPortals);
                         for (int j = 0; j < numPortals; j++)
                         {
                             portalThings[j] = reader.ReadInt16();
-                            tempRoomPortals[i].Add(portalThings[j]);
+                            tempRoom._portals.Add(portalThings[j]);
                         }
-
-                        logger.Debug("    Portals: " + numPortals);
-
                         for (int j = 0; j < numPortals; j++)
                         {
                             ushort direction = reader.ReadUInt16();
@@ -173,8 +169,7 @@ namespace TombEditor.Geometry.IO
                             short portalZBlocks = reader.ReadInt16();
                             short portalXBlocks = reader.ReadInt16();
                             reader.ReadInt16();
-                            short thisPortalRoomIndex = reader.ReadInt16();
-                            var thisPortalRoom = level.GetOrCreateDummyRoom(thisPortalRoomIndex);
+                            short thisRoomIndex = reader.ReadInt16();
                             short portalOppositeSlot = reader.ReadInt16();
 
                             reader.ReadBytes(26);
@@ -205,20 +200,25 @@ namespace TombEditor.Geometry.IO
                                     continue;
                             }
 
+                            if (thisRoomIndex != i)
+                                logger.Debug("Portal in room '" + roomName + "' doesn't refer to it's own room. That's probably ok, if it's a flip room.");
+
                             if (tempPortals.ContainsKey(portalThings[j]))
+                            {
+                                logger.Debug("Portal in room '" + roomName + "' was already present in the list.");
                                 continue;
+                            }
 
                             tempPortals.Add(portalThings[j], new PrjPortal
                             {
-                                //_room = room,
                                 _area = GetArea(room, 0, portalX, portalZ, portalXBlocks, portalZBlocks),
                                 _direction = directionEnum,
-                                _oppositePortalId = portalOppositeSlot,
-                                _thisPortalId = portalThings[j],
-                                _prjRealRoom = thisPortalRoomIndex
+                                _thisRoomIndex = thisRoomIndex,
+                                _oppositePortalId = portalOppositeSlot
                             });
                         }
 
+                        // Read objects
                         short numObjects = reader.ReadInt16();
                         var objectsThings = new short[numObjects];
 
@@ -237,7 +237,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeZ = reader.ReadInt16();
                             short objSizeX = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = reader.ReadInt16(); // level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            var objRoom = reader.ReadInt16();
                             short objSlot = reader.ReadInt16();
                             short objOcb = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -449,7 +449,7 @@ namespace TombEditor.Geometry.IO
                             short objSizeZ = reader.ReadInt16();
                             short objSizeX = reader.ReadInt16();
                             short objPosY = reader.ReadInt16();
-                            var objRoom = reader.ReadInt16(); // level.GetOrCreateDummyRoom(reader.ReadInt16());
+                            var objRoom = reader.ReadInt16();
                             short objSlot = reader.ReadInt16();
                             short objTimer = reader.ReadInt16();
                             short objOrientation = reader.ReadInt16();
@@ -590,27 +590,15 @@ namespace TombEditor.Geometry.IO
                             }
                         }
 
-                        short flipRoom = reader.ReadInt16();
+                        tempRoom._flipRoom = reader.ReadInt16();
                         short flags1 = reader.ReadInt16();
                         byte waterLevel = reader.ReadByte();
                         byte mistOrReflectionLevel = reader.ReadByte();
                         byte reverb = reader.ReadByte();
-                        short flags2 = reader.ReadInt16();
+                        tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
                         room.WaterLevel = waterLevel;
                         room.Reverberation = (Reverberation)reverb;
-
-                        if (flipRoom != -1)
-                        {
-                            var info = new PrjFlipInfo
-                            {
-                                _baseRoom = (short)i,
-                                _flipRoom = flipRoom,
-                                _group = (short)(flags2 & 0xff)
-                            };
-
-                            flipInfos.Add(info);
-                        }
 
                         if ((flags1 & 0x0200) != 0)
                         {
@@ -640,7 +628,8 @@ namespace TombEditor.Geometry.IO
                         if ((flags1 & 0x0800) != 0)
                             room.FlagRain = true;
 
-                        var tempBlocks = new PrjBlock[numXBlocks, numZBlocks];
+                        // Read blocks
+                        tempRoom._blocks = new PrjBlock[numXBlocks, numZBlocks];
                         for (int x = 0; x < room.NumXSectors; x++)
                             for (int z = 0; z < room.NumZSectors; z++)
                             {
@@ -749,89 +738,77 @@ namespace TombEditor.Geometry.IO
                                     block.Flags |= BlockFlags.TriggerTriggerer;
                                 block.FloorSplitDirectionToggled = (blockFlags3 & 0x1) != 0;
 
-                                tempBlocks[x, z] = tempBlock;
+                                tempRoom._blocks[x, z] = tempBlock;
                             }
-                        tempRooms.Add(i, tempBlocks);
 
                         room.NormalizeRoomY();
 
-                        System.Diagnostics.Debug.Assert(level.GetOrCreateDummyRoom(i) == room);
+                        // Add room
+                        tempRooms.Add(i, tempRoom);
+                        level.Rooms[i] = room;
 
                         progressReporter.ReportProgress(i / ((float)numRooms) * 28.0f, "");
                     }
-
                     progressReporter.ReportProgress(30, "Rooms loaded");
 
                     // Link portals
+                    progressReporter.ReportProgress(31, "Link portals");
+                    foreach (var tempRoom in tempRooms)
                     {
-                        progressReporter.ReportProgress(31, "Link portals");
-
-                        Dictionary<int, Portal> newPortals = new Dictionary<int, Portal>();
-
-                        foreach (PrjPortal prjPortal in tempPortals.Values)
+                        Room room = level.Rooms[tempRoom.Key];
+                        foreach (var portalId in tempRoom.Value._portals)
                         {
+                            PrjPortal prjPortal = tempPortals[portalId];
+
+                            // Link to the opposite room
                             if (!tempPortals.ContainsKey(prjPortal._oppositePortalId))
                             {
-                                progressReporter.ReportWarn("A portal in room '" + tempRooms[prjPortal._prjRealRoom] + "' refers to an invalid opposite portal.");
+                                progressReporter.ReportWarn("A portal in room '" + room + "' refers to an invalid opposite portal.");
                                 continue;
                             }
+                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._thisRoomIndex];
+                            Portal portal = new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom);
 
-                            Room adjoiningRoom = level.Rooms[tempPortals[prjPortal._oppositePortalId]._prjRealRoom];
-                            Portal p = new Portal(prjPortal._area, prjPortal._direction, adjoiningRoom);
-                            newPortals.Add(prjPortal._thisPortalId, p);
-                        }
-
-                        foreach (var tempRoom in tempRooms)
-                        {
-                            List<int> portalsForThisRoom = tempRoomPortals[tempRoom.Key];
-                            Room room = level.Rooms[tempRoom.Key];
-
-                            foreach (var portalId in portalsForThisRoom)
+                            // Figure out opacity of the portal
+                            portal.Opacity = PortalOpacity.None;
+                            switch (portal.Direction)
                             {
-                                Portal portal = newPortals[portalId];
+                                case PortalDirection.Ceiling:
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                            if (tempRoom.Value._blocks[x, z]._ceilingOpacity > portal.Opacity)
+                                                portal.Opacity = tempRoom.Value._blocks[x, z]._ceilingOpacity;
 
-                                // Figure out opacity of the portal
-                                PortalOpacity maxOpacity = PortalOpacity.None;
-                                switch (portal.Direction)
-                                {
-                                    case PortalDirection.Ceiling:
-                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                            for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
-                                                if (tempRoom.Value[x, z]._ceilingOpacity > maxOpacity)
-                                                    maxOpacity = tempRoom.Value[x, z]._ceilingOpacity;
+                                    // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                    // the water flag differs.
+                                    if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                        portal.Opacity = PortalOpacity.TraversableFaces;
+                                    break;
+                                case PortalDirection.Floor:
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                            if (tempRoom.Value._blocks[x, z]._floorOpacity > portal.Opacity)
+                                                portal.Opacity = tempRoom.Value._blocks[x, z]._floorOpacity;
 
-                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
-                                        // the water flag differs.
-                                        if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (maxOpacity == PortalOpacity.SolidFaces))
-                                            maxOpacity = PortalOpacity.TraversableFaces;
-                                        break;
-                                    case PortalDirection.Floor:
-                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                            for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
-                                                if (tempRoom.Value[x, z]._floorOpacity > maxOpacity)
-                                                    maxOpacity = tempRoom.Value[x, z]._floorOpacity;
-
-                                        // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
-                                        // the water flag differs.
-                                        if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (maxOpacity == PortalOpacity.SolidFaces))
-                                            maxOpacity = PortalOpacity.TraversableFaces;
-                                        break;
-                                    default:
-                                        for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
-                                            for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
-                                                if (tempRoom.Value[x, z]._wallOpacity > maxOpacity)
-                                                    maxOpacity = tempRoom.Value[x, z]._wallOpacity;
-                                        break;
-                                }
-                                portal.Opacity = maxOpacity;
-
-                                // Add portal to rooms
-                                room.AddObject(level, newPortals[portalId]);
+                                    // Special case in winroomedit. Portals are set to be traversable ignoring the Opacity setting if
+                                    // the water flag differs.
+                                    if ((room.FlagWater != portal.AdjoiningRoom.FlagWater) && (portal.Opacity == PortalOpacity.SolidFaces))
+                                        portal.Opacity = PortalOpacity.TraversableFaces;
+                                    break;
+                                default:
+                                    for (int z = portal.Area.Y; z <= portal.Area.Bottom; ++z)
+                                        for (int x = portal.Area.X; x <= portal.Area.Right; ++x)
+                                            if (tempRoom.Value._blocks[x, z]._wallOpacity > portal.Opacity)
+                                                portal.Opacity = tempRoom.Value._blocks[x, z]._wallOpacity;
+                                    break;
                             }
-                        }
 
-                        progressReporter.ReportProgress(32, "Portals linked");
+                            // Add portal to rooms
+                            room.AddObject(level, portal);
+                        }
                     }
+
+                    progressReporter.ReportProgress(32, "Portals linked");
 
                     // Link triggers
                     {
@@ -883,22 +860,16 @@ namespace TombEditor.Geometry.IO
                     foreach (var tempRoom in tempRooms)
                     {
                         Room room = level.Rooms[tempRoom.Key];
-                        foreach (var info in flipInfos)
+
+                        if (tempRoom.Value._flipRoom != -1)
                         {
-                            if (info._baseRoom == tempRoom.Key)
-                            {
-                                room.AlternateRoom = level.Rooms[info._flipRoom];
-                                room.AlternateGroup = info._group;
-                            }
+                            Room alternateRoom = level.Rooms[tempRoom.Value._flipRoom];
 
-                            if (info._flipRoom != tempRoom.Key)
-                                continue;
-
-                            room.AlternateBaseRoom = level.Rooms[info._baseRoom];
-                            room.AlternateGroup = info._group;
-                            room.Position = new Vector3(level.Rooms[info._baseRoom].Position.X,
-                                level.Rooms[info._baseRoom].Position.Y,
-                                level.Rooms[info._baseRoom].Position.Z);
+                            room.AlternateRoom = alternateRoom;
+                            room.AlternateGroup = tempRoom.Value._flipGroup;
+                            alternateRoom.AlternateBaseRoom = room;
+                            alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
+                            alternateRoom.Position = room.Position;
                         }
                     }
 
@@ -917,7 +888,7 @@ namespace TombEditor.Geometry.IO
                                     case Room.RoomConnectionType.TriangularPortalXpZn:
                                     case Room.RoomConnectionType.TriangularPortalXnZp:
                                     case Room.RoomConnectionType.TriangularPortalXpZp:
-                                        if (!tempRoom.Value[x, z]._hasNoCollisionFloor)
+                                        if (!tempRoom.Value._blocks[x, z]._hasNoCollisionFloor)
                                             room.Blocks[x, z].ForceFloorSolid = true;
                                         break;
                                 }
@@ -1132,9 +1103,7 @@ namespace TombEditor.Geometry.IO
                         for (int z = 0; z < room.NumZSectors; z++)
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                                var prjBlock = tempRooms[i][x, z];
-
-                                room.Blocks[x, z].PrjBlock = prjBlock;
+                                var prjBlock = tempRooms[i]._blocks[x, z];
 
                                 // 0: BLOCK_TEX_FLOOR
                                 LoadTextureArea(room, x, z, BlockFace.Floor, texture, tempTextures, prjBlock._faces[0]);
@@ -1333,17 +1302,9 @@ namespace TombEditor.Geometry.IO
                     }
                 }
 
-                // Check that there are no uninitialized rooms
-                foreach (Room room in level.Rooms)
-                    if (room != null)
-                        if ((room.NumXSectors <= 0) && (room.NumZSectors <= 0))
-                            throw new Exception("Room '" + room + "' has a sector size of zero. This is invalid. Probably the room was referenced but never initialized.");
-
+                // Update level geometry
                 progressReporter.ReportProgress(95, "Building rooms");
-
-                foreach (var room in level.Rooms.Where(r => r != null))
-                    room.UpdateCompletely();
-
+                Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.UpdateCompletely());
                 progressReporter.ReportProgress(100, "Level loaded correctly!");
 
                 return level;
