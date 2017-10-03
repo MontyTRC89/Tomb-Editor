@@ -548,14 +548,6 @@ namespace TombEditor
             optionsContainer.SelectedIndex = optionsList.SelectedIndices.First();
         }
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-
-
-
         // Target path
         // Target name
         // Target start
