@@ -21,13 +21,15 @@ namespace TombEditor.Controls
         public readonly List<Vector2> DepthProbes = new List<Vector2>();
         public event Action InvalidateParent;
 
-        private const float _marginX = 2.0f;
+        private const float _marginX = 10.0f;
         private const float _marginY = 48.0f;
         private const float _barWidth = 36.0f;
         private const float _explainationStringMargin = 4.0f;
         private const int _heightStringCount = 17;
-        private const float _heightStringLineLength = 8.0f;
-        private const float _heightStringLineDistance = 3.0f;
+        private const float _heightStringLineLength = 4.0f;
+        private const float _heightStringLineDistance = 6.0f;
+        private const float _heightStringFadeDistance = 12.0f;
+        private const float _heightStringArrowSize = 3.0f;
         private const float _selectionInsideOffset = -1.0f;
         private const float _selectionOutsideOffset = -2.0f;
         private const float _selectionMaxPixelDistanceForMove = 8.0f;
@@ -41,22 +43,23 @@ namespace TombEditor.Controls
         private bool IsExtendedViewActive { get { return _roomMouseMoveStarted && (_roomsToMove != null); } }
 
         public static readonly StringFormat ProbeStringLayout = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
-        public static readonly Font ProbeFont = new Font("Arial", 18.0f, FontStyle.Regular, GraphicsUnit.Pixel);
-        public static readonly Pen ProbePen = new Pen(Color.FromArgb(120, 0, 120), 2);
-        private static readonly Font _heightStringFont = new Font("Arial", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
+        public static readonly Font ProbeFont = new Font("Segoe UI", 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+        public static readonly Pen ProbePen = new Pen(Color.FromArgb(220, 40, 0, 120), 2);
+        private static readonly Font _heightStringFont = new Font("Segoe UI", 11.0f, FontStyle.Bold, GraphicsUnit.Pixel);
         private static readonly StringFormat _heightStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
-        private static readonly Font _explainationStringFont = _heightStringFont;
+        private static readonly Font _explainationStringFont = new Font("Segoe UI", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
         private static readonly StringFormat _explainationStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
         private static readonly Brush _explainationStringBrush = new SolidBrush(Color.Black);
         private const string _explainationString = "Press the middle mouse button on the map to add a depth bar.\nPress the middle mouse button on the depth bar, to remove it.";
         private static readonly Brush _backgroundBrush = new SolidBrush(Color.FromArgb(245, 245, 245));
-        private static readonly Pen _outlinePen = new Pen(Color.Black, 1);
-        private static readonly Pen _heightLinesPen = new Pen(Color.LightGray, 1);
-        private static readonly Pen _heightLinesBigPen = new Pen(Color.LightGray, 3);
+        private static readonly Pen _outlinePen = new Pen(Color.FromArgb(245, 80, 80, 80), 1);
+        private static readonly Pen _heightLinesPen = new Pen(Color.FromArgb(220, 220, 220), 1);
+        private static readonly Pen _heightLinesBigPen = new Pen(Color.FromArgb(200, 200, 200), 3);
         private static readonly Pen _sequenceSeperatorPen = _outlinePen;
         private static readonly Pen _portalPen = new Pen(Color.Black, 1) { DashStyle = DashStyle.Dot };
         private static readonly Pen _roomBoundsPen = _outlinePen;
-        private static readonly Pen _selectionPen = new Pen(Color.DarkBlue, 4);
+        private static readonly Pen _selectionPen = new Pen(Color.FromArgb(220, 40, 0, 120), 4);
+        private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(40, 40, 0, 120));
         private static readonly Brush _roomsNormalBrush = new SolidBrush(Editor.ColorFloor);
         private static readonly Brush _roomsSelectionBrush = new SolidBrush(Color.FromArgb(220, 20, 20));
         private static readonly Brush _roomsWallBrush = new SolidBrush(Editor.ColorWall);
@@ -79,6 +82,12 @@ namespace TombEditor.Controls
             RoomMove
         }
         private SelectionMode _selectionMode = SelectionMode.None;
+
+        private enum HeightStringType
+        {
+            Normal,
+            Selection,
+        }
 
         public DepthBar(Editor editor)
         {
@@ -245,6 +254,8 @@ namespace TombEditor.Controls
             // Draw box
             e.Graphics.FillRectangle(_backgroundBrush, barArea);
 
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
             // Draw height lines
             if (barArea.IntersectsWith(e.ClipRectangle))
                 for (int depth = (int)MinDepth; depth <= (int)MaxDepth; ++depth)
@@ -252,6 +263,8 @@ namespace TombEditor.Controls
                     float posY = ToVisualY(barArea, depth);
                     e.Graphics.DrawLine(_heightLinesPen, barArea.Left, posY, barArea.Right, posY);
                 }
+
+            e.Graphics.SmoothingMode = SmoothingMode.Default;
 
             // Draw height strings
             for (int i = 0; i <= _heightStringCount; ++i)
@@ -262,12 +275,42 @@ namespace TombEditor.Controls
                 // Hide height string when close to selection limits
                 float distanceToSelectionLimit0 = Math.Abs(posY - selectedLimit0PosY);
                 float distanceToSelectionLimit1 = Math.Abs(posY - selectedLimit1PosY);
-                if (Math.Min(distanceToSelectionLimit0, distanceToSelectionLimit1) > (_heightStringFont.Height * 0.85f))
+
+                float distance = Math.Min(distanceToSelectionLimit0, distanceToSelectionLimit1) - (_heightStringFont.Height * 0.85f);
+
+                if (distance > _heightStringFadeDistance)
                 {
-                    DrawHeightString(e, barArea, _outlinePen, depth);
-                    e.Graphics.DrawLine(_heightLinesBigPen, barArea.Left, posY, barArea.Right, posY);
+                    DrawHeightString(e, barArea, _outlinePen, depth, HeightStringType.Normal);
+
+                    if(i > 0 && i < _heightStringCount)
+                        e.Graphics.DrawLine(_heightLinesBigPen, barArea.Left, posY, barArea.Right, posY);
+                }
+                else if (distance > 0.0f)
+                {
+                    var alphaPen = (Pen)_heightLinesBigPen.Clone();
+                    alphaPen.Color = Color.FromArgb((int)(alphaPen.Color.A * (distance / _heightStringFadeDistance)), alphaPen.Color.R, alphaPen.Color.G, alphaPen.Color.B);
+
+                    var alphaOutlinePen = (Pen)_outlinePen.Clone();
+                    alphaOutlinePen.Color = Color.FromArgb((int)(alphaOutlinePen.Color.A * (distance / _heightStringFadeDistance)), alphaOutlinePen.Color.R, alphaOutlinePen.Color.G, alphaOutlinePen.Color.B);
+
+                    DrawHeightString(e, barArea, alphaOutlinePen, depth, HeightStringType.Normal);
+
+                    if (i > 0 && i < _heightStringCount)
+                        e.Graphics.DrawLine(alphaPen, barArea.Left, posY, barArea.Right, posY);
                 }
             }
+
+            // Draw selection range
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+            DrawHeightString(e, barArea, _selectionPen, SelectedLimit0, HeightStringType.Selection);
+            DrawHeightString(e, barArea, _selectionPen, SelectedLimit1, HeightStringType.Selection);
+
+            RectangleF selectionRect = new RectangleF(new PointF(barArea.Left + _selectionOutsideOffset + 2, Math.Min(selectedLimit1PosY, selectedLimit0PosY)),
+                new SizeF(barArea.Right - barArea.Left, Math.Abs(selectedLimit0PosY - selectedLimit1PosY)));
+
+            e.Graphics.FillRectangle(_selectionBrush, selectionRect);
 
             // Draw depth bar numbers
             if (!barArea.Contains(e.ClipRectangle))
@@ -276,6 +319,8 @@ namespace TombEditor.Controls
                     RectangleF groupArea = groupGetArea(barArea, groupIndex);
                     e.Graphics.DrawString(groupIndex.ToString(), ProbeFont, ProbePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
                 }
+            
+            e.Graphics.SmoothingMode = SmoothingMode.Default;
 
             // Draw depth bar content
             if (barArea.IntersectsWith(e.ClipRectangle))
@@ -343,16 +388,6 @@ namespace TombEditor.Controls
                 }
             }
 
-            // Draw selection range
-            DrawHeightString(e, barArea, _selectionPen, SelectedLimit0);
-            DrawHeightString(e, barArea, _selectionPen, SelectedLimit1);
-            PointF[] selectionLines = new PointF[4];
-            selectionLines[0] = new PointF(barArea.Right + _selectionInsideOffset, selectedLimit1PosY);
-            selectionLines[1] = new PointF(barArea.Left + _selectionOutsideOffset, selectedLimit1PosY);
-            selectionLines[2] = new PointF(barArea.Left + _selectionOutsideOffset, selectedLimit0PosY);
-            selectionLines[3] = new PointF(barArea.Right + _selectionInsideOffset, selectedLimit0PosY);
-            e.Graphics.DrawLines(_selectionPen, selectionLines);
-
             // Draw outline around the groups
             for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
             {
@@ -361,17 +396,35 @@ namespace TombEditor.Controls
             }
         }
 
-        private static void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth)
+        private static void DrawHeightString(PaintEventArgs e, RectangleF barArea, Pen pen, float depth, HeightStringType type)
         {
             if (barArea.Contains(e.ClipRectangle))
                 return;
-
+            
             float screenPosY = ToVisualY(barArea, depth);
-            e.Graphics.DrawLine(pen, barArea.X, screenPosY, barArea.X - _heightStringLineLength, screenPosY);
 
-            string text = string.Format("y = {0:F1}", depth);
+            switch (type)
+            {
+                case HeightStringType.Normal:
+                    e.Graphics.DrawLine(pen, barArea.X, screenPosY, barArea.X - _heightStringLineLength, screenPosY);
+                    break;
+
+                case HeightStringType.Selection:
+                    PointF[] heightPolyPoints = new PointF[3];
+
+                    heightPolyPoints[0] = new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY + _heightStringArrowSize / 1.5f);
+                    heightPolyPoints[1] = new PointF(barArea.X - _heightStringArrowSize - 4, screenPosY - _heightStringArrowSize / 1.5f);
+                    heightPolyPoints[2] = new PointF(barArea.X - 4, screenPosY);
+
+                    e.Graphics.DrawPolygon(pen, heightPolyPoints);
+                    break;
+            }
+
+            string text = string.Format((type == HeightStringType.Normal ? "{0:F1}" : "y = {0:F1}"), depth);
+
             RectangleF textArea = new RectangleF(0.0f, screenPosY - _heightStringFont.Height,
                 barArea.X - (_heightStringLineDistance + _heightStringLineLength), _heightStringFont.Height * 2);
+
             e.Graphics.DrawString(text, _heightStringFont, pen.Brush, textArea, _heightStringLayout);
         }
 
