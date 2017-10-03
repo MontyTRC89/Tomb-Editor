@@ -116,7 +116,7 @@ namespace TombEditor.Controls
             // check if the mouse click was in the bar area
             RectangleF barArea = getBarArea(parentControlSize);
             RectangleF selectionArea = barArea;
-            selectionArea.Inflate(2.0f, _selectionMaxPixelDistanceForMove * 0.8f);
+            selectionArea.Inflate(10.0f, _selectionMaxPixelDistanceForMove * 0.8f);
             if (!selectionArea.Contains(e.Location))
                 return true;
 
