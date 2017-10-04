@@ -18,7 +18,7 @@ namespace TombEditor.Controls
         public const float MaxDepth = 127;
         public float SelectedLimit0 { get; set; } = MinDepth;
         public float SelectedLimit1 { get; set; } = MaxDepth;
-        public readonly List<Vector2> DepthProbes = new List<Vector2>();
+        public readonly List<DepthProbe> DepthProbes = new List<DepthProbe>();
         public event Action InvalidateParent;
 
         private const float _marginX = 10.0f;
@@ -41,10 +41,17 @@ namespace TombEditor.Controls
         private float _roomMouseOffset; // Relative depth difference to where it was clicked.
         private bool _roomMouseMoveStarted;
         private bool IsExtendedViewActive { get { return _roomMouseMoveStarted && (_roomsToMove != null); } }
+        
+        public static readonly Color[] ProbeColors = {
+            Color.Crimson,
+            Color.Purple,
+            Color.DarkGreen,
+            Color.Maroon,
+            Color.DarkOrange,
+            Color.MidnightBlue };
 
         public static readonly StringFormat ProbeStringLayout = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Far };
         public static readonly Font ProbeFont = new Font("Segoe UI", 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
-        public static readonly Pen ProbePen = new Pen(Color.FromArgb(220, 40, 0, 120), 2);
         private static readonly Font _heightStringFont = new Font("Segoe UI", 11.0f, FontStyle.Bold, GraphicsUnit.Pixel);
         private static readonly StringFormat _heightStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Center };
         private static readonly Font _explainationStringFont = new Font("Segoe UI", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
@@ -65,6 +72,13 @@ namespace TombEditor.Controls
         private static readonly Brush _roomsWallBrush = new SolidBrush(Editor.ColorWall);
         private static readonly Brush _roomsToMoveBrush = new SolidBrush(Color.FromArgb(255, 230, 230, 80));
         private static readonly Brush _roomsOutsideOverdraw = new SolidBrush(Color.FromArgb(180, 240, 240, 240));
+
+        public class DepthProbe
+        {
+            public Vector2 Position { get; set; }
+            public Color Color { get; set; }
+        }
+        
 
         private struct RelevantRoom
         {
@@ -281,16 +295,19 @@ namespace TombEditor.Controls
                 }
                 else if (distance > 0.0f)
                 {
-                    var alphaPen = (Pen)_heightLinesBigPen.Clone();
-                    alphaPen.Color = Color.FromArgb((int)(alphaPen.Color.A * (distance / _heightStringFadeDistance)), alphaPen.Color.R, alphaPen.Color.G, alphaPen.Color.B);
-
                     var alphaOutlinePen = (Pen)_outlinePen.Clone();
                     alphaOutlinePen.Color = Color.FromArgb((int)(alphaOutlinePen.Color.A * (distance / _heightStringFadeDistance)), alphaOutlinePen.Color.R, alphaOutlinePen.Color.G, alphaOutlinePen.Color.B);
 
                     DrawHeightString(e, barArea, alphaOutlinePen, depth);
 
                     if (i > 0 && i < _heightStringCount)
+                    {
+                        var alphaPen = (Pen)_heightLinesBigPen.Clone();
+                        alphaPen.Color = Color.FromArgb((int)(alphaPen.Color.A * (distance / _heightStringFadeDistance)), alphaPen.Color.R, alphaPen.Color.G, alphaPen.Color.B);
+
                         e.Graphics.DrawLine(alphaPen, barArea.Left, posY, barArea.Right, posY);
+                    }
+                        
                 }
             }
 
@@ -301,18 +318,23 @@ namespace TombEditor.Controls
             DrawHeightString(e, barArea, _selectionPen, SelectedLimit0, true);
             DrawHeightString(e, barArea, _selectionPen, SelectedLimit1, true);
 
-            RectangleF selectionRect = new RectangleF(new PointF(barArea.Left + _selectionOutsideOffset + 2, Math.Min(selectedLimit1PosY, selectedLimit0PosY)),
-                new SizeF(barArea.Right - barArea.Left, Math.Abs(selectedLimit0PosY - selectedLimit1PosY)));
+            RectangleF selectionRect = new RectangleF(new PointF(barArea.Left, Math.Min(selectedLimit1PosY, selectedLimit0PosY)),
+                new SizeF(_barWidth, Math.Abs(selectedLimit0PosY - selectedLimit1PosY)));
 
             e.Graphics.FillRectangle(_selectionBrush, selectionRect);
 
-            // Draw depth bar numbers
             if (!barArea.Contains(e.ClipRectangle))
+
                 for (int groupIndex = 0; groupIndex < DepthProbes.Count; ++groupIndex)
                 {
                     RectangleF groupArea = groupGetArea(barArea, groupIndex);
-                    e.Graphics.DrawString(groupIndex.ToString(), ProbeFont, ProbePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
+                    selectionRect = new RectangleF(new PointF(groupArea.Left, Math.Min(selectedLimit1PosY, selectedLimit0PosY)), 
+                        new SizeF(groupArea.Width, Math.Abs(selectedLimit0PosY - selectedLimit1PosY))); 
+
+                    using (var b = new SolidBrush(Color.FromArgb(60, DepthProbes[groupIndex].Color.R, DepthProbes[groupIndex].Color.G, DepthProbes[groupIndex].Color.B)))
+                        e.Graphics.FillRectangle(b, selectionRect);
                 }
+
             
             e.Graphics.SmoothingMode = SmoothingMode.Default;
 
@@ -431,7 +453,7 @@ namespace TombEditor.Controls
         private List<List<RelevantRoom>> groupBuildRoomSequences(IEnumerable<Room> sortedRoomList, Level level, Vector2 curserPos, int groupIndex)
         {
             // Decide what bar is at the given index
-            Vector2 probePos = groupIndex == DepthProbes.Count ? curserPos : DepthProbes[groupIndex];
+            Vector2 probePos = groupIndex == DepthProbes.Count ? curserPos : DepthProbes[groupIndex].Position;
             bool shouldCheckRoomsToMove = (groupIndex == DepthProbes.Count) && (_roomsToMove != null) && _roomMouseMoveStarted;
 
             // Iterate over all rooms under the curser and add them to the room sequences
