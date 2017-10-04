@@ -71,10 +71,8 @@ namespace TombEditor.ToolWindows
                     comboRoomType.SelectedIndex = 6;
                 else if (room.FlagRain)
                     comboRoomType.SelectedIndex = 5;
-                else if (room.FlagWater)
-                    comboRoomType.SelectedIndex = room.WaterLevel;
                 else
-                    comboRoomType.SelectedIndex = 0;
+                    comboRoomType.SelectedIndex = room.WaterLevel;
 
                 panelRoomAmbientLight.BackColor = room.AmbientLight.ToWinFormsColor();
 
@@ -87,7 +85,7 @@ namespace TombEditor.ToolWindows
                 cbFlagOutside.Checked = room.FlagOutside;
                 cbHorizon.Checked = room.FlagHorizon;
                 cbNoLensflare.Checked = room.FlagNoLensflare;
-                cbNoPathfinding.Checked = room.ExcludeFromPathFinding;
+                cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
 
                 comboFlipMap.Enabled = !(room.Flipped && (room.AlternateRoom == null));
                 comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
@@ -166,7 +164,7 @@ namespace TombEditor.ToolWindows
 
         private void cbNoPathfinding_CheckedChanged(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.ExcludeFromPathFinding = cbNoPathfinding.Checked;
+            _editor.SelectedRoom.FlagExcludeFromPathFinding = cbNoPathfinding.Checked;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -181,7 +179,6 @@ namespace TombEditor.ToolWindows
             switch (comboRoomType.SelectedIndex)
             {
                 case 0:
-                    _editor.SelectedRoom.FlagWater = false;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -189,7 +186,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 1:
-                    _editor.SelectedRoom.FlagWater = true;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -197,7 +193,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 2:
-                    _editor.SelectedRoom.FlagWater = true;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -205,7 +200,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 3:
-                    _editor.SelectedRoom.FlagWater = true;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -213,7 +207,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 4:
-                    _editor.SelectedRoom.FlagWater = true;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -221,7 +214,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 5:
-                    _editor.SelectedRoom.FlagWater = false;
                     _editor.SelectedRoom.FlagRain = true;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -229,7 +221,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 6:
-                    _editor.SelectedRoom.FlagWater = false;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = true;
                     _editor.SelectedRoom.FlagQuickSand = false;
@@ -237,7 +228,6 @@ namespace TombEditor.ToolWindows
                     break;
 
                 case 7:
-                    _editor.SelectedRoom.FlagWater = false;
                     _editor.SelectedRoom.FlagRain = false;
                     _editor.SelectedRoom.FlagSnow = false;
                     _editor.SelectedRoom.FlagQuickSand = true;
@@ -249,31 +239,13 @@ namespace TombEditor.ToolWindows
 
         private void comboReflection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboReflection.SelectedIndex == 0)
-            {
-                _editor.SelectedRoom.FlagReflection = false;
-                _editor.SelectedRoom.ReflectionLevel = 0;
-            }
-            else
-            {
-                _editor.SelectedRoom.FlagReflection = true;
-                _editor.SelectedRoom.ReflectionLevel = (short)comboReflection.SelectedIndex;
-            }
+            _editor.SelectedRoom.ReflectionLevel = unchecked((byte)comboReflection.SelectedIndex);
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboMist_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboReflection.SelectedIndex == 0)
-            {
-                _editor.SelectedRoom.FlagMist = false;
-                _editor.SelectedRoom.MistLevel = 0;
-            }
-            else
-            {
-                _editor.SelectedRoom.FlagMist = true;
-                _editor.SelectedRoom.MistLevel = (short)comboMist.SelectedIndex;
-            }
+            _editor.SelectedRoom.MistLevel = unchecked((byte)comboMist.SelectedIndex);
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 

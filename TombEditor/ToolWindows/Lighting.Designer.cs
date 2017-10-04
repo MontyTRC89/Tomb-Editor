@@ -121,7 +121,7 @@
             // 
             this.darkLabel12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel12.Location = new System.Drawing.Point(251, 102);
+            this.darkLabel12.Location = new System.Drawing.Point(251, 77);
             this.darkLabel12.Name = "darkLabel12";
             this.darkLabel12.Size = new System.Drawing.Size(51, 22);
             this.darkLabel12.TabIndex = 80;
@@ -132,7 +132,7 @@
             // 
             this.darkLabel13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(251, 77);
+            this.darkLabel13.Location = new System.Drawing.Point(251, 102);
             this.darkLabel13.Name = "darkLabel13";
             this.darkLabel13.Size = new System.Drawing.Size(51, 22);
             this.darkLabel13.TabIndex = 79;
@@ -321,6 +321,16 @@
             0,
             131072});
             this.numIntensity.Location = new System.Drawing.Point(198, 53);
+            this.numIntensity.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.numIntensity.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
             this.numIntensity.MousewheelSingleIncrement = true;
             this.numIntensity.Name = "numIntensity";
             this.numIntensity.Size = new System.Drawing.Size(60, 22);
@@ -346,6 +356,11 @@
             0,
             0});
             this.numInnerRange.Location = new System.Drawing.Point(198, 78);
+            this.numInnerRange.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
             this.numInnerRange.MousewheelSingleIncrement = true;
             this.numInnerRange.Name = "numInnerRange";
             this.numInnerRange.Size = new System.Drawing.Size(60, 22);
@@ -371,6 +386,11 @@
             0,
             0});
             this.numOuterRange.Location = new System.Drawing.Point(198, 103);
+            this.numOuterRange.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
             this.numOuterRange.MousewheelSingleIncrement = true;
             this.numOuterRange.Name = "numOuterRange";
             this.numOuterRange.Size = new System.Drawing.Size(60, 22);
@@ -391,6 +411,11 @@
             0,
             0});
             this.numInnerAngle.Location = new System.Drawing.Point(302, 28);
+            this.numInnerAngle.Maximum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
             this.numInnerAngle.MousewheelSingleIncrement = true;
             this.numInnerAngle.Name = "numInnerAngle";
             this.numInnerAngle.Size = new System.Drawing.Size(60, 22);
@@ -411,6 +436,11 @@
             0,
             0});
             this.numOuterAngle.Location = new System.Drawing.Point(302, 53);
+            this.numOuterAngle.Maximum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
             this.numOuterAngle.MousewheelSingleIncrement = true;
             this.numOuterAngle.Name = "numOuterAngle";
             this.numOuterAngle.Size = new System.Drawing.Size(60, 22);
@@ -430,7 +460,7 @@
             0,
             0,
             0});
-            this.numDirectionX.Location = new System.Drawing.Point(302, 78);
+            this.numDirectionX.Location = new System.Drawing.Point(302, 103);
             this.numDirectionX.Maximum = new decimal(new int[] {
             90,
             0,
@@ -460,14 +490,14 @@
             0,
             0,
             0});
-            this.numDirectionY.Location = new System.Drawing.Point(302, 103);
+            this.numDirectionY.Location = new System.Drawing.Point(302, 78);
             this.numDirectionY.Maximum = new decimal(new int[] {
-            360,
+            720,
             0,
             0,
             0});
             this.numDirectionY.Minimum = new decimal(new int[] {
-            1,
+            360,
             0,
             0,
             -2147483648});

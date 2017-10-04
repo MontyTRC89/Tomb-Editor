@@ -137,14 +137,6 @@ namespace TombEditor.Geometry
                 texture.Reload(Settings);
         }
 
-        public Room GetOrCreateDummyRoom(int index)
-        {
-            if (index < 0 || index >= Rooms.Length)
-                return null;
-
-            return Rooms[index] ?? (Rooms[index] = new Room(this, 1, 1));
-        }
-
         public int GetFreeRoomIndex()
         {
             // Search the first free room
@@ -161,17 +153,19 @@ namespace TombEditor.Geometry
 
         public void DeleteRoom(Room room)
         {
-            int roomIndex = Rooms.ReferenceIndexOf(room);
-            if (roomIndex == -1)
-                throw new ArgumentException("The room does not belong to the level from which should be removed.");
+            for (int i = 0; i < Rooms.Length; ++i)
+                if (Rooms[i] == room)
+                {
+                    // Remove all objects in the room
+                    var objectsToRemove = room.AnyObjects.ToList();
+                    foreach (var instance in objectsToRemove)
+                        room.RemoveObject(this, instance);
 
-            // Remove all objects in the room
-            var objectsToRemove = room.AnyObjects.ToList();
-            foreach (var instance in objectsToRemove)
-                room.RemoveObject(this, instance);
-
-            // Remove all references to this room
-            Rooms[roomIndex] = null;
+                    // Remove all references to this room
+                    Rooms[i] = null;
+                    return;
+                }
+           throw new ArgumentException("The room does not belong to the level from which should be removed.");
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

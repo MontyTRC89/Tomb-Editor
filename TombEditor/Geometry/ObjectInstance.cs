@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 using System;
-using TombLib.Graphics;
+using System.Collections.Generic;
 
 namespace TombEditor.Geometry
 {
@@ -37,11 +37,19 @@ namespace TombEditor.Geometry
 
         public virtual void AddToRoom(Level level, Room room)
         {
+            if (Room != null)
+                throw new ArgumentException("An object can only be part of 1 room. The object '" + this + "' already belongs to room '" +
+                    Room + "', it can not be added again to room '" + room + "'");
             Room = room;
         }
 
         public virtual void RemoveFromRoom(Level level, Room room)
-        { }
+        {
+            if (Room != room)
+                throw new ArgumentException("An object can't be removed from a room it not part of. The object '" + this + "' belongs to room '" +
+                    (Room == null ? "<none>" : Room.ToString()) + "', it can not be removed from room '" + room + "'");
+            Room = null;
+        }
 
         public virtual bool CopyToFlipRooms => true;
     }

@@ -116,12 +116,12 @@ namespace TombLib.Utils
             _data[index + 2] = r;
             _data[index + 3] = a;
         }
-        
+
         public void SetPixel(int x, int y, ColorC color)
         {
             SetPixel(x, y, color.R, color.G, color.B, color.A);
         }
-        
+
         public Vector2 Size => new Vector2(Width, Height);
 
         public int DataSize => Width * Height * PixelSize;
@@ -138,7 +138,7 @@ namespace TombLib.Utils
                 {
                     image = Image.FromStream(stream);
                 }
-                catch (ArgumentException) //Fires if default .NET methods fail 
+                catch (ArgumentException) //Fires if default .NET methods fail
                 { // Try to open it as tga file
                     stream.Position = PreviousPosition;
                     image = Paloma.TargaImage.LoadTargaImage(stream);
@@ -157,7 +157,7 @@ namespace TombLib.Utils
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 return FromStream(stream);
         }
-        
+
         private static ImageC FromSystemDrawingBitmapMatchingPixelFormat(Bitmap bitmap)
         {
             BitmapData bitmapData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
@@ -229,7 +229,7 @@ namespace TombLib.Utils
                 throw;
             }
         }
-        
+
         // Bitmap has the pixel format 'Format32bppArgb'
         public unsafe void GetTempSystemDrawingBitmap(Action<Bitmap> bitmapAction)
         {
@@ -275,7 +275,7 @@ namespace TombLib.Utils
 
 
         /// <summary>
-        /// uint's are platform dependet representation of the color. 
+        /// uint's are platform dependet representation of the color.
         /// They should stay private inside ImageC to prevent abuse.
         /// </summary>
         private static unsafe uint ColorToUint(ColorC color)
@@ -292,7 +292,7 @@ namespace TombLib.Utils
         {
             uint fromUint = ColorToUint(from);
             uint toUint = ColorToUint(to);
-            
+
             fixed (void* ptr = _data)
             {
                 uint* ptrUint = (uint*)ptr;

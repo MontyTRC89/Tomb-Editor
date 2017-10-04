@@ -6,11 +6,13 @@ namespace TombLib.Utils
 {
     public static class ZLib
     {
-        public static byte[] CompressData(Stream inStream)
+        public const int DefaultCompressionLevel = 10;
+
+        public static byte[] CompressData(Stream inStream, int compressionLevel = DefaultCompressionLevel)
         {
             using (var outStream = new MemoryStream())
             {
-                MiniZ.Functions.Compress(inStream, outStream, -1);
+                MiniZ.Functions.Compress(inStream, outStream, compressionLevel);
                 return outStream.ToArray();
             }
         }
@@ -24,10 +26,10 @@ namespace TombLib.Utils
             }
         }
 
-        public static byte[] CompressData(byte[] inData)
+        public static byte[] CompressData(byte[] inData, int compressionLevel = DefaultCompressionLevel)
         {
             using (var inStream = new MemoryStream(inData, false))
-                return CompressData(inStream);
+                return CompressData(inStream, compressionLevel);
         }
 
         public static byte[] DecompressData(byte[] inData)

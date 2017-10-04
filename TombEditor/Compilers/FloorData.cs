@@ -23,7 +23,7 @@ namespace TombEditor.Compilers
                 var tempRoom = _tempRooms[room];
 
                 // Get all portals
-                var ceilingPortals = new List<Portal>();
+                var ceilingPortals = new List<PortalInstance>();
                 for (var z = 0; z < room.NumZSectors; z++)
                     for (var x = 0; x < room.NumXSectors; x++)
                     {

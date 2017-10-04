@@ -106,7 +106,7 @@ namespace TombEditor.ToolWindows
             if ((obj is Editor.ObjectChangedEvent) ||
                (obj is Editor.SelectedObjectChangedEvent))
             {
-                var portal = _editor.SelectedObject as Portal;
+                var portal = _editor.SelectedObject as PortalInstance;
                 butOpacityNone.Enabled = portal != null;
                 butOpacitySolidFaces.Enabled = portal != null;
                 butOpacityTraversableFaces.Enabled = portal != null;

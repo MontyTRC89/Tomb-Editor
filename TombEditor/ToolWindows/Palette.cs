@@ -26,7 +26,7 @@ namespace TombEditor.ToolWindows
             // Update palette
             lightPalette.SelectedColorChanged += delegate
             {
-                Light light = _editor.SelectedObject as Light;
+                LightInstance light = _editor.SelectedObject as LightInstance;
                 if (light == null)
                     return;
                 light.Color = lightPalette.SelectedColor.ToFloatColor3();

@@ -13,7 +13,7 @@ namespace TombEditor.Geometry
     {
         Floor, Wall, BorderWall
     }
-    
+
     [Flags]
     public enum BlockFlags : short
     {
@@ -30,7 +30,7 @@ namespace TombEditor.Geometry
         ClimbNegativeZ = 512,
         ClimbPositiveX = 1024,
         ClimbNegativeX = 2048,
-        ClimbAny = ClimbPositiveZ  | ClimbNegativeZ | ClimbPositiveX | ClimbNegativeX
+        ClimbAny = ClimbPositiveZ | ClimbNegativeZ | ClimbPositiveX | ClimbNegativeX
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
@@ -89,11 +89,9 @@ namespace TombEditor.Geometry
         public DiagonalSplit CeilingDiagonalSplit { get; set; } = DiagonalSplit.None;
 
         public List<TriggerInstance> Triggers { get; } = new List<TriggerInstance>(); // This array is not supposed to be modified here.
-        public Portal FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
-        public Portal WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
-        public Portal CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
-
-        public PrjBlock PrjBlock { get; set; }
+        public PortalInstance FloorPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public PortalInstance WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
+        public PortalInstance CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
 
         public Block(int floor, int ceiling)
         {
@@ -123,7 +121,7 @@ namespace TombEditor.Geometry
             b.Type = Type;
             b.FloorSplitDirectionToggled = FloorSplitDirectionToggled;
             b.CeilingSplitDirectionToggled = CeilingSplitDirectionToggled;
-            
+
             return b;
         }
 
@@ -136,16 +134,19 @@ namespace TombEditor.Geometry
         {
             return _faceTextures[(int)face];
         }
-        
+
         public bool IsAnyWall => Type != BlockType.Floor;
 
-        public IEnumerable<Portal> Portals
+        public IEnumerable<PortalInstance> Portals
         {
             get
             {
-                if (WallPortal != null) yield return WallPortal;
-                if (CeilingPortal != null) yield return CeilingPortal;
-                if (FloorPortal != null) yield return FloorPortal;
+                if (WallPortal != null)
+                    yield return WallPortal;
+                if (CeilingPortal != null)
+                    yield return CeilingPortal;
+                if (FloorPortal != null)
+                    yield return FloorPortal;
             }
         }
 
@@ -211,7 +212,7 @@ namespace TombEditor.Geometry
         {
             get
             {
-                int h1 = QAFaces[0],h2 = QAFaces[1], h3 = QAFaces[2], h4 = QAFaces[3];
+                int h1 = QAFaces[0], h2 = QAFaces[1], h3 = QAFaces[2], h4 = QAFaces[3];
                 int horizontalTriangle = FindHorizontalTriangle(h1, h2, h3, h4);
 
                 switch (horizontalTriangle)
@@ -227,7 +228,7 @@ namespace TombEditor.Geometry
                     default:
                         int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-                        
+
                         if (min == h1 && min == h3)
                             return FloorSplitDirectionToggled;
                         if (min == h2 && min == h4)
