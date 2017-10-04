@@ -782,7 +782,7 @@ namespace TombEditor
         {
             if (instance.Room.Flipped && (instance is PortalInstance))
             {
-                DarkMessageBox.Show(owner, "You can't delete portals of a flipped room", "Error", MessageBoxIcon.Error);
+                DarkMessageBox.Show(owner, "You can't delete portals of a flipped room currently. :(", "Error", MessageBoxIcon.Error);
                 return;
             }
 
@@ -1003,14 +1003,8 @@ namespace TombEditor
 
         public static void CropRoom(Room room, Rectangle newArea, IWin32Window owner)
         {
-            if (room.Flipped)
-            {
-                DarkMessageBox.Show(owner, "You can't crop a flipped room yet :(", "Error", MessageBoxIcon.Error);
-                return;
-            }
             newArea = newArea.Inflate(1);
-            if ((newArea.Width + 1) > Room.MaxRoomDimensions ||
-                (newArea.Height + 1) > Room.MaxRoomDimensions)
+            if ((newArea.Width + 1) > Room.MaxRoomDimensions || (newArea.Height + 1) > Room.MaxRoomDimensions)
             {
                 DarkMessageBox.Show(owner, "The selected area exceeds the maximum room size.", "Error", MessageBoxIcon.Error);
                 return;
@@ -1020,16 +1014,19 @@ namespace TombEditor
                 return;
 
             // Resize room
-            room.Resize(_editor.Level, newArea.Width + 1, newArea.Height + 1,
-                (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), new DrawingPoint(newArea.X, newArea.Y));
+            if (room.AlternateRoom != null)
+                room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+            else if (room.AlternateBaseRoom != null)
+                room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
+            room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner());
 
             // Fix selection if necessary
             if ((_editor.SelectedRoom == room) && _editor.SelectedSectors.Valid)
-                _editor.SelectedSectors = new SectorSelection
-                {
-                    Area = _editor.SelectedSectors.Area.Intersect(newArea).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y)),
-                    Arrow = _editor.SelectedSectors.Arrow
-                };
+            {
+                var selection = _editor.SelectedSectors;
+                selection.Area = selection.Area.Intersect(newArea).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y));
+                _editor.SelectedSectors = selection;
+            }
             _editor.RoomPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(room);
         }
@@ -1389,62 +1386,14 @@ namespace TombEditor
             _editor.RoomSectorPropertiesChange(destination);
         }
 
-        public static void CopyRoom(Room room, Rectangle area)
-        {
-            int found = _editor.Level.GetFreeRoomIndex();
-            var newRoom = new Room(_editor.Level, area.Width + 3, area.Height + 3, "Room " + found);
-
-            for (int x = 1; x < area.Width - 1; x++)
-                for (int z = 1; z < area.Height - 1; z++)
-                    newRoom.Blocks[x, z] = room.Blocks[x + area.X - 1, z + area.Y - 1].Clone();
-
-            newRoom.UpdateCompletely();
-
-            _editor.Level.Rooms[found] = newRoom;
-            _editor.RoomListChange();
-        }
-
-        public static void SplitRoom(Room room, Rectangle area, IWin32Window owner)
-        {
-            if (room.Flipped)
-            {
-                DarkMessageBox.Show(owner, "You can't split a flipped room", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
-            int found = _editor.Level.GetFreeRoomIndex();
-            var newRoom = new Room(_editor.Level, area.Width + 3, area.Height + 3, "Room " + found);
-
-            for (int x = 0; x < area.Width + 1; x++)
-                for (int z = 0; z < area.Height + 1; z++)
-                {
-                    newRoom.Blocks[x, z] = room.Blocks[x + area.X, z + area.Y].Clone();
-                    room.Blocks[x + area.X, z + area.Y].Type = BlockType.Wall;
-                }
-
-            // Build the geometry of the new room
-            room.UpdateCompletely();
-            newRoom.UpdateCompletely();
-
-            // Update the UI
-            _editor.Level.Rooms[found] = newRoom;
-            _editor.RoomListChange();
-        }
-
         public static void AlternateRoomEnable(Room room, short AlternateGroup)
         {
             // Create new room
-            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "Flipped of " + room.ToString());
-            newRoom.Position = new Vector3(room.Position.X, room.Position.Y, room.Position.Z);
-
-            // Copy all objects that need to be copied
-            foreach (var instance in room.AnyObjects)
-                if (instance.CopyToFlipRooms)
-                    newRoom.AddObject(_editor.Level, instance.Clone());
-
-            // Build the geometry of the new room
+            var newRoom = room.Clone(_editor.Level, instance => instance.CopyToFlipRooms);
+            newRoom.Name = "Flipped of " + room;
             newRoom.UpdateCompletely();
 
+            // Assign room
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
 
@@ -1651,22 +1600,52 @@ namespace TombEditor
         {
             if (!CheckForRoomAndBlockSelection(owner))
                 return;
-            SplitRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area, owner);
+
+            Rectangle area = _editor.SelectedSectors.Area.Inflate(1);
+            var room = _editor.SelectedRoom;
+
+            if (room.AlternateBaseRoom != null)
+            {
+                _editor.Level.AssignRoomToFree(room.AlternateBaseRoom.Split(_editor.Level, area));
+                _editor.RoomGeometryChange(room);
+                _editor.RoomSectorPropertiesChange(room);
+            }
+
+            if (room.AlternateRoom != null)
+            {
+                _editor.Level.AssignRoomToFree(room.AlternateRoom.Split(_editor.Level, area));
+                _editor.RoomGeometryChange(room);
+                _editor.RoomSectorPropertiesChange(room);
+            }
+
+            Vector3 oldRoomPos = room.Position;
+            _editor.Level.AssignRoomToFree(room.Split(_editor.Level, area));
+            _editor.RoomGeometryChange(room);
+            _editor.RoomSectorPropertiesChange(room);
+            _editor.RoomListChange();
+
+            // Fix selection
+            if ((_editor.SelectedRoom == room) && _editor.SelectedSectors.Valid)
+            {
+                var selection = _editor.SelectedSectors;
+                selection.Area = selection.Area.Offset(new DrawingPoint((int)(oldRoomPos.X - room.Position.X), (int)(oldRoomPos.Z - room.Position.Z)));
+                _editor.SelectedSectors = selection;
+            }
         }
 
         public static void CopyRoom(IWin32Window owner)
         {
-            if (!CheckForRoomAndBlockSelection(owner))
-                return;
-            CopyRoom(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
+            _editor.Level.AssignRoomToFree(newRoom);
+            _editor.RoomListChange();
+            _editor.SelectedRoom = newRoom;
         }
 
         public static bool CheckForRoomAndBlockSelection(IWin32Window owner)
         {
             if ((_editor.SelectedRoom == null) || !_editor.SelectedSectors.Valid)
             {
-                DarkMessageBox.Show(owner, "Please select a valid group of sectors",
-                    "Error", MessageBoxIcon.Error);
+                DarkMessageBox.Show(owner, "Please select a valid group of sectors", "Error", MessageBoxIcon.Error);
                 return false;
             }
             return true;

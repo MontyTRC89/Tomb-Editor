@@ -64,12 +64,7 @@ namespace TombEditor.Geometry
                     break;
             }
         }
-
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)(this.MemberwiseClone());
-        }
-
+        
         public override string ToString()
         {
             return "Light " + Type.ToString() +

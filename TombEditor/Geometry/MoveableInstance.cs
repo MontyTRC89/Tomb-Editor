@@ -11,10 +11,5 @@ namespace TombEditor.Geometry
 
         public override bool CopyToFlipRooms => false;
         public override ItemType ItemType => new ItemType(false, WadObjectId);
-
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)MemberwiseClone();
-        }
     }
 }

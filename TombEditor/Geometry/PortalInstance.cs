@@ -22,7 +22,6 @@ namespace TombEditor.Geometry
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
 
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
-
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
 
         public PortalInstance(Rectangle area, PortalDirection direction, Room adjoiningRoom)
@@ -32,16 +31,6 @@ namespace TombEditor.Geometry
                 throw new NullReferenceException("'adjoiningRoom' must not be null");
             Direction = direction;
             AdjoiningRoom = adjoiningRoom;
-        }
-
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)MemberwiseClone();
-        }
-
-        public override SectorBasedObjectInstance Clone(Rectangle newArea)
-        {
-            return new PortalInstance(newArea, Direction, AdjoiningRoom);
         }
 
         public override string ToString()
