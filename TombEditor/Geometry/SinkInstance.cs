@@ -8,12 +8,7 @@ namespace TombEditor.Geometry
         public short Strength { get; set; }
         
         public override bool CopyToFlipRooms => false;
-
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)MemberwiseClone();
-        }
-
+        
         public override string ToString()
         {
             return "Sink with strength " + Strength +
