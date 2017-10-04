@@ -528,14 +528,13 @@
             // 
             // soundDataGridViewControls
             // 
-            this.soundDataGridViewControls.AllowUserMove = false;
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundDataGridViewControls.Enabled = false;
             this.soundDataGridViewControls.Location = new System.Drawing.Point(342, 72);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(92, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(92, 147);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(92, 152);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
