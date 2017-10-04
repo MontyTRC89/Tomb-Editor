@@ -218,10 +218,14 @@ namespace TombEditor.Controls
             {
                 case SelectionMode.SelectedLimit0:
                     SelectedLimit0 = FromVisualY(barArea, e.Y);
+                    if (SelectedLimit0 > SelectedLimit1)
+                        _selectionMode = SelectionMode.SelectedLimit1;
                     InvalidateParent?.Invoke();
                     break;
                 case SelectionMode.SelectedLimit1:
                     SelectedLimit1 = FromVisualY(barArea, e.Y);
+                    if (SelectedLimit1 < SelectedLimit0)
+                        _selectionMode = SelectionMode.SelectedLimit0;
                     InvalidateParent?.Invoke();
                     break;
                 case SelectionMode.DepthBarMove:
