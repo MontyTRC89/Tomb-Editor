@@ -542,19 +542,29 @@ namespace TombEditor.Controls
                 // Do picking on the scene
                 PickingResult newPicking = DoPicking(e.X, e.Y);
 
-                // Move camera to selected sector
                 if ((newPicking is PickingResultBlock) && (_editor.Action.RelocateCameraActive))
                 {
+                    // Move camera to selected sector
                     _editor.MoveCameraToSector(((PickingResultBlock)newPicking).Pos);
                     return;
                 }
                 else if (newPicking is PickingResultObject)
                 {
+                    // Select new object
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
+                else if (newPicking is PickingResultGizmo)
+                {
+                    // Set gizmo axis
+                    _gizmo.SetGizmoAxis((newPicking as PickingResultGizmo)?.Axis ?? GizmoAxis.None);
+                }
+                else if(newPicking is null)
+                {
+                    // Nothing picked, reset selection
+                    _editor.SelectedSectors = SectorSelection.None;
+                    _editor.SelectedObject = null;
+                }
 
-                // Set gizmo axis (or none if another object was picked)
-                _gizmo.SetGizmoAxis((newPicking as PickingResultGizmo)?.Axis ?? GizmoAxis.None);
 
                 // Process editor actions
                 switch (_editor.Action.Action)
@@ -622,13 +632,15 @@ namespace TombEditor.Controls
                             _editor.ObjectChange(Clipboard.Paste(_editor.Level, _editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos));
                         break;
                     case EditorActionType.None:
-                        switch (_editor.Mode)
+                        if (newPicking is PickingResultBlock)
                         {
-                            case EditorMode.Geometry:
-                                if (newPicking is PickingResultBlock)
-                                {
-                                    DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
-                                    BlockFace face = ((PickingResultBlock)newPicking).Face;
+                            var newBlockPicking = (PickingResultBlock)newPicking;
+                            DrawingPoint pos = newBlockPicking.Pos;
+
+                            switch (_editor.Mode)
+                            {
+                                case EditorMode.Geometry:
+                                    BlockFace face = newBlockPicking.Face;
 
                                     // Split the faces
                                     if (ModifierKeys.HasFlag(Keys.Alt))
@@ -683,25 +695,28 @@ namespace TombEditor.Controls
                                         _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                                         _doSectorSelection = true;
                                     }
-                                }
-                                break;
+                                    break;
 
-                            case EditorMode.FaceEdit:
+                                case EditorMode.FaceEdit:
+                                    // Do texturing
 
-                                // Do texturing
-                                if (newPicking is PickingResultBlock)
-                                {
-                                    var newBlockPicking = (PickingResultBlock)newPicking;
                                     if (ModifierKeys == Keys.Control)
-                                        EditorActions.MirrorTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                        EditorActions.MirrorTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     else if (ModifierKeys == Keys.Shift)
-                                        EditorActions.RotateTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                        EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     else if (ModifierKeys == Keys.Alt)
-                                        EditorActions.PickTexture(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face);
+                                        EditorActions.PickTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
+                                    else if (ModifierKeys == (Keys.Control | Keys.Shift))
+                                    {
+                                        // Select rectangle
+                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                        _doSectorSelection = true;
+                                    }
                                     else
-                                        EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newBlockPicking.Pos, newBlockPicking.Face, _editor.SelectedTexture);
-                                }
-                                break;
+                                        if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) || _editor.SelectedSectors == SectorSelection.None))
+                                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                    break;
+                            }
                         }
                         break;
                 }
@@ -771,7 +786,10 @@ namespace TombEditor.Controls
                         PickingResultBlock newPicking = DoPicking(e.X, e.Y) as PickingResultBlock;
 
                         if (newPicking != null)
-                            EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                        {
+                            if ((_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(newPicking.Pos) || _editor.SelectedSectors == SectorSelection.None))
+                                EditorActions.ApplyTextureAutomatically(_editor.SelectedRoom, newPicking.Pos, newPicking.Face, _editor.SelectedTexture);
+                        }
                     }
                     break;
             }

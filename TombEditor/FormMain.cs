@@ -245,22 +245,22 @@ namespace TombEditor
 
                 case Keys.F1: // 2D map mode
                     if (e.Modifiers == Keys.None)
-                        _editor.Mode = EditorMode.Map2D;
+                        EditorActions.SwitchMode(EditorMode.Map2D);
                     break;
 
                 case Keys.F2: // 3D geometry mode
                     if (e.Modifiers == Keys.None)
-                        _editor.Mode = EditorMode.Geometry;
+                        EditorActions.SwitchMode(EditorMode.Geometry);
                     break;
 
                 case Keys.F3: // 3D face texturing mode
                     if (e.Modifiers == Keys.None)
-                        _editor.Mode = EditorMode.FaceEdit;
+                        EditorActions.SwitchMode(EditorMode.FaceEdit);
                     break;
 
                 case Keys.F4: // 3D lighting mode
                     if (e.Modifiers == Keys.None)
-                        _editor.Mode = EditorMode.Lighting;
+                        EditorActions.SwitchMode(EditorMode.Lighting);
                     break;
 
                 case Keys.F6: // Reset 3D camera
@@ -471,17 +471,17 @@ namespace TombEditor
 
         private void textureFloorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllFloor(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void textureCeilingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllCeiling(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void textureWallsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedTexture);
+            EditorActions.TexturizeAllWalls(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedTexture);
         }
 
         private void importConvertTextureToPng_Click(object sender, EventArgs e)

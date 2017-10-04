@@ -19,6 +19,11 @@ namespace TombEditor.Geometry
         Rectangle, Triangle
     }
 
+    public enum BlockFaceType
+    {
+        Floor, Ceiling, Wall
+    }
+
     public class Room
     {
         public const short DefaultHeight = 12;

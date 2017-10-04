@@ -25,7 +25,7 @@ namespace TombEditor.Geometry
 
             Level result = new Level();
             if (result.Rooms[0] == null)
-                result.Rooms[0] = new Room(result, 20, 20, "Room 0");
+                result.Rooms[0] = new Room(result, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
             return result;
         }
 
