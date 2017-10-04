@@ -40,6 +40,7 @@ namespace TombEditor.Controls
         private Room _roomMouseClicked;
         private float _roomMouseOffset; // Relative depth difference to where it was clicked.
         private bool _roomMouseMoveStarted;
+        private float _barMouseOffset;
         private bool IsExtendedViewActive { get { return _roomMouseMoveStarted && (_roomsToMove != null); } }
         
         public static readonly Color[] ProbeColors = {
@@ -93,6 +94,7 @@ namespace TombEditor.Controls
             None,
             SelectedLimit0,
             SelectedLimit1,
+            DepthBarMove,
             RoomMove
         }
         private SelectionMode _selectionMode = SelectionMode.None;
@@ -152,6 +154,7 @@ namespace TombEditor.Controls
 
                 // check if a the click happend on a room
                 if (barArea.Contains(e.Location) && (_selectionMode == SelectionMode.None))
+                { 
                     for (int groupIndex = 0; groupIndex < GroupCount; ++groupIndex)
                     {
                         RectangleF groupArea = groupGetArea(barArea, groupIndex);
@@ -181,6 +184,16 @@ namespace TombEditor.Controls
                             break;
                         }
                     }
+
+                    selectionArea.Y = ToVisualY(barArea, Math.Max(SelectedLimit0, SelectedLimit1));
+                    selectionArea.Height = Math.Abs(ToVisualY(barArea, SelectedLimit0) - ToVisualY(barArea, SelectedLimit1));
+
+                    if(selectionArea.Contains(e.Location))
+                    {
+                        _barMouseOffset = distanceToSelectedLimit0;
+                        _selectionMode = SelectionMode.DepthBarMove;
+                    }
+                }
             }
             else if ((e.Button == MouseButtons.Middle) || (e.Button == MouseButtons.XButton1) || (e.Button == MouseButtons.XButton2))
                 for (int groupIndex = 0; groupIndex < DepthProbes.Count; ++groupIndex)
@@ -209,6 +222,20 @@ namespace TombEditor.Controls
                     break;
                 case SelectionMode.SelectedLimit1:
                     SelectedLimit1 = FromVisualY(barArea, e.Y);
+                    InvalidateParent?.Invoke();
+                    break;
+                case SelectionMode.DepthBarMove:
+                    float barHeight = Math.Abs(SelectedLimit0 - SelectedLimit1);
+
+                    SelectedLimit0 = FromVisualY(barArea, _barMouseOffset + e.Y);
+                    SelectedLimit1 = SelectedLimit0 + barHeight;
+
+                    if (SelectedLimit1 > MaxDepth)
+                    {
+                        SelectedLimit1 = MaxDepth;
+                        SelectedLimit0 = MaxDepth - barHeight;
+                    }
+
                     InvalidateParent?.Invoke();
                     break;
                 case SelectionMode.RoomMove:
