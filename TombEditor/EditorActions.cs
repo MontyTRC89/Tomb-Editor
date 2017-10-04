@@ -81,7 +81,7 @@ namespace TombEditor
                     room.GetBlockTry(x, area.Y - 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZp, increment);
 
                     room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXnZn, increment);
-                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn,  increment);
+                    room.GetBlockTry(x, area.Bottom + 1)?.ChangeEdge(verticalSubdivision, Block.FaceXpZn, increment);
                 }
 
                 for (int z = area.Y; z <= area.Bottom; z++)
@@ -635,8 +635,10 @@ namespace TombEditor
 
             // Set some limits to scale
             // TODO: object risks to be too small and to be not pickable. We should add some size check
-            if (instance.Scale < 1.0f) instance.Scale = 1.0f;
-            if (instance.Scale > 128.0f) instance.Scale = 128.0f;
+            if (instance.Scale < 1.0f)
+                instance.Scale = 1.0f;
+            if (instance.Scale > 128.0f)
+                instance.Scale = 128.0f;
 
             _editor.ObjectChange(_editor.SelectedObject);
         }
@@ -675,7 +677,7 @@ namespace TombEditor
             instance.Position = pos;
 
             // Update state
-            if (instance is Light)
+            if (instance is LightInstance)
             {
                 instance.Room.CalculateLightingForThisRoom();
                 instance.Room.UpdateBuffers();
@@ -718,7 +720,7 @@ namespace TombEditor
                     rotateableRoll.Roll += angleInDegrees;
                     break;
             }
-            if (instance is Light)
+            if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
             _editor.ObjectChange(instance);
         }
@@ -778,7 +780,7 @@ namespace TombEditor
 
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
-            if (instance.Room.Flipped && (instance is Portal))
+            if (instance.Room.Flipped && (instance is PortalInstance))
             {
                 DarkMessageBox.Show(owner, "You can't delete portals of a flipped room", "Error", MessageBoxIcon.Error);
                 return;
@@ -794,19 +796,20 @@ namespace TombEditor
         public static void DeleteObject(ObjectInstance instance)
         {
             instance.Room.RemoveObject(_editor.Level, instance);
-            if (instance is Light)
+            if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(instance.Room);
-            if (instance is Light)
+            if (instance is LightInstance)
                 instance.Room.UpdateCompletely();
 
             // Remove triggers pointing to that object
             foreach (var r in _editor.Level.Rooms)
             {
-                if (r == null) continue;
+                if (r == null)
+                    continue;
 
                 List<TriggerInstance> triggersToDelete = new List<TriggerInstance>();
 
@@ -957,7 +960,7 @@ namespace TombEditor
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
-            if (instance is Light)
+            if (instance is LightInstance)
                 room.UpdateCompletely(); // Rebuild lighting!
             _editor.ObjectChange(instance);
         }
@@ -1009,10 +1012,10 @@ namespace TombEditor
             if ((newArea.Width + 1) > Room.MaxRoomDimensions ||
                 (newArea.Height + 1) > Room.MaxRoomDimensions)
             {
-                DarkMessageBox.Show(owner,  "The selected area exceeds the maximum room size.", "Error", MessageBoxIcon.Error);
+                DarkMessageBox.Show(owner, "The selected area exceeds the maximum room size.", "Error", MessageBoxIcon.Error);
                 return;
             }
-            if (DarkMessageBox.Show(owner,  "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
+            if (DarkMessageBox.Show(owner, "Warning: if you crop this room, all portals and triggers outside the new area will be deleted." +
                 " Do you want to continue?", "Crop room", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
@@ -1293,7 +1296,7 @@ namespace TombEditor
 
         public static void AddPortal(Room room, Rectangle area, IWin32Window owner)
         {
-            // Check if fliproom
+            // Check if it's a flip room
             if (room.Flipped)
                 throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
 
@@ -1372,8 +1375,8 @@ namespace TombEditor
                 throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
 
             // Create portals
-            Portal portal = new Portal(area, destinationDirection, destination);
-            Portal oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
+            PortalInstance portal = new PortalInstance(area, destinationDirection, destination);
+            PortalInstance oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
 
             // Update
             room.UpdateCompletely();
@@ -1430,49 +1433,22 @@ namespace TombEditor
 
         public static void AlternateRoomEnable(Room room, short AlternateGroup)
         {
-            // Search the first free room
-            int freeRoomIndex = _editor.Level.GetFreeRoomIndex();
-
-            // Duplicate portals
-            //var duplicatedPortals = new Dictionary<Portal, Portal>();
-
-            // TODO: portals of flipped rooms must be the same of portals of original room.
-            // Eventually new added portals between flipped rooms are owned only by flipped rooms. (MontyTRC)
-            /*foreach (var p in room.Portals)
-                duplicatedPortals.Add(p, (Portal)p.Clone());*/
-
-            string name = "(Flipped of " + room.ToString() + ") Room " + freeRoomIndex;
-            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, name);
-
-            for (int x = 0; x < room.NumXSectors; x++)
-                for (int z = 0; z < room.NumZSectors; z++)
-                {
-                    newRoom.Blocks[x, z] = room.Blocks[x, z].Clone();
-                    /*newRoom.Blocks[x, z].FloorPortal = (room.Blocks[x, z].FloorPortal != null
-                        ? duplicatedPortals[room.Blocks[x, z].FloorPortal] : null);
-                    newRoom.Blocks[x, z].CeilingPortal = (room.Blocks[x, z].CeilingPortal != null
-                        ? duplicatedPortals[room.Blocks[x, z].CeilingPortal] : null);
-                    newRoom.Blocks[x, z].WallPortal = (room.Blocks[x, z].WallPortal != null
-                        ? duplicatedPortals[room.Blocks[x, z].WallPortal] : null);*/
-
-                    // TODO: verify this and then remove above code (MontyTRC)
-                    newRoom.Blocks[x, z].FloorPortal = room.Blocks[x, z].FloorPortal;
-                    newRoom.Blocks[x, z].CeilingPortal = room.Blocks[x, z].CeilingPortal;
-                    newRoom.Blocks[x, z].WallPortal = room.Blocks[x, z].WallPortal;
-                }
-
-            foreach (var instance in room.Objects)
-                if (instance.CopyToFlipRooms)
-                    newRoom.AddObject(_editor.Level, (PositionBasedObjectInstance)instance.Clone());
-
+            // Create new room
+            var newRoom = new Room(_editor.Level, room.NumXSectors, room.NumZSectors, "Flipped of " + room.ToString());
             newRoom.Position = new Vector3(room.Position.X, room.Position.Y, room.Position.Z);
+
+            // Copy all objects that need to be copied
+            foreach (var instance in room.AnyObjects)
+                if (instance.CopyToFlipRooms)
+                    newRoom.AddObject(_editor.Level, instance.Clone());
 
             // Build the geometry of the new room
             newRoom.UpdateCompletely();
 
-            _editor.Level.Rooms[freeRoomIndex] = newRoom;
+            _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
 
+            // Update room alternate groups
             room.AlternateGroup = AlternateGroup;
             room.AlternateRoom = newRoom;
             _editor.RoomPropertiesChange(room);
@@ -1784,7 +1760,7 @@ namespace TombEditor
 
         public static void SetPortalOpacity(PortalOpacity opacity, IWin32Window owner)
         {
-            var portal = _editor.SelectedObject as Portal;
+            var portal = _editor.SelectedObject as PortalInstance;
             if ((_editor.SelectedRoom == null) || (portal == null))
             {
                 DarkMessageBox.Show(owner, "No portal selected.", "Error", MessageBoxIcon.Error);
@@ -1852,7 +1828,6 @@ namespace TombEditor
                     logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
                     DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
                 }
-                _editor.Level.Dispose();
                 _editor.Level = newLevel;
             }
         }
@@ -1904,7 +1879,7 @@ namespace TombEditor
             foreach (Room room in roomsToMove)
             {
                 bool anyRoomUpdated = false;
-                foreach (Portal portal in room.Portals)
+                foreach (PortalInstance portal in room.Portals)
                     if (!roomsToMove.Contains(portal.AdjoiningRoom))
                     {
                         roomsToUpdate.Add(portal.AdjoiningRoom);
@@ -1918,7 +1893,7 @@ namespace TombEditor
             // Update
             foreach (Room room in roomsToUpdate)
             {
-                 room.UpdateCompletely();
+                room.UpdateCompletely();
                 _editor.RoomSectorPropertiesChange(room);
             }
 

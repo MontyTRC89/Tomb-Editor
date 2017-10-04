@@ -13,7 +13,7 @@ namespace TombEditor.Geometry
         Intensity, InnerRange, OuterRange, InnerAngle, OuterAngle, RotationX, RotationY
     }
 
-    public class Light : PositionBasedObjectInstance, IRotateableYX
+    public class LightInstance : PositionBasedObjectInstance, IRotateableYX
     {
         public LightType Type { get; }
         public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
@@ -44,7 +44,7 @@ namespace TombEditor.Geometry
             set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
 
-        public Light(LightType type)
+        public LightInstance(LightType type)
         {
             Type = type;
             switch (type)

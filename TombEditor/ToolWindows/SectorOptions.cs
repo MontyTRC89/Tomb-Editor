@@ -41,7 +41,7 @@ namespace TombEditor.ToolWindows
 
         }
 
-            private void butWall_Click(object sender, EventArgs e)
+        private void butWall_Click(object sender, EventArgs e)
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;

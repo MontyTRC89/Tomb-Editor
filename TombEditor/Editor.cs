@@ -68,7 +68,7 @@ namespace TombEditor
                 // Validate level
                 int roomCount = value.Rooms.Count((room) => room != null);
                 if (roomCount <= 0)
-                    throw new NotSupportedException("A level must currently have at least one room to be used inside the editor.");
+                    value.Rooms[0] = new Room(value, 20, 20, "Room 0");
 
                 // Reset state that was related to the old level
                 SelectedObject = null;

@@ -103,7 +103,9 @@
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Plane.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Sphere.cs" />
     <Compile Include="Graphics\SolidVertex.cs" />
-    <Compile Include="IO\Chunk.cs" />
+    <Compile Include="IO\ChunkId.cs" />
+    <Compile Include="IO\ChunkReader.cs" />
+    <Compile Include="IO\ChunkWriter.cs" />
     <Compile Include="IO\LEB128.cs" />
     <Compile Include="NG\NGExtraParameter.cs" />
     <Compile Include="NG\NGTimerParameter.cs" />
