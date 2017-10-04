@@ -25,7 +25,7 @@ namespace TombEditor.Controls
         private const float _marginY = 48.0f;
         private const float _barWidth = 36.0f;
         private const float _explainationStringMargin = 4.0f;
-        private const int _heightStringCount = 17;
+        private const int _heightStringCount = 16;
         private const float _heightStringLineLength = 4.0f;
         private const float _heightStringLineDistance = 6.0f;
         private const float _heightStringFadeDistance = 12.0f;
@@ -315,7 +315,7 @@ namespace TombEditor.Controls
 
                 if (distance > _heightStringFadeDistance)
                 {
-                    DrawHeightString(e, barArea, _outlinePen, depth);
+                    DrawHeightString(e, barArea, _outlinePen, (float)Math.Round(depth));
 
                     if(i > 0 && i < _heightStringCount)
                         e.Graphics.DrawLine(_heightLinesBigPen, barArea.Left, posY, barArea.Right, posY);
@@ -325,7 +325,7 @@ namespace TombEditor.Controls
                     var alphaOutlinePen = (Pen)_outlinePen.Clone();
                     alphaOutlinePen.Color = Color.FromArgb((int)(alphaOutlinePen.Color.A * (distance / _heightStringFadeDistance)), alphaOutlinePen.Color.R, alphaOutlinePen.Color.G, alphaOutlinePen.Color.B);
 
-                    DrawHeightString(e, barArea, alphaOutlinePen, depth);
+                    DrawHeightString(e, barArea, alphaOutlinePen, (float)Math.Round(depth));
 
                     if (i > 0 && i < _heightStringCount)
                     {
@@ -459,7 +459,7 @@ namespace TombEditor.Controls
             else
                 e.Graphics.DrawLine(pen, barArea.X, screenPosY, barArea.X - _heightStringLineLength, screenPosY);
 
-            string text = string.Format((selection ? "y = {0:F1}" : "{0:F1}"), depth);
+            string text = string.Format((selection ? "y = {0:F0}" : "{0:F0}"), depth);
 
             RectangleF textArea = new RectangleF(0.0f, screenPosY - _heightStringFont.Height,
                 barArea.X - (_heightStringLineDistance + _heightStringLineLength), _heightStringFont.Height * 2);
