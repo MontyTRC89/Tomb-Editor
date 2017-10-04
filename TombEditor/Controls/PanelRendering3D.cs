@@ -558,7 +558,7 @@ namespace TombEditor.Controls
                     // Set gizmo axis
                     _gizmo.SetGizmoAxis((newPicking as PickingResultGizmo)?.Axis ?? GizmoAxis.None);
                 }
-                else if(newPicking is null)
+                else if(newPicking == null)
                 {
                     // Nothing picked, reset selection
                     _editor.SelectedSectors = SectorSelection.None;
