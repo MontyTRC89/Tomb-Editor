@@ -58,21 +58,27 @@ namespace TombEditor.Geometry
         };
         private VertexRange[,,] _sectorFaceVertexVertexRange;
         private int[,] _sectorAllVerticesOffset;
-        private readonly List<EditorVertex> _allVertices = new List<EditorVertex>();
+        private List<EditorVertex> _allVertices = new List<EditorVertex>();
 
         public Room(Level level, int numXSectors, int numZSectors, string name = "Unnamed", short ceiling = DefaultHeight)
         {
             Name = name;
-            Resize(level, numXSectors, numZSectors, 0, ceiling);
+            Resize(level, new Rectangle(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling);
         }
 
-        public void Resize(Level level, int numXSectors, int numZSectors, short floor = 0, short ceiling = DefaultHeight, DrawingPoint offset = new DrawingPoint())
+        public void Resize(Level level, Rectangle area, short floor = 0, short ceiling = DefaultHeight)
         {
+            int numXSectors = area.Width + 1;
+            int numZSectors = area.Height + 1;
+            DrawingPoint offset = new DrawingPoint(area.X, area.Y);
+
+            if ((numXSectors < 3) || (numZSectors < 3))
+                throw new ArgumentOutOfRangeException("area", area, "Provided area for resizing the room is too small. The area must span at least 3 sectors in X and Z dimension.");
+
             // Remove sector based objects if there are any
             var sector_objects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
             foreach (var instance in sector_objects)
                 RemoveObject(level, instance);
-            DrawingPoint oldSectorSize = Blocks != null ? SectorSize : new DrawingPoint();
 
             // Build new blocks
             Block[,] newBlocks = new Block[numXSectors, numZSectors];
@@ -103,50 +109,133 @@ namespace TombEditor.Geometry
                 instance.Position -= new Vector3(offset.X * 1024, 0, offset.Y * 1024);
 
             // Add sector based objects again
-            Rectangle newArea = new Rectangle(offset.X, offset.Y, numXSectors - 1, numZSectors - 1);
+            Rectangle newArea = new Rectangle(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
             foreach (var instance in sector_objects)
-            {
-                Rectangle instanceNewAreaConstraint = newArea.Inflate(-1);
-                if (instance is PortalInstance)
-                    switch (((PortalInstance)instance).Direction) // Special constraints for portals on walls
-                    {
-                        case PortalDirection.WallPositiveZ:
-                            if (newArea.Bottom != (oldSectorSize.Y - 1))
-                                continue;
-                            instanceNewAreaConstraint = newArea.Inflate(-1, 0);
-                            break;
-                        case PortalDirection.WallNegativeZ:
-                            if (newArea.Top != 0)
-                                continue;
-                            instanceNewAreaConstraint = newArea.Inflate(-1, 0);
-                            break;
-                        case PortalDirection.WallPositiveX:
-                            if (newArea.Right != (oldSectorSize.X - 1))
-                                continue;
-                            instanceNewAreaConstraint = newArea.Inflate(0, -1);
-                            break;
-                        case PortalDirection.WallNegativeX:
-                            if (newArea.Left != 0)
-                                continue;
-                            instanceNewAreaConstraint = newArea.Inflate(0, -1);
-                            break;
-                    }
-                if (!instance.Area.Intersects(instanceNewAreaConstraint))
-                    continue;
-                Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(offset);
-                if (instance is PortalInstance)
-                    AddBidirectionalPortalsToLevel(level, (PortalInstance)instance.Clone(instanceNewArea));
-                else
-                    AddObject(level, instance.Clone(instanceNewArea));
-            }
+                AddObjectCutSectors(level, newArea, instance);
 
             // Update state
             UpdateCompletely();
         }
 
-        public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
+        public Room Split(Level level, Rectangle area)
+        {
+            var newRoom = Clone(level, (instance) => !(instance is PositionBasedObjectInstance) && !(instance is PortalInstance));
+            newRoom.Name = "Split from " + Name;
+            newRoom.Resize(level, area);
+            List<PortalInstance> portals = Portals.ToList();
 
+            // Detect if the room was split by a straight line
+            // If this is the case, resize the original room
+            if ((area.X == 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom < (NumZSectors - 1)))
+            {
+                Resize(level, new Rectangle(area.X, area.Bottom - 1, area.Right, NumZSectors - 1));
+                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(area.X + 1, 0, area.Right - 1, 0), PortalDirection.WallNegativeZ, newRoom));
+
+                // Move objects
+                foreach (PortalInstance portal in portals)
+                    newRoom.AddObjectCutSectors(level, area, portal);
+                foreach (PositionBasedObjectInstance instance in Objects.ToList())
+                    if (instance.Position.Z < 1024)
+                        newRoom.MoveObjectFrom(level, this, instance);
+            }
+            else if ((area.X == 0) && (area.Y == 0) && (area.Right < (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
+            {
+                Resize(level, new Rectangle(area.Right - 1, area.Y, NumXSectors - 1, area.Bottom));
+                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(0, area.Y + 1, 0, area.Bottom - 1), PortalDirection.WallNegativeX, newRoom));
+
+                // Move objects
+                foreach (PortalInstance portal in portals)
+                    newRoom.AddObjectCutSectors(level, area, portal);
+                foreach (PositionBasedObjectInstance instance in Objects.ToList())
+                    if (instance.Position.X < 1024)
+                        newRoom.MoveObjectFrom(level, this, instance);
+            }
+            else if ((area.X == 0) && (area.Y > 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
+            {
+                Resize(level, new Rectangle(area.X, 0, area.Right, area.Y + 1));
+                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(area.X + 1, NumZSectors - 1, area.Right - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
+
+                // Move objects
+                foreach (PortalInstance portal in portals)
+                    newRoom.AddObjectCutSectors(level, area, portal);
+                foreach (PositionBasedObjectInstance instance in Objects.ToList())
+                    if (instance.Position.Z > ((NumZSectors - 2) * 1024))
+                        newRoom.MoveObjectFrom(level, this, instance);
+            }
+            else if ((area.X > 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
+            {
+                Resize(level, new Rectangle(0, area.Y, area.X + 1, area.Bottom));
+                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(NumXSectors - 1, area.Y + 1, NumXSectors - 1, area.Bottom - 1), PortalDirection.WallPositiveX, newRoom));
+
+                // Move objects
+                foreach (PortalInstance portal in portals)
+                    newRoom.AddObjectCutSectors(level, area, portal);
+                foreach (PositionBasedObjectInstance instance in Objects.ToList())
+                    if (instance.Position.Z > ((NumXSectors - 2) * 1024))
+                        newRoom.MoveObjectFrom(level, this, instance);
+            }
+            else
+            {
+                // Resize area
+                for (int z = area.Y + 1; z < area.Bottom; ++z)
+                    for (int x = area.X + 1; x < area.Right; ++x)
+                        Blocks[x, z].Type = BlockType.Wall;
+
+                // Move objects
+                Vector2 start = new Vector2(area.X, area.Y) * 1024.0f;
+                Vector2 end = new Vector2(area.Left + 1, area.Bottom + 1) * 1024.0f;
+                foreach (PositionBasedObjectInstance instance in Objects.ToList())
+                    if ((instance.Position.X > start.X) && (instance.Position.Z > start.Y) &&
+                        (instance.Position.X < end.X) && (instance.Position.Z < end.Y))
+                        newRoom.MoveObjectFrom(level, this, instance);
+            }
+
+            newRoom.UpdateCompletely();
+            UpdateCompletely();
+            return newRoom;
+        }
+
+        public Room Clone(Level level, Predicate<ObjectInstance> decideToCopy)
+        {
+            // Copy most variables
+            var result = (Room)MemberwiseClone();
+            result.AlternateBaseRoom = null;
+            result.AlternateRoom = null;
+
+            result._sectorVertices = new List<EditorVertex>[NumXSectors, NumZSectors];
+            for (int x = 0; x < NumXSectors; x++)
+                for (int z = 0; z < NumZSectors; z++)
+                    result._sectorVertices[x, z] = new List<EditorVertex>();
+            result._sectorFaceVertexVertexRange = new VertexRange[NumXSectors, NumZSectors, (int)Block.FaceCount];
+            result._sectorAllVerticesOffset = new int[NumXSectors, NumZSectors];
+            result._allVertices = new List<EditorVertex>();
+            result._vertexBuffer = null;
+
+            // Copy blocks
+            result.Blocks = new Block[NumXSectors, NumZSectors];
+            for (int z = 0; z < NumZSectors; ++z)
+                for (int x = 0; x < NumXSectors; ++x)
+                    result.Blocks[x, z] = Blocks[x, z].Clone();
+
+            // Copy objects
+            result._objects = new List<PositionBasedObjectInstance>();
+            foreach (var instance in _objects)
+                if (decideToCopy(instance))
+                    result.AddObject(level, instance.Clone());
+
+            result.UpdateCompletely();
+            return result;
+        }
+
+        public Room Clone(Level level)
+        {
+            return Clone(level, instance => !(instance is PortalInstance));
+        }
+
+        public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
         public DrawingPoint SectorSize => new DrawingPoint(NumXSectors, NumZSectors);
+        public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
+        public Rectangle LocalArea => new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1);
 
         public DrawingPoint SectorPos
         {
@@ -203,8 +292,6 @@ namespace TombEditor.Geometry
                     yield return instance;
             }
         }
-
-        public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, NumXSectors + (int)Position.X, NumZSectors + (int)Position.Z);
 
         public Block GetBlock(DrawingPoint pos)
         {
@@ -1799,7 +1886,7 @@ namespace TombEditor.Geometry
                         return true;
                     }
 
-                    if (currentXblock >= 0)
+                    if (currentXblock > 0)
                     {
                         var currentBlock = Blocks[currentXblock - 1, currentZblock];
                         var nextBlock = Blocks[currentXblock, currentZblock];
@@ -1906,7 +1993,7 @@ namespace TombEditor.Geometry
                         return true;
                     }
 
-                    if (currentZblock >= 0)
+                    if (currentZblock > 0)
                     {
                         var currentBlock = Blocks[currentXblock, currentZblock - 1];
                         var nextBlock = Blocks[currentXblock, currentZblock];
@@ -2226,13 +2313,13 @@ namespace TombEditor.Geometry
 
         public int GetHighestCorner(Rectangle area)
         {
-            int max = int.MinValue;
+            area = area.Intersect(LocalArea);
 
+            int max = int.MinValue;
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         max = Math.Max(max, Blocks[x, z].CeilingMax);
-
             return max;
         }
 
@@ -2243,13 +2330,13 @@ namespace TombEditor.Geometry
 
         public int GetLowestCorner(Rectangle area)
         {
-            int min = int.MaxValue;
+            area = area.Intersect(LocalArea);
 
+            int min = int.MaxValue;
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                     if (!Blocks[x, z].IsAnyWall)
                         min = Math.Min(min, Blocks[x, z].FloorMin);
-
             return min;
         }
 
@@ -2422,6 +2509,37 @@ namespace TombEditor.Geometry
                 instance.Position -= new Vector3(0, lowest * 256, 0);
         }
 
+        public bool AddObjectCutSectors(Level level, Rectangle newArea, SectorBasedObjectInstance instance)
+        {
+            // Determine area
+            Rectangle instanceNewAreaConstraint = newArea.Inflate(-1);
+            if (instance is PortalInstance)
+                switch (((PortalInstance)instance).Direction) // Special constraints for portals on walls
+                {
+                    case PortalDirection.WallPositiveZ:
+                        instanceNewAreaConstraint = newArea.Inflate(-1, 0);
+                        break;
+                    case PortalDirection.WallNegativeZ:
+                        instanceNewAreaConstraint = newArea.Inflate(-1, 0);
+                        break;
+                    case PortalDirection.WallPositiveX:
+                        instanceNewAreaConstraint = newArea.Inflate(0, -1);
+                        break;
+                    case PortalDirection.WallNegativeX:
+                        instanceNewAreaConstraint = newArea.Inflate(0, -1);
+                        break;
+                }
+            if (!instance.Area.Intersects(instanceNewAreaConstraint))
+                return false;
+            Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y));
+
+            // Add object
+            if (instance is PortalInstance)
+                AddBidirectionalPortalsToLevel(level, (PortalInstance)instance.Clone(instanceNewArea));
+            else
+                AddObject(level, instance.Clone(instanceNewArea));
+            return true;
+        }
 
         public void AddObject(Level level, ObjectInstance instance)
         {
@@ -2437,6 +2555,13 @@ namespace TombEditor.Geometry
                     _objects.Remove((PositionBasedObjectInstance)instance);
                 throw;
             }
+        }
+
+        public void MoveObjectFrom(Level level, Room from, PositionBasedObjectInstance instance)
+        {
+            from.RemoveObject(level, instance);
+            instance.Position += from.WorldPos - WorldPos;
+            AddObject(level, instance);
         }
 
         public void RemoveObject(Level level, ObjectInstance instance)

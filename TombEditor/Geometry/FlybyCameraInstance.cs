@@ -55,12 +55,7 @@ namespace TombEditor.Geometry
         }
 
         public override bool CopyToFlipRooms => false;
-
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)MemberwiseClone();
-        }
-
+        
         public override string ToString()
         {
             return "FlyBy " +

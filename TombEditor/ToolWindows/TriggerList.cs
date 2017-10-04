@@ -41,8 +41,7 @@ namespace TombEditor.ToolWindows
                 (obj is Editor.RoomSectorPropertiesChangedEvent))
             {
                 lstTriggers.Items.Clear();
-
-
+                
                 if ((_editor.Level != null) && _editor.SelectedSectors.Valid)
                 {
                     // Search for unique triggers inside the selected area
@@ -50,7 +49,7 @@ namespace TombEditor.ToolWindows
                     var area = _editor.SelectedSectors.Area;
                     for (int x = area.X; x <= area.Right; x++)
                         for (int z = area.Y; z <= area.Bottom; z++)
-                            foreach (var trigger in _editor.SelectedRoom.Blocks[x, z].Triggers)
+                            foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
                                 if (!triggers.Contains(trigger))
                                     triggers.Add(trigger);
 

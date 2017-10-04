@@ -26,9 +26,14 @@ namespace TombEditor.Geometry
 
     public abstract class ObjectInstance : ICloneable
     {
-        public Room Room { get; private set; }
+        public Room Room { get; private set; } = null;
 
-        public abstract ObjectInstance Clone();
+        public virtual ObjectInstance Clone()
+        {
+            ObjectInstance result = (ObjectInstance)MemberwiseClone();
+            result.Room = null;
+            return result;
+        }
 
         object ICloneable.Clone()
         {
@@ -56,14 +61,19 @@ namespace TombEditor.Geometry
 
     public abstract class SectorBasedObjectInstance : ObjectInstance
     {
-        public Rectangle Area { get; }
+        public Rectangle Area { get; private set; }
 
         public SectorBasedObjectInstance(Rectangle area)
         {
             Area = area;
         }
 
-        public abstract SectorBasedObjectInstance Clone(Rectangle newArea);
+        public SectorBasedObjectInstance Clone(Rectangle area)
+        {
+            var result = (SectorBasedObjectInstance)Clone();
+            result.Area = area;
+            return result;
+        }
     }
 
     public abstract class PositionBasedObjectInstance : ObjectInstance
