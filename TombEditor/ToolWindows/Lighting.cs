@@ -96,8 +96,6 @@ namespace TombEditor.ToolWindows
                             break;
                     }
 
-                    ChangeControlProperties(light.Type);
-
                     panelLightColor.BackColor = new Vector4(light.Color, 1.0f).ToWinFormsColor();
                     numIntensity.Value = (decimal)light.Intensity;
 
@@ -123,8 +121,8 @@ namespace TombEditor.ToolWindows
                     }
                     if (HasDirection)
                     {
-                        numDirectionX.Value = (decimal)light.RotationX;
                         numDirectionY.Value = (decimal)light.RotationY;
+                        numDirectionX.Value = (decimal)light.RotationX;
                     }
                     else
                     {
@@ -164,38 +162,8 @@ namespace TombEditor.ToolWindows
                 numOuterRange.Enabled = HasInOutRange;
                 numInnerAngle.Enabled = HasInOutAngle;
                 numOuterAngle.Enabled = HasInOutAngle;
-                numDirectionX.Enabled = HasDirection;
                 numDirectionY.Enabled = HasDirection;
-            }
-        }
-
-        public void ChangeControlProperties(LightType _lightType)
-        {
-            numIntensity.Minimum = 0.0M;
-            numIntensity.Maximum = 1.0M;
-            numInnerRange.Maximum = 40.0M;
-            numOuterRange.Maximum = 40.0M;
-
-
-            switch (_lightType)
-            {
-                case LightType.Shadow:
-                    numIntensity.Minimum = -1.0M;
-                    numIntensity.Maximum = 0.0M;
-                    break;
-
-                case LightType.Effect:
-                    numIntensity.Minimum = -16.0M;
-                    numIntensity.Maximum = 16.0M;
-                    break;
-
-                case LightType.Spot:
-                    numInnerRange.Maximum = 89.0M;
-                    numOuterRange.Maximum = 89.0M;
-                    break;
-
-                default:
-                    break;
+                numDirectionX.Enabled = HasDirection;
             }
         }
 
@@ -228,12 +196,12 @@ namespace TombEditor.ToolWindows
                     light.OuterAngle = (float)value;
                     break;
 
-                case LightParameter.RotationX:
-                    light.RotationX = (float)((light.Type == LightType.Spot || light.Type == LightType.Sun) ? (value >= 360.0M ? value - 360.0M : value) : value);
+                case LightParameter.RotationY:
+                    light.RotationY = (float)value;
                     break;
 
-                case LightParameter.RotationY:
-                    light.RotationY = (float)((light.Type == LightType.Spot || light.Type == LightType.Sun) ? (value < 0.0M ? 360.0M + value : (value >= 360.0M ? value - 360.0M : value)) : value);
+                case LightParameter.RotationX:
+                    light.RotationX = (float)value;
                     break;
             }
 
