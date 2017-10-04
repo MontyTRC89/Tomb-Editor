@@ -23,8 +23,8 @@ namespace TombEditor.Geometry.IO
 
         private class LevelSettingsIds
         {
-            public Dictionary<long, ImportedGeometry> ImportedGeometries { get; } = new Dictionary<long, ImportedGeometry>();
-            public Dictionary<long, LevelTexture> LevelTextures { get; } = new Dictionary<long, LevelTexture>();
+            public Dictionary<long, ImportedGeometry> ImportedGeometries { get; set; } = new Dictionary<long, ImportedGeometry>();
+            public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
         }
 
         private static Level LoadLevel(ChunkReader chunkIO, string thisPath)
@@ -91,6 +91,9 @@ namespace TombEditor.Geometry.IO
                 else if (id == Prj2Chunks.GameExecutableSuppressAskingForOptions)
                     settings.GameExecutableSuppressAskingForOptions = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.Textures)
+                {
+                    var toLoad = new Dictionary<LevelTexture, string>();
+                    var levelTextures = new Dictionary<long, LevelTexture>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
                         if (id2 != Prj2Chunks.LevelTexture)
@@ -127,13 +130,18 @@ namespace TombEditor.Geometry.IO
                                 return false;
                             return true;
                         });
-                        levelSettingsIds.LevelTextures.Add(levelTextureIndex, levelTexture);
-                        settings.Textures.Add(levelTexture);
-                        LevelTexturesToLoad.Add(levelTexture, path);
-
+                        levelTextures.Add(levelTextureIndex, levelTexture);
+                        toLoad.Add(levelTexture, path);
                         return true;
                     });
+                    settings.Textures = levelTextures.Values.ToList();
+                    levelSettingsIds.LevelTextures = levelTextures;
+                    LevelTexturesToLoad = toLoad;
+                }
                 else if (id == Prj2Chunks.ImportedGeometries)
+                {
+                    var toLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
+                    var importedGeometries = new Dictionary<long, ImportedGeometry>();
                     chunkIO.ReadChunks((id2, chunkSize2) =>
                     {
                         if (id2 != Prj2Chunks.ImportedGeometry)
@@ -157,12 +165,14 @@ namespace TombEditor.Geometry.IO
                             return true;
                         });
 
-                        levelSettingsIds.ImportedGeometries.Add(importedGeometryIndex, importedGeometry);
-                        settings.ImportedGeometries.Add(importedGeometry);
-                        ImportedGeometriesToLoad.Add(importedGeometry, importedGeometryInfo);
-
+                        importedGeometries.Add(importedGeometryIndex, importedGeometry);
+                        toLoad.Add(importedGeometry, importedGeometryInfo);
                         return true;
                     });
+                    settings.ImportedGeometries = importedGeometries.Values.ToList();
+                    levelSettingsIds.ImportedGeometries = importedGeometries;
+                    ImportedGeometriesToLoad = toLoad;
+                }
                 else
                     return false;
                 return true;
@@ -175,8 +185,6 @@ namespace TombEditor.Geometry.IO
 
             // Load imported geoemtries
             settings.ImportedGeometryUpdate(ImportedGeometriesToLoad);
-            foreach (var importedGeometry in ImportedGeometriesToLoad)
-                settings.ImportedGeometries.Add(importedGeometry.Key);
 
             // Apply settings
             levelSettingsIdsOuter = levelSettingsIds;
