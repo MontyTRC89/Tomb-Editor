@@ -53,13 +53,15 @@ namespace TombEditor.Controls
             public List<short> Indices { get; set; } = new List<short>();
         }
 
-        private class ComparerRoomRenderBuckets : IComparer<RoomRenderBucket>
+        private class Comparer : IComparer<RoomRenderBucket>, IComparer<ItemInstance>
         {
-            private readonly Room[] _rooms;
+            private readonly Dictionary<Room, int> _rooms = new Dictionary<Room, int>();
 
-            public ComparerRoomRenderBuckets(Room[] rooms)
+            public Comparer(Level level)
             {
-                _rooms = rooms;
+                for (int i = 0; i < level.Rooms.Length; ++i)
+                    if (level.Rooms[i] != null)
+                        _rooms.Add(level.Rooms[i], i);
             }
 
             public int Compare(RoomRenderBucket x, RoomRenderBucket y)
@@ -71,57 +73,20 @@ namespace TombEditor.Controls
                 }
 
                 {
-                    int result = Comparer<Room>.Default.Compare(x.Room, y.Room);
+                    int result = _rooms[x.Room].CompareTo(_rooms[y.Room]);
                     if (result != 0)
                         return result;
                 }
 
                 return x.Distance.CompareTo(y.Distance);
             }
-        }
 
-        private class ComparerMoveables : IComparer<MoveableInstance>
-        {
-            private readonly Room[] _rooms;
-
-            public ComparerMoveables(Room[] rooms)
-            {
-                _rooms = rooms;
-            }
-
-            public int Compare(MoveableInstance x, MoveableInstance y)
+            public int Compare(ItemInstance x, ItemInstance y)
             {
                 int result = x.WadObjectId.CompareTo(y.WadObjectId);
                 if (result != 0)
                     return result;
-                return Comparer<Room>.Default.Compare(x.Room, y.Room);
-            }
-        }
-
-        private class ComparerStaticMeshes : IComparer<StaticInstance>
-        {
-            private readonly Room[] _rooms;
-
-            public ComparerStaticMeshes(Room[] rooms)
-            {
-                _rooms = rooms;
-            }
-
-            public int Compare(StaticInstance x, StaticInstance y)
-            {
-                int result = x.WadObjectId.CompareTo(y.WadObjectId);
-                if (result != 0)
-                    return result;
-                return Comparer<Room>.Default.Compare(x.Room, y.Room);
-            }
-        }
-
-        private class ComparerFlybyCameras : IComparer<FlybyCameraInstance>
-        {
-            public int Compare(FlybyCameraInstance x, FlybyCameraInstance y)
-            {
-                int result = (x.Number > y.Number ? 1 : -1);
-                return result;
+                return _rooms[x.Room].CompareTo(_rooms[y.Room]);
             }
         }
 
@@ -1846,8 +1811,9 @@ namespace TombEditor.Controls
                 _roomGeometryToDraw.AddRange(_roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>());
             }
 
-            _moveablesToDraw.Sort(new ComparerMoveables(_editor.Level.Rooms));
-            _staticsToDraw.Sort(new ComparerStaticMeshes(_editor.Level.Rooms));
+            var comparer = new Comparer(_editor.Level);
+            _moveablesToDraw.Sort(comparer);
+            _staticsToDraw.Sort(comparer);
         }
 
         private void CollectRoomsToDraw(Room room)
@@ -2046,9 +2012,10 @@ namespace TombEditor.Controls
             }
 
             // Sort buckets
-            _opaqueBuckets.Sort(new ComparerRoomRenderBuckets(_editor.Level.Rooms));
-            _transparentBuckets.Sort(new ComparerRoomRenderBuckets(_editor.Level.Rooms));
-            _invisibleBuckets.Sort(new ComparerRoomRenderBuckets(_editor.Level.Rooms));
+            var comparer = new Comparer(_editor.Level);
+            _opaqueBuckets.Sort(comparer);
+            _transparentBuckets.Sort(comparer);
+            _invisibleBuckets.Sort(comparer);
 
             Parallel.ForEach(_opaqueBuckets, PrepareIndexBuffer);
         }
@@ -3114,7 +3081,7 @@ namespace TombEditor.Controls
                 return;
 
             // Sort cameras
-            flybyCameras.Sort(new ComparerFlybyCameras());
+            flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
             // Create a vertex array
             List<EditorVertex> vertices = new List<EditorVertex>();

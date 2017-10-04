@@ -54,7 +54,7 @@ namespace TombEditor.Geometry
         Floor = 25, FloorTriangle2 = 26, Ceiling = 27, CeilingTriangle2 = 28
     }
 
-    public class Block
+    public class Block : ICloneable
     {
         public const BlockFace FaceCount = (BlockFace)29;
         /// <summary> Index of faces on the negative X and positive Z direction </summary>
@@ -93,6 +93,9 @@ namespace TombEditor.Geometry
         public PortalInstance WallPortal { get; internal set; } = null; // This is not supposed to be modified here.
         public PortalInstance CeilingPortal { get; internal set; } = null; // This is not supposed to be modified here.
 
+        private Block()
+        {}
+
         public Block(int floor, int ceiling)
         {
             for (int i = 0; i < 4; i++)
@@ -106,24 +109,30 @@ namespace TombEditor.Geometry
 
         public Block Clone()
         {
-            var b = new Block(0, 0);
+            var result = new Block();
+            result.Flags = Flags;
+            result.Type = Type;
+            result.ForceFloorSolid = ForceFloorSolid;
 
             for (int i = 0; i < 4; i++)
-                b.QAFaces[i] = QAFaces[i];
+                result.QAFaces[i] = QAFaces[i];
             for (int i = 0; i < 4; i++)
-                b.EDFaces[i] = EDFaces[i];
+                result.EDFaces[i] = EDFaces[i];
             for (int i = 0; i < 4; i++)
-                b.WSFaces[i] = WSFaces[i];
+                result.WSFaces[i] = WSFaces[i];
             for (int i = 0; i < 4; i++)
-                b.RFFaces[i] = RFFaces[i];
+                result.RFFaces[i] = RFFaces[i];
+            for (int i = 0; i < (int)FaceCount; i++)
+                result._faceTextures[i] = _faceTextures[i];
 
-            b.Flags = Flags;
-            b.Type = Type;
-            b.FloorSplitDirectionToggled = FloorSplitDirectionToggled;
-            b.CeilingSplitDirectionToggled = CeilingSplitDirectionToggled;
-
-            return b;
+            result.FloorSplitDirectionToggled = FloorSplitDirectionToggled;
+            result.CeilingSplitDirectionToggled = CeilingSplitDirectionToggled;
+            result.FloorDiagonalSplit = FloorDiagonalSplit;
+            result.CeilingDiagonalSplit = CeilingDiagonalSplit;
+            return result;
         }
+
+        object ICloneable.Clone() => Clone();
 
         public void SetFaceTexture(BlockFace face, TextureArea texture)
         {

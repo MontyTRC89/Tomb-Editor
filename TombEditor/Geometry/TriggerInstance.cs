@@ -58,25 +58,6 @@ namespace TombEditor.Geometry
             : base(area)
         { }
 
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)MemberwiseClone();
-        }
-
-        public override SectorBasedObjectInstance Clone(Rectangle newArea)
-        {
-            return new TriggerInstance(newArea)
-            {
-                TriggerType = TriggerType,
-                TargetType = TargetType,
-                TargetObj = TargetObj,
-                TargetData = TargetData,
-                Timer = Timer,
-                OneShot = OneShot,
-                CodeBits = CodeBits
-            };
-        }
-
         public string TargetObjString => TargetObj?.ToString() ?? "NULL";
 
         public override string ToString()

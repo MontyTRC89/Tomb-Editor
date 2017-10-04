@@ -33,12 +33,7 @@ namespace TombEditor.Geometry
             get { return _rotationY; }
             set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
-
-        public override ObjectInstance Clone()
-        {
-            return (ObjectInstance)MemberwiseClone();
-        }
-
+        
         public override string ToString()
         {
             string result = "Imported Geometry: ";
