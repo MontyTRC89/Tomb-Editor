@@ -171,8 +171,10 @@ namespace TombEditor.Controls
                 case MouseButtons.Middle:
                 case MouseButtons.XButton2:
                     _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.FindIndex((depthProbe) => (
-                       (Math.Round(depthProbe.Position.X) == Math.Round(clickPos.X)) &&
-                       (Math.Round(depthProbe.Position.Y) == Math.Round(clickPos.Y))));
+                       (depthProbe.Position.X - 2 < clickPos.X) &&
+                       (depthProbe.Position.Y - 2 < clickPos.Y) &&
+                       (depthProbe.Position.X + 2 > clickPos.X) &&
+                       (depthProbe.Position.Y + 2 > clickPos.Y)));
 
                     if (_currentlyEditedDepthProbeIndex == -1)
                     {
