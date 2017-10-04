@@ -132,7 +132,7 @@ namespace TombEditor.Controls
                     }
                 }
 
-            } while (noNewColor && tries < DepthBar.ProbeColors.Count());
+            } while (noNewColor && tries < 15);
                 
         }
 
