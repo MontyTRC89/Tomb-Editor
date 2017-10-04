@@ -1,12 +1,10 @@
-﻿using System;
+﻿using NLog;
+using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using NLog;
-using SharpDX;
-using SharpDX.Toolkit.Graphics;
-using Color = System.Drawing.Color;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -18,590 +16,532 @@ namespace TombEditor.Geometry.IO
 
         public static Level LoadFromPrj2(string filename, IProgressReporter progressReporter)
         {
-            using (Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                var reader = new BinaryReaderEx(stream);
-
-                // Check file type
-                byte[] magicNumber = reader.ReadBytes(Prj2Chunks.MagicNumber.Length);
-                if (!magicNumber.SequenceEqual(Prj2Chunks.MagicNumber))
-                    throw new NotSupportedException("The header of the *.prj2 file was unrecognizable. Most likely it is not a *.prj2 file.");
-
-                // Check file version
-                uint version = reader.ReadUInt32();
-                switch (version)
-                {
-                    case Prj2Chunks.Version:
-                        return LoadLevel(reader, filename);
-                    case Prj2Chunks.VersionCompressed:
-                        // zlib compressed
-                        int compressedSize = reader.ReadInt32();
-                        var projectData = reader.ReadBytes(compressedSize);
-                        projectData = ZLib.DecompressData(projectData);
-
-                        using (var uncompressedStream = new MemoryStream(projectData))
-                            return LoadLevel(new BinaryReaderEx(uncompressedStream), filename);
-                    default:
-                        throw new NotSupportedException("File version " + version + " is not supported.");
-                }
-            }
+            using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, fileStream))
+                return LoadLevel(chunkIO, filename);
         }
 
-        public static Level LoadLevel(BinaryReaderEx streamOuter, string thisPath)
+        private class LevelSettingsIds
         {
+            public Dictionary<long, ImportedGeometry> ImportedGeometries { get; set; } = new Dictionary<long, ImportedGeometry>();
+            public Dictionary<long, LevelTexture> LevelTextures { get; set; } = new Dictionary<long, LevelTexture>();
+        }
+
+        private static Level LoadLevel(ChunkReader chunkIO, string thisPath)
+        {
+            LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
             Level level = new Level();
-            ChunkProcessing.ParseChunks(streamOuter, (stream, id, chunkSize) =>
+            chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (LoadLevelSettings(stream, id, level, thisPath))
+                if (LoadLevelSettings(chunkIO, id, level, thisPath, ref levelSettingsIds))
                     return true;
-                else if (LoadRooms(stream, id, level))
+                else if (LoadRooms(chunkIO, id, level, levelSettingsIds))
                     return true;
                 return false;
             });
             return level;
         }
 
-        public static bool LoadLevelSettings(BinaryReaderEx streamOuter, ChunkID idOuter, Level level, string thisPath)
+        private static bool LoadLevelSettings(ChunkReader chunkIO, ChunkId idOuter, Level level, string thisPath, ref LevelSettingsIds levelSettingsIdsOuter)
         {
             if (idOuter != Prj2Chunks.Settings)
                 return false;
 
-            LevelSettings settings = new LevelSettings { LevelFilePath = thisPath };
-            ChunkProcessing.ParseChunks(streamOuter, (stream, id, chunkSize) =>
+            var settings = new LevelSettings { LevelFilePath = thisPath };
+            var levelSettingsIds = new LevelSettingsIds();
+            var ImportedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
+            var LevelTexturesToLoad = new Dictionary<LevelTexture, string>();
+
+            chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id == Prj2Chunks.WadFilePath)
-                    settings.WadFilePath = stream.ReadStringUTF8();
+                    settings.WadFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.FontTextureFilePath)
-                    settings.FontTextureFilePath = stream.ReadStringUTF8();
+                    settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
-                    settings.SkyTextureFilePath = stream.ReadStringUTF8();
+                    settings.SkyTextureFilePath = chunkIO.ReadChunkString(chunkSize);
+                else if (id == Prj2Chunks.OldWadSoundPaths)
+                {
+                    var oldWadSoundPaths = new List<OldWadSoundPath>();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.OldWadSoundPath)
+                            return false;
+
+                        var oldWadSoundPath = new OldWadSoundPath("");
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.OldWadSoundPathPath)
+                                oldWadSoundPath.Path = chunkIO.ReadChunkString(chunkSize3);
+                            else
+                                return false;
+                            return true;
+                        });
+                        oldWadSoundPaths.Add(oldWadSoundPath);
+                        return true;
+                    });
+                    settings.OldWadSoundPaths = oldWadSoundPaths;
+                }
                 else if (id == Prj2Chunks.GameDirectory)
-                    settings.GameDirectory = stream.ReadStringUTF8();
+                    settings.GameDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameLevelFilePath)
-                    settings.GameLevelFilePath = stream.ReadStringUTF8();
+                    settings.GameLevelFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameExecutableFilePath)
-                    settings.GameExecutableFilePath = stream.ReadStringUTF8();
+                    settings.GameExecutableFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameExecutableSuppressAskingForOptions)
-                    settings.GameExecutableSuppressAskingForOptions = stream.ReadBoolean();
-                else if (id == Prj2Chunks.IgnoreMissingSounds)
-                    return true;
+                    settings.GameExecutableSuppressAskingForOptions = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.Textures)
+                {
+                    var toLoad = new Dictionary<LevelTexture, string>();
+                    var levelTextures = new Dictionary<long, LevelTexture>();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.LevelTexture)
+                            return false;
+
+                        string path = "";
+                        LevelTexture levelTexture = new LevelTexture();
+                        long levelTextureIndex = long.MinValue;
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.LevelTextureIndex)
+                                levelTextureIndex = chunkIO.ReadChunkLong(chunkSize3);
+                            else if (id3 == Prj2Chunks.LevelTexturePath)
+                                path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
+                            else if (id3 == Prj2Chunks.LevelTextureConvert512PixelsToDoubleRows)
+                                levelTexture.SetConvert512PixelsToDoubleRows(settings, chunkIO.ReadChunkBool(chunkSize3));
+                            else if (id3 == Prj2Chunks.LevelTextureReplaceMagentaWithTransparency)
+                                levelTexture.SetReplaceWithTransparency(settings, chunkIO.ReadChunkBool(chunkSize3));
+                            else if (id3 == Prj2Chunks.LevelTextureSounds)
+                            {
+                                int width = chunkIO.Raw.ReadInt32();
+                                int height = chunkIO.Raw.ReadInt32();
+                                levelTexture.ResizeTextureSounds(width, height);
+                                for (int y = 0; y < levelTexture.TextureSoundHeight; ++y)
+                                    for (int x = 0; x < levelTexture.TextureSoundWidth; ++x)
+                                    {
+                                        byte textureSoundByte = chunkIO.Raw.ReadByte();
+                                        if (textureSoundByte > 15)
+                                            textureSoundByte = 15;
+                                        levelTexture.SetTextureSound(x, y, (TextureSound)textureSoundByte);
+                                    }
+                            }
+                            else
+                                return false;
+                            return true;
+                        });
+                        levelTextures.Add(levelTextureIndex, levelTexture);
+                        toLoad.Add(levelTexture, path);
+                        return true;
+                    });
+                    settings.Textures = levelTextures.Values.ToList();
+                    levelSettingsIds.LevelTextures = levelTextures;
+                    LevelTexturesToLoad = toLoad;
+                }
+                else if (id == Prj2Chunks.ImportedGeometries)
+                {
+                    var toLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>();
+                    var importedGeometries = new Dictionary<long, ImportedGeometry>();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.ImportedGeometry)
+                            return false;
+
+                        ImportedGeometry importedGeometry = new ImportedGeometry();
+                        ImportedGeometryInfo importedGeometryInfo = new ImportedGeometryInfo();
+                        long importedGeometryIndex = long.MinValue;
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.ImportedGeometryIndex)
+                                importedGeometryIndex = chunkIO.ReadChunkLong(chunkSize3);
+                            else if (id3 == Prj2Chunks.ImportedGeometryPath)
+                                importedGeometryInfo.Path = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.ImportedGeometryName)
+                                importedGeometryInfo.Name = chunkIO.ReadChunkString(chunkSize3);
+                            else if (id3 == Prj2Chunks.ImportedGeometryScale)
+                                importedGeometryInfo.Scale = chunkIO.ReadChunkFloat(chunkSize3);
+                            else
+                                return false;
+                            return true;
+                        });
+
+                        importedGeometries.Add(importedGeometryIndex, importedGeometry);
+                        toLoad.Add(importedGeometry, importedGeometryInfo);
+                        return true;
+                    });
+                    settings.ImportedGeometries = importedGeometries.Values.ToList();
+                    levelSettingsIds.ImportedGeometries = importedGeometries;
+                    ImportedGeometriesToLoad = toLoad;
+                }
                 else
                     return false;
                 return true;
             });
+
+
+            // Load level textures
+            foreach (var levelTexture in LevelTexturesToLoad)
+                levelTexture.Key.SetPath(settings, levelTexture.Value);
+
+            // Load imported geoemtries
+            settings.ImportedGeometryUpdate(ImportedGeometriesToLoad);
+
+            // Apply settings
+            levelSettingsIdsOuter = levelSettingsIds;
             level.ApplyNewLevelSettings(settings);
             return true;
         }
 
-        public static bool LoadLevelTextures(BinaryReaderEx streamOuter, ChunkID idOuter, LevelSettings settings)
-        {
-            if (idOuter != Prj2Chunks.Textures)
-                return false;
-
-            ChunkProcessing.ParseChunks(streamOuter, (stream, id, chunkSize) => LoadLevelTexture(stream, id, settings));
-            return true;
-        }
-
-        public static bool LoadLevelTexture(BinaryReaderEx streamOuter, ChunkID idOuter, LevelSettings settings)
-        {
-            if (idOuter != Prj2Chunks.Texture)
-                return false;
-
-            string path = "";
-            LevelTexture texture = new LevelTexture();
-            ChunkProcessing.ParseChunks(streamOuter, (stream, id, chunkSize) =>
-            {
-                if (id == Prj2Chunks.TexturePath)
-                    path = stream.ReadStringUTF8(); // Don't set the path right away, to not load the texture until all information is available.
-                else if (id == Prj2Chunks.TextureConvert512PixelsToDoubleRows)
-                    texture.SetConvert512PixelsToDoubleRows(settings, stream.ReadBoolean());
-                else if (id == Prj2Chunks.TextureReplaceMagentaWithTransparency)
-                    texture.SetReplaceWithTransparency(settings, stream.ReadBoolean());
-                else if (id == Prj2Chunks.TextureSounds)
-                {
-                    int width = stream.ReadInt32();
-                    int height = stream.ReadInt32();
-                    texture.ResizeTextureSounds(width, height);
-                    for (int y = 0; y < texture.TextureSoundHeight; ++y)
-                        for (int x = 0; x < texture.TextureSoundWidth; ++x)
-                        {
-                            byte textureSoundByte = stream.ReadByte();
-                            if (textureSoundByte > 15)
-                                textureSoundByte = 15;
-                            texture.SetTextureSound(x, y, (TextureSound)textureSoundByte);
-                        }
-                }
-                else
-                    return false;
-                return true;
-            });
-            texture.SetPath(settings, path);
-            settings.Textures.Add(texture);
-            return true;
-        }
-
-        public static bool LoadRooms(BinaryReaderEx reader, ChunkID idOuter, Level level)
+        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds)
         {
             if (idOuter != Prj2Chunks.Rooms)
                 return false;
 
-            int TODO_LoadRooms;
+            List<KeyValuePair<long, Action<Room>>> roomLinkActions = new List<KeyValuePair<long, Action<Room>>>();
+            Dictionary<long, Room> newRooms = new Dictionary<long, Room>();
 
-            /*
-            var modelsList = new Dictionary<uint, string>();
+            List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions = new List<KeyValuePair<long, Action<ObjectInstance>>>();
+            Dictionary<long, ObjectInstance> newObjects = new Dictionary<long, ObjectInstance>();
 
-            Prj2ChunkType chunkType;
-
-            // Read imported geometry
-            uint numImportedGeometry = reader.ReadUInt32();
-            for (int i = 0; i < numImportedGeometry; i++)
+            chunkIO.ReadChunks((id, chunkSize) =>
             {
-                var modelFileName = reader.ReadStringUTF8();
-                var scale = reader.ReadSingle();
+                if (id != Prj2Chunks.Room)
+                    return false;
 
-                if (File.Exists(modelFileName))
+                // Read room
+                Room room = new Room(level, LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                long roomIndex = long.MinValue;
+                chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
-                    if (GeometryImporterExporter.LoadModel(modelFileName, scale) != null)
-                    {
-                        modelsList.Add((uint)i, modelFileName);
-                    }
-                }
-            }
+                    // Read basic room properties
+                    if (id2 == Prj2Chunks.RoomIndex)
+                        roomIndex = chunkIO.ReadChunkLong(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomName)
+                        room.Name = chunkIO.ReadChunkString(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomPosition)
+                        room.Position = chunkIO.ReadChunkVector3(chunkSize2);
 
-            // Read rooms
-            uint numRooms = reader.ReadUInt32();
-            for (int i = 0; i < numRooms; i++)
-            {
-                bool defined = reader.ReadBoolean();
-                if (!defined)
-                    continue;
-
-                var roomName = reader.ReadStringUTF8();
-                var position = reader.ReadVector3();
-                var numXsectors = reader.ReadByte();
-                var numZsectors = reader.ReadByte();
-
-                var room = new Room(level, numXsectors, numZsectors, roomName);
-                room.Position = position;
-
-                for (int z = 0; z < numZsectors; z++)
-                {
-                    for (int x = 0; x < numXsectors; x++)
-                    {
-                        var b = new Block(0, 12);
-
-                        b.Type = (BlockType)reader.ReadUInt16();
-                        b.Flags = (BlockFlags)reader.ReadUInt16();
-                        b.ForceFloorSolid = reader.ReadBoolean();
-
-                        for (int j = 0; j < 4; j++)
-                            b.QAFaces[j] = reader.ReadInt16();
-                        for (int j = 0; j < 4; j++)
-                            b.EDFaces[j] = reader.ReadInt16();
-                        for (int j = 0; j < 4; j++)
-                            b.WSFaces[j] = reader.ReadInt16();
-                        for (int j = 0; j < 4; j++)
-                            b.RFFaces[j] = reader.ReadInt16();
-
-                        b.FloorDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
-                        b.CeilingDiagonalSplit = (DiagonalSplit)reader.ReadUInt16();
-                        b.FloorSplitDirectionIsXEqualsZ = reader.ReadBoolean();
-                        b.CeilingSplitDirectionIsXEqualsZ = reader.ReadBoolean();
-
-                        for (int f = 0; f < 29; f++)
+                    // Read sectors
+                    else if (id2 == Prj2Chunks.RoomSectors)
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            Prj2FaceTextureMode mode = (Prj2FaceTextureMode)reader.ReadUInt16();
+                            if (id3 != Prj2Chunks.Sector)
+                                return false;
 
-                            if (mode == Prj2FaceTextureMode.Texture)
-                            {
-                                var textureArea = new TextureArea();
+                            int ReadPos = chunkIO.Raw.ReadInt32();
+                            int x = ReadPos % room.NumXSectors;
+                            int z = ReadPos / room.NumXSectors;
+                            Block block = room.Blocks[x, z];
 
-                                textureArea.TexCoord0 = reader.ReadVector2();
-                                textureArea.TexCoord1 = reader.ReadVector2();
-                                textureArea.TexCoord2 = reader.ReadVector2();
-                                textureArea.TexCoord3 = reader.ReadVector2();
-                                textureArea.BlendMode = (BlendMode)reader.ReadUInt16();
-                                textureArea.DoubleSided = reader.ReadBoolean();
-
-                                reader.ReadBytes(8);
-
-                                // Check for other chunks
-                                chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                            chunkIO.ReadChunks((id4, chunkSize4) =>
                                 {
-                                    // TODO: logic for reading in the future other chunks
-                                }
+                                    if (id4 == Prj2Chunks.SectorProperties)
+                                    {
+                                        long flag = chunkIO.ReadChunkLong(chunkSize4);
+                                        if (((flag & 1) != 0) && block.Type != BlockType.BorderWall)
+                                            block.Type = BlockType.Wall;
+                                        block.Flags = (BlockFlags)(flag >> 2);
+                                        block.ForceFloorSolid = (flag & 2) != 0;
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorFloor)
+                                    {
+                                        long flag = LEB128.ReadLong(chunkIO.Raw);
+                                        for (int j = 0; j < 4; j++)
+                                            block.QAFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                        for (int j = 0; j < 4; j++)
+                                            block.EDFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                        block.FloorSplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.FloorDiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                    }
+                                    else if (id4 == Prj2Chunks.SectorCeiling)
+                                    {
+                                        long flag = LEB128.ReadLong(chunkIO.Raw);
+                                        for (int j = 0; j < 4; j++)
+                                            block.WSFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                        for (int j = 0; j < 4; j++)
+                                            block.RFFaces[j] = LEB128.ReadShort(chunkIO.Raw);
+                                        block.CeilingSplitDirectionIsXEqualsZ = (flag & 1) != 0;
+                                        block.CeilingDiagonalSplit = (DiagonalSplit)(flag >> 1);
+                                    }
+                                    else if (id4 == Prj2Chunks.TextureLevelTexture)
+                                    {
+                                        BlockFace face = (BlockFace)LEB128.ReadLong(chunkIO.Raw);
 
-                                textureArea.Texture = level.Settings.Textures[0];
+                                        var textureArea = new TextureArea();
+                                        textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
+                                        textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
+                                        textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
+                                        textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                                        long blendFlag = LEB128.ReadLong(chunkIO.Raw);
+                                        textureArea.BlendMode = (BlendMode)(blendFlag >> 1);
+                                        textureArea.DoubleSided = (blendFlag & 1) != 0;
+                                        textureArea.Texture = levelSettingsIds.LevelTextures.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
 
-                                b.SetFaceTexture((BlockFace)f, textureArea);
-                            }
-                            else if (mode == Prj2FaceTextureMode.InvisibleColor)
+                                        block.SetFaceTexture(face, textureArea);
+                                    }
+                                    else if (id4 == Prj2Chunks.TextureInvisible)
+                                    {
+                                        BlockFace face = (BlockFace)LEB128.ReadLong(chunkIO.Raw);
+                                        block.SetFaceTexture(face, new TextureArea { Texture = TextureInvisible.Instance });
+                                    }
+                                    else
+                                        return false;
+                                    return true;
+                                });
+                            return true;
+                        });
+
+                    // Read room properties
+                    else if (id2 == Prj2Chunks.RoomAmbientLight)
+                        room.AmbientLight = chunkIO.ReadChunkVector4(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagCold)
+                        room.FlagCold = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagDamage)
+                        room.FlagDamage = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagHorizon)
+                        room.FlagHorizon = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagOutside)
+                        room.FlagOutside = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagNoLensflare)
+                        room.FlagNoLensflare = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagRain)
+                        room.FlagRain = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagSnow)
+                        room.FlagSnow = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagQuickSand)
+                        room.FlagQuickSand = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomFlagExcludeFromPathFinding)
+                        room.FlagExcludeFromPathFinding = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomWaterLevel)
+                        room.WaterLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomMistLevel)
+                        room.MistLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomReflectionLevel)
+                        room.ReflectionLevel = chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomReverberation)
+                        room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomAlternate)
+                    {
+                        short alternateGroup = 1;
+                        long alternateRoomIndex = -1;
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.AlternateGroup)
+                                alternateGroup = chunkIO.ReadChunkShort(chunkSize3);
+                            else if (id3 == Prj2Chunks.AlternateRoom)
+                                alternateRoomIndex = chunkIO.ReadChunkLong(chunkSize3);
+                            else
+                                return false;
+                            return true;
+                        });
+                        roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(alternateRoomIndex, (alternateRoom) =>
                             {
-                                b.SetFaceTexture((BlockFace)f, new TextureArea { Texture = TextureInvisible.Instance });
-                            }
-                        }
-
-                        reader.ReadBytes(32);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        room.Blocks[x, z] = b;
+                                if (room.AlternateRoom != null)
+                                    logger.Error("The room " + room + " has more than 1 flip room.");
+                                else if (alternateRoom.AlternateBaseRoom != null)
+                                    logger.Error("Room  " + alternateRoom + " is used for more than 1 flip room.");
+                                else
+                                {
+                                    room.AlternateRoom = alternateRoom;
+                                    room.AlternateGroup = alternateGroup;
+                                    alternateRoom.AlternateBaseRoom = room;
+                                    alternateRoom.AlternateGroup = alternateGroup;
+                                }
+                            }));
                     }
-                }
 
-                room.AmbientLight = reader.ReadVector4();
-                room.AlternateGroup = reader.ReadInt16();
-                room.Prj2AlternateRoomIndex = reader.ReadInt32();
-                room.Prj2AlternateBaseRoomIndex = reader.ReadInt32();
-                room.FlagCold = reader.ReadBoolean();
-                room.FlagDamage = reader.ReadBoolean();
-                room.FlagHorizon = reader.ReadBoolean();
-                room.FlagMist = reader.ReadBoolean();
-                room.FlagOutside = reader.ReadBoolean();
-                room.FlagNoLensflare = reader.ReadBoolean();
-                room.FlagRain = reader.ReadBoolean();
-                room.FlagReflection = reader.ReadBoolean();
-                room.FlagSnow = reader.ReadBoolean();
-                room.FlagWater = reader.ReadBoolean();
-                room.FlagQuickSand = reader.ReadBoolean();
-                room.ExcludeFromPathFinding = reader.ReadBoolean();
-                room.WaterLevel = reader.ReadInt16();
-                room.MistLevel = reader.ReadInt16();
-                room.ReflectionLevel = reader.ReadInt16();
-                room.Reverberation = (Reverberation)reader.ReadUInt16();
+                    // Read objects
+                    else if (id2 == Prj2Chunks.Objects)
+                    {
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            var objectID = LEB128.ReadLong(chunkIO.Raw);
+                            if (id3 == Prj2Chunks.ObjectMovable)
+                            {
+                                var instance = new MoveableInstance();
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.RotationY = chunkIO.Raw.ReadSingle();
+                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.WadObjectId = chunkIO.Raw.ReadUInt32();
+                                instance.Ocb = chunkIO.Raw.ReadInt16();
+                                instance.Invisible = chunkIO.Raw.ReadBoolean();
+                                instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                                instance.CodeBits = chunkIO.Raw.ReadByte();
+                                instance.Color = chunkIO.Raw.ReadVector4();
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectStatic)
+                            {
+                                var instance = new StaticInstance();
+                                newObjects.Add(objectID, instance);
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.RotationY = chunkIO.Raw.ReadSingle();
+                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.WadObjectId = chunkIO.Raw.ReadUInt32();
+                                instance.Color = chunkIO.Raw.ReadVector4();
+                                instance.Ocb = chunkIO.Raw.ReadUInt16();
+                                room.AddObject(level, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectCamera)
+                            {
+                                var instance = new CameraInstance();
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.Fixed = chunkIO.Raw.ReadBoolean();
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectFlyBy)
+                            {
+                                var instance = new FlybyCameraInstance();
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                                instance.Roll = chunkIO.Raw.ReadSingle();
+                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.Speed = chunkIO.Raw.ReadSingle();
+                                instance.Fov = chunkIO.Raw.ReadSingle();
+                                instance.Flags = LEB128.ReadUShort(chunkIO.Raw);
+                                instance.Number = LEB128.ReadUShort(chunkIO.Raw);
+                                instance.Sequence = LEB128.ReadUShort(chunkIO.Raw);
+                                instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectSink)
+                            {
+                                var instance = new SinkInstance();
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.ScriptId = ReadOptionalLEB128Ushort(chunkIO.Raw);
+                                instance.Strength = chunkIO.Raw.ReadInt16();
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectSoundSource)
+                            {
+                                var instance = new SoundSourceInstance();
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.SoundId = chunkIO.Raw.ReadInt16();
+                                instance.Flags = chunkIO.Raw.ReadInt16();
+                                instance.CodeBits = chunkIO.Raw.ReadByte();
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectImportedGeometry)
+                            {
+                                var instance = new ImportedGeometryInstance();
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                                instance.Roll = chunkIO.Raw.ReadSingle();
+                                instance.Scale = chunkIO.Raw.ReadSingle();
+                                instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectLight)
+                            {
+                                var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
+                                instance.Position = chunkIO.Raw.ReadVector3();
+                                instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                                instance.Intensity = chunkIO.Raw.ReadSingle();
+                                instance.Color = chunkIO.Raw.ReadVector3();
+                                instance.InnerRange = chunkIO.Raw.ReadSingle();
+                                instance.OuterRange = chunkIO.Raw.ReadSingle();
+                                instance.InnerAngle = chunkIO.Raw.ReadSingle();
+                                instance.OuterAngle = chunkIO.Raw.ReadSingle();
+                                instance.Enabled = chunkIO.Raw.ReadBoolean();
+                                instance.CastsShadows = chunkIO.Raw.ReadBoolean();
+                                instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
+                                instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectPortal)
+                            {
+                                var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                                var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
+                                var direction = (PortalDirection)chunkIO.Raw.ReadByte();
+                                var instance = new PortalInstance(area, direction, room);
+                                instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
+                                roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) => instance.AdjoiningRoom = adjoiningRoom ?? room));
 
-                reader.ReadBytes(64);
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else if (id3 == Prj2Chunks.ObjectTrigger)
+                            {
+                                var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
+                                var instance = new TriggerInstance(area);
+                                instance.TriggerType = (TriggerType)LEB128.ReadLong(chunkIO.Raw);
+                                instance.TargetType = (TriggerTargetType)LEB128.ReadLong(chunkIO.Raw);
+                                instance.TargetData = LEB128.ReadShort(chunkIO.Raw);
+                                long targetObjectId = LEB128.ReadLong(chunkIO.Raw);
+                                instance.Timer = LEB128.ReadShort(chunkIO.Raw);
+                                instance.CodeBits = (byte)(LEB128.ReadLong(chunkIO.Raw) & 0x1f);
+                                instance.OneShot = chunkIO.Raw.ReadBoolean();
+                                objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, (targetObj) => instance.TargetObj = targetObj));
 
-                // Check for other chunks
-                chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                                room.AddObject(level, instance);
+                                newObjects.Add(objectID, instance);
+                            }
+                            else
+                                return false;
+                            return true;
+                        });
+                    }
+                    else
+                        return false;
+                    return true;
+                });
+
+                // Add room
+                if ((roomIndex > 0) && (roomIndex < level.Rooms.Length) && (level.Rooms[roomIndex] == null))
+                    level.Rooms[roomIndex] = room;
+                else
+                    level.AssignRoomToFree(room);
+
+                if (!newRooms.ContainsKey(roomIndex))
+                    newRooms.Add(roomIndex, room);
+                return true;
+            });
+
+            // Link rooms
+            foreach (var roomLinkAction in roomLinkActions)
+                try
                 {
-                    // TODO: logic for reading in the future other chunks
+                    roomLinkAction.Value(newRooms.TryGetOrDefault(roomLinkAction.Key));
                 }
-
-                level.Rooms[i] = room;
-            }
-
-            // Read portals
-            uint numPortals = reader.ReadUInt32();
-            for (int i = 0; i < numPortals; i++)
-            {
-                var roomIndex = reader.ReadUInt16();
-                var adjoiningRoomIndex = reader.ReadUInt16();
-
-                var direction = (PortalDirection)reader.ReadUInt16();
-
-                var left = reader.ReadInt32();
-                var top = reader.ReadInt32();
-                var right = reader.ReadInt32();
-                var bottom = reader.ReadInt32();
-                var area = new Rectangle(left, top, right, bottom);
-                var opacity = reader.ReadByte();
-
-                reader.ReadBytes(16);
-
-                // Check for other chunks
-                chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                catch (Exception exc)
                 {
-                    // TODO: logic for reading in the future other chunks
+                    logger.Error(exc, "An exception was raised while trying to perform room link action.");
                 }
 
-                var portal = new Portal(area, direction, level.Rooms[adjoiningRoomIndex]);
-                portal.Opacity = (PortalOpacity)opacity;
-                level.Rooms[roomIndex].AddObject(level, portal);
-            }
-
-            // Read objects
-            uint numObjects = reader.ReadUInt32();
-            ObjectInstance[] objects = new ObjectInstance[numObjects];
-            for (int i = 0; i < numObjects; i++)
-            {
-                var objType = (Prj2ObjectType)reader.ReadUInt16();
-                var roomIndex = reader.ReadUInt16();
-
-                ObjectInstance objectInstance;
-                switch (objType)
+            // Link objects
+            foreach (var objectLinkAction in objectLinkActions)
+                try
                 {
-                    case Prj2ObjectType.Moveable:
-                        var moveable = new MoveableInstance();
-
-                        moveable.WadObjectId = reader.ReadUInt32();
-                        moveable.Position = reader.ReadVector3();
-                        moveable.RotationY = reader.ReadSingle();
-                        moveable.RotationYRadians = reader.ReadSingle();
-                        moveable.Ocb = reader.ReadInt16();
-                        moveable.Invisible = reader.ReadBoolean();
-                        moveable.ClearBody = reader.ReadBoolean();
-                        moveable.CodeBits = reader.ReadByte();
-                        moveable.Color = reader.ReadVector4();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = moveable;
-                        break;
-
-                    case Prj2ObjectType.Static:
-                        var staticMesh = new StaticInstance();
-
-                        staticMesh.WadObjectId = reader.ReadUInt32();
-                        staticMesh.Position = reader.ReadVector3();
-                        staticMesh.RotationY = reader.ReadSingle();
-                        staticMesh.RotationYRadians = reader.ReadSingle();
-                        staticMesh.Ocb = reader.ReadUInt16();
-                        staticMesh.Color = reader.ReadVector4();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = staticMesh;
-                        break;
-
-                    case Prj2ObjectType.Camera:
-                        var camera = new CameraInstance();
-
-                        camera.Position = reader.ReadVector3();
-                        camera.Fixed = reader.ReadBoolean();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = camera;
-                        break;
-
-                    case Prj2ObjectType.FlybyCamera:
-                        var flybyCamera = new FlybyCameraInstance();
-
-                        flybyCamera.Position = reader.ReadVector3();
-                        flybyCamera.Flags = reader.ReadUInt16();
-                        flybyCamera.Number = reader.ReadUInt16();
-                        flybyCamera.Sequence = reader.ReadUInt16();
-                        flybyCamera.Roll = reader.ReadSingle();
-                        flybyCamera.Speed = reader.ReadSingle();
-                        flybyCamera.Timer = reader.ReadInt16();
-                        flybyCamera.Fov = reader.ReadSingle();
-                        flybyCamera.RotationX = reader.ReadSingle();
-                        flybyCamera.RotationY = reader.ReadSingle();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = flybyCamera;
-                        break;
-
-                    case Prj2ObjectType.Sink:
-                        var sink = new SinkInstance();
-
-                        sink.Position = reader.ReadVector3();
-                        sink.Strength = reader.ReadInt16();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = sink;
-                        break;
-
-                    case Prj2ObjectType.SoundSource:
-                        var sound = new SoundSourceInstance();
-
-                        sound.Position = reader.ReadVector3();
-                        sound.SoundId = reader.ReadInt16();
-                        sound.Flags = reader.ReadInt16();
-                        sound.CodeBits = reader.ReadByte();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = sound;
-                        break;
-                    case Prj2ObjectType.Light:
-                        var light = new Light((LightType)reader.ReadUInt16());
-
-                        light.Position = reader.ReadVector3();
-                        light.Intensity = reader.ReadSingle();
-                        light.Color = reader.ReadVector3();
-                        light.InnerRange = reader.ReadSingle();
-                        light.OuterRange = reader.ReadSingle();
-                        light.InnerAngle = reader.ReadSingle();
-                        light.OuterAngle = reader.ReadSingle();
-                        var rotationX = reader.ReadSingle();
-                        var rotationY = reader.ReadSingle();
-                        light.SetArbitaryRotationsYX(rotationY, rotationX);
-                        light.Enabled = reader.ReadBoolean();
-                        light.CastsShadows = reader.ReadBoolean();
-                        light.IsDynamicallyUsed = reader.ReadBoolean();
-                        light.IsStaticallyUsed = reader.ReadBoolean();
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = light;
-                        break;
-                    case Prj2ObjectType.RoomGeometry:
-                        var pos = reader.ReadVector3();
-                        var model = reader.ReadUInt32();
-
-                        // If model is not present in the file system, ignore it
-                        if (!modelsList.ContainsKey(model))
-                            continue;
-
-                        var importedGeometry = new ImportedGeometryInstance();
-                        importedGeometry.Position = pos;
-                        importedGeometry.Model = GeometryImporterExporter.Models[modelsList[model]];
-
-                        reader.ReadBytes(8);
-
-                        // Check for other chunks
-                        chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                        if (chunkType != Prj2ChunkType.NoExtraChunk)
-                        {
-                            // TODO: logic for reading in the future other chunks
-                        }
-
-                        objectInstance = importedGeometry;
-                        break;
-                    default:
-                        continue;
+                    objectLinkAction.Value(newObjects.TryGetOrDefault(objectLinkAction.Key));
                 }
-
-                objects[i] = objectInstance;
-                level.Rooms[roomIndex].AddObject(level, objectInstance);
-            }
-
-            // Read triggers
-            uint numTriggers = reader.ReadUInt32();
-            for (int i = 0; i < numTriggers; i++)
-            {
-                var roomIndex = reader.ReadUInt16();
-                var trigger = new TriggerInstance(new Rectangle(reader.ReadInt32(),
-                                                                reader.ReadInt32(),
-                                                                reader.ReadInt32(),
-                                                                reader.ReadInt32()));
-                trigger.TriggerType = (TriggerType)reader.ReadUInt16();
-                trigger.TargetType = (TriggerTargetType)reader.ReadUInt16();
-                trigger.TargetData = reader.ReadInt16();
-
-                var targetObject = reader.ReadInt32();
-                if (targetObject != -1)
-                    trigger.TargetObj = objects[targetObject];
-
-                trigger.Timer = reader.ReadInt16();
-                trigger.CodeBits = reader.ReadByte();
-                trigger.OneShot = reader.ReadBoolean();
-
-                reader.ReadBytes(8);
-
-                // Check for other chunks
-                chunkType = (Prj2ChunkType)reader.ReadUInt16();
-                if (chunkType != Prj2ChunkType.NoExtraChunk)
+                catch (Exception exc)
                 {
-                    // TODO: logic for reading in the future other chunks
+                    logger.Error(exc, "An exception was raised while trying to perform room link objects.");
                 }
 
-                level.Rooms[roomIndex].AddObject(level, trigger);
-            }
-
-            // Check for other chunks
-            chunkType = (Prj2ChunkType)reader.ReadUInt16();
-            if (chunkType != Prj2ChunkType.NoExtraChunk)
-            {
-                // TODO: logic for reading in the future other chunks
-            }
-
-            // Now link everything
-            for (int i = 0; i < level.Rooms.Length; i++)
-            {
-                if (level.Rooms[i] == null)
-                    continue;
-                if (level.Rooms[i].Prj2AlternateRoomIndex != -1)
-                    level.Rooms[i].AlternateRoom = level.Rooms[level.Rooms[i].Prj2AlternateRoomIndex];
-                if (level.Rooms[i].Prj2AlternateBaseRoomIndex != -1)
-                    level.Rooms[i].AlternateBaseRoom = level.Rooms[level.Rooms[i].Prj2AlternateBaseRoomIndex];
-            }
-
-            // Now build the real geometry and update DirectX buffers
-            foreach (var room in level.Rooms.Where(room => room != null))
-                room.UpdateCompletely();*/
+            // Now build the real geometry and update geometry buffers
+            Parallel.ForEach(level.Rooms.Where(room => room != null), (room) => room.UpdateCompletely());
 
             return true;
         }
 
-
-
-        private class IdResolver<T> where T : class
+        private static ushort? ReadOptionalLEB128Ushort(BinaryReaderEx reader)
         {
-            private Func<T> _createT;
-            private readonly Dictionary<int, T> _portalList = new Dictionary<int, T>();
-
-            public IdResolver(Func<T> createT)
-            {
-                _createT = createT;
-            }
-
-            public T this[int id]
-            {
-                get
-                {
-                    if (id == -1)
-                        return null;
-
-                    if (_portalList.ContainsKey(id))
-                        return _portalList[id];
-
-                    T newT = _createT();
-                    _portalList.Add(id, newT);
-                    return newT;
-                }
-            }
+            long read = LEB128.ReadLong(reader);
+            if (read < 0)
+                return null;
+            else if (read > ushort.MaxValue)
+                return ushort.MaxValue;
+            else
+                return (ushort)read;
         }
     }
 }

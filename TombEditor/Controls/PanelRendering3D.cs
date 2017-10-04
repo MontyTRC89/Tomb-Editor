@@ -71,7 +71,7 @@ namespace TombEditor.Controls
                 }
 
                 {
-                    int result = _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                    int result = Comparer<Room>.Default.Compare(x.Room, y.Room);
                     if (result != 0)
                         return result;
                 }
@@ -94,7 +94,7 @@ namespace TombEditor.Controls
                 int result = x.WadObjectId.CompareTo(y.WadObjectId);
                 if (result != 0)
                     return result;
-                return _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                return Comparer<Room>.Default.Compare(x.Room, y.Room);
             }
         }
 
@@ -112,7 +112,7 @@ namespace TombEditor.Controls
                 int result = x.WadObjectId.CompareTo(y.WadObjectId);
                 if (result != 0)
                     return result;
-                return _rooms.ReferenceIndexOf(x.Room).CompareTo(_rooms.ReferenceIndexOf(y.Room));
+                return Comparer<Room>.Default.Compare(x.Room, y.Room);
             }
         }
 
@@ -129,21 +129,21 @@ namespace TombEditor.Controls
         {
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
-            public PickingResultBlock(float Distance, DrawingPoint pos, BlockFace face)
+            public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
             {
-                this.Distance = Distance;
-                this.Pos = pos;
-                this.Face = face;
+                Distance = distance;
+                Pos = pos;
+                Face = face;
             }
         }
 
         private class PickingResultObject : PickingResult
         {
             public ObjectInstance ObjectInstance { get; set; }
-            public PickingResultObject(float Distance, ObjectInstance objectPtr)
+            public PickingResultObject(float distance, ObjectInstance objectPtr)
             {
-                this.Distance = Distance;
-                this.ObjectInstance = objectPtr;
+                Distance = distance;
+                ObjectInstance = objectPtr;
             }
         }
 
@@ -562,7 +562,7 @@ namespace TombEditor.Controls
                     case EditorActionType.PlaceLight:
                         if (newPicking is PickingResultBlock)
                         {
-                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, new Light(_editor.Action.LightType));
+                            EditorActions.PlaceObject(_editor.SelectedRoom, ((PickingResultBlock)newPicking).Pos, new LightInstance(_editor.Action.LightType));
                             _editor.Action = EditorAction.None;
                         }
                         break;
@@ -844,7 +844,7 @@ namespace TombEditor.Controls
 
             // First check for all objects in the room
             foreach (var instance in room.Objects)
-                if (instance is Light)
+                if (instance is LightInstance)
                 {
                     BoundingSphere sphere = new BoundingSphere(room.WorldPos + instance.Position, _littleSphereRadius);
                     if (ray.Intersects(ref sphere, out distance) && ((result == null) || (distance < result.Distance)))
@@ -1034,7 +1034,7 @@ namespace TombEditor.Controls
             Effect solidEffect = _deviceManager.Effects["Solid"];
 
 
-            foreach (var light in room.Objects.OfType<Light>())
+            foreach (var light in room.Objects.OfType<LightInstance>())
             {
                 /*if (light.Type==LightType.Spot)
                 {
@@ -1083,9 +1083,9 @@ namespace TombEditor.Controls
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
             }
 
-            if (_editor.SelectedObject is Light)
+            if (_editor.SelectedObject is LightInstance)
             {
-                Light light = (Light)_editor.SelectedObject;
+                LightInstance light = (LightInstance)_editor.SelectedObject;
 
                 if (light.Type == LightType.Light || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
                 {
@@ -2163,7 +2163,7 @@ namespace TombEditor.Controls
 
         private void DrawSelectedFogBulb()
         {
-            Light light = _editor.SelectedObject as Light;
+            LightInstance light = _editor.SelectedObject as LightInstance;
             if (light != null)
             {
                 if (light.Type == LightType.FogBulb)
@@ -2213,7 +2213,7 @@ namespace TombEditor.Controls
         {
             for (int i = 0; i < _roomsToDraw.Count; i++)
             {
-                string message = _roomsToDraw[i].Name ?? ("Room " + _editor.Level.Rooms.ReferenceIndexOf(_roomsToDraw[i]));
+                string message = _roomsToDraw[i].Name;
 
                 Vector3 pos = _roomsToDraw[i].WorldPos;
                 Matrix wvp = Matrix.Translation(pos) * viewProjection;

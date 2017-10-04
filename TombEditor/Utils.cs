@@ -13,7 +13,7 @@ namespace TombEditor
     public static class Utils
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        
+
         public static string GetDirectoryNameTry(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -36,7 +36,7 @@ namespace TombEditor
 
             // https://stackoverflow.com/questions/9042861/how-to-make-an-absolute-path-relative-to-a-particular-folder
             //
-            // Roughly based on (slightly improved) 
+            // Roughly based on (slightly improved)
             //   https://sourceforge.net/p/syncproj/code/HEAD/tree/syncProj.cs#l976
             //   makeRelative
             baseDir = Path.GetFullPath(baseDir);
@@ -166,6 +166,14 @@ namespace TombEditor
                     return i;
 
             return -1;
+        }
+
+        public static TValue TryGetOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> rooms, TKey key, TValue @default = default(TValue))
+        {
+            TValue result;
+            if (rooms.TryGetValue(key, out result))
+                return result;
+            return @default;
         }
 
         public static IEnumerable<T> Unwrap<T>(this T[,] array)
