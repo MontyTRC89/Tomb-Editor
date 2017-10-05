@@ -195,12 +195,10 @@ namespace TombEditor.Controls
                 case MouseButtons.Middle:
                 case MouseButtons.XButton2:
                     Vector2 clickPos = FromVisualCoord(e.Location);
-                    int currentProbeIndex = _depthBar.DepthProbes.FindIndex((depthProbe) => (
-                       (Math.Round(depthProbe.Position.X) == Math.Round(clickPos.X)) &&
-                       (Math.Round(depthProbe.Position.Y) == Math.Round(clickPos.Y))));
-                    if (currentProbeIndex != -1)
+                    int? currentProbeIndex = FindClosestProbe(clickPos);
+                    if (currentProbeIndex.HasValue)
                     {
-                        _depthBar.DepthProbes.RemoveAt(currentProbeIndex);
+                        _depthBar.DepthProbes.RemoveAt(currentProbeIndex.Value);
                         Invalidate();
                     }
                     break;
