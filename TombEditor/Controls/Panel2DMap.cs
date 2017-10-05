@@ -111,29 +111,21 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
-        private void SetProbeColor(DepthBar.DepthProbe probe)
+        private int? FindClosestProbe(Vector2 clickPos)
         {
-            Random rnd = new Random();
-            bool noNewColor;
-            int tries = 0;
+            if (_depthBar.DepthProbes.Count == 0)
+                return null;
 
-            do
-            {
-                probe.Color = DepthBar.ProbeColors[rnd.Next(DepthBar.ProbeColors.Count())];
-                noNewColor = false;
+            int currentProbeIndex = 0;
 
-                foreach (var depthProbe in _depthBar.DepthProbes)
-                {
-                    if (depthProbe != probe && probe.Color == depthProbe.Color)
-                    {
-                        tries++;
-                        noNewColor = true;
-                        break;
-                    }
-                }
+            for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
+                if ((clickPos - _depthBar.DepthProbes[i].Position).LengthSquared() < (clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).LengthSquared())
+                    currentProbeIndex = i;
 
-            } while (noNewColor && tries < 15);
-                
+            if ((clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).LengthSquared() < _probeRadius / ViewScale)
+                return currentProbeIndex;
+            else
+                return null;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -170,32 +162,24 @@ namespace TombEditor.Controls
 
                 case MouseButtons.Middle:
                 case MouseButtons.XButton2:
-                    _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.FindIndex((depthProbe) => (
-                       (depthProbe.Position.X - 2 < clickPos.X) &&
-                       (depthProbe.Position.Y - 2 < clickPos.Y) &&
-                       (depthProbe.Position.X + 2 > clickPos.X) &&
-                       (depthProbe.Position.Y + 2 > clickPos.Y)));
+                    _currentlyEditedDepthProbeIndex = FindClosestProbe(clickPos);
 
-                    if (_currentlyEditedDepthProbeIndex == -1)
+                    if (!_currentlyEditedDepthProbeIndex.HasValue)
                     {
                         _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
-                        _depthBar.DepthProbes.Add(new DepthBar.DepthProbe());
-                        SetProbeColor(_depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value]);
+                        _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar));
                     }
                     _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = clickPos;
                     Invalidate();
                     break;
 
                 case MouseButtons.XButton1:
-                    if (_depthBar.DepthProbes.Count > 0)
+                    _currentlyEditedDepthProbeIndex = FindClosestProbe(clickPos);
+
+                    if (_currentlyEditedDepthProbeIndex.HasValue)
                     {
                         // Remove depth probe closest to mouse pointer
-                        int currentProbeIndex = 0;
-                        for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
-                            if ((clickPos - _depthBar.DepthProbes[i].Position).LengthSquared() < (clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).LengthSquared())
-                                currentProbeIndex = i;
-                        if ((clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).LengthSquared() <= 14.0f)
-                            _depthBar.DepthProbes.RemoveAt(currentProbeIndex);
+                        _depthBar.DepthProbes.RemoveAt(_currentlyEditedDepthProbeIndex.Value);
                         Invalidate();
                     }
                     break;
@@ -347,7 +331,7 @@ namespace TombEditor.Controls
 
             var barArea = _depthBar.getBarArea(Size);
 
-            // draw 2d map if necessary and not occluded by 2d bar
+            // Draw 2d map if necessary and not occluded by 2d bar
             if (!barArea.Contains(e.ClipRectangle))
             {
                 e.Graphics.Clear(Color.White);
@@ -364,7 +348,7 @@ namespace TombEditor.Controls
                         DrawRoom(e, room, currentRangeMin, currentRangeMax, true, false);
                     }
                 if (drewAny)
-                    e.Graphics.FillRectangle(_roomsOutsideOverdraw, e.ClipRectangle); //Make the rooms in the background appear faded
+                    e.Graphics.FillRectangle(_roomsOutsideOverdraw, e.ClipRectangle); // Make the rooms in the background appear faded
 
                 // Draw grid lines
                 Vector2 GridLines0 = FromVisualCoord(new PointF());
@@ -393,40 +377,38 @@ namespace TombEditor.Controls
                 for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
                 {
                     PointF depthProbeVisualPos = ToVisualCoord(_depthBar.DepthProbes[i].Position);
-
                     RectangleF depthProbeRect = new RectangleF(depthProbeVisualPos.X - _probeRadius / 2, depthProbeVisualPos.Y - _probeRadius / 2, _probeRadius, _probeRadius);
 
                     e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-                    var probePen = new Pen(_depthBar.DepthProbes[i].Color, 2);
-                    
                     e.Graphics.FillEllipse(new SolidBrush(Color.White), depthProbeRect);
 
-                    probePen.Color = Color.FromArgb(60, probePen.Color.R, probePen.Color.G, probePen.Color.B);
-                    e.Graphics.FillEllipse(probePen.Brush, depthProbeRect);
-
-                    probePen.Color = Color.FromArgb(240, probePen.Color.R, probePen.Color.G, probePen.Color.B);
-                    e.Graphics.DrawEllipse(probePen, depthProbeRect);
-
-                    SizeF textRectSize = e.Graphics.MeasureString(i.ToString(), DepthBar.ProbeFont);
-                    PointF textRextPos = new PointF(depthProbeVisualPos.X - textRectSize.Width / 2, depthProbeVisualPos.Y - textRectSize.Height / 2);
-
-                    e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(textRextPos, textRectSize), DepthBar.ProbeStringLayout);
-
-                    // Draw depth bar numbers
-                    if (!barArea.Contains(e.ClipRectangle))
+                    using (var probePen = new Pen(_depthBar.DepthProbes[i].Color, 2))
                     {
-                        RectangleF groupArea = _depthBar.groupGetArea(barArea, i);
-                        e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
+                        probePen.Color = Color.FromArgb(60, probePen.Color.R, probePen.Color.G, probePen.Color.B);
+                        e.Graphics.FillEllipse(probePen.Brush, depthProbeRect);
+
+                        probePen.Color = Color.FromArgb(240, probePen.Color.R, probePen.Color.G, probePen.Color.B);
+                        e.Graphics.DrawEllipse(probePen, depthProbeRect);
+
+                        SizeF textRectSize = e.Graphics.MeasureString(i.ToString(), DepthBar.ProbeFont);
+                        PointF textRextPos = new PointF(depthProbeVisualPos.X - textRectSize.Width / 2, depthProbeVisualPos.Y - textRectSize.Height / 2);
+
+                        e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(textRextPos, textRectSize), DepthBar.ProbeStringLayout);
+
+                        // Draw depth bar numbers
+                        if (!barArea.Contains(e.ClipRectangle))
+                        {
+                            RectangleF groupArea = _depthBar.groupGetArea(barArea, i);
+                            e.Graphics.DrawString(i.ToString(), DepthBar.ProbeFont, probePen.Brush, new RectangleF(groupArea.X, 0, groupArea.Width, groupArea.Y), DepthBar.ProbeStringLayout);
+                        }
                     }
                 }
             }
 
+            // Draw depth bar
             e.Graphics.SmoothingMode = SmoothingMode.Default;
-
-            // draw depth bar
-            Vector2 curserPos = FromVisualCoord(PointToClient(MousePosition));
-            _depthBar.Draw(e, Size, _editor.Level, curserPos, _editor.SelectedRoom, _roomsToMove);
+            Vector2 cursorPos = FromVisualCoord(PointToClient(MousePosition));
+            _depthBar.Draw(e, Size, _editor.Level, cursorPos, _editor.SelectedRoom, _roomsToMove);
         }
 
         private void DrawRoom(PaintEventArgs e, Room room, float currentRangeMin, float currentRangeMax, bool drawFilled, bool drawOutline)
