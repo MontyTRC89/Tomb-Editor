@@ -124,6 +124,7 @@ namespace TombEditor.Controls
         private Editor _editor;
         private DeviceManager _deviceManager;
         private Texture2D _textureAtlas;
+        private Vector2 _textureAtlasRemappingSize;
         private readonly List<ImageC> _textureAtlasImages = new List<ImageC>();
         private GraphicsDevice _device;
         private SwapChainGraphicsPresenter _presenter;
@@ -420,7 +421,31 @@ namespace TombEditor.Controls
             if (textures.Count > 0)
             {
                 // TODO Support more than 1 texture
-                _textureAtlas = TextureLoad.Load(_device, textures[0].Image);
+                ImageC texture = textures[0].Image;
+
+                const int maxTextureSize = 8096;
+                if (texture.Height > maxTextureSize)
+                {
+                    // HACK Split really high texture into multiple columns
+                    const int texturePageHeight = maxTextureSize - 256; // Subtract maximum tile size
+                    int pageCount = (texture.Height + texturePageHeight - 1) / texturePageHeight;
+                    var remappedTexture = ImageC.CreateNew(texture.Width * pageCount, maxTextureSize);
+
+                    for (int i = 0; i < pageCount; ++i)
+                    {
+                        int fromY = texturePageHeight * i;
+                        int fromHeight = Math.Min(texture.Height - texturePageHeight * i, 8096);
+                        remappedTexture.CopyFrom(texture.Width * i, 0, texture, 0, fromY, texture.Width, fromHeight);
+                    }
+
+                    _textureAtlas = TextureLoad.Load(_device, remappedTexture);
+                    _textureAtlasRemappingSize = new Vector2(texture.Width, texturePageHeight);
+                }
+                else
+                {
+                    _textureAtlas = TextureLoad.Load(_device, texture);
+                    _textureAtlasRemappingSize = new Vector2(float.MaxValue);
+                }
             }
         }
 
@@ -2094,6 +2119,7 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
             _roomEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
             _roomEffect.Parameters["LineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
+            _roomEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);
             _roomEffect.Parameters["TextureCoordinateFactor"].SetValue(_textureAtlas == null ? new Vector2(0) : new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
 
             // Draw buckets

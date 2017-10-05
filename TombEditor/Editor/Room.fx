@@ -39,15 +39,44 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
 	output.WorldPosition = mul(float4(input.Position, 1.0f), Model);
-	output.UV = DrawSectorOutlinesAndUseEditorUV ? input.EditorUV : (input.UV * TextureCoordinateFactor);
+	output.UV = DrawSectorOutlinesAndUseEditorUV ? input.EditorUV : input.UV;
 	if (UseVertexColors)
 		output.Color = input.Color;
-	else 
+	else
 		output.Color = Color;
     return output;
 }
 
-float ddAny(float value) 
+
+
+
+// Hack to enable textures with a height greater than 8096
+float2 TextureAtlasRemappingSize;
+[maxvertexcount(3)]
+void GS(triangle PixelInputType input[3], inout TriangleStream<PixelInputType> SpriteStream)
+{
+	if (!DrawSectorOutlinesAndUseEditorUV)
+	{
+		float minY = min(input[0].UV.y, min(input[1].UV.y, input[2].UV.y));
+		float pageIndex = floor((minY - 0.5f) / TextureAtlasRemappingSize.y);
+		float2 uvMovementVector = TextureAtlasRemappingSize * float2(pageIndex, -pageIndex);
+
+		input[0].UV += uvMovementVector;
+		input[1].UV += uvMovementVector;
+		input[2].UV += uvMovementVector;
+
+		input[0].UV *= TextureCoordinateFactor;
+		input[1].UV *= TextureCoordinateFactor;
+		input[2].UV *= TextureCoordinateFactor;
+	}
+
+	SpriteStream.Append(input[0]);
+	SpriteStream.Append(input[1]);
+	SpriteStream.Append(input[2]);
+}
+
+
+float ddAny(float value)
 {
 	return length(float2(ddx(value), ddy(value)));
 }
@@ -74,7 +103,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 	if (DrawSectorOutlinesAndUseEditorUV)
 	{
 		float2 absUV = abs(input.UV);
-		
+
 		float lineWidth = (LineWidth * 1024) / input.Position.w - 0.5f;
 		float resolutionX = ddAny(input.UV.x);
 		float resolutionY = ddAny(input.UV.y);
@@ -93,7 +122,7 @@ float4 PS(PixelInputType input) : SV_TARGET
 		result.xyz *= sectorAreaStrength;
 		result.w = 1.0f - (sectorAreaStrength - result.w * sectorAreaStrength);
 	}
-	
+
 	// Render Fog Bulb
 	if (FogBulbEnabled)
 	{
@@ -112,7 +141,7 @@ technique10 Textured
     pass P0
     {
         SetVertexShader( CompileShader( vs_4_0, VS() ) );
-        SetGeometryShader(NULL);
+		SetGeometryShader( CompileShader( gs_4_0, GS() ) );
         SetPixelShader( CompileShader( ps_4_0, PS() ) );
     }
-} 
+}
