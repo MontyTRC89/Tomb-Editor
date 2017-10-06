@@ -18,6 +18,10 @@ namespace TombEditor
     public class Configuration
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        [XmlIgnore]
+        public string FilePath { get; set; } = null;
+
         [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
         [XmlElement(nameof(Log_MinLevel))]
@@ -173,7 +177,7 @@ namespace TombEditor
 
         public static string GetDefaultPath()
         {
-            return Path.GetDirectoryName(Application.ExecutablePath) + "/TombEditorConfiguration.xml";
+            return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TombEditorConfiguration.xml");
         }
 
         public void Save(Stream stream)
@@ -185,23 +189,25 @@ namespace TombEditor
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 Save(stream);
+            FilePath = path;
         }
 
         public void Save()
         {
-            Save(GetDefaultPath());
+            Save(FilePath);
         }
 
         public void SaveTry()
         {
-            try
-            {
-                Save();
-            }
-            catch (Exception exc)
-            {
-                logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
-            }
+            if (!string.IsNullOrEmpty(FilePath))
+                try
+                {
+                    Save();
+                }
+                catch (Exception exc)
+                {
+                    logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
+                }
         }
 
         public static Configuration Load(Stream stream)
@@ -209,10 +215,13 @@ namespace TombEditor
             return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(stream));
         }
 
-        public static Configuration Load(string path)
+        public static Configuration Load(string filePath)
         {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return Load(stream);
+            Configuration result;
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                result = Load(stream);
+            result.FilePath = filePath;
+            return result;
         }
 
         public static Configuration Load()
@@ -229,7 +238,7 @@ namespace TombEditor
             catch (Exception exc)
             {
                 log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + GetDefaultPath() + "\"", null, exc));
-                return new Configuration();
+                return new Configuration { FilePath = GetDefaultPath() };
             }
         }
     }

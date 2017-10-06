@@ -16,7 +16,7 @@ using DarkUI.Forms;
 
 namespace TombEditor
 {
-    public partial class FormMain : DarkUI.Forms.DarkForm
+    public partial class FormMain : DarkForm
     {
         // Dockable tool windows are placed on actual dock panel at runtime.
 
@@ -187,6 +187,17 @@ namespace TombEditor
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
+            }
+
+            // Reload window layout if the configuration changed
+            if (obj is Editor.ConfigurationChangedEvent)
+            {
+                var @event = (Editor.ConfigurationChangedEvent)obj;
+                if ((@event.Current.Window_Maximized != @event.Previous.Window_Maximized) ||
+                    (@event.Current.Window_Position != @event.Previous.Window_Position) ||
+                    (@event.Current.Window_Size != @event.Previous.Window_Size) ||
+                    (@event.Current.Window_Layout != @event.Previous.Window_Layout))
+                    LoadWindowLayout(_editor.Configuration);
             }
         }
 

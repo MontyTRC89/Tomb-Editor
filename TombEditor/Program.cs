@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DarkUI.Win32;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace TombEditor
 {
@@ -33,9 +34,11 @@ namespace TombEditor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.AddMessageFilter(new ControlScrollFilter());
+            SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
             //Run
-            Editor editor = new Editor(configuration);
+            configuration.SaveTry();
+            Editor editor = new Editor(WindowsFormsSynchronizationContext.Current, configuration);
             Editor.Instance = editor;
             Application.Run(new FormMain(editor));
             editor.Configuration.SaveTry();
