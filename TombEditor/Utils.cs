@@ -7,6 +7,8 @@ using NLog;
 using System.Drawing;
 using TombEditor.Geometry;
 using System.Globalization;
+using System.Threading;
+using System.Diagnostics;
 
 namespace TombEditor
 {
@@ -56,6 +58,27 @@ namespace TombEditor
             var resultFolders = Enumerable.Repeat("..", Math.Max(0, baseDirArr.Length - i)).Concat(fileNameArr.Skip(i));
             string result = string.Join(Path.DirectorySeparatorChar.ToString(), resultFolders);
             return result;
+        }
+
+        public static bool RetryFor(int waitTimeInMilliseconds, Action actionToTry)
+        {
+            // File is maybe still open so let's retry until it becomes available
+            var watch = new Stopwatch();
+            watch.Start();
+            int waitTime = 0;
+            do
+            {
+                try
+                {
+                    actionToTry();
+                    return true;
+                }
+                catch (Exception)
+                { }
+                Thread.Sleep(waitTime);
+                waitTime = ((waitTime + 1) * 4) / 3;
+            } while (watch.ElapsedMilliseconds < waitTimeInMilliseconds); // Wait up to 300 milliseconds until the configuration is readable
+            return false;
         }
 
         public static bool Contains(this SharpDX.Rectangle This, Point point)
