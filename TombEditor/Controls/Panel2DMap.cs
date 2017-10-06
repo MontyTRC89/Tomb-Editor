@@ -119,10 +119,10 @@ namespace TombEditor.Controls
             int currentProbeIndex = 0;
 
             for (int i = 0; i < _depthBar.DepthProbes.Count; ++i)
-                if ((clickPos - _depthBar.DepthProbes[i].Position).LengthSquared() < (clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).LengthSquared())
+                if ((clickPos - _depthBar.DepthProbes[i].Position).Length() < (clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).Length())
                     currentProbeIndex = i;
 
-            if ((clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).LengthSquared() < _probeRadius / ViewScale)
+            if ((clickPos - _depthBar.DepthProbes[currentProbeIndex].Position).Length() < _probeRadius / 2 / ViewScale)
                 return currentProbeIndex;
             else
                 return null;
