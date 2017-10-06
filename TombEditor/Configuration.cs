@@ -8,6 +8,8 @@ using System.IO;
 using System.Windows.Forms;
 
 using System.Xml.Serialization;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace TombEditor
 {
@@ -16,8 +18,14 @@ namespace TombEditor
     public class Configuration
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
+        [XmlIgnore]
         public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
+        [XmlElement(nameof(Log_MinLevel))]
+        public string Log_MinLevelSerialized
+        {
+            get { return Log_MinLevel.Name; }
+            set { Log_MinLevel = LogLevel.FromString(value); }
+        }
         public bool Log_WriteToFile { get; set; } = true;
         public int Log_ArchiveN { get; set; } = 0;
 
