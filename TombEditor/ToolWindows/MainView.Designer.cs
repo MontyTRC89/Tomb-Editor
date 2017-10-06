@@ -390,7 +390,7 @@
             this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAdditiveBlending.Name = "butAdditiveBlending";
             this.butAdditiveBlending.Size = new System.Drawing.Size(23, 25);
-            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending) (Shift+A)";
+            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending) (Shift+1)";
             this.butAdditiveBlending.Click += new System.EventHandler(this.butAdditiveBlending_Click);
             //
             // butDoubleSided
@@ -403,7 +403,7 @@
             this.butDoubleSided.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDoubleSided.Name = "butDoubleSided";
             this.butDoubleSided.Size = new System.Drawing.Size(23, 25);
-            this.butDoubleSided.Text = "Double sided texture (Shift+D)";
+            this.butDoubleSided.Text = "Double sided texture (Shift+2)";
             this.butDoubleSided.Click += new System.EventHandler(this.butDoubleSided_Click);
             //
             // butInvisible
@@ -416,7 +416,7 @@
             this.butInvisible.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butInvisible.Name = "butInvisible";
             this.butInvisible.Size = new System.Drawing.Size(23, 25);
-            this.butInvisible.Text = "Invisible face (Shift+V)";
+            this.butInvisible.Text = "Invisible face (Shift+3)";
             //
             // toolStripSeparator2
             //

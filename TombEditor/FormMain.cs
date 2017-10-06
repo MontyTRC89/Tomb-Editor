@@ -236,13 +236,20 @@ namespace TombEditor
             _editor.ConfigurationChange();
         }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+
+        protected override bool ProcessDialogKey(Keys keyData)
         {
-            base.OnKeyDown(e);
+            // Don't open menus with the alt key
+            //if (keyData.HasFlag(Keys.Alt))
+            //    return true;
 
-            // Stamp
+            bool focused = IsFocused(MainView) || IsFocused(TexturePanel);
 
-            switch (e.KeyCode)
+            Keys modifierKeys = keyData & (Keys.Alt | Keys.Shift | Keys.Control);
+            bool shift = keyData.HasFlag(Keys.Shift);
+            bool alt = keyData.HasFlag(Keys.Alt);
+
+            switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
             {
                 case Keys.Z: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
                     _pressedZorY = true;
@@ -255,37 +262,37 @@ namespace TombEditor
                     break;
 
                 case Keys.F1: // 2D map mode
-                    if (e.Modifiers == Keys.None)
+                    if (modifierKeys == Keys.None)
                         _editor.Mode = EditorMode.Map2D;
                     break;
 
                 case Keys.F2: // 3D geometry mode
-                    if (e.Modifiers == Keys.None)
+                    if (modifierKeys == Keys.None)
                         _editor.Mode = EditorMode.Geometry;
                     break;
 
                 case Keys.F3: // 3D face texturing mode
-                    if (e.Modifiers == Keys.None)
+                    if (modifierKeys == Keys.None)
                         _editor.Mode = EditorMode.FaceEdit;
                     break;
 
                 case Keys.F4: // 3D lighting mode
-                    if (e.Modifiers == Keys.None)
+                    if (modifierKeys == Keys.None)
                         _editor.Mode = EditorMode.Lighting;
                     break;
 
                 case Keys.F6: // Reset 3D camera
-                    if (e.Modifiers == Keys.None)
+                    if (modifierKeys == Keys.None)
                         _editor.ResetCamera();
                     break;
 
                 case Keys.T: // Add trigger
-                    if (e.Modifiers == Keys.None && _editor.SelectedSectors.Valid)
+                    if (modifierKeys == Keys.None && _editor.SelectedSectors.Valid && focused)
                         EditorActions.AddTrigger(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
                     break;
 
                 case Keys.P: // Add portal
-                    if (e.Modifiers == Keys.None && _editor.SelectedSectors.Valid)
+                    if (modifierKeys == Keys.None && _editor.SelectedSectors.Valid && focused)
                         try
                         {
                             EditorActions.AddPortal(_editor.SelectedRoom, _editor.SelectedSectors.Area, this);
@@ -298,59 +305,13 @@ namespace TombEditor
                     break;
 
                 case Keys.O: // Show options dialog
-                    if (e.Modifiers == Keys.None && (_editor.SelectedObject != null))
+                    if (modifierKeys == Keys.None && (_editor.SelectedObject != null) && focused)
                         EditorActions.EditObject(_editor.SelectedObject, this);
                     break;
 
-                case Keys.V: // Reset texture selection
-                    if (e.Modifiers == Keys.Shift)
-                    {
-                        var texture = _editor.SelectedTexture;
-                        texture.Texture = TextureInvisible.Instance;
-                        _editor.SelectedTexture = texture;
-                    }
-                    break;
-
-                case Keys.Left: // Rotate objects with cones
-                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
-                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
-                    break;
-                case Keys.Right: // Rotate objects with cones
-                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
-                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
-                    break;
-
-                case Keys.Up:// Rotate objects with cones
-                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
-                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
-                    break;
-
-                case Keys.Down:// Rotate objects with cones
-                    if (e.Modifiers == Keys.Shift && (_editor.SelectedObject != null))
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
-                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
-                    break;
-
-                case Keys.Q:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(e.Shift ? 4 : 1), e.Control);
-                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 256, 0), new Vector3(), true);
-                    break;
-
-                case Keys.A:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)-(e.Shift ? 4 : 1), e.Control);
-                    else if (e.Modifiers == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance))
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
-                    else if (e.Modifiers == Keys.Shift)
+                case Keys.NumPad1: // Switch additive blending
+                case Keys.D1:
+                    if (modifierKeys == Keys.Shift)
                     {
                         var texture = _editor.SelectedTexture;
                         if (texture.BlendMode == BlendMode.Additive)
@@ -361,25 +322,9 @@ namespace TombEditor
                     }
                     break;
 
-                case Keys.W:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(e.Shift ? 4 : 1), e.Control);
-                    break;
-
-                case Keys.S:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(e.Shift ? 4 : 1), e.Control);
-                    break;
-
-                case Keys.E:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)(e.Shift ? 4 : 1), e.Control);
-                    break;
-
-                case Keys.D:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)-(e.Shift ? 4 : 1), e.Control);
-                    else if (e.Modifiers == Keys.Shift)
+                case Keys.NumPad2: // Switch double sided
+                case Keys.D2:
+                    if (modifierKeys == Keys.Shift)
                     {
                         var texture = _editor.SelectedTexture;
                         texture.DoubleSided = !texture.DoubleSided;
@@ -387,38 +332,91 @@ namespace TombEditor
                     }
                     break;
 
+                case Keys.NumPad3: // Switch to an invisible texture
+                case Keys.D3:
+                    if (modifierKeys == Keys.Shift)
+                    {
+                        var texture = _editor.SelectedTexture;
+                        texture.Texture = TextureInvisible.Instance;
+                        _editor.SelectedTexture = texture;
+                    }
+                    break;
+
+                case Keys.Left: // Rotate objects with cones
+                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
+                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                    break;
+                case Keys.Right: // Rotate objects with cones
+                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
+                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
+                    break;
+
+                case Keys.Up:// Rotate objects with cones
+                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
+                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
+                    break;
+
+                case Keys.Down:// Rotate objects with cones
+                    if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
+                    else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
+                    break;
+
+                case Keys.Q:
+                    if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)(shift ? 4 : 1), alt);
+                    else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 256, 0), new Vector3(), true);
+                    break;
+
+                case Keys.A:
+                    if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 0, (short)-(shift ? 4 : 1), alt);
+                    else if (_editor.SelectedObject is PositionBasedObjectInstance && focused)
+                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
+                    break;
+
+                case Keys.W:
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
+                    break;
+
+                case Keys.S:
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(shift ? 4 : 1), alt);
+                    break;
+
+                case Keys.E:
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)(shift ? 4 : 1), alt);
+                    break;
+
+                case Keys.D:
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 2, (short)-(shift ? 4 : 1), alt);
+                    break;
+
                 case Keys.R: // Rotate object
-                    if (e.Modifiers == Keys.None)
-                        if ((_editor.SelectedObject != null))
-                            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, e.Shift ? 5.0f : 45.0f);
-                        else if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                            EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(e.Shift ? 4 : 1), e.Control);
+                    if (!modifierKeys.HasFlag(Keys.Control) && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)(shift ? 4 : 1), alt);
+                    else if (_editor.SelectedObject != null && focused)
+                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, shift ? 5.0f : 45.0f);
                     break;
 
                 case Keys.F:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)-(e.Shift ? 4 : 1), e.Control);
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)-(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.Y: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
                     _pressedZorY = true;
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(e.Shift ? 4 : 1), e.Control);
-                    break;
-
-                case Keys.H:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)-(e.Shift ? 4 : 1), e.Control);
-                    break;
-
-                case Keys.U:
-                    if (e.Modifiers == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 1, (short)(e.Shift ? 4 : 1), e.Control);
-                    break;
-
-                case Keys.J:
-                    if (ModifierKeys == Keys.None && _editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid)
-                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 1, (short)-(e.Shift ? 4 : 1), e.Control);
                     break;
 
                 case Keys.OemMinus: // US keyboard key in documentation
@@ -431,12 +429,26 @@ namespace TombEditor
             }
 
             // Set camera relocation mode based on previous inputs
-            if (e.Alt && _pressedZorY)
+            if (alt && _pressedZorY)
             {
                 EditorAction action = _editor.Action;
                 action.RelocateCameraActive = true;
                 _editor.Action = action;
             }
+
+            if (alt)
+                return true;
+            return base.ProcessDialogKey(keyData);
+        }
+
+        private static bool IsFocused(Control control)
+        {
+            if (control.Focused)
+                return true;
+            foreach (Control controlInner in control.Controls)
+                if (IsFocused(controlInner))
+                    return true;
+            return false;
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
