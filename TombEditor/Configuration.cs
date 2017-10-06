@@ -17,6 +17,10 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
+        public bool Log_WriteToFile { get; set; } = true;
+        public int Log_ArchiveN { get; set; } = 0;
+
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
         public float RenderingItem_NavigationSpeedMouseTranslate { get; set; } = 200.0f;
@@ -208,7 +212,7 @@ namespace TombEditor
             return Load(GetDefaultPath());
         }
 
-        public static Configuration LoadOrUseDefault()
+        public static Configuration LoadOrUseDefault(ICollection<LogEventInfo> log = null)
         {
             try
             {
@@ -216,7 +220,7 @@ namespace TombEditor
             }
             catch (Exception exc)
             {
-                logger.Info(exc, "Unable to load configuration from \"" + GetDefaultPath() + "\"");
+                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + GetDefaultPath() + "\"", null, exc));
                 return new Configuration();
             }
         }

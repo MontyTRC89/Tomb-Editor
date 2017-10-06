@@ -41,10 +41,15 @@ namespace TombEditor
             EditorEventRaised?.Invoke(eventObj);
         }
 
-        public Editor()
+        public Editor(Configuration configuration, Level level)
         {
-            Level = Level.CreateSimpleLevel();
+            Configuration = configuration;
+            Level = level;
         }
+
+        public Editor(Configuration configuration)
+            : this(configuration, Level.CreateSimpleLevel())
+        { }
 
         // --- State of the editor ---
         // Unfortunately implementing this pattern is slightly elaborate in C#.
@@ -243,7 +248,7 @@ namespace TombEditor
             public Configuration Previous { get; set; }
             public Configuration Current { get; set; }
         }
-        private Configuration _Configuration = Configuration.LoadOrUseDefault();
+        private Configuration _Configuration;
         public Configuration Configuration
         {
             get { return _Configuration; }
@@ -435,17 +440,6 @@ namespace TombEditor
         }
 
         // Static instance
-        private static Editor _instance;
-
-        public static Editor Instance
-        {
-            get
-            {
-                if (_instance != null)
-                    return _instance;
-                else
-                    return _instance = new Editor();
-            }
-        }
+        public static Editor Instance;
     }
 }
