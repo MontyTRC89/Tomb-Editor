@@ -64,9 +64,9 @@ namespace TombEditor.ToolWindows
                 if (!e.Current.HasValue)
                     comboItems.SelectedIndex = -1;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.Items.Add(_editor.Level.Wad.Statics[e.Current.Value.Id]);
+                    comboItems.SelectedItem = _editor.Level.Wad.Statics[e.Current.Value.Id];
                 else
-                    comboItems.Items.Add(_editor.Level.Wad.Moveables[e.Current.Value.Id]);
+                    comboItems.SelectedItem = _editor.Level.Wad.Moveables[e.Current.Value.Id];
             }
 
             // Update item color control
@@ -175,11 +175,6 @@ namespace TombEditor.ToolWindows
                 _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
             else if (comboItems.SelectedItem is WadStatic)
                 _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
-        }
-
-        private void lblLoadHelper_Click(object sender, EventArgs e)
-        {
-            EditorActions.LoadWad(Parent);
         }
     }
 }
