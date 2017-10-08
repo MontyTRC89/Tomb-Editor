@@ -173,11 +173,12 @@ namespace TombEditor
                     statusStripGlobalSelectionArea.Text = "Global area = " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.X) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Y) + ") \u2192 " +
                         "(" + (room.Position.X + _editor.SelectedSectors.Area.Right) + ", " + (room.Position.Z + _editor.SelectedSectors.Area.Bottom) + ")" +
-                        " | y = [" + (room.Position.Y + minHeight) + ", " + (room.Position.Y + maxHeight) + "]";
+                        " | y = [" + ((minHeight == int.MaxValue || maxHeight == int.MinValue) ? "wall" : ((room.Position.Y + minHeight) + ", " + (room.Position.Y + maxHeight))) + "]";
+
                     statusStripLocalSelectionArea.Text = "Local area = " +
                         "(" + _editor.SelectedSectors.Area.X + ", " + _editor.SelectedSectors.Area.Y + ") \u2192 " +
                         "(" + _editor.SelectedSectors.Area.Right + ", " + _editor.SelectedSectors.Area.Bottom + ")" +
-                        " | y = [" + minHeight + ", " + maxHeight + "]";
+                        " | y = [" + ((minHeight == int.MaxValue || maxHeight == int.MinValue) ? "wall" : (minHeight + ", " + maxHeight)) + "]";
                 }
             }
 
