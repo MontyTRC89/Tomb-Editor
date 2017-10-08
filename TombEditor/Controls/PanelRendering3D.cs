@@ -2148,6 +2148,8 @@ namespace TombEditor.Controls
             _debug.Fps = 1.0 / _watch.Elapsed.TotalSeconds;
 
             // Draw debug info
+            Effect solidEffect = _deviceManager.Effects["Solid"];
+            solidEffect.Techniques[0].Passes[0].Apply();
             _debug.Draw(_deviceManager, _editor.SelectedObject?.ToString(), _editor.Configuration.Rendering3D_TextColor);
 
             _device.Present();
