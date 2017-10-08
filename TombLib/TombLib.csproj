@@ -102,6 +102,7 @@
     <Compile Include="Graphics\Primitives\GeometricPrimitive.LinesCube.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Plane.cs" />
     <Compile Include="Graphics\Primitives\GeometricPrimitive.Sphere.cs" />
+    <Compile Include="Graphics\Primitives\GeometricPrimitive.Torus.cs" />
     <Compile Include="Graphics\SolidVertex.cs" />
     <Compile Include="IO\ChunkId.cs" />
     <Compile Include="IO\ChunkReader.cs" />

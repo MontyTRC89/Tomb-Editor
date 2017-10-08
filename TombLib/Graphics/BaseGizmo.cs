@@ -27,12 +27,12 @@ namespace TombLib.Graphics
 
         public PickingResultGizmo(GizmoAxis axis, GizmoAction action)
         {
-            this.Axis = axis;
-            this.Action = action;
+            Axis = axis;
+            Action = action;
         }
     }
 
-    public abstract class BaseGizmo
+    public abstract class BaseGizmo : IDisposable
     {
         protected GizmoAxis _axis;
 
@@ -44,15 +44,15 @@ namespace TombLib.Graphics
 
         // Geometry of the gizmo
         private readonly GraphicsDevice _device;
-        private readonly Buffer<SolidVertex> _linesBuffer;
-
+        private readonly GeometricPrimitive _cylinder;
         private readonly GeometricPrimitive _sphere;
         private readonly GeometricPrimitive _cube;
-        private readonly GeometricPrimitive _circle;
-        private readonly Color4 _red;
-        private readonly Color4 _green;
-        private readonly Color4 _blue;
-        private readonly Color4 _yellow;
+        private GeometricPrimitive _torus;
+        private float _torusRadius = float.MinValue;
+        private static readonly Color4 _red = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
+        private static readonly Color4 _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
+        private static readonly Color4 _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
+        private static readonly Color4 _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
 
         protected PickingResultGizmo _lastResult;
         protected Vector3 _lastIntersectionPoint = Vector3.Zero;
@@ -64,26 +64,12 @@ namespace TombLib.Graphics
             _effect = effect;
             _device = device;
 
-            _red = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
-            _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
-            _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
-            _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
-
-            // Initialize the gizmo geometry
-            var v0 = new SolidVertex { Position = new Vector3(0.0f, 0.0f, 0.0f), Color = Vector4.One };
-            var vX = new SolidVertex { Position = new Vector3(1.0f, 0.0f, 0.0f), Color = Vector4.One };
-            var vY = new SolidVertex { Position = new Vector3(0.0f, 1.0f, 0.0f), Color = Vector4.One };
-            var vZ = new SolidVertex { Position = new Vector3(0.0f, 0.0f, -1.0f), Color = Vector4.One };
-            var vertices = new[] { v0, vX, v0, vY, v0, vZ };
-
-            _linesBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New
-                (_device, vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
-
+            // Create the gizmo geometry
+            _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, 5);
             _sphere = GeometricPrimitive.Sphere.New(_device, 1.0f, 16);
             _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
-            _circle = GeometricPrimitive.Circle.New(_device, 1.0f, 32);
 
-            // Initialize the rasterizer state for wireframe drawing
+            // Create the rasterizer state for wireframe drawing
             var renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
             {
                 CullMode = SharpDX.Direct3D11.CullMode.None,
@@ -99,7 +85,7 @@ namespace TombLib.Graphics
             };
             _rasterizerWireframe = RasterizerState.New(_device, renderStateDesc);
 
-            // Initialize the depth stencil state
+            // Create the depth stencil state
             SharpDX.Direct3D11.DepthStencilStateDescription depthStencilState = SharpDX.Direct3D11.DepthStencilStateDescription.Default();
             depthStencilState.IsDepthEnabled = false;
             depthStencilState.DepthComparison = SharpDX.Direct3D11.Comparison.Never;
@@ -107,6 +93,17 @@ namespace TombLib.Graphics
             _depthStencilState = DepthStencilState.New(_device, depthStencilState);
 
             _depthStencilStateDefault = DepthStencilState.New(_device, SharpDX.Direct3D11.DepthStencilStateDescription.Default());
+        }
+
+        public void Dispose()
+        {
+            _rasterizerWireframe.Dispose();
+            _depthStencilState.Dispose();
+            _depthStencilStateDefault.Dispose();
+            _cylinder.Dispose();
+            _sphere.Dispose();
+            _cube.Dispose();
+            _torus.Dispose();
         }
 
         public void SetGizmoAxis(GizmoAxis axis)
@@ -268,7 +265,7 @@ namespace TombLib.Graphics
                 return (_lastResult = new PickingResultGizmo(GizmoAxis.Z, GizmoAction.Scale));
 
             // Check for rotation
-            if (SupportRotationYX || SupportRotationYXRoll)
+            if (SupportRotationX)
             {
                 Plane planeX = new Plane(Position, Vector3.UnitX);
                 if (ray.Intersects(ref planeX, out _lastIntersectionPoint))
@@ -289,7 +286,7 @@ namespace TombLib.Graphics
                 }
             }
 
-            if (SupportRotationYX || SupportRotationYXRoll || SupportRotationY)
+            if (SupportRotationY)
             {
                 Plane planeY = new Plane(Position, Vector3.UnitY);
                 if (ray.Intersects(ref planeY, out _lastIntersectionPoint))
@@ -310,7 +307,7 @@ namespace TombLib.Graphics
                 }
             }
 
-            if (SupportRotationYXRoll)
+            if (SupportRotationZ)
             {
                 Plane planeZ = new Plane(Position, Vector3.UnitZ);
                 if (ray.Intersects(ref planeZ, out _lastIntersectionPoint))
@@ -340,160 +337,183 @@ namespace TombLib.Graphics
                 return;
 
             _device.SetDepthStencilState(_depthStencilState);
-            _device.SetRasterizerState(_rasterizerWireframe);
-            _device.SetVertexBuffer(_linesBuffer);
-            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _linesBuffer));
+            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
             var solidEffect = _effect;
 
-            //_editor.Configuration.Gizmo_Size
-            var model = Matrix.Scaling(Size) *
-                        Matrix.Translation(Position);
-            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-
-            // X axis
-            solidEffect.Parameters["Color"].SetValue(_red);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.Draw(PrimitiveType.LineList, 2, 0);
-
-            // Y axis
-            solidEffect.Parameters["Color"].SetValue(_green);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.Draw(PrimitiveType.LineList, 2, 2);
-
-            // Z axis
-            solidEffect.Parameters["Color"].SetValue(_blue);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.Draw(PrimitiveType.LineList, 2, 4);
-
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-            _device.SetVertexBuffer(_sphere.VertexBuffer);
-            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
-            _device.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
-
-            // X axis translation
-            model = Matrix.Scaling(TranslationSphereSize) *
-                    Matrix.Translation(Position + Vector3.UnitX * Size);
-            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-            solidEffect.Parameters["Color"].SetValue(_red);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-
-            // Y axis translation
-            model = Matrix.Scaling(TranslationSphereSize) *
-                    Matrix.Translation(Position + Vector3.UnitY * Size);
-            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-            solidEffect.Parameters["Color"].SetValue(_green);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-
-            // Z axis translation
-            model = Matrix.Scaling(TranslationSphereSize) *
-                    Matrix.Translation(Position - Vector3.UnitZ * Size);
-            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-            solidEffect.Parameters["Color"].SetValue(_blue);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-
             // Scale
             if (SupportScale)
+            {
+                _cube.SetupForRendering(_device);
+
+                // X axis scale
+                {
+                    var model = Matrix.Scaling(ScaleCubeSize) *
+                            Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+
+                // Y axis scale
+                {
+                    var model = Matrix.Scaling(ScaleCubeSize) *
+                            Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+
+                // Z axis scale
+                {
+                    var model = Matrix.Scaling(ScaleCubeSize) *
+                            Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+            }
+
+            // Rotation
+            if (SupportRotationX | SupportRotationY | SupportRotationZ)
+            {
+                float requiredTorusRadius = LineThickness * 0.5f / Size;
+                if (_torusRadius != requiredTorusRadius)
+                {
+                    _torus = GeometricPrimitive.Torus.New(_device, 1.0f, requiredTorusRadius, 48, 5);
+                    _torusRadius = requiredTorusRadius;
+                }
+                _torus.SetupForRendering(_device);
+
+                // Rotation Y
+                if (SupportRotationY)
+                {
+                    var model = Matrix.Scaling(Size * 2.0f) *
+                            Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                }
+
+                // Rotation X
+                if (SupportRotationX)
+                {
+                    var model = Matrix.Scaling(Size * 2.0f) *
+                            Matrix.RotationZ((float)Math.PI / 2.0f) *
+                            Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                }
+
+                // Rotation Z
+                if (SupportRotationZ)
+                {
+                    var model = Matrix.Scaling(Size * 2.0f) *
+                            Matrix.RotationX((float)Math.PI / 2.0f) *
+                            Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                }
+            }
+
+            if (SupportTranslate)
+            {
+                _cylinder.SetupForRendering(_device);
+
+                // X axis
+                {
+                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                                Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
+                                Matrix.RotationZ(-(float)Math.PI / 2.0f) *
+                                Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
+                }
+
+                // Y axis
+                {
+                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                                Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
+                                Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
+                }
+
+                // Z axis
+                {
+                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                                Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
+                                Matrix.RotationX(-(float)Math.PI / 2.0f) *
+                                Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
+                }
+
+                _sphere.SetupForRendering(_device);
+
+                // X axis translation
+                {
+                    var model = Matrix.Scaling(TranslationSphereSize) *
+                            Matrix.Translation(Position + Vector3.UnitX * Size);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                }
+
+                // Y axis translation
+                {
+                    var model = Matrix.Scaling(TranslationSphereSize) *
+                            Matrix.Translation(Position + Vector3.UnitY * Size);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                }
+
+                // Z axis translation
+                {
+                    var model = Matrix.Scaling(TranslationSphereSize) *
+                            Matrix.Translation(Position - Vector3.UnitZ * Size);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                }
+            }
+
+            // All time geometry
             {
                 _device.SetVertexBuffer(_cube.VertexBuffer);
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cube.VertexBuffer));
                 _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
 
-                // X axis scale
-                model = Matrix.Scaling(ScaleCubeSize) *
-                        Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
-                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                solidEffect.Parameters["Color"].SetValue(_red);
-                solidEffect.CurrentTechnique.Passes[0].Apply();
+                // center cube
+                {
+                    var model = Matrix.Scaling(CentreCubeSize) * Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_yellow);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
 
-                _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-
-                // Y axis scale
-                model = Matrix.Scaling(ScaleCubeSize) *
-                        Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
-                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                solidEffect.Parameters["Color"].SetValue(_green);
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-
-                // Z axis scale
-                model = Matrix.Scaling(ScaleCubeSize) *
-                        Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
-                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                solidEffect.Parameters["Color"].SetValue(_blue);
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+                _device.SetDepthStencilState(_depthStencilStateDefault);
             }
-
-            // Rotation Y
-            if (SupportRotationY || SupportRotationYX || SupportRotationYXRoll)
-            {
-                _device.SetVertexBuffer(_circle.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _circle.VertexBuffer));
-                _device.SetIndexBuffer(_circle.IndexBuffer, _circle.IsIndex32Bits);
-
-                model = Matrix.Scaling(Size * 2.0f) *
-                        Matrix.RotationY(0.0f) *
-                        Matrix.Translation(Position);
-                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                solidEffect.Parameters["Color"].SetValue(_green);
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                _device.DrawIndexed(PrimitiveType.LineList, _circle.IndexBuffer.ElementCount);
-            }
-
-            // Rotation X
-            if (SupportRotationYX || SupportRotationYXRoll)
-            {
-                model = Matrix.Scaling(Size * 2.0f) *
-                        Matrix.RotationZ((float)Math.PI / 2.0f) *
-                        Matrix.Translation(Position);
-                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                solidEffect.Parameters["Color"].SetValue(_red);
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                _device.DrawIndexed(PrimitiveType.LineList, _circle.IndexBuffer.ElementCount);
-            }
-
-            // Rotation roll
-            if (SupportRotationYXRoll)
-            {
-                model = Matrix.Scaling(Size * 2.0f) *
-                        Matrix.RotationX((float)Math.PI / 2.0f) *
-                        Matrix.Translation(Position);
-                solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                solidEffect.Parameters["Color"].SetValue(_blue);
-                solidEffect.CurrentTechnique.Passes[0].Apply();
-
-                _device.DrawIndexed(PrimitiveType.LineList, _circle.IndexBuffer.ElementCount);
-            }
-
-            // center cube
-            _device.SetVertexBuffer(_cube.VertexBuffer);
-            _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cube.VertexBuffer));
-            _device.SetIndexBuffer(_cube.IndexBuffer, _cube.IsIndex32Bits);
-
-            model = Matrix.Scaling(CentreCubeSize) *
-                    Matrix.Translation(Position);
-            solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-            solidEffect.Parameters["Color"].SetValue(_yellow);
-            solidEffect.CurrentTechnique.Passes[0].Apply();
-
-            _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-
-            _device.SetDepthStencilState(_depthStencilStateDefault);
         }
 
         public GizmoAction Action { get { return (_lastResult != null ? _lastResult.Action : GizmoAction.Translate); } }
@@ -502,15 +522,17 @@ namespace TombLib.Graphics
 
         protected abstract void DoGizmoAction(Vector3 newPos, float angle, float scale);
 
-        protected abstract bool DrawGizmo { get; }
         protected abstract Vector3 Position { get; }
         protected abstract float CentreCubeSize { get; }
         protected abstract float TranslationSphereSize { get; }
         protected abstract float ScaleCubeSize { get; }
         protected abstract float Size { get; }
+        protected abstract float LineThickness { get; }
+        protected abstract bool SupportTranslate { get; }
         protected abstract bool SupportScale { get; }
         protected abstract bool SupportRotationY { get; }
-        protected abstract bool SupportRotationYX { get; }
-        protected abstract bool SupportRotationYXRoll { get; }
+        protected abstract bool SupportRotationX { get; }
+        protected abstract bool SupportRotationZ { get; }
+        protected virtual bool DrawGizmo => SupportTranslate || SupportScale || SupportRotationY || SupportRotationX || SupportRotationZ;
     }
 }

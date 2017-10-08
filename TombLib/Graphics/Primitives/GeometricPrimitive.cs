@@ -1,15 +1,15 @@
 ﻿// Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -120,7 +120,7 @@ namespace SharpDX.Toolkit.Graphics
         /// Draws this <see cref="GeometricPrimitive" /> using an optional effect. See remarks.
         /// </summary>
         /// <param name="effect">The effect. Null by default.</param>
-        /// <remarks>If an effect is passed to this method, a draw will be issued for each passes defined in the current technique of the effect. 
+        /// <remarks>If an effect is passed to this method, a draw will be issued for each passes defined in the current technique of the effect.
         /// If no effect are passed, it is expected that an <see cref="EffectPass"/> was previously applied.
         /// </remarks>
         public void Draw(Effect effect = null)
@@ -133,7 +133,7 @@ namespace SharpDX.Toolkit.Graphics
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="effect">The effect. Null by default.</param>
-        /// <remarks>If an effect is passed to this method, a draw will be issued for each passes defined in the current technique of the effect. 
+        /// <remarks>If an effect is passed to this method, a draw will be issued for each passes defined in the current technique of the effect.
         /// If no effect are passed, an <see cref="EffectPass"/> must have been applied previously.
         /// </remarks>
         public void Draw(GraphicsDevice graphicsDevice, Effect effect = null)
@@ -159,7 +159,7 @@ namespace SharpDX.Toolkit.Graphics
         /// </summary>
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="pass">The effect pass, null by default.</param>
-        /// <remarks>If an effect pass is passed to this method, the effect pass will be applied before drawing the geometry. 
+        /// <remarks>If an effect pass is passed to this method, the effect pass will be applied before drawing the geometry.
         /// If no effect pass is passed, an <see cref="EffectPass"/> must have been applied previously.
         /// </remarks>
         public void Draw(GraphicsDevice graphicsDevice, EffectPass pass = null)
@@ -173,7 +173,7 @@ namespace SharpDX.Toolkit.Graphics
         /// <param name="graphicsDevice">The graphics device.</param>
         /// <param name="primitiveType">The primitive type to use when drawing.</param>
         /// <param name="pass">The effect pass, null by default.</param>
-        /// <remarks>If an effect pass is passed to this method, the effect pass will be applied before drawing the geometry. 
+        /// <remarks>If an effect pass is passed to this method, the effect pass will be applied before drawing the geometry.
         /// If no effect pass is passed, an <see cref="EffectPass"/> must have been applied previously.
         /// </remarks>
         public void Draw(GraphicsDevice graphicsDevice, PrimitiveType primitiveType, EffectPass pass)
@@ -194,6 +194,13 @@ namespace SharpDX.Toolkit.Graphics
             graphicsDevice.DrawIndexed(primitiveType, IndexBuffer.ElementCount);
         }
 
+        public void SetupForRendering(GraphicsDevice graphicsDevice)
+        {
+            graphicsDevice.SetVertexBuffer(VertexBuffer);
+            graphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, VertexBuffer));
+            graphicsDevice.SetIndexBuffer(IndexBuffer, IsIndex32Bits);
+        }
+
         /// <summary>
         /// Helper for flipping winding of geometric primitives for LH vs. RH coordinates
         /// </summary>
@@ -208,7 +215,7 @@ namespace SharpDX.Toolkit.Graphics
             }
         }
 
-        public static void Swap<TIndex>(ref TIndex a, ref TIndex b)
+        protected static void Swap<TIndex>(ref TIndex a, ref TIndex b)
         {
             TIndex temp = a;
             b = a;

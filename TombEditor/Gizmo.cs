@@ -21,14 +21,6 @@ namespace TombEditor
             _editor = Editor.Instance;
         }
 
-        protected override bool DrawGizmo
-        { 
-            get
-            {
-                return _editor.SelectedObject is PositionBasedObjectInstance;
-            }
-        }
-
         protected override Vector3 Position
         {
             get
@@ -63,19 +55,14 @@ namespace TombEditor
         }
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;
-
         protected override float TranslationSphereSize => _editor.Configuration.Gizmo_TranslationSphereSize;
-
         protected override float Size => _editor.Configuration.Gizmo_Size;
-
         protected override float ScaleCubeSize => _editor.Configuration.Gizmo_ScaleCubeSize;
-
+        protected override float LineThickness => _editor.Configuration.Gizmo_LineThickness;
+        protected override bool SupportTranslate => _editor.SelectedObject is PositionBasedObjectInstance;
         protected override bool SupportScale => _editor.SelectedObject is IScaleable;
-
         protected override bool SupportRotationY => _editor.SelectedObject is IRotateableY;
-
-        protected override bool SupportRotationYX => _editor.SelectedObject is IRotateableYX;
-
-        protected override bool SupportRotationYXRoll => _editor.SelectedObject is IRotateableYXRoll;
+        protected override bool SupportRotationX => _editor.SelectedObject is IRotateableYX;
+        protected override bool SupportRotationZ => _editor.SelectedObject is IRotateableYXRoll;
     }
 }

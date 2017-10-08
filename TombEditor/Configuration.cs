@@ -73,6 +73,7 @@ namespace TombEditor
         public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
+        public float Gizmo_LineThickness { get; set; } = 45.0f;
 
         public Point Window_Position { get; set; } = new Point(32, 32);
         public Size Window_Size { get; set; } = Window_SizeDefault;
