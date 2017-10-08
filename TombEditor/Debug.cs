@@ -14,29 +14,17 @@ namespace TombEditor
 
     public class Debug
     {
-        public static double Fps { get; set; }
-        public static long NumRooms { get; set; }
-        public static long NumVerticesRooms { get; set; }
-        public static long NumTrianglesRooms { get; set; }
-        public static long NumVerticesObjects { get; set; }
-        public static long NumTrianglesObjects { get; set; }
-        public static long NumMoveables { get; set; }
-        public static long NumStaticMeshes { get; set; }
-        public static List<DebugString> Strings { get; set; }
+        public double Fps { get; set; }
+        public int NumRooms { get; set; }
+        public int NumVerticesRooms { get; set; }
+        public int NumTrianglesRooms { get; set; }
+        public int NumVerticesObjects { get; set; }
+        public int NumTrianglesObjects { get; set; }
+        public int NumMoveables { get; set; }
+        public int NumStaticMeshes { get; set; }
+        public List<DebugString> Strings { get; } = new List<DebugString>();
 
-        public static void Reset()
-        {
-            NumRooms = 0;
-            NumVerticesRooms = 0;
-            NumTrianglesRooms = 0;
-            NumVerticesObjects = 0;
-            NumTrianglesObjects = 0;
-            NumMoveables = 0;
-            NumStaticMeshes = 0;
-            Strings = new List<DebugString>();
-        }
-
-        public static void AddString(string content, Vector3 position)
+        public void AddString(string content, Vector3 position)
         {
             DebugString str = new DebugString();
             str.Content = content;
@@ -44,22 +32,25 @@ namespace TombEditor
             Strings.Add(str);
         }
 
-        public static void Draw(DeviceManager deviceManager, string selectedItem, Vector4 textColor)
+        public void Draw(DeviceManager deviceManager, string selectedItem, Vector4 textColor)
         {
-            SpriteBatch batch = new SpriteBatch(deviceManager.Device);
-            batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
-
-            batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), Color.White);
-            batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), Color.White);
-            if (!string.IsNullOrEmpty(selectedItem))
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), Color.White);
-
-            for (int i = 0; i < Strings.Count; i++)
+            deviceManager.Device.SetBlendState(deviceManager.Device.BlendStates.Opaque);
+            using (SpriteBatch batch = new SpriteBatch(deviceManager.Device))
             {
-                batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, new Color(textColor));
-            }
+                batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
 
-            batch.End();
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), new Color(textColor));
+                batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), new Color(textColor));
+                if (!string.IsNullOrEmpty(selectedItem))
+                    batch.DrawStringOnOldSharpDx(deviceManager.Font, "Selected Object: " + selectedItem, new Vector2(0, 36), new Color(textColor));
+
+                for (int i = 0; i < Strings.Count; i++)
+                {
+                    batch.DrawStringOnOldSharpDx(deviceManager.Font, Strings[i].Content, Strings[i].Position, new Color(textColor));
+                }
+
+                batch.End();
+            }
 
             deviceManager.Device.SetBlendState(deviceManager.Device.BlendStates.Opaque);
         }
