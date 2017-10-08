@@ -34,10 +34,9 @@ namespace TombEditor
 
         public void Draw(DeviceManager deviceManager, string selectedItem, Vector4 textColor)
         {
-            deviceManager.Device.SetBlendState(deviceManager.Device.BlendStates.Opaque);
             using (SpriteBatch batch = new SpriteBatch(deviceManager.Device))
             {
-                batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.Additive);
+                batch.Begin(SpriteSortMode.FrontToBack, deviceManager.Device.BlendStates.AlphaBlend);
 
                 batch.DrawStringOnOldSharpDx(deviceManager.Font, "FPS: " + Math.Round(Fps, 2) + ", Rooms vertices: " + NumVerticesRooms + ", Objects vertices: " + NumVerticesObjects, new Vector2(0, 0), new Color(textColor));
                 batch.DrawStringOnOldSharpDx(deviceManager.Font, "Rooms: " + NumRooms + ", Moveables: " + NumMoveables + ", Static Meshes: " + NumStaticMeshes, new Vector2(0, 18), new Color(textColor));
