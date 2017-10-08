@@ -53,7 +53,8 @@ namespace TombEditor.Controls
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            // Change default statew
+            // Change default state
+            SetStyle(ControlStyles.Selectable, true);
             BorderStyle = BorderStyle.FixedSingle;
             DoubleBuffered = true;
 
@@ -427,14 +428,6 @@ namespace TombEditor.Controls
             // Draw border next to scroll bars
             using (Pen pen = new Pen(DarkUI.Config.Colors.LighterBackground, 1.0f))
                 e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
-        }
-
-        protected override bool ProcessDialogKey(Keys keyData)
-        {
-            if (keyData == Keys.Up || keyData == Keys.Down || keyData == Keys.Left || keyData == Keys.Right || keyData == Keys.PageDown || keyData == Keys.PageUp)
-                return false; // Prevent any control in the same group from taking focus
-            else
-                return base.ProcessDialogKey(keyData);
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
