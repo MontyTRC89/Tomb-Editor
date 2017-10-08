@@ -22,25 +22,16 @@ namespace WadTool
             _control = control;
         }
 
-        protected override bool DrawGizmo => true;
-
         protected override Vector3 Position => (_control != null ? _control.StaticPosition : Vector3.Zero);
-
         protected override float CentreCubeSize => 128.0f;
-
         protected override float TranslationSphereSize => 128.0f;
-
         protected override float ScaleCubeSize => 128.0f;
-
         protected override float Size => 1024.0f;
-
         protected override bool SupportScale => true;
-
+        protected override bool SupportTranslate => true;
         protected override bool SupportRotationY => true;
-
-        protected override bool SupportRotationYX => true;
-
-        protected override bool SupportRotationYXRoll => true;
+        protected override bool SupportRotationX => true;
+        protected override bool SupportRotationZ => true;
 
         protected override void DoGizmoAction(Vector3 newPos, float angle, float scale)
         {
