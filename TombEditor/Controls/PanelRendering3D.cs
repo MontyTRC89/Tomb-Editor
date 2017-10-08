@@ -469,44 +469,44 @@ namespace TombEditor.Controls
             }
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
+            base.OnPreviewKeyDown(e);
+
             // I intercept arrow keys here otherwise they would processed by the form and
             // camera would move only if Panel3D is focused
-            switch (keyData)
+            switch (e.KeyCode)
             {
                 case Keys.Up:
                     Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.Down:
                     Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.Left:
                     Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.Right:
                     Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.PageUp:
                     Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.PageDown:
                     Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
-                    return true;
+                    break;
             }
-
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

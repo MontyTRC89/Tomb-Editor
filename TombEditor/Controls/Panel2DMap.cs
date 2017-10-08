@@ -288,11 +288,13 @@ namespace TombEditor.Controls
             MoveToFixedPoint(e.Location, FixedPointInWorld);
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
+            base.OnPreviewKeyDown(e);
+
             // Make control receive key events as suggested here...
             // https://stackoverflow.com/questions/20079373/trouble-creating-keydown-event-in-panel
-            switch (keyData)
+            switch (e.KeyCode)
             {
                 case Keys.Down:
                     ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
@@ -319,7 +321,6 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnPaint(PaintEventArgs e)
