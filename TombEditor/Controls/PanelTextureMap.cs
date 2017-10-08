@@ -233,6 +233,10 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+
+            if (!Focused)
+                Focus(); // Enable keyboard interaction
+
             _lastMousePosition = e.Location;
             _startPos = null;
 
