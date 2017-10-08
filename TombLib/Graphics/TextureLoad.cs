@@ -40,7 +40,7 @@ namespace TombLib.Graphics
             }
             catch (Exception exc)
             {
-                logger.Error(exc, "Unable to create DirectX texture (image width: " + image.Width + " height: " + image.Height + " size: " + image.Size);
+                logger.Error(exc, "Unable to create DirectX texture (image size: " + image.Size);
             }
             return result;
         }
