@@ -52,7 +52,7 @@ namespace TombEditor
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(484, 173) + (Size - ClientSize);
+            MinimumSize = new Size(440, 180) + (Size - ClientSize);
 
             // Initialize texture map
             if (_editor.SelectedTexture.TextureIsInvisble)
