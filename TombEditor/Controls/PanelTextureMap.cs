@@ -50,9 +50,6 @@ namespace TombEditor.Controls
 
         public PanelTextureMap()
         {
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
-
             // Change default state
             SetStyle(ControlStyles.Selectable, true);
             BorderStyle = BorderStyle.FixedSingle;
@@ -71,6 +68,12 @@ namespace TombEditor.Controls
 
             Controls.Add(_vScrollBar);
             Controls.Add(_hScrollBar);
+
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            {
+                _editor = Editor.Instance;
+                _editor.EditorEventRaised += EditorEventRaised;
+            }
         }
 
         protected override void Dispose(bool disposing)

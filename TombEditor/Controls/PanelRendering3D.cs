@@ -171,8 +171,11 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            {
+                _editor = Editor.Instance;
+                _editor.EditorEventRaised += EditorEventRaised;
+            }
         }
 
         protected override void Dispose(bool disposing)

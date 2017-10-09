@@ -56,16 +56,20 @@ namespace TombEditor.Controls
 
         public Panel2DMap()
         {
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
             DoubleBuffered = true;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             UpdateStyles();
 
-            _depthBar = new DepthBar(_editor);
-            _depthBar.InvalidateParent += Invalidate;
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            {
+                _editor = Editor.Instance;
+                _editor.EditorEventRaised += EditorEventRaised;
 
-            ResetView();
+                _depthBar = new DepthBar(_editor);
+                _depthBar.InvalidateParent += Invalidate;
+
+                ResetView();
+            }
         }
 
         protected override void Dispose(bool disposing)
