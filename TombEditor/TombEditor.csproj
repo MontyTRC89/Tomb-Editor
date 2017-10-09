@@ -152,7 +152,7 @@
     <Compile Include="Controls\PanelRenderingItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\TabbedContainer.cs">
+    <Compile Include="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Debug.cs" />

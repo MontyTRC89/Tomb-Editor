@@ -132,13 +132,8 @@ namespace TombEditor
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
                 }
 
-            // Populate options list and select first entry
-            foreach (var tab in optionsContainer.Controls)
-            {
-                var tabPage = (TabPage)tab;
-                optionsList.Items.Add(new DarkListItem(tabPage.Text));
-            }
-            optionsList.SelectItem(0);
+            // Initialize options list
+            optionsContainer.LinkedListView = optionsList;
 
             // Initialize controls
             UpdateDialog();
@@ -534,11 +529,6 @@ namespace TombEditor
         private void butCancel_Click(object sender, EventArgs e)
         {
             Close();
-        }
-
-        private void optionsList_Click(object sender, EventArgs e)
-        {
-            optionsContainer.SelectedIndex = optionsList.SelectedIndices.First();
         }
 
         // Target path

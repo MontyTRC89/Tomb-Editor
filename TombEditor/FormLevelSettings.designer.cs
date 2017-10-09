@@ -35,7 +35,7 @@
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsContainer = new TombEditor.Controls.TabbedContainer();
+            this.optionsContainer = new TombEditor.Controls.DarkTabbedContainer();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel6 = new System.Windows.Forms.Panel();
             this.levelFilePathBut = new DarkUI.Controls.DarkButton();
@@ -894,7 +894,6 @@
             this.optionsList.Name = "optionsList";
             this.optionsList.Size = new System.Drawing.Size(198, 251);
             this.optionsList.TabIndex = 6;
-            this.optionsList.Click += new System.EventHandler(this.optionsList_Click);
             // 
             // FormLevelSettings
             // 
@@ -999,7 +998,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn pathVariablesDataGridViewValueColumn;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private Controls.ImportedGeometryManager importedGeometryManager;
-        private Controls.TabbedContainer optionsContainer;
+        private Controls.DarkTabbedContainer optionsContainer;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
