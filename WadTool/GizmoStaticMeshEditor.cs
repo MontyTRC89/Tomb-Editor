@@ -22,18 +22,6 @@ namespace WadTool
             _control = control;
         }
 
-        protected override Vector3 Position => (_control != null ? _control.StaticPosition : Vector3.Zero);
-        protected override float CentreCubeSize => 128.0f;
-        protected override float TranslationSphereSize => 128.0f;
-        protected override float ScaleCubeSize => 128.0f;
-        protected override float Size => 1024.0f;
-        protected override float LineThickness => 45.0f;
-        protected override bool SupportScale => true;
-        protected override bool SupportTranslate => true;
-        protected override bool SupportRotationY => true;
-        protected override bool SupportRotationX => true;
-        protected override bool SupportRotationZ => true;
-
         protected override void GizmoMove(Vector3 newPos) => _control.StaticPosition = newPos;
         protected override void GizmoRotateX(float angle) => _control.StaticRotation += new Vector3(angle, 0, 0);
         protected override void GizmoRotateY(float angle) => _control.StaticRotation += new Vector3(0, angle, 0);
@@ -52,5 +40,22 @@ namespace WadTool
 
             _control.StaticScale = newScale;
         }
+
+        protected override Vector3 Position => (_control != null ? _control.StaticPosition : Vector3.Zero);
+        protected override float RotationY => _control.StaticRotation.Y;
+        protected override float RotationX => _control.StaticRotation.X;
+        protected override float RotationZ => _control.StaticRotation.Z;
+
+        protected override float CentreCubeSize => 128.0f;
+        protected override float TranslationSphereSize => 128.0f;
+        protected override float ScaleCubeSize => 128.0f;
+        protected override float Size => 1024.0f;
+        protected override float LineThickness => 45.0f;
+
+        protected override bool SupportScale => true;
+        protected override bool SupportTranslate => true;
+        protected override bool SupportRotationY => true;
+        protected override bool SupportRotationX => true;
+        protected override bool SupportRotationZ => true;
     }
 }
