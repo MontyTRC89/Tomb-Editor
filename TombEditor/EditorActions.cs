@@ -1894,7 +1894,9 @@ namespace TombEditor
         {
             _editor.Mode = mode;
             _editor.Action = EditorAction.None;
-            _editor.SelectedSectors = SectorSelection.None;
+
+            if(_editor.Configuration.Editor_DiscardSelectionOnModeSwitch)
+                _editor.SelectedSectors = SectorSelection.None;
         }
     }
 }
