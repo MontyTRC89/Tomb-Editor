@@ -28,8 +28,11 @@ namespace TombEditor.Controls
 
         public PanelRenderingItem()
         {
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            {
+                _editor = Editor.Instance;
+                _editor.EditorEventRaised += EditorEventRaised;
+            }
         }
 
         protected override void Dispose(bool disposing)
