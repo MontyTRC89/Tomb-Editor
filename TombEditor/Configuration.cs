@@ -8,6 +8,8 @@ using System.IO;
 using System.Windows.Forms;
 
 using System.Xml.Serialization;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace TombEditor
 {
@@ -16,6 +18,20 @@ namespace TombEditor
     public class Configuration
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        [XmlIgnore]
+        public string FilePath { get; set; } = null;
+
+        [XmlIgnore]
+        public LogLevel Log_MinLevel { get; set; } = LogLevel.Debug;
+        [XmlElement(nameof(Log_MinLevel))]
+        public string Log_MinLevelSerialized
+        {
+            get { return Log_MinLevel.Name; }
+            set { Log_MinLevel = LogLevel.FromString(value); }
+        }
+        public bool Log_WriteToFile { get; set; } = true;
+        public int Log_ArchiveN { get; set; } = 0;
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 300.0f;
@@ -57,6 +73,7 @@ namespace TombEditor
         public float Gizmo_TranslationSphereSize { get; set; } = 220.0f;
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
+        public float Gizmo_LineThickness { get; set; } = 45.0f;
 
         public Point Window_Position { get; set; } = new Point(32, 32);
         public Size Window_Size { get; set; } = Window_SizeDefault;
@@ -161,7 +178,7 @@ namespace TombEditor
 
         public static string GetDefaultPath()
         {
-            return Path.GetDirectoryName(Application.ExecutablePath) + "/TombEditorConfiguration.xml";
+            return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "TombEditorConfiguration.xml");
         }
 
         public void Save(Stream stream)
@@ -173,23 +190,25 @@ namespace TombEditor
         {
             using (var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
                 Save(stream);
+            FilePath = path;
         }
 
         public void Save()
         {
-            Save(GetDefaultPath());
+            Save(FilePath);
         }
 
         public void SaveTry()
         {
-            try
-            {
-                Save();
-            }
-            catch (Exception exc)
-            {
-                logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
-            }
+            if (!string.IsNullOrEmpty(FilePath))
+                try
+                {
+                    Save();
+                }
+                catch (Exception exc)
+                {
+                    logger.Info(exc, "Unable to save configuration to \"" + GetDefaultPath() + "\"");
+                }
         }
 
         public static Configuration Load(Stream stream)
@@ -197,10 +216,13 @@ namespace TombEditor
             return (Configuration)(new XmlSerializer(typeof(Configuration)).Deserialize(stream));
         }
 
-        public static Configuration Load(string path)
+        public static Configuration Load(string filePath)
         {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                return Load(stream);
+            Configuration result;
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                result = Load(stream);
+            result.FilePath = filePath;
+            return result;
         }
 
         public static Configuration Load()
@@ -208,7 +230,7 @@ namespace TombEditor
             return Load(GetDefaultPath());
         }
 
-        public static Configuration LoadOrUseDefault()
+        public static Configuration LoadOrUseDefault(ICollection<LogEventInfo> log = null)
         {
             try
             {
@@ -216,8 +238,8 @@ namespace TombEditor
             }
             catch (Exception exc)
             {
-                logger.Info(exc, "Unable to load configuration from \"" + GetDefaultPath() + "\"");
-                return new Configuration();
+                log?.Add(new LogEventInfo(LogLevel.Info, logger.Name, null, "Unable to load configuration from \"" + GetDefaultPath() + "\"", null, exc));
+                return new Configuration { FilePath = GetDefaultPath() };
             }
         }
     }

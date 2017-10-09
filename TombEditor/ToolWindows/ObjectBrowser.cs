@@ -64,9 +64,9 @@ namespace TombEditor.ToolWindows
                 if (!e.Current.HasValue)
                     comboItems.SelectedIndex = -1;
                 else if (e.Current.Value.IsStatic)
-                    comboItems.Items.Add(_editor.Level.Wad.Statics[e.Current.Value.Id]);
+                    comboItems.SelectedItem = _editor.Level.Wad.Statics[e.Current.Value.Id];
                 else
-                    comboItems.Items.Add(_editor.Level.Wad.Moveables[e.Current.Value.Id]);
+                    comboItems.SelectedItem = _editor.Level.Wad.Moveables[e.Current.Value.Id];
             }
 
             // Update item color control
@@ -116,15 +116,17 @@ namespace TombEditor.ToolWindows
         private void butItemsBack_Click(object sender, EventArgs e)
         {
             if ((comboItems.SelectedIndex - 1) < 0)
-                return;
-            comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
+                comboItems.SelectedIndex = comboItems.Items.Count - 1;
+            else
+                comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
         }
 
         private void butItemsNext_Click(object sender, EventArgs e)
         {
             if ((comboItems.SelectedIndex + 1) >= comboItems.Items.Count)
-                return;
-            comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
+                comboItems.SelectedIndex = 0;
+            else
+                comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
         }
 
         private void butAddItem_Click(object sender, EventArgs e)
@@ -175,11 +177,6 @@ namespace TombEditor.ToolWindows
                 _editor.ChosenItem = new ItemType(false, ((WadMoveable)(comboItems.SelectedItem)).ObjectID);
             else if (comboItems.SelectedItem is WadStatic)
                 _editor.ChosenItem = new ItemType(true, ((WadStatic)(comboItems.SelectedItem)).ObjectID);
-        }
-
-        private void lblLoadHelper_Click(object sender, EventArgs e)
-        {
-            EditorActions.LoadWad(Parent);
         }
     }
 }

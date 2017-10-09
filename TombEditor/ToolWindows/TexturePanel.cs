@@ -64,11 +64,6 @@ namespace TombEditor.ToolWindows
             EditorActions.ShowAnimationRangesDialog(this);
         }
 
-        private void lblLoadHelper_Click(object sender, EventArgs e)
-        {
-            EditorActions.LoadTextures(this.Parent);
-        }
-
         private void rbTileSize64_CheckedChanged(object sender, EventArgs e)
         {
             if (rbTileSize64.Checked)

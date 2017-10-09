@@ -53,7 +53,8 @@ namespace TombEditor.Controls
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            // Change default statew
+            // Change default state
+            SetStyle(ControlStyles.Selectable, true);
             BorderStyle = BorderStyle.FixedSingle;
             DoubleBuffered = true;
 
@@ -232,6 +233,10 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+
+            if (!Focused)
+                Focus(); // Enable keyboard interaction
+
             _lastMousePosition = e.Location;
             _startPos = null;
 
@@ -429,10 +434,10 @@ namespace TombEditor.Controls
                 e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
         }
 
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
-            switch (keyData)
+            base.OnPreviewKeyDown(e);
+            switch (e.KeyCode)
             {
                 case Keys.Down:
                     ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
@@ -459,13 +464,6 @@ namespace TombEditor.Controls
                     Invalidate();
                     break;
             }
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        protected override bool ProcessDialogKey(Keys keyData)
-        {
-            return false; // Prevent any control in the same group from taking focus
         }
 
         protected override void OnResize(EventArgs eventargs)

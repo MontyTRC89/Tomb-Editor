@@ -74,7 +74,7 @@ namespace TombEditor.Geometry.IO
                     {
                         switch (MessageBox.Show(owner, "The texture file '" + settings.MakeAbsolute(texture.Path) +
                             " could not be loaded: " + texture.ImageLoadException.Message + ". \n" +
-                            "Do you want to load a substituting file now?", "Open project",
+                            "Do you want to load a substituting file now?\nError: " + (texture.ImageLoadException?.Message ?? "null"), "Open project",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                         {
                             case DialogResult.Yes:
@@ -93,7 +93,7 @@ namespace TombEditor.Geometry.IO
         {
             if (string.IsNullOrEmpty(level.Settings.WadFilePath))
                 return;
-            
+
             do
             {
                 // Try loading the file
@@ -111,12 +111,13 @@ namespace TombEditor.Geometry.IO
                     progressReporter.InvokeGui(delegate (IWin32Window owner)
                         {
                             switch (MessageBox.Show(owner, "The objects file '" + path + " could not be loaded. " +
-                                "Do you want to load a substituting file now?", "Open project",
+                                "Do you want to load a substituting file now?\nError: " + (exc?.Message ?? "null"), "Open project",
                                 MessageBoxButtons.YesNoCancel, MessageBoxIcon.Asterisk, MessageBoxDefaultButton.Button2))
                             {
                                 case DialogResult.Yes:
                                     string browsedPath = BrowseObjectFile(level.Settings, level.Settings.WadFilePath, owner);
                                     retry = browsedPath != level.Settings.WadFilePath;
+                                    level.Settings.WadFilePath = browsedPath;
                                     break;
                                 case DialogResult.No:
                                     break;

@@ -21,61 +21,48 @@ namespace TombEditor
             _editor = Editor.Instance;
         }
 
-        protected override bool DrawGizmo
-        { 
-            get
-            {
-                return _editor.SelectedObject is PositionBasedObjectInstance;
-            }
-        }
-
-        protected override Vector3 Position
+        protected override void GizmoMove(Vector3 newPos)
         {
-            get
-            {
-                var obj = (PositionBasedObjectInstance)_editor.SelectedObject;
-                return obj.Position + obj.Room.WorldPos;
-            }
+            EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
+                                     newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        protected override void DoGizmoAction(Vector3 newPos, float angle, float scale)
+        protected override void GizmoRotateZ(float angle)
         {
-            switch (Action)
-            {
-                case GizmoAction.Translate:
-                    EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
-                                             newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
-                    break;
-                case GizmoAction.Rotate:
-                    angle = MathUtil.RadiansToDegrees(angle);
-
-                    if (Axis == GizmoAxis.X)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, angle);
-                    else if (Axis == GizmoAxis.Y)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
-                    else if (Axis == GizmoAxis.Z)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, angle);
-                    break;
-                case GizmoAction.Scale:
-                    EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
-                    break;
-            }
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(angle * (180 / Math.PI)));
         }
+
+        protected override void GizmoRotateX(float angle)
+        {
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, (float)(angle * -(180 / Math.PI)));
+        }
+
+        protected override void GizmoRotateY(float angle)
+        {
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(angle * (180 / Math.PI)));
+        }
+
+
+        protected override void GizmoScale(float scale)
+        {
+            EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
+        }
+
+        protected override Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;
+        protected override float RotationY => (float)(((IRotateableY)_editor.SelectedObject).RotationY * (Math.PI / 180));
+        protected override float RotationX => (float)(((IRotateableYX)_editor.SelectedObject).RotationX * -(Math.PI / 180));
+        protected override float RotationZ => (float)(((IRotateableYXRoll)_editor.SelectedObject).Roll * (Math.PI / 180));
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;
-
         protected override float TranslationSphereSize => _editor.Configuration.Gizmo_TranslationSphereSize;
-
         protected override float Size => _editor.Configuration.Gizmo_Size;
-
         protected override float ScaleCubeSize => _editor.Configuration.Gizmo_ScaleCubeSize;
+        protected override float LineThickness => _editor.Configuration.Gizmo_LineThickness;
 
+        protected override bool SupportTranslate => _editor.SelectedObject is PositionBasedObjectInstance;
         protected override bool SupportScale => _editor.SelectedObject is IScaleable;
-
         protected override bool SupportRotationY => _editor.SelectedObject is IRotateableY;
-
-        protected override bool SupportRotationYX => _editor.SelectedObject is IRotateableYX;
-
-        protected override bool SupportRotationYXRoll => _editor.SelectedObject is IRotateableYXRoll;
+        protected override bool SupportRotationX => _editor.SelectedObject is IRotateableYX;
+        protected override bool SupportRotationZ => _editor.SelectedObject is IRotateableYXRoll;
     }
 }

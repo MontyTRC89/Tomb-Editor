@@ -4,6 +4,10 @@ using System.Linq;
 using SharpDX;
 using TombEditor.Geometry;
 using TombLib.Utils;
+using System.IO;
+using System.Diagnostics;
+using System.Threading;
+using NLog;
 
 namespace TombEditor
 {
@@ -23,8 +27,10 @@ namespace TombEditor
         ObjectInstance Object { get; }
     }
 
-    public class Editor
+    public class Editor : IDisposable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public static readonly System.Drawing.Color ColorFloor = System.Drawing.Color.FromArgb(0, 190, 190);
         public static readonly System.Drawing.Color ColorWall = System.Drawing.Color.FromArgb(0, 160, 0);
         public static readonly System.Drawing.Color ColorTrigger = System.Drawing.Color.FromArgb(200, 0, 200);
@@ -39,11 +45,6 @@ namespace TombEditor
         public void RaiseEvent(IEditorEvent eventObj)
         {
             EditorEventRaised?.Invoke(eventObj);
-        }
-
-        public Editor()
-        {
-            Level = Level.CreateSimpleLevel();
         }
 
         // --- State of the editor ---
@@ -243,7 +244,7 @@ namespace TombEditor
             public Configuration Previous { get; set; }
             public Configuration Current { get; set; }
         }
-        private Configuration _Configuration = Configuration.LoadOrUseDefault();
+        private Configuration _Configuration;
         public Configuration Configuration
         {
             get { return _Configuration; }
@@ -253,6 +254,7 @@ namespace TombEditor
                     return;
                 var previous = _Configuration;
                 _Configuration = value;
+                OnConfigurationChanged(previous, value);
                 RaiseEvent(new ConfigurationChangedEvent { Previous = previous, Current = value });
             }
         }
@@ -382,6 +384,7 @@ namespace TombEditor
         // Notify all components that values of the configuration have changed
         public void ConfigurationChange()
         {
+            OnConfigurationChanged(_Configuration, _Configuration);
             RaiseEvent(new ConfigurationChangedEvent { Previous = _Configuration, Current = _Configuration });
         }
 
@@ -434,18 +437,72 @@ namespace TombEditor
                 LevelFileNameChange();
         }
 
-        // Static instance
-        private static Editor _instance;
-
-        public static Editor Instance
+        // Configuration
+        FileSystemWatcher configurationWatcher = null;
+        bool configurationIsLoadedFromFile = false;
+        private void ConfigurationWatcher_Changed(object sender, FileSystemEventArgs e)
         {
-            get
+            if (Path.GetFullPath(e.FullPath) == Path.GetFullPath(Configuration.FilePath))
             {
-                if (_instance != null)
-                    return _instance;
-                else
-                    return _instance = new Editor();
+                Configuration configuration = Configuration;
+                if (!Utils.RetryFor(500, () => configuration = Configuration.Load(Configuration.FilePath)))
+                    logger.Warn("Unable to load configuration from '" + Path.GetFullPath(Configuration.FilePath) + "' after it changed.");
+
+                // Update configuration
+                SynchronizationContext.Post(o =>
+                {
+                    try
+                    {
+                        configurationIsLoadedFromFile = true; // Don't save the configuration again just yet
+                        Configuration = configuration; }
+                    finally
+                    {
+                        configurationIsLoadedFromFile = false;
+                    }
+                }, null);
             }
         }
+
+        private void OnConfigurationChanged(Configuration previous, Configuration current)
+        {
+            if (!string.Equals(previous?.FilePath ?? "", current?.FilePath ?? "", StringComparison.InvariantCultureIgnoreCase))
+            {
+                configurationWatcher?.Dispose();
+                if (!string.IsNullOrEmpty(current?.FilePath))
+                {
+                    configurationWatcher = new FileSystemWatcher(Path.GetDirectoryName(current.FilePath), Path.GetFileName(current.FilePath));
+                    configurationWatcher.EnableRaisingEvents = true;
+                    configurationWatcher.Created += ConfigurationWatcher_Changed;
+                    configurationWatcher.Deleted += ConfigurationWatcher_Changed;
+                    configurationWatcher.Renamed += ConfigurationWatcher_Changed;
+                    configurationWatcher.Changed += ConfigurationWatcher_Changed;
+                }
+            }
+            if (!configurationIsLoadedFromFile)
+                current?.SaveTry();
+        }
+
+        public void Dispose()
+        {
+            configurationWatcher?.Dispose();
+            Level?.Dispose();
+        }
+
+        // Construction
+        public SynchronizationContext SynchronizationContext { get; }
+        public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
+        {
+            if (synchronizationContext == null)
+                throw new ArgumentNullException("synchronizationContext");
+            SynchronizationContext = synchronizationContext;
+            Configuration = configuration;
+            Level = level;
+        }
+
+        public Editor(SynchronizationContext synchronizationContext,  Configuration configuration)
+            : this(synchronizationContext, configuration, Level.CreateSimpleLevel())
+        { }
+
+        public static Editor Instance;
     }
 }
