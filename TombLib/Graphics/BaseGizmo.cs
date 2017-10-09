@@ -48,6 +48,7 @@ namespace TombLib.Graphics
         private static readonly Color4 _green = new Color4(0.0f, 1.0f, 0.0f, 1.0f);
         private static readonly Color4 _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
         private static readonly Color4 _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
+        private static readonly Color4 _selected = new Color4(0.6f, 0.4f, 0.8f, 0.8f);
 
         public GizmoMode Mode { get; set; }
         private Vector3 _scaleLastIntersectionPoint = Vector3.Zero;
@@ -364,7 +365,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(Size * 2.0f) *
                             Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.RotateY ? _selected : _green);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
                 }
@@ -377,7 +378,7 @@ namespace TombLib.Graphics
                             Matrix.RotationY(SupportRotationY ? RotationY : 0.0f) *
                             Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.RotateX ? _selected : _red);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
                 }
@@ -391,7 +392,7 @@ namespace TombLib.Graphics
                             Matrix.RotationX(SupportRotationX ? RotationX : 0.0f) *
                             Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.RotateZ ? _selected : _blue);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
@@ -408,7 +409,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(ScaleCubeSize) *
                             Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.ScaleX ? _selected : _red);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
@@ -418,7 +419,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(ScaleCubeSize) *
                             Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.ScaleY ? _selected : _green);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
@@ -428,7 +429,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(ScaleCubeSize) *
                             Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.ScaleZ ? _selected : _blue);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
@@ -446,7 +447,7 @@ namespace TombLib.Graphics
                                 Matrix.RotationZ(-(float)Math.PI / 2.0f) *
                                 Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.TranslateX ? _selected : _red);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -457,7 +458,7 @@ namespace TombLib.Graphics
                                 Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
                                 Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.TranslateY ? _selected : _green);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -469,7 +470,7 @@ namespace TombLib.Graphics
                                 Matrix.RotationX(-(float)Math.PI / 2.0f) *
                                 Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.TranslateZ ? _selected : _blue);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -481,7 +482,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(TranslationSphereSize) *
                             Matrix.Translation(Position + Vector3.UnitX * Size);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.TranslateX ? _selected : _red);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                 }
@@ -491,7 +492,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(TranslationSphereSize) *
                             Matrix.Translation(Position + Vector3.UnitY * Size);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.TranslateY ? _selected : _green);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                 }
@@ -501,7 +502,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(TranslationSphereSize) *
                             Matrix.Translation(Position - Vector3.UnitZ * Size);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.Parameters["Color"].SetValue(Mode == GizmoMode.TranslateZ ? _selected : _blue);
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                 }
