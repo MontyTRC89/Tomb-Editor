@@ -185,6 +185,15 @@ namespace TombEditor.Controls
             _textureAtlas?.Dispose();
             _presenter?.Dispose();
             _rasterizerWireframe?.Dispose();
+            _objectHeightLineVertexBuffer?.Dispose();
+            _flybyPathVertexBuffer?.Dispose();
+            _gizmo?.Dispose();
+            _skyVertexBuffer?.Dispose();
+            _sphere?.Dispose();
+            _cone?.Dispose();
+            _linesCube?.Dispose();
+            _littleCube?.Dispose();
+            _littleSphere?.Dispose();
             base.Dispose(disposing);
         }
 
