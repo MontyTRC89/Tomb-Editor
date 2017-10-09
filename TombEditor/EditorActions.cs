@@ -1237,6 +1237,8 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall)
+                        continue;
                     room.Blocks[x, z].Type = BlockType.Wall;
                 }
 
