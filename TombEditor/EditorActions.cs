@@ -795,15 +795,14 @@ namespace TombEditor
 
         public static void DeleteObject(ObjectInstance instance)
         {
-            instance.Room.RemoveObject(_editor.Level, instance);
-            if (instance is LightInstance)
-                instance.Room.UpdateCompletely();
+            Room room = instance.Room;
+            room.RemoveObject(_editor.Level, instance);
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
-                _editor.RoomSectorPropertiesChange(instance.Room);
+                _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
-                instance.Room.UpdateCompletely();
+                room.UpdateCompletely();
 
             // Remove triggers pointing to that object
             foreach (var r in _editor.Level.Rooms)
