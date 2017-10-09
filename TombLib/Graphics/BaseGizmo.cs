@@ -100,6 +100,21 @@ namespace TombLib.Graphics
             _torus.Dispose();
         }
 
+        private static Vector3 ConstructPlaneIntersection(Vector3 Position, Matrix viewProjection, Ray ray, Vector3 perpendicularVector0, Vector3 perpendicularVector1)
+        {
+            // Choose the perpendicular plane that is more parallel to the camera plane to
+            // maximize the available accuracy in the view space.
+            Vector3 viewDirection = new Vector3(viewProjection.Row3.X, viewProjection.Row3.Y, viewProjection.Row3.Z);
+            float perpendicularVector0Dot = Math.Abs(Vector3.Dot(viewDirection, perpendicularVector0));
+            float perpendicularVector1Dot = Math.Abs(Vector3.Dot(viewDirection, perpendicularVector1));
+            Plane plane = new Plane(Position, perpendicularVector0Dot > perpendicularVector1Dot ? perpendicularVector0 : perpendicularVector1);
+
+            // Construct intersection
+            Vector3 intersection;
+            ray.Intersects(ref plane, out intersection);
+            return intersection;
+        }
+
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
         public bool MouseMoved(Matrix viewProjection, int x, int y)
         {
@@ -112,58 +127,46 @@ namespace TombLib.Graphics
             {
                 case GizmoMode.TranslateX:
                     {
-                        Plane plane = new Plane(Position, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
+                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ);
                         GizmoMove(new Vector3(intersection.X - Size, Position.Y, Position.Z));
                     }
                     break;
                 case GizmoMode.TranslateY:
                     {
-                        Plane plane = new Plane(Position, Vector3.UnitX);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
+                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ);
                         GizmoMove(new Vector3(Position.X, intersection.Y - Size, Position.Z));
                     }
                     break;
                 case GizmoMode.TranslateZ:
                     {
-                        Plane plane = new Plane(Position, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
+                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY);
                         GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size));
                     }
                     break;
                 case GizmoMode.ScaleX:
                     {
-                        Plane plane = new Plane(Position, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
+                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ);
                         GizmoScale(intersection.X - _scaleLastIntersectionPoint.X);
                         _scaleLastIntersectionPoint = intersection;
                     }
                     break;
                 case GizmoMode.ScaleY:
                     {
-                        Plane plane = new Plane(Position, Vector3.UnitX);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
+                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ);
                         GizmoScale(intersection.Y - _scaleLastIntersectionPoint.Y);
                         _scaleLastIntersectionPoint = intersection;
                     }
                     break;
                 case GizmoMode.ScaleZ:
                     {
-                        Plane plane = new Plane(Position, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
+                        Vector3 intersection = ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY);
                         GizmoScale(_scaleLastIntersectionPoint.Z - intersection.Z);
                         _scaleLastIntersectionPoint = intersection;
                     }
                     break;
                 case GizmoMode.RotateX:
                     {
-                        Vector3 rotationIntersection = Vector3.Zero;
+                        Vector3 rotationIntersection;
                         Plane rotationPlane = new Plane(Position, Vector3.UnitX);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
 
@@ -181,7 +184,7 @@ namespace TombLib.Graphics
                     break;
                 case GizmoMode.RotateY:
                     {
-                        Vector3 rotationIntersection = Vector3.Zero;
+                        Vector3 rotationIntersection;
                         Plane rotationPlane = new Plane(Position, Vector3.UnitY);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
 
@@ -199,7 +202,7 @@ namespace TombLib.Graphics
                     break;
                 case GizmoMode.RotateZ:
                     {
-                        Vector3 rotationIntersection = Vector3.Zero;
+                        Vector3 rotationIntersection;
                         Plane rotationPlane = new Plane(Position, Vector3.UnitZ);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
 
