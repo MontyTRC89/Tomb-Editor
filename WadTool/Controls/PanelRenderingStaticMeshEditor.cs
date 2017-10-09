@@ -137,7 +137,7 @@ namespace WadTool.Controls
 
                     _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
                     _device.SetVertexInputLayout(_layout);
-                    
+
                     mioEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
                     mioEffect.Techniques[0].Passes[0].Apply();
 
@@ -154,7 +154,7 @@ namespace WadTool.Controls
             effect.Parameters["ModelViewProjection"].SetValue(viewProjection);
             effect.Parameters["Color"].SetValue(Vector4.One);
             effect.Techniques[0].Passes[0].Apply();
-            
+
             _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
 
             // Draw the gizmo
@@ -209,7 +209,7 @@ namespace WadTool.Controls
             {
                 var result = _gizmo.DoPicking(ray);
                 if (result == null) return;
-                _gizmo.SetGizmoAxis(result.Axis);
+                _gizmo.Mode = result.Mode;
                 return;
             }
 

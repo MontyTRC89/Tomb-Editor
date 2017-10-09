@@ -30,28 +30,30 @@ namespace TombEditor
             }
         }
 
-        protected override void DoGizmoAction(Vector3 newPos, float angle, float scale)
+        protected override void GizmoMove(Vector3 newPos)
         {
-            switch (Action)
-            {
-                case GizmoAction.Translate:
-                    EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
-                                             newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
-                    break;
-                case GizmoAction.Rotate:
-                    angle = MathUtil.RadiansToDegrees(angle);
+            EditorActions.MoveObject(_editor.SelectedObject as PositionBasedObjectInstance,
+                                     newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
+        }
 
-                    if (Axis == GizmoAxis.X)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, angle);
-                    else if (Axis == GizmoAxis.Y)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle);
-                    else if (Axis == GizmoAxis.Z)
-                        EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, angle);
-                    break;
-                case GizmoAction.Scale:
-                    EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
-                    break;
-            }
+        protected override void GizmoRotateX(float angle)
+        {
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, angle * (float)(180 / Math.PI));
+        }
+
+        protected override void GizmoRotateY(float angle)
+        {
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle * (float)(180 / Math.PI));
+        }
+
+        protected override void GizmoRotateZ(float angle)
+        {
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, angle * (float)(180 / Math.PI));
+        }
+
+        protected override void GizmoScale(float scale)
+        {
+            EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
         }
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;

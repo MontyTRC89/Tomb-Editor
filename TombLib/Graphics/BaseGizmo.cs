@@ -5,37 +5,32 @@ using System;
 
 namespace TombLib.Graphics
 {
-    public enum GizmoAction : byte
-    {
-        Translate,
-        Rotate,
-        Scale
-    }
-
-    public enum GizmoAxis : byte
+    public enum GizmoMode : byte
     {
         None,
-        X,
-        Y,
-        Z
+        TranslateX,
+        TranslateY,
+        TranslateZ,
+        RotateX,
+        RotateY,
+        RotateZ,
+        ScaleX,
+        ScaleY,
+        ScaleZ
     }
 
     public class PickingResultGizmo : PickingResult
     {
-        public GizmoAxis Axis { get; set; }
-        public GizmoAction Action { get; set; }
+        public GizmoMode Mode { get; set; }
 
-        public PickingResultGizmo(GizmoAxis axis, GizmoAction action)
+        public PickingResultGizmo(GizmoMode mode)
         {
-            Axis = axis;
-            Action = action;
+            Mode = mode;
         }
     }
 
     public abstract class BaseGizmo : IDisposable
     {
-        protected GizmoAxis _axis;
-
         private readonly RasterizerState _rasterizerWireframe;
         private readonly DepthStencilState _depthStencilState;
         private readonly DepthStencilState _depthStencilStateDefault;
@@ -54,10 +49,9 @@ namespace TombLib.Graphics
         private static readonly Color4 _blue = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
         private static readonly Color4 _yellow = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
 
-        protected PickingResultGizmo _lastResult;
-        protected Vector3 _lastIntersectionPoint = Vector3.Zero;
-        protected float _startAngle = 0.0f;
-        protected Vector3 _startDirection = Vector3.Zero;
+        public GizmoMode Mode { get; set; }
+        private Vector3 _scaleLastIntersectionPoint = Vector3.Zero;
+        private float _rotationStartAngle = 0.0f;
 
         public BaseGizmo(GraphicsDevice device, Effect effect)
         {
@@ -106,42 +100,69 @@ namespace TombLib.Graphics
             _torus.Dispose();
         }
 
-        public void SetGizmoAxis(GizmoAxis axis)
-        {
-            _axis = axis;
-        }
-
         /// <returns>true, if an iteraction with the gizmo is happening</returns>
         public bool MouseMoved(Matrix viewProjection, int x, int y)
         {
-            if ((!DrawGizmo) || (_axis == GizmoAxis.None))
+            if ((!DrawGizmo) || (Mode == GizmoMode.None))
                 return false;
-
-            var newPos = Vector3.Zero;
-            float delta = 0;
-            float angle = 0;
-
 
             // First get the ray in 3D space from X, Y mouse coordinates
             Ray ray = Ray.GetPickRay(x, y, _device.Viewport, viewProjection);
-
-            newPos = Position;
-            switch (_axis)
+            switch (Mode)
             {
-                case GizmoAxis.X:
+                case GizmoMode.TranslateX:
                     {
-                        Plane plane = new Plane(newPos, Vector3.UnitY);
+                        Plane plane = new Plane(Position, Vector3.UnitY);
                         Vector3 intersection;
                         ray.Intersects(ref plane, out intersection);
-
-                        // Translation
-                        newPos.X = intersection.X - Size;
-
-                        // Scale
-                        delta = intersection.X - _lastIntersectionPoint.X;
-                        _lastIntersectionPoint = intersection;
-
-                        // Rotate
+                        GizmoMove(new Vector3(intersection.X - Size, Position.Y, Position.Z));
+                    }
+                    break;
+                case GizmoMode.TranslateY:
+                    {
+                        Plane plane = new Plane(Position, Vector3.UnitX);
+                        Vector3 intersection;
+                        ray.Intersects(ref plane, out intersection);
+                        GizmoMove(new Vector3(Position.X, intersection.Y - Size, Position.Z));
+                    }
+                    break;
+                case GizmoMode.TranslateZ:
+                    {
+                        Plane plane = new Plane(Position, Vector3.UnitY);
+                        Vector3 intersection;
+                        ray.Intersects(ref plane, out intersection);
+                        GizmoMove(new Vector3(Position.X, Position.Y, intersection.Z + Size));
+                    }
+                    break;
+                case GizmoMode.ScaleX:
+                    {
+                        Plane plane = new Plane(Position, Vector3.UnitY);
+                        Vector3 intersection;
+                        ray.Intersects(ref plane, out intersection);
+                        GizmoScale(intersection.X - _scaleLastIntersectionPoint.X);
+                        _scaleLastIntersectionPoint = intersection;
+                    }
+                    break;
+                case GizmoMode.ScaleY:
+                    {
+                        Plane plane = new Plane(Position, Vector3.UnitX);
+                        Vector3 intersection;
+                        ray.Intersects(ref plane, out intersection);
+                        GizmoScale(intersection.Y - _scaleLastIntersectionPoint.Y);
+                        _scaleLastIntersectionPoint = intersection;
+                    }
+                    break;
+                case GizmoMode.ScaleZ:
+                    {
+                        Plane plane = new Plane(Position, Vector3.UnitY);
+                        Vector3 intersection;
+                        ray.Intersects(ref plane, out intersection);
+                        GizmoScale(_scaleLastIntersectionPoint.Z - intersection.Z);
+                        _scaleLastIntersectionPoint = intersection;
+                    }
+                    break;
+                case GizmoMode.RotateX:
+                    {
                         Vector3 rotationIntersection = Vector3.Zero;
                         Plane rotationPlane = new Plane(Position, Vector3.UnitX);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
@@ -151,28 +172,15 @@ namespace TombLib.Graphics
 
                         float cos = Vector3.Dot(Vector3.UnitY, direction);
                         float sin = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
-                        angle = (float)Math.Atan2(sin, cos);
+                        float angle = (float)Math.Atan2(sin, cos);
                         if (angle < 0.0f) angle += (float)Math.PI * 2.0f;
 
-                        var startAngle = _startAngle;
-                        _startAngle = angle;
-                        angle -= startAngle;
+                        GizmoRotateX(angle - _rotationStartAngle);
+                        _rotationStartAngle = angle;
                     }
                     break;
-                case GizmoAxis.Y:
+                case GizmoMode.RotateY:
                     {
-                        Plane plane = new Plane(newPos, Vector3.UnitX);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
-
-                        // Translation
-                        newPos.Y = intersection.Y - Size;
-
-                        // Scale
-                        delta = intersection.Y - _lastIntersectionPoint.Y;
-                        _lastIntersectionPoint = intersection;
-
-                        // Rotate
                         Vector3 rotationIntersection = Vector3.Zero;
                         Plane rotationPlane = new Plane(Position, Vector3.UnitY);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
@@ -182,28 +190,15 @@ namespace TombLib.Graphics
 
                         float cos = Vector3.Dot(Vector3.UnitZ, direction);
                         float sin = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitZ, direction));
-                        angle = (float)Math.Atan2(sin, cos);
+                        float angle = (float)Math.Atan2(sin, cos);
                         if (angle < 0.0f) angle += (float)Math.PI * 2.0f;
 
-                        var startAngle = _startAngle;
-                        _startAngle = angle;
-                        angle -= startAngle;
+                        GizmoRotateY(angle - _rotationStartAngle);
+                        _rotationStartAngle = angle;
                     }
                     break;
-                case GizmoAxis.Z:
+                case GizmoMode.RotateZ:
                     {
-                        Plane plane = new Plane(newPos, Vector3.UnitY);
-                        Vector3 intersection;
-                        ray.Intersects(ref plane, out intersection);
-
-                        // Translation
-                        newPos.Z = intersection.Z + Size;
-
-                        // Scale
-                        delta = -(intersection.Z - _lastIntersectionPoint.Z);
-                        _lastIntersectionPoint = intersection;
-
-                        // Rotate
                         Vector3 rotationIntersection = Vector3.Zero;
                         Plane rotationPlane = new Plane(Position, Vector3.UnitZ);
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
@@ -213,17 +208,14 @@ namespace TombLib.Graphics
 
                         float cos = Vector3.Dot(Vector3.UnitY, direction);
                         float sin = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
-                        angle = (float)Math.Atan2(sin, cos);
+                        float angle = (float)Math.Atan2(sin, cos);
                         if (angle < 0.0f) angle += (float)Math.PI * 2.0f;
 
-                        var startAngle = _startAngle;
-                        _startAngle = angle;
-                        angle -= startAngle;
+                        GizmoRotateZ(angle - _rotationStartAngle);
+                        _rotationStartAngle = angle;
                     }
                     break;
             }
-
-            DoGizmoAction(newPos, angle, delta);
 
             return true;
         }
@@ -236,52 +228,58 @@ namespace TombLib.Graphics
             float circleTolerance = TranslationSphereSize;
 
             // Check for translation
-            BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size, TranslationSphereSize / 2.0f);
-            if (ray.Intersects(ref sphereX, out _lastIntersectionPoint))
-                return (_lastResult = new PickingResultGizmo(GizmoAxis.X, GizmoAction.Translate));
+            if (SupportTranslate)
+            {
+                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size, TranslationSphereSize / 2.0f);
+                if (ray.Intersects(ref sphereX, out _scaleLastIntersectionPoint))
+                    return new PickingResultGizmo(Mode = GizmoMode.TranslateX);
 
-            BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size, TranslationSphereSize / 2.0f);
-            if (ray.Intersects(ref sphereY, out _lastIntersectionPoint))
-                return (_lastResult = new PickingResultGizmo(GizmoAxis.Y, GizmoAction.Translate));
+                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size, TranslationSphereSize / 2.0f);
+                if (ray.Intersects(ref sphereY, out _scaleLastIntersectionPoint))
+                    return new PickingResultGizmo(Mode = GizmoMode.TranslateY);
 
-            BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size, TranslationSphereSize / 2.0f);
-            if (ray.Intersects(ref sphereZ, out _lastIntersectionPoint))
-                return (_lastResult = new PickingResultGizmo(GizmoAxis.Z, GizmoAction.Translate));
+                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size, TranslationSphereSize / 2.0f);
+                if (ray.Intersects(ref sphereZ, out _scaleLastIntersectionPoint))
+                    return new PickingResultGizmo(Mode = GizmoMode.TranslateZ);
+            }
 
             // Check for scale
-            BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                 Position + Vector3.UnitX * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-            if (ray.Intersects(ref scaleX, out _lastIntersectionPoint))
-                return (_lastResult = new PickingResultGizmo(GizmoAxis.X, GizmoAction.Scale));
+            if (SupportScale)
+            {
+                BoundingBox scaleX = new BoundingBox(Position + Vector3.UnitX * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                     Position + Vector3.UnitX * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
+                if (ray.Intersects(ref scaleX, out _scaleLastIntersectionPoint))
+                    return new PickingResultGizmo(GizmoMode.ScaleX);
 
-            BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                 Position + Vector3.UnitY * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-            if (ray.Intersects(ref scaleY, out _lastIntersectionPoint))
-                return (_lastResult = new PickingResultGizmo(GizmoAxis.Y, GizmoAction.Scale));
+                BoundingBox scaleY = new BoundingBox(Position + Vector3.UnitY * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                     Position + Vector3.UnitY * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
+                if (ray.Intersects(ref scaleY, out _scaleLastIntersectionPoint))
+                    return new PickingResultGizmo(GizmoMode.ScaleY);
 
-            BoundingBox scaleZ = new BoundingBox(Position - Vector3.UnitZ * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
-                                                 Position - Vector3.UnitZ * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
-            if (ray.Intersects(ref scaleZ, out _lastIntersectionPoint))
-                return (_lastResult = new PickingResultGizmo(GizmoAxis.Z, GizmoAction.Scale));
+                BoundingBox scaleZ = new BoundingBox(Position - Vector3.UnitZ * Size / 2.0f - new Vector3(ScaleCubeSize / 2.0f),
+                                                     Position - Vector3.UnitZ * Size / 2.0f + new Vector3(ScaleCubeSize / 2.0f));
+                if (ray.Intersects(ref scaleZ, out _scaleLastIntersectionPoint))
+                    return new PickingResultGizmo(GizmoMode.ScaleZ);
+            }
 
             // Check for rotation
             if (SupportRotationX)
             {
                 Plane planeX = new Plane(Position, Vector3.UnitX);
-                if (ray.Intersects(ref planeX, out _lastIntersectionPoint))
+                if (ray.Intersects(ref planeX, out _scaleLastIntersectionPoint))
                 {
-                    var distance = (_lastIntersectionPoint - Position).Length();
+                    var distance = (_scaleLastIntersectionPoint - Position).Length();
                     if (distance >= (Size - circleTolerance) && distance <= (Size + circleTolerance))
                     {
-                        _startDirection = (_lastIntersectionPoint - Position);
-                        _startDirection.Normalize();
+                        Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
+                        startDirection.Normalize();
 
-                        float cos = Vector3.Dot(Vector3.UnitY, _startDirection);
-                        float sin = Vector3.Dot(planeX.Normal, Vector3.Cross(Vector3.UnitY, _startDirection));
-                        _startAngle = (float)Math.Atan2(sin, cos);
-                        if (_startAngle < 0.0f) _startAngle += (float)Math.PI * 2.0f;
+                        float cos = Vector3.Dot(Vector3.UnitY, startDirection);
+                        float sin = Vector3.Dot(planeX.Normal, Vector3.Cross(Vector3.UnitY, startDirection));
+                        _rotationStartAngle = (float)Math.Atan2(sin, cos);
+                        if (_rotationStartAngle < 0.0f) _rotationStartAngle += (float)Math.PI * 2.0f;
 
-                        return (_lastResult = new PickingResultGizmo(GizmoAxis.X, GizmoAction.Rotate));
+                        return new PickingResultGizmo(GizmoMode.RotateX);
                     }
                 }
             }
@@ -289,20 +287,20 @@ namespace TombLib.Graphics
             if (SupportRotationY)
             {
                 Plane planeY = new Plane(Position, Vector3.UnitY);
-                if (ray.Intersects(ref planeY, out _lastIntersectionPoint))
+                if (ray.Intersects(ref planeY, out _scaleLastIntersectionPoint))
                 {
-                    var distance = (_lastIntersectionPoint - Position).Length();
+                    var distance = (_scaleLastIntersectionPoint - Position).Length();
                     if (distance >= (Size - circleTolerance) && distance <= (Size + circleTolerance))
                     {
-                        _startDirection = (_lastIntersectionPoint - Position);
-                        _startDirection.Normalize();
+                        Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
+                        startDirection.Normalize();
 
-                        float cos = Vector3.Dot(Vector3.UnitZ, _startDirection);
-                        float sin = Vector3.Dot(planeY.Normal, Vector3.Cross(Vector3.UnitZ, _startDirection));
-                        _startAngle = (float)Math.Atan2(sin, cos);
-                        if (_startAngle < 0.0f) _startAngle += (float)Math.PI * 2.0f;
+                        float cos = Vector3.Dot(Vector3.UnitZ, startDirection);
+                        float sin = Vector3.Dot(planeY.Normal, Vector3.Cross(Vector3.UnitZ, startDirection));
+                        _rotationStartAngle = (float)Math.Atan2(sin, cos);
+                        if (_rotationStartAngle < 0.0f) _rotationStartAngle += (float)Math.PI * 2.0f;
 
-                        return (_lastResult = new PickingResultGizmo(GizmoAxis.Y, GizmoAction.Rotate));
+                        return  new PickingResultGizmo(GizmoMode.RotateY);
                     }
                 }
             }
@@ -310,20 +308,20 @@ namespace TombLib.Graphics
             if (SupportRotationZ)
             {
                 Plane planeZ = new Plane(Position, Vector3.UnitZ);
-                if (ray.Intersects(ref planeZ, out _lastIntersectionPoint))
+                if (ray.Intersects(ref planeZ, out _scaleLastIntersectionPoint))
                 {
-                    var distance = (_lastIntersectionPoint - Position).Length();
+                    var distance = (_scaleLastIntersectionPoint - Position).Length();
                     if (distance >= (Size - circleTolerance) && distance <= (Size + circleTolerance))
                     {
-                        _startDirection = (_lastIntersectionPoint - Position);
-                        _startDirection.Normalize();
+                        Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
+                        startDirection.Normalize();
 
-                        float cos = Vector3.Dot(Vector3.UnitY, _startDirection);
-                        float sin = Vector3.Dot(planeZ.Normal, Vector3.Cross(Vector3.UnitY, _startDirection));
-                        _startAngle = (float)Math.Atan2(sin, cos);
-                        if (_startAngle < 0.0f) _startAngle += (float)Math.PI * 2.0f;
+                        float cos = Vector3.Dot(Vector3.UnitY, startDirection);
+                        float sin = Vector3.Dot(planeZ.Normal, Vector3.Cross(Vector3.UnitY, startDirection));
+                        _rotationStartAngle = (float)Math.Atan2(sin, cos);
+                        if (_rotationStartAngle < 0.0f) _rotationStartAngle += (float)Math.PI * 2.0f;
 
-                        return (_lastResult = new PickingResultGizmo(GizmoAxis.Z, GizmoAction.Rotate));
+                        return new PickingResultGizmo(GizmoMode.RotateZ);
                     }
                 }
             }
@@ -340,42 +338,6 @@ namespace TombLib.Graphics
             _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
             var solidEffect = _effect;
-
-            // Scale
-            if (SupportScale)
-            {
-                _cube.SetupForRendering(_device);
-
-                // X axis scale
-                {
-                    var model = Matrix.Scaling(ScaleCubeSize) *
-                            Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_red);
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }
-
-                // Y axis scale
-                {
-                    var model = Matrix.Scaling(ScaleCubeSize) *
-                            Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_green);
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }
-
-                // Z axis scale
-                {
-                    var model = Matrix.Scaling(ScaleCubeSize) *
-                            Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_blue);
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
-                }
-            }
 
             // Rotation
             if (SupportRotationX | SupportRotationY | SupportRotationZ)
@@ -425,6 +387,43 @@ namespace TombLib.Graphics
                 }
             }
 
+            // Scale
+            if (SupportScale)
+            {
+                _cube.SetupForRendering(_device);
+
+                // X axis scale
+                {
+                    var model = Matrix.Scaling(ScaleCubeSize) *
+                            Matrix.Translation(Position + Vector3.UnitX * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_red);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+
+                // Y axis scale
+                {
+                    var model = Matrix.Scaling(ScaleCubeSize) *
+                            Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_green);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+
+                // Z axis scale
+                {
+                    var model = Matrix.Scaling(ScaleCubeSize) *
+                            Matrix.Translation(Position - Vector3.UnitZ * Size / 2.0f);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_blue);
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
+                }
+            }
+
+            // Translation
             if (SupportTranslate)
             {
                 _cylinder.SetupForRendering(_device);
@@ -516,11 +515,11 @@ namespace TombLib.Graphics
             }
         }
 
-        public GizmoAction Action { get { return (_lastResult != null ? _lastResult.Action : GizmoAction.Translate); } }
-
-        public GizmoAxis Axis { get { return (_lastResult != null ? _lastResult.Axis : GizmoAxis.X); } }
-
-        protected abstract void DoGizmoAction(Vector3 newPos, float angle, float scale);
+        protected abstract void GizmoMove(Vector3 newPos);
+        protected abstract void GizmoScale(float scale);
+        protected abstract void GizmoRotateX(float angle);
+        protected abstract void GizmoRotateY(float angle);
+        protected abstract void GizmoRotateZ(float angle);
 
         protected abstract Vector3 Position { get; }
         protected abstract float CentreCubeSize { get; }

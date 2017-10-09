@@ -545,7 +545,7 @@ namespace TombEditor.Controls
                 }
 
                 // Set gizmo axis (or none if another object was picked)
-                _gizmo.SetGizmoAxis((newPicking as PickingResultGizmo)?.Axis ?? GizmoAxis.None);
+                _gizmo.Mode = (newPicking as PickingResultGizmo)?.Mode ?? GizmoMode.None;
 
                 // Process editor actions
                 switch (_editor.Action.Action)
@@ -775,7 +775,7 @@ namespace TombEditor.Controls
             base.OnMouseUp(e);
 
             _doSectorSelection = false;
-            _gizmo.SetGizmoAxis(GizmoAxis.None);
+            _gizmo.Mode = GizmoMode.None;
             Capture = false;
         }
 
