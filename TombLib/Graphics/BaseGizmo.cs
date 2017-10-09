@@ -11,9 +11,9 @@ namespace TombLib.Graphics
         TranslateX,
         TranslateY,
         TranslateZ,
+        RotateZ,
         RotateX,
         RotateY,
-        RotateZ,
         ScaleX,
         ScaleY,
         ScaleZ
@@ -164,24 +164,6 @@ namespace TombLib.Graphics
                         _scaleLastIntersectionPoint = intersection;
                     }
                     break;
-                case GizmoMode.RotateX:
-                    {
-                        Vector3 rotationIntersection;
-                        Plane rotationPlane = new Plane(Position, Vector3.UnitX);
-                        ray.Intersects(ref rotationPlane, out rotationIntersection);
-
-                        var direction = (rotationIntersection - Position);
-                        direction.Normalize();
-
-                        float cos = Vector3.Dot(Vector3.UnitY, direction);
-                        float sin = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
-                        float angle = (float)Math.Atan2(sin, cos);
-                        if (angle < 0.0f) angle += (float)Math.PI * 2.0f;
-
-                        GizmoRotateX(angle - _rotationStartAngle);
-                        _rotationStartAngle = angle;
-                    }
-                    break;
                 case GizmoMode.RotateY:
                     {
                         Vector3 rotationIntersection;
@@ -200,10 +182,30 @@ namespace TombLib.Graphics
                         _rotationStartAngle = angle;
                     }
                     break;
+                case GizmoMode.RotateX:
+                    {
+                        Matrix transform = Matrix.RotationY(SupportRotationY ? RotationY : 0.0f);
+                        Vector3 rotationIntersection;
+                        Plane rotationPlane = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitX, transform));
+                        ray.Intersects(ref rotationPlane, out rotationIntersection);
+
+                        var direction = (rotationIntersection - Position);
+                        direction.Normalize();
+
+                        float cos = Vector3.Dot(Vector3.UnitY, direction);
+                        float sin = Vector3.Dot(rotationPlane.Normal, Vector3.Cross(Vector3.UnitY, direction));
+                        float angle = (float)Math.Atan2(sin, cos);
+                        if (angle < 0.0f) angle += (float)Math.PI * 2.0f;
+
+                        GizmoRotateX(angle - _rotationStartAngle);
+                        _rotationStartAngle = angle;
+                    }
+                    break;
                 case GizmoMode.RotateZ:
                     {
+                        Matrix transform = Matrix.RotationY(SupportRotationY ? RotationY : 0.0f) * Matrix.RotationX(SupportRotationX ? RotationX : 0.0f);
                         Vector3 rotationIntersection;
-                        Plane rotationPlane = new Plane(Position, Vector3.UnitZ);
+                        Plane rotationPlane = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitZ, transform));
                         ray.Intersects(ref rotationPlane, out rotationIntersection);
 
                         var direction = (rotationIntersection - Position);
@@ -227,8 +229,6 @@ namespace TombLib.Graphics
         {
             if (!DrawGizmo)
                 return null;
-
-            float circleTolerance = TranslationSphereSize;
 
             // Check for translation
             if (SupportTranslate)
@@ -266,13 +266,38 @@ namespace TombLib.Graphics
             }
 
             // Check for rotation
+            float pickRadius = LineThickness / 2 + 55.0f;
+
+            if (SupportRotationY)
+            {
+                Plane planeY = new Plane(Position, Vector3.UnitY);
+                if (ray.Intersects(ref planeY, out _scaleLastIntersectionPoint))
+                {
+                    var distance = (_scaleLastIntersectionPoint - Position).Length();
+                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
+                    {
+                        Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
+                        startDirection.Normalize();
+
+                        float cos = Vector3.Dot(Vector3.UnitZ, startDirection);
+                        float sin = Vector3.Dot(planeY.Normal, Vector3.Cross(Vector3.UnitZ, startDirection));
+                        _rotationStartAngle = (float)Math.Atan2(sin, cos);
+                        if (_rotationStartAngle < 0.0f)
+                            _rotationStartAngle += (float)Math.PI * 2.0f;
+
+                        return new PickingResultGizmo(GizmoMode.RotateY);
+                    }
+                }
+            }
+
             if (SupportRotationX)
             {
-                Plane planeX = new Plane(Position, Vector3.UnitX);
+                Matrix transform = Matrix.RotationY(SupportRotationY ? RotationY : 0.0f);
+                Plane planeX = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitX, transform));
                 if (ray.Intersects(ref planeX, out _scaleLastIntersectionPoint))
                 {
                     var distance = (_scaleLastIntersectionPoint - Position).Length();
-                    if (distance >= (Size - circleTolerance) && distance <= (Size + circleTolerance))
+                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
                     {
                         Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
                         startDirection.Normalize();
@@ -287,34 +312,14 @@ namespace TombLib.Graphics
                 }
             }
 
-            if (SupportRotationY)
-            {
-                Plane planeY = new Plane(Position, Vector3.UnitY);
-                if (ray.Intersects(ref planeY, out _scaleLastIntersectionPoint))
-                {
-                    var distance = (_scaleLastIntersectionPoint - Position).Length();
-                    if (distance >= (Size - circleTolerance) && distance <= (Size + circleTolerance))
-                    {
-                        Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
-                        startDirection.Normalize();
-
-                        float cos = Vector3.Dot(Vector3.UnitZ, startDirection);
-                        float sin = Vector3.Dot(planeY.Normal, Vector3.Cross(Vector3.UnitZ, startDirection));
-                        _rotationStartAngle = (float)Math.Atan2(sin, cos);
-                        if (_rotationStartAngle < 0.0f) _rotationStartAngle += (float)Math.PI * 2.0f;
-
-                        return  new PickingResultGizmo(GizmoMode.RotateY);
-                    }
-                }
-            }
-
             if (SupportRotationZ)
             {
-                Plane planeZ = new Plane(Position, Vector3.UnitZ);
+                Matrix transform = Matrix.RotationY(SupportRotationY ? RotationY : 0.0f) * Matrix.RotationX(SupportRotationX ? RotationX : 0.0f);
+                Plane planeZ = new Plane(Position, Vector3.TransformCoordinate(Vector3.UnitZ, transform));
                 if (ray.Intersects(ref planeZ, out _scaleLastIntersectionPoint))
                 {
                     var distance = (_scaleLastIntersectionPoint - Position).Length();
-                    if (distance >= (Size - circleTolerance) && distance <= (Size + circleTolerance))
+                    if (distance >= (Size - pickRadius) && distance <= (Size + pickRadius))
                     {
                         Vector3 startDirection = (_scaleLastIntersectionPoint - Position);
                         startDirection.Normalize();
@@ -369,6 +374,7 @@ namespace TombLib.Graphics
                 {
                     var model = Matrix.Scaling(Size * 2.0f) *
                             Matrix.RotationZ((float)Math.PI / 2.0f) *
+                            Matrix.RotationY(SupportRotationY ? RotationY : 0.0f) *
                             Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_red);
@@ -381,6 +387,8 @@ namespace TombLib.Graphics
                 {
                     var model = Matrix.Scaling(Size * 2.0f) *
                             Matrix.RotationX((float)Math.PI / 2.0f) *
+                            Matrix.RotationY(SupportRotationY ? RotationY : 0.0f) *
+                            Matrix.RotationX(SupportRotationX ? RotationX : 0.0f) *
                             Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_blue);
@@ -520,11 +528,14 @@ namespace TombLib.Graphics
 
         protected abstract void GizmoMove(Vector3 newPos);
         protected abstract void GizmoScale(float scale);
-        protected abstract void GizmoRotateX(float angle);
         protected abstract void GizmoRotateY(float angle);
+        protected abstract void GizmoRotateX(float angle);
         protected abstract void GizmoRotateZ(float angle);
 
         protected abstract Vector3 Position { get; }
+        protected abstract float RotationY { get; }
+        protected abstract float RotationX { get; }
+        protected abstract float RotationZ { get; }
         protected abstract float CentreCubeSize { get; }
         protected abstract float TranslationSphereSize { get; }
         protected abstract float ScaleCubeSize { get; }
