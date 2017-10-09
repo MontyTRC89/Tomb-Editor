@@ -15,6 +15,7 @@ namespace TombEditor.Controls
     {
         private DarkListView _linkedListView;
 
+        [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DarkListView LinkedListView
         {
