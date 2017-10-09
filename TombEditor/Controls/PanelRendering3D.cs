@@ -777,6 +777,7 @@ namespace TombEditor.Controls
             _doSectorSelection = false;
             _gizmo.Mode = GizmoMode.None;
             Capture = false;
+            Invalidate();
         }
 
         private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix world) where T : struct, IVertex
