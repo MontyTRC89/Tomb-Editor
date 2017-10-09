@@ -142,7 +142,9 @@
     <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
     <Compile Include="Wad\OriginalSound.cs" />
     <Compile Include="Wad\Wad2Actions.cs" />
+    <Compile Include="Wad\Wad2Chunks.cs" />
     <Compile Include="Wad\Wad2IO.cs" />
+    <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\WadOperations.cs" />
     <Compile Include="Wad\WadSound.cs" />
