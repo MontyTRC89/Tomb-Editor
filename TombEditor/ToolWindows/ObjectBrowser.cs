@@ -116,15 +116,17 @@ namespace TombEditor.ToolWindows
         private void butItemsBack_Click(object sender, EventArgs e)
         {
             if ((comboItems.SelectedIndex - 1) < 0)
-                return;
-            comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
+                comboItems.SelectedIndex = comboItems.Items.Count - 1;
+            else
+                comboItems.SelectedIndex = comboItems.SelectedIndex - 1;
         }
 
         private void butItemsNext_Click(object sender, EventArgs e)
         {
             if ((comboItems.SelectedIndex + 1) >= comboItems.Items.Count)
-                return;
-            comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
+                comboItems.SelectedIndex = 0;
+            else
+                comboItems.SelectedIndex = comboItems.SelectedIndex + 1;
         }
 
         private void butAddItem_Click(object sender, EventArgs e)
