@@ -124,6 +124,7 @@ namespace TombEditor.Controls
         private Editor _editor;
         private DeviceManager _deviceManager;
         private Texture2D _textureAtlas;
+        private Vector2 _textureAtlasRemappingSize;
         private readonly List<ImageC> _textureAtlasImages = new List<ImageC>();
         private GraphicsDevice _device;
         private SwapChainGraphicsPresenter _presenter;
@@ -139,6 +140,7 @@ namespace TombEditor.Controls
         private bool _doSectorSelection = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
+        private Debug _debug;
 
         // Gizmo
         private Gizmo _gizmo;
@@ -420,7 +422,31 @@ namespace TombEditor.Controls
             if (textures.Count > 0)
             {
                 // TODO Support more than 1 texture
-                _textureAtlas = TextureLoad.Load(_device, textures[0].Image);
+                ImageC texture = textures[0].Image;
+
+                const int maxTextureSize = 8096;
+                if (texture.Height > maxTextureSize)
+                {
+                    // HACK Split really high texture into multiple columns
+                    const int texturePageHeight = maxTextureSize - 256; // Subtract maximum tile size
+                    int pageCount = (texture.Height + texturePageHeight - 1) / texturePageHeight;
+                    var remappedTexture = ImageC.CreateNew(texture.Width * pageCount, maxTextureSize);
+
+                    for (int i = 0; i < pageCount; ++i)
+                    {
+                        int fromY = texturePageHeight * i;
+                        int fromHeight = Math.Min(texture.Height - texturePageHeight * i, 8096);
+                        remappedTexture.CopyFrom(texture.Width * i, 0, texture, 0, fromY, texture.Width, fromHeight);
+                    }
+
+                    _textureAtlas = TextureLoad.Load(_device, remappedTexture);
+                    _textureAtlasRemappingSize = new Vector2(texture.Width, texturePageHeight);
+                }
+                else
+                {
+                    _textureAtlas = TextureLoad.Load(_device, texture);
+                    _textureAtlasRemappingSize = new Vector2(float.MaxValue);
+                }
             }
         }
 
@@ -444,44 +470,44 @@ namespace TombEditor.Controls
             }
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
+            base.OnPreviewKeyDown(e);
+
             // I intercept arrow keys here otherwise they would processed by the form and
             // camera would move only if Panel3D is focused
-            switch (keyData)
+            switch (e.KeyCode)
             {
                 case Keys.Up:
                     Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.Down:
                     Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.Left:
                     Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.Right:
                     Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.PageUp:
                     Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
-                    return true;
+                    break;
 
                 case Keys.PageDown:
                     Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
                     Invalidate();
-                    return true;
+                    break;
             }
-
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -519,7 +545,7 @@ namespace TombEditor.Controls
                 }
 
                 // Set gizmo axis (or none if another object was picked)
-                _gizmo.SetGizmoAxis((newPicking as PickingResultGizmo)?.Axis ?? GizmoAxis.None);
+                _gizmo.Mode = (newPicking as PickingResultGizmo)?.Mode ?? GizmoMode.None;
 
                 // Process editor actions
                 switch (_editor.Action.Action)
@@ -749,8 +775,9 @@ namespace TombEditor.Controls
             base.OnMouseUp(e);
 
             _doSectorSelection = false;
-            _gizmo.SetGizmoAxis(GizmoAxis.None);
+            _gizmo.Mode = GizmoMode.None;
             Capture = false;
+            Invalidate();
         }
 
         private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix world) where T : struct, IVertex
@@ -1139,7 +1166,7 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(light.Position, 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, modelViewProjection);
-                Debug.AddString(message, screenPos);
+                _debug.AddString(message, screenPos);
 
                 // Add the line height of the object
                 AddObjectHeightLine(viewProjection, light.Room, light.Position);
@@ -1177,7 +1204,7 @@ namespace TombEditor.Controls
 
                     BuildTriggeredByMessage(ref message, instance);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1215,7 +1242,7 @@ namespace TombEditor.Controls
 
                     BuildTriggeredByMessage(ref message, instance);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1254,7 +1281,7 @@ namespace TombEditor.Controls
 
                     BuildTriggeredByMessage(ref message, instance);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1297,7 +1324,7 @@ namespace TombEditor.Controls
 
                     BuildTriggeredByMessage(ref message, instance);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1338,7 +1365,7 @@ namespace TombEditor.Controls
 
                         BuildTriggeredByMessage(ref message, instance);
 
-                        Debug.AddString(message, screenPos);
+                        _debug.AddString(message, screenPos);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1372,7 +1399,7 @@ namespace TombEditor.Controls
                         Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                             _device.Viewport.MinDepth,
                             _device.Viewport.MaxDepth, modelViewProjection);
-                        Debug.AddString(message, screenPos);
+                        _debug.AddString(message, screenPos);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1403,7 +1430,7 @@ namespace TombEditor.Controls
                         Vector3 screenPos = Vector3.Project(instance.Position, 0, 0, Width, Height,
                             _device.Viewport.MinDepth,
                             _device.Viewport.MaxDepth, modelViewProjection);
-                        Debug.AddString(instance.ToString(), screenPos);
+                        _debug.AddString(instance.ToString(), screenPos);
 
                         // Add the line height of the object
                         AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1459,7 +1486,7 @@ namespace TombEditor.Controls
                 if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
-                Debug.NumMoveables++;
+                _debug.NumMoveables++;
 
                 Room room = instance.Room;
 
@@ -1497,8 +1524,8 @@ namespace TombEditor.Controls
                     skinnedModelEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                    Debug.NumVerticesObjects += mesh.NumIndices;
-                    Debug.NumTrianglesObjects += mesh.NumIndices / 3;
+                    _debug.NumVerticesObjects += mesh.NumIndices;
+                    _debug.NumTrianglesObjects += mesh.NumIndices / 3;
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -1520,7 +1547,7 @@ namespace TombEditor.Controls
 
                     BuildTriggeredByMessage(ref message, instance);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, room, instance.Position);
@@ -1546,7 +1573,7 @@ namespace TombEditor.Controls
 
                 ImportedGeometry.Model model = modelInfo.Model.DirectXModel;
 
-                //Debug.NumMoveables++;
+                //_debug.NumMoveables++;
 
                 Room room = modelInfo.Room;
 
@@ -1603,8 +1630,8 @@ namespace TombEditor.Controls
                     geometryEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.Indices.Count, mesh.BaseIndex);
 
-                    Debug.NumVerticesRooms += mesh.NumIndices;
-                    Debug.NumTrianglesRooms += mesh.NumIndices / 3;
+                    _debug.NumVerticesRooms += mesh.NumIndices;
+                    _debug.NumTrianglesRooms += mesh.NumIndices / 3;
                 }
 
                 if (_editor.SelectedObject == modelInfo)
@@ -1619,7 +1646,7 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(_editor.SelectedRoom, modelInfo);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, modelInfo.Position);
@@ -1658,7 +1685,7 @@ namespace TombEditor.Controls
                     _device.SetIndexBuffer(model.IndexBuffer, true);
                 }
 
-                Debug.NumStaticMeshes++;
+                _debug.NumStaticMeshes++;
 
                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
                 if (_editor.SelectedObject == instance)
@@ -1682,8 +1709,8 @@ namespace TombEditor.Controls
                     staticMeshEffect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                    Debug.NumVerticesObjects += mesh.NumIndices;
-                    Debug.NumTrianglesObjects += mesh.NumIndices / 3;
+                    _debug.NumVerticesObjects += mesh.NumIndices;
+                    _debug.NumTrianglesObjects += mesh.NumIndices / 3;
                 }
 
                 if (_editor.SelectedObject == instance)
@@ -1701,7 +1728,7 @@ namespace TombEditor.Controls
 
                     BuildTriggeredByMessage(ref message, instance);
 
-                    Debug.AddString(message, screenPos);
+                    _debug.AddString(message, screenPos);
 
                     // Add the line height of the object
                     AddObjectHeightLine(viewProjection, _editor.SelectedRoom, instance.Position);
@@ -1755,8 +1782,8 @@ namespace TombEditor.Controls
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
                 _device.DrawIndexed(PrimitiveType.TriangleList, mesh.NumIndices, mesh.BaseIndex);
 
-                Debug.NumVerticesObjects += mesh.NumIndices;
-                Debug.NumTrianglesObjects += mesh.NumIndices / 3;
+                _debug.NumVerticesObjects += mesh.NumIndices;
+                _debug.NumTrianglesObjects += mesh.NumIndices / 3;
             }
         }
 
@@ -2019,7 +2046,7 @@ namespace TombEditor.Controls
             _watch.Start();
 
             // Reset gizmo and debug strings and lines
-            Debug.Reset();
+            _debug = new Debug();
             _drawHeightLine = false;
             _drawFlybyPath = false;
             _boundingBoxesToDraw = new List<BoundingBoxToDraw>();
@@ -2061,7 +2088,7 @@ namespace TombEditor.Controls
             else
                 _roomsToDraw.Add(_editor.SelectedRoom);
 
-            Debug.NumRooms = _roomsToDraw.Count;
+            _debug.NumRooms = _roomsToDraw.Count;
 
             Task task1 = Task.Factory.StartNew(RenderTask1, viewProjection);
             Task task2 = Task.Factory.StartNew(RenderTask2, viewProjection);
@@ -2094,6 +2121,7 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
             _roomEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
             _roomEffect.Parameters["LineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
+            _roomEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);
             _roomEffect.Parameters["TextureCoordinateFactor"].SetValue(_textureAtlas == null ? new Vector2(0) : new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
 
             // Draw buckets
@@ -2118,10 +2146,12 @@ namespace TombEditor.Controls
             _gizmo.Draw(viewProjection);
 
             _watch.Stop();
-            Debug.Fps = 1.0 / _watch.Elapsed.TotalSeconds;
+            _debug.Fps = 1.0 / _watch.Elapsed.TotalSeconds;
 
             // Draw debug info
-            Debug.Draw(_deviceManager, _editor.SelectedObject?.ToString(), _editor.Configuration.Rendering3D_TextColor);
+            Effect solidEffect = _deviceManager.Effects["Solid"];
+            solidEffect.Techniques[0].Passes[0].Apply();
+            _debug.Draw(_deviceManager, _editor.SelectedObject?.ToString(), _editor.Configuration.Rendering3D_TextColor);
 
             _device.Present();
 
@@ -2187,7 +2217,7 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(_roomsToDraw[i].GetLocalCenter(), 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, wvp);
-                Debug.AddString(message, screenPos);
+                _debug.AddString(message, screenPos);
             }
         }
 
@@ -2214,7 +2244,7 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, wvp);
-                Debug.AddString(messages[i], screenPos);
+                _debug.AddString(messages[i], screenPos);
             }
         }
 
@@ -2273,8 +2303,8 @@ namespace TombEditor.Controls
                 // Draw the face
                 _device.DrawIndexed(PrimitiveType.TriangleList, bucket.IndexBuffer.ElementCount); // face.Vertices.Count, face.StartVertex);
 
-                Debug.NumVerticesRooms += bucket.IndexBuffer.ElementCount;
-                Debug.NumTrianglesRooms += bucket.IndexBuffer.ElementCount / 3;
+                _debug.NumVerticesRooms += bucket.IndexBuffer.ElementCount;
+                _debug.NumTrianglesRooms += bucket.IndexBuffer.ElementCount / 3;
 
                 _lastBucket = bucket;
             }
@@ -2316,8 +2346,8 @@ namespace TombEditor.Controls
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);
                 _device.Draw(PrimitiveType.TriangleList, vertexRange.Count, vertexRange.Start);
 
-                Debug.NumVerticesRooms += vertexRange.Count;
-                Debug.NumTrianglesRooms += vertexRange.Count / 3;
+                _debug.NumVerticesRooms += vertexRange.Count;
+                _debug.NumTrianglesRooms += vertexRange.Count / 3;
 
                 _lastBucket = bucket;
             }
@@ -2389,8 +2419,8 @@ namespace TombEditor.Controls
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);
                 _device.Draw(PrimitiveType.TriangleList, vertexRange.Count, vertexRange.Start);
 
-                Debug.NumVerticesRooms += vertexRange.Count;
-                Debug.NumTrianglesRooms += vertexRange.Count / 3;
+                _debug.NumVerticesRooms += vertexRange.Count;
+                _debug.NumTrianglesRooms += vertexRange.Count / 3;
 
                 _lastBucket = bucket;
             }
@@ -2994,8 +3024,8 @@ namespace TombEditor.Controls
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);
                 _device.Draw(PrimitiveType.TriangleList, vertexRange.Count, vertexRange.Start);
 
-                Debug.NumVerticesRooms += vertexRange.Count;
-                Debug.NumTrianglesRooms += vertexRange.Count / 3;
+                _debug.NumVerticesRooms += vertexRange.Count;
+                _debug.NumTrianglesRooms += vertexRange.Count / 3;
 
                 _lastBucket = bucket;
             }

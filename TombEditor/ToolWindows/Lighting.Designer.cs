@@ -64,7 +64,7 @@
             this.cbLightIsDynamicallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsDynamicallyUsed.TabIndex = 92;
             this.cbLightIsDynamicallyUsed.Text = "Dynamic";
-            this.toolTip.SetToolTip(this.cbLightIsDynamicallyUsed, "Use light for moveables");
+            this.toolTip.SetToolTip(this.cbLightIsDynamicallyUsed, "Use light for moveables ingame");
             this.cbLightIsDynamicallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsDynamicallyUsed_CheckedChanged);
             // 
             // cbLightIsStaticallyUsed
@@ -77,7 +77,7 @@
             this.cbLightIsStaticallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsStaticallyUsed.TabIndex = 91;
             this.cbLightIsStaticallyUsed.Text = "Static";
-            this.toolTip.SetToolTip(this.cbLightIsStaticallyUsed, "Use light for room geometry");
+            this.toolTip.SetToolTip(this.cbLightIsStaticallyUsed, "Use light for room geometry lighting");
             this.cbLightIsStaticallyUsed.CheckedChanged += new System.EventHandler(this.cbLightIsStaticallyUsed_CheckedChanged);
             // 
             // cbLightCastsShadows
@@ -114,7 +114,7 @@
             this.panelLightColor.Name = "panelLightColor";
             this.panelLightColor.Size = new System.Drawing.Size(60, 22);
             this.panelLightColor.TabIndex = 69;
-            this.toolTip.SetToolTip(this.panelLightColor, "Color of current light");
+            this.toolTip.SetToolTip(this.panelLightColor, "Light color");
             this.panelLightColor.Click += new System.EventHandler(this.panelLightColor_Click);
             // 
             // darkLabel12
@@ -476,7 +476,7 @@
             this.numDirectionX.Size = new System.Drawing.Size(60, 22);
             this.numDirectionX.TabIndex = 98;
             this.numDirectionX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip.SetToolTip(this.numDirectionX, "Horizontal direction");
+            this.toolTip.SetToolTip(this.numDirectionX, "Angle around the X axis (vertical rotation)");
             this.numDirectionX.ValueChanged += new System.EventHandler(this.numDirectionX_ValueChanged);
             // 
             // numDirectionY
@@ -506,7 +506,7 @@
             this.numDirectionY.Size = new System.Drawing.Size(60, 22);
             this.numDirectionY.TabIndex = 99;
             this.numDirectionY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.toolTip.SetToolTip(this.numDirectionY, "Vertical direction");
+            this.toolTip.SetToolTip(this.numDirectionY, "Angle around the Y axis (horizontal rotation)");
             this.numDirectionY.ValueChanged += new System.EventHandler(this.numDirectionY_ValueChanged);
             // 
             // toolTip

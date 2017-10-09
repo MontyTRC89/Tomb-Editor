@@ -296,7 +296,7 @@
             this.butOpacityNone.Name = "butOpacityNone";
             this.butOpacityNone.Size = new System.Drawing.Size(23, 25);
             this.butOpacityNone.Text = "toolStripButton1";
-            this.butOpacityNone.ToolTipText = "Solid face";
+            this.butOpacityNone.ToolTipText = "Clear ('No Toggle Opacity')";
             this.butOpacityNone.Click += new System.EventHandler(this.butOpacityNone_Click);
             //
             // butOpacitySolidFaces
@@ -312,7 +312,7 @@
             this.butOpacitySolidFaces.Name = "butOpacitySolidFaces";
             this.butOpacitySolidFaces.Size = new System.Drawing.Size(23, 25);
             this.butOpacitySolidFaces.Text = "toolStripButton2";
-            this.butOpacitySolidFaces.ToolTipText = "Toggle opacity 1";
+            this.butOpacitySolidFaces.ToolTipText = "Textured and solid ('Toggle Opacity 1')";
             this.butOpacitySolidFaces.Click += new System.EventHandler(this.butOpacitySolidFaces_Click);
             //
             // butOpacityTraversableFaces
@@ -327,7 +327,7 @@
             this.butOpacityTraversableFaces.Name = "butOpacityTraversableFaces";
             this.butOpacityTraversableFaces.Size = new System.Drawing.Size(23, 25);
             this.butOpacityTraversableFaces.Text = "toolStripButton3";
-            this.butOpacityTraversableFaces.ToolTipText = "Toggle opacity 2";
+            this.butOpacityTraversableFaces.ToolTipText = "Textured and traversable ('Toggle Opacity 2')";
             this.butOpacityTraversableFaces.Click += new System.EventHandler(this.butOpacityTraversableFaces_Click);
             //
             // toolStripSeparator4
@@ -390,7 +390,7 @@
             this.butAdditiveBlending.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAdditiveBlending.Name = "butAdditiveBlending";
             this.butAdditiveBlending.Size = new System.Drawing.Size(23, 25);
-            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending) (Shift+A)";
+            this.butAdditiveBlending.Text = "\'Transparent\' texture (Additive blending) (Shift+1)";
             this.butAdditiveBlending.Click += new System.EventHandler(this.butAdditiveBlending_Click);
             //
             // butDoubleSided
@@ -403,7 +403,7 @@
             this.butDoubleSided.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDoubleSided.Name = "butDoubleSided";
             this.butDoubleSided.Size = new System.Drawing.Size(23, 25);
-            this.butDoubleSided.Text = "Double sided texture (Shift+D)";
+            this.butDoubleSided.Text = "Double sided texture (Shift+2)";
             this.butDoubleSided.Click += new System.EventHandler(this.butDoubleSided_Click);
             //
             // butInvisible
@@ -416,7 +416,7 @@
             this.butInvisible.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butInvisible.Name = "butInvisible";
             this.butInvisible.Size = new System.Drawing.Size(23, 25);
-            this.butInvisible.Text = "Invisible face (Shift+V)";
+            this.butInvisible.Text = "Invisible face (Shift+3)";
             //
             // toolStripSeparator2
             //
