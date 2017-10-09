@@ -136,6 +136,8 @@ namespace TombEditor.Controls
                 _device.SetVertexBuffer(0, model.VertexBuffer);
                 _device.SetIndexBuffer(model.IndexBuffer, true);
 
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<StaticVertex>(0, model.VertexBuffer));
+
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     StaticMesh mesh = model.Meshes[i];
