@@ -45,14 +45,13 @@ namespace TombEditor
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textureMap.Location = new System.Drawing.Point(8, 9);
             this.textureMap.Name = "textureMap";
-            this.textureMap.Size = new System.Drawing.Size(577, 727);
+            this.textureMap.Size = new System.Drawing.Size(409, 517);
             this.textureMap.TabIndex = 0;
-            this.textureMap.TileSelectionSize = 64F;
             // 
             // butAssignSound
             // 
             this.butAssignSound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.butAssignSound.Location = new System.Drawing.Point(183, 742);
+            this.butAssignSound.Location = new System.Drawing.Point(183, 532);
             this.butAssignSound.Name = "butAssignSound";
             this.butAssignSound.Padding = new System.Windows.Forms.Padding(5);
             this.butAssignSound.Size = new System.Drawing.Size(113, 24);
@@ -71,7 +70,7 @@ namespace TombEditor
             this.comboSounds.ForeColor = System.Drawing.Color.White;
             this.comboSounds.FormattingEnabled = true;
             this.comboSounds.ItemHeight = 18;
-            this.comboSounds.Location = new System.Drawing.Point(8, 742);
+            this.comboSounds.Location = new System.Drawing.Point(8, 532);
             this.comboSounds.Name = "comboSounds";
             this.comboSounds.Size = new System.Drawing.Size(169, 24);
             this.comboSounds.Sorted = true;
@@ -80,10 +79,10 @@ namespace TombEditor
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(409, 742);
+            this.butOk.Location = new System.Drawing.Point(303, 532);
             this.butOk.Name = "butOk";
             this.butOk.Padding = new System.Windows.Forms.Padding(5);
-            this.butOk.Size = new System.Drawing.Size(176, 24);
+            this.butOk.Size = new System.Drawing.Size(114, 24);
             this.butOk.TabIndex = 3;
             this.butOk.Text = "Ok";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -93,7 +92,7 @@ namespace TombEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(592, 750);
+            this.ClientSize = new System.Drawing.Size(424, 562);
             this.Controls.Add(this.comboSounds);
             this.Controls.Add(this.butAssignSound);
             this.Controls.Add(this.butOk);
