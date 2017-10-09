@@ -831,6 +831,30 @@ namespace TombEditor
             _editor.ObjectChange(null);
         }
 
+        public static ItemType? GetCurrentItemWithMessage(IWin32Window owner)
+        {
+            ItemType? result = _editor.ChosenItem;
+            if (result == null)
+                DarkMessageBox.Show(owner, "Select an item first", "Error", MessageBoxIcon.Error);
+            return result;
+        }
+
+
+        public static void PlaceItem(IWin32Window owner)
+        {
+            var currentItem = GetCurrentItemWithMessage(owner);
+            if (currentItem == null)
+                return;
+
+            if ((!currentItem.Value.IsStatic) && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
+            {
+                DarkMessageBox.Show(owner, "You can't add moveables to a flipped room", "Error", MessageBoxIcon.Information);
+                return;
+            }
+
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceItem, ItemType = currentItem.Value };
+        }
+
         public static void RotateTexture(Room room, DrawingPoint pos, BlockFace face)
         {
             Block blocks = room.GetBlock(pos);

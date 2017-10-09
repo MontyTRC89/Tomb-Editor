@@ -512,7 +512,7 @@ namespace TombEditor.Controls
                     break;
             }
         }
-
+        
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -706,9 +706,21 @@ namespace TombEditor.Controls
         {
             base.OnMouseDoubleClick(e);
 
-            PickingResult newPicking = DoPicking(e.X, e.Y);
-            if (newPicking is PickingResultObject)
-                EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
+            switch(e.Button)
+            {
+                case MouseButtons.Left:
+                    PickingResult newPicking = DoPicking(e.X, e.Y);
+                    if (newPicking is PickingResultObject)
+                        EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
+                    break;
+
+                case MouseButtons.Right:
+                    _editor.ResetCamera();
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)

@@ -60,7 +60,8 @@ namespace TombEditor.Controls
                 Invalidate();
             }
 
-            if (obj is Editor.LoadedWadsChangedEvent)
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.ObjectChangedEvent)
                 Invalidate();
         }
 
@@ -112,8 +113,10 @@ namespace TombEditor.Controls
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
+            
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, 
+                (_editor.Action.Action == EditorActionType.PlaceItem) ? new Color4(0.7f, 0.7f, 0.7f, 1.0f) : Color4.White, 1.0f, 0);
 
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
             if ((_editor.ChosenItem == null) || (_editor?.Level?.Wad == null))
@@ -231,6 +234,11 @@ namespace TombEditor.Controls
             {
                 EditorActions.LoadWad(Parent);
                 return;
+            }
+            else if(e.Button == MouseButtons.Left)
+            {
+                EditorActions.PlaceItem(FindForm());
+                Invalidate();
             }
 
             _lastX = e.X;

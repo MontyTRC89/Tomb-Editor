@@ -76,18 +76,9 @@ namespace TombEditor.ToolWindows
                 panelStaticMeshColor.BackColor = itemInstance == null ? System.Drawing.Color.Black : itemInstance.Color.ToWinFormsColor();
             }
         }
-
-        private ItemType? GetCurrentItemWithMessage()
-        {
-            ItemType? result = _editor.ChosenItem;
-            if (result == null)
-                DarkMessageBox.Show(this, "Select an item first", "Error", MessageBoxIcon.Error);
-            return result;
-        }
-
         public void FindItem()
         {
-            ItemType? currentItem = GetCurrentItemWithMessage();
+            ItemType? currentItem = EditorActions.GetCurrentItemWithMessage(ParentForm);
             if (currentItem == null)
                 return;
 
@@ -131,17 +122,8 @@ namespace TombEditor.ToolWindows
 
         private void butAddItem_Click(object sender, EventArgs e)
         {
-            var currentItem = GetCurrentItemWithMessage();
-            if (currentItem == null)
-                return;
-
-            if ((!currentItem.Value.IsStatic) && _editor.SelectedRoom.Flipped && _editor.SelectedRoom.AlternateRoom == null)
-            {
-                DarkMessageBox.Show(this, "You can't add moveables to a flipped room", "Error", MessageBoxIcon.Information);
-                return;
-            }
-
-            _editor.Action = new EditorAction { Action = EditorActionType.PlaceItem, ItemType = currentItem.Value };
+            EditorActions.PlaceItem(ParentForm);
+            panelItem.Invalidate();
         }
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)
