@@ -16,20 +16,26 @@ namespace TombEditor.Controls
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.SupportsTransparentBackColor |
                      ControlStyles.ResizeRedraw, true);
+
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Runtime)
+            {
+                SetStyle(ControlStyles.UserPaint, true);
+
+                Appearance = TabAppearance.FlatButtons;
+                ItemSize = new Size(0, 1);
+                SizeMode = TabSizeMode.Fixed;
+
+                foreach (TabPage tab in TabPages)
+                    tab.Text = null;
+            }
         }
 
-        public void HideTabs()
+        protected override bool ProcessDialogKey(Keys keyData)
         {
-            SetStyle(ControlStyles.UserPaint, true);
+            if (keyData == (Keys.Tab | Keys.Control))
+                return true;
 
-            Appearance = TabAppearance.FlatButtons;
-            ItemSize = new Size(0, 1);
-            SizeMode = TabSizeMode.Fixed;
-
-            foreach (TabPage tab in TabPages)
-                tab.Text = null;
-
-            Invalidate();
+            return base.ProcessDialogKey(keyData);
         }
 
         protected override void OnPaint(PaintEventArgs e)

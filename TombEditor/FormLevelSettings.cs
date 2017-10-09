@@ -140,9 +140,6 @@ namespace TombEditor
             }
             optionsList.SelectItem(0);
 
-            // Hide options container tabs at runtime only
-            optionsContainer.HideTabs();
-
             // Initialize controls
             UpdateDialog();
         }
