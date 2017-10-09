@@ -27,47 +27,30 @@ namespace WadTool
         protected override float TranslationSphereSize => 128.0f;
         protected override float ScaleCubeSize => 128.0f;
         protected override float Size => 1024.0f;
+        protected override float LineThickness => 45.0f;
         protected override bool SupportScale => true;
         protected override bool SupportTranslate => true;
         protected override bool SupportRotationY => true;
         protected override bool SupportRotationX => true;
         protected override bool SupportRotationZ => true;
 
-        protected override void DoGizmoAction(Vector3 newPos, float angle, float scale)
+        protected override void GizmoMove(Vector3 newPos) => _control.StaticPosition = newPos;
+        protected override void GizmoRotateX(float angle) => _control.StaticRotation += new Vector3(angle, 0, 0);
+        protected override void GizmoRotateY(float angle) => _control.StaticRotation += new Vector3(0, angle, 0);
+        protected override void GizmoRotateZ(float angle) => _control.StaticRotation += new Vector3(0, 0, angle);
+        protected override void GizmoScale(float scale)
         {
-            if (Action == GizmoAction.Translate)
-            {
-                _control.StaticPosition = newPos;
-            }
-            else if (Action == GizmoAction.Rotate)
-            {
-                switch (Axis)
-                {
-                    case GizmoAxis.X:
-                        _control.StaticRotation += new Vector3(angle, 0, 0);
-                        break;
-                    case GizmoAxis.Y:
-                        _control.StaticRotation += new Vector3(0, angle, 0);
-                        break;
-                    case GizmoAxis.Z:
-                        _control.StaticRotation += new Vector3(0, 0, angle);
-                        break;
-                }
-            }
-            else if (Action == GizmoAction.Scale)
-            {
-                float newScale = scale / 1024.0f; // TODO: adjust
-                newScale += _control.StaticScale;
+            float newScale = scale / 1024.0f; // TODO: adjust
+            newScale += _control.StaticScale;
 
-                // Set some limits to scale
-                // TODO: object risks to be too small and to be not pickable. We should add some size check
-                if (newScale < 1.0f) newScale = 1.0f;
-                if (newScale > 128.0f) newScale = 128.0f;
+            // Set some limits to scale
+            // TODO: object risks to be too small and to be not pickable. We should add some size check
+            if (newScale < 1.0f)
+                newScale = 1.0f;
+            if (newScale > 128.0f)
+                newScale = 128.0f;
 
-                _control.StaticScale = newScale;
-            }
-
-            _control.Invalidate();
+            _control.StaticScale = newScale;
         }
     }
 }
