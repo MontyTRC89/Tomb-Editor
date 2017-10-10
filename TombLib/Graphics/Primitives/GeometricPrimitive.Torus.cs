@@ -134,19 +134,19 @@ namespace SharpDX.Toolkit.Graphics
                         Vector3.TransformCoordinate(ref position, ref transform, out position);
                         Vector3.TransformNormal(ref normal, ref transform, out normal);
 
-                        vertices.Add(new SolidVertex { Position = position, Color = Vector4.One });
+                        vertices.Add(new SolidVertex(position));
 
                         // And create indices for two triangles.
                         int nextI = (i + 1) % iStride;
                         int nextJ = (j + 1) % jStride;
 
+                        indices.Add(nextI * jStride + j);
+                        indices.Add(i * jStride + nextJ);
                         indices.Add(i * jStride + j);
-                        indices.Add(i * jStride + nextJ);
-                        indices.Add(nextI * jStride + j);
 
-                        indices.Add(i * jStride + nextJ);
-                        indices.Add(nextI * jStride + nextJ);
                         indices.Add(nextI * jStride + j);
+                        indices.Add(nextI * jStride + nextJ);
+                        indices.Add(i * jStride + nextJ);
                     }
                 }
 

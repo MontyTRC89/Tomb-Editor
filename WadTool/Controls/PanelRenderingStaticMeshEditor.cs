@@ -98,7 +98,8 @@ namespace WadTool.Controls
 
         public void Draw()
         {
-            if (_device == null || _presenter == null) return;
+            if (_device == null || _presenter == null)
+                return;
 
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
@@ -198,18 +199,21 @@ namespace WadTool.Controls
             Invalidate();
         }
 
+        private Ray GetRay(float x, float y)
+        {
+            return Ray.GetPickRay((int)Math.Round(x), (int)Math.Round(y),
+                new ViewportF(0, 0, Width, Height), Camera.GetViewProjectionMatrix(Width, Height));
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
-            Ray ray = Ray.GetPickRay((int)Math.Round((double)e.X), (int)Math.Round((double)e.Y),
-                                     new ViewportF(0, 0, Width, Height), Camera.GetViewProjectionMatrix(Width, Height));
-
             if (e.Button == MouseButtons.Left)
             {
-                var result = _gizmo.DoPicking(ray);
-                if (result == null) return;
-                _gizmo.Mode = result.Mode;
+                var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
+                if (result != null)
+                    _gizmo.ActivateGizmo(result);
                 return;
             }
 
@@ -221,10 +225,10 @@ namespace WadTool.Controls
         {
             base.OnMouseMove(e);
 
-            if (e.Button == MouseButtons.Left)
-            {
-                _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), (int)e.X, (int)e.Y);
-            }
+            if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
+                Invalidate();
+            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(Width, Height), (int)e.X, (int)e.Y))
+                Invalidate();
 
             if (e.Button == MouseButtons.Right)
             {
@@ -244,6 +248,14 @@ namespace WadTool.Controls
                                   -deltaY * 2.2f /*_editor.Configuration.RenderingItem_NavigationSpeedMouseRotate*/);
                 Invalidate();
             }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (_gizmo.MouseUp())
+                Invalidate();
         }
     }
 }

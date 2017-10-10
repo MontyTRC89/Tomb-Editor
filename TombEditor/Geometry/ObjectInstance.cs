@@ -86,6 +86,36 @@ namespace TombEditor.Geometry
         {
             Position = Position + new Vector3(deltaX, deltaY, deltaZ);
         }
+
+        public Matrix RotationMatrix
+        {
+            get
+            {
+                return Matrix.RotationYawPitchRoll(
+                    (this as IRotateableY)?.GetRotationYRadians() ?? 0.0f,
+                    (this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
+                    (this as IRotateableYXRoll)?.GetRotationRollRadians() ?? 0.0f);
+            }
+        }
+
+        public Matrix RotationPositionMatrix
+        {
+            get
+            {
+                return RotationMatrix *
+                    Matrix.Translation((Room?.WorldPos ?? new Vector3()) + Position);
+            }
+        }
+
+        public Matrix ObjectMatrix
+        {
+            get
+            {
+                return RotationMatrix *
+                    Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix.Translation((Room?.WorldPos ?? new Vector3()) + Position);
+            }
+        }
     }
 
     public interface IHasScriptID
