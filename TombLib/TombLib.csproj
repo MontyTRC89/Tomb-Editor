@@ -147,14 +147,14 @@
     <Compile Include="Wad\Wad2Loader.cs" />
     <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
-    <Compile Include="Wad\WadOperations.cs" />
+    <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
     <Compile Include="Wad\WadSound.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
     <Compile Include="Wad\WadSprite.cs" />
     <Compile Include="Wad\WadSpriteSequence.cs" />
     <Compile Include="Wad\Enumerations.cs" />
     <Compile Include="Wad\ObjectNames.cs" />
-    <Compile Include="Wad\TR4Wad.cs" />
+    <Compile Include="Wad\Tr4Wad\Tr4Wad.cs" />
     <Compile Include="Wad\Wad2.cs" />
     <Compile Include="Wad\WadObject.cs" />
     <Compile Include="Wad\WadTexture.cs" />
@@ -218,6 +218,9 @@
     <None Include="NG\TIME_LIST_128.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Wad\TrLevels\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
