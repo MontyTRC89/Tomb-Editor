@@ -123,7 +123,6 @@ namespace TombEditor.ToolWindows
         private void butAddItem_Click(object sender, EventArgs e)
         {
             EditorActions.PlaceItem(ParentForm);
-            panelItem.Invalidate();
         }
 
         private void panelStaticMeshColor_Click(object sender, EventArgs e)

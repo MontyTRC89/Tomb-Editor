@@ -795,6 +795,27 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            if (e.Data.GetData(typeof(ItemType)) != null)
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            System.Drawing.Point loc = PointToClient(new System.Drawing.Point(e.X, e.Y));
+            PickingResult newPicking = DoPicking(loc.X, loc.Y);
+
+            if (newPicking is PickingResultBlock)
+            {
+                EditorActions.PlaceObject(_editor.SelectedRoom,
+                    ((PickingResultBlock)newPicking).Pos,
+                    ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
+                Invalidate();
+            }
+        }
+
+
         private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix world) where T : struct, IVertex
         {
             Vector3 center = mesh.BoundingSphere.Center;
