@@ -61,49 +61,57 @@ namespace TombEditor
         private void butOK_Click(object sender, EventArgs e)
         {
             // Check inputs
-            if (!Utils.IsValidNumber(tbSequence.Text))
+            byte sequence;
+            if (!byte.TryParse(tbSequence.Text, out sequence))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for sequence", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbNumber.Text))
+            byte number;
+            if (!byte.TryParse(tbNumber.Text, out number))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for number", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbTimer.Text))
+            short timer;
+            if (!short.TryParse(tbTimer.Text, out timer))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for timer", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbSpeed.Text))
+            float speed;
+            if (!float.TryParse(tbSpeed.Text, out speed))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for speed", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbFOV.Text))
+            float fov;
+            if (!float.TryParse(tbFOV.Text, out fov))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for FOV", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbRoll.Text))
+            float roll;
+            if (!float.TryParse(tbRoll.Text, out roll))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for roll", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbRotationX.Text))
+            float rotationX;
+            if (!float.TryParse(tbRotationX.Text, out rotationX))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for rotation X", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.IsValidNumber(tbRotationY.Text))
+            float rotationY;
+            if (!float.TryParse(tbRotationY.Text, out rotationY))
             {
                 DarkMessageBox.Show(this, "You must insert a valid value for rotation Y", "Error", MessageBoxIcon.Error);
                 return;
@@ -128,14 +136,14 @@ namespace TombEditor
             flags |= (ushort)(cbBit15.Checked ? (1 << 15) : 0);
             _flyByCamera.Flags = flags;
 
-            _flyByCamera.Sequence = byte.Parse(tbSequence.Text);
-            _flyByCamera.Number = byte.Parse(tbNumber.Text);
-            _flyByCamera.Timer = short.Parse(tbTimer.Text);
-            _flyByCamera.Speed = float.Parse(tbSpeed.Text);
-            _flyByCamera.Fov = float.Parse(tbFOV.Text);
-            _flyByCamera.Roll = float.Parse(tbRoll.Text);
-            _flyByCamera.RotationX = short.Parse(tbRotationX.Text);
-            _flyByCamera.RotationY = float.Parse(tbRotationY.Text);
+            _flyByCamera.Sequence = sequence;
+            _flyByCamera.Number = number;
+            _flyByCamera.Timer = timer;
+            _flyByCamera.Speed = speed;
+            _flyByCamera.Fov = fov;
+            _flyByCamera.Roll = roll;
+            _flyByCamera.RotationX = rotationX;
+            _flyByCamera.RotationY = rotationY;
 
             DialogResult = DialogResult.OK;
             Close();

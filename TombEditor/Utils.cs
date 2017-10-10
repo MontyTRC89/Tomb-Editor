@@ -333,11 +333,5 @@ namespace TombEditor
             }
             return filename;
         }
-
-        public static bool IsValidNumber(string number)
-        {
-            double num;
-            return double.TryParse(number, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out num);
-        }
     }
 }
