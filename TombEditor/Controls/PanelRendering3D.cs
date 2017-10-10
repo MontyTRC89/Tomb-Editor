@@ -1078,7 +1078,7 @@ namespace TombEditor.Controls
                 _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
             }
 
-            if (_editor.SelectedObject is LightInstance)
+            if (_editor.SelectedObject?.Room == room && _editor.SelectedObject is LightInstance)
             {
                 LightInstance light = (LightInstance)_editor.SelectedObject;
 
@@ -2146,7 +2146,8 @@ namespace TombEditor.Controls
             DrawDebugLines(viewProjection);
 
             // Draw the gizmo
-            _gizmo.Draw(viewProjection);
+            if (_editor.SelectedObject?.Room == _editor.SelectedRoom)
+                _gizmo.Draw(viewProjection);
 
             _watch.Stop();
             _debug.Fps = 1.0 / _watch.Elapsed.TotalSeconds;
