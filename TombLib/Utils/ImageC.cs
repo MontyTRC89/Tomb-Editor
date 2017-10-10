@@ -194,6 +194,13 @@ namespace TombLib.Utils
             return result;
         }
 
+        public static ImageC FromByteArray(byte[] data, int width, int height)
+        {
+            ImageC result = ImageC.CreateNew(width, height);
+            Array.Copy(data, result._data, data.Length);
+            return result;
+        }
+
         public void WriteToStreamRaw(Stream stream)
         {
             stream.Write(_data, 0, Width * Height * PixelSize);
@@ -356,6 +363,11 @@ namespace TombLib.Utils
         public Stream ToRawStream()
         {
             return new MemoryStream(_data);
+        }
+
+        public byte[] ToByteArray()
+        {
+            return (new MemoryStream(_data)).ToArray();
         }
 
         public Stream ToRawStream(int yStart, int Height)

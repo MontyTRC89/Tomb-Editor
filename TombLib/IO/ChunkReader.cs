@@ -107,6 +107,11 @@ namespace TombLib.IO
             ReadChunks((id2, chunkSize2) => false);
         }
 
+        public byte[] ReadChunkArrayOfBytes(long length)
+        {
+            return _reader.ReadBytes((int)length);
+        }
+
         public bool ReadChunkBool(long length)
         {
             return _reader.ReadBoolean();

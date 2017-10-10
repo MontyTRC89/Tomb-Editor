@@ -63,14 +63,11 @@ namespace TombLib.Wad
                 {
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Texture, () =>
                     {
-                        chunkIO.WriteChunk(Wad2Chunks.TextureData, () =>
-                        {
-                            var txt = texture.Value;
+                        var txt = texture.Value;
 
-                            LEB128.Write(chunkIO.Raw, txt.Width);
-                            LEB128.Write(chunkIO.Raw, txt.Height);
-                            chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, txt.ToByteArray());
-                        });
+                        LEB128.Write(chunkIO.Raw, txt.Width);
+                        LEB128.Write(chunkIO.Raw, txt.Height);
+                        chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, txt.Image.ToByteArray());
                     });
                 }
             });
@@ -212,13 +209,10 @@ namespace TombLib.Wad
                 {
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.Sprite, () =>
                     {
-                        chunkIO.WriteChunk(Wad2Chunks.TextureData, () =>
-                        {
-                            var txt = sprite.Value;
-                            LEB128.Write(chunkIO.Raw, txt.Width);
-                            LEB128.Write(chunkIO.Raw, txt.Height);
-                            chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, txt.ToByteArray());
-                        });
+                        var txt = sprite.Value;
+                        LEB128.Write(chunkIO.Raw, txt.Width);
+                        LEB128.Write(chunkIO.Raw, txt.Height);
+                        chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, txt.Image.ToByteArray());
                     });
                 }
             });
