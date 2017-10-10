@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using TombLib.Wad;
+using TombLib.Wad.Tr4Wad;
 
 namespace TombEditor.Geometry
 {
@@ -97,9 +98,9 @@ namespace TombEditor.Geometry
                         foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
                             soundPaths.Add(Settings.ParseVariables(path_.Path));
 
-                        var oldWad = new TR4Wad();
+                        var oldWad = new Tr4Wad();
                         oldWad.LoadWad(path);
-                        newWad = WadOperations.ConvertTr4Wad(oldWad, soundPaths);
+                        newWad = Tr4WadOperations.ConvertTr4Wad(oldWad, soundPaths);
                     }
                     else
                     {

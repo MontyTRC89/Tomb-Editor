@@ -10,7 +10,7 @@ using SharpDX;
 using TombLib.Graphics;
 using TombLib.Utils;
 
-namespace TombLib.Wad
+namespace TombLib.Wad.Tr4Wad
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct wad_object_texture
@@ -167,7 +167,7 @@ namespace TombLib.Wad
         public short Offset;
     }
 
-    public class TR4Wad
+    public class Tr4Wad
     {
         public struct texture_piece
         {
