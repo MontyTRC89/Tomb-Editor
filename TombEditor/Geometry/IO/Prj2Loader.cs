@@ -421,7 +421,7 @@ namespace TombEditor.Geometry.IO
                             {
                                 var instance = new SoundSourceInstance();
                                 instance.Position = chunkIO.Raw.ReadVector3();
-                                instance.SoundId = chunkIO.Raw.ReadInt16();
+                                instance.SoundId = chunkIO.Raw.ReadUInt16();
                                 instance.Flags = chunkIO.Raw.ReadInt16();
                                 instance.CodeBits = chunkIO.Raw.ReadByte();
                                 room.AddObject(level, instance);

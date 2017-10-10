@@ -166,7 +166,7 @@ namespace TombEditor.Compilers
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    SoundID = (ushort)instance.SoundId,
+                    SoundID = instance.SoundId,
                     Flags = 0x80
                 });
             }
