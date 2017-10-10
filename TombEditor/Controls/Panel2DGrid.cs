@@ -158,7 +158,7 @@ namespace TombEditor.Controls
                     if (selectedSectorObject is PortalInstance)
                     {
                         Room room = _editor.SelectedRoom;
-                        _editor.SelectedRoom = ((PortalInstance)selectedSectorObject).AdjoiningRoom;
+                        _editor.SelectRoomAndResetCamera(((PortalInstance)selectedSectorObject).AdjoiningRoom);
                         _editor.SelectedObject = ((PortalInstance)selectedSectorObject).FindOppositePortal(room);
                     }
                     else if (selectedSectorObject is TriggerInstance)
