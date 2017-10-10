@@ -14,15 +14,17 @@ namespace TombLib.Graphics
     {
         [VertexElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0)]
         public Vector3 Position;
-        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 12)]
+        private float _unusedPadding;
+        [VertexElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 16)]
         public Vector4 Color;
 
         Vector3 IVertex.Position => Position;
 
-        public SolidVertex(Vector3 pos, Vector4 color)
+        public SolidVertex(Vector3 pos)
         {
             Position = pos;
-            Color = color;
+            _unusedPadding = 0;
+            Color = Vector4.One;
         }
     }
 }

@@ -190,35 +190,26 @@ namespace TombEditor.Compilers
                     if (geometry.Model?.DirectXModel == null)
                         continue;
 
+                    var transform = geometry.ObjectMatrix;
                     foreach (var mesh in geometry.Model.DirectXModel.Meshes)
                     {
                         for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
-                            var trVertex = new tr_room_vertex();
-
-                            var position = new Vector3(mesh.Vertices[j].Position.X,
-                                                       mesh.Vertices[j].Position.Y,
-                                                       mesh.Vertices[j].Position.Z);
-
                             // Apply the transform to the vertex
-                            Matrix transform = Matrix.Scaling(geometry.Scale) *
-                                               Matrix.RotationYawPitchRoll(MathUtil.DegreesToRadians(geometry.RotationY),
-                                                                           MathUtil.DegreesToRadians(geometry.RotationX),
-                                                                           MathUtil.DegreesToRadians(geometry.Roll)) *
-                                               Matrix.Translation(geometry.Position);
+                            Vector3 position = Vector3.TransformCoordinate(mesh.Vertices[j].Position, transform);
 
-                            position = Vector3.TransformCoordinate(position, transform);
-
-                            trVertex.Position = new tr_vertex
+                            var trVertex = new tr_room_vertex
                             {
-                                X = (short)(position.X),
-                                Y = (short)-(position.Y),
-                                Z = (short)(position.Z)
+                                Position = new tr_vertex
+                                {
+                                    X = (short)(position.X),
+                                    Y = (short)-(position.Y),
+                                    Z = (short)(position.Z)
+                                },
+                                Lighting1 = 0,
+                                Lighting2 = 0x4210, // TODO: apply light calculations also to imported geometry
+                                Attributes = 0
                             };
-
-                            trVertex.Lighting1 = 0;
-                            trVertex.Lighting2 = 0x4210; // TODO: apply light calculations also to imported geometry
-                            trVertex.Attributes = 0;
 
                             roomVertices.Add(trVertex);
                         }

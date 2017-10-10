@@ -55,7 +55,7 @@ namespace TombEditor.Geometry
         }
 
         public override bool CopyToFlipRooms => false;
-        
+
         public override string ToString()
         {
             return "FlyBy " +
