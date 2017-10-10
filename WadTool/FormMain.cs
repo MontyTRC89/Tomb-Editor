@@ -562,7 +562,8 @@ namespace WadTool
 
         private void debugAction1ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            _tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
+            //_tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
+            Wad2.SaveToWad2("E:\\testchunk.wad2", _tool.SourceWad);
         }
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)

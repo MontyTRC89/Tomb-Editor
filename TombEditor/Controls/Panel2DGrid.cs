@@ -46,9 +46,13 @@ namespace TombEditor.Controls
 
         public Panel2DGrid()
         {
-            _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;
             DoubleBuffered = true;
+
+            if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
+            {
+                _editor = Editor.Instance;
+                _editor.EditorEventRaised += EditorEventRaised;
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -96,7 +96,7 @@ namespace TombEditor
 
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(592, 1000) + (Size - ClientSize);
+            MinimumSize = new Size(678, 331) + (Size - ClientSize);
 
             // Initialize sound path data grid view
             foreach (var soundPath in _levelSettings.OldWadSoundPaths)
@@ -131,6 +131,9 @@ namespace TombEditor
                 {
                     pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
                 }
+
+            // Initialize options list
+            optionsContainer.LinkedListView = optionsList;
 
             // Initialize controls
             UpdateDialog();
@@ -527,9 +530,6 @@ namespace TombEditor
         {
             Close();
         }
-
-
-
 
         // Target path
         // Target name
