@@ -67,8 +67,8 @@ namespace TombLib.Wad
                         {
                             var txt = texture.Value;
 
-                            chunkIO.WriteChunkInt(Wad2Chunks.TextureWidth, txt.Width);
-                            chunkIO.WriteChunkInt(Wad2Chunks.TextureHeight, txt.Height);
+                            LEB128.Write(chunkIO.Raw, txt.Width);
+                            LEB128.Write(chunkIO.Raw, txt.Height);
                             chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, txt.ToByteArray());
                         });
                     });
@@ -140,15 +140,21 @@ namespace TombLib.Wad
                                         LEB128.Write(chunkIO.Raw, (byte)(poly.Transparent ? 1 : 0));
                                         LEB128.Write(chunkIO.Raw, (byte)poly.Attributes);
 
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[0]);
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[1]);
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[2]);
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[3]);
+                                        chunkIO.WriteChunk(Wad2Chunks.MeshPolygonIndices, () =>
+                                        {
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[0]);
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[1]);
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[2]);
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[3]);
+                                        });
 
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[0]);
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[1]);
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[2]);
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[3]);
+                                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygonTexCoords, () =>
+                                        {
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[0]);
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[1]);
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[2]);
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[3]);
+                                        });
                                     });
                                 }
                                 else
@@ -159,13 +165,19 @@ namespace TombLib.Wad
                                         LEB128.Write(chunkIO.Raw, (byte)(poly.Transparent ? 1 : 0));
                                         LEB128.Write(chunkIO.Raw, (byte)poly.Attributes);
 
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[0]);
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[1]);
-                                        LEB128.Write(chunkIO.Raw, (int)poly.Indices[2]);
+                                        chunkIO.WriteChunk(Wad2Chunks.MeshPolygonIndices, () =>
+                                        {
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[0]);
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[1]);
+                                            LEB128.Write(chunkIO.Raw, (int)poly.Indices[2]);
+                                        });
 
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[0]);
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[1]);
-                                        chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[2]);
+                                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygonTexCoords, () =>
+                                        {
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[0]);
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[1]);
+                                            chunkIO.WriteChunkVector2(Wad2Chunks.MeshPolygonTexCoord, poly.UV[2]);
+                                        });
                                     });
                                 }
                             }
@@ -203,8 +215,8 @@ namespace TombLib.Wad
                         chunkIO.WriteChunk(Wad2Chunks.TextureData, () =>
                         {
                             var txt = sprite.Value;
-                            chunkIO.WriteChunkInt(Wad2Chunks.SpriteWidth, txt.Width);
-                            chunkIO.WriteChunkInt(Wad2Chunks.SpriteHeight, txt.Height);
+                            LEB128.Write(chunkIO.Raw, txt.Width);
+                            LEB128.Write(chunkIO.Raw, txt.Height);
                             chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, txt.ToByteArray());
                         });
                     });
@@ -221,8 +233,11 @@ namespace TombLib.Wad
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.SpriteSequence, () =>
                     {
                         LEB128.Write(chunkIO.Raw, sequence.ObjectID);
-                        foreach (var spr in sequence.Sprites)
-                            chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSprite, _spritesTable.IndexOf(spr));
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.SpriteSequenceSprites, () =>
+                        {
+                            foreach (var spr in sequence.Sprites)
+                                chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSprite, _spritesTable.IndexOf(spr));
+                        });
                     });
                 }
             });
@@ -230,7 +245,127 @@ namespace TombLib.Wad
 
         private static void WriteMoveables(ChunkWriter chunkIO, Wad2 wad)
         {
+            chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveables, () =>
+            {
+                foreach (var moveable in wad.Moveables)
+                {
+                    chunkIO.WriteChunkWithChildren(Wad2Chunks.Moveable, () =>
+                    {
+                        var m = moveable.Value;
 
+                        LEB128.Write(chunkIO.Raw, m.ObjectID);
+                        chunkIO.WriteChunkVector3(Wad2Chunks.MoveableOffset, m.Offset);
+
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableMeshes, () =>
+                        {
+                            foreach (var mesh in m.Meshes)
+                                chunkIO.WriteChunkInt(Wad2Chunks.MoveableMesh, _meshesTable.IndexOf(mesh));
+                        });
+
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableLinks, () =>
+                        {
+                            foreach (var link in m.Links)
+                            {
+                                chunkIO.WriteChunkWithChildren(Wad2Chunks.MoveableLink, () =>
+                                {
+                                    LEB128.Write(chunkIO.Raw, (ushort)link.Opcode);
+                                    chunkIO.WriteChunkVector3(Wad2Chunks.MoveableLinkOffset, link.Offset);
+                                });
+                            }
+                        });
+
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.Animations, () =>
+                        {
+                            foreach (var animation in m.Animations)
+                            {
+                                chunkIO.WriteChunkWithChildren(Wad2Chunks.Animation, () =>
+                                {
+                                    chunkIO.WriteChunkString(Wad2Chunks.AnimationName, animation.Name);
+                                    LEB128.Write(chunkIO.Raw, animation.StateId);
+                                    LEB128.Write(chunkIO.Raw, animation.RealNumberOfFrames);
+                                    LEB128.Write(chunkIO.Raw, animation.FrameDuration);
+                                    LEB128.Write(chunkIO.Raw, animation.FrameStart);
+                                    LEB128.Write(chunkIO.Raw, animation.FrameEnd);
+                                    LEB128.Write(chunkIO.Raw, animation.Speed);
+                                    LEB128.Write(chunkIO.Raw, animation.Acceleration);
+                                    LEB128.Write(chunkIO.Raw, animation.LateralSpeed);
+                                    LEB128.Write(chunkIO.Raw, animation.LateralAcceleration);
+                                    LEB128.Write(chunkIO.Raw, animation.NextAnimation);
+                                    LEB128.Write(chunkIO.Raw, animation.NextFrame);
+
+                                    chunkIO.WriteChunkWithChildren(Wad2Chunks.KeyFrames, () =>
+                                    {
+                                        foreach (var kf in animation.KeyFrames)
+                                        {
+                                            chunkIO.WriteChunkWithChildren(Wad2Chunks.KeyFrame, () =>
+                                            {
+                                                chunkIO.WriteChunkVector3(Wad2Chunks.KeyFrameOffset, kf.Offset);
+                                                chunkIO.WriteChunk(Wad2Chunks.BoundingBox, () =>
+                                                {
+                                                    chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, kf.BoundingBox.Minimum);
+                                                    chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, kf.BoundingBox.Maximum);
+                                                });
+
+                                                chunkIO.WriteChunkWithChildren(Wad2Chunks.KeyFrameAngles, () =>
+                                                {
+                                                    foreach (var angle in kf.Angles)
+                                                    {
+                                                        chunkIO.WriteChunk(Wad2Chunks.KeyFrameAngle, () =>
+                                                        {
+                                                            LEB128.Write(chunkIO.Raw, (ushort)angle.Axis);
+                                                            LEB128.Write(chunkIO.Raw, angle.X);
+                                                            LEB128.Write(chunkIO.Raw, angle.Y);
+                                                            LEB128.Write(chunkIO.Raw, angle.Z);
+                                                        });
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    });
+
+                                    chunkIO.WriteChunkWithChildren(Wad2Chunks.StateChanges, () =>
+                                    {
+                                        foreach (var stateChange in animation.StateChanges)
+                                        {
+                                            chunkIO.WriteChunkWithChildren(Wad2Chunks.StateChange, () =>
+                                            {
+                                                LEB128.Write(chunkIO.Raw, stateChange.StateId);
+                                                chunkIO.WriteChunkWithChildren(Wad2Chunks.Dispatches, () =>
+                                                {
+                                                    foreach (var dispatch in stateChange.Dispatches)
+                                                    {
+                                                        chunkIO.WriteChunk(Wad2Chunks.Dispatch, () =>
+                                                        {
+                                                            LEB128.Write(chunkIO.Raw, dispatch.InFrame);
+                                                            LEB128.Write(chunkIO.Raw, dispatch.OutFrame);
+                                                            LEB128.Write(chunkIO.Raw, dispatch.NextAnimation);
+                                                            LEB128.Write(chunkIO.Raw, dispatch.NextFrame);
+                                                        });
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    });
+
+                                    chunkIO.WriteChunkWithChildren(Wad2Chunks.AnimCommands, () =>
+                                    {
+                                        foreach (var command in animation.AnimCommands)
+                                        {
+                                            chunkIO.WriteChunk(Wad2Chunks.AnimCommand, () =>
+                                            {
+                                                LEB128.Write(chunkIO.Raw, (ushort)command.Type);
+                                                LEB128.Write(chunkIO.Raw, command.Parameter1);
+                                                LEB128.Write(chunkIO.Raw, command.Parameter2);
+                                                LEB128.Write(chunkIO.Raw, command.Parameter3);
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    });
+                }
+            });
         }
 
         private static void WriteStatics(ChunkWriter chunkIO, Wad2 wad)
