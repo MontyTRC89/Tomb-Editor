@@ -44,10 +44,8 @@ namespace TombEditor
                         selectObject(objectToSelect);
                 }
             };
-        }
 
-        private void FormTrigger_Load(object sender, EventArgs e)
-        {
+            // Setup dialog
             comboType.SelectedItem = _trigger.TriggerType;
             comboTargetType.SelectedItem = _trigger.TargetType;
             cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
@@ -208,7 +206,8 @@ namespace TombEditor
             }
             else
             {
-                if (!Utils.IsValidNumber(tbParameter.Text))
+                short targetData;
+                if (!short.TryParse(tbParameter.Text, out targetData))
                 {
                     DarkMessageBox.Show(this, "You must insert a valid value for parameter",
                                         "Save trigger", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -216,7 +215,7 @@ namespace TombEditor
                 }
 
                 _trigger.TargetObj = null;
-                _trigger.TargetData = short.Parse(tbParameter.Text);
+                _trigger.TargetData = targetData;
             }
 
             DialogResult = DialogResult.OK;
