@@ -2123,8 +2123,7 @@ namespace TombEditor.Controls
             DrawDebugLines(viewProjection);
 
             // Draw the gizmo
-            if (_editor.SelectedObject?.Room == _editor.SelectedRoom)
-                _gizmo.Draw(viewProjection);
+            _gizmo.Draw(viewProjection);
 
             _watch.Stop();
             _debug.Fps = 1.0 / _watch.Elapsed.TotalSeconds;
