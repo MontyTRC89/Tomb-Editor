@@ -776,6 +776,12 @@ namespace TombEditor.Geometry
             UpdateBuffers();
         }
 
+        public void UpdateOnlyGeometry()
+        {
+            BuildGeometry();
+            CalculateLightingForThisRoom();
+        }
+
         private enum FaceDirection
         {
             PositiveZ, NegativeZ, PositiveX, NegativeX, DiagonalFloor, DiagonalCeiling, DiagonalWall
