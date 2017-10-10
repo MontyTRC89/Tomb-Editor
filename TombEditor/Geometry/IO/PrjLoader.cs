@@ -539,7 +539,7 @@ namespace TombEditor.Geometry.IO
                                 case 0x4c00:
                                     var sound = new SoundSourceInstance()
                                     {
-                                        SoundId = objSlot,
+                                        SoundId = unchecked((ushort)objSlot),
                                         Position = position
                                     };
 
