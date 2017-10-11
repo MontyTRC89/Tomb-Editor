@@ -1748,7 +1748,9 @@ namespace TombEditor
                     if (lowerFile.EndsWith("wad") ||
                         lowerFile.EndsWith("wad2") ||
                         lowerFile.EndsWith("png") ||
-                        lowerFile.EndsWith("tga"))
+                        lowerFile.EndsWith("tga") ||
+                        lowerFile.EndsWith("prj") ||
+                        lowerFile.EndsWith("prj2"))
                     {
                         return true;
                     }
@@ -1758,7 +1760,7 @@ namespace TombEditor
             return false;
         }
 
-        public static bool DragDropFile(DragEventArgs e)
+        public static bool DragDropFile(DragEventArgs e, IWin32Window owner)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -1788,6 +1790,14 @@ namespace TombEditor
 
                         _editor.Level.Settings.TextureFilePath = lowerFile;
                         _editor.LoadedTexturesChange();
+                    }
+                    else if (lowerFile.EndsWith("prj"))
+                    {
+                        OpenLevelPrj(lowerFile, owner);
+                    }
+                    else if (lowerFile.EndsWith("prj2"))
+                    {
+                        OpenLevel(lowerFile, owner);
                     }
                 }
 
@@ -1854,7 +1864,7 @@ namespace TombEditor
             }
         }
 
-        public static void OpenLevel(IWin32Window owner)
+        public static void OpenLevelWithDialog(IWin32Window owner)
         {
             if (DarkMessageBox.Show(owner,
                 "Your level will be lost. Do you really want to open another level file?",
@@ -1868,22 +1878,26 @@ namespace TombEditor
                 if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                // Load level
-                Level newLevel = null;
-                try
-                {
-                    newLevel = Prj2Loader.LoadFromPrj2(openFileDialog.FileName, new ProgressReporterSimple(owner));
-                }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
-                    DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
-                }
-                _editor.Level = newLevel;
+                OpenLevel(openFileDialog.FileName, owner);
             }
         }
 
-        public static void OpenLevelPrj(IWin32Window owner)
+        public static void OpenLevel(string fileName, IWin32Window owner)
+        {
+            Level newLevel = null;
+            try
+            {
+                newLevel = Prj2Loader.LoadFromPrj2(fileName, new ProgressReporterSimple(owner));
+            }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Unable to open \"" + fileName + "\"");
+                DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
+            }
+            _editor.Level = newLevel;
+        }
+
+        public static void OpenLevelPrjWithDialog(IWin32Window owner)
         {
             if (DarkMessageBox.Show(owner,
                     "Your level will be lost. Do you really want to open another level file?",
@@ -1897,23 +1911,27 @@ namespace TombEditor
                 if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                // Load level
-                Level newLevel = null;
-                try
+                OpenLevelPrj(openFileDialog.FileName, owner);
+            }
+        }
+
+        public static void OpenLevelPrj(string fileName, IWin32Window owner)
+        {
+            Level newLevel = null;
+            try
+            {
+                using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
+                    newLevel = PrjLoader.LoadFromPrj(fileName, progressReporter)))
                 {
-                    using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
-                        newLevel = PrjLoader.LoadFromPrj(openFileDialog.FileName, progressReporter)))
-                    {
-                        if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
-                            return;
-                        _editor.Level = newLevel;
-                        newLevel = null;
-                    }
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return;
+                    _editor.Level = newLevel;
+                    newLevel = null;
                 }
-                finally
-                {
-                    newLevel?.Dispose();
-                }
+            }
+            finally
+            {
+                newLevel?.Dispose();
             }
         }
 

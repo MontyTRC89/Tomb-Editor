@@ -842,7 +842,7 @@ namespace TombEditor.Controls
         {
             // Check if we are done with all common file tasks
 
-            if (EditorActions.DragDropFile(e))
+            if (EditorActions.DragDropFile(e, FindForm()))
                 return;
 
             // Now try to put data on pointed sector

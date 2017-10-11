@@ -616,12 +616,12 @@ namespace TombEditor
 
         private void openLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.OpenLevel(this);
+            EditorActions.OpenLevelWithDialog(this);
         }
 
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.OpenLevelPrj(this);
+            EditorActions.OpenLevelPrjWithDialog(this);
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1021,7 +1021,7 @@ namespace TombEditor
 
         private void FormMain_DragDrop(object sender, DragEventArgs e)
         {
-            EditorActions.DragDropFile(e);
+            EditorActions.DragDropFile(e, this);
         }
 
         private void FormMain_DragEnter(object sender, DragEventArgs e)
