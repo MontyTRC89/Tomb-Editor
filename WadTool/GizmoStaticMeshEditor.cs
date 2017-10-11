@@ -23,14 +23,11 @@ namespace WadTool
         }
 
         protected override void GizmoMove(Vector3 newPos) => _control.StaticPosition = newPos;
-        protected override void GizmoRotateX(float angle) => _control.StaticRotation += new Vector3(angle, 0, 0);
-        protected override void GizmoRotateY(float angle) => _control.StaticRotation += new Vector3(0, angle, 0);
-        protected override void GizmoRotateZ(float angle) => _control.StaticRotation += new Vector3(0, 0, angle);
-        protected override void GizmoScale(float scale)
+        protected override void GizmoRotateX(float newAngle) => _control.StaticRotation = new Vector3(newAngle, _control.StaticRotation.Y, _control.StaticRotation.Z);
+        protected override void GizmoRotateY(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, newAngle, _control.StaticRotation.Z);
+        protected override void GizmoRotateZ(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, _control.StaticRotation.Y, newAngle);
+        protected override void GizmoScale(float newScale)
         {
-            float newScale = scale / 1024.0f; // TODO: adjust
-            newScale += _control.StaticScale;
-
             // Set some limits to scale
             // TODO: object risks to be too small and to be not pickable. We should add some size check
             if (newScale < 1.0f)
@@ -45,6 +42,7 @@ namespace WadTool
         protected override float RotationY => _control.StaticRotation.Y;
         protected override float RotationX => _control.StaticRotation.X;
         protected override float RotationZ => _control.StaticRotation.Z;
+        protected override float Scale => _control.StaticScale;
 
         protected override float CentreCubeSize => 128.0f;
         protected override float TranslationSphereSize => 128.0f;
