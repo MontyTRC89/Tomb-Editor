@@ -628,17 +628,22 @@ namespace TombEditor
             return new Vector3(512.0f, 128.0f, 512.0f);
         }
 
-        public static void ScaleObject(IScaleable instance, float delta, Keys modifierKeys)
+        public static void ScaleObject(IScaleable instance, float newScale, double quantization)
         {
-            float newScale = delta / 1024.0f; // TODO: adjust
-            instance.Scale += newScale;
-
+            if (quantization != 0.0f)
+            {
+                double logScale = Math.Log(newScale);
+                double logQuantization = Math.Log(quantization);
+                logScale = Math.Round(logScale / logQuantization) * logQuantization;
+                newScale = (float)Math.Exp(logScale);
+            }
             // Set some limits to scale
             // TODO: object risks to be too small and to be not pickable. We should add some size check
-            if (instance.Scale < 1.0f)
-                instance.Scale = 1.0f;
-            if (instance.Scale > 128.0f)
-                instance.Scale = 128.0f;
+            if (newScale < (1 / 32.0f))
+                newScale = (1 / 32.0f);
+            if (newScale > 128.0f)
+                newScale = 128.0f;
+            instance.Scale = newScale;
 
             _editor.ObjectChange(_editor.SelectedObject);
         }
@@ -697,27 +702,30 @@ namespace TombEditor
             Roll
         };
 
-        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees)
+        public static void RotateObject(ObjectInstance instance, RotationAxis axis, float angleInDegrees, float quantization = 0.0f, bool delta = true)
         {
+            if (quantization != 0.0f)
+                angleInDegrees = (float)(Math.Round(angleInDegrees / quantization) * quantization);
+
             switch (axis)
             {
                 case RotationAxis.Y:
                     var rotateableY = instance as IRotateableY;
                     if (rotateableY == null)
                         return;
-                    rotateableY.RotationY += angleInDegrees;
+                    rotateableY.RotationY = angleInDegrees + (delta ? rotateableY.RotationY : 0);
                     break;
                 case RotationAxis.X:
                     var rotateableX = instance as IRotateableYX;
                     if (rotateableX == null)
                         return;
-                    rotateableX.RotationX += angleInDegrees;
+                    rotateableX.RotationX = angleInDegrees + (delta ? rotateableX.RotationX : 0);
                     break;
                 case RotationAxis.Roll:
                     var rotateableRoll = instance as IRotateableYXRoll;
                     if (rotateableRoll == null)
                         return;
-                    rotateableRoll.Roll += angleInDegrees;
+                    rotateableRoll.Roll = angleInDegrees + (delta ? rotateableRoll.Roll : 0);
                     break;
             }
             if (instance is LightInstance)

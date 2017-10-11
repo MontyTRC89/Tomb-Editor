@@ -115,7 +115,6 @@ namespace TombLib.IO
         public void WriteChunkArrayOfBytes(ChunkId chunkID, byte[] value)
         {
             chunkID.ToStream(_writer);
-            LEB128.Write(_writer, LEB128.GetLength(_writer, value.Length));
             LEB128.Write(_writer, value.Length);
             _writer.Write(value);
         }

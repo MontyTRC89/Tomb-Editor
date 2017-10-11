@@ -539,7 +539,7 @@ namespace TombEditor.Geometry.IO
                                 case 0x4c00:
                                     var sound = new SoundSourceInstance()
                                     {
-                                        SoundId = objSlot,
+                                        SoundId = unchecked((ushort)objSlot),
                                         Position = position
                                     };
 
@@ -1285,7 +1285,12 @@ namespace TombEditor.Geometry.IO
 
                 // Update level geometry
                 progressReporter.ReportProgress(95, "Building rooms");
+                /*Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.UpdateOnlyGeometry());
+                foreach (var room in level.Rooms)
+                    if (room != null)
+                        room.UpdateBuffers();*/
                 Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.UpdateCompletely());
+
                 progressReporter.ReportProgress(100, "Level loaded correctly!");
 
                 return level;

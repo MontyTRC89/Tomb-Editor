@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
+using TombLib.Wad.Tr4Wad;
 
 namespace WadTool
 {
@@ -240,10 +241,10 @@ namespace WadTool
             string fileName = openFileDialogWad.FileName.ToLower();
             if (fileName.EndsWith(".wad"))
             {
-                TR4Wad originalWad = new TR4Wad();
+                var originalWad = new Tr4Wad();
                 originalWad.LoadWad(fileName);
 
-                var newWad = WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths);
+                var newWad = Tr4WadOperations.ConvertTr4Wad(originalWad, wadSoundPaths);
                 if (newWad == null)
                     return;
 
@@ -564,6 +565,7 @@ namespace WadTool
         {
             //_tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
             Wad2.SaveToWad2("E:\\testchunk.wad2", _tool.SourceWad);
+            Wad2.LoadFromWad2("E:\\testchunk.wad2");
         }
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)

@@ -27,31 +27,34 @@ namespace TombEditor
                                      newPos - _editor.SelectedObject.Room.WorldPos, Control.ModifierKeys);
         }
 
-        protected override void GizmoRotateZ(float angle)
+        private float RotationQuanization => (Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift)) ? 22.5f : 0.0f;
+
+        protected override void GizmoRotateY(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(angle * (180 / Math.PI)));
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
         }
 
-        protected override void GizmoRotateX(float angle)
+        protected override void GizmoRotateX(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, (float)(angle * -(180 / Math.PI)));
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, (float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
         }
 
-        protected override void GizmoRotateY(float angle)
+        protected override void GizmoRotateZ(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, (float)(angle * (180 / Math.PI)));
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Roll, (float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
         }
-
 
         protected override void GizmoScale(float scale)
         {
-            EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, Control.ModifierKeys);
+            bool quantized = Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift);
+            EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, quantized ? Math.Sqrt(2) : 0.0f);
         }
 
         protected override Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;
         protected override float RotationY => (float)(((IRotateableY)_editor.SelectedObject).RotationY * (Math.PI / 180));
-        protected override float RotationX => (float)(((IRotateableYX)_editor.SelectedObject).RotationX * -(Math.PI / 180));
+        protected override float RotationX => (float)(((IRotateableYX)_editor.SelectedObject).RotationX * (Math.PI / 180));
         protected override float RotationZ => (float)(((IRotateableYXRoll)_editor.SelectedObject).Roll * (Math.PI / 180));
+        protected override float Scale => ((IScaleable)_editor.SelectedObject).Scale;
 
         protected override float CentreCubeSize => _editor.Configuration.Gizmo_CenterCubeSize;
         protected override float TranslationSphereSize => _editor.Configuration.Gizmo_TranslationSphereSize;

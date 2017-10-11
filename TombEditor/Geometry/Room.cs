@@ -781,6 +781,12 @@ namespace TombEditor.Geometry
             UpdateBuffers();
         }
 
+        public void UpdateOnlyGeometry()
+        {
+            BuildGeometry();
+            CalculateLightingForThisRoom();
+        }
+
         private enum FaceDirection
         {
             PositiveZ, NegativeZ, PositiveX, NegativeX, DiagonalFloor, DiagonalCeiling, DiagonalWall
@@ -2253,10 +2259,7 @@ namespace TombEditor.Geometry
                                 if (attenuation < 0.0f)
                                     continue;
 
-                                Vector3 normal2 = normal;
-                                normal2.Y = -normal2.Y;
-
-                                float dot1 = Vector3.Dot(lightDirection, normal2);
+                                float dot1 = -Vector3.Dot(lightDirection, normal);
                                 if (dot1 < 0.0f)
                                     continue;
                                 if (dot1 > 1.0f)
