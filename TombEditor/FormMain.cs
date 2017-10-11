@@ -252,7 +252,7 @@ namespace TombEditor
 
             switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
             {
-                case Keys.Z: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
+                case Keys.M: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
                     _pressedZorY = true;
                     break;
 
@@ -416,8 +416,21 @@ namespace TombEditor
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 3, (short)-(shift ? 4 : 1), alt);
                     break;
 
-                case Keys.Y: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
-                    _pressedZorY = true;
+                case Keys.Y:
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
+                    break;
+                case Keys.H: 
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)-(shift ? 4 : 1), alt);
+                    break;
+                case Keys.U:
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)(shift ? 4 : 1), alt);
+                    break;
+                case Keys.J: 
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                        EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)-(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.OemMinus: // US keyboard key in documentation
