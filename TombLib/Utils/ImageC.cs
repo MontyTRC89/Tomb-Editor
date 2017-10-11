@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
 using SharpDX;
 
@@ -126,29 +127,130 @@ namespace TombLib.Utils
 
         public int DataSize => Width * Height * PixelSize;
 
+        private static readonly byte[] Tga2_Signature = new byte [18] { 84, 82, 85, 69, 86, 73, 83, 73, 79, 78, 45, 88, 70, 73, 76, 69, 46, 0 };
+
+        private static bool IsTga(byte[] startBytes)
+        {
+            // Inspired by the FreeType tga image validation routine
+            // "Validate" in PluginTARGE.cpp
+
+            if (startBytes.SequenceEqual(Tga2_Signature))
+                return true;
+
+            byte colorMapType = startBytes[1];
+            byte imageType = startBytes[2];
+            ushort colorMapFirstEntry = BitConverter.ToUInt16(startBytes, 3);
+            ushort colorMapLength = BitConverter.ToUInt16(startBytes, 5);
+            byte colorMapSize = startBytes[7];
+            ushort width = BitConverter.ToUInt16(startBytes, 12);
+            ushort height = BitConverter.ToUInt16(startBytes, 14);
+            byte pixelDepth = startBytes[16];
+
+            if ((colorMapType != 0) && (colorMapType != 1))
+                return false;
+            if (colorMapType == 1)
+            {
+                if (colorMapFirstEntry >= colorMapLength)
+                    return false;
+                if ((colorMapSize == 0) || (colorMapSize > 32))
+                    return false;
+            }
+            if ((width == 0) || (height == 0))
+                return false;
+
+            switch (imageType)
+            {
+                case 1: // Cmap
+                case 2: // RGB
+                case 3: // Mono
+                case 9: // RLE Cmap
+                case 10: // RLE RGB
+                case 11: // RLE Mono
+                    break;
+                default:
+                    return false;
+            }
+
+            switch (pixelDepth)
+            {
+                case 8:
+                case 16:
+                case 24:
+                case 32:
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static ImageC FromPfimImage(Pfim.IImage image)
+        {
+            switch (image.Format)
+            {
+                case Pfim.ImageFormat.Rgba32:
+                    return new ImageC(image.Width, image.Height, image.Data);
+                case Pfim.ImageFormat.Rgb24:
+                    byte[] data = image.Data;
+                    int stride = image.Stride;
+                    ImageC result = CreateNew(image.Width, image.Height);
+                    for (int y = 0; y < result.Height; ++y)
+                    {
+                        int inputIndex = y * stride;
+                        int outputIndex = y * result.Width * PixelSize;
+
+                        for (int x = 0; x < result.Width; ++x)
+                        {
+                            result._data[outputIndex + 0] = data[inputIndex + 0];
+                            result._data[outputIndex + 1] = data[inputIndex + 1];
+                            result._data[outputIndex + 2] = data[inputIndex + 2];
+                            result._data[outputIndex + 3] = 0xff;
+
+                            inputIndex += 3;
+                            outputIndex += 4;
+                        }
+                    }
+                    return result;
+                default:
+                    throw new NotImplementedException("Pfim image library type " + image.Format + " not handled!");
+            }
+        }
+
         public static ImageC FromStream(Stream stream)
         {
             long PreviousPosition = stream.Position;
 
-            Image image = null;
-            try
+            // Read some start bytes
+            long startPos = stream.Position;
+            byte[] startBytes = new byte[18];
+            stream.Read(startBytes, 0, 18);
+            stream.Position = startPos;
+
+            // Detect special image types
+            if ((startBytes[0] == 0x44) && (startBytes[1] == 0x44) && (startBytes[2] == 0x53) && (startBytes[3] == 0x20))
             {
-                // First try to open it with .Net methods
+                // dds image
+                return FromPfimImage(Pfim.Dds.Create(stream));
+            }
+            else if (IsTga(startBytes))
+            {
+                // Tga image
+                return FromPfimImage(Pfim.Targa.Create(stream));
+            }
+            else
+            {
+                // Other image
+                Image image = null;
                 try
                 {
                     image = Image.FromStream(stream);
+                    return FromSystemDrawingImage(image);
                 }
-                catch (ArgumentException) //Fires if default .NET methods fail
-                { // Try to open it as tga file
-                    stream.Position = PreviousPosition;
-                    image = Paloma.TargaImage.LoadTargaImage(stream);
+                finally
+                {
+                    image?.Dispose();
                 }
-
-                return FromSystemDrawingImage(image);
-            }
-            finally
-            {
-                image?.Dispose();
             }
         }
 
