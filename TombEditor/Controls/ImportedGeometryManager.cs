@@ -127,7 +127,7 @@ namespace TombEditor.Controls
             path = LevelSettings.MakeAbsolute(path);
             using (FileDialog dialog = new OpenFileDialog())
             {
-                dialog.Filter = ImportedGeometry.SupportedFormats + "|All files (*.*)|*";
+                dialog.Filter = ImportedGeometry.SupportedFormats.GetFilter() + "|All files (*.*)|*";
                 dialog.Title = "Select a 3D file that you want to see imported.";
                 dialog.FileName = string.IsNullOrEmpty(path) ? "" : Path.GetFileName(path);
                 dialog.InitialDirectory = string.IsNullOrEmpty(path) ? path : Path.GetDirectoryName(path);

@@ -8,6 +8,7 @@ using SharpDX;
 using TombEditor.Geometry;
 using SharpDX.Toolkit.Graphics;
 using TombLib.Graphics;
+using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
@@ -820,14 +821,31 @@ namespace TombEditor.Controls
         {
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
-            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            else if (EditorActions.DragDropFileSupported(e))
                 e.Effect = DragDropEffects.Move;
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                for(int i = 0; i < files.Length; i++)
+                {
+                    if(ImportedGeometry.SupportedFormats.IsExtensionPresent(files[i]))
+                    {
+                        e.Effect = DragDropEffects.Move;
+                        break;
+                    }
+                }
+            }
         }
 
         protected override void OnDragDrop(DragEventArgs e)
         {
-            if (EditorActions.DragDropFile(e) == true)
+            // Check if we are done with all common file tasks
+
+            if (EditorActions.DragDropFile(e))
                 return;
+
+            // Now try to put data on pointed sector
 
             Point loc = PointToClient(new Point(e.X, e.Y));
             PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y));
@@ -836,9 +854,44 @@ namespace TombEditor.Controls
             {
                 if (e.Data.GetDataPresent(typeof(ItemType)))
                 {
+                    // Put item from object browser
+
                     EditorActions.PlaceObject(_editor.SelectedRoom,
                         ((PickingResultBlock)newPicking).Pos,
                         ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
+                }
+                else if(e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    // Try to put custom geometry files
+
+                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        if (!ImportedGeometry.SupportedFormats.IsExtensionPresent(files[i]))
+                            continue;
+
+                        var info = ImportedGeometryInfo.Default;
+                        info.Path = files[i];
+                        info.Name = Path.GetFileNameWithoutExtension(files[i]);
+
+                        var instance = new ImportedGeometryInstance();
+                        var existingGeometry = _editor.Level.Settings.ImportedGeometries.Find(item => item.Info.Path == info.Path);
+
+                        if(existingGeometry == null)
+                        {
+                            existingGeometry = new ImportedGeometry();
+                            _editor.Level.Settings.ImportedGeometryUpdate(existingGeometry, info);
+                            _editor.Level.Settings.ImportedGeometries.Add(existingGeometry);
+                        }
+
+                        instance.Model = existingGeometry;
+
+                        EditorActions.PlaceObject(_editor.SelectedRoom,
+                            ((PickingResultBlock)newPicking).Pos, instance);
+
+                        _editor.ObjectChange(instance);
+                    }
                 }
             }
         }

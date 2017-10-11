@@ -1734,40 +1734,67 @@ namespace TombEditor
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
         }
 
-        public static bool DragDropFile(DragEventArgs e)
+        public static bool DragDropFileSupported(DragEventArgs e)
         {
-            bool filesLoaded = false;
-
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                int fileCount = files.Count();
+
+                foreach (var file in files)
+                {
+                    var lowerFile = file.ToLower();
+
+                    if (lowerFile.EndsWith("wad") ||
+                        lowerFile.EndsWith("wad2") ||
+                        lowerFile.EndsWith("png") ||
+                        lowerFile.EndsWith("tga"))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static bool DragDropFile(DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                int fileCount = files.Count();
 
                 foreach (var file in files)
                 {
                     var lowerFile = file.ToLower();
                     if (lowerFile.EndsWith("wad") || lowerFile.EndsWith("wad2"))
                     {
+                        fileCount--;
+
                         if (lowerFile == _editor.Level.Settings.WadFilePath)
                             break;
 
                         _editor.Level.Settings.WadFilePath = lowerFile;
                         _editor.Level.ReloadWad();
                         _editor.LoadedWadsChange(_editor.Level.Wad);
-                        filesLoaded = true;
                     }
                     else if (lowerFile.EndsWith("png") || (lowerFile.EndsWith("tga")))
                     {
+                        fileCount--;
+
                         if (_editor.Level.Settings.TextureFilePath == lowerFile)
                             break;
 
                         _editor.Level.Settings.TextureFilePath = lowerFile;
                         _editor.LoadedTexturesChange();
-                        filesLoaded = true;
                     }
                 }
+
+                return (fileCount == 0);
             }
 
-            return filesLoaded;
+            return false;
         }
 
         public static void ShowTextureSoundsDialog(IWin32Window owner)

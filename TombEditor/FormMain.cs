@@ -1026,7 +1026,7 @@ namespace TombEditor
 
         private void FormMain_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (EditorActions.DragDropFileSupported(e))
                 e.Effect = DragDropEffects.Move;
         }
     }
