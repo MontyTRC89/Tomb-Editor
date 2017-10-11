@@ -151,7 +151,6 @@
     <Compile Include="Wad\OriginalSound.cs" />
     <Compile Include="Wad\Wad2Actions.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
-    <Compile Include="Wad\Wad2IO.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />
     <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
