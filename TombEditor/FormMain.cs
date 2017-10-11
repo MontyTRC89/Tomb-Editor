@@ -1018,5 +1018,16 @@ namespace TombEditor
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
         }
+
+        private void FormMain_DragDrop(object sender, DragEventArgs e)
+        {
+            EditorActions.DragDropFile(e);
+        }
+
+        private void FormMain_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Move;
+        }
     }
 }

@@ -818,18 +818,23 @@ namespace TombEditor.Controls
 
         protected override void OnDragEnter(DragEventArgs e)
         {
-            if (e.Data.GetData(typeof(ItemType)) != null)
+            if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Move;
         }
 
         protected override void OnDragDrop(DragEventArgs e)
         {
+            if (EditorActions.DragDropFile(e) == true)
+                return;
+
             Point loc = PointToClient(new Point(e.X, e.Y));
             PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y));
 
             if (newPicking is PickingResultBlock)
             {
-                if (e.Data.GetData(typeof(ItemType)) != null)
+                if (e.Data.GetDataPresent(typeof(ItemType)))
                 {
                     EditorActions.PlaceObject(_editor.SelectedRoom,
                         ((PickingResultBlock)newPicking).Pos,

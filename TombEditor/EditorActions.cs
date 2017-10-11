@@ -1734,6 +1734,42 @@ namespace TombEditor
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
         }
 
+        public static bool DragDropFile(DragEventArgs e)
+        {
+            bool filesLoaded = false;
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (var file in files)
+                {
+                    var lowerFile = file.ToLower();
+                    if (lowerFile.EndsWith("wad") || lowerFile.EndsWith("wad2"))
+                    {
+                        if (lowerFile == _editor.Level.Settings.WadFilePath)
+                            break;
+
+                        _editor.Level.Settings.WadFilePath = lowerFile;
+                        _editor.Level.ReloadWad();
+                        _editor.LoadedWadsChange(_editor.Level.Wad);
+                        filesLoaded = true;
+                    }
+                    else if (lowerFile.EndsWith("png") || (lowerFile.EndsWith("tga")))
+                    {
+                        if (_editor.Level.Settings.TextureFilePath == lowerFile)
+                            break;
+
+                        _editor.Level.Settings.TextureFilePath = lowerFile;
+                        _editor.LoadedTexturesChange();
+                        filesLoaded = true;
+                    }
+                }
+            }
+
+            return filesLoaded;
+        }
+
         public static void ShowTextureSoundsDialog(IWin32Window owner)
         {
             using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
