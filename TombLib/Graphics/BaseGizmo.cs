@@ -102,12 +102,12 @@ namespace TombLib.Graphics
 
         public void Dispose()
         {
-            _rasterizerWireframe.Dispose();
-            _rotationHelperGeometry.Dispose();
-            _cylinder.Dispose();
-            _sphere.Dispose();
-            _cube.Dispose();
-            _torus.Dispose();
+            if (_rasterizerWireframe != null) _rasterizerWireframe.Dispose();
+            if (_rotationHelperGeometry != null) _rotationHelperGeometry.Dispose();
+            if (_cylinder != null) _cylinder.Dispose();
+            if (_sphere != null) _sphere.Dispose();
+            if (_cube != null) _cube.Dispose();
+            if (_torus != null) _torus.Dispose();
         }
 
         private static Vector3 ConstructPlaneIntersection(Vector3 Position, Matrix viewProjection, Ray ray, Vector3 perpendicularVector0, Vector3 perpendicularVector1)
