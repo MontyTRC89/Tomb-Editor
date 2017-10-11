@@ -115,6 +115,9 @@ namespace TombEditor.ToolWindows
 
         private void butItemsBack_Click(object sender, EventArgs e)
         {
+            if (comboItems.Items.Count == 0)
+                return;
+
             if ((comboItems.SelectedIndex - 1) < 0)
                 comboItems.SelectedIndex = comboItems.Items.Count - 1;
             else
@@ -123,6 +126,9 @@ namespace TombEditor.ToolWindows
 
         private void butItemsNext_Click(object sender, EventArgs e)
         {
+            if (comboItems.Items.Count == 0)
+                return;
+
             if ((comboItems.SelectedIndex + 1) >= comboItems.Items.Count)
                 comboItems.SelectedIndex = 0;
             else
