@@ -821,21 +821,8 @@ namespace TombEditor.Controls
         {
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
-            else if (EditorActions.DragDropFileSupported(e))
+            else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
-            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                for(int i = 0; i < files.Length; i++)
-                {
-                    if(ImportedGeometry.SupportedFormats.IsExtensionPresent(files[i]))
-                    {
-                        e.Effect = DragDropEffects.Move;
-                        break;
-                    }
-                }
-            }
         }
 
         protected override void OnDragDrop(DragEventArgs e)

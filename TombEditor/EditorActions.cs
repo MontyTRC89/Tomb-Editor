@@ -1734,7 +1734,7 @@ namespace TombEditor
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
         }
 
-        public static bool DragDropFileSupported(DragEventArgs e)
+        public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -1754,6 +1754,9 @@ namespace TombEditor
                     {
                         return true;
                     }
+
+                    if (allow3DImport && ImportedGeometry.SupportedFormats.IsExtensionPresent(file))
+                        return true;
                 }
             }
 
