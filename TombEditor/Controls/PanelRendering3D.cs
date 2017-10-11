@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using SharpDX;
@@ -642,12 +643,12 @@ namespace TombEditor.Controls
                                     {
                                         if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
                                         {
-                                            EditorActions.FlipFloorSplit(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                            EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                             return;
                                         }
                                         else if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
                                         {
-                                            EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                            EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                             return;
                                         }
                                     }
@@ -823,15 +824,17 @@ namespace TombEditor.Controls
 
         protected override void OnDragDrop(DragEventArgs e)
         {
-            System.Drawing.Point loc = PointToClient(new System.Drawing.Point(e.X, e.Y));
+            Point loc = PointToClient(new Point(e.X, e.Y));
             PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y));
 
             if (newPicking is PickingResultBlock)
             {
-                EditorActions.PlaceObject(_editor.SelectedRoom,
-                    ((PickingResultBlock)newPicking).Pos,
-                    ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
-                Invalidate();
+                if (e.Data.GetData(typeof(ItemType)) != null)
+                {
+                    EditorActions.PlaceObject(_editor.SelectedRoom,
+                        ((PickingResultBlock)newPicking).Pos,
+                        ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
+                }
             }
         }
 
