@@ -38,6 +38,7 @@ namespace TombLib.Wad
         public Texture2D DirectXTexture { get; private set; }
         public SortedDictionary<uint, SkinnedModel> DirectXMoveables { get; } = new SortedDictionary<uint, SkinnedModel>();
         public SortedDictionary<uint, StaticModel> DirectXStatics { get; } = new SortedDictionary<uint, StaticModel>();
+        public List<WadTexture> PackedTextures { get; set; } = new List<WadTexture>();
 
         // Size of the atlas
         public const int TextureAtlasSize = 2048;
@@ -142,23 +143,23 @@ namespace TombLib.Wad
             }
         }
 
-        public List<WadTexture> RebuildTextureAtlas()
+        public void RebuildTextureAtlas()
         {
             if (DirectXTexture != null) DirectXTexture.Dispose();
 
             // Pack the textures in a single atlas
-            List<WadTexture> packedTextures = new List<WadTexture>();
+            PackedTextures = new List<WadTexture>();
 
             for (int i = 0; i < Textures.Count; i++)
             {
-                packedTextures.Add(Textures.ElementAt(i).Value);
+                PackedTextures.Add(Textures.ElementAt(i).Value);
             }
 
-            packedTextures.Sort(new ComparerWadTextures());
+            PackedTextures.Sort(new ComparerWadTextures());
 
             RectPackerSimpleStack packer = new RectPackerSimpleStack(TextureAtlasSize, TextureAtlasSize);
 
-            foreach (var texture in packedTextures)
+            foreach (var texture in PackedTextures)
             {
                 var point = packer.TryAdd(texture.Width, texture.Height);
                 texture.PositionInPackedTexture = new Vector2(point.Value.X, point.Value.Y);
@@ -168,7 +169,7 @@ namespace TombLib.Wad
             // I generate a texture atlas, putting all texture pages inside 2048x2048 pixel textures.
             var tempBitmap = ImageC.CreateNew(TextureAtlasSize, TextureAtlasSize);
 
-            foreach (var texture in packedTextures)
+            foreach (var texture in PackedTextures)
             {
                 int startX = (int)texture.PositionInPackedTexture.X;
                 int startY = (int)texture.PositionInPackedTexture.Y;
@@ -185,8 +186,6 @@ namespace TombLib.Wad
 
             // Create the DirectX texture atlas
             DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
-
-            return packedTextures;
         }
 
         public void PrepareDataForDirectX()
@@ -194,20 +193,20 @@ namespace TombLib.Wad
             Dispose();
 
             // Rebuild the texture atlas and covert it to a DirectX texture
-            var packedTextures = RebuildTextureAtlas();
+            RebuildTextureAtlas();
             
             // Create movable models
             for (int i = 0; i < Moveables.Count; i++)
             {
                 WadMoveable mov = Moveables.ElementAt(i).Value;
-                DirectXMoveables.Add(mov.ObjectID, SkinnedModel.FromWad2(GraphicsDevice, this, mov, packedTextures));
+                DirectXMoveables.Add(mov.ObjectID, SkinnedModel.FromWad2(GraphicsDevice, this, mov, PackedTextures));
             }
 
             // Create static meshes
             for (int i = 0; i < Statics.Count; i++)
             {
                 WadStatic staticMesh = Statics.ElementAt(i).Value;
-                DirectXStatics.Add(staticMesh.ObjectID, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, packedTextures));
+                DirectXStatics.Add(staticMesh.ObjectID, StaticModel.FromWad2(GraphicsDevice, this, staticMesh, PackedTextures));
             }
 
             // Prepare sprites

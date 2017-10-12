@@ -46,7 +46,6 @@ namespace TombLib.Graphics
         {
             node.GlobalTransform = node.Transform * parentTransform;
             Transforms[node.Index] = node.GlobalTransform;
-            //   InverseTransforms[node.Index] = new Matrix(node.GlobalTransform.ToArray());
             InverseTransforms[node.Index] = Matrix.Invert(node.GlobalTransform);
 
             foreach (var child in node.Children)

@@ -49,7 +49,7 @@
             this.panel2DGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2DGrid.Location = new System.Drawing.Point(2, 0);
             this.panel2DGrid.Name = "panel2DGrid";
-            this.panel2DGrid.Size = new System.Drawing.Size(295, 295);
+            this.panel2DGrid.Size = new System.Drawing.Size(224, 225);
             this.panel2DGrid.TabIndex = 103;
             // 
             // panelRight
@@ -78,6 +78,7 @@
             // 
             // butCeiling
             // 
+            this.butCeiling.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.butCeiling.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butCeiling.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
@@ -95,6 +96,7 @@
             // 
             // butClimbPositiveZ
             // 
+            this.butClimbPositiveZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.climb_north;
             this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 140);
             this.butClimbPositiveZ.Name = "butClimbPositiveZ";
@@ -106,6 +108,7 @@
             // 
             // butClimbPositiveX
             // 
+            this.butClimbPositiveX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.climb_east;
             this.butClimbPositiveX.Location = new System.Drawing.Point(32, 168);
             this.butClimbPositiveX.Name = "butClimbPositiveX";
@@ -117,6 +120,7 @@
             // 
             // butClimbNegativeZ
             // 
+            this.butClimbNegativeZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.climb_south;
             this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 140);
             this.butClimbNegativeZ.Name = "butClimbNegativeZ";
@@ -128,6 +132,7 @@
             // 
             // butClimbNegativeX
             // 
+            this.butClimbNegativeX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.climb_west;
             this.butClimbNegativeX.Location = new System.Drawing.Point(3, 168);
             this.butClimbNegativeX.Name = "butClimbNegativeX";
@@ -139,6 +144,7 @@
             // 
             // butNotWalkableBox
             // 
+            this.butNotWalkableBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
             this.butNotWalkableBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butNotWalkableBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(75)))));
@@ -156,6 +162,7 @@
             // 
             // butPortal
             // 
+            this.butPortal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butPortal.BackColor = System.Drawing.Color.Black;
             this.butPortal.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butPortal.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Black;
@@ -173,6 +180,7 @@
             // 
             // butFlagTriggerTriggerer
             // 
+            this.butFlagTriggerTriggerer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 112);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Padding = new System.Windows.Forms.Padding(5);
@@ -184,6 +192,7 @@
             // 
             // butDeath
             // 
+            this.butDeath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(240)))), ((int)(((byte)(0)))));
             this.butDeath.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butDeath.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
@@ -201,17 +210,19 @@
             // 
             // butForceSolidFloor
             // 
+            this.butForceSolidFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butForceSolidFloor.Location = new System.Drawing.Point(3, 196);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
             this.butForceSolidFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butForceSolidFloor.Size = new System.Drawing.Size(24, 24);
+            this.butForceSolidFloor.Size = new System.Drawing.Size(53, 24);
             this.butForceSolidFloor.TabIndex = 101;
-            this.butForceSolidFloor.Text = "Ff";
+            this.butForceSolidFloor.Text = "FSF";
             this.toolTip.SetToolTip(this.butForceSolidFloor, "Force solid floor");
             this.butForceSolidFloor.Click += new System.EventHandler(this.butForceSolidFloor_Click);
             // 
             // butMonkey
             // 
+            this.butMonkey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.butMonkey.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butMonkey.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
@@ -229,6 +240,7 @@
             // 
             // butFlagBeetle
             // 
+            this.butFlagBeetle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butFlagBeetle.Location = new System.Drawing.Point(3, 112);
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Padding = new System.Windows.Forms.Padding(5);
@@ -240,6 +252,7 @@
             // 
             // butBox
             // 
+            this.butBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.butBox.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butBox.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
@@ -256,6 +269,7 @@
             // 
             // butFloor
             // 
+            this.butFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(190)))), ((int)(((byte)(190)))));
             this.butFloor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butFloor.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(95)))), ((int)(((byte)(95)))));
@@ -273,6 +287,7 @@
             // 
             // butWall
             // 
+            this.butWall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(160)))), ((int)(((byte)(0)))));
             this.butWall.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
             this.butWall.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(0)))));
@@ -301,40 +316,44 @@
             // 
             // butDiagonalWall
             // 
+            this.butDiagonalWall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diagonal_wall_SE;
+            this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.diag_wall_16;
             this.butDiagonalWall.Location = new System.Drawing.Point(192, 0);
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalWall.Size = new System.Drawing.Size(88, 24);
+            this.butDiagonalWall.Size = new System.Drawing.Size(91, 24);
             this.butDiagonalWall.TabIndex = 108;
-            this.butDiagonalWall.Text = "Diag. Wall";
+            this.butDiagonalWall.Text = "Diag wall";
             this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDiagonalWall, "Click again to rotate wall");
             this.butDiagonalWall.Click += new System.EventHandler(this.butDiagonalWall_Click);
             // 
             // butDiagonalCeiling
             // 
+            this.butDiagonalCeiling.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
+            this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.diag_step_ceil_16;
             this.butDiagonalCeiling.Location = new System.Drawing.Point(97, 0);
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
             this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalCeiling.Size = new System.Drawing.Size(89, 24);
+            this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 24);
             this.butDiagonalCeiling.TabIndex = 107;
-            this.butDiagonalCeiling.Text = "Diag. CE";
+            this.butDiagonalCeiling.Text = "Ceil step";
             this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
             // 
             // butDiagonalFloor
             // 
+            this.butDiagonalFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.diagonal_floor_SE;
+            this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.diag_step_fl_16;
             this.butDiagonalFloor.Location = new System.Drawing.Point(2, 0);
             this.butDiagonalFloor.Name = "butDiagonalFloor";
             this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalFloor.Size = new System.Drawing.Size(89, 24);
+            this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
             this.butDiagonalFloor.TabIndex = 106;
-            this.butDiagonalFloor.Text = "Diag. FL";
+            this.butDiagonalFloor.Text = "Floor step";
             this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
             // 

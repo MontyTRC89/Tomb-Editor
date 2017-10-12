@@ -54,6 +54,9 @@
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.Size = new System.Drawing.Size(564, 513);
             this.panelRendering.StaticMesh = null;
+            this.panelRendering.StaticPosition = new SharpDX.Vector3(0F, 0F, 0F);
+            this.panelRendering.StaticRotation = new SharpDX.Vector3(0F, 0F, 0F);
+            this.panelRendering.StaticScale = 1F;
             this.panelRendering.TabIndex = 1;
             // 
             // darkLabel1
@@ -88,6 +91,7 @@
             this.butSaveChanges.TabIndex = 46;
             this.butSaveChanges.Text = "Save changes";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butSaveChanges.Click += new System.EventHandler(this.butSaveChanges_Click);
             // 
             // butImportMesh
             // 
