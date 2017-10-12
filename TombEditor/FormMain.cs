@@ -188,15 +188,14 @@ namespace TombEditor
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
+
+                Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
+                saveLevelToolStripMenuItem.Enabled = false;
+
                 if (_editor.UnsavedChanges)
                 {
-                    Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName + "*";
+                    Text = Text + "*";
                     saveLevelToolStripMenuItem.Enabled = true;
-                }
-                else
-                {
-                    Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
-                    saveLevelToolStripMenuItem.Enabled = false;
                 }
             }
 
@@ -443,7 +442,7 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
-                case Keys.H: 
+                case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)-(shift ? 4 : 1), alt);
                     break;
@@ -451,7 +450,7 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
-                case Keys.J: 
+                case Keys.J:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)-(shift ? 4 : 1), alt);
                     break;

@@ -558,26 +558,32 @@ namespace TombEditor.Controls
                 // Do picking on the scene
                 PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
 
-                // Move camera to selected sector
                 if ((newPicking is PickingResultBlock) && (_editor.Action.RelocateCameraActive))
                 {
+                    // Move camera to selected sector
                     _editor.MoveCameraToSector(((PickingResultBlock)newPicking).Pos);
                     return;
                 }
                 else if (newPicking is PickingResultObject)
                 {
+                    // Select new object
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
-                else if (!(newPicking is PickingResultGizmo))
+                else if (newPicking is PickingResultGizmo)
                 {
-                    _editor.SelectedObject = null;
+                    // Set gizmo axis
+                    _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
                 }
 
-                // Set gizmo axis (or none if another object was picked)
-                if (newPicking is PickingResultGizmo)
+                if (!(newPicking is PickingResultBlock))
                 {
-                    _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
-                    return;
+                    // No tile selected
+                    _editor.SelectedSectors = SectorSelection.None;
+                }
+                if (!(newPicking is PickingResultGizmo) && !(newPicking is PickingResultObject))
+                {
+                    // No object or object gizmo selected
+                    _editor.SelectedObject = null;
                 }
 
                 // Process editor actions
@@ -707,10 +713,6 @@ namespace TombEditor.Controls
                                         _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                                         _doSectorSelection = true;
                                     }
-                                }
-                                else
-                                {
-                                    _editor.SelectedSectors = SectorSelection.None;
                                 }
                                 break;
 
