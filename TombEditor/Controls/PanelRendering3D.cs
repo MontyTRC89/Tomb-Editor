@@ -846,10 +846,8 @@ namespace TombEditor.Controls
             // Do a fast bounding box check
             float minDistance;
             {
-                float distance;
+                float distance = 0;
                 if (transformBB && !transformedRay.Intersects(ref objectBB, out distance))
-                    return;
-                else if(!ray.Intersects(ref objectBB, out distance))
                     return;
 
                 minDistance = result == null ? float.PositiveInfinity : TransformRayDistance(ref ray, ref inverseObjectMatrix, ref transformedRay, result.Distance);
