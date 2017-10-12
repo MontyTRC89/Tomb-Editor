@@ -768,7 +768,7 @@ namespace TombEditor.Controls
                     // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                     float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                     float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
-                    float distanceMultiplier = Camera.Distance / DefaultCameraDistance;
+                    float distanceMultiplier = (float)Math.Pow((Camera.Distance / DefaultCameraDistance), (float)2 / (float)3);
                     if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
                         Camera.MoveCameraPlane(new Vector3(relativeDeltaX * distanceMultiplier, relativeDeltaY * distanceMultiplier, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
