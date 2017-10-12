@@ -41,8 +41,8 @@ namespace TombEditor
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            Text = "Tomb Editor " + Application.ProductVersion + " - Untitled*";
-            _editor.UnsavedChanges = true;
+            Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
+            //_editor.UnsavedChanges = true;
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
