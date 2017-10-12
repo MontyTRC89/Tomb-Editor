@@ -89,10 +89,10 @@ namespace WadTool.Controls
 
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
-            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer,
-                _device.Presenter.BackBuffer);
+            _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.White, 1.0f, 0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
+            _device.SetBlendState(_device.BlendStates.Opaque);
 
             if (CurrentWad != null && CurrentObject != null)
             {
@@ -115,13 +115,9 @@ namespace WadTool.Controls
                     for (int i = 0; i < model.Meshes.Count; i++)
                     {
                         StaticMesh mesh = model.Meshes[i];
-
-                        if (_layout == null)
-                        {
-                            _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
-                            _device.SetVertexInputLayout(_layout);
-                        }
-
+                        _layout = VertexInputLayout.FromBuffer<StaticVertex>(0, mesh.VertexBuffer);
+                        _device.SetVertexInputLayout(_layout);
+                        
                         mioEffect.Parameters["ModelViewProjection"].SetValue(viewProjection);
                         mioEffect.Techniques[0].Passes[0].Apply();
 
