@@ -212,7 +212,7 @@ namespace TombEditor
             }
 
             // Update on changes to the project
-            if ((obj is IEditorObjectChangedEvent) ||
+            if (((obj is IEditorObjectChangedEvent) && !(obj is Editor.SelectedObjectChangedEvent)) ||
                 (obj is IEditorRoomChangedEvent) ||
                 (obj is Editor.LoadedWadsChangedEvent) ||
                 (obj is Editor.LoadedTexturesChangedEvent) ||

@@ -2248,7 +2248,7 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, wvp);
-                _debug.AddString(messages[i], screenPos);
+                _debug.AddString(messages[i], screenPos - new Vector3(45, 0, 0));       // it'd be better if it was a dynamic string length enumeration
             }
         }
 
