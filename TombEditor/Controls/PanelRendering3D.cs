@@ -142,6 +142,9 @@ namespace TombEditor.Controls
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
 
+        // Current room's last position
+        private Vector3 _currentRoomLastPos = new Vector3(0);
+
         // Gizmo
         private Gizmo _gizmo;
 
@@ -222,6 +225,17 @@ namespace TombEditor.Controls
                 (obj is Editor.LoadedTexturesChangedEvent) ||
                 (obj is Editor.LoadedImportedGeometriesChangedEvent))
             {
+                if (Camera != null && (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ModeChangedEvent))
+                {
+                    var deltaroompos = _editor.SelectedRoom.Position - _currentRoomLastPos;
+                    Camera.MoveCameraLinear(deltaroompos * 1024);
+                    _currentRoomLastPos = _editor.SelectedRoom.Position;
+                }
+
+                //if (obj is Editor.ModeChangedEvent)
+                //{
+                //    var newroompos = _editor.SelectedRoom.Position;
+                //}
                 if (_editor.Mode != EditorMode.Map2D)
                     Invalidate();
             }
@@ -555,6 +569,10 @@ namespace TombEditor.Controls
                 {
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
+                else
+                {
+                    _editor.SelectedObject = null;
+                }
 
                 // Set gizmo axis (or none if another object was picked)
                 if (newPicking is PickingResultGizmo)
@@ -691,6 +709,10 @@ namespace TombEditor.Controls
                                         _doSectorSelection = true;
                                     }
                                 }
+                                else
+                                {
+                                    _editor.SelectedSectors = SectorSelection.None;
+                                }
                                 break;
 
                             case EditorMode.FaceEdit:
@@ -747,8 +769,9 @@ namespace TombEditor.Controls
                     // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                     float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                     float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
+                    float panMultiplier = Camera.Distance / DefaultCameraDistance;
                     if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
-                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
+                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX * panMultiplier, relativeDeltaY * panMultiplier, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
                     else if ((ModifierKeys & Keys.Control) == Keys.Control)
                         Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
@@ -811,7 +834,7 @@ namespace TombEditor.Controls
             return destinationDistance;
         }
 
-        private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix objectMatrix) where T : struct, IVertex
+        private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix objectMatrix, BoundingBox objectBB, bool transformBB = true) where T : struct, IVertex
         {
             // Transform view ray to object space space
             Matrix inverseObjectMatrix = objectMatrix;
@@ -824,9 +847,10 @@ namespace TombEditor.Controls
             // Do a fast bounding box check
             float minDistance;
             {
-                BoundingBox box = mesh.BoundingBox;
                 float distance;
-                if (!transformedRay.Intersects(ref box, out distance))
+                if (transformBB && !transformedRay.Intersects(ref objectBB, out distance))
+                    return;
+                else if(!ray.Intersects(ref objectBB, out distance))
                     return;
 
                 minDistance = result == null ? float.PositiveInfinity : TransformRayDistance(ref ray, ref inverseObjectMatrix, ref transformedRay, result.Distance);
@@ -884,7 +908,7 @@ namespace TombEditor.Controls
                         for (int j = 0; j < model.Meshes.Count; j++)
                         {
                             SkinnedMesh mesh = model.Meshes[j];
-                            DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                            DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix, mesh.BoundingBox);
                         }
                     }
                     else
@@ -904,7 +928,7 @@ namespace TombEditor.Controls
                         StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
 
                         StaticMesh mesh = model.Meshes[0];
-                        DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                        DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix, mesh.BoundingBox);
                     }
                     else
                     {
@@ -922,8 +946,11 @@ namespace TombEditor.Controls
                     BoundingBox box = geometry.Model?.DirectXModel?.BoundingBox ?? new BoundingBox(new Vector3(-128), new Vector3(128));
                     box.Minimum += room.WorldPos + instance.Position;
                     box.Maximum += room.WorldPos + instance.Position;
-                    if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
-                        result = new PickingResultObject(distance, instance);
+
+                    DoMeshPicking(ref result, ray, instance, geometry.Model.DirectXModel.Meshes.ElementAt(0), geometry.ObjectMatrix, box, false);
+
+                    //if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                    //    result = new PickingResultObject(distance, instance);
                 }
                 else
                 {
