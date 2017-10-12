@@ -94,11 +94,13 @@ namespace TombEditor.Controls
         {
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
+            public bool IsFloor { get; private set; }
             public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
             {
                 Distance = distance;
                 Pos = pos;
                 Face = face;
+                IsFloor = (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2 || Face <= BlockFace.DiagonalMiddle);
             }
         }
 
@@ -635,21 +637,21 @@ namespace TombEditor.Controls
                                 if (newPicking is PickingResultBlock)
                                 {
                                     DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
-                                    BlockFace face = ((PickingResultBlock)newPicking).Face;
+                                    bool isFloor = ((PickingResultBlock)newPicking).IsFloor;
 
                                     // Split the faces
                                     if (ModifierKeys.HasFlag(Keys.Alt))
                                     {
-                                        if (face == BlockFace.Floor || face == BlockFace.FloorTriangle2)
-                                        {
+                                        if (isFloor)
                                             EditorActions.FlipFloorSplit(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                                            return;
-                                        }
-                                        else if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
-                                        {
+                                        else
                                             EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
-                                            return;
-                                        }
+                                        return;
+                                    }
+                                    else if (ModifierKeys.HasFlag(Keys.Shift))
+                                    {
+                                        EditorActions.RotateSectors(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y), isFloor);
+                                        return;
                                     }
 
                                     // Handle face selection

@@ -152,7 +152,7 @@ namespace TombEditor.ToolWindows
         {
             if (!EditorActions.CheckForRoomAndBlockSelection(this))
                 return;
-            EditorActions.SetDiagonalWallSplit(_editor.SelectedRoom, _editor.SelectedSectors.Area);
+            EditorActions.SetDiagonalWall(_editor.SelectedRoom, _editor.SelectedSectors.Area);
         }
 
         private void butFlagBeetle_Click(object sender, EventArgs e)
