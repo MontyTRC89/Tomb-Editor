@@ -232,10 +232,6 @@ namespace TombEditor.Controls
                     _currentRoomLastPos = _editor.SelectedRoom.Position;
                 }
 
-                //if (obj is Editor.ModeChangedEvent)
-                //{
-                //    var newroompos = _editor.SelectedRoom.Position;
-                //}
                 if (_editor.Mode != EditorMode.Map2D)
                     Invalidate();
             }
@@ -570,7 +566,7 @@ namespace TombEditor.Controls
                 {
                     _editor.SelectedObject = ((PickingResultObject)newPicking).ObjectInstance;
                 }
-                else
+                else if (!(newPicking is PickingResultGizmo))
                 {
                     _editor.SelectedObject = null;
                 }
@@ -948,10 +944,10 @@ namespace TombEditor.Controls
                     box.Minimum += room.WorldPos + instance.Position;
                     box.Maximum += room.WorldPos + instance.Position;
 
-                    DoMeshPicking(ref result, ray, instance, geometry.Model.DirectXModel.Meshes.ElementAt(0), geometry.ObjectMatrix, box, false);
-
-                    //if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
-                    //    result = new PickingResultObject(distance, instance);
+                    if (geometry?.Model?.DirectXModel?.Meshes?.ElementAt(0) != null)
+                        DoMeshPicking(ref result, ray, instance, geometry.Model.DirectXModel.Meshes.ElementAt(0), geometry.ObjectMatrix, box, false);
+                    else if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                        result = new PickingResultObject(distance, instance);
                 }
                 else
                 {

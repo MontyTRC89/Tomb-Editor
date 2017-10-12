@@ -22,6 +22,24 @@ namespace TombEditor
 
         private static Editor _editor = Editor.Instance;
 
+        public static bool ContinueOnFileDrop(IWin32Window owner, string description)
+        {
+            //if (noUnsavedChanges)
+            //    return true;
+
+            DialogResult saveChanges = DarkMessageBox.Show(owner,
+                "Your unsaved changes will be lost. Do you want to save?",
+                description,
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question);
+            if (saveChanges == DialogResult.Cancel)
+                return false;
+            if (saveChanges == DialogResult.Yes)
+                SaveLevel(owner, false);
+
+            return true;
+        }
+
         public static void SmartBuildGeometry(Room room, Rectangle area)
         {
             var watch = new System.Diagnostics.Stopwatch();
@@ -1793,9 +1811,7 @@ namespace TombEditor
 
         public static void OpenLevel(IWin32Window owner)
         {
-            if (DarkMessageBox.Show(owner,
-                "Your level will be lost. Do you really want to open another level file?",
-                "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -1822,9 +1838,7 @@ namespace TombEditor
 
         public static void OpenLevelPrj(IWin32Window owner)
         {
-            if (DarkMessageBox.Show(owner,
-                    "Your level will be lost. Do you really want to open another level file?",
-                    "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!ContinueOnFileDrop(owner, "Open level"))
                 return;
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())

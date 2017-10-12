@@ -208,8 +208,7 @@ namespace TombEditor
             {
                 case CloseReason.None:
                 case CloseReason.UserClosing:
-                    if (DarkMessageBox.Show(this, "Your level will be lost. Do you really want to exit?",
-                            "Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    if (!EditorActions.ContinueOnFileDrop(this, "Exit"))
                         e.Cancel = true;
                     break;
             }
@@ -602,9 +601,7 @@ namespace TombEditor
 
         private void newLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this,
-                    "Your level will be lost. Do you really want to create a new level?",
-                    "New level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (!EditorActions.ContinueOnFileDrop(this, "New level"))
                 return;
             _editor.Level = Level.CreateSimpleLevel();
         }
