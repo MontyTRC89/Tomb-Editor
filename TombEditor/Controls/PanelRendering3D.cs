@@ -2994,7 +2994,6 @@ namespace TombEditor.Controls
                     }
                 }
 
-
                 _roomEffect.CurrentTechnique.Passes[0].Apply();
 
                 var vertexRange = room.GetFaceVertexRange(bucket.X, bucket.Z, bucket.Face);

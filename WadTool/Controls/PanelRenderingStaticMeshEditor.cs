@@ -16,6 +16,15 @@ namespace WadTool.Controls
     {
         public WadStatic StaticMesh { get; set; }
         public ArcBallCamera Camera { get; set; }
+        public Matrix GizmoTransform
+        {
+            get
+            {
+                return Matrix.Scaling(StaticScale) *
+                       Matrix.RotationYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
+                       Matrix.Translation(StaticPosition);
+            }
+        }
 
         private GraphicsDevice _device;
         private SwapChainGraphicsPresenter _presenter;
@@ -118,9 +127,7 @@ namespace WadTool.Controls
 
                 Effect mioEffect = _tool.Effects["StaticModel"];
 
-                var world = Matrix.Scaling(StaticScale) *
-                            Matrix.RotationYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *
-                            Matrix.Translation(StaticPosition);
+                var world = GizmoTransform;
 
                 mioEffect.Parameters["ModelViewProjection"].SetValue(world * viewProjection);
 
