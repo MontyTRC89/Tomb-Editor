@@ -42,10 +42,10 @@ namespace TombEditor
         public int Rendering3D_DrawRoomsMaxDepth { get; set; } = 6;
         public float Rendering3D_NavigationSpeedKeyRotate { get; set; } = 0.17f;
         public float Rendering3D_NavigationSpeedKeyZoom { get; set; } = 3000.0f;
-        public float Rendering3D_NavigationSpeedMouseWheelZoom { get; set; } = 25.0f;
+        public float Rendering3D_NavigationSpeedMouseWheelZoom { get; set; } = 30.0f;
         public float Rendering3D_NavigationSpeedMouseZoom { get; set; } = 72000.0f;
         public float Rendering3D_NavigationSpeedMouseTranslate { get; set; } = 22000.0f;
-        public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 2.2f;
+        public float Rendering3D_NavigationSpeedMouseRotate { get; set; } = 3.0f;
         public float Rendering3D_LineWidth { get; set; } = 10.0f;
         public float Rendering3D_FieldOfView { get; set; } = 50.0f;
         public Vector4 Rendering3D_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);

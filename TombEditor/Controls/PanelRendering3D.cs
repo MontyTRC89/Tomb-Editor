@@ -539,8 +539,9 @@ namespace TombEditor.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
+            float distanceMultiplier = Camera.Distance / DefaultCameraDistance;
 
-            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
+            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom * distanceMultiplier);
             Invalidate();
         }
 
@@ -769,12 +770,12 @@ namespace TombEditor.Controls
                     // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                     float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                     float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
-                    float panMultiplier = Camera.Distance / DefaultCameraDistance;
+                    float distanceMultiplier = Camera.Distance / DefaultCameraDistance;
                     if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
-                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX * panMultiplier, relativeDeltaY * panMultiplier, 0) *
+                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX * distanceMultiplier, relativeDeltaY * distanceMultiplier, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
                     else if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
+                        Camera.Zoom(relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom * distanceMultiplier);
                     else
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
