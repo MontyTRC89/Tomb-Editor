@@ -236,7 +236,7 @@ namespace TombEditor.Controls
                     Invalidate();
             }
 
-            // Update curser
+            // Update cursor
             if (obj is Editor.ActionChangedEvent)
             {
                 EditorAction currentAction = ((Editor.ActionChangedEvent)obj).Current;

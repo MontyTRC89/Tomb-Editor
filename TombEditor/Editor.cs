@@ -40,6 +40,8 @@ namespace TombEditor
         public static readonly System.Drawing.Color ColorClimb = System.Drawing.Color.FromArgb(0, 100, 0);
         public static readonly System.Drawing.Color ColorNotWalkable = System.Drawing.Color.FromArgb(0, 0, 150);
 
+        public bool UnsavedChanges = true;
+
         public event Action<IEditorEvent> EditorEventRaised;
 
         public void RaiseEvent(IEditorEvent eventObj)
@@ -90,6 +92,7 @@ namespace TombEditor
                 LoadedWadsChange(value.Wad);
                 LoadedTexturesChange();
                 LoadedImportedGeometriesChange();
+                UnsavedChanges = false;
                 LevelFileNameChange();
             }
         }

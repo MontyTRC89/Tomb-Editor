@@ -24,8 +24,8 @@ namespace TombEditor
 
         public static bool ContinueOnFileDrop(IWin32Window owner, string description)
         {
-            //if (noUnsavedChanges)
-            //    return true;
+            if (!_editor.UnsavedChanges)
+                return true;
 
             DialogResult saveChanges = DarkMessageBox.Show(owner,
                 "Your unsaved changes will be lost. Do you want to save?",
@@ -1794,6 +1794,7 @@ namespace TombEditor
                         return;
 
                     _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
+                    _editor.UnsavedChanges = false;
                     _editor.LevelFileNameChange();
                 }
 
@@ -1801,6 +1802,8 @@ namespace TombEditor
             try
             {
                 Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
+                _editor.UnsavedChanges = false;
+                _editor.LevelFileNameChange();
             }
             catch (Exception exc)
             {
@@ -1832,6 +1835,7 @@ namespace TombEditor
                     logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
                     DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
                 }
+                _editor.UnsavedChanges = false;
                 _editor.Level = newLevel;
             }
         }
@@ -1857,6 +1861,7 @@ namespace TombEditor
                     {
                         if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                             return;
+                        _editor.UnsavedChanges = false;
                         _editor.Level = newLevel;
                         newLevel = null;
                     }

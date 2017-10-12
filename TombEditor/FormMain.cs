@@ -41,7 +41,8 @@ namespace TombEditor
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
-            Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
+            Text = "Tomb Editor " + Application.ProductVersion + " - Untitled*";
+            _editor.UnsavedChanges = true;
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
@@ -187,7 +188,10 @@ namespace TombEditor
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
-                Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
+                if (_editor.UnsavedChanges)
+                    Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName + "*";
+                else
+                    Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
             }
 
             // Reload window layout if the configuration changed
@@ -199,6 +203,20 @@ namespace TombEditor
                     (@event.Current.Window_Size != @event.Previous.Window_Size) ||
                     (@event.Current.Window_Layout != @event.Previous.Window_Layout))
                     LoadWindowLayout(_editor.Configuration);
+            }
+
+            // Update on changes to the project
+            if ((obj is IEditorObjectChangedEvent) ||
+                (obj is IEditorRoomChangedEvent) ||
+                (obj is Editor.LoadedWadsChangedEvent) ||
+                (obj is Editor.LoadedTexturesChangedEvent) ||
+                (obj is Editor.LoadedImportedGeometriesChangedEvent))
+            {
+                if (!_editor.UnsavedChanges)
+                {
+                    _editor.UnsavedChanges = true;
+                    _editor.LevelFileNameChange();
+                }
             }
         }
 
