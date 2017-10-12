@@ -2495,7 +2495,7 @@ namespace TombEditor.Controls
                 _roomEffect.Parameters["TextureEnabled"].SetValue(false);
 
                 if (x >= xMin && x <= xMax && xMin != -1 && zMin != -1 && xMax != -1 && zMax != -1 &&
-                    z >= zMin && z <= zMax)
+                    z >= zMin && z <= zMax && room == _editor.SelectedRoom)
                 {
                     // We are in a selected area, so enable selection color
                     _roomEffect.Parameters["UseVertexColors"].SetValue(false);
