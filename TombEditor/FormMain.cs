@@ -183,15 +183,21 @@ namespace TombEditor
                 }
             }
 
-            // Update application title
+            // Update application title and save button
             if (obj is Editor.LevelFileNameChanged)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
                 if (_editor.UnsavedChanges)
+                {
                     Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName + "*";
+                    saveLevelToolStripMenuItem.Enabled = true;
+                }
                 else
+                {
                     Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
+                    saveLevelToolStripMenuItem.Enabled = false;
+                }
             }
 
             // Reload window layout if the configuration changed
@@ -402,12 +408,12 @@ namespace TombEditor
                     break;
 
                 case Keys.W:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)(shift ? 4 : 1), alt);
                     break;
 
                 case Keys.S:
-                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
+                    if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused && modifierKeys != Keys.Control)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, _editor.SelectedSectors.Arrow, 1, (short)-(shift ? 4 : 1), alt);
                     break;
 
