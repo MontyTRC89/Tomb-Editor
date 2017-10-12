@@ -190,7 +190,9 @@ namespace TombEditor.Compilers
                     if (geometry.Model?.DirectXModel == null)
                         continue;
 
-                    var transform = geometry.ObjectMatrix;
+                    var transform = geometry.RotationMatrix * 
+                                    Matrix.Scaling(geometry.Scale) *
+                                    Matrix.Translation(geometry.Position);
                     foreach (var mesh in geometry.Model.DirectXModel.Meshes)
                     {
                         for (int j = 0; j < mesh.Vertices.Count; j++)
