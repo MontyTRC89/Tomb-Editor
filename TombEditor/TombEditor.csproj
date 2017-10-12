@@ -476,7 +476,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Editor\sky.png" />
-    <None Include="Resources\tick_new.png" />
     <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
     <None Include="Editor\arrow_ne_se.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -703,6 +702,9 @@
     <None Include="Resources\diagonal-wall-NW.png" />
     <None Include="Resources\diagonal-wall-SE.png" />
     <None Include="Resources\diagonal-wall-SW.png" />
+    <None Include="Resources\diag-step-ceil-16.png" />
+    <None Include="Resources\diag-step-fl-16.png" />
+    <None Include="Resources\diag-wall-16.png" />
     <None Include="Resources\paste-16.png" />
     <None Include="Resources\rubber_stamp-16.png" />
     <None Include="Resources\Splash.png" />

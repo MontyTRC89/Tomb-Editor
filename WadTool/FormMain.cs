@@ -25,7 +25,7 @@ namespace WadTool
             {
                 "Sounds",
                 "",
-                Path.Combine(Application.StartupPath, "Sounds")
+                Path.Combine(Application.StartupPath, "Sounds\\Samples")
             };
 
         public FormMain()
@@ -564,8 +564,19 @@ namespace WadTool
         private void debugAction1ToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             //_tool.DestinationWad.DirectXTexture.Save("E:\\atlas.png", SharpDX.Toolkit.Graphics.ImageFileType.Png);
-            Wad2.SaveToWad2("E:\\testchunk.wad2", _tool.SourceWad);
-            Wad2.LoadFromWad2("E:\\testchunk.wad2");
+            Wad2.SaveToFile(_tool.SourceWad, "E:\\testchunk.wad2");
+            var newWad = Wad2.LoadFromFile("E:\\testchunk.wad2");
+            if (_tool.DestinationWad != null)
+                _tool.DestinationWad.Dispose();
+
+            newWad.FileName = "E:\\testchunk.wad2";
+            newWad.GraphicsDevice = _tool.Device;
+            newWad.PrepareDataForDirectX();
+            _tool.DestinationWad = newWad;
+
+
+            // Update the UI
+            UpdateDestinationWad2UI();
         }
 
         private void treeDestWad_DoubleClick(object sender, EventArgs e)

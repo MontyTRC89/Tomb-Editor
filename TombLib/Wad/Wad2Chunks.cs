@@ -66,7 +66,8 @@ namespace TombLib.Wad
         /************/public static readonly ChunkId AnimCommand = ChunkId.FromString("W2Cmd");
         public static readonly ChunkId Statics = ChunkId.FromString("W2Statics");
         /**/public static readonly ChunkId Static = ChunkId.FromString("W2Static");
-        /****/public static readonly ChunkId StaticData = ChunkId.FromString("W2StaticData");
+        /****/public static readonly ChunkId StaticVisibilityBox = ChunkId.FromString("W2StaticVB");
+        /****/public static readonly ChunkId StaticCollisionBox = ChunkId.FromString("W2StaticCB");
         public static readonly ChunkId SpriteSequences = ChunkId.FromString("W2SpriteSequences");
         /**/public static readonly ChunkId SpriteSequence = ChunkId.FromString("W2SpriteSeq");
         /****/public static readonly ChunkId SpriteSequenceData = ChunkId.FromString("W2SpriteSeqData");
