@@ -160,6 +160,13 @@ namespace TombEditor.Geometry
                         if (hasTexCoords)
                         {
                             v.UV = new Vector2(texCoords[i].X, 1.0f - texCoords[i].Y);
+
+                            // HACK: maybe something better can be done, but for now it works
+                            if (v.UV.X > 1.0f) v.UV.X -= 1.0f;
+                            if (v.UV.Y > 1.0f) v.UV.Y -= 1.0f;
+                            if (v.UV.X < 0.0f) v.UV.X += 1.0f;
+                            if (v.UV.Y < 0.0f) v.UV.Y += 1.0f;
+
                             if (modelMesh.Texture?.IsAvailable ?? false)
                                 v.UV *= modelMesh.Texture.Image.Size;
                         }

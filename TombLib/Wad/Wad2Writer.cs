@@ -18,10 +18,15 @@ namespace TombLib.Wad
         private static List<WadTexture> _texturesTable;
         private static List<WadSprite> _spritesTable;
 
-        public static void SaveToWad2(string filename, Wad2 wad)
+        public static void SaveToFile(Wad2 wad, string filename)
         {
             using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, fileStream, ChunkWriter.Compression.None))
+                SaveToStream(wad, fileStream);
+        }
+
+        public static void SaveToStream(Wad2 wad, Stream stream)
+        {
+            using (var chunkIO = new ChunkWriter(Wad2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
                 WriteWad2(chunkIO, wad);
         }
 
@@ -217,11 +222,8 @@ namespace TombLib.Wad
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.SpriteSequence, () =>
                     {
                         LEB128.Write(chunkIO.Raw, sequence.ObjectID);
-                        chunkIO.WriteChunkWithChildren(Wad2Chunks.SpriteSequenceSprites, () =>
-                        {
-                            foreach (var spr in sequence.Sprites)
-                                chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSprite, _spritesTable.IndexOf(spr));
-                        });
+                        foreach (var spr in sequence.Sprites)
+                            chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSprite, _spritesTable.IndexOf(spr));
                     });
                 }
             });
@@ -256,7 +258,6 @@ namespace TombLib.Wad
                         {
                             chunkIO.WriteChunkWithChildren(Wad2Chunks.Animation, () =>
                             {
-                                chunkIO.WriteChunkString(Wad2Chunks.AnimationName, animation.Name);
                                 LEB128.Write(chunkIO.Raw, animation.StateId);
                                 LEB128.Write(chunkIO.Raw, animation.RealNumberOfFrames);
                                 LEB128.Write(chunkIO.Raw, animation.FrameDuration);
@@ -269,12 +270,14 @@ namespace TombLib.Wad
                                 LEB128.Write(chunkIO.Raw, animation.NextAnimation);
                                 LEB128.Write(chunkIO.Raw, animation.NextFrame);
 
+                                chunkIO.WriteChunkString(Wad2Chunks.AnimationName, animation.Name);
+
                                 foreach (var kf in animation.KeyFrames)
                                 {
                                     chunkIO.WriteChunkWithChildren(Wad2Chunks.KeyFrame, () =>
                                     {
                                         chunkIO.WriteChunkVector3(Wad2Chunks.KeyFrameOffset, kf.Offset);
-                                        chunkIO.WriteChunk(Wad2Chunks.BoundingBox, () =>
+                                        chunkIO.WriteChunk(Wad2Chunks.KeyFrameBoundingBox, () =>
                                         {
                                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, kf.BoundingBox.Minimum);
                                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, kf.BoundingBox.Maximum);
@@ -342,13 +345,13 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, _meshesTable.IndexOf(s.Mesh));
                         LEB128.Write(chunkIO.Raw, s.Flags);
 
-                        chunkIO.WriteChunk(Wad2Chunks.BoundingBox, () =>
+                        chunkIO.WriteChunk(Wad2Chunks.StaticVisibilityBox, () =>
                         {
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, s.VisibilityBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.VisibilityBox.Maximum);
                         });
 
-                        chunkIO.WriteChunk(Wad2Chunks.BoundingBox, () =>
+                        chunkIO.WriteChunk(Wad2Chunks.StaticCollisionBox, () =>
                         {
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, s.CollisionBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.CollisionBox.Maximum);
@@ -368,17 +371,17 @@ namespace TombLib.Wad
                     {
                         var s = sound.Value;
 
-                        chunkIO.WriteChunkString(Wad2Chunks.SoundName, s.Name);
-                        
+                        LEB128.Write(chunkIO.Raw, (ushort)sound.Key);
                         LEB128.Write(chunkIO.Raw, s.Volume);
                         LEB128.Write(chunkIO.Raw, s.Range);
                         LEB128.Write(chunkIO.Raw, s.Pitch);
                         LEB128.Write(chunkIO.Raw, s.Chance);
-                        LEB128.Write(chunkIO.Raw, (s.FlagN ? 1 : 0));
-                        LEB128.Write(chunkIO.Raw, (s.RandomizePitch ? 1 : 0));
-                        LEB128.Write(chunkIO.Raw, (s.RandomizeGain ? 1 : 0));
+                        LEB128.Write(chunkIO.Raw, (byte)(s.FlagN ? 1 : 0));
+                        LEB128.Write(chunkIO.Raw, (byte)(s.RandomizePitch ? 1 : 0));
+                        LEB128.Write(chunkIO.Raw, (byte)(s.RandomizeGain ? 1 : 0));
                         LEB128.Write(chunkIO.Raw, (ushort)s.Loop);
 
+                        chunkIO.WriteChunkString(Wad2Chunks.SoundName, s.Name);
                         foreach (var wav in s.WaveSounds)
                             chunkIO.WriteChunkInt(Wad2Chunks.SoundSample, _wavesTable.IndexOf(wav));
                     });

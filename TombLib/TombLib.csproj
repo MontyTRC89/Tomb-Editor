@@ -56,7 +56,6 @@
     </Reference>
     <Reference Include="Pfim, Version=0.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Pfim.0.4.2\lib\netstandard1.0\Pfim.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -151,7 +150,6 @@
     <Compile Include="Wad\OriginalSound.cs" />
     <Compile Include="Wad\Wad2Actions.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
-    <Compile Include="Wad\Wad2IO.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />
     <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />

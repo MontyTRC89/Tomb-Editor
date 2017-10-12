@@ -523,6 +523,36 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap diag_step_ceil_16 {
+            get {
+                object obj = ResourceManager.GetObject("diag_step_ceil_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap diag_step_fl_16 {
+            get {
+                object obj = ResourceManager.GetObject("diag_step_fl_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap diag_wall_16 {
+            get {
+                object obj = ResourceManager.GetObject("diag_wall_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap diagonal_floor_NE {
             get {
                 object obj = ResourceManager.GetObject("diagonal-floor-NE", resourceCulture);
