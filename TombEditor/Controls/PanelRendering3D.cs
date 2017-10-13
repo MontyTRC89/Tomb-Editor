@@ -162,10 +162,10 @@ namespace TombEditor.Controls
         private readonly List<ImportedGeometryInstance> _roomGeometryToDraw = new List<ImportedGeometryInstance>();
 
         // Debug lines
-        private Buffer<EditorVertex> _objectHeightLineVertexBuffer;
+        private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
         private bool _drawHeightLine = false;
 
-        private Buffer<EditorVertex> _flybyPathVertexBuffer;
+        private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private bool _drawFlybyPath = false;
         private List<BoundingBoxToDraw> _boundingBoxesToDraw;
 
@@ -3039,16 +3039,16 @@ namespace TombEditor.Controls
             float height = position.Y - floorHeight;
 
             // Prepare two vertices for the line
-            EditorVertex[] vertices = new EditorVertex[]
+            var vertices = new SolidVertex[]
             {
-                new EditorVertex { Position = position },
-                new EditorVertex { Position = new Vector3(position.X, floorHeight, position.Z) }
+                new SolidVertex { Position = position, Color = Vector4.One },
+                new SolidVertex { Position = new Vector3(position.X, floorHeight, position.Z), Color = Vector4.One }
             };
 
             // Prepare the Vertex Buffer
             if (_objectHeightLineVertexBuffer != null)
                 _objectHeightLineVertexBuffer.Dispose();
-            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device,
+            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device,
                 vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _drawHeightLine = true;
@@ -3074,18 +3074,20 @@ namespace TombEditor.Controls
             flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
             // Create a vertex array
-            List<EditorVertex> vertices = new List<EditorVertex>();
+            List<SolidVertex> vertices = new List<SolidVertex>();
 
             for (int i = 0; i < flybyCameras.Count - 1; i++)
             {
                 Vector3 room1pos = flybyCameras[i].Room.WorldPos;
                 Vector3 room2pos = flybyCameras[i + 1].Room.WorldPos;
 
-                EditorVertex v1 = new EditorVertex();
+                var v1 = new SolidVertex();
                 v1.Position = flybyCameras[i].Position + room1pos;
+                v1.Color = Vector4.One;
 
-                EditorVertex v2 = new EditorVertex();
+                var v2 = new SolidVertex();
                 v2.Position = flybyCameras[i + 1].Position + room2pos;
+                v2.Color = Vector4.One;
 
                 vertices.Add(v1);
                 vertices.Add(v2);
@@ -3093,7 +3095,7 @@ namespace TombEditor.Controls
 
             // Prepare the Vertex Buffer
             if (_flybyPathVertexBuffer != null) _flybyPathVertexBuffer.Dispose();
-            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _drawFlybyPath = true;
         }
