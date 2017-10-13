@@ -286,7 +286,7 @@ namespace TombEditor.Compilers
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
-                ((block.FloorPortal != null) && (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)))
+                ((block.WallPortal != null) && (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)))
             {
                 return false;
             }
