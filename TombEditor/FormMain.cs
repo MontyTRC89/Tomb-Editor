@@ -347,27 +347,27 @@ namespace TombEditor
                     if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, -1);
                     else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
+                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
                     break;
                 case Keys.Right: // Rotate objects with cones
                     if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.Y, 1);
                     else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(1024, 0, 0), new Vector3(), true);
+                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(-1024, 0, 0), new Vector3(), true);
                     break;
 
                 case Keys.Up:// Rotate objects with cones
                     if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, 1);
                     else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
+                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
                     break;
 
                 case Keys.Down:// Rotate objects with cones
                     if (modifierKeys == Keys.Shift && (_editor.SelectedObject != null) && focused)
                         EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -1);
                     else if (modifierKeys == Keys.Control && (_editor.SelectedObject is PositionBasedObjectInstance) && focused)
-                        EditorActions.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, -1024), new Vector3(), true);
+                        MainView.MoveObjectRelative((PositionBasedObjectInstance)_editor.SelectedObject, new Vector3(0, 0, 1024), new Vector3(), true);
                     break;
 
                 case Keys.Q:
@@ -420,7 +420,7 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
-                case Keys.H: 
+                case Keys.H:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)-(shift ? 4 : 1), alt);
                     break;
@@ -428,7 +428,7 @@ namespace TombEditor
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
-                case Keys.J: 
+                case Keys.J:
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalCeilingCorner, 0, (short)-(shift ? 4 : 1), alt);
                     break;
