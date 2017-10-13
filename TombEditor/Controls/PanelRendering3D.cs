@@ -173,6 +173,8 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
+            SetStyle(ControlStyles.Selectable, true);
+
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
                 _editor = Editor.Instance;
