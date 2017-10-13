@@ -490,40 +490,39 @@ namespace TombEditor.Controls
         {
             base.OnPreviewKeyDown(e);
 
-            // I intercept arrow keys here otherwise they would processed by the form and
-            // camera would move only if Panel3D is focused
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
-                    Invalidate();
-                    break;
+            if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
+                switch (e.KeyCode)
+                {
+                    case Keys.Up:
+                        Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
+                        Invalidate();
+                        break;
 
-                case Keys.Down:
-                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
-                    Invalidate();
-                    break;
+                    case Keys.Down:
+                        Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
+                        Invalidate();
+                        break;
 
-                case Keys.Left:
-                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
-                    Invalidate();
-                    break;
+                    case Keys.Left:
+                        Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
+                        Invalidate();
+                        break;
 
-                case Keys.Right:
-                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
-                    Invalidate();
-                    break;
+                    case Keys.Right:
+                        Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
+                        Invalidate();
+                        break;
 
-                case Keys.PageUp:
-                    Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
+                    case Keys.PageUp:
+                        Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
 
-                case Keys.PageDown:
-                    Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
-            }
+                    case Keys.PageDown:
+                        Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
+                }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
