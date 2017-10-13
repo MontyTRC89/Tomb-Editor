@@ -93,7 +93,7 @@ namespace TombEditor.Geometry
             {
                 return Matrix.RotationYawPitchRoll(
                     (this as IRotateableY)?.GetRotationYRadians() ?? 0.0f,
-                    (this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
+                    -(this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
                     (this as IRotateableYXRoll)?.GetRotationRollRadians() ?? 0.0f);
             }
         }
