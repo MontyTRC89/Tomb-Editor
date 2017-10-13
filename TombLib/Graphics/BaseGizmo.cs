@@ -55,6 +55,7 @@ namespace TombLib.Graphics
         private readonly GeometricPrimitive _cylinder;
         private readonly GeometricPrimitive _sphere;
         private readonly GeometricPrimitive _cube;
+        private readonly GeometricPrimitive _cone;
         private GeometricPrimitive _torus;
         private float _torusRadius = float.MinValue;
         private static readonly Color4 _xAxisColor = new Color4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -62,6 +63,7 @@ namespace TombLib.Graphics
         private static readonly Color4 _zAxisColor = new Color4(0.0f, 0.0f, 1.0f, 1.0f);
         private static readonly Color4 _centerColor = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
         private static readonly Color4 _hoveredAddition = new Color4(0.6f, 0.6f, 0.6f, 1.0f);
+        private static readonly float _hoveredAdditionGreensCorrection = 1.5f;
 
         private GizmoMode _mode;
         private float _scaleBase;
@@ -82,6 +84,7 @@ namespace TombLib.Graphics
             _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, _lineRadiusTesselation);
             _sphere = GeometricPrimitive.Sphere.New(_device, 1.0f, 16);
             _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
+            _cone = GeometricPrimitive.Cone.New(_device, 1.0f, 1.3f, 16);
 
             // Create the rasterizer state for wireframe drawing
             var renderStateDesc = new SharpDX.Direct3D11.RasterizerStateDescription
@@ -107,6 +110,7 @@ namespace TombLib.Graphics
             _cylinder?.Dispose();
             _sphere?.Dispose();
             _cube?.Dispose();
+            _cone?.Dispose();
             _torus?.Dispose();
         }
 
@@ -246,15 +250,15 @@ namespace TombLib.Graphics
             if (SupportTranslate)
             {
                 float unused;
-                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size, TranslationSphereSize / 2.0f);
+                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size, TranslationSphereSize / 1.7f);
                 if (ray.Intersects(ref sphereX, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateX);
 
-                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size, TranslationSphereSize / 2.0f);
+                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size, TranslationSphereSize / 1.7f);
                 if (ray.Intersects(ref sphereY, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateY);
 
-                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size, TranslationSphereSize / 2.0f);
+                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size, TranslationSphereSize / 1.7f);
                 if (ray.Intersects(ref sphereZ, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateZ);
             }
@@ -401,18 +405,6 @@ namespace TombLib.Graphics
                 }
                 _torus.SetupForRendering(_device);
 
-                // Rotation Y
-                if (SupportRotationY)
-                {
-                    var model = Matrix.Scaling(Size * 2.0f) *
-                        RotateMatrixY *
-                        Matrix.Translation(Position);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition : new Color4()));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
-                }
-
                 // Rotation X
                 if (SupportRotationX)
                 {
@@ -422,6 +414,18 @@ namespace TombLib.Graphics
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.RotateX ? _hoveredAddition : new Color4()));
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
+                }
+
+                // Rotation Y
+                if (SupportRotationY)
+                {
+                    var model = Matrix.Scaling(Size * 2.0f) *
+                        RotateMatrixY *
+                        Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.RotateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _torus.IndexBuffer.ElementCount);
                 }
@@ -441,10 +445,51 @@ namespace TombLib.Graphics
                 }
             }
 
+            _device.Clear(ClearOptions.DepthBuffer, Color4.Black, 1.0f, 0);
+
             // Scale
             if (SupportScale)
             {
+                _cylinder.SetupForRendering(_device);
+                _device.SetRasterizerState(_device.RasterizerStates.CullFront);
+
+                // X axis
+                {
+                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
+                        Matrix.RotationZ(-(float)Math.PI / 2.0f) *
+                        Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.ScaleX ? _hoveredAddition : new Color4()));
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
+                }
+
+                // Y axis
+                {
+                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
+                        Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
+                }
+
+                // Z axis
+                {
+                    var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
+                        Matrix.Scaling(new Vector3(LineThickness * 1.1f, Size / 2.0f, LineThickness * 1.1f)) *
+                        Matrix.RotationX(-(float)Math.PI / 2.0f) *
+                        Matrix.Translation(Position);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.ScaleZ ? _hoveredAddition : new Color4()));
+                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
+                }
+
                 _cube.SetupForRendering(_device);
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
                 // X axis scale
                 {
@@ -461,7 +506,7 @@ namespace TombLib.Graphics
                     var model = Matrix.Scaling(ScaleCubeSize) *
                         Matrix.Translation(Position + Vector3.UnitY * Size / 2.0f);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.ScaleY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }
@@ -481,6 +526,7 @@ namespace TombLib.Graphics
             if (SupportTranslate)
             {
                 _cylinder.SetupForRendering(_device);
+                _device.SetRasterizerState(_device.RasterizerStates.CullFront);
 
                 // X axis
                 {
@@ -489,7 +535,7 @@ namespace TombLib.Graphics
                         Matrix.RotationZ(-(float)Math.PI / 2.0f) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_xAxisColor);
+                    solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -500,7 +546,7 @@ namespace TombLib.Graphics
                         Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor);
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
@@ -512,41 +558,44 @@ namespace TombLib.Graphics
                         Matrix.RotationX(-(float)Math.PI / 2.0f) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_zAxisColor);
+                    solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cylinder.IndexBuffer.ElementCount);
                 }
 
-                _sphere.SetupForRendering(_device);
+                _cone.SetupForRendering(_device);
+                _device.SetRasterizerState(_device.RasterizerStates.CullNone);
 
                 // X axis translation
                 {
-                    var model = Matrix.Scaling(TranslationSphereSize) *
-                        Matrix.Translation(Position + Vector3.UnitX * Size);
+                    var model = Matrix.RotationY((float)-Math.PI * 0.5f) *
+                        Matrix.Scaling(TranslationSphereSize) *
+                        Matrix.Translation(Position + (Vector3.UnitX + new Vector3(0.1f, 0, 0)) * Size);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
                 // Y axis translation
                 {
-                    var model = Matrix.Scaling(TranslationSphereSize) *
-                        Matrix.Translation(Position + Vector3.UnitY * Size);
+                    var model = Matrix.RotationX((float)Math.PI * 0.5f) *
+                        Matrix.Scaling(TranslationSphereSize) *
+                        Matrix.Translation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * Size);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
-                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition : new Color4()));
+                    solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
                 // Z axis translation
                 {
                     var model = Matrix.Scaling(TranslationSphereSize) *
-                        Matrix.Translation(Position - Vector3.UnitZ * Size);
+                        Matrix.Translation(Position - (Vector3.UnitZ + new Vector3(0, 0, 0.1f)) * Size);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
             }
 

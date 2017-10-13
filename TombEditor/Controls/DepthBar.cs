@@ -58,7 +58,7 @@ namespace TombEditor.Controls
         private static readonly Font _explanationStringFont = new Font("Segoe UI", 12.0f, FontStyle.Regular, GraphicsUnit.Pixel);
         private static readonly StringFormat _explanationStringLayout = new StringFormat() { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far };
         private static readonly Brush _explanationStringBrush = new SolidBrush(Color.Black);
-        private const string _explanationString = "Double click or press CTRL + left click on the map to add a depth probe.\nDouble click or press ALT + left click on a depth probe to remove it.";
+        private const string _explanationString = "Double click or press CTRL + left click on the map to add a depth probe.\nDouble click or press CTRL + left click on a depth probe to remove it.";
         private static readonly Brush _backgroundBrush = new SolidBrush(Color.FromArgb(245, 245, 245));
         private static readonly Pen _outlinePen = new Pen(Color.FromArgb(245, 80, 80, 80), 1);
         private static readonly Pen _heightLinesPen = new Pen(Color.FromArgb(220, 220, 220), 1);

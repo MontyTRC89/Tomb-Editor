@@ -1555,7 +1555,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, -10, 40, Width,
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
@@ -1650,7 +1650,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, -10, 40, Width,
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
@@ -1721,7 +1721,7 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject == instance)
                 {
-                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, -10, 40, Width,
                         Height, _device.Viewport.MinDepth,
                         _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 

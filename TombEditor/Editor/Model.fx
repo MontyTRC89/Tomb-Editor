@@ -34,12 +34,12 @@ PixelInputType VS(VertexInputType input)
 float4 PS(PixelInputType input) : SV_TARGET
 {
 	float4 pixel = Texture.Sample(TextureSampler, input.UV);
-		
+
 	float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
 	float3 colorMul = min(input.Color.xyz, 1.0f);
 	pixel.xyz = pixel.xyz * colorMul + colorAdd;
 	pixel.w *= input.Color.w;
-	
+
 	return pixel;
 }
 
@@ -51,4 +51,4 @@ technique10 Textured
         SetGeometryShader(NULL);
         SetPixelShader( CompileShader( ps_4_0, PS() ) );
     }
-} 
+}
