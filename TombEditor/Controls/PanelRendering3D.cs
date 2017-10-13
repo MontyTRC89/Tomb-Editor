@@ -1222,9 +1222,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1258,9 +1258,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1295,9 +1295,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1334,9 +1334,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1355,7 +1355,7 @@ namespace TombEditor.Controls
 
             if (_editor.SelectedRoom != null)
             {
-                foreach (var instance in room.Objects.OfType<MoveableInstance>())
+                /*foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
                     if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false)
                         continue;
@@ -1423,7 +1423,7 @@ namespace TombEditor.Controls
                     effect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
-
+                */
                 foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (instance.Model?.DirectXModel != null)
@@ -3043,7 +3043,7 @@ namespace TombEditor.Controls
             EditorVertex[] vertices = new EditorVertex[]
             {
                 new EditorVertex { Position = position },
-                new EditorVertex { Position = new Vector3(position.X,floorHeight,position.Z) }
+                new EditorVertex { Position = new Vector3(position.X, floorHeight, position.Z) }
             };
 
             // Prepare the Vertex Buffer
