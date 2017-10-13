@@ -57,7 +57,7 @@ namespace TombEditor.Controls
         public Panel2DMap()
         {
             DoubleBuffered = true;
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.Selectable, true);
             UpdateStyles();
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
