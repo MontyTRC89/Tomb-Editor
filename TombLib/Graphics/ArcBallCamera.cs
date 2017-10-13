@@ -9,7 +9,12 @@ namespace TombLib.Graphics
     public class ArcBallCamera : Camera
     {
         // Rotation around the two axes
-        public float RotationY { get; set; }
+        private float _rotationY;
+        public float RotationY
+        {
+            get { return _rotationY; }
+            set  { _rotationY = (float)(value - Math.Floor(value / (2 * Math.PI)) * (2 * Math.PI)); }
+        }
         public float RotationX { get; set; }
 
         // Y axis rotation limits (radians)
