@@ -176,10 +176,10 @@ namespace TombEditor.Geometry
         {
             rotationX -= (float)(360 * Math.Floor(rotationX / 360));
             if (rotationX > 270)
-                rotationX = rotationX - 360;
-            else if (rotationX > 180)
+                rotationX -= 360;
+            else if (rotationX > 90)
             {
-                rotationX = rotationX - 360;
+                rotationX = 180 - rotationX;
                 rotationY += 180;
             }
 
