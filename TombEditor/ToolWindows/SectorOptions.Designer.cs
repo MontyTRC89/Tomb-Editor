@@ -322,7 +322,7 @@
             this.butDiagonalWall.Location = new System.Drawing.Point(192, 0);
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
-            this.butDiagonalWall.Size = new System.Drawing.Size(91, 24);
+            this.butDiagonalWall.Size = new System.Drawing.Size(90, 24);
             this.butDiagonalWall.TabIndex = 108;
             this.butDiagonalWall.Text = "Diag wall";
             this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
