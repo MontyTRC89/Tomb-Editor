@@ -116,6 +116,16 @@ namespace TombEditor.Geometry
                     Matrix.Translation((Room?.WorldPos ?? new Vector3()) + Position);
             }
         }
+
+        public Matrix LocalObjectMatrix
+        {
+            get
+            {
+                return RotationMatrix *
+                    Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix.Translation(Position);
+            }
+        }
     }
 
     public interface IHasScriptID
