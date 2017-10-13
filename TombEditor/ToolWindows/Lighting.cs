@@ -59,24 +59,20 @@ namespace TombEditor.ToolWindows
                             HasInOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
-                            butAddPointLight.Focus();
                             break;
 
                         case LightType.Shadow:
                             HasInOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
-                            butAddShadow.Focus();
                             break;
 
                         case LightType.Effect:
                             HasInOutRange = true;
-                            butAddEffectLight.Focus();
                             break;
 
                         case LightType.FogBulb:
                             HasInOutRange = true;
-                            butAddFogBulb.Focus();
                             break;
 
                         case LightType.Spot:
@@ -85,14 +81,12 @@ namespace TombEditor.ToolWindows
                             HasDirection = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
-                            butAddSpotLight.Focus();
                             break;
 
                         case LightType.Sun:
                             HasDirection = true;
                             CanCastShadows = true;
                             CanIlluminateStaticAndDynamicGeometry = true;
-                            butAddSun.Focus();
                             break;
                     }
 
