@@ -190,7 +190,7 @@ namespace TombEditor.Compilers
                     if (geometry.Model?.DirectXModel == null)
                         continue;
 
-                    var transform = geometry.RotationMatrix * 
+                    var transform = geometry.RotationMatrix *
                                     Matrix.Scaling(geometry.Scale) *
                                     Matrix.Translation(geometry.Position);
                     foreach (var mesh in geometry.Model.DirectXModel.Meshes)
@@ -805,7 +805,6 @@ namespace TombEditor.Compilers
 
                     // Find connected rooms that might share this vertex
                     roomsSharedByVertex.Clear();
-                    roomsSharedByVertex.Add(trRoom.OriginalRoom);
                     FindConnectedRooms(roomsSharedByVertex, trRoom.OriginalRoom, worldPos, true);
                     if (roomsSharedByVertex.Count == 0)
                         continue;
@@ -861,6 +860,10 @@ namespace TombEditor.Compilers
 
         private static void FindConnectedRooms(List<Room> outSharedRooms, Room currentRoom, Vector3 worldPos, bool checkFloorCeiling)
         {
+            if (outSharedRooms.Contains(currentRoom))
+                return;
+            outSharedRooms.Add(currentRoom);
+
             Vector3 localPos = worldPos - currentRoom.WorldPos;
             int sectorPosX = (int)(localPos.X * (1.0f / 1024.0f) + 0.5f);
             int sectorPosZ = (int)(localPos.Z * (1.0f / 1024.0f) + 0.5f);
@@ -890,23 +893,29 @@ namespace TombEditor.Compilers
 
             if (checkFloorCeiling)
             {
-                if ((block.FloorPortal != null) && !outSharedRooms.Contains(block.FloorPortal.AdjoiningRoom))
-                {
-                    outSharedRooms.Add(block.FloorPortal.AdjoiningRoom);
-                    FindConnectedRooms(outSharedRooms, block.FloorPortal.AdjoiningRoom, worldPos, false);
-                }
-                if ((block.CeilingPortal != null) && !outSharedRooms.Contains(block.CeilingPortal.AdjoiningRoom))
-                {
-                    outSharedRooms.Add(block.CeilingPortal.AdjoiningRoom);
-                    FindConnectedRooms(outSharedRooms, block.CeilingPortal.AdjoiningRoom, worldPos, false);
-                }
+                if (block.FloorPortal != null)
+                    foreach (var roomPair in Room.GetPossibleAlternateRoomPairs(currentRoom, block.FloorPortal.AdjoiningRoom))
+                    {
+                        if (roomPair.Key != currentRoom)
+                            FindConnectedRooms(outSharedRooms, roomPair.Key, worldPos, checkFloorCeiling);
+                        FindConnectedRooms(outSharedRooms, roomPair.Value, worldPos, false);
+                    }
+                if (block.CeilingPortal != null)
+                    foreach (var roomPair in Room.GetPossibleAlternateRoomPairs(currentRoom, block.CeilingPortal.AdjoiningRoom))
+                    {
+                        if (roomPair.Key != currentRoom)
+                            FindConnectedRooms(outSharedRooms, roomPair.Key, worldPos, checkFloorCeiling);
+                        FindConnectedRooms(outSharedRooms, roomPair.Value, worldPos, false);
+                    }
             }
 
-            if ((block.WallPortal != null) && !outSharedRooms.Contains(block.WallPortal.AdjoiningRoom))
-            {
-                outSharedRooms.Add(block.WallPortal.AdjoiningRoom);
-                FindConnectedRooms(outSharedRooms, block.WallPortal.AdjoiningRoom, worldPos, checkFloorCeiling);
-            }
+            if (block.WallPortal != null)
+                foreach (var roomPair in Room.GetPossibleAlternateRoomPairs(currentRoom, block.WallPortal.AdjoiningRoom))
+                {
+                    if (roomPair.Key != currentRoom)
+                        FindConnectedRooms(outSharedRooms, roomPair.Key, worldPos, checkFloorCeiling);
+                    FindConnectedRooms(outSharedRooms, roomPair.Value, worldPos, checkFloorCeiling);
+                }
         }
 
         private static ushort PackColorTo16Bit(Vector4 color)
