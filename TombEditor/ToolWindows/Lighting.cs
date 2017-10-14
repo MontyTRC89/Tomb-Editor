@@ -39,7 +39,7 @@ namespace TombEditor.ToolWindows
         {
             // Update light UI
             if ((obj is Editor.ObjectChangedEvent) ||
-               (obj is Editor.ObjectChangedEvent))
+               (obj is Editor.SelectedObjectChangedEvent))
             {
                 var light = _editor.SelectedObject as LightInstance;
 

@@ -45,7 +45,7 @@ namespace WadTool
         protected override float Scale => _control.StaticScale;
 
         protected override float CentreCubeSize => 128.0f;
-        protected override float TranslationSphereSize => 128.0f;
+        protected override float TranslationConeSize => 128.0f;
         protected override float ScaleCubeSize => 128.0f;
         protected override float Size => 1024.0f;
         protected override float LineThickness => 45.0f;

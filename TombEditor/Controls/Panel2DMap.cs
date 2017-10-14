@@ -148,14 +148,15 @@ namespace TombEditor.Controls
             switch (e.Button)
             {
                 case MouseButtons.Left:
-                    // Try selecting or moving a room or depth probe
-                    _currentlyEditedDepthProbeIndex = FindClosestProbe(clickPos);
-                    if ((ModifierKeys & Keys.Control) == Keys.Control)
+                    // Check for depth probe
+                    int? currentProbeIndex = FindClosestProbe(clickPos);
+
+                    if (ModifierKeys.HasFlag(Keys.Control))
                     {
-                        // Remove depth probe closest to mouse pointer
-                        if (_currentlyEditedDepthProbeIndex.HasValue)
+                        if (currentProbeIndex.HasValue)
                         {
-                            _depthBar.DepthProbes.RemoveAt(_currentlyEditedDepthProbeIndex.Value);
+                            // Remove depth probe closest to mouse pointer
+                            _depthBar.DepthProbes.RemoveAt(currentProbeIndex.Value);
                         }
                         else
                         {
@@ -166,11 +167,12 @@ namespace TombEditor.Controls
                         }
                         Invalidate();
                     }
-                    else if ((ModifierKeys & Keys.Alt) == Keys.Alt && _currentlyEditedDepthProbeIndex.HasValue)
+                    else if (currentProbeIndex.HasValue)
                     {
-                        // nothing for now
+                        // Depth probe normally selected
+                        _currentlyEditedDepthProbeIndex = FindClosestProbe(clickPos);
                     }
-                    else if (!_currentlyEditedDepthProbeIndex.HasValue)
+                    else if (!currentProbeIndex.HasValue)
                     {
                         _roomMouseClicked = DoPicking(clickPos);
                         if (_roomMouseClicked == null)
@@ -182,27 +184,27 @@ namespace TombEditor.Controls
                     break;
 
                 case MouseButtons.Right:
+                case MouseButtons.Middle:
                     // Move view with mouse curser
                     // Mouse curser is a fixed point
                     _viewMoveMouseWorldCoord = clickPos;
                     break;
 
-                case MouseButtons.Middle:
-                case MouseButtons.XButton2:
-                    // Move view with mouse curser
-                    // Mouse curser is a fixed point
-                    _viewMoveMouseWorldCoord = clickPos;
-
+                case MouseButtons.XButton1:
                     // Remove depth probe closest to mouse pointer
-                    _currentlyEditedDepthProbeIndex = FindClosestProbe(clickPos);
-                    if (_currentlyEditedDepthProbeIndex.HasValue)
+                    currentProbeIndex = FindClosestProbe(clickPos);
+                    if (currentProbeIndex.HasValue)
                     {
-                        _depthBar.DepthProbes.RemoveAt(_currentlyEditedDepthProbeIndex.Value);
+                        _depthBar.DepthProbes.RemoveAt(currentProbeIndex.Value);
                         Invalidate();
                     }
                     break;
 
-                case MouseButtons.XButton1:
+                case MouseButtons.XButton2:
+                    // Add depth probe under mouse pointer
+                    _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
+                    _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar));
+                    _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = clickPos;
                     break;
             }
         }
@@ -217,7 +219,7 @@ namespace TombEditor.Controls
             {
                 case MouseButtons.Left:
                     // Remove depth probe closest to mouse pointer
-                    if ((ModifierKeys & Keys.Control) != Keys.Control)
+                    if (!ModifierKeys.HasFlag(Keys.Control))
                     {
                         int? currentProbeIndex = FindClosestProbe(clickPos);
                         if (currentProbeIndex.HasValue)
@@ -227,15 +229,12 @@ namespace TombEditor.Controls
                         else
                         {
                             // Add depth probe under mouse pointer
-                            _currentlyEditedDepthProbeIndex = _depthBar.DepthProbes.Count;
+                            currentProbeIndex = _depthBar.DepthProbes.Count;
                             _depthBar.DepthProbes.Add(new DepthBar.DepthProbe(_depthBar));
-                            _depthBar.DepthProbes[_currentlyEditedDepthProbeIndex.Value].Position = clickPos;
+                            _depthBar.DepthProbes[currentProbeIndex.Value].Position = clickPos;
                         }
                         Invalidate();
                     }
-                    break;
-                case MouseButtons.Right:
-                case MouseButtons.XButton2:
                     break;
             }
         }
@@ -262,14 +261,20 @@ namespace TombEditor.Controls
                     case MouseButtons.Left:
                         if (_currentlyEditedDepthProbeIndex.HasValue)
                         {
+                            // Move depth probe around
                             _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
                             Invalidate();
                         }
                         else if (_roomsToMove != null)
+                            // Move room around
                             UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, _roomsToMove);
                         break;
 
                     case MouseButtons.Middle:
+                        // Panning
+                        if (_viewMoveMouseWorldCoord != null)
+                            MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
+                        break;
                     case MouseButtons.Right:
                         if (_viewMoveMouseWorldCoord != null)
                             if (ModifierKeys.HasFlag(Keys.Control))
@@ -279,17 +284,9 @@ namespace TombEditor.Controls
                                 Invalidate();
                             }
                             else
-                            { // Movement
+                            { // Panning
                                 MoveToFixedPoint(e.Location, _viewMoveMouseWorldCoord.Value);
                             }
-                        break;
-
-                    case MouseButtons.XButton2:
-                        if (_currentlyEditedDepthProbeIndex.HasValue)
-                        {
-                            _depthBar.DepthProbes[(_currentlyEditedDepthProbeIndex.Value)].Position = FromVisualCoord(e.Location);
-                            Invalidate();
-                        }
                         break;
                 }
 

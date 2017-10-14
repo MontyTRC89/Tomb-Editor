@@ -42,7 +42,6 @@ namespace TombEditor
             _editor.EditorEventRaised += EditorEventRaised;
 
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
-            //_editor.UnsavedChanges = true;
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = System.Diagnostics.Debugger.IsAttached;
@@ -219,6 +218,7 @@ namespace TombEditor
             {
                 if (!_editor.UnsavedChanges)
                 {
+                    // TODO: fix event catch when simply opening a level, so it doesn't add "*" for a split second
                     _editor.UnsavedChanges = true;
                     _editor.LevelFileNameChange();
                 }

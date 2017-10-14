@@ -29,6 +29,9 @@ namespace TombLib.Graphics
         // Horizontal field of view angle of the camera in radians.
         public float FieldOfView { get; set; } = 0.872f;
 
+        // Default camera distance, used for internal zoom/panning multiplier calculation
+        private float DefaultDistance;
+
         public ArcBallCamera(Vector3 target, float rotationX,
             float rotationY, float minRotationY, float maxRotationY,
             float distance, float minDistance, float maxDistance, float fieldOfView)
@@ -46,12 +49,15 @@ namespace TombLib.Graphics
             // Lock the distance between the min and max values
             Distance = MathUtil.Clamp(distance, minDistance, maxDistance);
 
+            DefaultDistance = distance;
+
             FieldOfView = fieldOfView;
         }
 
         public void Zoom(float distanceChange)
         {
-            Distance += distanceChange;
+            float distanceMultiplier = Distance / DefaultDistance;
+            Distance += distanceChange * distanceMultiplier;
             Distance = MathUtil.Clamp(Distance, MinDistance, MaxDistance);
         }
 
@@ -64,7 +70,8 @@ namespace TombLib.Graphics
 
         public void MoveCameraPlane(Vector3 movementVec)
         {
-            Target += Vector3.TransformCoordinate(movementVec, GetRotationMatrix());
+            float distanceMultiplier = (float)Math.Pow((Distance / DefaultDistance), (float)2 / (float)3);
+            Target += Vector3.TransformCoordinate(movementVec * distanceMultiplier, GetRotationMatrix());
         }
 
         public void MoveCameraLinear(Vector3 movementVec)

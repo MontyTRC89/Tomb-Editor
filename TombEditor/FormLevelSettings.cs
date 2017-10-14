@@ -268,27 +268,15 @@ namespace TombEditor
 
         private string BrowseFolder(string currentPath, string description, VariableType baseDirType)
         {
-            if (true)
-                using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
-                {
-                    dialog.Title = description;
-                    dialog.InitialDirectory = _levelSettings.MakeAbsolute(currentPath);
-                    dialog.IsFolderPicker = true;
-                    if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
-                        return null;
-                    return _levelSettings.MakeRelative(dialog.FileName, baseDirType);
-                }
-            else
-                using (FolderBrowserDialog dialog = new FolderBrowserDialog())
-                {
-                    dialog.Description = description;
-                    dialog.SelectedPath = _levelSettings.MakeAbsolute(currentPath);
-                    dialog.RootFolder = Environment.SpecialFolder.MyComputer;
-                    SendKeys.Send("{TAB}{TAB}{RIGHT}");  // Workaround https://stackoverflow.com/questions/6942150/why-folderbrowserdialog-dialog-does-not-scroll-to-selected-folder
-                    if (dialog.ShowDialog(this) != DialogResult.OK)
-                        return null;
-                    return _levelSettings.MakeRelative(dialog.SelectedPath, baseDirType);
-                }
+            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+            {
+                dialog.Title = description;
+                dialog.InitialDirectory = _levelSettings.MakeAbsolute(currentPath);
+                dialog.IsFolderPicker = true;
+                if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+                    return null;
+                return _levelSettings.MakeRelative(dialog.FileName, baseDirType);
+            }
         }
 
         // Level path

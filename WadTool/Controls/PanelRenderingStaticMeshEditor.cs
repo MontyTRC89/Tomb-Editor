@@ -246,9 +246,9 @@ namespace WadTool.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                if (ModifierKeys.HasFlag(Keys.Control))
                     Camera.Zoom(-deltaY * 46000f /*_editor.Configuration.RenderingItem_NavigationSpeedMouseZoom*/);
-                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                else if (ModifierKeys.HasFlag(Keys.Shift))
                     Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * 22000f /* _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate*/);
                 else
                     Camera.Rotate(deltaX * 2.2f /*_editor.Configuration.RenderingItem_NavigationSpeedMouseRotate*/,

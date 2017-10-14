@@ -140,6 +140,7 @@ namespace TombEditor.Controls
         private const float _littleSphereRadius = 128.0f;
         private System.Drawing.Point _lastMousePosition;
         private bool _doSectorSelection = false;
+        private bool _noSelectionConfirm = false;
         private static readonly Vector4 _selectionColor = new Vector4(3.0f, 0.2f, 0.2f, 1.0f);
         private Buffer<EditorVertex> _skyVertexBuffer;
         private Debug _debug;
@@ -229,8 +230,8 @@ namespace TombEditor.Controls
             {
                 if (Camera != null && (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ModeChangedEvent))
                 {
-                    var deltaroompos = _editor.SelectedRoom.Position - _currentRoomLastPos;
-                    Camera.MoveCameraLinear(deltaroompos * 1024);
+                    var deltaRoomPos = _editor.SelectedRoom.Position - _currentRoomLastPos;
+                    Camera.MoveCameraLinear(deltaRoomPos * 1024);
                     _currentRoomLastPos = _editor.SelectedRoom.Position;
                 }
 
@@ -537,9 +538,8 @@ namespace TombEditor.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
-            float distanceMultiplier = Camera.Distance / DefaultCameraDistance;
 
-            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom * distanceMultiplier);
+            Camera.Zoom(-e.Delta * _editor.Configuration.Rendering3D_NavigationSpeedMouseWheelZoom);
             Invalidate();
         }
 
@@ -575,15 +575,20 @@ namespace TombEditor.Controls
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
                 }
 
-                if (!(newPicking is PickingResultBlock))
+                if (!(newPicking == null) && !(newPicking is PickingResultBlock) && !ModifierKeys.HasFlag(Keys.Control))
                 {
                     // No tile selected
                     _editor.SelectedSectors = SectorSelection.None;
                 }
-                if (!(newPicking is PickingResultGizmo) && !(newPicking is PickingResultObject))
+                if (!(newPicking == null) && !(newPicking is PickingResultGizmo) && !(newPicking is PickingResultObject) && !ModifierKeys.HasFlag(Keys.Control))
                 {
-                    // No object or object gizmo selected
+                    // No object (or gizmo) selected and CTRL is not pressed
                     _editor.SelectedObject = null;
+                }
+                if (newPicking == null)
+                {
+                    // Click outside room; if mouse is released without action, unselect all
+                    _noSelectionConfirm = true;
                 }
 
                 // Process editor actions
@@ -710,7 +715,13 @@ namespace TombEditor.Controls
                                     else
                                     {
                                         // Select rectangle
-                                        _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                        if (ModifierKeys.HasFlag(Keys.Control))
+                                        {
+                                            // Multiple separate tile selection - To Be Implemented...
+                                            _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
+                                        }
+                                        else
+                                            _editor.SelectedSectors = new SectorSelection { Start = pos, End = pos };
                                         _doSectorSelection = true;
                                     }
                                 }
@@ -756,6 +767,9 @@ namespace TombEditor.Controls
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            // Reset internal bool for deselection
+            _noSelectionConfirm = false;
+
             base.OnMouseMove(e);
 
             // Hover effect on gizmo
@@ -770,12 +784,11 @@ namespace TombEditor.Controls
                     // Use height for X coordinate because the camera FOV per pixel is defined by the height.
                     float relativeDeltaX = (e.X - _lastMousePosition.X) / (float)Height;
                     float relativeDeltaY = (e.Y - _lastMousePosition.Y) / (float)Height;
-                    float distanceMultiplier = (float)Math.Pow((Camera.Distance / DefaultCameraDistance), (float)2 / (float)3);
-                    if (((ModifierKeys & Keys.Shift) == Keys.Shift) || (e.Button == MouseButtons.Middle))
-                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX * distanceMultiplier, relativeDeltaY * distanceMultiplier, 0) *
+                    if (ModifierKeys.HasFlag(Keys.Shift) || (e.Button == MouseButtons.Middle))
+                        Camera.MoveCameraPlane(new Vector3(relativeDeltaX, relativeDeltaY, 0) *
                             _editor.Configuration.Rendering3D_NavigationSpeedMouseTranslate);
-                    else if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom * distanceMultiplier);
+                    else if (ModifierKeys.HasFlag(Keys.Control))
+                        Camera.Zoom(relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseZoom);
                     else
                         Camera.Rotate(
                             relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
@@ -818,6 +831,14 @@ namespace TombEditor.Controls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            // Click outside room
+            if (_noSelectionConfirm && !(ModifierKeys == Keys.Control))
+            {
+                _editor.SelectedSectors = SectorSelection.None;
+                _editor.SelectedObject = null;
+                _noSelectionConfirm = false;    // It gets already set on MouseMove, but it's better to prevent obscure errors and unwanted behavior later on
+            }
+
             base.OnMouseUp(e);
 
             _doSectorSelection = false;
@@ -941,12 +962,14 @@ namespace TombEditor.Controls
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
-                    BoundingBox box = geometry.Model?.DirectXModel?.BoundingBox ?? new BoundingBox(new Vector3(-128), new Vector3(128));
+                    BoundingBox box = geometry.Model?.DirectXModel?.BoundingBox ?? new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius));
                     box.Minimum += room.WorldPos + instance.Position;
                     box.Maximum += room.WorldPos + instance.Position;
 
                     if (geometry?.Model?.DirectXModel?.Meshes?.ElementAt(0) != null)
-                        DoMeshPicking(ref result, ray, instance, geometry.Model.DirectXModel.Meshes.ElementAt(0), geometry.ObjectMatrix, box, false);
+                        foreach (ImportedGeometryMesh mesh in geometry.Model.DirectXModel.Meshes)
+                            DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix, box, false);
+                        //DoMeshPicking(ref result, ray, instance, geometry.Model.DirectXModel.Meshes.ElementAt(0), geometry.ObjectMatrix, box, false);
                     else if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
                         result = new PickingResultObject(distance, instance);
                 }
@@ -2248,7 +2271,7 @@ namespace TombEditor.Controls
                 Vector3 screenPos = Vector3.Project(positions[i], 0, 0, Width, Height,
                     _device.Viewport.MinDepth,
                     _device.Viewport.MaxDepth, wvp);
-                _debug.AddString(messages[i], screenPos - new Vector3(45, 0, 0));       // it'd be better if it was a dynamic string length enumeration
+                _debug.AddString(messages[i], screenPos - new Vector3(45, 0, 0));
             }
         }
 
