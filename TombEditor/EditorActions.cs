@@ -1893,7 +1893,7 @@ namespace TombEditor
                     {
                         OpenLevelPrj(owner, file);
                     }
-                    else if (file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                    else if (file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
                     {
                         OpenLevel(owner, file);
                     }
