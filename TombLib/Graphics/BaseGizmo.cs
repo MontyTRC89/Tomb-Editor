@@ -388,7 +388,7 @@ namespace TombLib.Graphics
                 return;
 
             _device.Clear(ClearOptions.DepthBuffer, Color4.Black, 1.0f, 0);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
 
             var solidEffect = _effect;
             GizmoMode highlight = _mode == GizmoMode.None ? _hoveredMode : _mode;
@@ -446,13 +446,10 @@ namespace TombLib.Graphics
                 }
             }
 
-            //_device.Clear(ClearOptions.DepthBuffer, Color4.Black, 1.0f, 0);
-
             // Scale
             if (SupportScale)
             {
                 _cylinder.SetupForRendering(_device);
-                _device.SetRasterizerState(_device.RasterizerStates.CullFront);
 
                 // X axis
                 {
@@ -490,7 +487,6 @@ namespace TombLib.Graphics
                 }
 
                 _cube.SetupForRendering(_device);
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
                 // X axis scale
                 {
@@ -527,7 +523,6 @@ namespace TombLib.Graphics
             if (SupportTranslate)
             {
                 _cylinder.SetupForRendering(_device);
-                _device.SetRasterizerState(_device.RasterizerStates.CullFront);
 
                 // X axis
                 {
@@ -565,7 +560,6 @@ namespace TombLib.Graphics
                 }
 
                 _cone.SetupForRendering(_device);
-                _device.SetRasterizerState(_device.RasterizerStates.CullNone);
 
                 // X axis translation
                 {
@@ -616,6 +610,8 @@ namespace TombLib.Graphics
                     _device.DrawIndexed(PrimitiveType.TriangleList, _cube.IndexBuffer.ElementCount);
                 }*/
             }
+
+            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
             // Rotation display vertices
             switch (_mode)

@@ -27,17 +27,20 @@ namespace TombEditor
             if (!_editor.UnsavedChanges)
                 return true;
 
-            DialogResult saveChanges = DarkMessageBox.Show(owner,
+            switch (DarkMessageBox.Show(owner,
                 "Your unsaved changes will be lost. Do you want to save?",
                 description,
                 MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question);
-            if (saveChanges == DialogResult.Cancel)
-                return false;
-            if (saveChanges == DialogResult.Yes)
-                SaveLevel(owner, false);
-
-            return true;
+                MessageBoxIcon.Question))
+            {
+                case DialogResult.No:
+                    return true;
+                case DialogResult.Yes:
+                    SaveLevel(owner, false); // TODO: This should be made to handle errors os saving
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public static void SmartBuildGeometry(Room room, Rectangle area)
