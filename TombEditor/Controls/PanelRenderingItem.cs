@@ -203,7 +203,7 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_editor?.Level?.Settings?.WadFilePath == null)
+            if (string.IsNullOrEmpty(_editor?.Level.Settings.WadFilePath))
             {
                 e.Graphics.Clear(Parent.BackColor);
                 e.Graphics.DrawString("Click here to load WAD.",
