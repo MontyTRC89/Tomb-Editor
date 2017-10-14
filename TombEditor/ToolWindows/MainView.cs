@@ -11,6 +11,7 @@ using DarkUI.Docking;
 using TombEditor.Geometry;
 using TombLib.Utils;
 using DarkUI.Forms;
+using SharpDX;
 
 namespace TombEditor.ToolWindows
 {
@@ -32,6 +33,20 @@ namespace TombEditor.ToolWindows
 
             // Update 3D view
             EditorActions.SwitchMode(EditorMode.Geometry);
+        }
+
+        public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
+        {
+            if (panel3D.Camera.RotationY < (Math.PI * (1.0 / 4.0)))
+                EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
+            else if (panel3D.Camera.RotationY < (Math.PI * (3.0 / 4.0)))
+                EditorActions.MoveObjectRelative(instance, new Vector3(pos.Z, pos.Y, -pos.X), new Vector3(precision.Z, precision.Y, -precision.X), canGoOutsideRoom);
+            else if (panel3D.Camera.RotationY < (Math.PI * (5.0 / 4.0)))
+                EditorActions.MoveObjectRelative(instance, new Vector3(-pos.X, pos.Y, -pos.Z), new Vector3(-precision.X, precision.Y, -precision.Z), canGoOutsideRoom);
+            else if (panel3D.Camera.RotationY < (Math.PI * (7.0 / 4.0)))
+                EditorActions.MoveObjectRelative(instance, new Vector3(-pos.Z, pos.Y, pos.X), new Vector3(-precision.Z, precision.Y, precision.X), canGoOutsideRoom);
+            else
+                EditorActions.MoveObjectRelative(instance, pos, precision, canGoOutsideRoom);
         }
 
         protected override void Dispose(bool disposing)
