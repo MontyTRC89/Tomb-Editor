@@ -92,7 +92,7 @@ namespace TombEditor.Geometry
                 var newWad = new Wad2();
                 try
                 {
-                    if (path.ToLower().EndsWith("wad"))
+                    if (path.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
                     {
                         List<string> soundPaths = new List<string>();
                         foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)

@@ -1285,8 +1285,6 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Tomb Editor";
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormMain_DragDrop);
-            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormMain_DragEnter);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);

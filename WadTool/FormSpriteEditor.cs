@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -25,6 +26,8 @@ namespace WadTool
         public FormSpriteEditor()
         {
             InitializeComponent();
+
+            openFileDialogSprites.Filter = SupportedFormats.GetFilter(FileFormatType.Texture);
 
             _tool = WadToolClass.Instance;
 

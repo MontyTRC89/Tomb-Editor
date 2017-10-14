@@ -12,7 +12,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
-using TombLib.Wad;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -734,9 +734,6 @@ namespace TombEditor.Controls
                 case MouseButtons.Right:
                     _editor.ResetCamera();
                     break;
-
-                default:
-                    break;
             }
         }
 
@@ -825,6 +822,8 @@ namespace TombEditor.Controls
                 e.Effect = DragDropEffects.Copy;
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
         }
 
         protected override void OnDragDrop(DragEventArgs e)
@@ -857,7 +856,7 @@ namespace TombEditor.Controls
 
                     for (int i = 0; i < files.Length; i++)
                     {
-                        if (!ImportedGeometry.SupportedFormats.IsExtensionPresent(files[i]))
+                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, files[i]))
                             continue;
 
                         var info = ImportedGeometryInfo.Default;
@@ -872,6 +871,7 @@ namespace TombEditor.Controls
                             existingGeometry = new ImportedGeometry();
                             _editor.Level.Settings.ImportedGeometryUpdate(existingGeometry, info);
                             _editor.Level.Settings.ImportedGeometries.Add(existingGeometry);
+                            _editor.LoadedImportedGeometriesChange();
                         }
 
                         instance.Model = existingGeometry;

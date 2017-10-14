@@ -629,12 +629,12 @@ namespace TombEditor
 
         private void openLevelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.OpenLevelWithDialog(this);
+            EditorActions.OpenLevel(this);
         }
 
         private void importTRLEPRJToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditorActions.OpenLevelPrjWithDialog(this);
+            EditorActions.OpenLevelPrj(this);
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1032,15 +1032,20 @@ namespace TombEditor
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
         }
 
-        private void FormMain_DragDrop(object sender, DragEventArgs e)
+        protected override void OnDragEnter(DragEventArgs e)
         {
-            EditorActions.DragDropFile(e, this);
+            base.OnDragEnter(e);
+
+            if (EditorActions.DragDropFileSupported(e))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
         }
 
-        private void FormMain_DragEnter(object sender, DragEventArgs e)
+        protected override void OnDragDrop(DragEventArgs e)
         {
-            if (EditorActions.DragDropFileSupported(e, false))
-                e.Effect = DragDropEffects.Move;
+            base.OnDragDrop(e);
+            EditorActions.DragDropFile(e, this);
         }
     }
 }

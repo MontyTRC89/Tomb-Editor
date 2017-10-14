@@ -5,7 +5,6 @@ using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using TombLib.Graphics;
 using TombLib.Utils;
@@ -222,98 +221,6 @@ namespace TombEditor.Geometry
             Textures.Add(newTexture);
             absolutePathTextureLookup.Add(absolutePath, newTexture);
             return newTexture;
-        }
-
-        private struct FileFormat
-        {
-            public string Description;
-            public string Extension;
-        }
-
-        public static class SupportedFormats
-        {
-            private static readonly List<FileFormat> _supportedFormats = new List<FileFormat>()
-            {
-                new FileFormat() { Description = "Autodesk (*.fbx)", Extension = "fbx" },
-                new FileFormat() { Description = "Collada (*.dae)", Extension = "dae" },
-                new FileFormat() { Description = "glTF (*.gltf)", Extension = "gltf" },
-                new FileFormat() { Description = "glTF (*.glb)", Extension = "glb" },
-                new FileFormat() { Description = "Blender 3D (*.blend)", Extension = "blend" },
-                new FileFormat() { Description = "3ds Max 3DS (*.3ds)", Extension = "3ds" },
-                new FileFormat() { Description = "3ds Max ASE (*.ase)", Extension = "ase" },
-                new FileFormat() { Description = "Wavefront Object (*.obj)", Extension = "obj" },
-                new FileFormat() { Description = "Industry Foundation Classes (IFC / Step) (*.ifc)", Extension = "ifc" },
-                new FileFormat() { Description = "XGL (*.xgl)", Extension = "xgl" },
-                new FileFormat() { Description = "XGL ZGL (*.zgl)", Extension = "zgl" },
-                new FileFormat() { Description = "Stanford Polygon Library (*.ply)", Extension = "ply" },
-                new FileFormat() { Description = "AutoCAD DXF (*.dxf)", Extension = "dxf" },
-                new FileFormat() { Description = "LightWave (*.lwo)", Extension = "lwo" },
-                new FileFormat() { Description = "LightWave Scene (*.lws)", Extension = "lws" },
-                new FileFormat() { Description = "Modo (*.lxo)", Extension = "lxo" },
-                new FileFormat() { Description = "Stereolithography (*.stl)", Extension = "stl" },
-                new FileFormat() { Description = "DirectX X (*.x)", Extension = "x" },
-                new FileFormat() { Description = "AC3D (*.ac)", Extension = "ac" },
-                new FileFormat() { Description = "Milkshape 3D (*.ms3d)", Extension = "ms3d" },
-                new FileFormat() { Description = "TrueSpace COB (*.cob)", Extension = "cob" },
-                new FileFormat() { Description = "TrueSpace SCN (*.scn)", Extension = "scn" },
-                new FileFormat() { Description = "OpenGEX (*.ogex)", Extension = "ogex" },
-                new FileFormat() { Description = "X3D (*.x3d)", Extension = "x3d" },
-                new FileFormat() { Description = "3MF(*.3mf)", Extension = "3mf" },
-                new FileFormat() { Description = "Biovision BVH (*.bvh)", Extension = "bvh" },
-                new FileFormat() { Description = "CharacterStudio Motion (*.csm)", Extension = "csm" },
-                new FileFormat() { Description = "Ogre XML (*.xml)", Extension = "xml" },
-                new FileFormat() { Description = "Irrlicht Mesh (*.irrmesh)", Extension = "irrmesh" },
-                new FileFormat() { Description = "Irrlicht Scene (*.irr)", Extension = "irr" },
-                new FileFormat() { Description = "Quake I (*.mdl)", Extension = "mdl" },
-                new FileFormat() { Description = "Quake II (*.md2)", Extension = "md2" },
-                new FileFormat() { Description = "Quake III Mesh (*.md3)", Extension = "md3" },
-                new FileFormat() { Description = "Quake III Map / BSP (*.pk3)", Extension = "pk3" },
-                new FileFormat() { Description = "Return to Castle Wolfenstein (*.mdc)", Extension = "mdc" },
-                new FileFormat() { Description = "Doom 3 (*.md5)", Extension = "md5" },
-                new FileFormat() { Description = "Valve Model SMD (*.smd)", Extension = "smd" },
-                new FileFormat() { Description = "Valve Model VTA (*.vta)", Extension = "vta" },
-                new FileFormat() { Description = "Open Game Engine Exchange (*.ogex)", Extension = "ogex" },
-                new FileFormat() { Description = "Unreal(*.3d)", Extension = "3d" },
-                new FileFormat() { Description = "BlitzBasic 3D (*.b3d)", Extension = "b3d" },
-                new FileFormat() { Description = "Quick3D (*.q3d)", Extension = "q3d" },
-                new FileFormat() { Description = "Quick3D Q3S (*.q3s)", Extension = "q3s" },
-                new FileFormat() { Description = "Neutral File Format (*.nff)", Extension = "nff" },
-                new FileFormat() { Description = "Object File Format (*.off)", Extension = "off" },
-                new FileFormat() { Description = "PovRAY Raw (*.raw)", Extension = "raw" },
-                new FileFormat() { Description = "Terragen Terrain (*.ter)", Extension = "ter" },
-                new FileFormat() { Description = "3D GameStudio(3DGS) (*.mdl)", Extension = "mdl" },
-                new FileFormat() { Description = "3D GameStudio(3DGS) Terrain (*.hmp)", Extension = "hmp" },
-                new FileFormat() { Description = "Izware Nendo (*.ndo)", Extension = "ndo" }
-            };
-
-            public static string GetFilter()
-            {
-                int numExtensions = _supportedFormats.Count;
-                string result = "Any supported 3D model format|";
-
-                foreach(var ext in _supportedFormats)
-                {
-                    result = result + "*." + ext.Extension;
-                    if (ext.Equals(_supportedFormats.Last()))
-                        result = result + "|";
-                    else
-                        result = result + ";";
-                }
-
-                foreach (var ext in _supportedFormats)
-                {
-                    result = result + ext.Description + "|*." + ext.Extension;
-                    if (!ext.Equals(_supportedFormats.Last()))
-                        result = result + "|";
-                }
-
-                return result;
-            }
-
-            public static bool IsExtensionPresent(string srcExtension)
-            {
-                return _supportedFormats.Exists(item => srcExtension.EndsWith(item.Extension));
-            }
         }
 
         public void Assign(ImportedGeometry other)

@@ -142,9 +142,6 @@
             // 
             // openFileDialogSprites
             // 
-            this.openFileDialogSprites.Filter = "Recommended image files (*.png, *.tga, *.bmp)|*.png;*.tga;*.bmp|PNG images (*.png" +
-    ")|*.png|Targe images (*.tga)|*.tga|Bitmap images (*.bmp)|*.bmp|All files (*.*)|*" +
-    "";
             this.openFileDialogSprites.Title = "Add new sprite";
             // 
             // FormSpriteEditor
