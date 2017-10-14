@@ -221,7 +221,7 @@ namespace TombEditor.Geometry
 
             // Copy objects
             result._objects = new List<PositionBasedObjectInstance>();
-            foreach (var instance in _objects)
+            foreach (var instance in AnyObjects)
                 if (decideToCopy(instance))
                     result.AddObject(level, instance.Clone());
 
