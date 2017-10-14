@@ -96,15 +96,13 @@ namespace TombEditor.Controls
         {
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
-            public bool IsFloorHorizontalPlane { get; private set; }
-            public bool BelongsToFloor { get; private set; }
+            public bool IsFloorHorizontalPlane => (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
+            public bool BelongsToFloor => (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
             public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
             {
                 Distance = distance;
                 Pos = pos;
                 Face = face;
-                IsFloorHorizontalPlane = (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
-                BelongsToFloor = (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
             }
         }
 
