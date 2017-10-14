@@ -57,7 +57,6 @@ namespace TombLib.IO
         private static bool AddFormat(FileFormatType type, string description, List<string> extensions)
         {
             List<FileFormat> _formatList = GetFormatList(type);
-
             string _finalDescription = description + " (";
 
             foreach(var format in _formatList)
@@ -194,7 +193,6 @@ namespace TombLib.IO
             }
 
             result = result + "|All files (*.*)|*";
-
             return result;
         }
     }

@@ -853,16 +853,16 @@ namespace TombEditor.Controls
                 {
                     // Try to put custom geometry files
 
-                    string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                    List<string> files = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
 
-                    for (int i = 0; i < files.Length; i++)
+                    foreach(var file in files)
                     {
-                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, files[i]))
+                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file))
                             continue;
 
                         var info = ImportedGeometryInfo.Default;
-                        info.Path = files[i];
-                        info.Name = Path.GetFileNameWithoutExtension(files[i]);
+                        info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        info.Name = Path.GetFileNameWithoutExtension(file);
 
                         var instance = new ImportedGeometryInstance();
                         var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => item.Info.Path == info.Path);
