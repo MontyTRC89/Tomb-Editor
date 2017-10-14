@@ -114,6 +114,7 @@
     <Compile Include="IO\ChunkId.cs" />
     <Compile Include="IO\ChunkReader.cs" />
     <Compile Include="IO\ChunkWriter.cs" />
+    <Compile Include="IO\FileFormat.cs" />
     <Compile Include="IO\LEB128.cs" />
     <Compile Include="NG\NGExtraParameter.cs" />
     <Compile Include="NG\NGTimerParameter.cs" />

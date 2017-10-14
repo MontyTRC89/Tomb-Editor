@@ -11,7 +11,7 @@ using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
 using TombLib.Utils;
 using DarkUI.Forms;
-using TombLib.Graphics;
+using TombLib.IO;
 using System.IO;
 
 namespace TombEditor
@@ -1880,6 +1880,63 @@ namespace TombEditor
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
         }
 
+        public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                int fileCount = files.Count();
+
+                foreach (var file in files)
+                    if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file) ||
+                        SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file) ||
+                        (allow3DImport && SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file)) ||
+                        file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase) ||
+                        file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                        return true;
+            }
+
+            return false;
+        }
+
+        public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
+        {
+            int unsupportedFileCount = 0;
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (var file in files)
+                {
+                    if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file))
+                    {
+                        _editor.Level.Settings.WadFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        _editor.Level.ReloadWad();
+                        _editor.LoadedWadsChange(_editor.Level.Wad);
+                    }
+                    else if (SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file))
+                    {
+                        _editor.Level.Settings.TextureFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        _editor.LoadedTexturesChange();
+                    }
+                    else if (file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        OpenLevelPrj(owner, file);
+                    }
+                    else if (file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        OpenLevel(owner, file);
+                    }
+                    else
+                        unsupportedFileCount++;
+                }
+                return unsupportedFileCount;
+            }
+            else
+                return -1;
+        }
+
         public static void ShowTextureSoundsDialog(IWin32Window owner)
         {
             using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
@@ -1937,66 +1994,74 @@ namespace TombEditor
             }
         }
 
-        public static void OpenLevel(IWin32Window owner)
+        public static void OpenLevel(IWin32Window owner, string fileName = null)
         {
             if (DarkMessageBox.Show(owner,
                 "Your level will be lost. Do you really want to open another level file?",
                 "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Title = "Open Tomb Editor level";
-                openFileDialog.Filter = "Tomb Editor level (*.prj2)|*.prj2|All files (*.*)|*.*";
-                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
-                    return;
+            string _fileName = fileName;
 
-                // Load level
-                Level newLevel = null;
-                try
+            if(_fileName == null)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    newLevel = Prj2Loader.LoadFromPrj2(openFileDialog.FileName, new ProgressReporterSimple(owner));
+                    openFileDialog.Title = "Open Tomb Editor level";
+                    openFileDialog.Filter = "Tomb Editor level (*.prj2)|*.prj2|All files (*.*)|*.*";
+                    if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                        return;
+
+                    _fileName = openFileDialog.FileName;
                 }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
-                    DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
-                }
-                _editor.Level = newLevel;
+
+            Level newLevel = null;
+            try
+            {
+                newLevel = Prj2Loader.LoadFromPrj2(_fileName, new ProgressReporterSimple(owner));
             }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Unable to open \"" + _fileName + "\"");
+                DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
+            }
+            _editor.Level = newLevel;
         }
 
-        public static void OpenLevelPrj(IWin32Window owner)
+        public static void OpenLevelPrj(IWin32Window owner, string fileName = null)
         {
             if (DarkMessageBox.Show(owner,
                     "Your level will be lost. Do you really want to open another level file?",
                     "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Title = "Open Tomb Editor level";
-                openFileDialog.Filter = "Winroomedit level (*.prj)|*.prj|All files (*.*)|*.*";
-                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
-                    return;
+            string _fileName = fileName;
 
-                // Load level
-                Level newLevel = null;
-                try
+            if (_fileName == null)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
-                        newLevel = PrjLoader.LoadFromPrj(openFileDialog.FileName, progressReporter)))
-                    {
-                        if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
-                            return;
-                        _editor.Level = newLevel;
-                        newLevel = null;
-                    }
+                    openFileDialog.Title = "Open Tomb Editor level";
+                    openFileDialog.Filter = "Winroomedit level (*.prj)|*.prj|All files (*.*)|*.*";
+                    if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                        return;
+
+                    _fileName = openFileDialog.FileName;
                 }
-                finally
+
+            Level newLevel = null;
+            try
+            {
+                using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
+                    newLevel = PrjLoader.LoadFromPrj(_fileName, progressReporter)))
                 {
-                    newLevel?.Dispose();
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return;
+                    _editor.Level = newLevel;
+                    newLevel = null;
                 }
+            }
+            finally
+            {
+                newLevel?.Dispose();
             }
         }
 
