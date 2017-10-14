@@ -417,6 +417,7 @@
             this.butInvisible.Name = "butInvisible";
             this.butInvisible.Size = new System.Drawing.Size(23, 25);
             this.butInvisible.Text = "Invisible face (Shift+3)";
+            this.butInvisible.Click += new System.EventHandler(this.butInvisible_Click);
             //
             // toolStripSeparator2
             //
