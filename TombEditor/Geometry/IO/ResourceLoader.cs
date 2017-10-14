@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombEditor.Geometry.IO
@@ -28,12 +29,7 @@ namespace TombEditor.Geometry.IO
                 else
                     dialog.InitialDirectory = path;
 
-                dialog.Filter =
-                    "Recommended image files (*.png, *.tga, *.bmp)|*.png;*.tga;*.bmp|" +
-                    "PNG images (*.png)|*.png|" +
-                    "Targe images (*.tga)|*.tga|" +
-                    "Bitmap images (*.bmp)|*.bmp|" +
-                    "All files (*.*)|*";
+                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.Texture);
                 dialog.Title = "Load texture map";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
@@ -57,7 +53,7 @@ namespace TombEditor.Geometry.IO
                 else
                     dialog.InitialDirectory = path;
 
-                dialog.Filter = "Tomb Raider WAD (*.wad)|*.wad|Tomb Editor Wad2 (*.wad2)|*.wad2|All files (*.*)|*.*";
+                dialog.Filter = SupportedFormats.GetFilter(FileFormatType.Object);
                 dialog.Title = "Load object file (WAD)";
 
                 if (dialog.ShowDialog(owner) != DialogResult.OK)

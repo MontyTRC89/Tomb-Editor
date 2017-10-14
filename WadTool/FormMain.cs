@@ -10,6 +10,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.IO;
 using TombLib.Wad;
 using TombLib.Wad.Tr4Wad;
 
@@ -232,7 +233,7 @@ namespace WadTool
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
             // Open the file dialog
-            openFileDialogWad.Filter = "Tomb Raider WAD (*.wad)|*.wad|Tomb Editor Wad2 (*.wad2)|*.wad2";
+            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.Wad);
             openFileDialogWad.Title = "Open source WAD/Wad2";
             if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
                 return;
