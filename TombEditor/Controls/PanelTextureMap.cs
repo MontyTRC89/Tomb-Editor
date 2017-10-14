@@ -440,33 +440,35 @@ namespace TombEditor.Controls
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
             base.OnPreviewKeyDown(e);
-            switch (e.KeyCode)
-            {
-                case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Up:
-                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Left:
-                    ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                    Invalidate();
-                    break;
-                case Keys.Right:
-                    ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                    Invalidate();
-                    break;
-                case Keys.PageDown:
-                    ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
-                case Keys.PageUp:
-                    ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
-            }
+
+            if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
+                switch (e.KeyCode)
+                {
+                    case Keys.Down:
+                        ViewPosition += new Vector2(0.0f, _editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                        Invalidate();
+                        break;
+                    case Keys.Up:
+                        ViewPosition += new Vector2(0.0f, -_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale);
+                        Invalidate();
+                        break;
+                    case Keys.Left:
+                        ViewPosition += new Vector2(-_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                        Invalidate();
+                        break;
+                    case Keys.Right:
+                        ViewPosition += new Vector2(_editor.Configuration.TextureMap_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                        Invalidate();
+                        break;
+                    case Keys.PageDown:
+                        ViewScale *= (float)Math.Exp(-_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
+                    case Keys.PageUp:
+                        ViewScale *= (float)Math.Exp(_editor.Configuration.TextureMap_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
+                }
         }
 
         protected override void OnResize(EventArgs eventargs)

@@ -862,7 +862,18 @@ namespace TombLib.Wad
                         maxVertex = position;
 
                     // Add texture coordinates
-                    uv.Add(new Vector2(texCoords[i].X, 1.0f - texCoords[i].Y) * faceTexture.Width);
+                    var currentUV = new Vector2(texCoords[i].X, 1.0f - texCoords[i].Y);
+
+                    // HACK: maybe something better can be done, but for now it works
+                    if (currentUV.X > 1.0f) currentUV.X -= 1.0f;
+                    if (currentUV.Y > 1.0f) currentUV.Y -= 1.0f;
+                    if (currentUV.X < 0.0f) currentUV.X += 1.0f;
+                    if (currentUV.Y < 0.0f) currentUV.Y += 1.0f;
+
+                    currentUV.X *= faceTexture.Width;
+                    currentUV.Y *= faceTexture.Height;
+
+                    uv.Add(currentUV);
                 }
 
                 // Add polygons

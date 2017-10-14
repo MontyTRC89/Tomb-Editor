@@ -558,7 +558,7 @@ namespace WadTool
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _tool.DestinationWad.CreateNewStaticMeshFromExternalModel("low-poly-wooden-door.obj", 300.0f);
+            _tool.DestinationWad.CreateNewStaticMeshFromExternalModel("tank.3ds", 1.0f);
             UpdateDestinationWad2UI();
         }
 

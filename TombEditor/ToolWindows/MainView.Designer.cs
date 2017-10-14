@@ -431,7 +431,7 @@
             this.butAddCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butAddCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butAddCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butAddCamera.Image = global::TombEditor.Properties.Resources.Camera_161;
+            this.butAddCamera.Image = global::TombEditor.Properties.Resources.Camera_16;
             this.butAddCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddCamera.Name = "butAddCamera";
             this.butAddCamera.Size = new System.Drawing.Size(23, 25);

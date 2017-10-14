@@ -164,10 +164,10 @@ namespace TombEditor.Controls
         private readonly List<ImportedGeometryInstance> _roomGeometryToDraw = new List<ImportedGeometryInstance>();
 
         // Debug lines
-        private Buffer<EditorVertex> _objectHeightLineVertexBuffer;
+        private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
         private bool _drawHeightLine = false;
 
-        private Buffer<EditorVertex> _flybyPathVertexBuffer;
+        private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private bool _drawFlybyPath = false;
         private List<BoundingBoxToDraw> _boundingBoxesToDraw;
 
@@ -175,6 +175,8 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
+            SetStyle(ControlStyles.Selectable, true);
+
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
                 _editor = Editor.Instance;
@@ -490,40 +492,39 @@ namespace TombEditor.Controls
         {
             base.OnPreviewKeyDown(e);
 
-            // I intercept arrow keys here otherwise they would processed by the form and
-            // camera would move only if Panel3D is focused
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                    Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
-                    Invalidate();
-                    break;
+            if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
+                switch (e.KeyCode)
+                {
+                    case Keys.Up:
+                        Camera.Rotate(0, -_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
+                        Invalidate();
+                        break;
 
-                case Keys.Down:
-                    Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
-                    Invalidate();
-                    break;
+                    case Keys.Down:
+                        Camera.Rotate(0, _editor.Configuration.Rendering3D_NavigationSpeedKeyRotate);
+                        Invalidate();
+                        break;
 
-                case Keys.Left:
-                    Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
-                    Invalidate();
-                    break;
+                    case Keys.Left:
+                        Camera.Rotate(_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
+                        Invalidate();
+                        break;
 
-                case Keys.Right:
-                    Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
-                    Invalidate();
-                    break;
+                    case Keys.Right:
+                        Camera.Rotate(-_editor.Configuration.Rendering3D_NavigationSpeedKeyRotate, 0);
+                        Invalidate();
+                        break;
 
-                case Keys.PageUp:
-                    Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
+                    case Keys.PageUp:
+                        Camera.Zoom(-_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
 
-                case Keys.PageDown:
-                    Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
-            }
+                    case Keys.PageDown:
+                        Camera.Zoom(_editor.Configuration.Rendering3D_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
+                }
         }
         
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -1300,9 +1301,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1336,9 +1337,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1373,9 +1374,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1412,9 +1413,9 @@ namespace TombEditor.Controls
                     // Object position
                     message += "\n" + GetObjectPositionString(room, instance);
 
-                    Vector3 screenPos = Vector3.Project(new Vector3(), 0, 0, Width, Height,
-                        _device.Viewport.MinDepth,
-                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
+                    Vector3 screenPos = Vector3.Project(512.0f * Vector3.UnitY, 0, 0, Width,
+                                                        Height, _device.Viewport.MinDepth,
+                                                        _device.Viewport.MaxDepth, instance.ObjectMatrix * viewProjection);
 
                     BuildTriggeredByMessage(ref message, instance);
 
@@ -1433,7 +1434,7 @@ namespace TombEditor.Controls
 
             if (_editor.SelectedRoom != null)
             {
-                foreach (var instance in room.Objects.OfType<MoveableInstance>())
+                /*foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
                     if (_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false)
                         continue;
@@ -1501,7 +1502,7 @@ namespace TombEditor.Controls
                     effect.Techniques[0].Passes[0].Apply();
                     _device.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
-
+                */
                 foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (instance.Model?.DirectXModel != null)
@@ -3118,16 +3119,16 @@ namespace TombEditor.Controls
             float height = position.Y - floorHeight;
 
             // Prepare two vertices for the line
-            EditorVertex[] vertices = new EditorVertex[]
+            var vertices = new SolidVertex[]
             {
-                new EditorVertex { Position = position },
-                new EditorVertex { Position = new Vector3(position.X,floorHeight,position.Z) }
+                new SolidVertex { Position = position, Color = Vector4.One },
+                new SolidVertex { Position = new Vector3(position.X, floorHeight, position.Z), Color = Vector4.One }
             };
 
             // Prepare the Vertex Buffer
             if (_objectHeightLineVertexBuffer != null)
                 _objectHeightLineVertexBuffer.Dispose();
-            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device,
+            _objectHeightLineVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device,
                 vertices, SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _drawHeightLine = true;
@@ -3153,18 +3154,20 @@ namespace TombEditor.Controls
             flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
             // Create a vertex array
-            List<EditorVertex> vertices = new List<EditorVertex>();
+            List<SolidVertex> vertices = new List<SolidVertex>();
 
             for (int i = 0; i < flybyCameras.Count - 1; i++)
             {
                 Vector3 room1pos = flybyCameras[i].Room.WorldPos;
                 Vector3 room2pos = flybyCameras[i + 1].Room.WorldPos;
 
-                EditorVertex v1 = new EditorVertex();
+                var v1 = new SolidVertex();
                 v1.Position = flybyCameras[i].Position + room1pos;
+                v1.Color = Vector4.One;
 
-                EditorVertex v2 = new EditorVertex();
+                var v2 = new SolidVertex();
                 v2.Position = flybyCameras[i + 1].Position + room2pos;
+                v2.Color = Vector4.One;
 
                 vertices.Add(v1);
                 vertices.Add(v2);
@@ -3172,7 +3175,7 @@ namespace TombEditor.Controls
 
             // Prepare the Vertex Buffer
             if (_flybyPathVertexBuffer != null) _flybyPathVertexBuffer.Dispose();
-            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<EditorVertex>(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             _drawFlybyPath = true;
         }

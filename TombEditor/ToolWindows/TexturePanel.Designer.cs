@@ -129,6 +129,7 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.TabIndex = 1;
             this.butAnimationRanges.Text = "Animation ranges";
             this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
+            this.butBump.Visible = false;
             // 
             // butTextureSounds
             // 
