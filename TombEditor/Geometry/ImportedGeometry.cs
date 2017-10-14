@@ -67,6 +67,15 @@ namespace TombEditor.Geometry
             if (Vertices.Count == 0)
                 return;
 
+            Vector3 minVertex = new Vector3(float.MaxValue);
+            Vector3 maxVertex = new Vector3(float.MinValue);
+            foreach (var vertex in Vertices)
+            {
+                minVertex = Vector3.Min(minVertex, vertex.Position);
+                maxVertex = Vector3.Max(maxVertex, vertex.Position);
+            }
+            BoundingBox = new BoundingBox(minVertex, maxVertex);
+
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Default);
         }

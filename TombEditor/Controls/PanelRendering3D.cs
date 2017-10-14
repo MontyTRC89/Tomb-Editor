@@ -857,7 +857,7 @@ namespace TombEditor.Controls
             return destinationDistance;
         }
 
-        private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix objectMatrix, BoundingBox objectBB, bool transformBB = true) where T : struct, IVertex
+        private void DoMeshPicking<T>(ref PickingResult result, Ray ray, ObjectInstance objectPtr, Mesh<T> mesh, Matrix objectMatrix) where T : struct, IVertex
         {
             // Transform view ray to object space space
             Matrix inverseObjectMatrix = objectMatrix;
@@ -870,8 +870,9 @@ namespace TombEditor.Controls
             // Do a fast bounding box check
             float minDistance;
             {
-                float distance = 0;
-                if (transformBB && !transformedRay.Intersects(ref objectBB, out distance))
+                BoundingBox box = mesh.BoundingBox;
+                float distance;
+                if (!transformedRay.Intersects(ref box, out distance))
                     return;
 
                 minDistance = result == null ? float.PositiveInfinity : TransformRayDistance(ref ray, ref inverseObjectMatrix, ref transformedRay, result.Distance);
@@ -928,7 +929,7 @@ namespace TombEditor.Controls
                         for (int j = 0; j < model.Meshes.Count; j++)
                         {
                             SkinnedMesh mesh = model.Meshes[j];
-                            DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix, mesh.BoundingBox);
+                            DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
                         }
                     }
                     else
@@ -948,7 +949,7 @@ namespace TombEditor.Controls
                         StaticModel model = _editor.Level.Wad.DirectXStatics[modelInfo.WadObjectId];
 
                         StaticMesh mesh = model.Meshes[0];
-                        DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix, mesh.BoundingBox);
+                        DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
                     }
                     else
                     {
@@ -963,16 +964,17 @@ namespace TombEditor.Controls
                 {
                     var geometry = (ImportedGeometryInstance)instance;
 
-                    BoundingBox box = geometry.Model?.DirectXModel?.BoundingBox ?? new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius));
-                    box.Minimum += room.WorldPos + instance.Position;
-                    box.Maximum += room.WorldPos + instance.Position;
-
                     if (geometry?.Model?.DirectXModel?.Meshes?.ElementAt(0) != null)
                         foreach (ImportedGeometryMesh mesh in geometry.Model.DirectXModel.Meshes)
-                            DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix, box, false);
-                        //DoMeshPicking(ref result, ray, instance, geometry.Model.DirectXModel.Meshes.ElementAt(0), geometry.ObjectMatrix, box, false);
-                    else if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
-                        result = new PickingResultObject(distance, instance);
+                            DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                    else
+                    {
+                        BoundingBox box = new BoundingBox(
+                            room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
+                            room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
+                        if (ray.Intersects(ref box, out distance) && ((result == null) || (distance < result.Distance)))
+                            result = new PickingResultObject(distance, instance);
+                    }
                 }
                 else
                 {
