@@ -6,6 +6,7 @@ using SharpDX.Toolkit.Graphics;
 using TombEditor.Compilers;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombLib.Utils;
+using System.Threading.Tasks;
 
 namespace TombEditor.Geometry
 {
@@ -2633,7 +2634,7 @@ namespace TombEditor.Geometry
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
         };
 
-        public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond)
+        public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
         {
             if (firstRoom.AlternateVersion == null)
             {
@@ -2762,12 +2763,10 @@ namespace TombEditor.Geometry
         public void SmartBuildGeometry(Rectangle area)
         {
             area = area.Inflate(1); // Add margin
-            BuildGeometry(area);
-            CalculateLightingForThisRoom();
-            UpdateBuffers();
 
             // Update adjoining rooms
-            HashSet<Room> roomsProcessed = new HashSet<Room>();
+            var roomsToProcess = new List<Room> { this };
+            var areaToProcess = new List<Rectangle> { area };
             List<PortalInstance> listOfPortals = Portals.ToList();
             foreach (var portal in listOfPortals)
             {
@@ -2777,16 +2776,41 @@ namespace TombEditor.Geometry
                 Rectangle portalArea = portal.Area.Intersect(area);
                 Rectangle otherRoomPortalArea = PortalInstance.GetOppositePortalArea(portal.Direction, portalArea)
                     .Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-                portal.AdjoiningRoom.BuildGeometry(otherRoomPortalArea);
-                roomsProcessed.Add(portal.AdjoiningRoom);
-            }
 
-            // Update lighting in room that were updated geometrically
-            foreach (var adjoiningRoom in roomsProcessed)
-            {
-                adjoiningRoom.CalculateLightingForThisRoom();
-                adjoiningRoom.UpdateBuffers();
+                // Find all related rooms or alternate rooms around the portals
+                foreach (var roomPairs in GetPossibleAlternateRoomPairs(this, portal.AdjoiningRoom))
+                {
+                    // Add itself if necessary
+                    int thisRoomIndex = roomsToProcess.IndexOf(roomPairs.Key);
+                    if (thisRoomIndex == -1)
+                    {
+                        roomsToProcess.Add(roomPairs.Key);
+                        areaToProcess.Add(area);
+                    }
+                    else
+                        areaToProcess[thisRoomIndex] = areaToProcess[thisRoomIndex].Union(area);
+
+                    // Add other if necessary
+                    int adjoiningRoomIndex = roomsToProcess.IndexOf(roomPairs.Value);
+                    if (adjoiningRoomIndex == -1)
+                    {
+                        roomsToProcess.Add(roomPairs.Value);
+                        areaToProcess.Add(otherRoomPortalArea);
+                    }
+                    else
+                        areaToProcess[adjoiningRoomIndex] = areaToProcess[adjoiningRoomIndex].Union(otherRoomPortalArea);
+                }
             }
+            System.Diagnostics.Debug.Assert(roomsToProcess.Count == areaToProcess.Count);
+
+            // Update the collected stuff now
+            Parallel.For(0, roomsToProcess.Count, (index) =>
+                {
+                    roomsToProcess[index].BuildGeometry(areaToProcess[index]);
+                    roomsToProcess[index].CalculateLightingForThisRoom();
+                });
+            foreach (var room in roomsToProcess)
+                room.UpdateBuffers();
         }
     }
 
