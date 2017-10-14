@@ -89,14 +89,14 @@ namespace TombLib.Wad
                         var msh = mesh.Value;
 
                         // Write bounding sphere
-                        chunkIO.WriteChunk(Wad2Chunks.Sphere, () =>
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.Sphere, () =>
                         {
                             chunkIO.WriteChunkVector3(Wad2Chunks.SphereCentre, msh.BoundingSphere.Center);
                             chunkIO.WriteChunkFloat(Wad2Chunks.SphereRadius, msh.BoundingSphere.Radius);
                         });
 
                         // Write bounding box
-                        chunkIO.WriteChunk(Wad2Chunks.BoundingBox, () =>
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.BoundingBox, () =>
                         {
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, msh.BoundingBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, msh.BoundingBox.Maximum);
@@ -277,7 +277,7 @@ namespace TombLib.Wad
                                     chunkIO.WriteChunkWithChildren(Wad2Chunks.KeyFrame, () =>
                                     {
                                         chunkIO.WriteChunkVector3(Wad2Chunks.KeyFrameOffset, kf.Offset);
-                                        chunkIO.WriteChunk(Wad2Chunks.KeyFrameBoundingBox, () =>
+                                        chunkIO.WriteChunkWithChildren(Wad2Chunks.KeyFrameBoundingBox, () =>
                                         {
                                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, kf.BoundingBox.Minimum);
                                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, kf.BoundingBox.Maximum);
@@ -345,13 +345,13 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, _meshesTable.IndexOf(s.Mesh));
                         LEB128.Write(chunkIO.Raw, s.Flags);
 
-                        chunkIO.WriteChunk(Wad2Chunks.StaticVisibilityBox, () =>
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.StaticVisibilityBox, () =>
                         {
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, s.VisibilityBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.VisibilityBox.Maximum);
                         });
 
-                        chunkIO.WriteChunk(Wad2Chunks.StaticCollisionBox, () =>
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.StaticCollisionBox, () =>
                         {
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, s.CollisionBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.CollisionBox.Maximum);
