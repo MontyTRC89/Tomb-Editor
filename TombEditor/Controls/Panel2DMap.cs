@@ -57,7 +57,7 @@ namespace TombEditor.Controls
         public Panel2DMap()
         {
             DoubleBuffered = true;
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.Selectable, true);
             UpdateStyles();
 
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
@@ -331,33 +331,34 @@ namespace TombEditor.Controls
 
             // Make control receive key events as suggested here...
             // https://stackoverflow.com/questions/20079373/trouble-creating-keydown-event-in-panel
-            switch (e.KeyCode)
-            {
-                case Keys.Down:
-                    ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Up:
-                    ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
-                    Invalidate();
-                    break;
-                case Keys.Left:
-                    ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                    Invalidate();
-                    break;
-                case Keys.Right:
-                    ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
-                    Invalidate();
-                    break;
-                case Keys.PageDown:
-                    ViewScale *= (float)Math.Exp(-_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
-                case Keys.PageUp:
-                    ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
-                    Invalidate();
-                    break;
-            }
+            if ((ModifierKeys & (Keys.Control | Keys.Alt | Keys.Shift)) == Keys.None)
+                switch (e.KeyCode)
+                {
+                    case Keys.Down:
+                        ViewPosition += new Vector2(0.0f, -_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
+                        Invalidate();
+                        break;
+                    case Keys.Up:
+                        ViewPosition += new Vector2(0.0f, _editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale);
+                        Invalidate();
+                        break;
+                    case Keys.Left:
+                        ViewPosition += new Vector2(-_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                        Invalidate();
+                        break;
+                    case Keys.Right:
+                        ViewPosition += new Vector2(_editor.Configuration.Map2D_NavigationSpeedKeyMove / ViewScale, 0.0f);
+                        Invalidate();
+                        break;
+                    case Keys.PageDown:
+                        ViewScale *= (float)Math.Exp(-_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
+                    case Keys.PageUp:
+                        ViewScale *= (float)Math.Exp(_editor.Configuration.Map2D_NavigationSpeedKeyZoom);
+                        Invalidate();
+                        break;
+                }
         }
 
         protected override void OnPaint(PaintEventArgs e)

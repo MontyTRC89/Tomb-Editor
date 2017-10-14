@@ -93,7 +93,7 @@ namespace TombEditor.Geometry
             {
                 return Matrix.RotationYawPitchRoll(
                     (this as IRotateableY)?.GetRotationYRadians() ?? 0.0f,
-                    (this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
+                    -(this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
                     (this as IRotateableYXRoll)?.GetRotationRollRadians() ?? 0.0f);
             }
         }
@@ -114,6 +114,16 @@ namespace TombEditor.Geometry
                 return RotationMatrix *
                     Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
                     Matrix.Translation((Room?.WorldPos ?? new Vector3()) + Position);
+            }
+        }
+
+        public Matrix LocalObjectMatrix
+        {
+            get
+            {
+                return RotationMatrix *
+                    Matrix.Scaling((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix.Translation(Position);
             }
         }
     }
@@ -166,10 +176,10 @@ namespace TombEditor.Geometry
         {
             rotationX -= (float)(360 * Math.Floor(rotationX / 360));
             if (rotationX > 270)
-                rotationX = rotationX - 360;
-            else if (rotationX > 180)
+                rotationX -= 360;
+            else if (rotationX > 90)
             {
-                rotationX = rotationX - 360;
+                rotationX = 180 - rotationX;
                 rotationY += 180;
             }
 

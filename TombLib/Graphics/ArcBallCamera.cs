@@ -9,12 +9,17 @@ namespace TombLib.Graphics
     public class ArcBallCamera : Camera
     {
         // Rotation around the two axes
+        private float _rotationY;
+        public float RotationY
+        {
+            get { return _rotationY; }
+            set  { _rotationY = (float)(value - Math.Floor(value / (2 * Math.PI)) * (2 * Math.PI)); }
+        }
         public float RotationX { get; set; }
-        public float RotationY { get; set; }
 
         // Y axis rotation limits (radians)
-        public float MinRotationY { get; set; }
-        public float MaxRotationY { get; set; }
+        public float MinRotationX { get; set; }
+        public float MaxRotationX { get; set; }
 
         // Distance between the target and camera
         public float Distance { get; set; }
@@ -37,12 +42,12 @@ namespace TombLib.Graphics
             float distance, float minDistance, float maxDistance, float fieldOfView)
         {
             Target = target;
-            MinRotationY = minRotationY;
-            MaxRotationY = maxRotationY;
+            MinRotationX = minRotationX;
+            MaxRotationX = maxRotationX;
 
             // Lock the y axis rotation between the min and max values
-            RotationY = MathUtil.Clamp(rotationY, minRotationY, maxRotationY);
-            RotationX = rotationX;
+            RotationX = MathUtil.Clamp(rotationX, minRotationX, maxRotationX);
+            RotationY = rotationY;
             MinDistance = minDistance;
             MaxDistance = maxDistance;
 
@@ -63,9 +68,9 @@ namespace TombLib.Graphics
 
         public void Rotate(float rotationXChange, float rotationYChange)
         {
-            RotationX += rotationXChange;
-            RotationY -= rotationYChange;
-            RotationY = MathUtil.Clamp(RotationY, MinRotationY, MaxRotationY);
+            RotationY += rotationXChange;
+            RotationX -= rotationYChange;
+            RotationX = MathUtil.Clamp(RotationX, MinRotationX, MaxRotationX);
         }
 
         public void MoveCameraPlane(Vector3 movementVec)
@@ -82,7 +87,7 @@ namespace TombLib.Graphics
         public override Matrix GetViewProjectionMatrix(float width, float height)
         {
             // Calculate up vector
-            Matrix rotation = Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
+            Matrix rotation = Matrix.RotationYawPitchRoll(RotationY, -RotationX, 0);
             Vector3 up = Vector3.TransformCoordinate(Vector3.UnitY, rotation);
 
             //new Vector3(0, 150, 0), Vector3.Up);
@@ -94,7 +99,7 @@ namespace TombLib.Graphics
 
         public Matrix GetRotationMatrix()
         {
-            return Matrix.RotationYawPitchRoll(RotationX, -RotationY, 0);
+            return Matrix.RotationYawPitchRoll(RotationY, -RotationX, 0);
         }
 
         public Vector3 GetDirection()
