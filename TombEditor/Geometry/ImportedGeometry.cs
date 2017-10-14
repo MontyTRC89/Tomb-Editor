@@ -232,60 +232,6 @@ namespace TombEditor.Geometry
             return newTexture;
         }
 
-        public static string SupportedFormats
-        {
-            get
-            {
-                return "Any supported 3D model format|*.fbx;*.dae;*.gltf;*.glb;*.blend;*.3ds;*.ase;*.obj;.ifc;*.xgl;*.zgl;*.ply;*.dxf;*.lwo;*.lws;*.lxo;*.stl;*.x;*.ac;*.ms3d;*.cob;*.scn;*.ogex;*.x3d;*.3mf;*.bvh;*.csm;*.xml;*.irrmesh;*.*.irr;*.mdl;*.md2;*.md3;*.pk3;*.mdc;*.md5;*.smd;*.vta;*.ogex;*.3d;*.b3d;*.q3d;*.q3s;*.nff;*.nff;*.off;*.raw;*.ter;*.mdl;*.hmp;*.ndo|" +
-                    "Autodesk (*.fbx)|*.fbx|" +
-                    "Collada (*.dae)|*.dae|" +
-                    "glTF (*.gltf, *.glb)|*.gltf;*.glb|" +
-                    "Blender 3D (*.blend)|*.blend|" +
-                    "3ds Max 3DS (*.3ds)|*.3ds|" +
-                    "3ds Max ASE (*.ase)|*.ase|" +
-                    "Wavefront Object (*.obj)|*.obj|" +
-                    "Industry Foundation Classes (IFC / Step) (*.ifc)|*.ifc|" +
-                    "XGL (*.xgl, *.zgl)|*.xgl;*.zgl|" +
-                    "Stanford Polygon Library (*.ply)|*.ply|" +
-                    "AutoCAD DXF (*.dxf)|*.dxf|" +
-                    "LightWave (*.lwo)|*.lwo|" +
-                    "LightWave Scene (*.lws)|*.lws|" +
-                    "Modo (*.lxo)|*.lxo|" +
-                    "Stereolithography (*.stl)|*.stl|" +
-                    "DirectX X (*.x)|*.x|" +
-                    "AC3D (*.ac)|*.ac|" +
-                    "Milkshape 3D (*.ms3d)|*.ms3d|" +
-                    "TrueSpace (*.cob, *.scn)|*.cob;*.scn|" +
-                    "OpenGEX (*.ogex)|*.ogex|" +
-                    "X3D (*.x3d)|*.x3d|" +
-                    "3MF(*.3mf)|*.3mf|" +
-                    "Biovision BVH (*.bvh)|*.bvh|" +
-                    "CharacterStudio Motion (*.csm)|*.csm|" +
-                    "Ogre XML (*.xml)|*.xml|" +
-                    "Irrlicht Mesh (*.irrmesh)|*.irrmesh|" +
-                    "Irrlicht Scene (*.irr)|*.irr|" +
-                    "Quake I (*.mdl)|*.mdl|" +
-                    "Quake II (*.md2)|*.md2|" +
-                    "Quake III Mesh (*.md3)|*.md3|" +
-                    "Quake III Map / BSP (*.pk3)|*.pk3|" +
-                    "Return to Castle Wolfenstein (*.mdc)|*.mdc|" +
-                    "Doom 3 (*.md5)|*.md5|" +
-                    "Valve Model (*.smd, *.vta)|*.smd;*.vta|" +
-                    "Open Game Engine Exchange (*.ogex)|*.ogex|" +
-                    "Unreal(*.3d)|*.3d|" +
-                    "BlitzBasic 3D (*.b3d)|*.b3d|" +
-                    "Quick3D (*.q3d, *.q3s)|*.q3d;*.q3s|" +
-                    "Neutral File Format (*.nff)|*.nff|" +
-                    "Sense8 WorldToolKit (*.nff)|*.nff|" +
-                    "Object File Format (*.off)|*.off|" +
-                    "PovRAY Raw (*.raw)|*.raw|" +
-                    "Terragen Terrain (*.ter)|*.ter|" +
-                    "3D GameStudio(3DGS) (*.mdl)|*.mdl|" +
-                    "3D GameStudio(3DGS) Terrain (*.hmp)|*.hmp|" +
-                    "Izware Nendo (*.ndo)|*.ndo";
-            }
-        }
-
         public void Assign(ImportedGeometry other)
         {
             LoadException = other.LoadException;

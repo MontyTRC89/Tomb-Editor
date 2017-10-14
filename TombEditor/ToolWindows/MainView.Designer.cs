@@ -417,6 +417,7 @@
             this.butInvisible.Name = "butInvisible";
             this.butInvisible.Size = new System.Drawing.Size(23, 25);
             this.butInvisible.Text = "Invisible face (Shift+3)";
+            this.butInvisible.Click += new System.EventHandler(this.butInvisible_Click);
             //
             // toolStripSeparator2
             //
@@ -516,6 +517,7 @@
             this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3D.AllowDrop = true;
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3D.Location = new System.Drawing.Point(3, 31);
             this.panel3D.Name = "panel3D";

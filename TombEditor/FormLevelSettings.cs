@@ -13,6 +13,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using TombEditor.Controls;
 using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
+using TombLib.IO;
 
 namespace TombEditor
 {
@@ -69,15 +70,6 @@ namespace TombEditor
                 e.Graphics.DrawRectangle(Pens.Black, e.Bounds.X, e.Bounds.Y, e.Bounds.Width - 1, e.Bounds.Height - 1);
             }
         }
-
-        private const string _specialTextureFilter =
-                    "Image files (*.png, *.tga, *.bmp, *.pc, *.raw, *.jpg, *.jpeg)|*.png;*.tga;*.bmp;*.pc;*.raw;*.jpg;*.jpeg|" +
-                    "PNG images (*.png)|*.png|" +
-                    "Targe images (*.tga)|*.tga|" +
-                    "Bitmap images (*.bmp)|*.bmp|" +
-                    "Raw image files (*.pc, *.raw)|*.pc;*.raw|" +
-                    "JPEG images (*.jpg, *.jpeg)|*.jpg;*.jpeg|" +
-                    "All files (*.*)|*";
 
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
@@ -358,7 +350,7 @@ namespace TombEditor
 
         private void fontTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.FontTextureFilePath, "Select a font texture", _specialTextureFilter, VariableType.LevelDirectory, false);
+            string result = BrowseFile(_levelSettings.FontTextureFilePath, "Select a font texture", SupportedFormats.GetFilter(FileFormatType.SpecialTexture), VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.FontTextureFilePath = result;
@@ -387,7 +379,7 @@ namespace TombEditor
 
         private void skyTextureFilePathBut_Click(object sender, EventArgs e)
         {
-            string result = BrowseFile(_levelSettings.SkyTextureFilePath, "Select a sky texture", _specialTextureFilter, VariableType.LevelDirectory, false);
+            string result = BrowseFile(_levelSettings.SkyTextureFilePath, "Select a sky texture", SupportedFormats.GetFilter(FileFormatType.SpecialTexture), VariableType.LevelDirectory, false);
             if (result != null)
             {
                 _levelSettings.SkyTextureFilePath = result;
