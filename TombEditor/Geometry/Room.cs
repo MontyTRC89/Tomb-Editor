@@ -826,6 +826,19 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
 
+                    // Fix illegal heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
+
                     // Fix heights only for border walls
                     if (z == 0)
                     {
@@ -963,6 +976,19 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
+                    // Fix illegal heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
+                    
                     // Fix heights only for border walls
                     if (z == NumZSectors - 1)
                     {
@@ -1098,6 +1124,19 @@ namespace TombEditor.Geometry
                     middleFace = BlockFace.PositiveX_Middle;
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
+
+                    // Fix illegal heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
 
                     // Fix heights only for border walls
                     if (x == 0)
@@ -1432,6 +1471,19 @@ namespace TombEditor.Geometry
                     middleFace = BlockFace.NegativeX_Middle;
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
+
+                    // Fix illegal heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
 
                     // Fix heights only for border walls
                     if (x == NumXSectors - 1)
