@@ -865,17 +865,17 @@ namespace TombEditor.Controls
                         info.Name = Path.GetFileNameWithoutExtension(files[i]);
 
                         var instance = new ImportedGeometryInstance();
-                        var existingGeometry = _editor.Level.Settings.ImportedGeometries.Find(item => item.Info.Path == info.Path);
+                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => item.Info.Path == info.Path);
 
-                        if(existingGeometry == null)
+                        if(geometryToDrop == null)
                         {
-                            existingGeometry = new ImportedGeometry();
-                            _editor.Level.Settings.ImportedGeometryUpdate(existingGeometry, info);
-                            _editor.Level.Settings.ImportedGeometries.Add(existingGeometry);
+                            geometryToDrop = new ImportedGeometry();
+                            _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
+                            _editor.Level.Settings.ImportedGeometries.Add(geometryToDrop);
                             _editor.LoadedImportedGeometriesChange();
                         }
 
-                        instance.Model = existingGeometry;
+                        instance.Model = geometryToDrop;
 
                         EditorActions.PlaceObject(_editor.SelectedRoom,
                             ((PickingResultBlock)newPicking).Pos, instance);
