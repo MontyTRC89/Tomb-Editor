@@ -96,13 +96,15 @@ namespace TombEditor.Controls
         {
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
-            public bool IsFloor { get; private set; }
+            public bool IsFloorHorizontalPlane { get; private set; }
+            public bool BelongsToFloor { get; private set; }
             public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
             {
                 Distance = distance;
                 Pos = pos;
                 Face = face;
-                IsFloor = (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2 || Face <= BlockFace.DiagonalMiddle);
+                IsFloorHorizontalPlane = (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
+                BelongsToFloor = (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
             }
         }
 
@@ -640,12 +642,12 @@ namespace TombEditor.Controls
                                 if (newPicking is PickingResultBlock)
                                 {
                                     DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
-                                    bool isFloor = ((PickingResultBlock)newPicking).IsFloor;
+                                    bool belongsToFloor = ((PickingResultBlock)newPicking).BelongsToFloor;
 
                                     // Split the faces
                                     if (ModifierKeys.HasFlag(Keys.Alt))
                                     {
-                                        if (isFloor)
+                                        if (belongsToFloor)
                                             EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                         else
                                             EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
@@ -653,7 +655,7 @@ namespace TombEditor.Controls
                                     }
                                     else if (ModifierKeys.HasFlag(Keys.Shift))
                                     {
-                                        EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), isFloor);
+                                        EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
                                         return;
                                     }
 
@@ -834,29 +836,32 @@ namespace TombEditor.Controls
             base.OnDragDrop(e);
 
             // Check if we are done with all common file tasks
-
-            if (EditorActions.DragDropFile(e, FindForm()))
+            var filesToProcess = EditorActions.DragDropCommonFiles(e, FindForm());
+            if (filesToProcess == 0)
                 return;
 
             // Now try to put data on pointed sector
-
             Point loc = PointToClient(new Point(e.X, e.Y));
             PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y));
 
             if (newPicking is PickingResultBlock)
             {
+                var newBlockPicking = (PickingResultBlock)newPicking;
+
+                // Disallow dropping objects and geometry on non-floor faces
+                if (!newBlockPicking.IsFloorHorizontalPlane)
+                    return;
+
                 if (e.Data.GetDataPresent(typeof(ItemType)))
                 {
                     // Put item from object browser
-
                     EditorActions.PlaceObject(_editor.SelectedRoom,
-                        ((PickingResultBlock)newPicking).Pos,
+                        newBlockPicking.Pos,
                         ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
                 }
-                else if(e.Data.GetDataPresent(DataFormats.FileDrop))
+                else if(filesToProcess != -1)
                 {
-                    // Try to put custom geometry files
-
+                    // Try to put custom geometry files, if any
                     List<string> files = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
 
                     foreach(var file in files)
@@ -869,7 +874,7 @@ namespace TombEditor.Controls
                         info.Name = Path.GetFileNameWithoutExtension(file);
 
                         var instance = new ImportedGeometryInstance();
-                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => item.Info.Path == info.Path);
+                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
 
                         if(geometryToDrop == null)
                         {
@@ -882,7 +887,7 @@ namespace TombEditor.Controls
                         instance.Model = geometryToDrop;
 
                         EditorActions.PlaceObject(_editor.SelectedRoom,
-                            ((PickingResultBlock)newPicking).Pos, instance);
+                            newBlockPicking.Pos, instance);
 
                         _editor.ObjectChange(instance);
                     }

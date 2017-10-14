@@ -1045,7 +1045,7 @@ namespace TombEditor
         protected override void OnDragDrop(DragEventArgs e)
         {
             base.OnDragDrop(e);
-            EditorActions.DragDropFile(e, this);
+            EditorActions.DragDropCommonFiles(e, this);
         }
     }
 }

@@ -1865,27 +1865,24 @@ namespace TombEditor
             return false;
         }
 
-        public static bool DragDropFile(DragEventArgs e, IWin32Window owner)
+        public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
         {
+            int unsupportedFileCount = 0;
+
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                int fileCount = files.Count();
 
                 foreach (var file in files)
                 {
                     if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file))
                     {
-                        fileCount--;
-
                         _editor.Level.Settings.WadFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
                         _editor.Level.ReloadWad();
                         _editor.LoadedWadsChange(_editor.Level.Wad);
                     }
                     else if (SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file))
                     {
-                        fileCount--;
-
                         _editor.Level.Settings.TextureFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
                         _editor.LoadedTexturesChange();
                     }
@@ -1897,12 +1894,13 @@ namespace TombEditor
                     {
                         OpenLevel(owner, file);
                     }
+                    else
+                        unsupportedFileCount++;
                 }
-
-                return (fileCount == 0);
+                return unsupportedFileCount;
             }
-
-            return false;
+            else
+                return -1;
         }
 
         public static void ShowTextureSoundsDialog(IWin32Window owner)
