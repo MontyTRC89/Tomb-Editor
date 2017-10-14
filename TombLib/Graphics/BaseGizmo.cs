@@ -64,6 +64,7 @@ namespace TombLib.Graphics
         private static readonly Color4 _centerColor = new Color4(1.0f, 1.0f, 0.0f, 1.0f);
         private static readonly Color4 _hoveredAddition = new Color4(0.6f, 0.6f, 0.6f, 1.0f);
         private static readonly float _hoveredAdditionGreensCorrection = 1.35f;
+        private static readonly float _arrowHeadOffsetMultiplier = 1.21f;
 
         private GizmoMode _mode;
         private float _scaleBase;
@@ -250,15 +251,15 @@ namespace TombLib.Graphics
             if (SupportTranslate)
             {
                 float unused;
-                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size, TranslationConeSize / 1.7f);
+                BoundingSphere sphereX = new BoundingSphere(Position + Vector3.UnitX * Size * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.7f);
                 if (ray.Intersects(ref sphereX, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateX);
 
-                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size, TranslationConeSize / 1.7f);
+                BoundingSphere sphereY = new BoundingSphere(Position + Vector3.UnitY * Size * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.7f);
                 if (ray.Intersects(ref sphereY, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateY);
 
-                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size, TranslationConeSize / 1.7f);
+                BoundingSphere sphereZ = new BoundingSphere(Position - Vector3.UnitZ * Size * _arrowHeadOffsetMultiplier, TranslationConeSize / 1.7f);
                 if (ray.Intersects(ref sphereZ, out unused))
                     return new PickingResultGizmo(GizmoMode.TranslateZ);
             }
@@ -445,7 +446,7 @@ namespace TombLib.Graphics
                 }
             }
 
-            _device.Clear(ClearOptions.DepthBuffer, Color4.Black, 1.0f, 0);
+            //_device.Clear(ClearOptions.DepthBuffer, Color4.Black, 1.0f, 0);
 
             // Scale
             if (SupportScale)
@@ -531,7 +532,7 @@ namespace TombLib.Graphics
                 // X axis
                 {
                     var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
+                        Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
                         Matrix.RotationZ(-(float)Math.PI / 2.0f) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -543,7 +544,7 @@ namespace TombLib.Graphics
                 // Y axis
                 {
                     var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
+                        Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
@@ -554,7 +555,7 @@ namespace TombLib.Graphics
                 // Z axis
                 {
                     var model = Matrix.Translation(new Vector3(0.0f, 0.5f, 0.0f)) *
-                        Matrix.Scaling(new Vector3(LineThickness, Size, LineThickness)) *
+                        Matrix.Scaling(new Vector3(LineThickness, Size * _arrowHeadOffsetMultiplier, LineThickness)) *
                         Matrix.RotationX(-(float)Math.PI / 2.0f) *
                         Matrix.Translation(Position);
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
@@ -570,7 +571,7 @@ namespace TombLib.Graphics
                 {
                     var model = Matrix.RotationY((float)-Math.PI * 0.5f) *
                         Matrix.Scaling(TranslationConeSize) *
-                        Matrix.Translation(Position + (Vector3.UnitX + new Vector3(0.1f, 0, 0)) * Size);
+                        Matrix.Translation(Position + (Vector3.UnitX + new Vector3(0.1f, 0, 0)) * (Size * _arrowHeadOffsetMultiplier));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_xAxisColor + (highlight == GizmoMode.TranslateX ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -581,7 +582,7 @@ namespace TombLib.Graphics
                 {
                     var model = Matrix.RotationX((float)Math.PI * 0.5f) *
                         Matrix.Scaling(TranslationConeSize) *
-                        Matrix.Translation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * Size);
+                        Matrix.Translation(Position + (Vector3.UnitY + new Vector3(0, 0.1f, 0)) * (Size * _arrowHeadOffsetMultiplier));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_yAxisColor + (highlight == GizmoMode.TranslateY ? _hoveredAddition * _hoveredAdditionGreensCorrection : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
@@ -591,7 +592,7 @@ namespace TombLib.Graphics
                 // Z axis translation
                 {
                     var model = Matrix.Scaling(TranslationConeSize) *
-                        Matrix.Translation(Position - (Vector3.UnitZ + new Vector3(0, 0, 0.1f)) * Size);
+                        Matrix.Translation(Position - (Vector3.UnitZ + new Vector3(0, 0, 0.1f)) * (Size * _arrowHeadOffsetMultiplier));
                     solidEffect.Parameters["ModelViewProjection"].SetValue(model * viewProjection);
                     solidEffect.Parameters["Color"].SetValue(_zAxisColor + (highlight == GizmoMode.TranslateZ ? _hoveredAddition : new Color4()));
                     solidEffect.CurrentTechnique.Passes[0].Apply();
