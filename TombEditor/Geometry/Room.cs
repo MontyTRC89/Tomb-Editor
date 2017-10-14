@@ -6,6 +6,7 @@ using SharpDX.Toolkit.Graphics;
 using TombEditor.Compilers;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombLib.Utils;
+using System.Threading.Tasks;
 
 namespace TombEditor.Geometry
 {
@@ -201,6 +202,7 @@ namespace TombEditor.Geometry
             var result = (Room)MemberwiseClone();
             result.AlternateBaseRoom = null;
             result.AlternateRoom = null;
+            result.AlternateGroup = -1;
 
             result._sectorVertices = new List<EditorVertex>[NumXSectors, NumZSectors];
             for (int x = 0; x < NumXSectors; x++)
@@ -219,7 +221,7 @@ namespace TombEditor.Geometry
 
             // Copy objects
             result._objects = new List<PositionBasedObjectInstance>();
-            foreach (var instance in _objects)
+            foreach (var instance in AnyObjects)
                 if (decideToCopy(instance))
                     result.AddObject(level, instance.Clone());
 
@@ -233,6 +235,7 @@ namespace TombEditor.Geometry
         }
 
         public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
+        public Room AlternateVersion => AlternateRoom ?? AlternateBaseRoom;
         public DrawingPoint SectorSize => new DrawingPoint(NumXSectors, NumZSectors);
         public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
         public Rectangle LocalArea => new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1);
@@ -2606,6 +2609,14 @@ namespace TombEditor.Geometry
             FullPortal
         };
 
+        public static RoomConnectionType Combine(RoomConnectionType first, RoomConnectionType second)
+        {
+            if (first == second || first == RoomConnectionType.FullPortal)
+                return second;
+            else
+                return RoomConnectionType.NoPortal;
+        }
+
         public struct RoomConnectionInfo
         {
             public PortalInstance Portal { get; }
@@ -2623,7 +2634,44 @@ namespace TombEditor.Geometry
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
         };
 
-        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
+        public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
+        {
+            if (firstRoom.AlternateVersion == null)
+            {
+                if (secondRoom.AlternateVersion == null)
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                else
+                {
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateVersion);
+                }
+            }
+            else
+            {
+                if (secondRoom.AlternateVersion == null)
+                {
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom);
+                }
+                else if (firstRoom.AlternateGroup == secondRoom.AlternateGroup)
+                {
+                    bool isAlternateCurrently = lookingFromSecond ? (secondRoom.AlternateBaseRoom != null) : (firstRoom.AlternateBaseRoom != null);
+                    if (isAlternateCurrently)
+                        yield return new KeyValuePair<Room, Room>(firstRoom.AlternateRoom ?? firstRoom, secondRoom.AlternateRoom ?? secondRoom);
+                    else
+                        yield return new KeyValuePair<Room, Room>(firstRoom.AlternateBaseRoom ?? firstRoom, secondRoom.AlternateBaseRoom ?? secondRoom);
+                }
+                else
+                {
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateVersion);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom.AlternateVersion);
+                }
+            }
+        }
+
+        public static RoomConnectionType CalculateRoomConnectionTypeWithoutAlternates(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
         {
             // Evaluate force floor solid
             if (blockAbove.ForceFloorSolid)
@@ -2673,6 +2721,17 @@ namespace TombEditor.Geometry
             return RoomConnectionType.NoPortal;
         }
 
+        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, DrawingPoint posBelow, DrawingPoint posAbove, bool lookingFromAbove)
+        {
+            // Checkout all possible alternate room combinations and combine the results
+            RoomConnectionType result = RoomConnectionType.FullPortal;
+            foreach (var roomPair in GetPossibleAlternateRoomPairs(roomBelow, roomAbove, lookingFromAbove))
+                result = Combine(result,
+                    CalculateRoomConnectionTypeWithoutAlternates(roomPair.Key, roomPair.Value,
+                        roomPair.Key.GetBlock(posBelow), roomPair.Value.GetBlock(posAbove)));
+            return result;
+        }
+
         public RoomConnectionInfo GetFloorRoomConnectionInfo(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
@@ -2682,7 +2741,7 @@ namespace TombEditor.Geometry
                 DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
                 if (adjoiningBlock.CeilingPortal != null)
-                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningBlock, block));
+                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningPos, pos, true));
             }
             return new RoomConnectionInfo();
         }
@@ -2696,7 +2755,7 @@ namespace TombEditor.Geometry
                 DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
                 if (adjoiningBlock.FloorPortal != null)
-                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, block, adjoiningBlock));
+                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, pos, adjoiningPos, false));
             }
             return new RoomConnectionInfo();
         }
@@ -2704,12 +2763,10 @@ namespace TombEditor.Geometry
         public void SmartBuildGeometry(Rectangle area)
         {
             area = area.Inflate(1); // Add margin
-            BuildGeometry(area);
-            CalculateLightingForThisRoom();
-            UpdateBuffers();
 
             // Update adjoining rooms
-            HashSet<Room> roomsProcessed = new HashSet<Room>();
+            var roomsToProcess = new List<Room> { this };
+            var areaToProcess = new List<Rectangle> { area };
             List<PortalInstance> listOfPortals = Portals.ToList();
             foreach (var portal in listOfPortals)
             {
@@ -2719,16 +2776,41 @@ namespace TombEditor.Geometry
                 Rectangle portalArea = portal.Area.Intersect(area);
                 Rectangle otherRoomPortalArea = PortalInstance.GetOppositePortalArea(portal.Direction, portalArea)
                     .Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-                portal.AdjoiningRoom.BuildGeometry(otherRoomPortalArea);
-                roomsProcessed.Add(portal.AdjoiningRoom);
-            }
 
-            // Update lighting in room that were updated geometrically
-            foreach (var adjoiningRoom in roomsProcessed)
-            {
-                adjoiningRoom.CalculateLightingForThisRoom();
-                adjoiningRoom.UpdateBuffers();
+                // Find all related rooms or alternate rooms around the portals
+                foreach (var roomPairs in GetPossibleAlternateRoomPairs(this, portal.AdjoiningRoom))
+                {
+                    // Add itself if necessary
+                    int thisRoomIndex = roomsToProcess.IndexOf(roomPairs.Key);
+                    if (thisRoomIndex == -1)
+                    {
+                        roomsToProcess.Add(roomPairs.Key);
+                        areaToProcess.Add(area);
+                    }
+                    else
+                        areaToProcess[thisRoomIndex] = areaToProcess[thisRoomIndex].Union(area);
+
+                    // Add other if necessary
+                    int adjoiningRoomIndex = roomsToProcess.IndexOf(roomPairs.Value);
+                    if (adjoiningRoomIndex == -1)
+                    {
+                        roomsToProcess.Add(roomPairs.Value);
+                        areaToProcess.Add(otherRoomPortalArea);
+                    }
+                    else
+                        areaToProcess[adjoiningRoomIndex] = areaToProcess[adjoiningRoomIndex].Union(otherRoomPortalArea);
+                }
             }
+            System.Diagnostics.Debug.Assert(roomsToProcess.Count == areaToProcess.Count);
+
+            // Update the collected stuff now
+            Parallel.For(0, roomsToProcess.Count, (index) =>
+                {
+                    roomsToProcess[index].BuildGeometry(areaToProcess[index]);
+                    roomsToProcess[index].CalculateLightingForThisRoom();
+                });
+            foreach (var room in roomsToProcess)
+                room.UpdateBuffers();
         }
     }
 

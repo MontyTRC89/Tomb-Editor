@@ -850,7 +850,7 @@ namespace TombEditor.Geometry.IO
                             room.AlternateGroup = tempRoom.Value._flipGroup;
                             alternateRoom.AlternateBaseRoom = room;
                             alternateRoom.AlternateGroup = tempRoom.Value._flipGroup;
-                            alternateRoom.Position = room.Position;
+                            alternateRoom.Position = new Vector3(room.Position.X, alternateRoom.Position.Y, room.Position.Z);
                         }
                     }
 

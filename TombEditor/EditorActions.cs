@@ -1043,6 +1043,10 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
+                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor))
+                        continue;
+
                     // Now try to guess the floor split
                     short maxHeight = -32767;
                     byte theCorner = 0;
@@ -1076,6 +1080,8 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[1] = maxHeight;
                         room.Blocks[x, z].QAFaces[3] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
                     }
 
                     if (theCorner == 1)
@@ -1083,6 +1089,8 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[0] = maxHeight;
                         room.Blocks[x, z].QAFaces[2] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
                     }
 
                     if (theCorner == 2)
@@ -1090,6 +1098,8 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[1] = maxHeight;
                         room.Blocks[x, z].QAFaces[3] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
                     }
 
                     if (theCorner == 3)
@@ -1097,7 +1107,14 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[0] = maxHeight;
                         room.Blocks[x, z].QAFaces[2] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
                     }
+
+                    room.Blocks[x, z].EDFaces[0] = 0;
+                    room.Blocks[x, z].EDFaces[1] = 0;
+                    room.Blocks[x, z].EDFaces[2] = 0;
+                    room.Blocks[x, z].EDFaces[3] = 0;
                 }
 
             SmartBuildGeometry(room, area);
@@ -1108,6 +1125,10 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
+                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling))
+                        continue;
+
                     // Now try to guess the floor split
                     short minHeight = 32767;
                     byte theCorner = 0;
@@ -1141,6 +1162,8 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[1] = minHeight;
                         room.Blocks[x, z].WSFaces[3] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
                     }
 
                     if (theCorner == 1)
@@ -1148,6 +1171,8 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[0] = minHeight;
                         room.Blocks[x, z].WSFaces[2] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
                     }
 
                     if (theCorner == 2)
@@ -1155,6 +1180,8 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[1] = minHeight;
                         room.Blocks[x, z].WSFaces[3] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
                     }
 
                     if (theCorner == 3)
@@ -1162,7 +1189,14 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[0] = minHeight;
                         room.Blocks[x, z].WSFaces[2] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
                     }
+
+                    room.Blocks[x, z].RFFaces[0] = 0;
+                    room.Blocks[x, z].RFFaces[1] = 0;
+                    room.Blocks[x, z].RFFaces[2] = 0;
+                    room.Blocks[x, z].RFFaces[3] = 0;
                 }
 
             SmartBuildGeometry(room, area);

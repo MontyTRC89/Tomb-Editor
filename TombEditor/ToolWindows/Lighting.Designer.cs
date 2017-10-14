@@ -59,7 +59,7 @@
             this.cbLightIsDynamicallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsDynamicallyUsed.Enabled = false;
             this.cbLightIsDynamicallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(368, 103);
+            this.cbLightIsDynamicallyUsed.Location = new System.Drawing.Point(360, 102);
             this.cbLightIsDynamicallyUsed.Name = "cbLightIsDynamicallyUsed";
             this.cbLightIsDynamicallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsDynamicallyUsed.TabIndex = 92;
@@ -72,7 +72,7 @@
             this.cbLightIsStaticallyUsed.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightIsStaticallyUsed.Enabled = false;
             this.cbLightIsStaticallyUsed.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(368, 78);
+            this.cbLightIsStaticallyUsed.Location = new System.Drawing.Point(360, 77);
             this.cbLightIsStaticallyUsed.Name = "cbLightIsStaticallyUsed";
             this.cbLightIsStaticallyUsed.Size = new System.Drawing.Size(70, 22);
             this.cbLightIsStaticallyUsed.TabIndex = 91;
@@ -85,7 +85,7 @@
             this.cbLightCastsShadows.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightCastsShadows.Enabled = false;
             this.cbLightCastsShadows.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightCastsShadows.Location = new System.Drawing.Point(368, 53);
+            this.cbLightCastsShadows.Location = new System.Drawing.Point(360, 52);
             this.cbLightCastsShadows.Name = "cbLightCastsShadows";
             this.cbLightCastsShadows.Size = new System.Drawing.Size(70, 22);
             this.cbLightCastsShadows.TabIndex = 90;
@@ -98,7 +98,7 @@
             this.cbLightEnabled.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbLightEnabled.Enabled = false;
             this.cbLightEnabled.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbLightEnabled.Location = new System.Drawing.Point(368, 28);
+            this.cbLightEnabled.Location = new System.Drawing.Point(360, 27);
             this.cbLightEnabled.Name = "cbLightEnabled";
             this.cbLightEnabled.Size = new System.Drawing.Size(70, 22);
             this.cbLightEnabled.TabIndex = 89;
@@ -121,9 +121,9 @@
             // 
             this.darkLabel12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel12.Location = new System.Drawing.Point(251, 77);
+            this.darkLabel12.Location = new System.Drawing.Point(260, 77);
             this.darkLabel12.Name = "darkLabel12";
-            this.darkLabel12.Size = new System.Drawing.Size(51, 22);
+            this.darkLabel12.Size = new System.Drawing.Size(38, 22);
             this.darkLabel12.TabIndex = 80;
             this.darkLabel12.Text = "Dir Y";
             this.darkLabel12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -132,9 +132,9 @@
             // 
             this.darkLabel13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(251, 102);
+            this.darkLabel13.Location = new System.Drawing.Point(260, 102);
             this.darkLabel13.Name = "darkLabel13";
-            this.darkLabel13.Size = new System.Drawing.Size(51, 22);
+            this.darkLabel13.Size = new System.Drawing.Size(38, 22);
             this.darkLabel13.TabIndex = 79;
             this.darkLabel13.Text = "Dir X";
             this.darkLabel13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -154,9 +154,9 @@
             // 
             this.darkLabel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel9.Location = new System.Drawing.Point(251, 52);
+            this.darkLabel9.Location = new System.Drawing.Point(260, 52);
             this.darkLabel9.Name = "darkLabel9";
-            this.darkLabel9.Size = new System.Drawing.Size(51, 22);
+            this.darkLabel9.Size = new System.Drawing.Size(38, 22);
             this.darkLabel9.TabIndex = 77;
             this.darkLabel9.Text = "Out α";
             this.darkLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -165,9 +165,9 @@
             // 
             this.darkLabel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(251, 27);
+            this.darkLabel10.Location = new System.Drawing.Point(260, 27);
             this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(51, 22);
+            this.darkLabel10.Size = new System.Drawing.Size(38, 22);
             this.darkLabel10.TabIndex = 73;
             this.darkLabel10.Text = "In α";
             this.darkLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -410,7 +410,7 @@
             0,
             0,
             0});
-            this.numInnerAngle.Location = new System.Drawing.Point(302, 28);
+            this.numInnerAngle.Location = new System.Drawing.Point(298, 28);
             this.numInnerAngle.Maximum = new decimal(new int[] {
             90,
             0,
@@ -435,7 +435,7 @@
             0,
             0,
             0});
-            this.numOuterAngle.Location = new System.Drawing.Point(302, 53);
+            this.numOuterAngle.Location = new System.Drawing.Point(298, 53);
             this.numOuterAngle.Maximum = new decimal(new int[] {
             90,
             0,
@@ -460,7 +460,7 @@
             0,
             0,
             0});
-            this.numDirectionX.Location = new System.Drawing.Point(302, 103);
+            this.numDirectionX.Location = new System.Drawing.Point(298, 103);
             this.numDirectionX.Maximum = new decimal(new int[] {
             90,
             0,
@@ -490,7 +490,7 @@
             0,
             0,
             0});
-            this.numDirectionY.Location = new System.Drawing.Point(302, 78);
+            this.numDirectionY.Location = new System.Drawing.Point(298, 78);
             this.numDirectionY.Maximum = new decimal(new int[] {
             720,
             0,
@@ -549,10 +549,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
             this.DockText = "Lighting";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(442, 128);
+            this.MinimumSize = new System.Drawing.Size(432, 128);
             this.Name = "Lighting";
             this.SerializationKey = "Lighting";
-            this.Size = new System.Drawing.Size(442, 128);
+            this.Size = new System.Drawing.Size(432, 128);
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).EndInit();

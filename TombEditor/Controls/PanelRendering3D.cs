@@ -2343,8 +2343,9 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    bool lights = (room != _editor.SelectedRoom ||
-                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
+                    /*bool lights = (room != _editor.SelectedRoom ||
+                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));*/
+                    bool lights = _editor.Mode == EditorMode.Lighting;
                     _roomEffect.Parameters["UseVertexColors"].SetValue(lights);
 
                     _roomEffect.Parameters["Model"].SetValue(room.Transform);
