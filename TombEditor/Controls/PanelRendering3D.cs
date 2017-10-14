@@ -819,6 +819,8 @@ namespace TombEditor.Controls
 
         protected override void OnDragEnter(DragEventArgs e)
         {
+            base.OnDragEnter(e);
+
             if (e.Data.GetDataPresent(typeof(ItemType)))
                 e.Effect = DragDropEffects.Copy;
             else if (EditorActions.DragDropFileSupported(e, true))
@@ -829,6 +831,8 @@ namespace TombEditor.Controls
 
         protected override void OnDragDrop(DragEventArgs e)
         {
+            base.OnDragDrop(e);
+
             // Check if we are done with all common file tasks
 
             if (EditorActions.DragDropFile(e, FindForm()))
