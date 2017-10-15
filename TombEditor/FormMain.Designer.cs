@@ -488,7 +488,7 @@
             this.loadWADToolStripMenuItem.Image = global::TombEditor.Properties.Resources.opened_folder_16;
             this.loadWADToolStripMenuItem.Name = "loadWADToolStripMenuItem";
             this.loadWADToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.loadWADToolStripMenuItem.Text = "Load WAD";
+            this.loadWADToolStripMenuItem.Text = "Load WAD...";
             this.loadWADToolStripMenuItem.Click += new System.EventHandler(this.loadWADToolStripMenuItem_Click);
             // 
             // unloadWADToolStripMenuItem
@@ -596,7 +596,7 @@
             this.addTriggerToolStripMenuItem.Name = "addTriggerToolStripMenuItem";
             this.addTriggerToolStripMenuItem.ShortcutKeyDisplayString = "T";
             this.addTriggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.addTriggerToolStripMenuItem.Text = "Add trigger";
+            this.addTriggerToolStripMenuItem.Text = "Add trigger...";
             this.addTriggerToolStripMenuItem.Click += new System.EventHandler(this.addTriggerToolStripMenuItem_Click);
             // 
             // toolStripMenuSeparator8
@@ -667,7 +667,7 @@
             this.loadTextureToolStripMenuItem.Image = global::TombEditor.Properties.Resources.opened_folder_16;
             this.loadTextureToolStripMenuItem.Name = "loadTextureToolStripMenuItem";
             this.loadTextureToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.loadTextureToolStripMenuItem.Text = "Load textures";
+            this.loadTextureToolStripMenuItem.Text = "Load textures...";
             this.loadTextureToolStripMenuItem.Click += new System.EventHandler(this.loadTextureToolStripMenuItem_Click);
             // 
             // UnloadTextureToolStripMenuItem

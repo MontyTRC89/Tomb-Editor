@@ -88,7 +88,7 @@
             this.butCeiling.Location = new System.Drawing.Point(32, 0);
             this.butCeiling.Name = "butCeiling";
             this.butCeiling.Size = new System.Drawing.Size(24, 24);
-            this.butCeiling.TabIndex = 105;
+            this.butCeiling.TabIndex = 1;
             this.butCeiling.Text = "C";
             this.toolTip.SetToolTip(this.butCeiling, "Set sector ceiling");
             this.butCeiling.UseVisualStyleBackColor = false;
@@ -102,7 +102,7 @@
             this.butClimbPositiveZ.Name = "butClimbPositiveZ";
             this.butClimbPositiveZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveZ.Size = new System.Drawing.Size(24, 24);
-            this.butClimbPositiveZ.TabIndex = 99;
+            this.butClimbPositiveZ.TabIndex = 10;
             this.toolTip.SetToolTip(this.butClimbPositiveZ, "Climb on North side");
             this.butClimbPositiveZ.Click += new System.EventHandler(this.butClimbPositiveZ_Click);
             // 
@@ -114,7 +114,7 @@
             this.butClimbPositiveX.Name = "butClimbPositiveX";
             this.butClimbPositiveX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbPositiveX.Size = new System.Drawing.Size(24, 24);
-            this.butClimbPositiveX.TabIndex = 98;
+            this.butClimbPositiveX.TabIndex = 13;
             this.toolTip.SetToolTip(this.butClimbPositiveX, "Climb on East side");
             this.butClimbPositiveX.Click += new System.EventHandler(this.butClimbPositiveX_Click);
             // 
@@ -126,7 +126,7 @@
             this.butClimbNegativeZ.Name = "butClimbNegativeZ";
             this.butClimbNegativeZ.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeZ.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNegativeZ.TabIndex = 97;
+            this.butClimbNegativeZ.TabIndex = 11;
             this.toolTip.SetToolTip(this.butClimbNegativeZ, "Climb on South side");
             this.butClimbNegativeZ.Click += new System.EventHandler(this.butClimbNegativeZ_Click);
             // 
@@ -138,7 +138,7 @@
             this.butClimbNegativeX.Name = "butClimbNegativeX";
             this.butClimbNegativeX.Padding = new System.Windows.Forms.Padding(5);
             this.butClimbNegativeX.Size = new System.Drawing.Size(24, 24);
-            this.butClimbNegativeX.TabIndex = 96;
+            this.butClimbNegativeX.TabIndex = 12;
             this.toolTip.SetToolTip(this.butClimbNegativeX, "Climb on West side");
             this.butClimbNegativeX.Click += new System.EventHandler(this.butClimbNegativeX_Click);
             // 
@@ -154,7 +154,7 @@
             this.butNotWalkableBox.Location = new System.Drawing.Point(32, 28);
             this.butNotWalkableBox.Name = "butNotWalkableBox";
             this.butNotWalkableBox.Size = new System.Drawing.Size(24, 24);
-            this.butNotWalkableBox.TabIndex = 104;
+            this.butNotWalkableBox.TabIndex = 3;
             this.butNotWalkableBox.Text = "N";
             this.toolTip.SetToolTip(this.butNotWalkableBox, "Not walkable");
             this.butNotWalkableBox.UseVisualStyleBackColor = false;
@@ -172,7 +172,7 @@
             this.butPortal.Location = new System.Drawing.Point(3, 84);
             this.butPortal.Name = "butPortal";
             this.butPortal.Size = new System.Drawing.Size(24, 24);
-            this.butPortal.TabIndex = 95;
+            this.butPortal.TabIndex = 6;
             this.butPortal.Text = "P";
             this.toolTip.SetToolTip(this.butPortal, "Portal");
             this.butPortal.UseVisualStyleBackColor = false;
@@ -185,7 +185,7 @@
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Padding = new System.Windows.Forms.Padding(5);
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
-            this.butFlagTriggerTriggerer.TabIndex = 102;
+            this.butFlagTriggerTriggerer.TabIndex = 9;
             this.butFlagTriggerTriggerer.Text = "T";
             this.toolTip.SetToolTip(this.butFlagTriggerTriggerer, "Delay trigger until Trigger Triggerer is used");
             this.butFlagTriggerTriggerer.Click += new System.EventHandler(this.butFlagTriggerTriggerer_Click);
@@ -202,7 +202,7 @@
             this.butDeath.Location = new System.Drawing.Point(32, 56);
             this.butDeath.Name = "butDeath";
             this.butDeath.Size = new System.Drawing.Size(24, 24);
-            this.butDeath.TabIndex = 94;
+            this.butDeath.TabIndex = 5;
             this.butDeath.Text = "D";
             this.toolTip.SetToolTip(this.butDeath, "Death");
             this.butDeath.UseVisualStyleBackColor = false;
@@ -214,8 +214,8 @@
             this.butForceSolidFloor.Location = new System.Drawing.Point(3, 196);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
             this.butForceSolidFloor.Padding = new System.Windows.Forms.Padding(5);
-            this.butForceSolidFloor.Size = new System.Drawing.Size(53, 24);
-            this.butForceSolidFloor.TabIndex = 101;
+            this.butForceSolidFloor.Size = new System.Drawing.Size(53, 29);
+            this.butForceSolidFloor.TabIndex = 14;
             this.butForceSolidFloor.Text = "FSF";
             this.toolTip.SetToolTip(this.butForceSolidFloor, "Force solid floor");
             this.butForceSolidFloor.Click += new System.EventHandler(this.butForceSolidFloor_Click);
@@ -232,7 +232,7 @@
             this.butMonkey.Location = new System.Drawing.Point(3, 56);
             this.butMonkey.Name = "butMonkey";
             this.butMonkey.Size = new System.Drawing.Size(24, 24);
-            this.butMonkey.TabIndex = 93;
+            this.butMonkey.TabIndex = 4;
             this.butMonkey.Text = "M";
             this.toolTip.SetToolTip(this.butMonkey, "Monkeyswing");
             this.butMonkey.UseVisualStyleBackColor = false;
@@ -245,7 +245,7 @@
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Padding = new System.Windows.Forms.Padding(5);
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
-            this.butFlagBeetle.TabIndex = 100;
+            this.butFlagBeetle.TabIndex = 8;
             this.butFlagBeetle.Text = "B";
             this.toolTip.SetToolTip(this.butFlagBeetle, "Beetle checkpoint");
             this.butFlagBeetle.Click += new System.EventHandler(this.butFlagBeetle_Click);
@@ -262,7 +262,7 @@
             this.butBox.Location = new System.Drawing.Point(3, 28);
             this.butBox.Name = "butBox";
             this.butBox.Size = new System.Drawing.Size(24, 24);
-            this.butBox.TabIndex = 92;
+            this.butBox.TabIndex = 2;
             this.butBox.Text = "B";
             this.butBox.UseVisualStyleBackColor = false;
             this.butBox.Click += new System.EventHandler(this.butBox_Click);
@@ -279,7 +279,7 @@
             this.butFloor.Location = new System.Drawing.Point(3, 0);
             this.butFloor.Name = "butFloor";
             this.butFloor.Size = new System.Drawing.Size(24, 24);
-            this.butFloor.TabIndex = 90;
+            this.butFloor.TabIndex = 0;
             this.butFloor.Text = "F";
             this.toolTip.SetToolTip(this.butFloor, "Set sector floor");
             this.butFloor.UseVisualStyleBackColor = false;
@@ -297,7 +297,7 @@
             this.butWall.Location = new System.Drawing.Point(32, 84);
             this.butWall.Name = "butWall";
             this.butWall.Size = new System.Drawing.Size(24, 24);
-            this.butWall.TabIndex = 91;
+            this.butWall.TabIndex = 7;
             this.butWall.Text = "W";
             this.toolTip.SetToolTip(this.butWall, "Wall");
             this.butWall.UseVisualStyleBackColor = false;
@@ -323,7 +323,7 @@
             this.butDiagonalWall.Name = "butDiagonalWall";
             this.butDiagonalWall.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalWall.Size = new System.Drawing.Size(90, 24);
-            this.butDiagonalWall.TabIndex = 108;
+            this.butDiagonalWall.TabIndex = 17;
             this.butDiagonalWall.Text = "Diag wall";
             this.butDiagonalWall.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.toolTip.SetToolTip(this.butDiagonalWall, "Click again to rotate wall");
@@ -338,7 +338,7 @@
             this.butDiagonalCeiling.Name = "butDiagonalCeiling";
             this.butDiagonalCeiling.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalCeiling.Size = new System.Drawing.Size(90, 24);
-            this.butDiagonalCeiling.TabIndex = 107;
+            this.butDiagonalCeiling.TabIndex = 16;
             this.butDiagonalCeiling.Text = "Ceil step";
             this.butDiagonalCeiling.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDiagonalCeiling.Click += new System.EventHandler(this.butDiagonalCeiling_Click);
@@ -352,7 +352,7 @@
             this.butDiagonalFloor.Name = "butDiagonalFloor";
             this.butDiagonalFloor.Padding = new System.Windows.Forms.Padding(5);
             this.butDiagonalFloor.Size = new System.Drawing.Size(90, 24);
-            this.butDiagonalFloor.TabIndex = 106;
+            this.butDiagonalFloor.TabIndex = 15;
             this.butDiagonalFloor.Text = "Floor step";
             this.butDiagonalFloor.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDiagonalFloor.Click += new System.EventHandler(this.butDiagonalFloor_Click);
