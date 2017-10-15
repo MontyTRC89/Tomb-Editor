@@ -57,7 +57,7 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the room property controls
-            if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent) ||
+            if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.LevelChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 Room room = _editor.SelectedRoom;
