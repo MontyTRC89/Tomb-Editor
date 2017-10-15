@@ -43,8 +43,11 @@ namespace TombEditor
 
         private void butAssign_Click(object sender, EventArgs e)
         {
-            _currentModel = importedGeometryManager.SelectedImportedGeometry.UniqueID;
-            UpdateCurrentModelDisplay();
+            if(importedGeometryManager.SelectedImportedGeometry != null)
+            {
+                _currentModel = importedGeometryManager.SelectedImportedGeometry.UniqueID;
+                UpdateCurrentModelDisplay();
+            }
         }
 
         private void butOk_Click(object sender, EventArgs e)
