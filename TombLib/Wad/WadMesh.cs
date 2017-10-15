@@ -6,6 +6,7 @@ using System.Text;
 using SharpDX;
 using System.IO;
 using TombLib.Utils;
+using TombLib.IO;
 
 namespace TombLib.Wad
 {
@@ -65,14 +66,8 @@ namespace TombLib.Wad
                 var newPoly = new WadPolygon(poly.Shape);
 
                 newPoly.Indices.AddRange(poly.Indices.ToArray());
-
-                foreach (var uv in poly.UV)
-                    newPoly.UV.Add(new Vector2(uv.X, uv.Y));
-
-                newPoly.Attributes = poly.Attributes;
-                newPoly.ShineStrength = poly.ShineStrength;
-                newPoly.Transparent = poly.Transparent;
                 newPoly.Texture = poly.Texture;
+                newPoly.ShineStrength = poly.ShineStrength;
 
                 mesh.Polys.Add(newPoly);
             }
@@ -86,7 +81,7 @@ namespace TombLib.Wad
         {
             using (var ms = new MemoryStream())
             {
-                var writer = new BinaryWriter(ms);
+                var writer = new BinaryWriterEx(ms);
                 writer.Write(_boundingSphere.Center.X);
                 writer.Write(_boundingSphere.Center.Y);
                 writer.Write(_boundingSphere.Center.Z);
@@ -128,10 +123,18 @@ namespace TombLib.Wad
                     writer.Write(_polygons[i].Indices[0]);
                     writer.Write(_polygons[i].Indices[1]);
                     writer.Write(_polygons[i].Indices[2]);
-                    if (_polygons[i].Shape == WadPolygonShape.Rectangle)
+                    if (_polygons[i].Shape == WadPolygonShape.Quad)
                         writer.Write(_polygons[i].Indices[3]);
-                    writer.Write(_polygons[i].Texture.Hash.Hash1);
-                    writer.Write(_polygons[i].Transparent);
+                    if (_polygons[i].Shape == WadPolygonShape.Quad)
+                        writer.Write(_polygons[i].Indices[3]);
+                    writer.Write(((WadTexture)(_polygons[i].Texture.Texture)).Hash.Hash1);
+                    writer.Write(_polygons[i].Texture.DoubleSided);
+                    writer.Write((short)_polygons[i].Texture.BlendMode);
+                    writer.Write(_polygons[i].Texture.TexCoord0);
+                    writer.Write(_polygons[i].Texture.TexCoord1);
+                    writer.Write(_polygons[i].Texture.TexCoord2);
+                    if (_polygons[i].Shape == WadPolygonShape.Quad)
+                        writer.Write(_polygons[i].Texture.TexCoord3);
                     writer.Write(_polygons[i].ShineStrength);
                 }
 

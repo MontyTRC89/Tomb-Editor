@@ -32,7 +32,7 @@ namespace TombLib.Wad
         /******/public static readonly ChunkId MeshVertexShade = ChunkId.FromString("W2Shd");
         /****/public static readonly ChunkId MeshPolygons = ChunkId.FromString("W2Polys");
         /******/public static readonly ChunkId MeshTriangle = ChunkId.FromString("W2Tr");
-        /******/public static readonly ChunkId MeshRectangle = ChunkId.FromString("W2Re");
+        /******/public static readonly ChunkId MeshQuad = ChunkId.FromString("W2Uq");
         /********/public static readonly ChunkId MeshPolygonIndices = ChunkId.FromString("W2PolyInd");
         /**********/public static readonly ChunkId MeshPolygonIndex = ChunkId.FromString("W2Ind");
         /********/public static readonly ChunkId MeshPolygonTexCoords = ChunkId.FromString("W2PolyUV");

@@ -25,7 +25,7 @@ namespace TombLib.Graphics
         public SkinnedModel(GraphicsDevice device)
             : base(device, ModelType.Skinned)
         {}
-        
+
         public void ApplyTransforms()
         { }
 
@@ -121,16 +121,17 @@ namespace TombLib.Graphics
                 for (int j = 0; j < msh.Polys.Count; j++)
                 {
                     WadPolygon poly = msh.Polys[j];
-                  
+                    Vector2 positionInPackedTexture = ((WadTexture)(poly.Texture.Texture)).PositionInPackedTexture;
+
                     if (poly.Shape == WadPolygonShape.Triangle)
                     {
                         int v1 = poly.Indices[0];
                         int v2 = poly.Indices[1];
                         int v3 = poly.Indices[2];
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, m, poly.Texture.PositionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
                     }
                     else
                     {
@@ -139,16 +140,16 @@ namespace TombLib.Graphics
                         int v3 = poly.Indices[2];
                         int v4 = poly.Indices[3];
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, m, poly.Texture.PositionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
 
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, m, poly.Texture.PositionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, m, poly.Texture.PositionInPackedTexture);
-                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, m, poly.Texture.PositionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, m, positionInPackedTexture);
+                        PutSkinnedVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, m, positionInPackedTexture);
                     }
                 }
-                
+
                 model.Meshes.Add(mesh);
             }
 

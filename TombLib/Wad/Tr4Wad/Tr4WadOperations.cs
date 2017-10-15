@@ -122,40 +122,19 @@ namespace TombLib.Wad.Tr4Wad
             // Add polygons
             foreach (var oldPoly in oldMesh.Polygons)
             {
-                WadPolygon poly = new WadPolygon(oldPoly.Shape == 8 ? WadPolygonShape.Triangle : WadPolygonShape.Rectangle);
+                WadPolygon poly = new WadPolygon(oldPoly.Shape == 8 ? WadPolygonShape.Triangle : WadPolygonShape.Quad);
 
                 // Polygon indices
                 poly.Indices.Add(oldPoly.V1);
                 poly.Indices.Add(oldPoly.V2);
                 poly.Indices.Add(oldPoly.V3);
-                if (poly.Shape == WadPolygonShape.Rectangle) poly.Indices.Add(oldPoly.V4);
+                if (poly.Shape == WadPolygonShape.Quad) poly.Indices.Add(oldPoly.V4);
 
                 // Polygon special effects
                 poly.ShineStrength = (byte)((oldPoly.Attributes & 0x7c) >> 2);
-                poly.Transparent = (oldPoly.Attributes & 0x01) == 0x01;
 
                 // Add the texture
-                int textureId = GetTr4TextureIdFromPolygon(oldPoly);
-                WadTexture newTexture = convertedTextures[textureId];
-
-                if (wad.Textures.ContainsKey(newTexture.Hash))
-                {
-                    poly.Texture = wad.Textures[newTexture.Hash];
-                }
-                else
-                {
-                    wad.Textures.Add(newTexture.Hash, newTexture);
-                    poly.Texture = newTexture;
-                }
-
-                // Calculate UV coordinates for this polygon
-                List<Vector2> uv = CalculateTr4UVCoordinates(oldWad, oldPoly);
-
-                // Add the UV coordinates
-                poly.UV.Add(uv[0]);
-                poly.UV.Add(uv[1]);
-                poly.UV.Add(uv[2]);
-                if (poly.Shape == WadPolygonShape.Rectangle) poly.UV.Add(uv[3]);
+                poly.Texture = CalculateTr4UVCoordinates(wad, oldWad, oldPoly, convertedTextures);
 
                 mesh.Polys.Add(poly);
             }
@@ -671,16 +650,28 @@ namespace TombLib.Wad.Tr4Wad
             return staticMesh;
         }
 
-        private static List<Vector2> CalculateTr4UVCoordinates(Tr4Wad oldWad, wad_polygon poly)
+        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> convertedTextures)
         {
-            List<Vector2> uv = new List<Vector2>();
+            TextureArea textureArea;
+            textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
+            textureArea.DoubleSided = false;
 
-            // recupero le informazioni necessarie
+            int textureId = GetTr4TextureIdFromPolygon(poly);
+            WadTexture newTexture = convertedTextures[textureId];
+
+            if (wad.Textures.ContainsKey(newTexture.Hash))
+            {
+                textureArea.Texture = wad.Textures[newTexture.Hash];
+            }
+            else
+            {
+                wad.Textures.Add(newTexture.Hash, newTexture);
+                textureArea.Texture = newTexture;
+            }
+
+            // Add the UV coordinates
             int shape = (poly.Texture & 0x7000) >> 12;
             int flipped = (poly.Texture & 0x8000) >> 15;
-            int textureId = poly.Texture & 0xfff;
-            if (textureId > 2047)
-                textureId = -(textureId - 4096);
 
             wad_object_texture texture = oldWad.Textures[textureId];
 
@@ -693,17 +684,17 @@ namespace TombLib.Wad.Tr4Wad
             {
                 if (flipped == 1)
                 {
-                    uv.Add(ne);
-                    uv.Add(nw);
-                    uv.Add(sw);
-                    uv.Add(se);
+                    textureArea.TexCoord0 = ne;
+                    textureArea.TexCoord1 = nw;
+                    textureArea.TexCoord2 = sw;
+                    textureArea.TexCoord3 = se;
                 }
                 else
                 {
-                    uv.Add(nw);
-                    uv.Add(ne);
-                    uv.Add(se);
-                    uv.Add(sw);
+                    textureArea.TexCoord0 = nw;
+                    textureArea.TexCoord1 = ne;
+                    textureArea.TexCoord2 = se;
+                    textureArea.TexCoord3 = sw;
                 }
             }
             else
@@ -713,66 +704,69 @@ namespace TombLib.Wad.Tr4Wad
                     case 0:
                         if (flipped == 1)
                         {
-                            uv.Add(ne);
-                            uv.Add(nw);
-                            uv.Add(se);
+                            textureArea.TexCoord0 = ne;
+                            textureArea.TexCoord1 = nw;
+                            textureArea.TexCoord2 = se;
                         }
                         else
                         {
-                            uv.Add(nw);
-                            uv.Add(ne);
-                            uv.Add(sw);
+                            textureArea.TexCoord0 = nw;
+                            textureArea.TexCoord1 = ne;
+                            textureArea.TexCoord2 = sw;
                         }
                         break;
 
                     case 2:
                         if (flipped == 1)
                         {
-                            uv.Add(nw);
-                            uv.Add(sw);
-                            uv.Add(ne);
+                            textureArea.TexCoord0 = nw;
+                            textureArea.TexCoord1 = sw;
+                            textureArea.TexCoord2 = ne;
                         }
                         else
                         {
-                            uv.Add(ne);
-                            uv.Add(se);
-                            uv.Add(nw);
+                            textureArea.TexCoord0 = ne;
+                            textureArea.TexCoord1 = se;
+                            textureArea.TexCoord2 = nw;
                         }
                         break;
 
                     case 4:
                         if (flipped == 1)
                         {
-                            uv.Add(sw);
-                            uv.Add(se);
-                            uv.Add(nw);
+                            textureArea.TexCoord0 = sw;
+                            textureArea.TexCoord1 = se;
+                            textureArea.TexCoord2 = nw;
                         }
                         else
                         {
-                            uv.Add(se);
-                            uv.Add(sw);
-                            uv.Add(ne);
+                            textureArea.TexCoord0 = se;
+                            textureArea.TexCoord1 = sw;
+                            textureArea.TexCoord2 = ne;
                         }
                         break;
 
                     case 6:
                         if (flipped == 1)
                         {
-                            uv.Add(se);
-                            uv.Add(ne);
-                            uv.Add(sw);
+                            textureArea.TexCoord0 = se;
+                            textureArea.TexCoord1 = ne;
+                            textureArea.TexCoord2 = sw;
                         }
                         else
                         {
-                            uv.Add(sw);
-                            uv.Add(nw);
-                            uv.Add(se);
+                            textureArea.TexCoord0 = sw;
+                            textureArea.TexCoord1 = nw;
+                            textureArea.TexCoord2 = se;
                         }
                         break;
+                    default:
+                        throw new NotImplementedException("Unknown texture shape " + shape + " found in the wad.");
                 }
+                textureArea.TexCoord3 = new Vector2();
             }
 
-            return uv;
+            return textureArea;
         }
     }
 }

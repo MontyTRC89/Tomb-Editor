@@ -61,16 +61,17 @@ namespace TombLib.Graphics
             for (int j = 0; j < msh.Polys.Count; j++)
             {
                 WadPolygon poly = msh.Polys[j];
-                
+                Vector2 positionInPackedTexture = ((WadTexture)(poly.Texture.Texture)).PositionInPackedTexture;
+
                 if (poly.Shape == WadPolygonShape.Triangle)
                 {
                     int v1 = poly.Indices[0];
                     int v2 = poly.Indices[1];
                     int v3 = poly.Indices[2];
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), positionInPackedTexture);
                 }
                 else
                 {
@@ -79,13 +80,13 @@ namespace TombLib.Graphics
                     int v3 = poly.Indices[2];
                     int v4 = poly.Indices[3];
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.UV[0], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), poly.Texture.PositionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v1], mesh, poly.Texture.TexCoord0, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v1] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), positionInPackedTexture);
 
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.UV[3], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), poly.Texture.PositionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.UV[1], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), poly.Texture.PositionInPackedTexture);
-                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.UV[2], 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), poly.Texture.PositionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v4], mesh, poly.Texture.TexCoord3, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v4] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v2], mesh, poly.Texture.TexCoord1, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v2] : 0), positionInPackedTexture);
+                    PutStaticVertexAndIndex(msh.VerticesPositions[v3], mesh, poly.Texture.TexCoord2, 0, (short)(msh.VerticesShades.Count != 0 ? msh.VerticesShades[v3] : 0), positionInPackedTexture);
 
                 }
             }
