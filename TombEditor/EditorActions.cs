@@ -977,24 +977,16 @@ namespace TombEditor
         public static void DeleteRoom(Room room, IWin32Window owner)
         {
             // Check if is the last room
-            int roomCount = _editor.Level.Rooms.Count(r => r != null);
-            if (roomCount <= 1)
+            int remainingRoomCount = _editor.Level.Rooms.Count(r => (r != null) && (r != room) && (r != room.AlternateVersion));
+            if (remainingRoomCount <= 0)
             {
                 DarkMessageBox.Show(owner, "You must have at least one room in your level", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            // Check if room has portals
-            int portalCount = room.Portals.Count();
-            if (portalCount != 0)
-            {
-                DarkMessageBox.Show(owner, "You can't delete a room with portals to other rooms.", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
             // Ask for confirmation
             if (DarkMessageBox.Show(owner,
-                    "Do you really want to delete this room? All objects inside room will be deleted and " +
+                    "Do you really want to delete this room? All objects (including portals) inside room will be deleted and " +
                     "triggers pointing to them will be removed.",
                     "Delete room", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
             {
