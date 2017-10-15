@@ -34,7 +34,7 @@ namespace TombEditor.Geometry
         {
             var result = new HashSet<Room>();
             GetConnectedRoomsRecursively(result, startingRoom);
-            if (startingRoom.Flipped && (startingRoom.AlternateRoom != null))
+            if (startingRoom.Flipped && (startingRoom.AlternateVersion != null))
                 GetConnectedRoomsRecursively(result, startingRoom.AlternateRoom);
             return result;
         }
@@ -48,8 +48,8 @@ namespace TombEditor.Geometry
                 if (!result.Contains(room))
                 {
                     GetConnectedRoomsRecursively(result, room);
-                    if (room.Flipped && (room.AlternateRoom != null))
-                        GetConnectedRoomsRecursively(result, room.AlternateRoom);
+                    if (room.Flipped && (room.AlternateVersion != null))
+                        GetConnectedRoomsRecursively(result, room.AlternateVersion);
                 }
             }
         }
