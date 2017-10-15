@@ -252,10 +252,6 @@ namespace TombEditor
 
             switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
             {
-                case Keys.M: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
-                    _pressedZorY = true;
-                    break;
-
                 case Keys.Escape: // End any action
                     _editor.Action = EditorAction.None;
                     _editor.SelectedSectors = SectorSelection.None;
@@ -417,6 +413,9 @@ namespace TombEditor
                     break;
 
                 case Keys.Y:
+                    // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
+                    _pressedZorY = true;
+
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
