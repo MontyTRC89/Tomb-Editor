@@ -1442,10 +1442,6 @@ namespace TombEditor
 
         public static void AddPortal(Room room, Rectangle area, IWin32Window owner)
         {
-            // Check if it's a flip room
-            if (room.Flipped)
-                throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
-
             // Check for possible candidates ...
             VerticalSpace? verticalSpaceLocal = room.GetHeightInAreaMaxSpace(new Rectangle(area.X, area.Y, area.Right + 1, area.Bottom + 1));
 
@@ -1462,7 +1458,7 @@ namespace TombEditor
 
                 foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
                 {
-                    if (neighborRoom == room)
+                    if ((neighborRoom == room) || (neighborRoom == room.AlternateVersion))
                         continue;
                     Rectangle neighborArea = area.Offset(room.SectorPos).OffsetNeg(neighborRoom.SectorPos);
                     if (!new Rectangle(0, 0, neighborRoom.NumXSectors - 1, neighborRoom.NumZSectors - 1).Contains(neighborArea))
@@ -1517,8 +1513,6 @@ namespace TombEditor
 
             PortalDirection destinationDirection = candidates[0].Item1;
             Room destination = candidates[0].Item2;
-            if (destination.Flipped)
-                throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
 
             // Create portals
             var portals = room.AddObject(_editor.Level, new PortalInstance(area, destinationDirection, destination)).Cast<PortalInstance>();

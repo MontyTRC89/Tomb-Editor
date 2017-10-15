@@ -2681,20 +2681,27 @@ namespace TombEditor.Geometry
             if (portal != null)
             {
                 Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-                PortalInstance oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
+                var oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
 
-                AddObjectAndSingularPortal(level, portal);
+                // Add portals
+                var addedObjects = new List<ObjectInstance>();
                 try
                 {
-                    portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal);
+                    addedObjects.Add(AddObjectAndSingularPortal(level, portal));
+                    if (AlternateVersion != null)
+                        addedObjects.Add(AlternateVersion.AddObjectAndSingularPortal(level, portal.Clone()));
+
+                    addedObjects.Add(portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal));
+                    if (AlternateVersion != null)
+                        addedObjects.Add(portal.AdjoiningRoom.AlternateVersion.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
                 }
                 catch
                 {
-                    RemoveObjectAndSingularPortal(level, portal);
+                    foreach (ObjectInstance instanceToRemove in addedObjects)
+                        instanceToRemove.Room.RemoveObjectAndSingularPortal(level, instanceToRemove);
                     throw;
                 }
-
-                return new ObjectInstance[] { portal, oppositePortal };
+                return addedObjects;
             }
 
             // Add normal object
