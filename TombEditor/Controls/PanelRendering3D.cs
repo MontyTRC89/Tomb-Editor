@@ -526,7 +526,7 @@ namespace TombEditor.Controls
                         break;
                 }
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -1839,6 +1839,7 @@ namespace TombEditor.Controls
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
 
             for (int i = 0; i < skinnedModel.Meshes.Count; i++)
             {
