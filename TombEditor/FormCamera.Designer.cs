@@ -81,7 +81,7 @@
             this.ckFixed.AutoSize = true;
             this.ckFixed.Location = new System.Drawing.Point(12, 12);
             this.ckFixed.Name = "ckFixed";
-            this.ckFixed.Size = new System.Drawing.Size(100, 17);
+            this.ckFixed.Size = new System.Drawing.Size(106, 17);
             this.ckFixed.TabIndex = 6;
             this.ckFixed.Text = "Camera is fixed.";
             // 
@@ -92,6 +92,7 @@
             this.ClientSize = new System.Drawing.Size(181, 74);
             this.Controls.Add(this.ckFixed);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MinimizeBox = false;
             this.Name = "FormCamera";

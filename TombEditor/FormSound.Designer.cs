@@ -48,7 +48,7 @@
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(12, 415);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 13);
+            this.label1.Size = new System.Drawing.Size(44, 13);
             this.label1.TabIndex = 54;
             this.label1.Text = "Sound:";
             // 
@@ -61,7 +61,7 @@
             this.tbSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbSound.Location = new System.Drawing.Point(59, 412);
             this.tbSound.Name = "tbSound";
-            this.tbSound.Size = new System.Drawing.Size(449, 20);
+            this.tbSound.Size = new System.Drawing.Size(449, 22);
             this.tbSound.TabIndex = 55;
             this.tbSound.TextChanged += new System.EventHandler(this.tbSound_TextChanged);
             // 
@@ -71,7 +71,7 @@
             this.cbBit5.AutoSize = true;
             this.cbBit5.Location = new System.Drawing.Point(271, 448);
             this.cbBit5.Name = "cbBit5";
-            this.cbBit5.Size = new System.Drawing.Size(47, 17);
+            this.cbBit5.Size = new System.Drawing.Size(49, 17);
             this.cbBit5.TabIndex = 56;
             this.cbBit5.Text = "Bit 5";
             // 
@@ -81,7 +81,7 @@
             this.cbBit1.AutoSize = true;
             this.cbBit1.Location = new System.Drawing.Point(59, 448);
             this.cbBit1.Name = "cbBit1";
-            this.cbBit1.Size = new System.Drawing.Size(47, 17);
+            this.cbBit1.Size = new System.Drawing.Size(49, 17);
             this.cbBit1.TabIndex = 57;
             this.cbBit1.Text = "Bit 1";
             // 
@@ -91,7 +91,7 @@
             this.cbBit2.AutoSize = true;
             this.cbBit2.Location = new System.Drawing.Point(112, 448);
             this.cbBit2.Name = "cbBit2";
-            this.cbBit2.Size = new System.Drawing.Size(47, 17);
+            this.cbBit2.Size = new System.Drawing.Size(49, 17);
             this.cbBit2.TabIndex = 58;
             this.cbBit2.Text = "Bit 2";
             // 
@@ -101,7 +101,7 @@
             this.cbBit3.AutoSize = true;
             this.cbBit3.Location = new System.Drawing.Point(165, 448);
             this.cbBit3.Name = "cbBit3";
-            this.cbBit3.Size = new System.Drawing.Size(47, 17);
+            this.cbBit3.Size = new System.Drawing.Size(49, 17);
             this.cbBit3.TabIndex = 59;
             this.cbBit3.Text = "Bit 3";
             // 
@@ -111,7 +111,7 @@
             this.cbBit4.AutoSize = true;
             this.cbBit4.Location = new System.Drawing.Point(218, 448);
             this.cbBit4.Name = "cbBit4";
-            this.cbBit4.Size = new System.Drawing.Size(47, 17);
+            this.cbBit4.Size = new System.Drawing.Size(49, 17);
             this.cbBit4.TabIndex = 60;
             this.cbBit4.Text = "Bit 4";
             // 
@@ -178,6 +178,7 @@
             this.Controls.Add(this.cbBit5);
             this.Controls.Add(this.tbSound);
             this.Controls.Add(this.label1);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(400, 200);
