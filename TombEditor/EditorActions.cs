@@ -1791,6 +1791,7 @@ namespace TombEditor
         public static void CopyRoom(IWin32Window owner)
         {
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
+            newRoom.Name = _editor.SelectedRoom.Name + " (copy)";
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.SelectedRoom = newRoom;

@@ -825,7 +825,7 @@ namespace TombEditor
                 EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
         }
 
-        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void editSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
                 EditorActions.EditObject(_editor.SelectedObject, this);
