@@ -37,7 +37,7 @@ namespace TombEditor.ToolWindows
             this.panelTextureMap.Location = new System.Drawing.Point(0, 25);
             this.panelTextureMap.Name = "panelTextureMap";
             this.panelTextureMap.Size = new System.Drawing.Size(284, 739);
-            this.panelTextureMap.TabIndex = 9;
+            this.panelTextureMap.TabIndex = 0;
             // 
             // panelTextureTools
             // 
@@ -126,7 +126,7 @@ namespace TombEditor.ToolWindows
             this.butAnimationRanges.Name = "butAnimationRanges";
             this.butAnimationRanges.Padding = new System.Windows.Forms.Padding(5);
             this.butAnimationRanges.Size = new System.Drawing.Size(138, 23);
-            this.butAnimationRanges.TabIndex = 1;
+            this.butAnimationRanges.TabIndex = 0;
             this.butAnimationRanges.Text = "Animation ranges";
             this.butAnimationRanges.Click += new System.EventHandler(this.butAnimationRanges_Click);
             this.butBump.Visible = false;
@@ -139,7 +139,7 @@ namespace TombEditor.ToolWindows
             this.butTextureSounds.Name = "butTextureSounds";
             this.butTextureSounds.Padding = new System.Windows.Forms.Padding(5);
             this.butTextureSounds.Size = new System.Drawing.Size(138, 23);
-            this.butTextureSounds.TabIndex = 0;
+            this.butTextureSounds.TabIndex = 1;
             this.butTextureSounds.Text = "Texture sounds";
             this.butTextureSounds.Click += new System.EventHandler(this.butTextureSounds_Click);
             // 
