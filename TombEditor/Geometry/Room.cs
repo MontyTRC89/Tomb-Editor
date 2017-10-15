@@ -826,17 +826,29 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
 
-                    // Fix illegal heights
+                    // Try to adjust illegal combinations of heights
                     if (qA < fA && qB > fB || qA > fA && qB < fB)
                     {
                         qA = fA;
                         qB = fB;
                     }
 
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
                     if (wA < cA && wB > cB || wA > cA && wB < cB)
                     {
                         wA = cA;
                         wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
                     }
 
                     // Fix heights only for border walls
@@ -976,11 +988,17 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
-                    // Fix illegal heights
+                    // Try to adjust illegal combinations of heights
                     if (qA < fA && qB > fB || qA > fA && qB < fB)
                     {
                         qA = fA;
                         qB = fB;
+                    }
+
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
                     }
 
                     if (wA < cA && wB > cB || wA > cA && wB < cB)
@@ -988,7 +1006,13 @@ namespace TombEditor.Geometry
                         wA = cA;
                         wB = cB;
                     }
-                    
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
+                    }
+
                     // Fix heights only for border walls
                     if (z == NumZSectors - 1)
                     {
@@ -1125,17 +1149,29 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
 
-                    // Fix illegal heights
+                    // Try to adjust illegal combinations of heights
                     if (qA < fA && qB > fB || qA > fA && qB < fB)
                     {
                         qA = fA;
                         qB = fB;
                     }
 
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
                     if (wA < cA && wB > cB || wA > cA && wB < cB)
                     {
                         wA = cA;
                         wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
                     }
 
                     // Fix heights only for border walls
@@ -1472,17 +1508,29 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
 
-                    // Fix illegal heights
+                    // Try to adjust illegal combinations of heights
                     if (qA < fA && qB > fB || qA > fA && qB < fB)
                     {
                         qA = fA;
                         qB = fB;
                     }
 
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
                     if (wA < cA && wB > cB || wA > cA && wB < cB)
                     {
                         wA = cA;
                         wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
                     }
 
                     // Fix heights only for border walls
@@ -1618,25 +1666,28 @@ namespace TombEditor.Geometry
                 face = Blocks[x, z].GetFaceTexture(qaFace);
 
                 // QA
-                if (qA > yA && qB > yB)
-                    AddRectangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                else if (qA == yA && qB > yB)
-                    AddTriangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
-                else if (qA > yA && qB == yB)
-                    AddTriangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                if (qA <= cA || qB <= cB)
+                {
+                    if (qA > yA && qB > yB)
+                        AddRectangle(x, z, qaFace,
+                            new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                    else if (qA == yA && qB > yB)
+                        AddTriangle(x, z, qaFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                    else if (qA > yA && qB == yB)
+                        AddTriangle(x, z, qaFace,
+                            new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                }
 
                 // ED
                 if (subdivide)
@@ -1664,7 +1715,7 @@ namespace TombEditor.Geometry
                             new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f),  false);
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
                 }
             }
 
@@ -1689,25 +1740,28 @@ namespace TombEditor.Geometry
                     face = Blocks[x, z].GetFaceTexture(wsFace);
 
                     // WS
-                    if (wA < yA && wB < yB)
-                        AddRectangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                    else if (wA < yA && wB == yB)
-                        AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                    else if (wA == yA && wB < yB)
-                        AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                    if (wA >= fA || wB >= fB)
+                    {
+                        if (wA < yA && wB < yB)
+                            AddRectangle(x, z, wsFace,
+                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                                new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                                face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                        else if (wA < yA && wB == yB)
+                            AddTriangle(x, z, wsFace,
+                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                                face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                        else if (wA == yA && wB < yB)
+                            AddTriangle(x, z, wsFace,
+                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                                face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                    }
 
                     // RF
                     if (subdivide)

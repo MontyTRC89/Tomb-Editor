@@ -2294,7 +2294,7 @@ namespace TombEditor.Controls
             float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = { "+Z (North)", "-Z (South)", "-X (East)", "+X (West)" };
+            string[] messages = { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
             Vector3[] positions = new Vector3[4];
 
             Vector3 center = _editor.SelectedRoom.GetLocalCenter();
