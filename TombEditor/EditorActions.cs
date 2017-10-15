@@ -1573,11 +1573,16 @@ namespace TombEditor
                 return;
             }
 
-            _editor.Level.DeleteRoom(room.AlternateRoom);
-            _editor.RoomListChange();
+            // Change room selection if necessary
+            if (_editor.SelectedRoom == room.AlternateRoom)
+                _editor.SelectedRoom = room;
 
+            // Delete alternate room
+            _editor.Level.DeleteAlternateRoom(room.AlternateRoom);
             room.AlternateRoom = null;
             room.AlternateGroup = -1;
+
+            _editor.RoomListChange();
             _editor.RoomPropertiesChange(room);
         }
 

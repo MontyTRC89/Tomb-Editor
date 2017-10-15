@@ -150,7 +150,7 @@ namespace TombEditor.Geometry
             Rooms[GetFreeRoomIndex()] = room;
         }
 
-        public void DeleteRoom(Room room)
+        public void DeleteAlternateRoom(Room room)
         {
             for (int i = 0; i < Rooms.Length; ++i)
                 if (Rooms[i] == room)
@@ -163,23 +163,18 @@ namespace TombEditor.Geometry
                         else
                             room.RemoveObject(this, instance);
 
-                    // Remove alternate room
-                    if (room.AlternateVersion != null)
-                    {
-                        room.AlternateBaseRoom = null;
-                        room.AlternateRoom = null;
-                        room.AlternateGroup = -1;
-                        room.AlternateVersion.AlternateBaseRoom = null;
-                        room.AlternateVersion.AlternateRoom = null;
-                        room.AlternateVersion.AlternateGroup = -1;
-                        DeleteRoom(room.AlternateVersion);
-                    }
-
                     // Remove all references to this room
                     Rooms[i] = null;
                     return;
                 }
            throw new ArgumentException("The room does not belong to the level from which it should be removed.");
+        }
+
+        public void DeleteRoom(Room room)
+        {
+            DeleteAlternateRoom(room);
+            if (room.AlternateVersion != null)
+                DeleteAlternateRoom(room.AlternateVersion);
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)
