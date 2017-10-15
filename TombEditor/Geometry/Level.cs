@@ -59,6 +59,7 @@ namespace TombEditor.Geometry
                     roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
             var result = roomList
                 .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
+                .ThenBy((roomPair) => roomPair.Value.AlternateBaseRoom == null)
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
         }
@@ -157,13 +158,28 @@ namespace TombEditor.Geometry
                     // Remove all objects in the room
                     var objectsToRemove = room.AnyObjects.ToList();
                     foreach (var instance in objectsToRemove)
-                        room.RemoveObject(this, instance);
+                        if (room.AlternateBaseRoom != null)
+                            room.RemoveObjectAndSingularPortal(this, instance);
+                        else
+                            room.RemoveObject(this, instance);
+
+                    // Remove alternate room
+                    if (room.AlternateVersion != null)
+                    {
+                        room.AlternateBaseRoom = null;
+                        room.AlternateRoom = null;
+                        room.AlternateGroup = -1;
+                        room.AlternateVersion.AlternateBaseRoom = null;
+                        room.AlternateVersion.AlternateRoom = null;
+                        room.AlternateVersion.AlternateGroup = -1;
+                        DeleteRoom(room.AlternateVersion);
+                    }
 
                     // Remove all references to this room
                     Rooms[i] = null;
                     return;
                 }
-           throw new ArgumentException("The room does not belong to the level from which should be removed.");
+           throw new ArgumentException("The room does not belong to the level from which it should be removed.");
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

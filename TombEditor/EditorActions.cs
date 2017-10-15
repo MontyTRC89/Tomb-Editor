@@ -788,12 +788,6 @@ namespace TombEditor
 
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
-            if (instance.Room.Flipped && (instance is PortalInstance))
-            {
-                DarkMessageBox.Show(owner, "You can't delete portals of a flipped room currently. :(", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
             if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance.ToString() + "?",
                     "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
@@ -804,6 +798,7 @@ namespace TombEditor
         public static void DeleteObject(ObjectInstance instance)
         {
             Room room = instance.Room;
+            Room adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
             room.RemoveObject(_editor.Level, instance);
 
             // Additional updates
@@ -811,6 +806,13 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
                 room.UpdateCompletely();
+            if (instance is PortalInstance)
+            {
+                room?.UpdateCompletely();
+                adjoiningRoom?.UpdateCompletely();
+                room?.AlternateVersion?.UpdateCompletely();
+                adjoiningRoom?.AlternateVersion?.UpdateCompletely();
+            }
 
             // Remove triggers pointing to that object
             foreach (var r in _editor.Level.Rooms)
@@ -1527,15 +1529,13 @@ namespace TombEditor
                 throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
 
             // Create portals
-            PortalInstance portal = new PortalInstance(area, destinationDirection, destination);
-            PortalInstance oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
+            var portals = room.AddObject(_editor.Level, new PortalInstance(area, destinationDirection, destination)).Cast<PortalInstance>();
 
             // Update
-            room.UpdateCompletely();
-            destination.UpdateCompletely();
-
-            _editor.ObjectChange(portal);
-            _editor.ObjectChange(oppositePortal);
+            foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
+                portalRoom.UpdateCompletely();
+            foreach (PortalInstance portal in portals)
+                _editor.ObjectChange(portal);
 
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
@@ -1555,21 +1555,16 @@ namespace TombEditor
             // Update room alternate groups
             room.AlternateGroup = AlternateGroup;
             room.AlternateRoom = newRoom;
-            _editor.RoomPropertiesChange(room);
-
             newRoom.AlternateGroup = AlternateGroup;
             newRoom.AlternateBaseRoom = room;
+
+            _editor.RoomPropertiesChange(room);
             _editor.RoomPropertiesChange(newRoom);
         }
 
         public static void AlternateRoomDisableWithWarning(Room room, IWin32Window owner)
         {
-            // Check if room has portals
-            if (room.Portals.Count() > 0)
-            {
-                DarkMessageBox.Show(owner, "You can't delete a room with portals to other rooms.", "Error", MessageBoxIcon.Error);
-                return;
-            }
+            room = room.AlternateBaseRoom ?? room;
 
             // Ask for confirmation
             if (DarkMessageBox.Show(owner, "Do you really want to delete the flip room?",
@@ -1584,7 +1579,6 @@ namespace TombEditor
             room.AlternateRoom = null;
             room.AlternateGroup = -1;
             _editor.RoomPropertiesChange(room);
-
         }
 
         public static void SmoothRandomFloor(Room room, Rectangle area, float strengthDirection)

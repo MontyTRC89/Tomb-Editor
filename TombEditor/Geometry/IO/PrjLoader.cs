@@ -785,7 +785,7 @@ namespace TombEditor.Geometry.IO
                             }
 
                             // Add portal to rooms
-                            room.AddObject(level, portal);
+                            room.AddObjectAndSingularPortal(level, portal);
                         }
                     }
 
@@ -1179,7 +1179,7 @@ namespace TombEditor.Geometry.IO
                                 {
                                     if (z > 0)
                                         if ((room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
-                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED)) || 
+                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED)) ||
                                             !IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
                                         {
                                             LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[12]);
@@ -1311,7 +1311,7 @@ namespace TombEditor.Geometry.IO
                                         LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[5]);
                                     }
                                     else if (!room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
-                                             room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) && 
+                                             room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) &&
                                              IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
                                     {
                                         LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[5]);
@@ -1397,7 +1397,7 @@ namespace TombEditor.Geometry.IO
                     return (!room.IsFaceDefined(x, z, face) && (b.QAFaces[3] > b.EDFaces[3] || b.QAFaces[2] > b.EDFaces[2]));
                 case BlockFace.NegativeZ_WS:
                     return (!room.IsFaceDefined(x, z, face) && (b.WSFaces[3] < b.RFFaces[3] || b.WSFaces[2] < b.RFFaces[2]));
-                    
+
                 case BlockFace.NegativeX_QA:
                     return (!room.IsFaceDefined(x, z, face) && (b.QAFaces[0] > b.EDFaces[0] || b.QAFaces[3] > b.EDFaces[3]));
                 case BlockFace.PositiveX_WS:
