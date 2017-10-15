@@ -30,7 +30,7 @@ namespace TombEditor.Geometry
             if (adjoiningRoom == null)
                 throw new NullReferenceException("'adjoiningRoom' must not be null");
             Direction = direction;
-            AdjoiningRoom = adjoiningRoom;
+            AdjoiningRoom = adjoiningRoom.AlternateBaseRoom ?? adjoiningRoom;
         }
 
         public override string ToString()
@@ -104,6 +104,20 @@ namespace TombEditor.Geometry
             }
         }
 
+        public PortalInstance FindAlternatePortal(Room alternateRoom)
+        {
+            var sector = alternateRoom?.GetBlockTry(Area.X, Area.Y);
+            switch (Direction)
+            {
+                case PortalDirection.Floor:
+                    return sector?.FloorPortal; // A floor portal in this room is a ceiling portal in the adjoining room.
+                case PortalDirection.Ceiling:
+                    return sector?.CeilingPortal; // A ceiling portal in this room is a floor portal in the adjoining room.
+                default:
+                    return sector?.WallPortal;
+            }
+        }
+
         public override void AddToRoom(Level level, Room room)
         {
             base.AddToRoom(level, room);
@@ -150,9 +164,6 @@ namespace TombEditor.Geometry
         {
             base.RemoveFromRoom(level, room);
 
-            if ((room.Flipped) || (AdjoiningRoom?.Flipped ?? false))
-                throw new NotImplementedException("Removing portals from rooms that are flipped is not supported just yet. :(");
-
             // Remove portal reference
             switch (Direction)
             {
@@ -172,14 +183,6 @@ namespace TombEditor.Geometry
                             room.Blocks[x, z].WallPortal = null;
                     break;
             }
-
-            // Delete the corresponding opposite portal.
-            // (Will invoke this routine again from the other perspective).
-            var oppositePortal = FindOppositePortal(room);
-            if (oppositePortal != null)
-                AdjoiningRoom.RemoveObject(level, oppositePortal);
-
-            room.UpdateCompletely();
         }
     }
 }

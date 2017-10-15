@@ -77,8 +77,8 @@ namespace TombEditor.Geometry
                 throw new ArgumentOutOfRangeException("area", area, "Provided area for resizing the room is too small. The area must span at least 3 sectors in X and Z dimension.");
 
             // Remove sector based objects if there are any
-            var sector_objects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
-            foreach (var instance in sector_objects)
+            var sectorObjects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
+            foreach (var instance in sectorObjects)
                 RemoveObject(level, instance);
 
             // Build new blocks
@@ -111,7 +111,7 @@ namespace TombEditor.Geometry
 
             // Add sector based objects again
             Rectangle newArea = new Rectangle(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
-            foreach (var instance in sector_objects)
+            foreach (var instance in sectorObjects)
                 AddObjectCutSectors(level, newArea, instance);
 
             // Update state
@@ -130,7 +130,7 @@ namespace TombEditor.Geometry
             if ((area.X == 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom < (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(area.X, area.Bottom - 1, area.Right, NumZSectors - 1));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(area.X + 1, 0, area.Right - 1, 0), PortalDirection.WallNegativeZ, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(area.X + 1, 0, area.Right - 1, 0), PortalDirection.WallNegativeZ, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -142,7 +142,7 @@ namespace TombEditor.Geometry
             else if ((area.X == 0) && (area.Y == 0) && (area.Right < (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(area.Right - 1, area.Y, NumXSectors - 1, area.Bottom));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(0, area.Y + 1, 0, area.Bottom - 1), PortalDirection.WallNegativeX, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(0, area.Y + 1, 0, area.Bottom - 1), PortalDirection.WallNegativeX, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -154,7 +154,7 @@ namespace TombEditor.Geometry
             else if ((area.X == 0) && (area.Y > 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(area.X, 0, area.Right, area.Y + 1));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(area.X + 1, NumZSectors - 1, area.Right - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(area.X + 1, NumZSectors - 1, area.Right - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -166,7 +166,7 @@ namespace TombEditor.Geometry
             else if ((area.X > 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(0, area.Y, area.X + 1, area.Bottom));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(NumXSectors - 1, area.Y + 1, NumXSectors - 1, area.Bottom - 1), PortalDirection.WallPositiveX, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(NumXSectors - 1, area.Y + 1, NumXSectors - 1, area.Bottom - 1), PortalDirection.WallPositiveX, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -223,7 +223,7 @@ namespace TombEditor.Geometry
             result._objects = new List<PositionBasedObjectInstance>();
             foreach (var instance in AnyObjects)
                 if (decideToCopy(instance))
-                    result.AddObject(level, instance.Clone());
+                    result.AddObjectAndSingularPortal(level, instance.Clone());
 
             result.UpdateCompletely();
             return result;
@@ -2646,14 +2646,11 @@ namespace TombEditor.Geometry
             Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y));
 
             // Add object
-            if (instance is PortalInstance)
-                AddBidirectionalPortalsToLevel(level, (PortalInstance)instance.Clone(instanceNewArea));
-            else
-                AddObject(level, instance.Clone(instanceNewArea));
+            AddObject(level, instance.Clone(instanceNewArea));
             return true;
         }
 
-        public void AddObject(Level level, ObjectInstance instance)
+        public ObjectInstance AddObjectAndSingularPortal(Level level, ObjectInstance instance)
         {
             if (instance is PositionBasedObjectInstance)
                 _objects.Add((PositionBasedObjectInstance)instance);
@@ -2667,6 +2664,64 @@ namespace TombEditor.Geometry
                     _objects.Remove((PositionBasedObjectInstance)instance);
                 throw;
             }
+            return instance;
+        }
+
+        public void RemoveObjectAndSingularPortal(Level level, ObjectInstance instance)
+        {
+            instance.RemoveFromRoom(level, this);
+            if (instance is PositionBasedObjectInstance)
+                _objects.Remove((PositionBasedObjectInstance)instance);
+        }
+
+        public IEnumerable<ObjectInstance> AddObject(Level level, ObjectInstance instance)
+        {
+            // Add portals and opposite portals
+            var portal = instance as PortalInstance;
+            if (portal != null)
+            {
+                Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+                PortalInstance oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
+
+                AddObjectAndSingularPortal(level, portal);
+                try
+                {
+                    portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal);
+                }
+                catch
+                {
+                    RemoveObjectAndSingularPortal(level, portal);
+                    throw;
+                }
+
+                return new ObjectInstance[] { portal, oppositePortal };
+            }
+
+            // Add normal object
+            AddObjectAndSingularPortal(level, instance);
+            return new ObjectInstance[] { instance };
+        }
+
+        public void RemoveObject(Level level, ObjectInstance instance)
+        {
+            RemoveObjectAndSingularPortal(level, instance);
+
+            // Delete the corresponding other portals if necessary.
+            var portal = instance as PortalInstance;
+            if (portal != null)
+            {
+                var alternatePortal = portal.FindAlternatePortal(this?.AlternateVersion);
+                if (alternatePortal != null)
+                    AlternateVersion.RemoveObjectAndSingularPortal(level, alternatePortal);
+
+                var oppositePortal = portal.FindOppositePortal(this);
+                if (oppositePortal != null)
+                    portal.AdjoiningRoom.RemoveObjectAndSingularPortal(level, oppositePortal);
+
+                var oppositeAlternatePortal = oppositePortal?.FindAlternatePortal(portal.AdjoiningRoom?.AlternateVersion);
+                if (oppositeAlternatePortal != null)
+                    oppositeAlternatePortal.Room.RemoveObjectAndSingularPortal(level, oppositeAlternatePortal);
+            }
         }
 
         public void MoveObjectFrom(Level level, Room from, PositionBasedObjectInstance instance)
@@ -2674,35 +2729,6 @@ namespace TombEditor.Geometry
             from.RemoveObject(level, instance);
             instance.Position += from.WorldPos - WorldPos;
             AddObject(level, instance);
-        }
-
-        public void RemoveObject(Level level, ObjectInstance instance)
-        {
-            instance.RemoveFromRoom(level, this);
-            if (instance is PositionBasedObjectInstance)
-                _objects.Remove((PositionBasedObjectInstance)instance);
-        }
-
-        public PortalInstance AddBidirectionalPortalsToLevel(Level level, PortalInstance portal)
-        {
-            Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-            PortalInstance oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
-
-            AddObject(level, portal);
-            try
-            {
-                portal.AdjoiningRoom.AddObject(level, oppositePortal);
-            }
-            catch
-            {
-                RemoveObject(level, portal);
-                throw;
-            }
-
-            UpdateCompletely();
-            portal.AdjoiningRoom.UpdateCompletely();
-
-            return oppositePortal;
         }
 
         public enum RoomConnectionType
