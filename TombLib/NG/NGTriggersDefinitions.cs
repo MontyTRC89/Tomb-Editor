@@ -30,7 +30,7 @@ namespace TombLib.NG
             using (var reader = new StreamReader(stream))
             {
                 string line;
-                NGParameterType parameterType;
+                //NGParameterType parameterType;
 
                 while (!reader.EndOfStream)
                 {
@@ -56,10 +56,10 @@ namespace TombLib.NG
 
                         int flipeffect = Int32.Parse(tokens[1]);
 
-                        if (tokens[2] == "T") parameterType = NGParameterType.Timer;
-                        if (tokens[2] == "O") parameterType = NGParameterType.Object;
-                        if (tokens[2] == "E") parameterType = NGParameterType.Extra;
-                        if (tokens[2] == "B") parameterType = NGParameterType.Button;
+                        //if (tokens[2] == "T") parameterType = NGParameterType.Timer;
+                        //if (tokens[2] == "O") parameterType = NGParameterType.Object;
+                        //if (tokens[2] == "E") parameterType = NGParameterType.Extra;
+                        //if (tokens[2] == "B") parameterType = NGParameterType.Button;
 
                         while (!reader.EndOfStream && (line = reader.ReadLine()).Trim().StartsWith("<END"))
                         {

@@ -233,7 +233,7 @@ namespace WadTool
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
             // Open the file dialog
-            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.Wad);
+            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.Object);
             openFileDialogWad.Title = "Open source WAD/Wad2";
             if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
                 return;

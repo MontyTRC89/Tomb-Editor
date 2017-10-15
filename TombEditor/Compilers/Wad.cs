@@ -86,7 +86,7 @@ namespace TombEditor.Compilers
 
                 foreach (var poly in oldMesh.Polys)
                 {
-                    if (poly.Shape == WadPolygonShape.Rectangle)
+                    if (poly.Shape == WadPolygonShape.Quad)
                         numRectangles++;
                     else
                         numTriangles++;
@@ -106,7 +106,7 @@ namespace TombEditor.Compilers
 
                 foreach (var poly in oldMesh.Polys)
                 {
-                    if (poly.Shape == WadPolygonShape.Rectangle)
+                    if (poly.Shape == WadPolygonShape.Quad)
                     {
                         tr_face4 face = new tr_face4();
 
@@ -116,10 +116,10 @@ namespace TombEditor.Compilers
                         face.Vertices[2] = (ushort)poly.Indices[2];
                         face.Vertices[3] = (ushort)poly.Indices[3];
 
-                        var result = _objectTextureManager.AddTexture(_level.Wad.GetTextureArea(poly), false, false);
+                        var result = _objectTextureManager.AddTexture(poly.Texture, false, false);
                         face.Texture = result.ObjectTextureIndex;
 
-                        face.LightingEffect = (ushort)(poly.Transparent ? 0x01 : 0x00);
+                        face.LightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
                         face.LightingEffect |= (ushort)(poly.ShineStrength << 1);
 
                         newMesh.TexturedQuads[lastRectangle] = face;
@@ -136,10 +136,10 @@ namespace TombEditor.Compilers
                         face.Vertices[1] = (ushort)poly.Indices[1];
                         face.Vertices[2] = (ushort)poly.Indices[2];
 
-                        var result = _objectTextureManager.AddTexture(_level.Wad.GetTextureArea(poly), true, false);
+                        var result = _objectTextureManager.AddTexture(poly.Texture, true, false);
                         face.Texture = result.ObjectTextureIndex;
 
-                        face.LightingEffect = (ushort)(poly.Transparent ? 0x01 : 0x00);
+                        face.LightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
                         face.LightingEffect |= (ushort)(poly.ShineStrength << 1);
 
                         newMesh.TexturedTriangles[lastTriangle] = face;
