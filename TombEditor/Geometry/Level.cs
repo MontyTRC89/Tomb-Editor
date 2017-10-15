@@ -34,23 +34,20 @@ namespace TombEditor.Geometry
         {
             var result = new HashSet<Room>();
             GetConnectedRoomsRecursively(result, startingRoom);
-            if (startingRoom.Flipped && (startingRoom.AlternateVersion != null))
-                GetConnectedRoomsRecursively(result, startingRoom.AlternateRoom);
+            GetConnectedRoomsRecursively(result, startingRoom.AlternateVersion);
             return result;
         }
 
         private void GetConnectedRoomsRecursively(ISet<Room> result, Room startingRoom)
         {
+            if ((startingRoom == null) || result.Contains(startingRoom))
+                return;
+
             result.Add(startingRoom);
             foreach (var portal in startingRoom.Portals)
             {
-                var room = portal.AdjoiningRoom;
-                if (!result.Contains(room))
-                {
-                    GetConnectedRoomsRecursively(result, room);
-                    if (room.Flipped && (room.AlternateVersion != null))
-                        GetConnectedRoomsRecursively(result, room.AlternateVersion);
-                }
+                GetConnectedRoomsRecursively(result, portal.AdjoiningRoom);
+                GetConnectedRoomsRecursively(result, portal.AdjoiningRoom?.AlternateVersion);
             }
         }
 
