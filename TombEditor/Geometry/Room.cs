@@ -851,16 +851,28 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
-                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
                     {
-                        eA = fA;
-                        eB = fB;
+                        eA = qA;
+                        eB = qB;
                     }
 
-                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
                     {
-                        rA = cA;
-                        rB = cB;
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
                     }
 
                     // Fix heights only for border walls
@@ -1025,16 +1037,28 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
-                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
                     {
-                        eA = fA;
-                        eB = fB;
+                        eA = qA;
+                        eB = qB;
                     }
 
-                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
                     {
-                        rA = cA;
-                        rB = cB;
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
                     }
 
                     // Fix heights only for border walls
@@ -1198,16 +1222,28 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
-                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
                     {
-                        eA = fA;
-                        eB = fB;
+                        eA = qA;
+                        eB = qB;
                     }
 
-                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
                     {
-                        rA = cA;
-                        rB = cB;
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
                     }
 
                     // Fix heights only for border walls
@@ -1569,16 +1605,28 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
-                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
                     {
-                        eA = fA;
-                        eB = fB;
+                        eA = qA;
+                        eB = qB;
                     }
 
-                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
                     {
-                        rA = cA;
-                        rB = cB;
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
                     }
 
                     // Fix heights only for border walls
