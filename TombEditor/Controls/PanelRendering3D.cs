@@ -2049,7 +2049,7 @@ namespace TombEditor.Controls
                                         Z = z,
                                         Face = face,
                                         DoubleSided = faceTexture.DoubleSided,
-                                        BlendMode = BlendMode.AlphaTest
+                                        BlendMode = BlendMode.Normal
                                     };
 
                                     _opaqueBuckets.Add(foundBucket);
