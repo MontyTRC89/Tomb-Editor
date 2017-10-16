@@ -47,7 +47,8 @@ namespace TombLib.Utils
         Normal = 0,
         Additive = 2,
         NoZTest = 4,
-        Wireframe = 6
+        Wireframe = 6,
+        AlphaTest = 100
         // By using FLEP, more BlendMode mode indices can be assigned meaning.
         // We probably want support for those in the future.
     }
