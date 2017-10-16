@@ -1350,6 +1350,8 @@ namespace TombEditor
                 block.RFFaces[2] = swapFace[2];
                 block.RFFaces[3] = swapFace[3];
             }
+
+            block.FixHeights(floor ? 1 : 0);
         }
 
         public static void RotateSectors(Room room, Rectangle area, bool floor)
