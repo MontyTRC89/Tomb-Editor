@@ -560,6 +560,7 @@ namespace TombEditor
 
                             break;
                     }
+                    room.Blocks[x, z].FixHeights(verticalSubdivision);
                 }
 
             SmartBuildGeometry(room, area);
@@ -1105,10 +1106,7 @@ namespace TombEditor
                             room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
                     }
 
-                    room.Blocks[x, z].EDFaces[0] = 0;
-                    room.Blocks[x, z].EDFaces[1] = 0;
-                    room.Blocks[x, z].EDFaces[2] = 0;
-                    room.Blocks[x, z].EDFaces[3] = 0;
+                    room.Blocks[x, z].FixHeights();
                 }
 
             SmartBuildGeometry(room, area);
@@ -1187,10 +1185,7 @@ namespace TombEditor
                             room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
                     }
 
-                    room.Blocks[x, z].RFFaces[0] = 0;
-                    room.Blocks[x, z].RFFaces[1] = 0;
-                    room.Blocks[x, z].RFFaces[2] = 0;
-                    room.Blocks[x, z].RFFaces[3] = 0;
+                    room.Blocks[x, z].FixHeights();
                 }
 
             SmartBuildGeometry(room, area);
