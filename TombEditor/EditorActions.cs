@@ -13,6 +13,8 @@ using TombLib.Utils;
 using DarkUI.Forms;
 using TombLib.IO;
 using System.IO;
+using Assimp;
+using SharpDX.Toolkit.Graphics;
 
 namespace TombEditor
 {
@@ -1976,6 +1978,70 @@ namespace TombEditor
                 DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
             }
         }
+
+        /*public static void ExportCurrentRoom(IWin32Window owner)
+        {
+            // Ask for the file to save
+            string _fileName = "";
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "Export current room";
+                saveFileDialog.Filter = "Wavefront OBJ (*.obj)|*.obj";
+                if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                _fileName = saveFileDialog.FileName;
+            }
+
+            // Initialize Assimp
+            var context = new AssimpContext();
+            var scene = new Scene();
+            var mesh = new Mesh(Assimp.PrimitiveType.Triangle);
+
+            // Pointer to the selected room
+            var room = _editor.SelectedRoom;
+
+            // Now build the Assimp mesh
+            var editorRoomVertices = room.GetRoomVertices();
+            for (int z = 0; z < room.NumZSectors; ++z)
+                for (int x = 0; x < room.NumXSectors; ++x)
+                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                    {
+                        var range = room.GetFaceVertexRange(x, z, face);
+                        if (range.Count == 0)
+                            continue;
+
+                        TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
+                        if (texture.TextureIsInvisble)
+                            continue;
+
+                        for (int i = range.Start; i < (range.Start + range.Count); i += 3)
+                        {
+                            mesh.Vertices.Add(new Vector3D(editorRoomVertices[i].Position.X,
+                                                           editorRoomVertices[i].Position.Y,
+                                                           editorRoomVertices[i].Position.Z));
+                            mesh.VertexColorChannels[0].Add(new Color4D(editorRoomVertices[i].FaceColor.X,
+                                                                        editorRoomVertices[i].FaceColor.Y,
+                                                                        editorRoomVertices[i].FaceColor.Z));
+                            mesh.TextureCoordinateChannels[0].Add(new Vector3D(editorRoomVertices[i].UV.X / 2048.0f,
+                                                                               editorRoomVertices[i].UV.Y / 2048.0f,
+                                                                               0.0f));
+                            mesh.Faces.Add(new Face(new int[] { i, i + 1, i + 2 }));
+                        }
+                    }
+
+            atlas.Save(File.OpenWrite(_fileName + ".png"), ImageFileType.Png);
+
+            var material = new Material();
+            material.TextureDiffuse = new TextureSlot(_fileName + ".png", TextureType.Diffuse, 0, TextureMapping.FromUV, 0,
+                                                      1.0f, TextureOperation.Add, TextureWrapMode.Clamp, TextureWrapMode.Clamp, 0);
+            scene.Materials.Add(material);
+            mesh.MaterialIndex = 0;
+
+            scene.Meshes.Add(mesh);
+            context.ExportFile(scene, _fileName, "obj", PostProcessSteps.Triangulate |
+                                                        PostProcessSteps.OptimizeMeshes |
+                                                        PostProcessSteps.GenerateSmoothNormals);
+        }*/
 
         public static void OpenLevel(IWin32Window owner, string fileName = null)
         {

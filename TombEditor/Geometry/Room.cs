@@ -851,6 +851,18 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
+                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    {
+                        eA = fA;
+                        eB = fB;
+                    }
+
+                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    {
+                        rA = cA;
+                        rB = cB;
+                    }
+
                     // Fix heights only for border walls
                     if (z == 0)
                     {
@@ -893,10 +905,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[1] = (short)qA;
+                        /*Blocks[x, z].QAFaces[1] = (short)qA;
                         Blocks[x, z].QAFaces[0] = (short)qB;
                         Blocks[x, z].WSFaces[1] = (short)wA;
-                        Blocks[x, z].WSFaces[0] = (short)wB;
+                        Blocks[x, z].WSFaces[0] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -904,13 +916,13 @@ namespace TombEditor.Geometry
                         if (Blocks[x, 1].WSFaces[2] < Blocks[x, z].QAFaces[1])
                         {
                             qA = Blocks[x, 1].WSFaces[2];
-                            Blocks[x, z].QAFaces[1] = (short)qA;
+                            //Blocks[x, z].QAFaces[1] = (short)qA;
                         }
 
                         if (Blocks[x, 1].WSFaces[3] < Blocks[x, z].QAFaces[0])
                         {
                             qB = Blocks[x, 1].WSFaces[3];
-                            Blocks[x, z].QAFaces[0] = (short)qB;
+                            //Blocks[x, z].QAFaces[0] = (short)qB;
                         }
                     }
 
@@ -1013,6 +1025,18 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
+                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    {
+                        eA = fA;
+                        eB = fB;
+                    }
+
+                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    {
+                        rA = cA;
+                        rB = cB;
+                    }
+
                     // Fix heights only for border walls
                     if (z == NumZSectors - 1)
                     {
@@ -1054,10 +1078,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[3] = (short)qA;
+                       /* Blocks[x, z].QAFaces[3] = (short)qA;
                         Blocks[x, z].QAFaces[2] = (short)qB;
                         Blocks[x, z].WSFaces[3] = (short)wA;
-                        Blocks[x, z].WSFaces[2] = (short)wB;
+                        Blocks[x, z].WSFaces[2] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1065,13 +1089,13 @@ namespace TombEditor.Geometry
                         if (Blocks[x, NumZSectors - 2].WSFaces[0] < Blocks[x, z].QAFaces[3])
                         {
                             qA = Blocks[x, NumZSectors - 2].WSFaces[0];
-                            Blocks[x, z].QAFaces[3] = (short)qA;
+                            //Blocks[x, z].QAFaces[3] = (short)qA;
                         }
 
                         if (Blocks[x, NumZSectors - 2].WSFaces[1] < Blocks[x, z].QAFaces[2])
                         {
                             qB = Blocks[x, NumZSectors - 2].WSFaces[1];
-                            Blocks[x, z].QAFaces[2] = (short)qB;
+                            //Blocks[x, z].QAFaces[2] = (short)qB;
                         }
                     }
 
@@ -1174,6 +1198,18 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
+                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    {
+                        eA = fA;
+                        eB = fB;
+                    }
+
+                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    {
+                        rA = cA;
+                        rB = cB;
+                    }
+
                     // Fix heights only for border walls
                     if (x == 0)
                     {
@@ -1215,10 +1251,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[2] = (short)qA;
+                        /*Blocks[x, z].QAFaces[2] = (short)qA;
                         Blocks[x, z].QAFaces[1] = (short)qB;
                         Blocks[x, z].WSFaces[2] = (short)wA;
-                        Blocks[x, z].WSFaces[1] = (short)wB;
+                        Blocks[x, z].WSFaces[1] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1226,13 +1262,13 @@ namespace TombEditor.Geometry
                         if (Blocks[1, z].WSFaces[3] < Blocks[x, z].QAFaces[2])
                         {
                             qA = Blocks[1, z].WSFaces[3];
-                            Blocks[x, z].QAFaces[2] = (short)qA;
+                            //Blocks[x, z].QAFaces[2] = (short)qA;
                         }
 
                         if (Blocks[1, z].WSFaces[0] < Blocks[x, z].QAFaces[1])
                         {
                             qB = Blocks[1, z].WSFaces[0];
-                            Blocks[x, z].QAFaces[1] = (short)qB;
+                            //Blocks[x, z].QAFaces[1] = (short)qB;
                         }
                     }
 
@@ -1533,6 +1569,18 @@ namespace TombEditor.Geometry
                         wB = fB;
                     }
 
+                    if (eA < fA && eB > fB || eA > fA && eB < fB)
+                    {
+                        eA = fA;
+                        eB = fB;
+                    }
+
+                    if (rA < cA && rB > cB || rA > cA && rB < cB)
+                    {
+                        rA = cA;
+                        rB = cB;
+                    }
+
                     // Fix heights only for border walls
                     if (x == NumXSectors - 1)
                     {
@@ -1575,10 +1623,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[3] = (short)qA;
+                        /*Blocks[x, z].QAFaces[3] = (short)qA;
                         Blocks[x, z].QAFaces[0] = (short)qB;
                         Blocks[x, z].WSFaces[3] = (short)wA;
-                        Blocks[x, z].WSFaces[0] = (short)wB;
+                        Blocks[x, z].WSFaces[0] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1586,13 +1634,13 @@ namespace TombEditor.Geometry
                         if (Blocks[NumXSectors - 2, z].WSFaces[1] < Blocks[x, z].QAFaces[0])
                         {
                             qA = Blocks[NumXSectors - 2, z].WSFaces[1];
-                            Blocks[x, z].QAFaces[0] = (short)qA;
+                            //Blocks[x, z].QAFaces[0] = (short)qA;
                         }
 
                         if (Blocks[NumXSectors - 2, z].WSFaces[2] < Blocks[x, z].QAFaces[3])
                         {
                             qB = Blocks[NumXSectors - 2, z].WSFaces[2];
-                            Blocks[x, z].QAFaces[3] = (short)qB;
+                            //Blocks[x, z].QAFaces[3] = (short)qB;
                         }
                     }
 

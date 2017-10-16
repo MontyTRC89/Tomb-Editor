@@ -13,6 +13,7 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -1045,6 +1046,11 @@ namespace TombEditor
         {
             base.OnDragDrop(e);
             EditorActions.DragDropCommonFiles(e, this);
+        }
+
+        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
         }
     }
 }
