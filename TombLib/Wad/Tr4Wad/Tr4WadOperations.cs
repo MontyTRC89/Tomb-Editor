@@ -1,6 +1,7 @@
 ﻿using NLog;
 using SharpDX;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,47 +18,47 @@ namespace TombLib.Wad.Tr4Wad
 
         public static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad)
         {
-            var textures = new Dictionary<int, WadTexture>();
+            var textures = new ConcurrentDictionary<int, WadTexture>();
 
-            int i = 0;
-            foreach (var oldTexture in oldWad.Textures)
-            {
-                var texture = new WadTexture();
+            Parallel.For(0, oldWad.Textures.Count, i =>
+              {
+                  var oldTexture = oldWad.Textures[i];
+                  var texture = new WadTexture();
 
-                short startX = (short)(oldTexture.X);
-                short startY = (short)(oldTexture.Page * 256 + oldTexture.Y);
+                  short startX = (short)(oldTexture.X);
+                  short startY = (short)(oldTexture.Page * 256 + oldTexture.Y);
 
                 // Create the texture ImageC
                 var textureData = ImageC.CreateNew(oldTexture.Width + 1, oldTexture.Height + 1);
 
-                for (int y = 0; y < textureData.Height; y++)
-                {
-                    for (int x = 0; x < textureData.Width; x++)
-                    {
-                        byte r = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 0];
-                        byte g = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 1];
-                        byte b = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 2];
-                        byte a = 255;
+                  for (int y = 0; y < textureData.Height; y++)
+                  {
+                      for (int x = 0; x < textureData.Width; x++)
+                      {
+                          byte r = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 0];
+                          byte g = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 1];
+                          byte b = oldWad.TexturePages[startY + y, startX * 3 + 3 * x + 2];
+                          byte a = 255;
 
-                        var color = new ColorC(r, g, b, a);
-                        textureData.SetPixel(x, y, color);
-                    }
-                }
+                          var color = new ColorC(r, g, b, a);
+                          textureData.SetPixel(x, y, color);
+                      }
+                  }
 
                 // Replace magenta color with alpha transparent black
                 textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
-                texture.Image = textureData;
+                  texture.Image = textureData;
 
                 // Update the hash of the texture
                 texture.UpdateHash();
 
-                textures.Add(i, texture);
+                  textures.TryAdd(i, texture);
 
-                i++;
-            }
+                  i++;
+              });
 
-            return textures;
+            return new Dictionary<int, WadTexture>(textures);
         }
 
         private static int GetTr4TextureIdFromPolygon(wad_polygon polygon)

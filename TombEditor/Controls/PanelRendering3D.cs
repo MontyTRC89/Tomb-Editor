@@ -2049,7 +2049,7 @@ namespace TombEditor.Controls
                                         Z = z,
                                         Face = face,
                                         DoubleSided = faceTexture.DoubleSided,
-                                        BlendMode = BlendMode.Normal
+                                        BlendMode = BlendMode.AlphaTest
                                     };
 
                                     _opaqueBuckets.Add(foundBucket);
@@ -2071,17 +2071,8 @@ namespace TombEditor.Controls
                                     BlendMode = faceTexture.BlendMode
                                 };
 
-                                // calcolo il piano passante per la faccia
-
-                                // calcolo il centro della faccia
-                                Vector3 center = Vector3.Zero;
-                                var vertexRange = room.GetFaceVertexRange(x, z, face);
-                                for (int j = 0; j < vertexRange.Count; j++)
-                                    center += room.GetRoomVertices()[j].Position;
-                                center /= vertexRange.Count;
-
-                                // calcolo la distanza
-                                bucket.Distance = (center - cameraPosition).Length();
+                                // Get the distance of the face from the camera
+                                bucket.Distance = GetFaceDistance(x, z, room, face, cameraPosition);
 
                                 // aggiungo la struttura alla lista
                                 _transparentBuckets.Add(bucket);
@@ -2096,6 +2087,16 @@ namespace TombEditor.Controls
             _invisibleBuckets.Sort(comparer);
 
             Parallel.ForEach(_opaqueBuckets, PrepareIndexBuffer);
+        }
+
+        private float GetFaceDistance(int x, int z, Room room, BlockFace face, Vector3 cameraPosition)
+        {
+            Vector3 center = Vector3.Zero;
+            var vertexRange = room.GetFaceVertexRange(x, z, face);
+            for (int j = 0; j < vertexRange.Count; j++)
+                center += room.GetRoomVertices()[j].Position;
+            center /= vertexRange.Count;
+            return (center - cameraPosition).Length();
         }
 
         private void PrepareIndexBuffer(RoomRenderBucket item)
@@ -2342,10 +2343,20 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    /*bool lights = (room != _editor.SelectedRoom ||
-                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));*/
-                    bool lights = _editor.Mode == EditorMode.Lighting;
-                    _roomEffect.Parameters["UseVertexColors"].SetValue(lights);
+                    _roomEffect.Parameters["UseVertexColors"].SetValue(_editor.Mode == EditorMode.Lighting);
+
+                    // Set blend mode
+                    if (_lastBucket == null || _lastBucket.BlendMode != bucket.BlendMode)
+                    {
+                        if (bucket.BlendMode == BlendMode.Normal)
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+                        else if (bucket.BlendMode == BlendMode.Additive)
+                            _device.SetBlendState(_device.BlendStates.Additive);
+                        else if (bucket.BlendMode == BlendMode.AlphaTest)
+                            _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                        else
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+                    }
 
                     _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }
