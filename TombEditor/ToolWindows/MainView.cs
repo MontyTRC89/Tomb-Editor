@@ -102,10 +102,10 @@ namespace TombEditor.ToolWindows
 
             // Update flipmap toolbar button
             if ((obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.RoomPropertiesChangedEvent))
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
-                Room room = ((IEditorRoomChangedEvent)obj).Room;
-                butFlipMap.Checked = room.Flipped && (room.AlternateRoom == null);
+                butFlipMap.Enabled = _editor.SelectedRoom.Flipped;
+                butFlipMap.Checked = _editor.SelectedRoom.AlternateBaseRoom != null;
             }
 
             // Update texture properties

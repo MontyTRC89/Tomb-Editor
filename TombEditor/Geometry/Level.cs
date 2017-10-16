@@ -34,23 +34,20 @@ namespace TombEditor.Geometry
         {
             var result = new HashSet<Room>();
             GetConnectedRoomsRecursively(result, startingRoom);
-            if (startingRoom.Flipped && (startingRoom.AlternateRoom != null))
-                GetConnectedRoomsRecursively(result, startingRoom.AlternateRoom);
+            GetConnectedRoomsRecursively(result, startingRoom.AlternateVersion);
             return result;
         }
 
         private void GetConnectedRoomsRecursively(ISet<Room> result, Room startingRoom)
         {
+            if ((startingRoom == null) || result.Contains(startingRoom))
+                return;
+
             result.Add(startingRoom);
             foreach (var portal in startingRoom.Portals)
             {
-                var room = portal.AdjoiningRoom;
-                if (!result.Contains(room))
-                {
-                    GetConnectedRoomsRecursively(result, room);
-                    if (room.Flipped && (room.AlternateRoom != null))
-                        GetConnectedRoomsRecursively(result, room.AlternateRoom);
-                }
+                GetConnectedRoomsRecursively(result, portal.AdjoiningRoom);
+                GetConnectedRoomsRecursively(result, portal.AdjoiningRoom?.AlternateVersion);
             }
         }
 
@@ -62,6 +59,7 @@ namespace TombEditor.Geometry
                     roomList.Add(new KeyValuePair<float, Room>(room.Position.Y + room.GetHighestCorner(), room));
             var result = roomList
                 .OrderBy((roomPair) => roomPair.Key) // don't use the Sort member function because it is unstable!
+                .ThenBy((roomPair) => roomPair.Value.AlternateBaseRoom == null)
                 .Select(roomKey => roomKey.Value).ToList();
             return result;
         }
@@ -92,7 +90,7 @@ namespace TombEditor.Geometry
                 var newWad = new Wad2();
                 try
                 {
-                    if (path.ToLower().EndsWith("wad"))
+                    if (path.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
                     {
                         List<string> soundPaths = new List<string>();
                         foreach (OldWadSoundPath path_ in Settings.OldWadSoundPaths)
@@ -152,7 +150,7 @@ namespace TombEditor.Geometry
             Rooms[GetFreeRoomIndex()] = room;
         }
 
-        public void DeleteRoom(Room room)
+        public void DeleteAlternateRoom(Room room)
         {
             for (int i = 0; i < Rooms.Length; ++i)
                 if (Rooms[i] == room)
@@ -160,13 +158,23 @@ namespace TombEditor.Geometry
                     // Remove all objects in the room
                     var objectsToRemove = room.AnyObjects.ToList();
                     foreach (var instance in objectsToRemove)
-                        room.RemoveObject(this, instance);
+                        if (room.AlternateBaseRoom != null)
+                            room.RemoveObjectAndSingularPortal(this, instance);
+                        else
+                            room.RemoveObject(this, instance);
 
                     // Remove all references to this room
                     Rooms[i] = null;
                     return;
                 }
-           throw new ArgumentException("The room does not belong to the level from which should be removed.");
+           throw new ArgumentException("The room does not belong to the level from which it should be removed.");
+        }
+
+        public void DeleteRoom(Room room)
+        {
+            DeleteAlternateRoom(room);
+            if (room.AlternateVersion != null)
+                DeleteAlternateRoom(room.AlternateVersion);
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using SharpDX;
 using TombEditor.Geometry;
 using SharpDX.Toolkit.Graphics;
 using TombLib.Graphics;
+using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using NLog;
-using TombLib.Wad;
+using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -94,13 +96,13 @@ namespace TombEditor.Controls
         {
             public DrawingPoint Pos { get; set; }
             public BlockFace Face { get; set; }
-            public bool IsFloor { get; private set; }
+            public bool IsFloorHorizontalPlane => (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2);
+            public bool BelongsToFloor => (IsFloorHorizontalPlane || Face <= BlockFace.DiagonalMiddle);
             public PickingResultBlock(float distance, DrawingPoint pos, BlockFace face)
             {
                 Distance = distance;
                 Pos = pos;
                 Face = face;
-                IsFloor = (Face == BlockFace.Floor || Face == BlockFace.FloorTriangle2 || Face <= BlockFace.DiagonalMiddle);
             }
         }
 
@@ -643,20 +645,20 @@ namespace TombEditor.Controls
                                 if (newPicking is PickingResultBlock)
                                 {
                                     DrawingPoint pos = ((PickingResultBlock)newPicking).Pos;
-                                    bool isFloor = ((PickingResultBlock)newPicking).IsFloor;
+                                    bool belongsToFloor = ((PickingResultBlock)newPicking).BelongsToFloor;
 
                                     // Split the faces
                                     if (ModifierKeys.HasFlag(Keys.Alt))
                                     {
-                                        if (isFloor)
-                                            EditorActions.FlipFloorSplit(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                        if (belongsToFloor)
+                                            EditorActions.FlipFloorSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                         else
-                                            EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y));
+                                            EditorActions.FlipCeilingSplit(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y));
                                         return;
                                     }
                                     else if (ModifierKeys.HasFlag(Keys.Shift))
                                     {
-                                        EditorActions.RotateSectors(_editor.SelectedRoom, new Rectangle(pos.X, pos.Y, pos.X, pos.Y), isFloor);
+                                        EditorActions.RotateSectors(_editor.SelectedRoom, new SharpDX.Rectangle(pos.X, pos.Y, pos.X, pos.Y), belongsToFloor);
                                         return;
                                     }
 
@@ -734,9 +736,18 @@ namespace TombEditor.Controls
         {
             base.OnMouseDoubleClick(e);
 
-            PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
-            if (newPicking is PickingResultObject)
-                EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
+            switch(e.Button)
+            {
+                case MouseButtons.Left:
+                    PickingResult newPicking = DoPicking(GetRay(e.X, e.Y));
+                    if (newPicking is PickingResultObject)
+                        EditorActions.EditObject(((PickingResultObject)newPicking).ObjectInstance, this.Parent);
+                    break;
+
+                case MouseButtons.Right:
+                    _editor.ResetCamera();
+                    break;
+            }
         }
 
         protected override void OnMouseEnter(EventArgs e)
@@ -819,6 +830,82 @@ namespace TombEditor.Controls
                 Invalidate();
             Capture = false;
             Invalidate();
+        }
+
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            base.OnDragEnter(e);
+
+            if (e.Data.GetDataPresent(typeof(ItemType)))
+                e.Effect = DragDropEffects.Copy;
+            else if (EditorActions.DragDropFileSupported(e, true))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            base.OnDragDrop(e);
+
+            // Check if we are done with all common file tasks
+            var filesToProcess = EditorActions.DragDropCommonFiles(e, FindForm());
+            if (filesToProcess == 0)
+                return;
+
+            // Now try to put data on pointed sector
+            Point loc = PointToClient(new Point(e.X, e.Y));
+            PickingResult newPicking = DoPicking(GetRay(loc.X, loc.Y));
+
+            if (newPicking is PickingResultBlock)
+            {
+                var newBlockPicking = (PickingResultBlock)newPicking;
+
+                // Disallow dropping objects and geometry on non-floor faces
+                if (!newBlockPicking.IsFloorHorizontalPlane)
+                    return;
+
+                if (e.Data.GetDataPresent(typeof(ItemType)))
+                {
+                    // Put item from object browser
+                    EditorActions.PlaceObject(_editor.SelectedRoom,
+                        newBlockPicking.Pos,
+                        ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
+                }
+                else if(filesToProcess != -1)
+                {
+                    // Try to put custom geometry files, if any
+                    List<string> files = ((string[])e.Data.GetData(DataFormats.FileDrop)).ToList();
+
+                    foreach(var file in files)
+                    {
+                        if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file))
+                            continue;
+
+                        var info = ImportedGeometryInfo.Default;
+                        info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        info.Name = Path.GetFileNameWithoutExtension(file);
+
+                        var instance = new ImportedGeometryInstance();
+                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
+
+                        if(geometryToDrop == null)
+                        {
+                            geometryToDrop = new ImportedGeometry();
+                            _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
+                            _editor.Level.Settings.ImportedGeometries.Add(geometryToDrop);
+                            _editor.LoadedImportedGeometriesChange();
+                        }
+
+                        instance.Model = geometryToDrop;
+
+                        EditorActions.PlaceObject(_editor.SelectedRoom,
+                            newBlockPicking.Pos, instance);
+
+                        _editor.ObjectChange(instance);
+                    }
+                }
+            }
         }
 
         private static float TransformRayDistance(ref Ray sourceRay, ref Matrix transform, ref Ray destinationRay, float sourceDistance)
@@ -1767,6 +1854,7 @@ namespace TombEditor.Controls
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
 
             for (int i = 0; i < skinnedModel.Meshes.Count; i++)
             {
@@ -1998,17 +2086,8 @@ namespace TombEditor.Controls
                                     BlendMode = faceTexture.BlendMode
                                 };
 
-                                // calcolo il piano passante per la faccia
-
-                                // calcolo il centro della faccia
-                                Vector3 center = Vector3.Zero;
-                                var vertexRange = room.GetFaceVertexRange(x, z, face);
-                                for (int j = 0; j < vertexRange.Count; j++)
-                                    center += room.GetRoomVertices()[j].Position;
-                                center /= vertexRange.Count;
-
-                                // calcolo la distanza
-                                bucket.Distance = (center - cameraPosition).Length();
+                                // Get the distance of the face from the camera
+                                bucket.Distance = GetFaceDistance(x, z, room, face, cameraPosition);
 
                                 // aggiungo la struttura alla lista
                                 _transparentBuckets.Add(bucket);
@@ -2023,6 +2102,16 @@ namespace TombEditor.Controls
             _invisibleBuckets.Sort(comparer);
 
             Parallel.ForEach(_opaqueBuckets, PrepareIndexBuffer);
+        }
+
+        private float GetFaceDistance(int x, int z, Room room, BlockFace face, Vector3 cameraPosition)
+        {
+            Vector3 center = Vector3.Zero;
+            var vertexRange = room.GetFaceVertexRange(x, z, face);
+            for (int j = 0; j < vertexRange.Count; j++)
+                center += room.GetRoomVertices()[j].Position;
+            center /= vertexRange.Count;
+            return (center - cameraPosition).Length();
         }
 
         private void PrepareIndexBuffer(RoomRenderBucket item)
@@ -2222,7 +2311,7 @@ namespace TombEditor.Controls
             float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = { "+Z (North)", "-Z (South)", "-X (East)", "+X (West)" };
+            string[] messages = { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
             Vector3[] positions = new Vector3[4];
 
             Vector3 center = _editor.SelectedRoom.GetLocalCenter();
@@ -2269,9 +2358,20 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    bool lights = (room != _editor.SelectedRoom ||
-                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));
-                    _roomEffect.Parameters["UseVertexColors"].SetValue(lights);
+                    _roomEffect.Parameters["UseVertexColors"].SetValue(_editor.Mode == EditorMode.Lighting);
+
+                    // Set blend mode
+                    if (_lastBucket == null || _lastBucket.BlendMode != bucket.BlendMode)
+                    {
+                        if (bucket.BlendMode == BlendMode.Normal)
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+                        else if (bucket.BlendMode == BlendMode.Additive)
+                            _device.SetBlendState(_device.BlendStates.Additive);
+                        else if (bucket.BlendMode == BlendMode.AlphaTest)
+                            _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                        else
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+                    }
 
                     _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }

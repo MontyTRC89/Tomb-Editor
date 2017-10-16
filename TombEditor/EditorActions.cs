@@ -11,8 +11,10 @@ using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
 using TombLib.Utils;
 using DarkUI.Forms;
-using TombLib.Graphics;
+using TombLib.IO;
 using System.IO;
+using Assimp;
+using SharpDX.Toolkit.Graphics;
 
 namespace TombEditor
 {
@@ -560,6 +562,7 @@ namespace TombEditor
 
                             break;
                     }
+                    room.Blocks[x, z].FixHeights(verticalSubdivision);
                 }
 
             SmartBuildGeometry(room, area);
@@ -788,12 +791,6 @@ namespace TombEditor
 
         public static void DeleteObjectWithWarning(ObjectInstance instance, IWin32Window owner)
         {
-            if (instance.Room.Flipped && (instance is PortalInstance))
-            {
-                DarkMessageBox.Show(owner, "You can't delete portals of a flipped room currently. :(", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
             if (DarkMessageBox.Show(owner, "Do you really want to delete " + instance.ToString() + "?",
                     "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
@@ -804,6 +801,7 @@ namespace TombEditor
         public static void DeleteObject(ObjectInstance instance)
         {
             Room room = instance.Room;
+            Room adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
             room.RemoveObject(_editor.Level, instance);
 
             // Additional updates
@@ -811,6 +809,13 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
                 room.UpdateCompletely();
+            if (instance is PortalInstance)
+            {
+                room?.UpdateCompletely();
+                adjoiningRoom?.UpdateCompletely();
+                room?.AlternateVersion?.UpdateCompletely();
+                adjoiningRoom?.AlternateVersion?.UpdateCompletely();
+            }
 
             // Remove triggers pointing to that object
             foreach (var r in _editor.Level.Rooms)
@@ -985,24 +990,16 @@ namespace TombEditor
         public static void DeleteRoom(Room room, IWin32Window owner)
         {
             // Check if is the last room
-            int roomCount = _editor.Level.Rooms.Count(r => r != null);
-            if (roomCount <= 1)
+            int remainingRoomCount = _editor.Level.Rooms.Count(r => (r != null) && (r != room) && (r != room.AlternateVersion));
+            if (remainingRoomCount <= 0)
             {
                 DarkMessageBox.Show(owner, "You must have at least one room in your level", "Error", MessageBoxIcon.Error);
                 return;
             }
 
-            // Check if room has portals
-            int portalCount = room.Portals.Count();
-            if (portalCount != 0)
-            {
-                DarkMessageBox.Show(owner, "You can't delete a room with portals to other rooms.", "Error", MessageBoxIcon.Error);
-                return;
-            }
-
             // Ask for confirmation
             if (DarkMessageBox.Show(owner,
-                    "Do you really want to delete this room? All objects inside room will be deleted and " +
+                    "Do you really want to delete this room? All objects (including portals) inside room will be deleted and " +
                     "triggers pointing to them will be removed.",
                     "Delete room", MessageBoxButtons.YesNo, MessageBoxIcon.Error) != DialogResult.Yes)
             {
@@ -1053,6 +1050,10 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
+                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Floor))
+                        continue;
+
                     // Now try to guess the floor split
                     short maxHeight = -32767;
                     byte theCorner = 0;
@@ -1086,6 +1087,8 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[1] = maxHeight;
                         room.Blocks[x, z].QAFaces[3] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
                     }
 
                     if (theCorner == 1)
@@ -1093,6 +1096,8 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[0] = maxHeight;
                         room.Blocks[x, z].QAFaces[2] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
                     }
 
                     if (theCorner == 2)
@@ -1100,6 +1105,8 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[1] = maxHeight;
                         room.Blocks[x, z].QAFaces[3] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
                     }
 
                     if (theCorner == 3)
@@ -1107,7 +1114,11 @@ namespace TombEditor
                         room.Blocks[x, z].QAFaces[0] = maxHeight;
                         room.Blocks[x, z].QAFaces[2] = maxHeight;
                         room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
                     }
+
+                    room.Blocks[x, z].FixHeights();
                 }
 
             SmartBuildGeometry(room, area);
@@ -1118,6 +1129,10 @@ namespace TombEditor
             for (int x = area.X; x <= area.Right; x++)
                 for (int z = area.Y; z <= area.Bottom; z++)
                 {
+                    if (room.Blocks[x, z].Type == BlockType.BorderWall ||
+                        room.Blocks[x, z].Portals.ToList().Exists(item => item.Direction == PortalDirection.Ceiling))
+                        continue;
+
                     // Now try to guess the floor split
                     short minHeight = 32767;
                     byte theCorner = 0;
@@ -1151,6 +1166,8 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[1] = minHeight;
                         room.Blocks[x, z].WSFaces[3] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZp;
                     }
 
                     if (theCorner == 1)
@@ -1158,6 +1175,8 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[0] = minHeight;
                         room.Blocks[x, z].WSFaces[2] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZp;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZp;
                     }
 
                     if (theCorner == 2)
@@ -1165,6 +1184,8 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[1] = minHeight;
                         room.Blocks[x, z].WSFaces[3] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XpZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XpZn;
                     }
 
                     if (theCorner == 3)
@@ -1172,7 +1193,11 @@ namespace TombEditor
                         room.Blocks[x, z].WSFaces[0] = minHeight;
                         room.Blocks[x, z].WSFaces[2] = minHeight;
                         room.Blocks[x, z].CeilingDiagonalSplit = DiagonalSplit.XnZn;
+                        if (room.Blocks[x, z].Type == BlockType.Wall && room.Blocks[x, z].FloorDiagonalSplit != DiagonalSplit.None)
+                            room.Blocks[x, z].FloorDiagonalSplit = DiagonalSplit.XnZn;
                     }
+
+                    room.Blocks[x, z].FixHeights();
                 }
 
             SmartBuildGeometry(room, area);
@@ -1337,6 +1362,8 @@ namespace TombEditor
                 block.RFFaces[2] = swapFace[2];
                 block.RFFaces[3] = swapFace[3];
             }
+
+            block.FixHeights(floor ? 1 : 0);
         }
 
         public static void RotateSectors(Room room, Rectangle area, bool floor)
@@ -1424,10 +1451,6 @@ namespace TombEditor
 
         public static void AddPortal(Room room, Rectangle area, IWin32Window owner)
         {
-            // Check if it's a flip room
-            if (room.Flipped)
-                throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
-
             // Check for possible candidates ...
             VerticalSpace? verticalSpaceLocal = room.GetHeightInAreaMaxSpace(new Rectangle(area.X, area.Y, area.Right + 1, area.Bottom + 1));
 
@@ -1444,7 +1467,7 @@ namespace TombEditor
 
                 foreach (Room neighborRoom in _editor.Level.Rooms.Where(possibleNeighborRoom => possibleNeighborRoom != null))
                 {
-                    if (neighborRoom == room)
+                    if ((neighborRoom == room) || (neighborRoom == room.AlternateVersion))
                         continue;
                     Rectangle neighborArea = area.Offset(room.SectorPos).OffsetNeg(neighborRoom.SectorPos);
                     if (!new Rectangle(0, 0, neighborRoom.NumXSectors - 1, neighborRoom.NumZSectors - 1).Contains(neighborArea))
@@ -1499,19 +1522,15 @@ namespace TombEditor
 
             PortalDirection destinationDirection = candidates[0].Item1;
             Room destination = candidates[0].Item2;
-            if (destination.Flipped)
-                throw new NotSupportedException("Unfortunately we don't support adding portals to flipped rooms currently. :(");
 
             // Create portals
-            PortalInstance portal = new PortalInstance(area, destinationDirection, destination);
-            PortalInstance oppositePortal = room.AddBidirectionalPortalsToLevel(_editor.Level, portal);
+            var portals = room.AddObject(_editor.Level, new PortalInstance(area, destinationDirection, destination)).Cast<PortalInstance>();
 
             // Update
-            room.UpdateCompletely();
-            destination.UpdateCompletely();
-
-            _editor.ObjectChange(portal);
-            _editor.ObjectChange(oppositePortal);
+            foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
+                portalRoom.UpdateCompletely();
+            foreach (PortalInstance portal in portals)
+                _editor.ObjectChange(portal);
 
             _editor.RoomSectorPropertiesChange(room);
             _editor.RoomSectorPropertiesChange(destination);
@@ -1531,21 +1550,16 @@ namespace TombEditor
             // Update room alternate groups
             room.AlternateGroup = AlternateGroup;
             room.AlternateRoom = newRoom;
-            _editor.RoomPropertiesChange(room);
-
             newRoom.AlternateGroup = AlternateGroup;
             newRoom.AlternateBaseRoom = room;
+
+            _editor.RoomPropertiesChange(room);
             _editor.RoomPropertiesChange(newRoom);
         }
 
         public static void AlternateRoomDisableWithWarning(Room room, IWin32Window owner)
         {
-            // Check if room has portals
-            if (room.Portals.Count() > 0)
-            {
-                DarkMessageBox.Show(owner, "You can't delete a room with portals to other rooms.", "Error", MessageBoxIcon.Error);
-                return;
-            }
+            room = room.AlternateBaseRoom ?? room;
 
             // Ask for confirmation
             if (DarkMessageBox.Show(owner, "Do you really want to delete the flip room?",
@@ -1554,13 +1568,17 @@ namespace TombEditor
                 return;
             }
 
-            _editor.Level.DeleteRoom(room.AlternateRoom);
-            _editor.RoomListChange();
+            // Change room selection if necessary
+            if (_editor.SelectedRoom == room.AlternateRoom)
+                _editor.SelectedRoom = room;
 
+            // Delete alternate room
+            _editor.Level.DeleteAlternateRoom(room.AlternateRoom);
             room.AlternateRoom = null;
             room.AlternateGroup = -1;
-            _editor.RoomPropertiesChange(room);
 
+            _editor.RoomListChange();
+            _editor.RoomPropertiesChange(room);
         }
 
         public static void SmoothRandomFloor(Room room, Rectangle area, float strengthDirection)
@@ -1767,6 +1785,7 @@ namespace TombEditor
         public static void CopyRoom(IWin32Window owner)
         {
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
+            newRoom.Name = _editor.SelectedRoom.Name + " (copy)";
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.SelectedRoom = newRoom;
@@ -1856,6 +1875,63 @@ namespace TombEditor
             _editor.Action = new EditorAction { Action = EditorActionType.Stamp };
         }
 
+        public static bool DragDropFileSupported(DragEventArgs e, bool allow3DImport = false)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                int fileCount = files.Count();
+
+                foreach (var file in files)
+                    if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file) ||
+                        SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file) ||
+                        (allow3DImport && SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file)) ||
+                        file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase) ||
+                        file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                        return true;
+            }
+
+            return false;
+        }
+
+        public static int DragDropCommonFiles(DragEventArgs e, IWin32Window owner)
+        {
+            int unsupportedFileCount = 0;
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (var file in files)
+                {
+                    if (SupportedFormats.IsExtensionPresent(FileFormatType.Object, file))
+                    {
+                        _editor.Level.Settings.WadFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        _editor.Level.ReloadWad();
+                        _editor.LoadedWadsChange(_editor.Level.Wad);
+                    }
+                    else if (SupportedFormats.IsExtensionPresent(FileFormatType.Texture, file))
+                    {
+                        _editor.Level.Settings.TextureFilePath = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                        _editor.LoadedTexturesChange();
+                    }
+                    else if (file.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        OpenLevelPrj(owner, file);
+                    }
+                    else if (file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        OpenLevel(owner, file);
+                    }
+                    else
+                        unsupportedFileCount++;
+                }
+                return unsupportedFileCount;
+            }
+            else
+                return -1;
+        }
+
         public static void ShowTextureSoundsDialog(IWin32Window owner)
         {
             using (var form = new FormTextureSounds(_editor, _editor.Level.Settings))
@@ -1913,66 +1989,138 @@ namespace TombEditor
             }
         }
 
-        public static void OpenLevel(IWin32Window owner)
+        /*public static void ExportCurrentRoom(IWin32Window owner)
+        {
+            // Ask for the file to save
+            string _fileName = "";
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "Export current room";
+                saveFileDialog.Filter = "Wavefront OBJ (*.obj)|*.obj";
+                if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+                _fileName = saveFileDialog.FileName;
+            }
+
+            // Initialize Assimp
+            var context = new AssimpContext();
+            var scene = new Scene();
+            var mesh = new Mesh(Assimp.PrimitiveType.Triangle);
+
+            // Pointer to the selected room
+            var room = _editor.SelectedRoom;
+
+            // Now build the Assimp mesh
+            var editorRoomVertices = room.GetRoomVertices();
+            for (int z = 0; z < room.NumZSectors; ++z)
+                for (int x = 0; x < room.NumXSectors; ++x)
+                    for (BlockFace face = 0; face < Block.FaceCount; ++face)
+                    {
+                        var range = room.GetFaceVertexRange(x, z, face);
+                        if (range.Count == 0)
+                            continue;
+
+                        TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
+                        if (texture.TextureIsInvisble)
+                            continue;
+
+                        for (int i = range.Start; i < (range.Start + range.Count); i += 3)
+                        {
+                            mesh.Vertices.Add(new Vector3D(editorRoomVertices[i].Position.X,
+                                                           editorRoomVertices[i].Position.Y,
+                                                           editorRoomVertices[i].Position.Z));
+                            mesh.VertexColorChannels[0].Add(new Color4D(editorRoomVertices[i].FaceColor.X,
+                                                                        editorRoomVertices[i].FaceColor.Y,
+                                                                        editorRoomVertices[i].FaceColor.Z));
+                            mesh.TextureCoordinateChannels[0].Add(new Vector3D(editorRoomVertices[i].UV.X / 2048.0f,
+                                                                               editorRoomVertices[i].UV.Y / 2048.0f,
+                                                                               0.0f));
+                            mesh.Faces.Add(new Face(new int[] { i, i + 1, i + 2 }));
+                        }
+                    }
+
+            atlas.Save(File.OpenWrite(_fileName + ".png"), ImageFileType.Png);
+
+            var material = new Material();
+            material.TextureDiffuse = new TextureSlot(_fileName + ".png", TextureType.Diffuse, 0, TextureMapping.FromUV, 0,
+                                                      1.0f, TextureOperation.Add, TextureWrapMode.Clamp, TextureWrapMode.Clamp, 0);
+            scene.Materials.Add(material);
+            mesh.MaterialIndex = 0;
+
+            scene.Meshes.Add(mesh);
+            context.ExportFile(scene, _fileName, "obj", PostProcessSteps.Triangulate |
+                                                        PostProcessSteps.OptimizeMeshes |
+                                                        PostProcessSteps.GenerateSmoothNormals);
+        }*/
+
+        public static void OpenLevel(IWin32Window owner, string fileName = null)
         {
             if (DarkMessageBox.Show(owner,
                 "Your level will be lost. Do you really want to open another level file?",
                 "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Title = "Open Tomb Editor level";
-                openFileDialog.Filter = "Tomb Editor level (*.prj2)|*.prj2|All files (*.*)|*.*";
-                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
-                    return;
+            string _fileName = fileName;
 
-                // Load level
-                Level newLevel = null;
-                try
+            if(_fileName == null)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    newLevel = Prj2Loader.LoadFromPrj2(openFileDialog.FileName, new ProgressReporterSimple(owner));
+                    openFileDialog.Title = "Open Tomb Editor level";
+                    openFileDialog.Filter = "Tomb Editor level (*.prj2)|*.prj2|All files (*.*)|*.*";
+                    if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                        return;
+
+                    _fileName = openFileDialog.FileName;
                 }
-                catch (Exception exc)
-                {
-                    logger.Error(exc, "Unable to open \"" + openFileDialog.FileName + "\"");
-                    DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
-                }
-                _editor.Level = newLevel;
+
+            Level newLevel = null;
+            try
+            {
+                newLevel = Prj2Loader.LoadFromPrj2(_fileName, new ProgressReporterSimple(owner));
             }
+            catch (Exception exc)
+            {
+                logger.Error(exc, "Unable to open \"" + _fileName + "\"");
+                DarkMessageBox.Show(owner, "There was an error while opening project file. File may be in use or may be corrupted. Exception: " + exc.Message, "Error", MessageBoxIcon.Error);
+            }
+            _editor.Level = newLevel;
         }
 
-        public static void OpenLevelPrj(IWin32Window owner)
+        public static void OpenLevelPrj(IWin32Window owner, string fileName = null)
         {
             if (DarkMessageBox.Show(owner,
                     "Your level will be lost. Do you really want to open another level file?",
                     "Open level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Title = "Open Tomb Editor level";
-                openFileDialog.Filter = "Winroomedit level (*.prj)|*.prj|All files (*.*)|*.*";
-                if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
-                    return;
+            string _fileName = fileName;
 
-                // Load level
-                Level newLevel = null;
-                try
+            if (_fileName == null)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
-                        newLevel = PrjLoader.LoadFromPrj(openFileDialog.FileName, progressReporter)))
-                    {
-                        if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
-                            return;
-                        _editor.Level = newLevel;
-                        newLevel = null;
-                    }
+                    openFileDialog.Title = "Open Tomb Editor level";
+                    openFileDialog.Filter = "Winroomedit level (*.prj)|*.prj|All files (*.*)|*.*";
+                    if (openFileDialog.ShowDialog(owner) != DialogResult.OK)
+                        return;
+
+                    _fileName = openFileDialog.FileName;
                 }
-                finally
+
+            Level newLevel = null;
+            try
+            {
+                using (var form = new FormOperationDialog("Import PRJ", false, (progressReporter) =>
+                    newLevel = PrjLoader.LoadFromPrj(_fileName, progressReporter)))
                 {
-                    newLevel?.Dispose();
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return;
+                    _editor.Level = newLevel;
+                    newLevel = null;
                 }
+            }
+            finally
+            {
+                newLevel?.Dispose();
             }
         }
 

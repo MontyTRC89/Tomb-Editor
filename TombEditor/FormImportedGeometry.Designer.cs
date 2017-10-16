@@ -90,7 +90,7 @@
             // 
             this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(221, 410);
+            this.darkLabel2.Location = new System.Drawing.Point(221, 411);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(144, 17);
             this.darkLabel2.TabIndex = 2;
@@ -102,7 +102,7 @@
             this.butAssign.Location = new System.Drawing.Point(23, 407);
             this.butAssign.Name = "butAssign";
             this.butAssign.Padding = new System.Windows.Forms.Padding(5);
-            this.butAssign.Size = new System.Drawing.Size(185, 20);
+            this.butAssign.Size = new System.Drawing.Size(185, 22);
             this.butAssign.TabIndex = 1;
             this.butAssign.Text = "Assign";
             this.butAssign.Click += new System.EventHandler(this.butAssign_Click);
@@ -112,7 +112,7 @@
             this.importedGeometryLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.importedGeometryLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importedGeometryLabel.Location = new System.Drawing.Point(371, 410);
+            this.importedGeometryLabel.Location = new System.Drawing.Point(371, 411);
             this.importedGeometryLabel.Name = "importedGeometryLabel";
             this.importedGeometryLabel.Size = new System.Drawing.Size(365, 17);
             this.importedGeometryLabel.TabIndex = 2;
@@ -144,6 +144,7 @@
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butAssign);
             this.Controls.Add(this.importedGeometryManager);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
             this.Name = "FormImportedGeometry";
             this.ShowIcon = false;

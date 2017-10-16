@@ -112,8 +112,9 @@ namespace TombEditor.Controls
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-
+            
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
+
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
             if ((_editor.ChosenItem == null) || (_editor?.Level?.Wad == null))
@@ -202,7 +203,7 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_editor?.Level?.Settings?.WadFilePath == null)
+            if (string.IsNullOrEmpty(_editor?.Level.Settings.WadFilePath))
             {
                 e.Graphics.Clear(Parent.BackColor);
                 e.Graphics.DrawString("Click here to load WAD.",
@@ -227,17 +228,31 @@ namespace TombEditor.Controls
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            if (_editor?.Level?.Settings?.WadFilePath == null)
+
+            switch(e.Button)
             {
-                EditorActions.LoadWad(Parent);
-                return;
+                case MouseButtons.Left:
+                    if (_editor?.Level?.Settings?.WadFilePath == null)
+                    {
+                        EditorActions.LoadWad(Parent);
+                        return;
+                    }
+                    else
+                        if (_editor.ChosenItem != null)
+                            DoDragDrop(_editor.ChosenItem, DragDropEffects.Copy);
+                    break;
+
+                case MouseButtons.Right:
+                    //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
+                    Capture = true; // Capture mouse for zoom and panning
+
+                    _lastX = e.X;
+                    _lastY = e.Y;
+                    break;
+
+                default:
+                    break;
             }
-
-            _lastX = e.X;
-            _lastY = e.Y;
-
-            //https://stackoverflow.com/questions/14191219/receive-mouse-move-even-cursor-is-outside-control
-            Capture = true; // Capture mouse for zoom and panning
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

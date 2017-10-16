@@ -216,22 +216,5 @@ namespace TombLib.Wad
                 sprite.DirectXTexture = TextureLoad.Load(GraphicsDevice, sprite.Image);
             }
         }
-
-        // Lets remove this methode once we use UVs internally in the Wad representation.
-        // Until then this converts the deprecated format to UVs that the new texture manager in the *.tr4 export understands.
-        public TextureArea GetTextureArea(WadPolygon poly)
-        {
-            TextureArea result = new TextureArea();
-            result.Texture = poly.Texture;
-            result.BlendMode = poly.Transparent ? BlendMode.Additive : BlendMode.Normal;
-            result.DoubleSided = false; // TODO isn't this flag also available in wads?
-
-            result.TexCoord0 = poly.UV[0];
-            result.TexCoord1 = poly.UV[1];
-            result.TexCoord2 = poly.UV[2];
-            if (poly.Shape == WadPolygonShape.Rectangle) result.TexCoord3 = poly.UV[3];
-
-            return result;
-        }
     }
 }

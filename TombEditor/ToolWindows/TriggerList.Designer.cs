@@ -45,7 +45,7 @@
             this.butAddTrigger.Name = "butAddTrigger";
             this.butAddTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butAddTrigger.Size = new System.Drawing.Size(24, 24);
-            this.butAddTrigger.TabIndex = 56;
+            this.butAddTrigger.TabIndex = 1;
             this.toolTip.SetToolTip(this.butAddTrigger, "Add trigger");
             this.butAddTrigger.Click += new System.EventHandler(this.butAddTrigger_Click);
             // 
@@ -56,7 +56,7 @@
             this.butEditTrigger.Name = "butEditTrigger";
             this.butEditTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butEditTrigger.Size = new System.Drawing.Size(24, 24);
-            this.butEditTrigger.TabIndex = 53;
+            this.butEditTrigger.TabIndex = 2;
             this.toolTip.SetToolTip(this.butEditTrigger, "Edit selected trigger");
             this.butEditTrigger.Click += new System.EventHandler(this.butEditTrigger_Click);
             // 
@@ -67,7 +67,7 @@
             this.butDeleteTrigger.Name = "butDeleteTrigger";
             this.butDeleteTrigger.Padding = new System.Windows.Forms.Padding(5);
             this.butDeleteTrigger.Size = new System.Drawing.Size(24, 24);
-            this.butDeleteTrigger.TabIndex = 52;
+            this.butDeleteTrigger.TabIndex = 3;
             this.toolTip.SetToolTip(this.butDeleteTrigger, "Delete trigger");
             this.butDeleteTrigger.Click += new System.EventHandler(this.butDeleteTrigger_Click);
             // 
@@ -94,7 +94,7 @@
             this.lstTriggers.Location = new System.Drawing.Point(2, 2);
             this.lstTriggers.Name = "lstTriggers";
             this.lstTriggers.Size = new System.Drawing.Size(280, 114);
-            this.lstTriggers.TabIndex = 56;
+            this.lstTriggers.TabIndex = 0;
             this.lstTriggers.SelectedIndexChanged += new System.EventHandler(this.lstTriggers_SelectedIndexChanged);
             this.lstTriggers.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstTriggers_MouseDoubleClick);
             // 

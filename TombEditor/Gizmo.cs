@@ -36,7 +36,7 @@ namespace TombEditor
 
         protected override void GizmoRotateX(float newAngle)
         {
-            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, (float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
+            EditorActions.RotateObject(_editor.SelectedObject, EditorActions.RotationAxis.X, -(float)(newAngle * (180 / Math.PI)), RotationQuanization, false);
         }
 
         protected override void GizmoRotateZ(float newAngle)
@@ -52,7 +52,7 @@ namespace TombEditor
 
         protected override Vector3 Position => ((PositionBasedObjectInstance)_editor.SelectedObject).Position + _editor.SelectedObject.Room.WorldPos;
         protected override float RotationY => (float)(((IRotateableY)_editor.SelectedObject).RotationY * (Math.PI / 180));
-        protected override float RotationX => (float)(((IRotateableYX)_editor.SelectedObject).RotationX * (Math.PI / 180));
+        protected override float RotationX => (float)(((IRotateableYX)_editor.SelectedObject).RotationX * -(Math.PI / 180));
         protected override float RotationZ => (float)(((IRotateableYXRoll)_editor.SelectedObject).Roll * (Math.PI / 180));
         protected override float Scale => ((IScaleable)_editor.SelectedObject).Scale;
 

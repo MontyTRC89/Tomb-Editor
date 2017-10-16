@@ -88,7 +88,9 @@ namespace TombLib.Wad
             {
                 foreach (var poly in mesh.Polys)
                 {
-                    if (!texturesToCheck.Contains(poly.Texture) && poly.Texture != null) texturesToCheck.Add(poly.Texture);
+                    var wadTexture = poly.Texture.Texture as WadTexture;
+                    if ((wadTexture != null) && !texturesToCheck.Contains(poly.Texture.Texture))
+                        texturesToCheck.Add(wadTexture);
                 }
             }
 
@@ -106,7 +108,7 @@ namespace TombLib.Wad
                     {
                         foreach (var poly in moveableMesh.Polys)
                         {
-                            if (poly.Texture == texture)
+                            if (poly.Texture.Texture == texture)
                             {
                                 foundInMoveables = true;
                                 break;
@@ -128,7 +130,7 @@ namespace TombLib.Wad
 
                     foreach (var poly in staticMesh.Mesh.Polys)
                     {
-                        if (poly.Texture == texture)
+                        if (poly.Texture.Texture == texture)
                         {
                             foundInStatics = true;
                             break;
@@ -210,7 +212,7 @@ namespace TombLib.Wad
                     if (!isFound) waves.Add(foundWave);
                 }
 
-                // Fourth, identify which sound infos are not used 
+                // Fourth, identify which sound infos are not used
                 foreach (var foundSoundInfo in tempSounds)
                 {
                     bool isFound = false;
@@ -325,10 +327,16 @@ namespace TombLib.Wad
             {
                 foreach (var poly in mesh.Polys)
                 {
-                    if (Textures.ContainsKey(poly.Texture.Hash))
-                        poly.Texture = Textures[poly.Texture.Hash];
-                    else
-                        Textures.Add(poly.Texture.Hash, poly.Texture);
+                    var wadTexture = poly.Texture.Texture as WadTexture;
+                    if (wadTexture != null)
+                        if (Textures.ContainsKey(wadTexture.Hash))
+                        {
+                            var textureArea = poly.Texture;
+                            textureArea.Texture = Textures[wadTexture.Hash];
+                            poly.Texture = textureArea;
+                        }
+                        else
+                            Textures.Add(wadTexture.Hash, wadTexture);
                 }
 
                 mesh.UpdateHash();
@@ -722,7 +730,8 @@ namespace TombLib.Wad
                 {
                     foreach (var poly in mesh.Value.Polys)
                     {
-                        if (poly.Texture != null && poly.Texture.Hash == texture.Key)
+                        var wadTexture = poly.Texture.Texture as WadTexture;
+                        if (wadTexture != null && wadTexture.Hash == texture.Key)
                         {
                             found = true;
                             break;
@@ -885,11 +894,12 @@ namespace TombLib.Wad
                     poly.Indices.Add(lastBaseVertex + face.Indices[1]);
                     poly.Indices.Add(lastBaseVertex + face.Indices[2]);
 
-                    poly.UV.Add(uv[face.Indices[0]]);
-                    poly.UV.Add(uv[face.Indices[1]]);
-                    poly.UV.Add(uv[face.Indices[2]]);
-
-                    poly.Texture = faceTexture;
+                    TextureArea textureArea = new TextureArea();
+                    textureArea.TexCoord0 = uv[face.Indices[0]];
+                    textureArea.TexCoord1 = uv[face.Indices[1]];
+                    textureArea.TexCoord2 = uv[face.Indices[2]];
+                    textureArea.Texture = faceTexture;
+                    poly.Texture = textureArea;
 
                     newMesh.Polys.Add(poly);
                 }

@@ -243,46 +243,29 @@ namespace TombLib.Wad
                     {
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
-                            if (id3 == Wad2Chunks.MeshRectangle)
+                            if ((id3 == Wad2Chunks.MeshQuad) ||
+                                (id3 == Wad2Chunks.MeshTriangle))
                             {
-                                var rectangle = new WadPolygon(WadPolygonShape.Rectangle);
-                                rectangle.Transparent = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                                rectangle.Attributes = LEB128.ReadByte(chunkIO.Raw);
-                                rectangle.ShineStrength = LEB128.ReadByte(chunkIO.Raw);
-                                rectangle.Texture = wad.Textures.ElementAt(LEB128.ReadInt(chunkIO.Raw)).Value;
-                                rectangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                rectangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                rectangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                rectangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                chunkIO.ReadChunks((id4, chunkSize4) =>
-                                {
-                                    if (id4 == Wad2Chunks.MeshPolygonTexCoord)
-                                        rectangle.UV.Add(chunkIO.ReadChunkVector2(chunkSize4));
-                                    else
-                                        return false;
-                                    return true;
-                                });
-                                mesh.Polys.Add(rectangle);
-                            }
-                            else if (id3 == Wad2Chunks.MeshTriangle)
-                            {
-                                var triangle = new WadPolygon(WadPolygonShape.Triangle);
-                                triangle.Transparent = (LEB128.ReadByte(chunkIO.Raw) == 1);
-                                triangle.Attributes = LEB128.ReadByte(chunkIO.Raw);
-                                triangle.ShineStrength = LEB128.ReadByte(chunkIO.Raw);
-                                triangle.Texture = wad.Textures.ElementAt(LEB128.ReadInt(chunkIO.Raw)).Value;
-                                triangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                triangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                triangle.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
-                                chunkIO.ReadChunks((id4, chunkSize4) =>
-                                {
-                                    if (id4 == Wad2Chunks.MeshPolygonTexCoord)
-                                        triangle.UV.Add(chunkIO.ReadChunkVector2(chunkSize4));
-                                    else
-                                        return false;
-                                    return true;
-                                });
-                                mesh.Polys.Add(triangle);
+                                var polygon = new WadPolygon(WadPolygonShape.Quad);
+                                polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
+                                polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
+                                polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
+                                if (id3 == Wad2Chunks.MeshQuad)
+                                    polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
+                                polygon.ShineStrength = LEB128.ReadByte(chunkIO.Raw);
+
+                                TextureArea textureArea = new TextureArea();
+                                textureArea.Texture = wad.Textures.ElementAt(LEB128.ReadInt(chunkIO.Raw)).Value;
+                                textureArea.TexCoord0 = chunkIO.Raw.ReadVector2();
+                                textureArea.TexCoord1 = chunkIO.Raw.ReadVector2();
+                                textureArea.TexCoord2 = chunkIO.Raw.ReadVector2();
+                                if (id3 == Wad2Chunks.MeshQuad)
+                                    textureArea.TexCoord3 = chunkIO.Raw.ReadVector2();
+                                textureArea.BlendMode = (BlendMode)LEB128.ReadLong(chunkIO.Raw);
+                                textureArea.DoubleSided = chunkIO.Raw.ReadBoolean();
+                                polygon.Texture = textureArea;
+
+                                mesh.Polys.Add(polygon);
                             }
                             else
                             {

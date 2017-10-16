@@ -6,6 +6,7 @@ using SharpDX.Toolkit.Graphics;
 using TombEditor.Compilers;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using TombLib.Utils;
+using System.Threading.Tasks;
 
 namespace TombEditor.Geometry
 {
@@ -81,8 +82,8 @@ namespace TombEditor.Geometry
                 throw new ArgumentOutOfRangeException("area", area, "Provided area for resizing the room is too small. The area must span at least 3 sectors in X and Z dimension.");
 
             // Remove sector based objects if there are any
-            var sector_objects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
-            foreach (var instance in sector_objects)
+            var sectorObjects = Blocks != null ? SectorObjects.ToList() : new List<SectorBasedObjectInstance>();
+            foreach (var instance in sectorObjects)
                 RemoveObject(level, instance);
 
             // Build new blocks
@@ -115,7 +116,7 @@ namespace TombEditor.Geometry
 
             // Add sector based objects again
             Rectangle newArea = new Rectangle(offset.X, offset.Y, offset.X + numXSectors - 1, offset.Y + numZSectors - 1);
-            foreach (var instance in sector_objects)
+            foreach (var instance in sectorObjects)
                 AddObjectCutSectors(level, newArea, instance);
 
             // Update state
@@ -134,7 +135,7 @@ namespace TombEditor.Geometry
             if ((area.X == 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom < (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(area.X, area.Bottom - 1, area.Right, NumZSectors - 1));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(area.X + 1, 0, area.Right - 1, 0), PortalDirection.WallNegativeZ, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(area.X + 1, 0, area.Right - 1, 0), PortalDirection.WallNegativeZ, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -146,7 +147,7 @@ namespace TombEditor.Geometry
             else if ((area.X == 0) && (area.Y == 0) && (area.Right < (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(area.Right - 1, area.Y, NumXSectors - 1, area.Bottom));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(0, area.Y + 1, 0, area.Bottom - 1), PortalDirection.WallNegativeX, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(0, area.Y + 1, 0, area.Bottom - 1), PortalDirection.WallNegativeX, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -158,7 +159,7 @@ namespace TombEditor.Geometry
             else if ((area.X == 0) && (area.Y > 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(area.X, 0, area.Right, area.Y + 1));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(area.X + 1, NumZSectors - 1, area.Right - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(area.X + 1, NumZSectors - 1, area.Right - 1, NumZSectors - 1), PortalDirection.WallPositiveZ, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -170,7 +171,7 @@ namespace TombEditor.Geometry
             else if ((area.X > 0) && (area.Y == 0) && (area.Right == (NumXSectors - 1)) && (area.Bottom == (NumZSectors - 1)))
             {
                 Resize(level, new Rectangle(0, area.Y, area.X + 1, area.Bottom));
-                AddBidirectionalPortalsToLevel(level, new PortalInstance(new Rectangle(NumXSectors - 1, area.Y + 1, NumXSectors - 1, area.Bottom - 1), PortalDirection.WallPositiveX, newRoom));
+                AddObject(level, new PortalInstance(new Rectangle(NumXSectors - 1, area.Y + 1, NumXSectors - 1, area.Bottom - 1), PortalDirection.WallPositiveX, newRoom));
 
                 // Move objects
                 foreach (PortalInstance portal in portals)
@@ -206,6 +207,7 @@ namespace TombEditor.Geometry
             var result = (Room)MemberwiseClone();
             result.AlternateBaseRoom = null;
             result.AlternateRoom = null;
+            result.AlternateGroup = -1;
 
             result._sectorVertices = new List<EditorVertex>[NumXSectors, NumZSectors];
             for (int x = 0; x < NumXSectors; x++)
@@ -224,9 +226,9 @@ namespace TombEditor.Geometry
 
             // Copy objects
             result._objects = new List<PositionBasedObjectInstance>();
-            foreach (var instance in _objects)
+            foreach (var instance in AnyObjects)
                 if (decideToCopy(instance))
-                    result.AddObject(level, instance.Clone());
+                    result.AddObjectAndSingularPortal(level, instance.Clone());
 
             result.UpdateCompletely();
             return result;
@@ -238,6 +240,7 @@ namespace TombEditor.Geometry
         }
 
         public bool Flipped => (AlternateRoom != null) || (AlternateBaseRoom != null);
+        public Room AlternateVersion => AlternateRoom ?? AlternateBaseRoom;
         public DrawingPoint SectorSize => new DrawingPoint(NumXSectors, NumZSectors);
         public Rectangle WorldArea => new Rectangle((int)Position.X, (int)Position.Z, (int)Position.X + NumXSectors - 1, (int)Position.Z + NumZSectors - 1);
         public Rectangle LocalArea => new Rectangle(0, 0, NumXSectors - 1, NumZSectors - 1);
@@ -828,6 +831,55 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
 
+                    // Try to adjust illegal combinations of heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
+                    }
+
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
+                    {
+                        eA = qA;
+                        eB = qB;
+                    }
+
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
+                    {
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
+                    }
+
                     // Fix heights only for border walls
                     if (z == 0)
                     {
@@ -870,10 +922,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[1] = (short)qA;
+                        /*Blocks[x, z].QAFaces[1] = (short)qA;
                         Blocks[x, z].QAFaces[0] = (short)qB;
                         Blocks[x, z].WSFaces[1] = (short)wA;
-                        Blocks[x, z].WSFaces[0] = (short)wB;
+                        Blocks[x, z].WSFaces[0] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -881,13 +933,13 @@ namespace TombEditor.Geometry
                         if (Blocks[x, 1].WSFaces[2] < Blocks[x, z].QAFaces[1])
                         {
                             qA = Blocks[x, 1].WSFaces[2];
-                            Blocks[x, z].QAFaces[1] = (short)qA;
+                            //Blocks[x, z].QAFaces[1] = (short)qA;
                         }
 
                         if (Blocks[x, 1].WSFaces[3] < Blocks[x, z].QAFaces[0])
                         {
                             qB = Blocks[x, 1].WSFaces[3];
-                            Blocks[x, z].QAFaces[0] = (short)qB;
+                            //Blocks[x, z].QAFaces[0] = (short)qB;
                         }
                     }
 
@@ -965,6 +1017,55 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
+                    // Try to adjust illegal combinations of heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
+                    }
+
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
+                    {
+                        eA = qA;
+                        eB = qB;
+                    }
+
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
+                    {
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
+                    }
+
                     // Fix heights only for border walls
                     if (z == NumZSectors - 1)
                     {
@@ -1006,10 +1107,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[3] = (short)qA;
+                       /* Blocks[x, z].QAFaces[3] = (short)qA;
                         Blocks[x, z].QAFaces[2] = (short)qB;
                         Blocks[x, z].WSFaces[3] = (short)wA;
-                        Blocks[x, z].WSFaces[2] = (short)wB;
+                        Blocks[x, z].WSFaces[2] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1017,13 +1118,13 @@ namespace TombEditor.Geometry
                         if (Blocks[x, NumZSectors - 2].WSFaces[0] < Blocks[x, z].QAFaces[3])
                         {
                             qA = Blocks[x, NumZSectors - 2].WSFaces[0];
-                            Blocks[x, z].QAFaces[3] = (short)qA;
+                            //Blocks[x, z].QAFaces[3] = (short)qA;
                         }
 
                         if (Blocks[x, NumZSectors - 2].WSFaces[1] < Blocks[x, z].QAFaces[2])
                         {
                             qB = Blocks[x, NumZSectors - 2].WSFaces[1];
-                            Blocks[x, z].QAFaces[2] = (short)qB;
+                            //Blocks[x, z].QAFaces[2] = (short)qB;
                         }
                     }
 
@@ -1101,6 +1202,55 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
 
+                    // Try to adjust illegal combinations of heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
+                    }
+
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
+                    {
+                        eA = qA;
+                        eB = qB;
+                    }
+
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
+                    {
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
+                    }
+
                     // Fix heights only for border walls
                     if (x == 0)
                     {
@@ -1142,10 +1292,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[2] = (short)qA;
+                        /*Blocks[x, z].QAFaces[2] = (short)qA;
                         Blocks[x, z].QAFaces[1] = (short)qB;
                         Blocks[x, z].WSFaces[2] = (short)wA;
-                        Blocks[x, z].WSFaces[1] = (short)wB;
+                        Blocks[x, z].WSFaces[1] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1153,13 +1303,13 @@ namespace TombEditor.Geometry
                         if (Blocks[1, z].WSFaces[3] < Blocks[x, z].QAFaces[2])
                         {
                             qA = Blocks[1, z].WSFaces[3];
-                            Blocks[x, z].QAFaces[2] = (short)qA;
+                            //Blocks[x, z].QAFaces[2] = (short)qA;
                         }
 
                         if (Blocks[1, z].WSFaces[0] < Blocks[x, z].QAFaces[1])
                         {
                             qB = Blocks[1, z].WSFaces[0];
-                            Blocks[x, z].QAFaces[1] = (short)qB;
+                            //Blocks[x, z].QAFaces[1] = (short)qB;
                         }
                     }
 
@@ -1435,6 +1585,55 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
 
+                    // Try to adjust illegal combinations of heights
+                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    {
+                        qA = fA;
+                        qB = fB;
+                    }
+
+                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    {
+                        qA = cA;
+                        qB = cB;
+                    }
+
+                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    {
+                        wA = cA;
+                        wB = cB;
+                    }
+
+                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    {
+                        wA = fA;
+                        wB = fB;
+                    }
+
+                    if (eA < qA && eB > qB || eA > qA && eB < qB)
+                    {
+                        eA = qA;
+                        eB = qB;
+                    }
+
+                    if (eA < cA && eB > cB || eA > cA && eB < cB)
+                    {
+                        eA = cA;
+                        eB = cB;
+                    }
+
+                    if (rA < wA && rB > wB || rA > wA && rB < wB)
+                    {
+                        rA = wA;
+                        rB = wB;
+                    }
+
+                    if (rA < fA && rB > fB || rA > fA && rB < fB)
+                    {
+                        rA = fA;
+                        rB = fB;
+                    }
+
                     // Fix heights only for border walls
                     if (x == NumXSectors - 1)
                     {
@@ -1477,10 +1676,10 @@ namespace TombEditor.Geometry
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
 
-                        Blocks[x, z].QAFaces[3] = (short)qA;
+                        /*Blocks[x, z].QAFaces[3] = (short)qA;
                         Blocks[x, z].QAFaces[0] = (short)qB;
                         Blocks[x, z].WSFaces[3] = (short)wA;
-                        Blocks[x, z].WSFaces[0] = (short)wB;
+                        Blocks[x, z].WSFaces[0] = (short)wB;*/
                     }
 
                     if (Blocks[x, z].Type == BlockType.BorderWall)
@@ -1488,13 +1687,13 @@ namespace TombEditor.Geometry
                         if (Blocks[NumXSectors - 2, z].WSFaces[1] < Blocks[x, z].QAFaces[0])
                         {
                             qA = Blocks[NumXSectors - 2, z].WSFaces[1];
-                            Blocks[x, z].QAFaces[0] = (short)qA;
+                            //Blocks[x, z].QAFaces[0] = (short)qA;
                         }
 
                         if (Blocks[NumXSectors - 2, z].WSFaces[2] < Blocks[x, z].QAFaces[3])
                         {
                             qB = Blocks[NumXSectors - 2, z].WSFaces[2];
-                            Blocks[x, z].QAFaces[3] = (short)qB;
+                            //Blocks[x, z].QAFaces[3] = (short)qB;
                         }
                     }
 
@@ -1568,25 +1767,28 @@ namespace TombEditor.Geometry
                 face = Blocks[x, z].GetFaceTexture(qaFace);
 
                 // QA
-                if (qA > yA && qB > yB)
-                    AddRectangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                else if (qA == yA && qB > yB)
-                    AddTriangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
-                else if (qA > yA && qB == yB)
-                    AddTriangle(x, z, qaFace,
-                        new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
-                        new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                        new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                        face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                if (qA <= cA || qB <= cB)
+                {
+                    if (qA > yA && qB > yB)
+                        AddRectangle(x, z, qaFace,
+                            new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                    else if (qA == yA && qB > yB)
+                        AddTriangle(x, z, qaFace,
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, qB * 256.0f, zB * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                    else if (qA > yA && qB == yB)
+                        AddTriangle(x, z, qaFace,
+                            new Vector3(xA * 1024.0f, qA * 256.0f, zA * 1024.0f),
+                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                }
 
                 // ED
                 if (subdivide)
@@ -1614,7 +1816,7 @@ namespace TombEditor.Geometry
                             new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
                             new Vector3(xB * 1024.0f, eB * 256.0f, zB * 1024.0f),
                             new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f),  false);
+                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
                 }
             }
 
@@ -1639,25 +1841,28 @@ namespace TombEditor.Geometry
                     face = Blocks[x, z].GetFaceTexture(wsFace);
 
                     // WS
-                    if (wA < yA && wB < yB)
-                        AddRectangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
-                    else if (wA < yA && wB == yB)
-                        AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
-                            face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
-                    else if (wA == yA && wB < yB)
-                        AddTriangle(x, z, wsFace,
-                            new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
-                            new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
-                            new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
-                            face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                    if (wA >= fA || wB >= fB)
+                    {
+                        if (wA < yA && wB < yB)
+                            AddRectangle(x, z, wsFace,
+                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                                new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                                face, new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), new Vector2(1.0f, 1.0f), new Vector2(0.0f, 1.0f));
+                        else if (wA < yA && wB == yB)
+                            AddTriangle(x, z, wsFace,
+                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xA * 1024.0f, wA * 256.0f, zA * 1024.0f),
+                                face, new Vector2(0.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), true);
+                        else if (wA == yA && wB < yB)
+                            AddTriangle(x, z, wsFace,
+                                new Vector3(xA * 1024.0f, yA * 256.0f, zA * 1024.0f),
+                                new Vector3(xB * 1024.0f, yB * 256.0f, zB * 1024.0f),
+                                new Vector3(xB * 1024.0f, wB * 256.0f, zB * 1024.0f),
+                                face, new Vector2(1.0f, 1.0f), new Vector2(0.0f, 0.0f), new Vector2(1.0f, 0.0f), false);
+                    }
 
                     // RF
                     if (subdivide)
@@ -2542,14 +2747,11 @@ namespace TombEditor.Geometry
             Rectangle instanceNewArea = instance.Area.Intersect(instanceNewAreaConstraint).OffsetNeg(new DrawingPoint(newArea.X, newArea.Y));
 
             // Add object
-            if (instance is PortalInstance)
-                AddBidirectionalPortalsToLevel(level, (PortalInstance)instance.Clone(instanceNewArea));
-            else
-                AddObject(level, instance.Clone(instanceNewArea));
+            AddObject(level, instance.Clone(instanceNewArea));
             return true;
         }
 
-        public void AddObject(Level level, ObjectInstance instance)
+        public ObjectInstance AddObjectAndSingularPortal(Level level, ObjectInstance instance)
         {
             if (instance is PositionBasedObjectInstance)
                 _objects.Add((PositionBasedObjectInstance)instance);
@@ -2563,6 +2765,71 @@ namespace TombEditor.Geometry
                     _objects.Remove((PositionBasedObjectInstance)instance);
                 throw;
             }
+            return instance;
+        }
+
+        public void RemoveObjectAndSingularPortal(Level level, ObjectInstance instance)
+        {
+            instance.RemoveFromRoom(level, this);
+            if (instance is PositionBasedObjectInstance)
+                _objects.Remove((PositionBasedObjectInstance)instance);
+        }
+
+        public IEnumerable<ObjectInstance> AddObject(Level level, ObjectInstance instance)
+        {
+            // Add portals and opposite portals
+            var portal = instance as PortalInstance;
+            if (portal != null)
+            {
+                Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
+                var oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
+
+                // Add portals
+                var addedObjects = new List<ObjectInstance>();
+                try
+                {
+                    addedObjects.Add(AddObjectAndSingularPortal(level, portal));
+                    if (AlternateVersion != null)
+                        addedObjects.Add(AlternateVersion.AddObjectAndSingularPortal(level, portal.Clone()));
+
+                    addedObjects.Add(portal.AdjoiningRoom.AddObjectAndSingularPortal(level, oppositePortal));
+                    if (AlternateVersion != null)
+                        addedObjects.Add(portal.AdjoiningRoom.AlternateVersion.AddObjectAndSingularPortal(level, oppositePortal.Clone()));
+                }
+                catch
+                {
+                    foreach (ObjectInstance instanceToRemove in addedObjects)
+                        instanceToRemove.Room.RemoveObjectAndSingularPortal(level, instanceToRemove);
+                    throw;
+                }
+                return addedObjects;
+            }
+
+            // Add normal object
+            AddObjectAndSingularPortal(level, instance);
+            return new ObjectInstance[] { instance };
+        }
+
+        public void RemoveObject(Level level, ObjectInstance instance)
+        {
+            RemoveObjectAndSingularPortal(level, instance);
+
+            // Delete the corresponding other portals if necessary.
+            var portal = instance as PortalInstance;
+            if (portal != null)
+            {
+                var alternatePortal = portal.FindAlternatePortal(this?.AlternateVersion);
+                if (alternatePortal != null)
+                    AlternateVersion.RemoveObjectAndSingularPortal(level, alternatePortal);
+
+                var oppositePortal = portal.FindOppositePortal(this);
+                if (oppositePortal != null)
+                    portal.AdjoiningRoom.RemoveObjectAndSingularPortal(level, oppositePortal);
+
+                var oppositeAlternatePortal = oppositePortal?.FindAlternatePortal(portal.AdjoiningRoom?.AlternateVersion);
+                if (oppositeAlternatePortal != null)
+                    oppositeAlternatePortal.Room.RemoveObjectAndSingularPortal(level, oppositeAlternatePortal);
+            }
         }
 
         public void MoveObjectFrom(Level level, Room from, PositionBasedObjectInstance instance)
@@ -2570,35 +2837,6 @@ namespace TombEditor.Geometry
             from.RemoveObject(level, instance);
             instance.Position += from.WorldPos - WorldPos;
             AddObject(level, instance);
-        }
-
-        public void RemoveObject(Level level, ObjectInstance instance)
-        {
-            instance.RemoveFromRoom(level, this);
-            if (instance is PositionBasedObjectInstance)
-                _objects.Remove((PositionBasedObjectInstance)instance);
-        }
-
-        public PortalInstance AddBidirectionalPortalsToLevel(Level level, PortalInstance portal)
-        {
-            Rectangle oppositeArea = PortalInstance.GetOppositePortalArea(portal.Direction, portal.Area).Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-            PortalInstance oppositePortal = new PortalInstance(oppositeArea, PortalInstance.GetOppositeDirection(portal.Direction), this);
-
-            AddObject(level, portal);
-            try
-            {
-                portal.AdjoiningRoom.AddObject(level, oppositePortal);
-            }
-            catch
-            {
-                RemoveObject(level, portal);
-                throw;
-            }
-
-            UpdateCompletely();
-            portal.AdjoiningRoom.UpdateCompletely();
-
-            return oppositePortal;
         }
 
         public enum RoomConnectionType
@@ -2610,6 +2848,14 @@ namespace TombEditor.Geometry
             TriangularPortalXpZp,
             FullPortal
         };
+
+        public static RoomConnectionType Combine(RoomConnectionType first, RoomConnectionType second)
+        {
+            if (first == second || first == RoomConnectionType.FullPortal)
+                return second;
+            else
+                return RoomConnectionType.NoPortal;
+        }
 
         public struct RoomConnectionInfo
         {
@@ -2628,7 +2874,44 @@ namespace TombEditor.Geometry
             public RoomConnectionType TraversableType => (Portal?.IsTraversable ?? false) ? AnyType : RoomConnectionType.NoPortal;
         };
 
-        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
+        public static IEnumerable<KeyValuePair<Room, Room>> GetPossibleAlternateRoomPairs(Room firstRoom, Room secondRoom, bool lookingFromSecond = false)
+        {
+            if (firstRoom.AlternateVersion == null)
+            {
+                if (secondRoom.AlternateVersion == null)
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                else
+                {
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateVersion);
+                }
+            }
+            else
+            {
+                if (secondRoom.AlternateVersion == null)
+                {
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom);
+                }
+                else if (firstRoom.AlternateGroup == secondRoom.AlternateGroup)
+                {
+                    bool isAlternateCurrently = lookingFromSecond ? (secondRoom.AlternateBaseRoom != null) : (firstRoom.AlternateBaseRoom != null);
+                    if (isAlternateCurrently)
+                        yield return new KeyValuePair<Room, Room>(firstRoom.AlternateRoom ?? firstRoom, secondRoom.AlternateRoom ?? secondRoom);
+                    else
+                        yield return new KeyValuePair<Room, Room>(firstRoom.AlternateBaseRoom ?? firstRoom, secondRoom.AlternateBaseRoom ?? secondRoom);
+                }
+                else
+                {
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom);
+                    yield return new KeyValuePair<Room, Room>(firstRoom, secondRoom.AlternateVersion);
+                    yield return new KeyValuePair<Room, Room>(firstRoom.AlternateVersion, secondRoom.AlternateVersion);
+                }
+            }
+        }
+
+        public static RoomConnectionType CalculateRoomConnectionTypeWithoutAlternates(Room roomBelow, Room roomAbove, Block blockBelow, Block blockAbove)
         {
             // Evaluate force floor solid
             if (blockAbove.ForceFloorSolid)
@@ -2678,6 +2961,17 @@ namespace TombEditor.Geometry
             return RoomConnectionType.NoPortal;
         }
 
+        public static RoomConnectionType CalculateRoomConnectionType(Room roomBelow, Room roomAbove, DrawingPoint posBelow, DrawingPoint posAbove, bool lookingFromAbove)
+        {
+            // Checkout all possible alternate room combinations and combine the results
+            RoomConnectionType result = RoomConnectionType.FullPortal;
+            foreach (var roomPair in GetPossibleAlternateRoomPairs(roomBelow, roomAbove, lookingFromAbove))
+                result = Combine(result,
+                    CalculateRoomConnectionTypeWithoutAlternates(roomPair.Key, roomPair.Value,
+                        roomPair.Key.GetBlock(posBelow), roomPair.Value.GetBlock(posAbove)));
+            return result;
+        }
+
         public RoomConnectionInfo GetFloorRoomConnectionInfo(DrawingPoint pos)
         {
             Block block = GetBlock(pos);
@@ -2687,7 +2981,7 @@ namespace TombEditor.Geometry
                 DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
                 if (adjoiningBlock.CeilingPortal != null)
-                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningBlock, block));
+                    return new RoomConnectionInfo(block.FloorPortal, CalculateRoomConnectionType(adjoiningRoom, this, adjoiningPos, pos, true));
             }
             return new RoomConnectionInfo();
         }
@@ -2701,7 +2995,7 @@ namespace TombEditor.Geometry
                 DrawingPoint adjoiningPos = pos.Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
                 Block adjoiningBlock = adjoiningRoom.GetBlock(adjoiningPos);
                 if (adjoiningBlock.FloorPortal != null)
-                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, block, adjoiningBlock));
+                    return new RoomConnectionInfo(block.CeilingPortal, CalculateRoomConnectionType(this, adjoiningRoom, pos, adjoiningPos, false));
             }
             return new RoomConnectionInfo();
         }
@@ -2709,12 +3003,10 @@ namespace TombEditor.Geometry
         public void SmartBuildGeometry(Rectangle area)
         {
             area = area.Inflate(1); // Add margin
-            BuildGeometry(area);
-            CalculateLightingForThisRoom();
-            UpdateBuffers();
 
             // Update adjoining rooms
-            HashSet<Room> roomsProcessed = new HashSet<Room>();
+            var roomsToProcess = new List<Room> { this };
+            var areaToProcess = new List<Rectangle> { area };
             List<PortalInstance> listOfPortals = Portals.ToList();
             foreach (var portal in listOfPortals)
             {
@@ -2724,16 +3016,41 @@ namespace TombEditor.Geometry
                 Rectangle portalArea = portal.Area.Intersect(area);
                 Rectangle otherRoomPortalArea = PortalInstance.GetOppositePortalArea(portal.Direction, portalArea)
                     .Offset(SectorPos).OffsetNeg(portal.AdjoiningRoom.SectorPos);
-                portal.AdjoiningRoom.BuildGeometry(otherRoomPortalArea);
-                roomsProcessed.Add(portal.AdjoiningRoom);
-            }
 
-            // Update lighting in room that were updated geometrically
-            foreach (var adjoiningRoom in roomsProcessed)
-            {
-                adjoiningRoom.CalculateLightingForThisRoom();
-                adjoiningRoom.UpdateBuffers();
+                // Find all related rooms or alternate rooms around the portals
+                foreach (var roomPairs in GetPossibleAlternateRoomPairs(this, portal.AdjoiningRoom))
+                {
+                    // Add itself if necessary
+                    int thisRoomIndex = roomsToProcess.IndexOf(roomPairs.Key);
+                    if (thisRoomIndex == -1)
+                    {
+                        roomsToProcess.Add(roomPairs.Key);
+                        areaToProcess.Add(area);
+                    }
+                    else
+                        areaToProcess[thisRoomIndex] = areaToProcess[thisRoomIndex].Union(area);
+
+                    // Add other if necessary
+                    int adjoiningRoomIndex = roomsToProcess.IndexOf(roomPairs.Value);
+                    if (adjoiningRoomIndex == -1)
+                    {
+                        roomsToProcess.Add(roomPairs.Value);
+                        areaToProcess.Add(otherRoomPortalArea);
+                    }
+                    else
+                        areaToProcess[adjoiningRoomIndex] = areaToProcess[adjoiningRoomIndex].Union(otherRoomPortalArea);
+                }
             }
+            System.Diagnostics.Debug.Assert(roomsToProcess.Count == areaToProcess.Count);
+
+            // Update the collected stuff now
+            Parallel.For(0, roomsToProcess.Count, (index) =>
+                {
+                    roomsToProcess[index].BuildGeometry(areaToProcess[index]);
+                    roomsToProcess[index].CalculateLightingForThisRoom();
+                });
+            foreach (var room in roomsToProcess)
+                room.UpdateBuffers();
         }
     }
 

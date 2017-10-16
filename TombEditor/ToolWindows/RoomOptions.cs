@@ -57,7 +57,7 @@ namespace TombEditor.ToolWindows
             }
 
             // Update the room property controls
-            if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent) ||
+            if ((obj is InitEvent) || (obj is Editor.SelectedRoomChangedEvent) || (obj is Editor.LevelChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
                 Room room = _editor.SelectedRoom;
@@ -87,7 +87,6 @@ namespace TombEditor.ToolWindows
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
 
-                comboFlipMap.Enabled = !(room.Flipped && (room.AlternateRoom == null));
                 comboFlipMap.SelectedIndex = room.Flipped ? (room.AlternateGroup + 1) : 0;
             }
         }
@@ -111,31 +110,38 @@ namespace TombEditor.ToolWindows
                 return;
 
             var room = _editor.SelectedRoom;
+            short alternateGroupIndex = (short)(comboFlipMap.SelectedIndex - 1);
 
-            // Delete flipped room
-            if (comboFlipMap.SelectedIndex == 0 && room.Flipped)
+            if (room.Flipped)
             {
-                EditorActions.AlternateRoomDisableWithWarning(room, this);
-                return;
+                if (alternateGroupIndex == -1)
+                { // Delete flipped room
+                    EditorActions.AlternateRoomDisableWithWarning(room, this);
+                }
+                else
+                { // Change flipped map number, not much to do here
+                    if ((room.AlternateGroup != alternateGroupIndex) &&
+                        (room.AlternateVersion.AlternateGroup != alternateGroupIndex))
+                    {
+
+                        room.AlternateGroup = alternateGroupIndex;
+                        room.AlternateVersion.AlternateGroup = alternateGroupIndex;
+                        _editor.RoomPropertiesChange(room);
+                        _editor.RoomPropertiesChange(room.AlternateVersion);
+                    }
+                }
+            }
+            else
+            {
+                if (alternateGroupIndex != -1)
+                {// Create a new flipped room
+                    EditorActions.AlternateRoomEnable(room, alternateGroupIndex);
+                }
             }
 
-            // Change flipped map number, not much to do here
-            if (comboFlipMap.SelectedIndex != 0 && room.Flipped)
-            {
-                if (room.AlternateGroup == (comboFlipMap.SelectedIndex - 1))
-                    return;
-
-                room.AlternateGroup = (short)(comboFlipMap.SelectedIndex - 1);
-                _editor.RoomPropertiesChange(room);
-                return;
-            }
-
-            // Create a new flipped room
-            if (comboFlipMap.SelectedIndex != 0 && !room.Flipped)
-            {
-                EditorActions.AlternateRoomEnable(room, (short)(comboFlipMap.SelectedIndex - 1));
-                return;
-            }
+            // Update combo box even if nothing changed internally
+            // to correct invalid user input
+            EditorEventRaised(new Editor.RoomPropertiesChangedEvent { Room = room });
         }
 
         private void cbFlagDamage_CheckedChanged(object sender, EventArgs e)

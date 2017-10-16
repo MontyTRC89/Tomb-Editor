@@ -13,6 +13,7 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -252,10 +253,6 @@ namespace TombEditor
 
             switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
             {
-                case Keys.M: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
-                    _pressedZorY = true;
-                    break;
-
                 case Keys.Escape: // End any action
                     _editor.Action = EditorAction.None;
                     _editor.SelectedSectors = SectorSelection.None;
@@ -417,6 +414,9 @@ namespace TombEditor
                     break;
 
                 case Keys.Y:
+                    // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
+                    _pressedZorY = true;
+
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
@@ -825,7 +825,7 @@ namespace TombEditor
                 EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
         }
 
-        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void editSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
                 EditorActions.EditObject(_editor.SelectedObject, this);
@@ -1030,6 +1030,27 @@ namespace TombEditor
         private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NGTriggersDefinitions.LoadTriggers(File.OpenRead("NG\\NG_Constants.txt"));
+        }
+
+        protected override void OnDragEnter(DragEventArgs e)
+        {
+            base.OnDragEnter(e);
+
+            if (EditorActions.DragDropFileSupported(e))
+                e.Effect = DragDropEffects.Move;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            base.OnDragDrop(e);
+            EditorActions.DragDropCommonFiles(e, this);
+        }
+
+        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
         }
     }
 }
