@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using TombLib.IO;
 using TombLib.Wad;
 using TombLib.Wad.Tr4Wad;
+using TombLib.Wad.TrLevels;
 
 namespace WadTool
 {
@@ -598,6 +599,12 @@ namespace WadTool
 
                 UpdateDestinationWad2UI();
             }
+        }
+
+        private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var level = new TrLevel();
+            level.LoadLevel("E:\\Andrea1.trc");
         }
     }
 }
