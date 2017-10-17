@@ -261,22 +261,22 @@ namespace TombEditor
 
                 case Keys.F1: // 2D map mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.Map2D;
+                        EditorActions.SwitchMode(EditorMode.Map2D);
                     break;
 
                 case Keys.F2: // 3D geometry mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.Geometry;
+                        EditorActions.SwitchMode(EditorMode.Geometry);
                     break;
 
                 case Keys.F3: // 3D face texturing mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.FaceEdit;
+                        EditorActions.SwitchMode(EditorMode.FaceEdit);
                     break;
 
                 case Keys.F4: // 3D lighting mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.Lighting;
+                        EditorActions.SwitchMode(EditorMode.Lighting);
                     break;
 
                 case Keys.F6: // Reset 3D camera

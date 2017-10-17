@@ -32,7 +32,7 @@ namespace TombEditor.ToolWindows
             panel3D.InitializePanel(_deviceManager);
 
             // Update 3D view
-            but3D_Click(null, null);
+            EditorActions.SwitchMode(EditorMode.Geometry);
         }
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
@@ -66,13 +66,6 @@ namespace TombEditor.ToolWindows
                 ObjectInstance selectedObject = _editor.SelectedObject;
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
-            }
-            if (obj is Editor.SelectedSectorsChangedEvent)
-            {
-                bool validSectorSelection = _editor.SelectedSectors.Valid;
-                butTextureFloor.Enabled = validSectorSelection;
-                butTextureCeiling.Enabled = validSectorSelection;
-                butTextureWalls.Enabled = validSectorSelection;
             }
             if (obj is Editor.ModeChangedEvent)
             {
@@ -127,26 +120,22 @@ namespace TombEditor.ToolWindows
 
         private void but3D_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.Geometry;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.Geometry);
         }
 
         private void but2D_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.Map2D;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.Map2D);
         }
 
         private void butFaceEdit_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.FaceEdit;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.FaceEdit);
         }
 
         private void butLightingMode_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.Lighting;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.Lighting);
         }
 
         private void butCenterCamera_Click(object sender, EventArgs e)
@@ -285,6 +274,11 @@ namespace TombEditor.ToolWindows
         private void butStamp_Click(object sender, EventArgs e)
         {
             EditorActions.Clone(this.ParentForm);
+        }
+
+        private void butAddImportedGeometry_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
         }
     }
 }

@@ -2148,5 +2148,11 @@ namespace TombEditor
             foreach (Room room in roomsToMove)
                 _editor.RoomGeometryChange(room);
         }
+
+        public static void SwitchMode(EditorMode mode)
+        {
+            _editor.Mode = mode;
+            _editor.Action = EditorAction.None;
+        }
     }
 }
