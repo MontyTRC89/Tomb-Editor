@@ -175,6 +175,126 @@ namespace TombLib.Wad.TrLevels
                         // Floordata
                         var numFloorData = levelReader.ReadUInt32();
                         levelReader.ReadBytes((int)numFloorData * 2);
+
+                        var numMeshData = levelReader.ReadUInt32();
+                        var numMeshes = 0;
+                        var numBytes = 0;
+                        var totalBytes = 0;
+                        var l = 0;
+                        var temp = 0;
+
+                        _meshes = new List<tr_mesh>();
+
+                        while (totalBytes < (numMeshData * 2))
+                        {
+                            long offset1 = levelReader.BaseStream.Position;
+
+                            var mesh = new tr_mesh();
+
+                            mesh.Center = new tr_vertex(levelReader.ReadInt16(), levelReader.ReadInt16(), levelReader.ReadInt16());
+                            mesh.Radius = levelReader.ReadInt32();
+                            numBytes += 10;
+
+                            var numVertices = levelReader.ReadUInt16();
+                            levelReader.ReadBlockArray(out mesh.Vertices,numVertices);
+                            numBytes += 2 + 6 * numVertices;
+
+                            var numNormals = levelReader.ReadInt16();
+                            if (numNormals > 0)
+                            {
+                                levelReader.ReadBlockArray(out mesh.Normals, numNormals);
+                                numBytes += 2 + 6 * numNormals;
+                            }
+                            else
+                            {
+                                levelReader.ReadBlockArray(out mesh.Lights, -numNormals);
+                                numBytes += 2 - 2 * numNormals;
+                            }
+
+                            var numTexturedRectangles = 0;
+                            var numColoredRectangles = 0;
+                            var numTexturedTriangles = 0;
+                            var numColoredTriangles = 0;
+
+                            numTexturedRectangles = levelReader.ReadUInt16();
+                            mesh.TexturedQuads = new tr_face4[numTexturedRectangles];
+                            for (int i = 0; i < numTexturedRectangles; i++)
+                            {
+                                var poly = new tr_face4();
+                                poly.Vertices = new ushort[4];
+                                for (int j = 0; j < 4; j++)
+                                    poly.Vertices[j] = levelReader.ReadUInt16();
+                                if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
+                                    poly.LightingEffect = levelReader.ReadUInt16();
+                                mesh.TexturedQuads[i] = poly;
+                            }
+
+                            numTexturedTriangles = levelReader.ReadUInt16();
+                            mesh.TexturedTriangles = new tr_face3[numTexturedTriangles];
+                            for (int i = 0; i < numTexturedTriangles; i++)
+                            {
+                                var poly = new tr_face3();
+                                poly.Vertices = new ushort[3];
+                                for (int j = 0; j < 3; j++)
+                                    poly.Vertices[j] = levelReader.ReadUInt16();
+                                if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
+                                    poly.LightingEffect = levelReader.ReadUInt16();
+                                mesh.TexturedTriangles[i] = poly;
+                            }
+
+                            if (_version == TrVersion.TR1 || _version == TrVersion.TR2 || _version == TrVersion.TR3)
+                            {
+                                numColoredRectangles = levelReader.ReadUInt16();
+                                mesh.ColoredRectangles = new tr_face4[numColoredRectangles];
+                                for (int i = 0; i < numColoredRectangles; i++)
+                                {
+                                    var poly = new tr_face4();
+                                    poly.Vertices = new ushort[4];
+                                    for (int j = 0; j < 4; j++)
+                                        poly.Vertices[j] = levelReader.ReadUInt16();
+                                    mesh.ColoredRectangles[i] = poly;
+                                }
+
+                                numColoredTriangles = levelReader.ReadUInt16();
+                                mesh.ColoredTriangles = new tr_face3[numColoredTriangles];
+                                for (int i = 0; i < numColoredTriangles; i++)
+                                {
+                                    var poly = new tr_face3();
+                                    poly.Vertices = new ushort[3];
+                                    for (int j = 0; j < 3; j++)
+                                        poly.Vertices[j] = levelReader.ReadUInt16();
+                                    mesh.ColoredTriangles[i] = poly;
+                                }
+                            }
+
+                            if (_version == TrVersion.TR1 || _version == TrVersion.TR2 || _version == TrVersion.TR3)
+                            {
+                                numBytes += 2 + numTexturedRectangles * 10;
+                                numBytes += 2 + numTexturedTriangles * 8;
+                                numBytes += 2 + numColoredRectangles * 10;
+                                numBytes += 2 + numColoredTriangles * 8;
+                            }
+                            else
+                            {
+                                numBytes += 2 + numTexturedRectangles * 12;
+                                numBytes += 2 + numTexturedTriangles * 10;
+                            }
+                            
+                            long offset2 = levelReader.BaseStream.Position;
+                            int diff = (int)(offset2 - offset1);
+                            if (diff % 4 != 0)
+                            { levelReader.ReadBlock(out temp); diff += 2; }
+
+                            mesh.MeshSize = numBytes;
+                            mesh.MeshPointer = totalBytes;
+
+                            totalBytes += diff;
+                            numBytes = 0;
+                            l++;
+
+                            _meshes.Add(mesh);
+                        }
+
                     }
                 }
             }

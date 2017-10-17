@@ -56,18 +56,20 @@
             this.butAddNewWave = new DarkUI.Controls.DarkButton();
             this.butDeleteWave = new DarkUI.Controls.DarkButton();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
+            this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.darkStatusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
             // 
-            this.darkStatusStrip1.AutoSize = false;
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 504);
+            this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelStatus});
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 503);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(576, 24);
-            this.darkStatusStrip1.SizingGrip = false;
+            this.darkStatusStrip1.Size = new System.Drawing.Size(576, 32);
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -365,11 +367,16 @@
             this.butPlaySound.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butPlaySound.Click += new System.EventHandler(this.butPlaySound_Click);
             // 
+            // labelStatus
+            // 
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(0, 19);
+            // 
             // FormSoundEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(576, 528);
+            this.ClientSize = new System.Drawing.Size(576, 535);
             this.Controls.Add(this.butPlaySound);
             this.Controls.Add(this.butAddNewWave);
             this.Controls.Add(this.butDeleteWave);
@@ -404,6 +411,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sound editor";
             this.Load += new System.EventHandler(this.FormSoundEditor_Load);
+            this.darkStatusStrip1.ResumeLayout(false);
+            this.darkStatusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -438,5 +447,6 @@
         private DarkUI.Controls.DarkButton butAddNewWave;
         private DarkUI.Controls.DarkButton butDeleteWave;
         private DarkUI.Controls.DarkButton butPlaySound;
+        private System.Windows.Forms.ToolStripStatusLabel labelStatus;
     }
 }
