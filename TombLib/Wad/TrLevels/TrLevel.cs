@@ -36,6 +36,7 @@ namespace TombLib.Wad.TrLevels
             using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
                 _version = (TrVersion)reader.ReadUInt32();
+                if (_version == TrVersion.TR4 && fileName.ToLower().Trim().EndsWith(".trc")) _version = TrVersion.TR5;
 
                 var palette8 = new tr_color[256];
                 var palette16 = new tr_color4[256];
@@ -81,7 +82,7 @@ namespace TombLib.Wad.TrLevels
                     compressedSize = reader.ReadUInt32();
                     reader.ReadBytes((int)compressedSize);
 
-                    // Misx textures (not needed?)
+                    // Misc textures (not needed?)
                     uncompressedSize = reader.ReadUInt32();
                     compressedSize = reader.ReadUInt32();
                     reader.ReadBytes((int)compressedSize);
@@ -101,6 +102,8 @@ namespace TombLib.Wad.TrLevels
                 }
                 else
                 {
+                    reader.ReadBytes(32);
+
                     var uncompressedSize = reader.ReadUInt32();
                     var compressedSize = reader.ReadUInt32();
                     levelData = reader.ReadBytes((int)compressedSize);
@@ -111,8 +114,8 @@ namespace TombLib.Wad.TrLevels
                 {
                     using (var levelReader = new BinaryReaderEx(stream))
                     {
-                        var unused = reader.ReadUInt32();
-                        var numRooms = reader.ReadUInt16();
+                        var unused = levelReader.ReadUInt32();
+                        var numRooms = (_version != TrVersion.TR5 ? levelReader.ReadUInt16() : levelReader.ReadUInt32());
 
                         for (int i = 0; i < numRooms; i++)
                         {
@@ -120,58 +123,58 @@ namespace TombLib.Wad.TrLevels
                             if (_version != TrVersion.TR5)
                             {
                                 // Room info
-                                reader.ReadBytes(16);
+                                levelReader.ReadBytes(16);
 
-                                var numDataWords = reader.ReadUInt32();
-                                reader.ReadBytes((int)numDataWords * 2);
+                                var numDataWords = levelReader.ReadUInt32();
+                                levelReader.ReadBytes((int)numDataWords * 2);
 
-                                var numPortals = reader.ReadUInt16();
-                                reader.ReadBytes(numPortals * 32);
+                                var numPortals = levelReader.ReadUInt16();
+                                levelReader.ReadBytes(numPortals * 32);
 
-                                var numXsectors = reader.ReadUInt16();
-                                var numZsectors = reader.ReadUInt16();
-                                reader.ReadBytes(numXsectors * numZsectors * 8);
+                                var numXsectors = levelReader.ReadUInt16();
+                                var numZsectors = levelReader.ReadUInt16();
+                                levelReader.ReadBytes(numXsectors * numZsectors * 8);
 
                                 // Ambient intensity 1 & 2
-                                reader.ReadUInt16();
-                                if (_version != TrVersion.TR1) reader.ReadUInt16();
+                                levelReader.ReadUInt16();
+                                if (_version != TrVersion.TR1) levelReader.ReadUInt16();
 
                                 // Lightmode
-                                if (_version == TrVersion.TR2) reader.ReadUInt16();
+                                if (_version == TrVersion.TR2) levelReader.ReadUInt16();
 
                                 var numLights = reader.ReadUInt16();
-                                if (_version == TrVersion.TR1) reader.ReadBytes(numLights * 18);
-                                if (_version == TrVersion.TR2) reader.ReadBytes(numLights * 24);
-                                if (_version == TrVersion.TR3) reader.ReadBytes(numLights * 24);
-                                if (_version == TrVersion.TR4) reader.ReadBytes(numLights * 46);
+                                if (_version == TrVersion.TR1) levelReader.ReadBytes(numLights * 18);
+                                if (_version == TrVersion.TR2) levelReader.ReadBytes(numLights * 24);
+                                if (_version == TrVersion.TR3) levelReader.ReadBytes(numLights * 24);
+                                if (_version == TrVersion.TR4) levelReader.ReadBytes(numLights * 46);
 
-                                var numStaticMeshes = reader.ReadUInt16();
+                                var numStaticMeshes = levelReader.ReadUInt16();
                                 if (_version == TrVersion.TR1)
-                                    reader.ReadBytes(numStaticMeshes * 18);
+                                    levelReader.ReadBytes(numStaticMeshes * 18);
                                 else
-                                    reader.ReadBytes(numStaticMeshes * 20);
+                                    levelReader.ReadBytes(numStaticMeshes * 20);
 
                                 // Various flags and alternate room
-                                if (_version == TrVersion.TR1) reader.ReadBytes(4);
-                                if (_version == TrVersion.TR2) reader.ReadBytes(4);
-                                if (_version == TrVersion.TR3) reader.ReadBytes(7);
-                                if (_version == TrVersion.TR4) reader.ReadBytes(7);
+                                if (_version == TrVersion.TR1) levelReader.ReadBytes(4);
+                                if (_version == TrVersion.TR2) levelReader.ReadBytes(4);
+                                if (_version == TrVersion.TR3) levelReader.ReadBytes(7);
+                                if (_version == TrVersion.TR4) levelReader.ReadBytes(7);
                             }
                             else
                             {
                                 // TR5 is very different, but luckly we have a field with the total size
 
                                 // XELA
-                                reader.ReadUInt32();
+                                var xela = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
 
-                                var roomDataSize = reader.ReadUInt32();
-                                reader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
+                                var roomDataSize = levelReader.ReadUInt32();
+                                levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
                             }
                         }
 
                         // Floordata
-                        var numFloorData = reader.ReadUInt32();
-                        reader.ReadBytes((int)numFloorData * 2);
+                        var numFloorData = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numFloorData * 2);
                     }
                 }
             }
