@@ -246,7 +246,7 @@ namespace TombLib.Wad
                             if ((id3 == Wad2Chunks.MeshQuad) ||
                                 (id3 == Wad2Chunks.MeshTriangle))
                             {
-                                var polygon = new WadPolygon(WadPolygonShape.Quad);
+                                var polygon = new WadPolygon(id3 == Wad2Chunks.MeshQuad ? WadPolygonShape.Quad : WadPolygonShape.Triangle);
                                 polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
                                 polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));
                                 polygon.Indices.Add(LEB128.ReadInt(chunkIO.Raw));

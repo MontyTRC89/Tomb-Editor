@@ -136,7 +136,7 @@ namespace TombLib.Wad
                             {
                                 bool isQuad = poly.Shape == WadPolygonShape.Quad;
 
-                                chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshTriangle : Wad2Chunks.MeshQuad, () =>
+                                chunkIO.WriteChunkWithChildren(isQuad ? Wad2Chunks.MeshQuad : Wad2Chunks.MeshTriangle, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, poly.Indices[0]);
                                     LEB128.Write(chunkIO.Raw, poly.Indices[1]);
