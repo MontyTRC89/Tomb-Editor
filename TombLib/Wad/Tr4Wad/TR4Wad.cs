@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -169,6 +170,8 @@ namespace TombLib.Wad.Tr4Wad
 
     public class Tr4Wad
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public struct texture_piece
         {
             public byte Width;
@@ -206,16 +209,23 @@ namespace TombLib.Wad.Tr4Wad
             BaseName = Path.GetFileNameWithoutExtension(fileName);
             BasePath = Path.GetDirectoryName(fileName);
 
-            // inizializzo lo stream
+            logger.Info("Reading wad file: " + fileName);
+
+            // Initialize stream
             using (BinaryReaderEx reader = new BinaryReaderEx(new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read)))
             {
-                // leggo la versione
+                // Read wad version
                 int version = reader.ReadInt32();
                 if (version != 129)
+                {
+                    logger.Error("Wad version  " + version + " is not supported!");
                     throw new InvalidDataException();
+                }
 
-                // leggo le texture
+
+                // Read textures
                 uint numTextures = reader.ReadUInt32();
+                logger.Info("Wad object textures: " + numTextures);
                 for (int i = 0; i < numTextures; i++)
                 {
                     wad_object_texture text;
@@ -224,6 +234,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numTextureBytes = reader.ReadUInt32();
+                logger.Info("Wad texture data size: " + numTextureBytes);
                 TexturePages = new byte[numTextureBytes / 768, 768];
                 for (int y = 0; y < numTextureBytes / 768; y++)
                     for (int x = 0; x < 768; x++)
@@ -231,8 +242,9 @@ namespace TombLib.Wad.Tr4Wad
 
                 NumTexturePages = (int)(numTextureBytes / 196608);
 
-                // leggo le mesh
+                // Read meshes
                 uint numMeshPointers = reader.ReadUInt32();
+                logger.Info("Wad mesh pointers: " + numMeshPointers);
                 for (int i = 0; i < numMeshPointers; i++)
                 {
                     Pointers.Add(reader.ReadUInt32());
@@ -241,9 +253,11 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numMeshWords = reader.ReadUInt32();
+                uint bytesToRead = numMeshWords * 2;
                 uint bytesRead = 0;
 
-                while (bytesRead < (numMeshWords * 2))
+                logger.Info("Wad mesh data size: " + bytesToRead);
+                while (bytesRead < bytesToRead)
                 {
                     uint startOfMesh = (uint)reader.BaseStream.Position;
 
@@ -354,6 +368,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numAnimations = reader.ReadUInt32();
+                logger.Info("Wad animations: " + numAnimations);
                 for (int i = 0; i < numAnimations; i++)
                 {
                     wad_animation anim;
@@ -362,6 +377,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numChanges = reader.ReadUInt32();
+                logger.Info("Wad animation state changes: " + numChanges);
                 for (int i = 0; i < numChanges; i++)
                 {
                     wad_state_change change;
@@ -370,6 +386,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numDispatches = reader.ReadUInt32();
+                logger.Info("Wad animation dispatches: " + numDispatches);
                 for (int i = 0; i < numDispatches; i++)
                 {
                     wad_anim_dispatch anim;
@@ -378,6 +395,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numCommands = reader.ReadUInt32();
+                logger.Info("Wad animation commands: " + numCommands);
                 for (int i = 0; i < numCommands; i++)
                 {
                     short anim;
@@ -386,6 +404,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numLinks = reader.ReadUInt32();
+                logger.Info("Wad animation links: " + numLinks);
                 for (int i = 0; i < numLinks; i++)
                 {
                     int link;
@@ -394,6 +413,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numFrames = reader.ReadUInt32();
+                logger.Info("Wad animation frames: " + numFrames);
                 for (int i = 0; i < numFrames; i++)
                 {
                     short frame;
@@ -402,6 +422,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numMoveables = reader.ReadUInt32();
+                logger.Info("Wad objects (moveables): " + numMoveables);
                 for (int i = 0; i < numMoveables; i++)
                 {
                     long pos = reader.BaseStream.Position;
@@ -411,6 +432,7 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 uint numStaticMeshes = reader.ReadUInt32();
+                logger.Info("Wad static meshes: " + numStaticMeshes);
                 for (int i = 0; i < numStaticMeshes; i++)
                 {
                     wad_static_mesh staticMesh;
@@ -419,74 +441,80 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 reader.Close();
+                logger.Info("Wad loaded successfully.");
+            }
 
-                // Read sounds
-                using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
+            // Read sounds
+            logger.Info("Reading sound (sfx/sam) files associated with wad.");
+            using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
                     while (!readerSounds.EndOfStream)
                         Sounds.Add(readerSounds.ReadLine());
 
-                using (var readerSfx = new BinaryReaderEx(new FileStream(BasePath + "\\" + BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var readerSfx = new BinaryReaderEx(new FileStream(BasePath + "\\" + BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                for (int i = 0; i < 370; i++)
                 {
-                    for (int i = 0; i < 370; i++)
-                    {
-                        SoundMap[i] = readerSfx.ReadInt16();
-                    }
-
-                    uint numSounds = readerSfx.ReadUInt32();
-                    for (int i = 0; i < numSounds; i++)
-                    {
-                        wad_sound_info info;
-                        readerSfx.ReadBlock<wad_sound_info>(out info);
-
-                        SoundInfo.Add(info);
-                    }
+                    SoundMap[i] = readerSfx.ReadInt16();
                 }
 
-                // Read sprites
-                using (var readerSprites = new BinaryReaderEx(new FileStream(
-                                            BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
-                FileMode.Open, FileAccess.Read, FileShare.Read)))
+                uint numSounds = readerSfx.ReadUInt32();
+                logger.Info("Sounds: " + numSounds);
+                for (int i = 0; i < numSounds; i++)
                 {
-                    // Version
-                    readerSprites.ReadUInt32();
+                    wad_sound_info info;
+                    readerSfx.ReadBlock<wad_sound_info>(out info);
 
-                    uint numSpritesTextures = readerSprites.ReadUInt32();
+                    SoundInfo.Add(info);
+                }
+            }
 
-                    //Sprite texture array
-                    for (int i = 0; i < numSpritesTextures; i++)
+            // Read sprites
+            logger.Info("Reading sprites (swd file) associated with wad.");
+            using (var readerSprites = new BinaryReaderEx(new FileStream(
+                                        BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
+            FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                // Version
+                readerSprites.ReadUInt32();
+
+                uint numSpritesTextures = readerSprites.ReadUInt32();
+                logger.Info("Sprites: " + numSpritesTextures);
+
+                //Sprite texture array
+                for (int i = 0; i < numSpritesTextures; i++)
+                {
+                    byte[] buffer;
+                    readerSprites.ReadBlockArray(out buffer, 16);
+
+                    var spriteTexture = new wad_sprite_texture
                     {
-                        byte[] buffer;
-                        readerSprites.ReadBlockArray(out buffer, 16);
+                        Tile = buffer[2],
+                        X = buffer[0],
+                        Y = buffer[1],
+                        Width = (ushort)(buffer[5]),
+                        Height = (ushort)(buffer[7]),
+                        LeftSide = buffer[0],
+                        TopSide = buffer[1],
+                        RightSide = (short)(buffer[0] + buffer[5] + 1),
+                        BottomSide = (short)(buffer[1] + buffer[7] + 1)
+                    };
 
-                        var spriteTexture = new wad_sprite_texture
-                        {
-                            Tile = buffer[2],
-                            X = buffer[0],
-                            Y = buffer[1],
-                            Width = (ushort)(buffer[5]),
-                            Height = (ushort)(buffer[7]),
-                            LeftSide = buffer[0],
-                            TopSide = buffer[1],
-                            RightSide = (short)(buffer[0] + buffer[5] + 1),
-                            BottomSide = (short)(buffer[1] + buffer[7] + 1)
-                        };
+                    SpriteTextures.Add(spriteTexture);
+                }
 
-                        SpriteTextures.Add(spriteTexture);
-                    }
+                // Sprites size
+                int spriteDataSize = readerSprites.ReadInt32();
+                SpriteData = readerSprites.ReadBytes(spriteDataSize);
 
-                    // Sprites size
-                    int spriteDataSize = readerSprites.ReadInt32();
-                    SpriteData = readerSprites.ReadBytes(spriteDataSize);
+                uint numSequences = readerSprites.ReadUInt32();
+                logger.Info("Sprite sequences: " + numSequences);
 
-                    uint numSequences = readerSprites.ReadUInt32();
-
-                    // Sprite sequences
-                    for (int i = 0; i < numSequences; i++)
-                    {
-                        wad_sprite_sequence sequence;
-                        readerSprites.ReadBlock(out sequence);
-                        SpriteSequences.Add(sequence);
-                    }
+                // Sprite sequences
+                for (int i = 0; i < numSequences; i++)
+                {
+                    wad_sprite_sequence sequence;
+                    readerSprites.ReadBlock(out sequence);
+                    SpriteSequences.Add(sequence);
                 }
             }
         }

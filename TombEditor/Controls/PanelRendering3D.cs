@@ -867,21 +867,21 @@ namespace TombEditor.Controls
                         if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file))
                             continue;
 
-                        var info = ImportedGeometryInfo.Default;
-                        info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                        info.Name = Path.GetFileNameWithoutExtension(file);
-
-                        var instance = new ImportedGeometryInstance();
                         var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
 
                         if(geometryToDrop == null)
                         {
+                            var info = ImportedGeometryInfo.Default;
+                            info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+                            info.Name = Path.GetFileNameWithoutExtension(file);
+
                             geometryToDrop = new ImportedGeometry();
                             _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
                             _editor.Level.Settings.ImportedGeometries.Add(geometryToDrop);
                             _editor.LoadedImportedGeometriesChange();
                         }
 
+                        var instance = new ImportedGeometryInstance();
                         instance.Model = geometryToDrop;
 
                         EditorActions.PlaceObject(_editor.SelectedRoom,
