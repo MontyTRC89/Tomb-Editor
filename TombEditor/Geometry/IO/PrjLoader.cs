@@ -1389,24 +1389,24 @@ namespace TombEditor.Geometry.IO
             switch (face)
             {
                 case BlockFace.PositiveZ_QA:
-                    return (!room.IsFaceDefined(x, z, face) && (b.QAFaces[0] > b.EDFaces[0] || b.QAFaces[1] > b.EDFaces[1]));
-                case BlockFace.PositiveZ_WS:
-                    return (!room.IsFaceDefined(x, z, face) && (b.WSFaces[0] < b.RFFaces[0] || b.WSFaces[1] < b.RFFaces[1]));
+                    return (!room.IsFaceDefined(x, z, face) &&
+                            (b.QAFaces[0] >= b.EDFaces[0] && b.QAFaces[1] >= b.EDFaces[1]) &&
+                            !(b.QAFaces[0] == b.EDFaces[0] && b.QAFaces[1] == b.EDFaces[1]));
 
                 case BlockFace.NegativeZ_QA:
-                    return (!room.IsFaceDefined(x, z, face) && (b.QAFaces[3] > b.EDFaces[3] || b.QAFaces[2] > b.EDFaces[2]));
-                case BlockFace.NegativeZ_WS:
-                    return (!room.IsFaceDefined(x, z, face) && (b.WSFaces[3] < b.RFFaces[3] || b.WSFaces[2] < b.RFFaces[2]));
+                    return (!room.IsFaceDefined(x, z, face) &&
+                            (b.QAFaces[3] >= b.EDFaces[3] && b.QAFaces[2] >= b.EDFaces[2]) &&
+                            !(b.QAFaces[3] == b.EDFaces[3] && b.QAFaces[2] == b.EDFaces[2]));
 
                 case BlockFace.NegativeX_QA:
-                    return (!room.IsFaceDefined(x, z, face) && (b.QAFaces[0] > b.EDFaces[0] || b.QAFaces[3] > b.EDFaces[3]));
-                case BlockFace.PositiveX_WS:
-                    return (!room.IsFaceDefined(x, z, face) && (b.WSFaces[0] < b.RFFaces[0] || b.WSFaces[3] < b.RFFaces[3]));
+                    return (!room.IsFaceDefined(x, z, face) &&
+                            (b.QAFaces[3] >= b.EDFaces[3] && b.QAFaces[0] >= b.EDFaces[0]) &&
+                            !(b.QAFaces[3] == b.EDFaces[3] && b.QAFaces[0] == b.EDFaces[0]));
 
                 case BlockFace.PositiveX_QA:
-                    return (!room.IsFaceDefined(x, z, face) && (b.QAFaces[2] > b.EDFaces[2] || b.QAFaces[1] > b.EDFaces[1]));
-                case BlockFace.NegativeX_WS:
-                    return (!room.IsFaceDefined(x, z, face) && (b.WSFaces[2] < b.RFFaces[2] || b.WSFaces[1] < b.RFFaces[1]));
+                    return (!room.IsFaceDefined(x, z, face) &&
+                               (b.QAFaces[1] >= b.EDFaces[1] && b.QAFaces[2] >= b.EDFaces[2]) &&
+                               !(b.QAFaces[1] == b.EDFaces[1] && b.QAFaces[2] == b.EDFaces[2]));
             }
 
             return false;
