@@ -606,5 +606,10 @@ namespace WadTool
             var level = new TrLevel();
             level.LoadLevel("E:\\Andrea1.trc");
         }
+
+        private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butSoundEditor_Click(null, null);
+        }
     }
 }
