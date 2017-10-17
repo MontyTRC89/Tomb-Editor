@@ -161,6 +161,8 @@ namespace TombLib.Wad.Tr4Wad
         {
             Wad2 wad = new Wad2();
 
+            logger.Info("Converting TR4 WAD to WAD2");
+
             // First convert all textures
             Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad);
             for (int i = 0; i < textures.Count; i++)
@@ -168,6 +170,7 @@ namespace TombLib.Wad.Tr4Wad
                 if (!wad.Textures.ContainsKey(textures.ElementAt(i).Value.Hash))
                     wad.Textures.Add(textures.ElementAt(i).Value.Hash, textures.ElementAt(i).Value);
             }
+            logger.Info("Texture conversion complete.");
 
             // Then convert moveables and static meshes
             // Meshes will be converted inside each model
@@ -175,17 +178,21 @@ namespace TombLib.Wad.Tr4Wad
             {
                 ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures);
             }
+            logger.Info("Moveable conversion complete.");
 
             for (int i = 0; i < oldWad.StaticMeshes.Count; i++)
             {
                 ConvertTr4StaticMeshToWadStatic(wad, oldWad, i, textures);
             }
+            logger.Info("Static mesh conversion complete.");
 
             // Convert sounds
             ConvertTr4Sounds(wad, oldWad, soundPaths);
+            logger.Info("Sound conversion complete.");
 
             // Convert sprites
             ConvertTr4Sprites(wad, oldWad);
+            logger.Info("Sprite conversion complete.");
 
             return wad;
         }
