@@ -58,6 +58,7 @@ namespace TombEditor.Controls
                 if ((e.Current != null) && (_editor?.Level?.Wad != null))
                     ResetCamera();
                 Invalidate();
+                Update(); // Magic fix for room view leaking into item view
             }
 
             if (obj is Editor.LoadedWadsChangedEvent)
