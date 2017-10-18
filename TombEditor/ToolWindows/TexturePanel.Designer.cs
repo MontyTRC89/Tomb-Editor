@@ -24,6 +24,7 @@ namespace TombEditor.ToolWindows
             this.rbTileSize256 = new DarkUI.Controls.DarkRadioButton();
             this.rbTileSize128 = new DarkUI.Controls.DarkRadioButton();
             this.rbTileSize64 = new DarkUI.Controls.DarkRadioButton();
+            this.rbTileSize32 = new DarkUI.Controls.DarkRadioButton();
             this.butBump = new DarkUI.Controls.DarkButton();
             this.butAnimationRanges = new DarkUI.Controls.DarkButton();
             this.butTextureSounds = new DarkUI.Controls.DarkButton();
@@ -58,6 +59,7 @@ namespace TombEditor.ToolWindows
             this.panelTileSizeSelector.Controls.Add(this.rbTileSize256);
             this.panelTileSizeSelector.Controls.Add(this.rbTileSize128);
             this.panelTileSizeSelector.Controls.Add(this.rbTileSize64);
+            this.panelTileSizeSelector.Controls.Add(this.rbTileSize32);
             this.panelTileSizeSelector.Location = new System.Drawing.Point(0, 0);
             this.panelTileSizeSelector.Name = "panelTileSizeSelector";
             this.panelTileSizeSelector.Size = new System.Drawing.Size(282, 25);
@@ -68,7 +70,7 @@ namespace TombEditor.ToolWindows
             this.darkLabel1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(22, 6);
+            this.darkLabel1.Location = new System.Drawing.Point(5, 6);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(98, 13);
             this.darkLabel1.TabIndex = 3;
@@ -78,7 +80,7 @@ namespace TombEditor.ToolWindows
             // 
             this.rbTileSize256.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbTileSize256.AutoSize = true;
-            this.rbTileSize256.Location = new System.Drawing.Point(218, 5);
+            this.rbTileSize256.Location = new System.Drawing.Point(239, 4);
             this.rbTileSize256.Name = "rbTileSize256";
             this.rbTileSize256.Size = new System.Drawing.Size(43, 17);
             this.rbTileSize256.TabIndex = 2;
@@ -90,7 +92,7 @@ namespace TombEditor.ToolWindows
             // 
             this.rbTileSize128.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbTileSize128.AutoSize = true;
-            this.rbTileSize128.Location = new System.Drawing.Point(169, 5);
+            this.rbTileSize128.Location = new System.Drawing.Point(192, 4);
             this.rbTileSize128.Name = "rbTileSize128";
             this.rbTileSize128.Size = new System.Drawing.Size(43, 17);
             this.rbTileSize128.TabIndex = 1;
@@ -102,13 +104,25 @@ namespace TombEditor.ToolWindows
             // 
             this.rbTileSize64.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.rbTileSize64.AutoSize = true;
-            this.rbTileSize64.Location = new System.Drawing.Point(126, 5);
+            this.rbTileSize64.Location = new System.Drawing.Point(150, 4);
             this.rbTileSize64.Name = "rbTileSize64";
             this.rbTileSize64.Size = new System.Drawing.Size(37, 17);
             this.rbTileSize64.TabIndex = 0;
             this.rbTileSize64.TabStop = true;
             this.rbTileSize64.Text = "64";
             this.rbTileSize64.CheckedChanged += new System.EventHandler(this.rbTileSize64_CheckedChanged);
+            // 
+            // rbTileSize32
+            // 
+            this.rbTileSize32.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.rbTileSize32.AutoSize = true;
+            this.rbTileSize32.Location = new System.Drawing.Point(107, 4);
+            this.rbTileSize32.Name = "rbTileSize32";
+            this.rbTileSize32.Size = new System.Drawing.Size(37, 17);
+            this.rbTileSize32.TabIndex = 4;
+            this.rbTileSize32.TabStop = true;
+            this.rbTileSize32.Text = "32";
+            this.rbTileSize32.CheckedChanged += new System.EventHandler(this.rbTileSize32_CheckedChanged);
             // 
             // butBump
             // 
@@ -175,5 +189,6 @@ namespace TombEditor.ToolWindows
         private DarkUI.Controls.DarkRadioButton rbTileSize256;
         private DarkUI.Controls.DarkRadioButton rbTileSize128;
         private DarkUI.Controls.DarkRadioButton rbTileSize64;
+        private DarkUI.Controls.DarkRadioButton rbTileSize32;
     }
 }
