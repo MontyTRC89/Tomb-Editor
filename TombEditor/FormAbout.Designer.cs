@@ -167,10 +167,11 @@
             // 
             // darkSeparator2
             // 
-            this.darkSeparator2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkSeparator2.Location = new System.Drawing.Point(0, 0);
+            this.darkSeparator2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkSeparator2.Location = new System.Drawing.Point(10, 82);
             this.darkSeparator2.Name = "darkSeparator2";
-            this.darkSeparator2.Size = new System.Drawing.Size(571, 2);
+            this.darkSeparator2.Size = new System.Drawing.Size(552, 2);
             this.darkSeparator2.TabIndex = 24;
             this.darkSeparator2.Text = "darkSeparator2";
             // 

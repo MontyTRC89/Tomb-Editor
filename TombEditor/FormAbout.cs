@@ -33,7 +33,7 @@ namespace TombEditor
         private void FormAbout_Load(object sender, EventArgs e)
         {
             versionLabel.Text = "Version " + Application.ProductVersion;
-            versionLabel.Location = new Point(ClientSize.Width - versionLabel.Width - 8, versionLabel.Location.Y);
+            versionLabel.Location = new Point(ClientSize.Width - versionLabel.Width, versionLabel.Location.Y);
         }
     }
 }
