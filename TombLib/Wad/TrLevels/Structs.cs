@@ -346,6 +346,24 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr_object_texture_vert
+    {
+        public byte Xc;
+        public byte Xp;
+        public byte Yc;
+        public byte Yp;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr_object_texture
+    {
+        public ushort Attributes;
+        public ushort TileAndFlags;
+        public ushort NewFlags;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public tr_object_texture_vert[] Vertices;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_animatedTextures_set
     {
         public short[] Textures;
@@ -505,11 +523,16 @@ namespace TombLib.Wad.TrLevels
     public struct tr_sound_details
     {
         public short Sample;
-        public byte Volume;
+        public ushort Volume;
         public byte Range;
-        public byte Chance;
+        public ushort Chance;
         public byte Pitch;
         public ushort Characteristics;
+    }
+
+    public struct tr_wave
+    {
+        public byte[] Data;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

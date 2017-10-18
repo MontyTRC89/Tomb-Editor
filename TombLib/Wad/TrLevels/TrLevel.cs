@@ -27,9 +27,13 @@ namespace TombLib.Wad.TrLevels
         private List<short> _frames = new List<short>();
         private List<tr_moveable> _moveables = new List<tr_moveable>();
         private List<tr_staticmesh> _staticMeshes = new List<tr_staticmesh>();
-
+        private List<tr_object_texture> _objectTextures = new List<tr_object_texture>();
         private List<tr_sprite_texture> _spriteTextures = new List<tr_sprite_texture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();
+        private List<short> _soundMap = new List<short>();
+        private List<tr_sound_details> _soundDetails = new List<tr_sound_details>();
+        private List<uint> _samplesIndices = new List<uint>();
+        private List<tr_wave> _waves = new List<tr_wave>();
 
         public bool LoadLevel(string fileName)
         {
@@ -395,20 +399,20 @@ namespace TombLib.Wad.TrLevels
                             staticMesh.Mesh = levelReader.ReadUInt16();
 
                             var visibilityBox = new tr_bounding_box();
-                            visibilityBox.X1 = reader.ReadInt16();
-                            visibilityBox.X2 = reader.ReadInt16();
-                            visibilityBox.Y1 = reader.ReadInt16();
-                            visibilityBox.Y2 = reader.ReadInt16();
-                            visibilityBox.Z1 = reader.ReadInt16();
-                            visibilityBox.Z2 = reader.ReadInt16();
+                            visibilityBox.X1 = levelReader.ReadInt16();
+                            visibilityBox.X2 = levelReader.ReadInt16();
+                            visibilityBox.Y1 = levelReader.ReadInt16();
+                            visibilityBox.Y2 = levelReader.ReadInt16();
+                            visibilityBox.Z1 = levelReader.ReadInt16();
+                            visibilityBox.Z2 = levelReader.ReadInt16();
 
                             var collisionBox = new tr_bounding_box();
-                            collisionBox.X1 = reader.ReadInt16();
-                            collisionBox.X2 = reader.ReadInt16();
-                            collisionBox.Y1 = reader.ReadInt16();
-                            collisionBox.Y2 = reader.ReadInt16();
-                            collisionBox.Z1 = reader.ReadInt16();
-                            collisionBox.Z2 = reader.ReadInt16();
+                            collisionBox.X1 = levelReader.ReadInt16();
+                            collisionBox.X2 = levelReader.ReadInt16();
+                            collisionBox.Y1 = levelReader.ReadInt16();
+                            collisionBox.Y2 = levelReader.ReadInt16();
+                            collisionBox.Z1 = levelReader.ReadInt16();
+                            collisionBox.Z2 = levelReader.ReadInt16();
 
                             staticMesh.VisibilityBox = visibilityBox;
                             staticMesh.CollisionBox = collisionBox;
@@ -422,8 +426,199 @@ namespace TombLib.Wad.TrLevels
                         if (_version == TrVersion.TR1 || _version == TrVersion.TR2)
                         {
                             var numObjectTextures = reader.ReadUInt32();
-
+                            for (int i = 0; i < numObjectTextures; i++)
+                            {
+                                var objectTexture = new tr_object_texture();
+                                objectTexture.Attributes = levelReader.ReadUInt16();
+                                objectTexture.TileAndFlags = levelReader.ReadUInt16();
+                                objectTexture.Vertices = new tr_object_texture_vert[4];
+                                for (int j = 0; j < 4; j++)
+                                {
+                                    var vert = new tr_object_texture_vert();
+                                    vert.Xc = levelReader.ReadByte();
+                                    vert.Xp = levelReader.ReadByte();
+                                    vert.Yc = levelReader.ReadByte();
+                                    vert.Yp = levelReader.ReadByte();
+                                    objectTexture.Vertices[j] = vert;
+                                }
+                                _objectTextures.Add(objectTexture);
+                            }
                         }
+
+                        // SPR marker
+                        string marker = "";
+                        if (_version == TrVersion.TR4) marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(3));
+                        if (_version == TrVersion.TR5) marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+
+                        var numSpriteTextures = levelReader.ReadUInt32();
+                        for (int i = 0; i < numSpriteTextures; i++)
+                        {
+                            var sprite = new tr_sprite_texture();
+                            sprite.Tile = levelReader.ReadUInt16();
+                            sprite.X = levelReader.ReadByte();
+                            sprite.Y = levelReader.ReadByte();
+                            sprite.Width = levelReader.ReadUInt16();
+                            sprite.Height = levelReader.ReadUInt16();
+                            sprite.LeftSide = levelReader.ReadInt16();
+                            sprite.TopSide = levelReader.ReadInt16();
+                            sprite.RightSide = levelReader.ReadInt16();
+                            sprite.BottomSide = levelReader.ReadInt16();
+                            _spriteTextures.Add(sprite);
+                        }
+
+                        var numSpriteSequences = levelReader.ReadUInt32();
+                        for (int i = 0; i < numSpriteSequences; i++)
+                        {
+                            var sequence = new tr_sprite_sequence();
+                            sequence.ObjectID = levelReader.ReadInt32();
+                            sequence.NegativeLength = levelReader.ReadInt16();
+                            sequence.Offset = levelReader.ReadInt16();
+                            _spriteSequences.Add(sequence);
+                        }
+
+                        uint numCameras = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numCameras * 16);
+
+                        // Flyby cameras
+                        if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
+                        {
+                            uint numFlybyCameras = levelReader.ReadUInt32();
+                            levelReader.ReadBytes((int)numFlybyCameras * 40);
+                        }
+
+                        uint numSoundSources = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numSoundSources * 16);
+
+                        uint numBoxes = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numBoxes * (_version == TrVersion.TR1 ? 20 : 8));
+
+                        uint numOverlaps = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numOverlaps * 2);
+
+                        levelReader.ReadBytes((int)numBoxes * (_version == TrVersion.TR1 ? 12 : 20));
+
+                        uint numAnimatedTextures = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numAnimatedTextures * 2);
+
+                        // If version >= TR3, object textures are here
+                        if (_version == TrVersion.TR3 || _version == TrVersion.TR4 || _version == TrVersion.TR5)
+                        {
+                            if (_version == TrVersion.TR4 || _version == TrVersion.TR5) marker = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(5));
+
+                            var numObjectTextures = levelReader.ReadUInt32();
+                            for (int i = 0; i < numObjectTextures; i++)
+                            {
+                                var objectTexture = new tr_object_texture();
+                                objectTexture.Attributes = levelReader.ReadUInt16();
+                                objectTexture.TileAndFlags = levelReader.ReadUInt16();
+                                if (_version == TrVersion.TR4 || _version == TrVersion.TR5) objectTexture.NewFlags = levelReader.ReadUInt16();
+                                objectTexture.Vertices = new tr_object_texture_vert[4];
+                                for (int j = 0; j < 4; j++)
+                                {
+                                    var vert = new tr_object_texture_vert();
+                                    vert.Xc = levelReader.ReadByte();
+                                    vert.Xp = levelReader.ReadByte();
+                                    vert.Yc = levelReader.ReadByte();
+                                    vert.Yp = levelReader.ReadByte();
+                                    objectTexture.Vertices[j] = vert;
+                                }
+                                if (_version == TrVersion.TR4) levelReader.ReadBytes(16);
+                                if (_version == TrVersion.TR5) levelReader.ReadBytes(18);
+                                _objectTextures.Add(objectTexture);
+                            }
+                        }
+
+                        var numEntities = levelReader.ReadUInt32();
+                        levelReader.ReadBytes((int)numEntities * (_version == TrVersion.TR1 ? 22 : 24));
+
+                        if (_version == TrVersion.TR1 || _version == TrVersion.TR2 || _version == TrVersion.TR3)
+                        {
+                            levelReader.ReadBytes(8192);
+
+                            if (_version == TrVersion.TR1)
+                            {
+                                palette8 = new tr_color[256];
+                                for (int i = 0; i < 256; i++)
+                                {
+                                    palette8[i].Red = levelReader.ReadByte();
+                                    palette8[i].Green = levelReader.ReadByte();
+                                    palette8[i].Blue = levelReader.ReadByte();
+                                }
+                            }
+
+                            var numCinematicFrames = levelReader.ReadUInt16();
+                            levelReader.ReadBytes(numCinematicFrames * 16);
+                        }
+
+                        if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
+                        {
+                            var numAI = levelReader.ReadUInt32();
+                            levelReader.ReadBytes((int)numAI * 24);
+                        }
+
+                        var numDemoData = levelReader.ReadUInt16();
+                        levelReader.ReadBytes(numDemoData);
+
+                        if (_version == TrVersion.TR1)
+                            for (int i = 0; i < 256; i++)
+                                _soundMap.Add(levelReader.ReadInt16());
+
+                        if (_version == TrVersion.TR2 || _version == TrVersion.TR3 || _version == TrVersion.TR4)
+                            for (int i = 0; i < 370; i++)
+                                _soundMap.Add(levelReader.ReadInt16());
+
+                        if (_version == TrVersion.TR5)
+                            for (int i = 0; i < 450; i++)
+                                _soundMap.Add(levelReader.ReadInt16());
+
+                        var numSoundDetails = levelReader.ReadUInt32();
+                        for (int i = 0; i < numSoundDetails; i++)
+                        {
+                            var soundDetails = new tr_sound_details();
+                            if (_version == TrVersion.TR1 || _version == TrVersion.TR2)
+                            {
+                                soundDetails.Sample = levelReader.ReadInt16();
+                                soundDetails.Volume = levelReader.ReadUInt16();
+                                soundDetails.Chance = levelReader.ReadUInt16();
+                                soundDetails.Range = 8;
+                                soundDetails.Characteristics = levelReader.ReadUInt16();
+                            }
+                            else
+                            {
+                                soundDetails.Sample = levelReader.ReadInt16();
+                                soundDetails.Volume = levelReader.ReadByte();
+                                soundDetails.Range = levelReader.ReadByte();
+                                soundDetails.Chance = levelReader.ReadByte();
+                                soundDetails.Pitch = levelReader.ReadByte();
+                                soundDetails.Characteristics = levelReader.ReadUInt16();
+                            }
+                            _soundDetails.Add(soundDetails);
+                        }
+
+                        // In TR1 waves are here
+                        if (_version == TrVersion.TR1)
+                        {
+                            // TODO: examine a PHD file first
+                        }
+
+                        var numSamplesIndices = levelReader.ReadUInt32();
+                        for (int i = 0; i < numSamplesIndices; i++)
+                            _samplesIndices.Add(levelReader.ReadUInt32());
+                    }
+                }
+
+                // Now for TR4 and TR5 there are sounds
+                if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
+                {
+                    var numSamples = reader.ReadUInt32();
+                    for (int i = 0; i < numSamples; i++)
+                    {
+                        var uncompressedWaveSize = reader.ReadUInt32();
+                        var compressedWaveSize = reader.ReadUInt32();
+                        var wave = reader.ReadBytes((int)compressedWaveSize);
+                        var trWave = new tr_wave();
+                        trWave.Data = wave;
+                        _waves.Add(trWave);
                     }
                 }
             }
