@@ -410,8 +410,13 @@ namespace TombEditor.Controls
                 using (var textureBrush = new TextureBrush(Properties.Resources.TransparentBackground))
                     e.Graphics.FillRectangle(textureBrush, drawArea);
 
+                // Switch interpolation based on current view scale
+                if(ViewScale >= 1.0)
+                    e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                else
+                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+
                 // Draw image
-                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
                     {
                         // System.Drawing being silly, it draws the first row of pixels only half, so everything would be shifted
