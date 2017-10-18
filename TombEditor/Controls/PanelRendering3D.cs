@@ -1575,30 +1575,33 @@ namespace TombEditor.Controls
             {
                 if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
+
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
+                SkinnedModel skin = ((instance.WadObjectId == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
+
                 _debug.NumMoveables++;
 
                 Room room = instance.Room;
 
                 if (_lastObject == null || instance.WadObjectId != _lastObject.WadObjectId)
                 {
-                    _device.SetVertexBuffer(0, model.VertexBuffer);
-                    _device.SetIndexBuffer(model.IndexBuffer, true);
+                    _device.SetVertexBuffer(0, skin.VertexBuffer);
+                    _device.SetIndexBuffer(skin.IndexBuffer, true);
                 }
 
                 if (_lastObject == null)
                 {
                     _device.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
                 }
 
                 skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
 
-                for (int i = 0; i < model.Meshes.Count; i++)
+                for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    SkinnedMesh mesh = model.Meshes[i];
+                    SkinnedMesh mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
