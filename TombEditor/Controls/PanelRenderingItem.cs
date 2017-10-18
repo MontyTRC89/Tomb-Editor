@@ -162,24 +162,24 @@ namespace TombEditor.Controls
             else
             {
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.Id];
-                SkinnedModel skin = model;
+                SkinnedModel skin = ((chosenItem.Id == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
-                _device.SetVertexBuffer(0, model.VertexBuffer);
-                _device.SetIndexBuffer(model.IndexBuffer, true);
+                _device.SetVertexBuffer(0, skin.VertexBuffer);
+                _device.SetIndexBuffer(skin.IndexBuffer, true);
 
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
-                for (int i = 0; i < model.Meshes.Count; i++)
+                for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     SkinnedMesh mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (skin.Vertices.Count == 0)
                         continue;
 
                     Matrix modelMatrix;
