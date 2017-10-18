@@ -13,7 +13,7 @@ namespace TombLib.Wad.TrLevels
     using TombLib.IO;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_color
+    internal struct tr_color
     {
         public byte Red;
         public byte Green;
@@ -21,7 +21,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_color4
+    internal struct tr_color4
     {
         public byte Red;
         public byte Green;
@@ -30,7 +30,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_vertex
+    internal struct tr_vertex
     {
         public short X;
         public short Y;
@@ -72,7 +72,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_face4
+    internal struct tr_face4
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)] public ushort[] Vertices;
         public ushort Texture;
@@ -89,7 +89,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_face3
+    internal struct tr_face3
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)] public ushort[] Vertices;
         public ushort Texture;
@@ -105,7 +105,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_info
+    internal struct tr_room_info
     {
         public int X;
         public int Z;
@@ -114,7 +114,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_portal
+    internal struct tr_room_portal
     {
         public ushort AdjoiningRoom;
         public tr_vertex Normal;
@@ -122,7 +122,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_sector
+    internal struct tr_room_sector
     {
         public ushort FloorDataIndex;
         public ushort BoxIndex;
@@ -133,7 +133,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr4_room_light
+    internal struct tr4_room_light
     {
         public int X;
         public int Y;
@@ -151,7 +151,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_vertex : IEquatable<tr_room_vertex>
+    internal struct tr_room_vertex : IEquatable<tr_room_vertex>
     {
         public tr_vertex Position;
         public ushort Lighting1;
@@ -187,7 +187,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room_staticmesh
+    internal struct tr_room_staticmesh
     {
         public int X;
         public int Y;
@@ -199,7 +199,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_room
+    internal struct tr_room
     {
         public tr_room_info Info;
         public uint NumDataWords;
@@ -223,7 +223,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_mesh
+    internal struct tr_mesh
     {
         public tr_vertex Center;
         public int Radius;
@@ -336,7 +336,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_staticmesh
+    internal struct tr_staticmesh
     {
         public uint ObjectID;
         public ushort Mesh;
@@ -346,7 +346,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_object_texture_vert
+    internal struct tr_object_texture_vert
     {
         public byte Xc;
         public byte Xp;
@@ -355,7 +355,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_object_texture
+    internal struct tr_object_texture
     {
         public ushort Attributes;
         public ushort TileAndFlags;
@@ -364,13 +364,13 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animatedTextures_set
+    internal struct tr_animatedTextures_set
     {
         public short[] Textures;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_bounding_box
+    internal struct tr_bounding_box
     {
         public short X1;
         public short X2;
@@ -381,7 +381,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_moveable
+    internal struct tr_moveable
     {
         public uint ObjectID;
         public ushort NumMeshes;
@@ -392,7 +392,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_item
+    internal struct tr_item
     {
         public short ObjectID;
         public short Room;
@@ -406,7 +406,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sprite_texture
+    internal struct tr_sprite_texture
     {
         public ushort Tile;
         public byte X;
@@ -420,7 +420,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sprite_sequence
+    internal struct tr_sprite_sequence
     {
         public int ObjectID;
         public short NegativeLength;
@@ -428,7 +428,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animation
+    internal struct tr_animation
     {
         public uint FrameOffset;
         public byte FrameRate;
@@ -467,7 +467,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_state_change
+    internal struct tr_state_change
     {
         public ushort StateID;
         public ushort NumAnimDispatches;
@@ -475,7 +475,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_anim_dispatch
+    internal struct tr_anim_dispatch
     {
         public ushort Low;
         public ushort High;
@@ -484,7 +484,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_box
+    internal struct tr_box
     {
         public byte Zmin;
         public byte Zmax;
@@ -495,7 +495,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_zone
+    internal struct tr_zone
     {
         public ushort GroundZone1_Normal;
         public ushort GroundZone2_Normal;
@@ -510,7 +510,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sound_source
+    internal struct tr_sound_source
     {
         public int X;
         public int Y;
@@ -520,7 +520,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_sound_details
+    internal struct tr_sound_details
     {
         public short Sample;
         public ushort Volume;
@@ -530,13 +530,13 @@ namespace TombLib.Wad.TrLevels
         public ushort Characteristics;
     }
 
-    public struct tr_wave
+    internal struct tr_sample
     {
         public byte[] Data;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_camera
+    internal struct tr_camera
     {
         public int X;
         public int Y;
@@ -546,14 +546,14 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animatedTextures
+    internal struct tr_animatedTextures
     {
         public short NumTextureID;
         public short[] TextureID;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_ai_item
+    internal struct tr_ai_item
     {
         public ushort ObjectID;
         public ushort Room;
@@ -567,7 +567,7 @@ namespace TombLib.Wad.TrLevels
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr4_flyby_camera
+    internal struct tr4_flyby_camera
     {
         public int X;
         public int Y;
