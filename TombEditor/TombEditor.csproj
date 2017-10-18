@@ -55,7 +55,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Tomb Raider - The Last Revelation [Alternate].ico</ApplicationIcon>
+    <ApplicationIcon>tomb_editor.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TombEditor.Program</StartupObject>
@@ -159,6 +159,12 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCamera.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -349,6 +355,9 @@
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormCamera.resx">
       <DependentUpon>FormCamera.cs</DependentUpon>
     </EmbeddedResource>
@@ -456,7 +465,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Editor\sky.png" />
-    <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
     <None Include="Editor\arrow_ne_se.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
