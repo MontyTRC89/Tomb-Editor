@@ -1052,5 +1052,11 @@ namespace TombEditor
         {
             //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
+        }
     }
 }
