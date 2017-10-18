@@ -148,11 +148,11 @@ namespace TombLib.Wad.TrLevels
                                 if (_version == TrVersion.TR3) levelReader.ReadBytes(numLights * 24);
                                 if (_version == TrVersion.TR4) levelReader.ReadBytes(numLights * 46);
 
-                                var numStaticMeshes = levelReader.ReadUInt16();
+                                var numRoomStaticMeshes = levelReader.ReadUInt16();
                                 if (_version == TrVersion.TR1)
-                                    levelReader.ReadBytes(numStaticMeshes * 18);
+                                    levelReader.ReadBytes(numRoomStaticMeshes * 18);
                                 else
-                                    levelReader.ReadBytes(numStaticMeshes * 20);
+                                    levelReader.ReadBytes(numRoomStaticMeshes * 20);
 
                                 // Various flags and alternate room
                                 if (_version == TrVersion.TR1) levelReader.ReadBytes(4);
@@ -196,7 +196,7 @@ namespace TombLib.Wad.TrLevels
                             numBytes += 10;
 
                             var numVertices = levelReader.ReadUInt16();
-                            levelReader.ReadBlockArray(out mesh.Vertices,numVertices);
+                            levelReader.ReadBlockArray(out mesh.Vertices, numVertices);
                             numBytes += 2 + 6 * numVertices;
 
                             var numNormals = levelReader.ReadInt16();
@@ -224,6 +224,7 @@ namespace TombLib.Wad.TrLevels
                                 poly.Vertices = new ushort[4];
                                 for (int j = 0; j < 4; j++)
                                     poly.Vertices[j] = levelReader.ReadUInt16();
+                                poly.Texture = levelReader.ReadUInt16();
                                 if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
                                     poly.LightingEffect = levelReader.ReadUInt16();
                                 mesh.TexturedQuads[i] = poly;
@@ -237,6 +238,7 @@ namespace TombLib.Wad.TrLevels
                                 poly.Vertices = new ushort[3];
                                 for (int j = 0; j < 3; j++)
                                     poly.Vertices[j] = levelReader.ReadUInt16();
+                                poly.Texture = levelReader.ReadUInt16();
                                 if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
                                     poly.LightingEffect = levelReader.ReadUInt16();
                                 mesh.TexturedTriangles[i] = poly;
@@ -252,6 +254,7 @@ namespace TombLib.Wad.TrLevels
                                     poly.Vertices = new ushort[4];
                                     for (int j = 0; j < 4; j++)
                                         poly.Vertices[j] = levelReader.ReadUInt16();
+                                    poly.Texture = levelReader.ReadUInt16();
                                     mesh.ColoredRectangles[i] = poly;
                                 }
 
@@ -263,6 +266,7 @@ namespace TombLib.Wad.TrLevels
                                     poly.Vertices = new ushort[3];
                                     for (int j = 0; j < 3; j++)
                                         poly.Vertices[j] = levelReader.ReadUInt16();
+                                    poly.Texture = levelReader.ReadUInt16();
                                     mesh.ColoredTriangles[i] = poly;
                                 }
                             }
@@ -279,11 +283,11 @@ namespace TombLib.Wad.TrLevels
                                 numBytes += 2 + numTexturedRectangles * 12;
                                 numBytes += 2 + numTexturedTriangles * 10;
                             }
-                            
+
                             long offset2 = levelReader.BaseStream.Position;
                             int diff = (int)(offset2 - offset1);
                             if (diff % 4 != 0)
-                            { levelReader.ReadBlock(out temp); diff += 2; }
+                            { levelReader.ReadUInt16(); diff += 2; }
 
                             mesh.MeshSize = numBytes;
                             mesh.MeshPointer = totalBytes;
@@ -295,6 +299,131 @@ namespace TombLib.Wad.TrLevels
                             _meshes.Add(mesh);
                         }
 
+                        var numMeshPointers = levelReader.ReadUInt32();
+                        _meshPointers = new List<uint>();
+                        for (int i = 0; i < numMeshPointers; i++)
+                            _meshPointers.Add(levelReader.ReadUInt32());
+
+                        var numAnimations = levelReader.ReadUInt32();
+                        _animations = new List<tr_animation>();
+                        for (int i = 0; i < numAnimations; i++)
+                        {
+                            var animation = new tr_animation();
+                            animation.FrameOffset = levelReader.ReadUInt32();
+                            animation.FrameRate = levelReader.ReadByte();
+                            animation.FrameSize = levelReader.ReadByte();
+                            animation.StateID = levelReader.ReadUInt16();
+                            animation.Speed = levelReader.ReadInt32();
+                            animation.Accel = levelReader.ReadInt32();
+                            if (_version == TrVersion.TR4 || _version == TrVersion.TR5)
+                            {
+                                animation.SpeedLateral = levelReader.ReadInt32();
+                                animation.AccelLateral = levelReader.ReadInt32();
+                            }
+                            animation.FrameStart = levelReader.ReadUInt16();
+                            animation.FrameEnd = levelReader.ReadUInt16();
+                            animation.NextAnimation = levelReader.ReadUInt16();
+                            animation.NextFrame = levelReader.ReadUInt16();
+                            animation.NumStateChanges = levelReader.ReadUInt16();
+                            animation.StateChangeOffset = levelReader.ReadUInt16();
+                            animation.NumAnimCommands = levelReader.ReadUInt16();
+                            animation.AnimCommand = levelReader.ReadUInt16();
+                            _animations.Add(animation);
+                        }
+
+                        var numStateChanges = levelReader.ReadUInt32();
+                        _stateChanges = new List<tr_state_change>();
+                        for (int i = 0; i < numStateChanges; i++)
+                        {
+                            var stateChange = new tr_state_change();
+                            stateChange.StateID = levelReader.ReadUInt16();
+                            stateChange.NumAnimDispatches = levelReader.ReadUInt16();
+                            stateChange.AnimDispatch = levelReader.ReadUInt16();
+                            _stateChanges.Add(stateChange);
+                        }
+
+                        var numDispatches = levelReader.ReadUInt32();
+                        _animDispatches = new List<tr_anim_dispatch>();
+                        for (int i = 0; i < numDispatches; i++)
+                        {
+                            var dispatch = new tr_anim_dispatch();
+                            dispatch.Low = levelReader.ReadUInt16();
+                            dispatch.High = levelReader.ReadUInt16();
+                            dispatch.NextAnimation = levelReader.ReadUInt16();
+                            dispatch.NextFrame = levelReader.ReadUInt16();
+                            _animDispatches.Add(dispatch);
+                        }
+
+                        var numAnimCommands = levelReader.ReadUInt32();
+                        _animCommands = new List<ushort>();
+                        for (int i = 0; i < numAnimCommands; i++)
+                            _animCommands.Add(levelReader.ReadUInt16());
+
+                        var numMeshTrees = levelReader.ReadUInt32();
+                        _meshTrees = new List<int>();
+                        for (int i = 0; i < numMeshTrees; i++)
+                            _meshTrees.Add(levelReader.ReadInt32());
+
+                        var numFrames = levelReader.ReadUInt32();
+                        _frames = new List<short>();
+                        for (int i = 0; i < numFrames; i++)
+                            _frames.Add(levelReader.ReadInt16());
+
+                        var numMoveables = levelReader.ReadUInt32();
+                        _moveables = new List<tr_moveable>();
+                        for (int i = 0; i < numMoveables; i++)
+                        {
+                            var moveable = new tr_moveable();
+                            moveable.ObjectID = levelReader.ReadUInt32();
+                            moveable.NumMeshes = levelReader.ReadUInt16();
+                            moveable.StartingMesh = levelReader.ReadUInt16();
+                            moveable.MeshTree = levelReader.ReadUInt32();
+                            moveable.FrameOffset = levelReader.ReadUInt32();
+                            moveable.Animation = levelReader.ReadUInt16();
+
+                            if (_version == TrVersion.TR5) levelReader.ReadUInt16();
+
+                            _moveables.Add(moveable);
+                        }
+
+                        var numStaticMeshes = levelReader.ReadUInt32();
+                        _staticMeshes = new List<tr_staticmesh>();
+                        for (int i = 0; i < numStaticMeshes; i++)
+                        {
+                            var staticMesh = new tr_staticmesh();
+                            staticMesh.ObjectID = levelReader.ReadUInt32();
+                            staticMesh.Mesh = levelReader.ReadUInt16();
+
+                            var visibilityBox = new tr_bounding_box();
+                            visibilityBox.X1 = reader.ReadInt16();
+                            visibilityBox.X2 = reader.ReadInt16();
+                            visibilityBox.Y1 = reader.ReadInt16();
+                            visibilityBox.Y2 = reader.ReadInt16();
+                            visibilityBox.Z1 = reader.ReadInt16();
+                            visibilityBox.Z2 = reader.ReadInt16();
+
+                            var collisionBox = new tr_bounding_box();
+                            collisionBox.X1 = reader.ReadInt16();
+                            collisionBox.X2 = reader.ReadInt16();
+                            collisionBox.Y1 = reader.ReadInt16();
+                            collisionBox.Y2 = reader.ReadInt16();
+                            collisionBox.Z1 = reader.ReadInt16();
+                            collisionBox.Z2 = reader.ReadInt16();
+
+                            staticMesh.VisibilityBox = visibilityBox;
+                            staticMesh.CollisionBox = collisionBox;
+
+                            staticMesh.Flags = levelReader.ReadUInt16();
+
+                            _staticMeshes.Add(staticMesh);
+                        }
+
+                        // If version <= TR2 object textures are here
+                        if (_version == TrVersion.TR1 || _version == TrVersion.TR2)
+                        {
+                            var numObjectTextures = reader.ReadUInt32();
+
+                        }
                     }
                 }
             }
