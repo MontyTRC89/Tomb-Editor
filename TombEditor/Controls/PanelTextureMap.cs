@@ -194,7 +194,7 @@ namespace TombEditor.Controls
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
             texCoord /= selectionPrecision.Precision;
-            if ((selectionPrecision.Precision >= 64.0f) && rectangularSelection)
+            if ((selectionPrecision.Precision >= 32.0f) && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -414,7 +414,7 @@ namespace TombEditor.Controls
                 if(ViewScale >= 1.0)
                     e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 else
-                    e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
 
                 // Draw image
                 VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
