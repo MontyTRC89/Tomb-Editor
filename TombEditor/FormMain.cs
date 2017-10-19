@@ -619,9 +619,7 @@ namespace TombEditor
                     "Your level will be lost. Do you really want to create a new level?",
                     "New level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-            EditorActions.SwitchMode(EditorMode.Geometry);
-            _editor.Level.Settings.Textures.Clear();
-            _editor.LoadedTexturesChange();
+
             _editor.Level = Level.CreateSimpleLevel();
         }
 
