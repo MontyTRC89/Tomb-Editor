@@ -882,14 +882,12 @@ namespace TombEditor.Controls
                         if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file))
                             continue;
 
+                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
                         var info = ImportedGeometryInfo.Default;
                         info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
                         info.Name = Path.GetFileNameWithoutExtension(file);
 
-                        var instance = new ImportedGeometryInstance();
-                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
-
-                        if(geometryToDrop == null)
+                        if (geometryToDrop == null)
                         {
                             geometryToDrop = new ImportedGeometry();
                             _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
@@ -897,11 +895,9 @@ namespace TombEditor.Controls
                             _editor.LoadedImportedGeometriesChange();
                         }
 
+                        var instance = new ImportedGeometryInstance();
                         instance.Model = geometryToDrop;
-
-                        EditorActions.PlaceObject(_editor.SelectedRoom,
-                            newBlockPicking.Pos, instance);
-
+                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, instance);
                         _editor.ObjectChange(instance);
                     }
                 }
@@ -1594,30 +1590,33 @@ namespace TombEditor.Controls
             {
                 if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
+
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
+                SkinnedModel skin = ((instance.WadObjectId == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
+
                 _debug.NumMoveables++;
 
                 Room room = instance.Room;
 
                 if (_lastObject == null || instance.WadObjectId != _lastObject.WadObjectId)
                 {
-                    _device.SetVertexBuffer(0, model.VertexBuffer);
-                    _device.SetIndexBuffer(model.IndexBuffer, true);
+                    _device.SetVertexBuffer(0, skin.VertexBuffer);
+                    _device.SetIndexBuffer(skin.IndexBuffer, true);
                 }
 
                 if (_lastObject == null)
                 {
                     _device.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
                 }
 
                 skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
 
-                for (int i = 0; i < model.Meshes.Count; i++)
+                for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    SkinnedMesh mesh = model.Meshes[i];
+                    SkinnedMesh mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
@@ -2204,6 +2203,7 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
+            _roomEffect.Parameters["Texture"].SetResource((Texture2D)null);
             _roomEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
             _roomEffect.Parameters["LineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
             _roomEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);

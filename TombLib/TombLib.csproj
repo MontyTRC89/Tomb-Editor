@@ -149,6 +149,9 @@
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
     <Compile Include="Wad\OriginalSound.cs" />
+    <Compile Include="Wad\TrLevels\Enumerations.cs" />
+    <Compile Include="Wad\TrLevels\Structs.cs" />
+    <Compile Include="Wad\TrLevels\TrLevel.cs" />
     <Compile Include="Wad\Wad2Actions.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />
@@ -226,9 +229,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Wad\TrLevels\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

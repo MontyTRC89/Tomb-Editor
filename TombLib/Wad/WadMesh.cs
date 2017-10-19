@@ -125,8 +125,6 @@ namespace TombLib.Wad
                     writer.Write(_polygons[i].Indices[2]);
                     if (_polygons[i].Shape == WadPolygonShape.Quad)
                         writer.Write(_polygons[i].Indices[3]);
-                    if (_polygons[i].Shape == WadPolygonShape.Quad)
-                        writer.Write(_polygons[i].Indices[3]);
                     writer.Write(((WadTexture)(_polygons[i].Texture.Texture)).Hash.Hash1);
                     writer.Write(_polygons[i].Texture.DoubleSided);
                     writer.Write((short)_polygons[i].Texture.BlendMode);

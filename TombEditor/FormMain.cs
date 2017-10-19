@@ -619,6 +619,7 @@ namespace TombEditor
                     "Your level will be lost. Do you really want to create a new level?",
                     "New level", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
+
             _editor.Level = Level.CreateSimpleLevel();
         }
 
@@ -1051,6 +1052,12 @@ namespace TombEditor
         private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
         }
     }
 }

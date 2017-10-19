@@ -83,6 +83,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap about_header {
+            get {
+                object obj = ResourceManager.GetObject("about_header", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap angle_left_16 {
             get {
                 object obj = ResourceManager.GetObject("angle_left_16", resourceCulture);
@@ -206,6 +216,16 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap crop_16 {
             get {
                 object obj = ResourceManager.GetObject("crop_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap custom_geometry {
+            get {
+                object obj = ResourceManager.GetObject("custom_geometry", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

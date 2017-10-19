@@ -194,7 +194,7 @@ namespace TombEditor.Controls
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
             texCoord /= selectionPrecision.Precision;
-            if ((selectionPrecision.Precision >= 64.0f) && rectangularSelection)
+            if ((selectionPrecision.Precision >= 32.0f) && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -410,8 +410,13 @@ namespace TombEditor.Controls
                 using (var textureBrush = new TextureBrush(Properties.Resources.TransparentBackground))
                     e.Graphics.FillRectangle(textureBrush, drawArea);
 
+                // Switch interpolation based on current view scale
+                if(ViewScale >= 1.0)
+                    e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                else
+                    e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
+
                 // Draw image
-                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
                     {
                         // System.Drawing being silly, it draws the first row of pixels only half, so everything would be shifted

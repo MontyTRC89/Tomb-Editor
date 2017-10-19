@@ -11,7 +11,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    internal class WadToolClass
+    internal class WadToolClass : IDisposable
     {
         public Wad2 DestinationWad { get; set; }
         public Wad2 SourceWad { get; set; }
@@ -21,6 +21,9 @@ namespace WadTool
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public SpriteFont Font { get; set; }
 
+        public Configuration Configuration { get { return _configuration; } }
+
+        private Configuration _configuration;
         private static WadToolClass _instance;
 
         public static WadToolClass Instance
@@ -69,6 +72,10 @@ namespace WadTool
             SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
             fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
             Font = SpriteFont.New(Device, fontData);
+
+            // Load configuration
+            _configuration = Configuration.LoadOrUseDefault();
+
         }
 
         private Effect LoadEffect(string fileName)
@@ -84,6 +91,11 @@ namespace WadTool
             }
 
             return new Effect(Device, result.EffectData);
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

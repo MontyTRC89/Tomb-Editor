@@ -289,5 +289,10 @@ namespace TombEditor.ToolWindows
         {
             EditorActions.Clone(this.ParentForm);
         }
+
+        private void butAddImportedGeometry_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
+        }
     }
 }
