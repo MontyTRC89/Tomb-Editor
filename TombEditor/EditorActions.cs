@@ -997,9 +997,15 @@ namespace TombEditor
             }
 
             // Do it finally
+            List<Room> adjoiningRooms = room.Portals.Select(portal => portal.AdjoiningRoom).Distinct().ToList();
             _editor.Level.DeleteRoom(room);
 
             // Update selection
+            foreach (Room adjoiningRoom in adjoiningRooms)
+            {
+                adjoiningRoom?.UpdateCompletely();
+                adjoiningRoom?.AlternateVersion?.UpdateCompletely();
+            }
             if (_editor.SelectedRoom == room)
                 _editor.SelectRoomAndResetCamera(_editor.Level.Rooms.FirstOrDefault(r => r != null));
             _editor.RoomListChange();
