@@ -2188,6 +2188,7 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
+            _roomEffect.Parameters["Texture"].SetResource((Texture2D)null);
             _roomEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
             _roomEffect.Parameters["LineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
             _roomEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);
