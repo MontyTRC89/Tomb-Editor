@@ -94,7 +94,7 @@ namespace TombEditor.Controls
         {
             Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -113,7 +113,7 @@ namespace TombEditor.Controls
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            
+
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor, 1.0f, 0);
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
@@ -207,15 +207,13 @@ namespace TombEditor.Controls
             if (_editor?.Level?.Wad == null)
             {
                 string notifyMessage = null;
-                if (string.IsNullOrEmpty(_editor?.Level.Settings.WadFilePath))
-                    notifyMessage = "Click here to load WAD.";
+                if (string.IsNullOrEmpty(_editor.Level.Settings.WadFilePath))
+                    notifyMessage = "Click here to load a new WAD file.";
                 else
-                    notifyMessage = "WAD file not found. Click to load.";
+                    notifyMessage = "Unable to load WAD file '" + (_editor.Level.Settings.WadFilePath ?? "") + "'. Click here to choose a replacement.";
 
                 e.Graphics.Clear(Parent.BackColor);
-                e.Graphics.DrawString(notifyMessage,
-                    Font, System.Drawing.Brushes.DarkGray,
-                    ClientRectangle,
+                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, ClientRectangle,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
             else

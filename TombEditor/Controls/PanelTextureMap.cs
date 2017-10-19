@@ -15,6 +15,7 @@ using TombEditor.Geometry;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 using Color = System.Drawing.Color;
+using System.IO;
 
 namespace TombEditor.Controls
 {
@@ -203,7 +204,7 @@ namespace TombEditor.Controls
             else
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
             texCoord *= selectionPrecision.Precision;
-            texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
+            texCoord += new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
 
             return texCoord;
         }
@@ -397,7 +398,7 @@ namespace TombEditor.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.IntersectClip(new RectangleF(0, 0, ClientSize.Width - _scrollSizeTotal, ClientSize.Height - _scrollSizeTotal));
+            e.Graphics.IntersectClip(new RectangleF(new PointF(), ClientSize - new SizeF(_scrollSizeTotal, _scrollSizeTotal)));
 
             // Only proceed if texture is actually available
             if (VisibleTexture?.IsAvailable ?? false)
@@ -411,7 +412,7 @@ namespace TombEditor.Controls
                     e.Graphics.FillRectangle(textureBrush, drawArea);
 
                 // Switch interpolation based on current view scale
-                if(ViewScale >= 1.0)
+                if (ViewScale >= 1.0)
                     e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 else
                     e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
@@ -433,14 +434,17 @@ namespace TombEditor.Controls
             {
                 string notifyMessage = null;
 
-                if (VisibleTexture == null || string.IsNullOrEmpty(VisibleTexture?.Path))
-                    notifyMessage = "Click here to load textures.";
+                if (string.IsNullOrEmpty(VisibleTexture?.Path))
+                    notifyMessage = "Click here to load a new texture file.";
+                else if (VisibleTexture?.ImageLoadException is FileNotFoundException)
+                    notifyMessage = "Texture from file '" + (VisibleTexture?.Path ?? "") + "' was not found! Click here to choose a replacement.";
                 else
-                    notifyMessage = "Texture not found. Click here to load.";
+                    notifyMessage = "Unable to load texture from file '" + (VisibleTexture?.Path ?? "") + "'. Click here to choose a replacement. " +
+                        "Error: " + (VisibleTexture?.ImageLoadException?.Message ?? "<Unknown>");
 
-                e.Graphics.DrawString(notifyMessage,
-                    Font, System.Drawing.Brushes.DarkGray,
-                    ClientRectangle,
+                RectangleF textArea = ClientRectangle;
+                textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
+                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, textArea,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
 
