@@ -187,7 +187,7 @@ namespace TombEditor
             if (obj is Editor.LevelFileNameChanged)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
-                    Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
+                    Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
             }
 
