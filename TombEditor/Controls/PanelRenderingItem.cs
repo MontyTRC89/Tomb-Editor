@@ -204,10 +204,16 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (string.IsNullOrEmpty(_editor?.Level.Settings.WadFilePath))
+            if (_editor?.Level?.Wad == null)
             {
+                string notifyMessage = null;
+                if (string.IsNullOrEmpty(_editor?.Level.Settings.WadFilePath))
+                    notifyMessage = "Click here to load WAD.";
+                else
+                    notifyMessage = "WAD file not found. Click to load.";
+
                 e.Graphics.Clear(Parent.BackColor);
-                e.Graphics.DrawString("Click here to load WAD.",
+                e.Graphics.DrawString(notifyMessage,
                     Font, System.Drawing.Brushes.DarkGray,
                     ClientRectangle,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
@@ -233,7 +239,7 @@ namespace TombEditor.Controls
             switch(e.Button)
             {
                 case MouseButtons.Left:
-                    if (_editor?.Level?.Settings?.WadFilePath == null)
+                    if (_editor?.Level?.Wad == null)
                     {
                         EditorActions.LoadWad(Parent);
                         return;

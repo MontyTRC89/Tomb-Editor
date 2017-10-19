@@ -431,7 +431,14 @@ namespace TombEditor.Controls
             }
             else
             {
-                e.Graphics.DrawString("Click here to load textures.",
+                string notifyMessage = null;
+
+                if (VisibleTexture == null || string.IsNullOrEmpty(VisibleTexture?.Path))
+                    notifyMessage = "Click here to load textures.";
+                else
+                    notifyMessage = "Texture not found. Click here to load.";
+
+                e.Graphics.DrawString(notifyMessage,
                     Font, System.Drawing.Brushes.DarkGray,
                     ClientRectangle,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
