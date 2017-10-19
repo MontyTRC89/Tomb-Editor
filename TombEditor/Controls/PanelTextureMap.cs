@@ -432,15 +432,20 @@ namespace TombEditor.Controls
             }
             else
             {
-                string notifyMessage = null;
+                string notifyMessage;
 
                 if (string.IsNullOrEmpty(VisibleTexture?.Path))
                     notifyMessage = "Click here to load a new texture file.";
-                else if (VisibleTexture?.ImageLoadException is FileNotFoundException)
-                    notifyMessage = "Texture from file '" + (VisibleTexture?.Path ?? "") + "' was not found! Click here to choose a replacement.";
                 else
-                    notifyMessage = "Unable to load texture from file '" + (VisibleTexture?.Path ?? "") + "'. Click here to choose a replacement. " +
-                        "Error: " + (VisibleTexture?.ImageLoadException?.Message ?? "<Unknown>");
+                {
+                    string fileName = Utils.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
+                    if (Utils.IsFileNotFoundException(VisibleTexture?.ImageLoadException))
+                        notifyMessage = "Texture file '" + fileName + "' was not found!\n";
+                    else
+                        notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";
+                    notifyMessage += "Click here to choose a replacement.\n\n";
+                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(VisibleTexture?.Path) ?? "");
+                }
 
                 RectangleF textArea = ClientRectangle;
                 textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
