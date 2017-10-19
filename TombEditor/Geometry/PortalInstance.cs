@@ -17,12 +17,20 @@ namespace TombEditor.Geometry
 
     public class PortalInstance : SectorBasedObjectInstance
     {
-        public Room AdjoiningRoom { get { return _adjoiningRoom; } set { _adjoiningRoom = value.AlternateBaseRoom ?? value; } }
         private Room _adjoiningRoom;
+        public Room AdjoiningRoom
+        {
+            get { return _adjoiningRoom; }
+            set
+            {
+                if (value == null)
+                    throw new NullReferenceException("'AdjoiningRoom' must not be null");
+                _adjoiningRoom = value.AlternateBaseRoom ?? value;
+            }
+        }
 
         public PortalDirection Direction { get; }
         public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
-
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
 
