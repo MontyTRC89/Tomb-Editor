@@ -461,12 +461,14 @@ namespace TombEditor.Geometry.IO
                                 var area = new Rectangle(LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw), LEB128.ReadInt(chunkIO.Raw));
                                 var adjoiningRoomIndex = LEB128.ReadLong(chunkIO.Raw);
                                 var direction = (PortalDirection)chunkIO.Raw.ReadByte();
-                                var instance = new PortalInstance(area, direction, room);
-                                instance.Opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
-                                roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) => instance.AdjoiningRoom = adjoiningRoom ?? room));
-
-                                room.AddObject(level, instance);
-                                newObjects.Add(objectID, instance);
+                                var opacity = (PortalOpacity)chunkIO.Raw.ReadByte();
+                                roomLinkActions.Add(new KeyValuePair<long, Action<Room>>(adjoiningRoomIndex, (adjoiningRoom) =>
+                                {
+                                    var instance = new PortalInstance(area, direction, adjoiningRoom ?? room);
+                                    instance.Opacity = opacity;
+                                    room.AddObject(level, instance);
+                                    newObjects.Add(objectID, instance);
+                                }));
                             }
                             else if (id3 == Prj2Chunks.ObjectTrigger)
                             {
@@ -505,7 +507,7 @@ namespace TombEditor.Geometry.IO
                 return true;
             });
 
-            // Link rooms
+            // Create portals
             foreach (var roomLinkAction in roomLinkActions)
                 try
                 {
