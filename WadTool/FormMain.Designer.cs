@@ -78,6 +78,7 @@
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.butAddObjectToDifferentSlot = new DarkUI.Controls.DarkButton();
             this.butAddObject = new DarkUI.Controls.DarkButton();
+            this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -289,7 +290,8 @@
             this.debugAction0ToolStripMenuItem,
             this.debugAction1ToolStripMenuItem,
             this.debugAction1ToolStripMenuItem1,
-            this.debugAction4ToolStripMenuItem});
+            this.debugAction4ToolStripMenuItem,
+            this.debugAction5ToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
@@ -575,6 +577,15 @@
             this.butAddObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddObject.Click += new System.EventHandler(this.butAddObject_Click);
             // 
+            // debugAction5ToolStripMenuItem
+            // 
+            this.debugAction5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
+            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction5ToolStripMenuItem.Text = "Debug action 5";
+            this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -662,6 +673,7 @@
         private System.Windows.Forms.ToolStripMenuItem addNewSpriteSequenceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction5ToolStripMenuItem;
     }
 }
 

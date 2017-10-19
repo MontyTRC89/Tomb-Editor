@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -76,6 +77,8 @@ namespace WadTool
             // Load configuration
             _configuration = Configuration.LoadOrUseDefault();
 
+            // Load items catalog
+            TrCatalog.LoadCatalog("Editor\\TRCatalog.xml");
         }
 
         private Effect LoadEffect(string fileName)

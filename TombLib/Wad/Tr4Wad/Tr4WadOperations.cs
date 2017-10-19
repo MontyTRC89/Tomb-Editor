@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
@@ -160,7 +161,7 @@ namespace TombLib.Wad.Tr4Wad
         public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths)
         {
             Wad2 wad = new Wad2();
-
+            
             logger.Info("Converting TR4 WAD to WAD2");
 
             // First convert all textures
@@ -325,6 +326,7 @@ namespace TombLib.Wad.Tr4Wad
             wad_moveable m = oldWad.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
+            moveable.Name = TrCatalog.Games[TombRaiderVersion.TR4].Moveables[(int)m.ObjectID].Name;
 
             // First I build a list of meshes for this moveable
             List<wad_mesh> meshes = new List<wad_mesh>();
@@ -629,6 +631,8 @@ namespace TombLib.Wad.Tr4Wad
         {
             var staticMesh = new WadStatic();
             var oldStaticMesh = oldWad.StaticMeshes[staticIndex];
+
+            staticMesh.Name = TrCatalog.Games[TombRaiderVersion.TR4].StaticMeshes[(int)oldStaticMesh.ObjectId].Name;
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionX1,

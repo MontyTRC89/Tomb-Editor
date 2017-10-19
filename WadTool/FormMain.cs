@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.IO;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
 using TombLib.Wad.TrLevels;
 
@@ -610,6 +611,11 @@ namespace WadTool
         private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             butSoundEditor_Click(null, null);
+        }
+
+        private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TrCatalog.LoadCatalog("Editor\\TRCatalog.xml");
         }
     }
 }

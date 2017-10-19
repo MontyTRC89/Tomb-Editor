@@ -27,7 +27,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            return "(" + ObjectID + ") " + ObjectNames.GetMoveableName(ObjectID);
+            return "(" + ObjectID + ") " + Name; // ObjectNames.GetMoveableName(ObjectID);
         }
 
         public List<WadSoundInfo> GetSounds(Wad2 wad)
