@@ -465,6 +465,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Editor\sky.png" />
+    <None Include="Editor\TRCatalog.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Editor\arrow_ne_se.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

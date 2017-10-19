@@ -121,11 +121,6 @@ namespace TombLib.Wad
             WaveSounds = new Dictionary<Hash, WadSound>();
         }
 
-        public Wad2(GraphicsDevice device) : this()
-        {
-            GraphicsDevice = device;
-        }
-
         public static string[] OfficialSoundNames { get { return _officialSoundNames; } }
 
         public static ushort[] MandatorySounds

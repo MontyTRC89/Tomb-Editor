@@ -4,6 +4,7 @@ using System.IO;
 
 namespace TombLib.Wad
 {
+    // DEPRECATED: we'll store names in WadObject and we'll use TrCatalog class that is multi-version
     public static class ObjectNames
     {
         private static Dictionary<uint, string> _moveableNames = new Dictionary<uint, string>();

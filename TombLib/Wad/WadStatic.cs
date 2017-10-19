@@ -21,7 +21,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            return "(" + ObjectID + ") " + ObjectNames.GetStaticName(ObjectID);
+            return "(" + ObjectID + ") " + Name; // ObjectNames.GetStaticName(ObjectID);
         }
     }
 }
