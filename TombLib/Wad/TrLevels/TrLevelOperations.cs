@@ -585,6 +585,9 @@ namespace TombLib.Wad.TrLevels
                 int frames = (int)anim.FrameOffset / 2;
                 uint numFrames;
 
+                // HACK: last animation of Tomb of Qualopec has this problem
+                if (anim.FrameSize == 0) continue;
+
                 if (j + m.Animation == oldLevel.Animations.Count - 1)
                 {
                     numFrames = ((uint)(2 * oldLevel.Frames.Count) - anim.FrameOffset) / (uint)(2 * anim.FrameSize);
@@ -620,6 +623,9 @@ namespace TombLib.Wad.TrLevels
                                                oldLevel.Frames[frames + 2]);
 
                     frames += 3;
+
+                    // TR1 has also the number of angles to follow
+                    if (oldLevel.Version == TrVersion.TR1) frames++;
 
                     for (int n = 0; n < m.NumMeshes; n++)
                     {
