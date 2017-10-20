@@ -155,6 +155,7 @@
     <Compile Include="Wad\TrLevels\Enumerations.cs" />
     <Compile Include="Wad\TrLevels\Structs.cs" />
     <Compile Include="Wad\TrLevels\TrLevel.cs" />
+    <Compile Include="Wad\TrLevels\TrLevelOperations.cs" />
     <Compile Include="Wad\Wad2Actions.cs" />
     <Compile Include="Wad\Wad2Chunks.cs" />
     <Compile Include="Wad\Wad2Loader.cs" />

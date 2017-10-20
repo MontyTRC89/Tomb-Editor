@@ -12,6 +12,20 @@ namespace TombLib.Wad.Catalog
     {
         public static Dictionary<TombRaiderVersion, TrCatalogGame> Games { get; private set; } = new Dictionary<TombRaiderVersion, TrCatalogGame>();
 
+        public static string GetMoveableName(TombRaiderVersion version, uint id)
+        {
+            if (!Games.ContainsKey(version)) return "Unknown #" + id;
+            if (!Games[version].Moveables.ContainsKey((int)id)) return "Unknown #" + id;
+            return Games[version].Moveables[(int)id].Name;
+        }
+
+        public static string GetStaticName(TombRaiderVersion version, uint id)
+        {
+            if (!Games.ContainsKey(version)) return "Unknown #" + id;
+            if (!Games[version].StaticMeshes.ContainsKey((int)id)) return "Unknown #" + id;
+            return Games[version].StaticMeshes[(int)id].Name;
+        }
+
         public static void LoadCatalog(string fileName)
         {
             var document = new XmlDocument();

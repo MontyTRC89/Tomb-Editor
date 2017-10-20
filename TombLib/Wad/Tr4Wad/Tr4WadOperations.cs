@@ -17,7 +17,7 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad)
+        internal static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad)
         {
             var textures = new ConcurrentDictionary<int, WadTexture>();
 
@@ -49,7 +49,7 @@ namespace TombLib.Wad.Tr4Wad
                 // Replace magenta color with alpha transparent black
                 textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
-                  texture.Image = textureData;
+                texture.Image = textureData;
 
                 // Update the hash of the texture
                 texture.UpdateHash();
@@ -62,7 +62,7 @@ namespace TombLib.Wad.Tr4Wad
             return new Dictionary<int, WadTexture>(textures);
         }
 
-        private static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
+        internal static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
         {
             int textureId = polygon.Texture & 0xfff;
             if (textureId > 2047)
@@ -70,7 +70,7 @@ namespace TombLib.Wad.Tr4Wad
             return textureId;
         }
 
-        public static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, wad_mesh oldMesh,
+        internal static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, wad_mesh oldMesh,
                                                       Dictionary<int, WadTexture> convertedTextures)
         {
             WadMesh mesh = new WadMesh();
@@ -198,7 +198,7 @@ namespace TombLib.Wad.Tr4Wad
             return wad;
         }
 
-        private static void ConvertTr4Sprites(Wad2 wad, Tr4Wad oldWad)
+        internal static void ConvertTr4Sprites(Wad2 wad, Tr4Wad oldWad)
         {
             int spriteDataSize = oldWad.SpriteData.Length;
 
@@ -259,7 +259,7 @@ namespace TombLib.Wad.Tr4Wad
             }
         }
 
-        private static void ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<string> soundPaths)
+        internal static void ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<string> soundPaths)
         {
             for (int i = 0; i < 370; i++)
             {
@@ -319,7 +319,7 @@ namespace TombLib.Wad.Tr4Wad
             }
         }
 
-        public static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
+        internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
                                                                   Dictionary<int, WadTexture> textures)
         {
             WadMoveable moveable = new WadMoveable();
@@ -626,7 +626,7 @@ namespace TombLib.Wad.Tr4Wad
             return moveable;
         }
 
-        public static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex,
+        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex,
                                                                 Dictionary<int, WadTexture> textures)
         {
             var staticMesh = new WadStatic();

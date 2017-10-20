@@ -55,6 +55,7 @@
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
             this.butOpenDestWad2 = new System.Windows.Forms.ToolStripButton();
             this.butOpenSourceWad = new System.Windows.Forms.ToolStripButton();
@@ -78,7 +79,7 @@
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.butAddObjectToDifferentSlot = new DarkUI.Controls.DarkButton();
             this.butAddObject = new DarkUI.Controls.DarkButton();
-            this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -291,7 +292,8 @@
             this.debugAction1ToolStripMenuItem,
             this.debugAction1ToolStripMenuItem1,
             this.debugAction4ToolStripMenuItem,
-            this.debugAction5ToolStripMenuItem});
+            this.debugAction5ToolStripMenuItem,
+            this.debugAction6ToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
@@ -330,6 +332,15 @@
             this.debugAction4ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
             this.debugAction4ToolStripMenuItem.Text = "Debug action 4";
             this.debugAction4ToolStripMenuItem.Click += new System.EventHandler(this.debugAction4ToolStripMenuItem_Click);
+            // 
+            // debugAction5ToolStripMenuItem
+            // 
+            this.debugAction5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
+            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction5ToolStripMenuItem.Text = "Debug action 5";
+            this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
             // 
             // darkToolStrip1
             // 
@@ -577,14 +588,14 @@
             this.butAddObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddObject.Click += new System.EventHandler(this.butAddObject_Click);
             // 
-            // debugAction5ToolStripMenuItem
+            // debugAction6ToolStripMenuItem
             // 
-            this.debugAction5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
-            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-            this.debugAction5ToolStripMenuItem.Text = "Debug action 5";
-            this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
+            this.debugAction6ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction6ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction6ToolStripMenuItem.Name = "debugAction6ToolStripMenuItem";
+            this.debugAction6ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction6ToolStripMenuItem.Text = "Debug action 6";
+            this.debugAction6ToolStripMenuItem.Click += new System.EventHandler(this.debugAction6ToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -674,6 +685,7 @@
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction6ToolStripMenuItem;
     }
 }
 

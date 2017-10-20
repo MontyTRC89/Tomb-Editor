@@ -617,5 +617,44 @@ namespace WadTool
         {
             TrCatalog.LoadCatalog("Editor\\TRCatalog.xml");
         }
+
+        private void debugAction6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var level = new TrLevel();
+            level.LoadLevel("E:\\TR2\\data\\venice.tr2");
+            var newWad = TrLevelOperations.ConvertTrLevel(level, new List<string>());
+
+            if (_tool.SourceWad != null)
+                _tool.SourceWad.Dispose();
+
+            newWad.GraphicsDevice = _tool.Device;
+            newWad.PrepareDataForDirectX();
+            _tool.SourceWad = newWad;
+
+            // Update the UI
+            treeSourceWad.Nodes.Clear();
+
+            var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
+            treeSourceWad.Nodes.Add(nodeMoveables);
+
+            foreach (var moveable in _tool.SourceWad.Moveables)
+            {
+                var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
+                nodeMoveable.Tag = moveable.Value;
+
+                treeSourceWad.Nodes[0].Nodes.Add(nodeMoveable);
+            }
+
+            var nodeStatics = new DarkUI.Controls.DarkTreeNode("Statics");
+            treeSourceWad.Nodes.Add(nodeStatics);
+
+            foreach (var staticMesh in _tool.SourceWad.Statics)
+            {
+                var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
+                nodeStatic.Tag = staticMesh.Value;
+
+                treeSourceWad.Nodes[1].Nodes.Add(nodeStatic);
+            }
+        }
     }
 }
