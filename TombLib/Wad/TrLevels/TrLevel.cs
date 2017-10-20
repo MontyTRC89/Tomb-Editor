@@ -41,7 +41,7 @@ namespace TombLib.Wad.TrLevels
         internal List<uint> RealPointers = new List<uint>();
         internal List<uint> HelperPointers = new List<uint>();
 
-        public bool LoadLevel(string fileName)
+        public bool LoadLevel(string fileName, string tr2sfxPath, string tr3sfxPath)
         {
             using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
@@ -758,6 +758,43 @@ namespace TombLib.Wad.TrLevels
                             TextureMap32[y * 1024 + x * 4 + 2] = (byte)r;
                             TextureMap32[y * 1024 + x * 4 + 3] = (byte)a;
                         }
+                    }
+                }
+            }
+
+            // If TR2 or TR3, read samples from SFX files
+            if (Version == TrVersion.TR2 || Version == TrVersion.TR3)
+            {
+                string path = (Version == TrVersion.TR2 ? tr2sfxPath : tr3sfxPath);
+                if (path == null || path.Trim() == "" || !File.Exists(path)) return true;
+
+                using (var sampleReader = new BinaryReaderEx(File.OpenRead(path)))
+                {
+                    while (sampleReader.BaseStream.Position < sampleReader.BaseStream.Length)
+                    {
+                        var sample = new tr_sample();
+
+                        // Check for RIFF header
+                        var riff = System.Text.ASCIIEncoding.ASCII.GetString(sampleReader.ReadBytes(4));
+                        if (riff != "RIFF") continue;
+
+                        // Read the chunk size (in this case, the entire file size)
+                        var fileSize = sampleReader.ReadInt32();
+
+                        // Write to a MemoryStream
+                        using (var ms = new MemoryStream())
+                        {
+                            using (var writerSample = new BinaryWriterEx(ms))
+                            {
+                                writerSample.Write(System.Text.ASCIIEncoding.ASCII.GetBytes("RIFF"));
+                                writerSample.Write(fileSize);
+                                writerSample.Write(sampleReader.ReadBytes(fileSize));
+                            }
+
+                            sample.Data = ms.ToArray();
+                        }
+
+                        Samples.Add(sample);
                     }
                 }
             }

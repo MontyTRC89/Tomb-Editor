@@ -284,7 +284,7 @@ namespace TombLib.Wad.TrLevels
             return wad.Textures[texture.Hash];
         }
 
-        public static Wad2 ConvertTrLevel(TrLevel oldLevel, List<string> soundPaths)
+        public static Wad2 ConvertTrLevel(TrLevel oldLevel)
         {
             Wad2 wad = new Wad2();
 
@@ -314,7 +314,7 @@ namespace TombLib.Wad.TrLevels
             logger.Info("Static mesh conversion complete.");
 
             // Convert sounds
-            ConvertTrLevelSounds(wad, oldLevel, soundPaths);
+            ConvertTrLevelSounds(wad, oldLevel);
             logger.Info("Sound conversion complete.");
 
             // Convert sprites
@@ -385,7 +385,7 @@ namespace TombLib.Wad.TrLevels
             }*/
         }
 
-        private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel, List<string> soundPaths)
+        private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
         {
             for (int i = 0; i < oldLevel.SoundMap.Count; i++)
             {
@@ -406,38 +406,31 @@ namespace TombLib.Wad.TrLevels
                 newInfo.FlagN = ((oldInfo.Characteristics & 0x1000) != 0);
                 newInfo.Loop = (WadSoundLoopType)(oldInfo.Characteristics & 0x03);
 
-                int numSamplesInGroup = 0; // (oldInfo.Characteristics & 0x00fc) >> 2;
+                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
 
                 // Read all samples linked to this sound info (for example footstep has 4 samples)
-                /*for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
+                for (int j = oldInfo.Sample; j < oldInfo.Sample + numSamplesInGroup; j++)
                 {
-                    foreach (string soundPath in soundPaths)
-                    {
-                        string fileName = Path.Combine(oldLevel.BasePath, soundPath, oldLevel.Sounds[j]);
+                    var soundName = j + ".wav";
 
-                        // If wave sound exists, then load it in memory
-                        if (File.Exists(fileName))
+                    if (j < oldLevel.Samples.Count)
+                    {
+                        var sound = new WadSound(soundName, oldLevel.Samples[j].Data);
+                        if (wad.WaveSounds.ContainsKey(sound.Hash))
                         {
-                            using (var reader = new BinaryReader(File.OpenRead(fileName)))
-                            {
-                                var sound = new WadSound(oldLevel.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
-                                if (wad.WaveSounds.ContainsKey(sound.Hash))
-                                {
-                                    newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
-                                }
-                                else
-                                {
-                                    wad.WaveSounds.Add(sound.Hash, sound);
-                                    newInfo.WaveSounds.Add(sound);
-                                }
-                            }
-                            goto FoundSound;
+                            newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                        }
+                        else
+                        {
+                            wad.WaveSounds.Add(sound.Hash, sound);
+                            newInfo.WaveSounds.Add(sound);
                         }
                     }
-                    logger.Warn("Unable to find sample '" + oldLevel.Sounds[j] + "' at any of the defined sound paths");
-                    FoundSound:
-                    ;
-                }*/
+                    else
+                    {
+                        logger.Warn("Unable to find sample " + j);
+                    }
+                }
 
                 newInfo.UpdateHash();
 

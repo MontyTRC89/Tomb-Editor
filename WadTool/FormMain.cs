@@ -278,9 +278,9 @@ namespace WadTool
             else
             {
                 var originalLevel = new TrLevel();
-                originalLevel.LoadLevel(fileName);
+                originalLevel.LoadLevel(fileName, _tool.Configuration.Sounds_Tr2MainSfxPath, _tool.Configuration.Sounds_Tr3MainSfxPath);
 
-                var newWad = TrLevelOperations.ConvertTrLevel(originalLevel, wadSoundPaths);
+                var newWad = TrLevelOperations.ConvertTrLevel(originalLevel);
                 if (newWad == null)
                     return;
 
@@ -621,7 +621,7 @@ namespace WadTool
         private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var level = new TrLevel();
-            level.LoadLevel("E:\\Andrea1.trc");
+            //level.LoadLevel("E:\\Andrea1.trc");
         }
 
         private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -637,8 +637,8 @@ namespace WadTool
         private void debugAction6ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var level = new TrLevel();
-            level.LoadLevel("E:\\TR2\\data\\venice.tr2");
-            var newWad = TrLevelOperations.ConvertTrLevel(level, new List<string>());
+            //level.LoadLevel("E:\\TR2\\data\\venice.tr2");
+            var newWad = TrLevelOperations.ConvertTrLevel(level);
 
             if (_tool.SourceWad != null)
                 _tool.SourceWad.Dispose();

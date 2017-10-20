@@ -30,7 +30,10 @@ namespace WadTool
         public float Gizmo_CenterCubeSize { get; set; } = 128.0f;
         public float Gizmo_ScaleCubeSize { get; set; } = 128.0f;
         public float Gizmo_LineThickness { get; set; } = 45.0f;
-        
+
+        public string Sounds_Tr2MainSfxPath { get; set; } = "Sounds\\TR2\\Main.sfx";
+        public string Sounds_Tr3MainSfxPath { get; set; } = "Sounds\\TR3\\Main.sfx";
+
         public static string GetDefaultPath()
         {
             return Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "WadToolConfiguration.xml");
