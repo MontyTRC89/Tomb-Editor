@@ -362,6 +362,7 @@ namespace TombLib.Wad
 
                 newMoveable.ObjectID = destination;
                 newMoveable.Offset = new Vector3(moveable.Offset.X, moveable.Offset.Y, moveable.Offset.Z);
+                newMoveable.Name = moveable.Name;
 
                 // Add mesh trees
                 foreach (var link in moveable.Links)
@@ -385,6 +386,8 @@ namespace TombLib.Wad
 
                 newStaticMesh.Mesh = Meshes[meshesToAdd[0].Hash];
                 newStaticMesh.ObjectID = destination;
+                newStaticMesh.Name = staticMesh.Name;
+
                 newStaticMesh.CollisionBox = new BoundingBox(new Vector3(staticMesh.CollisionBox.Minimum.X,
                                                                          staticMesh.CollisionBox.Minimum.Y,
                                                                          staticMesh.CollisionBox.Minimum.Z),

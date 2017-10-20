@@ -235,8 +235,8 @@ namespace WadTool
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
             // Open the file dialog
-            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.Object);
-            openFileDialogWad.Title = "Open source WAD/Wad2";
+            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.ObjectForWadTool);
+            openFileDialogWad.Title = "Open source WAD - Wad2 - Level";
             if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
                 return;
 
@@ -258,7 +258,7 @@ namespace WadTool
                 newWad.PrepareDataForDirectX();
                 _tool.SourceWad = newWad;
             }
-            else
+            else if (fileName.EndsWith("wad2"))
             {
                 using (var stream = File.OpenRead(fileName))
                 {
@@ -274,6 +274,22 @@ namespace WadTool
                     newWad.PrepareDataForDirectX();
                     _tool.SourceWad = newWad;
                 }
+            }
+            else
+            {
+                var originalLevel = new TrLevel();
+                originalLevel.LoadLevel(fileName);
+
+                var newWad = TrLevelOperations.ConvertTrLevel(originalLevel, wadSoundPaths);
+                if (newWad == null)
+                    return;
+
+                if (_tool.SourceWad != null)
+                    _tool.SourceWad.Dispose();
+
+                newWad.GraphicsDevice = _tool.Device;
+                newWad.PrepareDataForDirectX();
+                _tool.SourceWad = newWad;
             }
 
             // Update the UI

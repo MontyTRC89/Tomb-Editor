@@ -65,7 +65,6 @@ namespace TombLib.Wad.TrLevels
                 //textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
                 texture.Image = textureData;
-                texture.Image.Save("E:\\TestTextures\\" + i + ".png");
 
                 // Update the hash of the texture
                 texture.UpdateHash();
@@ -634,51 +633,85 @@ namespace TombLib.Wad.TrLevels
                         short rot = oldLevel.Frames[frames];
                         WadKeyFrameRotation kfAngle = new WadKeyFrameRotation();
 
-                        switch (rot & 0xc000)
+                        if (oldLevel.Version == TrVersion.TR1)
                         {
-                            case 0:
-                                int rotation = rot;
-                                int rotation2 = oldLevel.Frames[frames + 1];
+                            int rotation = rot;
+                            int rotation2 = oldLevel.Frames[frames + 1];
 
-                                frames += 2;
+                            frames += 2;
 
-                                int rotX = (int)((rotation & 0x3ff0) >> 4);
-                                int rotY = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
-                                int rotZ = (int)((rotation2) & 0x3ff);
+                            int rotX = (int)((rotation & 0x3ff0) >> 4);
+                            int rotZ = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
+                            int rotY = (int)((rotation2) & 0x3ff);
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
-                                kfAngle.X = rotX;
-                                kfAngle.Y = rotY;
-                                kfAngle.Z = rotZ;
+                            kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
+                            kfAngle.X = rotX;
+                            kfAngle.Y = rotY;
+                            kfAngle.Z = rotZ;
 
-                                break;
+                            break;
 
-                            case 0x4000:
-                                frames += 1;
-                                int rotationX = rot & 0x3fff;
+                        }
+                        else
+                        {
+                            switch (rot & 0xc000)
+                            {
+                                case 0:
+                                    int rotation = rot;
+                                    int rotation2 = oldLevel.Frames[frames + 1];
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.AxisX;
-                                kfAngle.X = rotationX;
+                                    frames += 2;
 
-                                break;
+                                    int rotX = (int)((rotation & 0x3ff0) >> 4);
+                                    int rotY = (int)(((rotation2 & 0xfc00) >> 10) + ((rotation & 0xf) << 6) & 0x3ff);
+                                    int rotZ = (int)((rotation2) & 0x3ff);
 
-                            case 0x8000:
-                                frames += 1;
-                                int rotationY = rot & 0x3fff;
+                                    kfAngle.Axis = WadKeyFrameRotationAxis.ThreeAxes;
+                                    kfAngle.X = rotX;
+                                    kfAngle.Y = rotY;
+                                    kfAngle.Z = rotZ;
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.AxisY;
-                                kfAngle.Y = rotationY;
+                                    break;
 
-                                break;
+                                case 0x4000:
+                                    frames += 1;
+                                    int rotationX;
+                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
+                                        rotationX = rot & 0xfff;
+                                    else
+                                        rotationX = (rot & 0x3ff) * 4;
 
-                            case 0xc000:
-                                int rotationZ = rot & 0x3fff;
-                                frames += 1;
+                                    kfAngle.Axis = WadKeyFrameRotationAxis.AxisX;
+                                    kfAngle.X = rotationX;
 
-                                kfAngle.Axis = WadKeyFrameRotationAxis.AxisZ;
-                                kfAngle.Z = rotationZ;
+                                    break;
 
-                                break;
+                                case 0x8000:
+                                    frames += 1;
+                                    int rotationY;
+                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
+                                        rotationY = rot & 0xfff;
+                                    else
+                                        rotationY = (rot & 0x3ff) * 4;
+
+                                    kfAngle.Axis = WadKeyFrameRotationAxis.AxisY;
+                                    kfAngle.Y = rotationY;
+
+                                    break;
+
+                                case 0xc000:
+                                    frames += 1;
+                                    int rotationZ;
+                                    if (oldLevel.Version == TrVersion.TR4 || oldLevel.Version == TrVersion.TR5)
+                                        rotationZ = rot & 0xfff;
+                                    else
+                                        rotationZ = (rot & 0x3ff) * 4;
+
+                                    kfAngle.Axis = WadKeyFrameRotationAxis.AxisZ;
+                                    kfAngle.Z = rotationZ;
+
+                                    break;
+                            }
                         }
 
                         frame.Angles.Add(kfAngle);
@@ -773,7 +806,7 @@ namespace TombLib.Wad.TrLevels
             var staticMesh = new WadStatic();
             var oldStaticMesh = oldLevel.StaticMeshes[staticIndex];
 
-            staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), staticMesh.ObjectID);
+            staticMesh.Name = TrCatalog.GetStaticName(GetTrVersion(oldLevel.Version), oldStaticMesh.ObjectID);
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionBox.X1,
