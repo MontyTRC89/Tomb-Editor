@@ -14,7 +14,7 @@ using TombLib.Utils;
 namespace TombLib.Wad.Tr4Wad
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_object_texture
+    internal struct wad_object_texture
     {
         public byte X;
         public byte Y;
@@ -26,7 +26,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_vertex
+    internal struct wad_vertex
     {
         public short X;
         public short Y;
@@ -34,7 +34,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_polygon
+    internal struct wad_polygon
     {
         public ushort Shape;
         public ushort V1;
@@ -47,7 +47,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_mesh
+    internal struct wad_mesh
     {
         public short SphereX;
         public short SphereY;
@@ -67,7 +67,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_animation
+    internal struct wad_animation
     {
         public uint KeyFrameOffset;
         public byte FrameDuration;
@@ -88,7 +88,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_state_change
+    internal struct wad_state_change
     {
         public ushort StateId;
         public ushort NumDispatches;
@@ -96,7 +96,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_anim_dispatch
+    internal struct wad_anim_dispatch
     {
         public short Low;
         public short High;
@@ -105,7 +105,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_moveable
+    internal struct wad_moveable
     {
         public uint ObjectID;
         public ushort NumPointers;
@@ -116,7 +116,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_static_mesh
+    internal struct wad_static_mesh
     {
         public uint ObjectId;
         public ushort PointersIndex;
@@ -136,7 +136,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_sound_info
+    internal struct wad_sound_info
     {
         public ushort Sample;
         public byte Volume;
@@ -147,7 +147,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_sprite_texture
+    internal struct wad_sprite_texture
     {
         public ushort Tile;
         public byte X;
@@ -161,7 +161,7 @@ namespace TombLib.Wad.Tr4Wad
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct wad_sprite_sequence
+    internal struct wad_sprite_sequence
     {
         public int ObjectID;
         public short NegativeLength;
@@ -172,37 +172,37 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public struct texture_piece
+        internal struct texture_piece
         {
             public byte Width;
             public byte Height;
             public byte[] Data;
         }
 
-        public List<wad_object_texture> Textures = new List<wad_object_texture>();
-        public byte[,] TexturePages;
-        public int NumTexturePages;
-        public List<uint> Pointers = new List<uint>();
-        public List<uint> RealPointers = new List<uint>();
-        public List<uint> HelperPointers = new List<uint>();
-        public List<wad_mesh> Meshes = new List<wad_mesh>();
-        public List<wad_animation> Animations = new List<wad_animation>();
-        public List<wad_state_change> Changes = new List<wad_state_change>();
-        public List<wad_anim_dispatch> Dispatches = new List<wad_anim_dispatch>();
-        public List<short> Commands = new List<short>();
-        public List<int> Links = new List<int>();
-        public List<short> KeyFrames = new List<short>();
-        public List<wad_moveable> Moveables = new List<wad_moveable>();
-        public List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
-        public short[] SoundMap = new short[370];
-        public List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
-        public List<wad_sprite_sequence> SpriteSequences = new List<wad_sprite_sequence>();
-        public List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();
-        public byte[] SpriteData;
+        internal List<wad_object_texture> Textures = new List<wad_object_texture>();
+        internal byte[,] TexturePages;
+        internal int NumTexturePages;
+        internal List<uint> Pointers = new List<uint>();
+        internal List<uint> RealPointers = new List<uint>();
+        internal List<uint> HelperPointers = new List<uint>();
+        internal List<wad_mesh> Meshes = new List<wad_mesh>();
+        internal List<wad_animation> Animations = new List<wad_animation>();
+        internal List<wad_state_change> Changes = new List<wad_state_change>();
+        internal List<wad_anim_dispatch> Dispatches = new List<wad_anim_dispatch>();
+        internal List<short> Commands = new List<short>();
+        internal List<int> Links = new List<int>();
+        internal List<short> KeyFrames = new List<short>();
+        internal List<wad_moveable> Moveables = new List<wad_moveable>();
+        internal List<wad_static_mesh> StaticMeshes = new List<wad_static_mesh>();
+        internal short[] SoundMap = new short[370];
+        internal List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
+        internal List<wad_sprite_sequence> SpriteSequences = new List<wad_sprite_sequence>();
+        internal List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();
+        internal byte[] SpriteData;
 
-        public List<string> Sounds { get; set; } = new List<string>();
-        public string BaseName { get; set; }
-        public string BasePath { get; set; }
+        internal List<string> Sounds { get; set; } = new List<string>();
+        internal string BaseName { get; set; }
+        internal string BasePath { get; set; }
 
         public void LoadWad(string fileName)
         {
@@ -363,7 +363,6 @@ namespace TombLib.Wad.Tr4Wad
                             RealPointers[k] = (uint)Meshes.Count;
                             HelperPointers[k] = (uint)Meshes.Count;
                         }
-
                     }
                 }
 
@@ -519,7 +518,7 @@ namespace TombLib.Wad.Tr4Wad
             }
         }
 
-        public int GetNextMoveableWithAnimations(int current)
+        internal int GetNextMoveableWithAnimations(int current)
         {
             for (int i = current + 1; i < Moveables.Count; i++)
                 if (Moveables[i].AnimationIndex != -1)
@@ -527,7 +526,7 @@ namespace TombLib.Wad.Tr4Wad
             return -1;
         }
 
-        public wad_mesh GetMeshFromPointer(int pointer)
+        internal wad_mesh GetMeshFromPointer(int pointer)
         {
             return Meshes[(int)RealPointers[pointer]];
         }
