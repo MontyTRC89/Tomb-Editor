@@ -683,7 +683,37 @@ namespace TombLib.Wad.TrLevels
                         // In TR1 waves are here
                         if (Version == TrVersion.TR1)
                         {
-                            // TODO: examine a PHD file first
+                            var numSamples = levelReader.ReadUInt32();
+                            var samplesBytesRead = 0;
+                            while (samplesBytesRead < numSamples)
+                            {
+                                var sample = new tr_sample();
+
+                                // Check for RIFF header
+                                var riff = System.Text.ASCIIEncoding.ASCII.GetString(levelReader.ReadBytes(4));
+                                samplesBytesRead += 4;
+                                if (riff != "RIFF") continue;
+
+                                // Read the chunk size (in this case, the entire file size)
+                                var fileSize = levelReader.ReadInt32();
+                                samplesBytesRead += 4;
+
+                                // Write to a MemoryStream
+                                using (var ms = new MemoryStream())
+                                {
+                                    using (var writerSample = new BinaryWriterEx(ms))
+                                    {
+                                        writerSample.Write(System.Text.ASCIIEncoding.ASCII.GetBytes("RIFF"));
+                                        writerSample.Write(fileSize);
+                                        writerSample.Write(levelReader.ReadBytes(fileSize));
+                                        samplesBytesRead += fileSize;
+                                    }
+
+                                    sample.Data = ms.ToArray();
+                                }
+
+                                Samples.Add(sample);
+                            }
                         }
 
                         // Samples indices
@@ -721,14 +751,14 @@ namespace TombLib.Wad.TrLevels
                     {
                         for (int x = 0; x < width; x++)
                         {
-                            var r = Palette8[texture8[y * 256 + x]].Red;
-                            var g = Palette8[texture8[y * 256 + x]].Green;
-                            var b = Palette8[texture8[y * 256 + x]].Blue;
+                            var r = (Palette8[texture8[y * 256 + x]].Red * 4);
+                            var g = (Palette8[texture8[y * 256 + x]].Green * 4);
+                            var b = (Palette8[texture8[y * 256 + x]].Blue * 4);
                             var a = (byte)(r == 255 && g == 0 && b == 255 ? 0 : 255);
 
-                            TextureMap32[y * 1024 + x * 4 + 0] = b;
-                            TextureMap32[y * 1024 + x * 4 + 1] = g;
-                            TextureMap32[y * 1024 + x * 4 + 2] = r;
+                            TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
+                            TextureMap32[y * 1024 + x * 4 + 1] = (byte)g;
+                            TextureMap32[y * 1024 + x * 4 + 2] = (byte)r;
                             TextureMap32[y * 1024 + x * 4 + 3] = a;
                         }
                     }
