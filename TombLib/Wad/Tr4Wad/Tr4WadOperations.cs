@@ -468,7 +468,10 @@ namespace TombLib.Wad.Tr4Wad
 
                 if (j + m.AnimationIndex == oldWad.Animations.Count - 1)
                 {
-                    numFrames = ((uint)(2 * oldWad.KeyFrames.Count) - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
+                    if (anim.KeyFrameSize == 0)
+                        numFrames = 0;
+                    else
+                        numFrames = ((uint)(2 * oldWad.KeyFrames.Count) - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
                 }
                 else
                 {
