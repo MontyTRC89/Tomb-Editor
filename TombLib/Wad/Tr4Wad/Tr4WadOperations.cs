@@ -326,7 +326,7 @@ namespace TombLib.Wad.Tr4Wad
             wad_moveable m = oldWad.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
-            moveable.Name = TrCatalog.Games[TombRaiderVersion.TR4].Moveables[(int)m.ObjectID].Name;
+            moveable.Name = TrCatalog.GetMoveableName(TombRaiderVersion.TR4, m.ObjectID);
 
             // First I build a list of meshes for this moveable
             List<wad_mesh> meshes = new List<wad_mesh>();
@@ -632,7 +632,7 @@ namespace TombLib.Wad.Tr4Wad
             var staticMesh = new WadStatic();
             var oldStaticMesh = oldWad.StaticMeshes[staticIndex];
 
-            staticMesh.Name = TrCatalog.Games[TombRaiderVersion.TR4].StaticMeshes[(int)oldStaticMesh.ObjectId].Name;
+            staticMesh.Name = TrCatalog.GetStaticName(TombRaiderVersion.TR4, oldStaticMesh.ObjectId);
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionX1,
