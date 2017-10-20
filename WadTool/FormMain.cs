@@ -672,5 +672,11 @@ namespace WadTool
                 treeSourceWad.Nodes[1].Nodes.Add(nodeStatic);
             }
         }
+
+        private void aboutWadToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
+        }
     }
 }
