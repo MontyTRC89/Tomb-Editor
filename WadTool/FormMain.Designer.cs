@@ -166,7 +166,7 @@
             this.openSourceWADToolStripMenuItem.Image = global::WadTool.Properties.Resources.import_16;
             this.openSourceWADToolStripMenuItem.Name = "openSourceWADToolStripMenuItem";
             this.openSourceWADToolStripMenuItem.Size = new System.Drawing.Size(262, 22);
-            this.openSourceWADToolStripMenuItem.Text = "Open source WAD/Wad2";
+            this.openSourceWADToolStripMenuItem.Text = "Open source WAD - Wad2 - Level";
             this.openSourceWADToolStripMenuItem.Click += new System.EventHandler(this.openSourceWADToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
@@ -469,9 +469,9 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(713, 59);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(107, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(149, 13);
             this.darkLabel2.TabIndex = 6;
-            this.darkLabel2.Text = "Source WAD/Wad2";
+            this.darkLabel2.Text = "Source WAD - Wad2 - Level";
             // 
             // treeDestWad
             // 
