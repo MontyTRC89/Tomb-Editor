@@ -315,6 +315,190 @@ namespace TombEditor.Geometry
             return GetBlockTry(pos.X, pos.Y);
         }
 
+        public Block GetBlockTryThroughPortal(int x, int z)
+        {
+            Block sector = GetBlockTry(x, z);
+
+            if (sector?.WallPortal != null)
+            {
+                Room adjoiningRoom = sector.WallPortal.AdjoiningRoom;
+                DrawingPoint adjoiningSectorCoordinate = new DrawingPoint(x, z).Offset(SectorPos).OffsetNeg(adjoiningRoom.SectorPos);
+                sector = adjoiningRoom.GetBlockTry(adjoiningSectorCoordinate);
+            }
+            return sector;
+        }
+
+        public bool IsIllegalSlope(int x, int z)
+        {
+            Block sector = GetBlockTry(x, z);
+
+            if (sector == null || sector.IsAnyWall)
+                return false;
+
+            const float criticalSlantComponent = 0.8f;
+            const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
+            const int lowestPassableHeight = 3;
+
+            Plane[] tri = new Plane[2];
+
+            var p0 = new Vector3(0, sector.QAFaces[0], 0);
+            var p1 = new Vector3(4, sector.QAFaces[1], 0);
+            var p2 = new Vector3(4, sector.QAFaces[2], -4);
+            var p3 = new Vector3(0, sector.QAFaces[3], -4);
+
+            if ( true ) /// WE'RE MISSING REAL TRIANGLE DIRECTION HERE
+            {
+                tri[0] = new Plane(p0, p1, p2);
+                tri[1] = new Plane(p0, p2, p3);
+            }
+            else
+            {
+                tri[0] = new Plane(p0, p1, p3);
+                tri[1] = new Plane(p1, p2, p3);
+            }
+            
+            EditorArrowType[] slopeDirections = new EditorArrowType[2] { EditorArrowType.EntireFace, EditorArrowType.EntireFace };
+
+            if (Math.Abs(tri[0].Normal.Y) <= criticalSlantComponent)
+            {
+                int tri1Angle = (int)Math.Floor(Math.Atan2(tri[0].Normal.Z, tri[0].Normal.X) * (180.0f / Math.PI) / 90.0f) * 90;
+
+                switch (tri1Angle)
+                {
+                    case 0:
+                        slopeDirections[0] = EditorArrowType.EdgeE;
+                        break;
+                    case -90:
+                        slopeDirections[0] = EditorArrowType.EdgeS;
+                        break;
+                    case 90:
+                        slopeDirections[0] = EditorArrowType.EdgeN;
+                        break;
+                    case 180:
+                        slopeDirections[0] = EditorArrowType.EdgeW;
+                        break;
+                }
+            }
+
+            if (!sector.FloorIsQuad)
+            {
+                if (Math.Abs(tri[1].Normal.Y) <= criticalSlantComponent)
+                {
+                    int tri2Angle = (int)Math.Floor(Math.Atan2(tri[1].Normal.Z, tri[1].Normal.X) * (180.0f / Math.PI) / 90.0f) * 90;
+
+                    switch (tri2Angle)
+                    {
+                        case 0:
+                            slopeDirections[1] = EditorArrowType.EdgeE;
+                            break;
+                        case -90:
+                            slopeDirections[1] = EditorArrowType.EdgeS;
+                            break;
+                        case 90:
+                            slopeDirections[1] = EditorArrowType.EdgeN;
+                            break;
+                        case 180:
+                            slopeDirections[1] = EditorArrowType.EdgeW;
+                            break;
+                    }
+                }
+            }
+            else
+                slopeDirections[1] = slopeDirections[0];
+
+            if (slopeDirections[0] == EditorArrowType.EntireFace && slopeDirections[1] == EditorArrowType.EntireFace)
+                // Both triangles are unslidable
+                return false;
+            else if(slopeDirections[0] == slopeDirections[1])
+            {
+                // Second triangle pointing to the same direction, treat as quad
+                slopeDirections[1] = EditorArrowType.EntireFace;
+            }
+            else if(slopeDirections[0] == EditorArrowType.EntireFace || slopeDirections[1] == EditorArrowType.EntireFace)
+            {
+                // One of the triangles is unslidable
+                if(slopeDirections[0] == EditorArrowType.EntireFace &&
+                    (slopeDirections[1] == EditorArrowType.EdgeN || slopeDirections[1] == EditorArrowType.EdgeE))
+                        return false; // Case resolved by engine
+
+                if (slopeDirections[1] == EditorArrowType.EntireFace &&
+                    (slopeDirections[0] == EditorArrowType.EdgeW || slopeDirections[0] == EditorArrowType.EdgeS))
+                        return false; // Case resolved by engine
+            }
+            else 
+            {
+                // Both triangles are slidable
+                var diff = tri[0].Normal - tri[1].Normal;
+                var angle = Math.Atan2(diff.X, diff.Z);
+
+                if (angle < 0)
+                    return true; // Slants are pointing to each other, hence engine can't resolve this situation
+            }
+
+            bool slopeIsIllegal = false;
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (slopeDirections[i] == EditorArrowType.EntireFace || slopeIsIllegal)
+                    continue;
+
+                Block lookupBlock = null;
+                short[] facesToCheck = new short[2];
+                short[] heightsToCompare = new short[2];
+
+                switch (slopeDirections[i])
+                {
+                    case EditorArrowType.EdgeN:
+                        lookupBlock = GetBlockTryThroughPortal(x, z + 1);
+                        heightsToCompare[0] = 0;
+                        heightsToCompare[1] = 1;
+                        facesToCheck[0] = 2;
+                        facesToCheck[1] = 3;
+                        break;
+
+                    case EditorArrowType.EdgeE:
+                        lookupBlock = GetBlockTryThroughPortal(x + 1, z);
+                        heightsToCompare[0] = 1;
+                        heightsToCompare[1] = 2;
+                        facesToCheck[0] = 3;
+                        facesToCheck[1] = 0;
+                        break;
+
+                    case EditorArrowType.EdgeS:
+                        lookupBlock = GetBlockTryThroughPortal(x, z - 1);
+                        heightsToCompare[0] = 2;
+                        heightsToCompare[1] = 3;
+                        facesToCheck[0] = 0;
+                        facesToCheck[1] = 1;
+                        break;
+
+                    case EditorArrowType.EdgeW:
+                        lookupBlock = GetBlockTryThroughPortal(x - 1, z);
+                        heightsToCompare[0] = 3;
+                        heightsToCompare[1] = 0;
+                        facesToCheck[0] = 1;
+                        facesToCheck[1] = 2;
+                        break;
+                }
+
+                if (lookupBlock.IsAnyWall &&
+                    (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn ||
+                     lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp ||
+                     lookupBlock.FloorDiagonalSplit == DiagonalSplit.None ))
+                        slopeIsIllegal = true;
+                else
+                {
+                    if (Math.Max(lookupBlock.QAFaces[facesToCheck[0]], lookupBlock.QAFaces[facesToCheck[1]]) - Math.Min(sector.QAFaces[heightsToCompare[0]], sector.QAFaces[heightsToCompare[1]]) > lowestPassableStep ||
+                        Math.Min(lookupBlock.WSFaces[facesToCheck[0]], lookupBlock.WSFaces[facesToCheck[1]]) - Math.Max(sector.QAFaces[heightsToCompare[0]], sector.QAFaces[heightsToCompare[1]]) < lowestPassableHeight ||
+                        Math.Min(lookupBlock.WSFaces[facesToCheck[0]], lookupBlock.WSFaces[facesToCheck[1]]) - Math.Max(lookupBlock.QAFaces[facesToCheck[1]], lookupBlock.QAFaces[facesToCheck[1]]) < lowestPassableHeight)
+                        slopeIsIllegal = true;
+                }
+                break;
+            }
+
+            return slopeIsIllegal;
+        }
+
         public bool IsFaceDefined(int x, int z, BlockFace face)
         {
             return _sectorFaceVertexVertexRange[x, z, (int)face].Count != 0;
