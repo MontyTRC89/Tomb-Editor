@@ -270,7 +270,7 @@ namespace TombLib.Wad.Tr4Wad
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = OriginalSoundsDefinitions.GetSoundName(i);
+                newInfo.Name = TrCatalog.GetSoundName(TombRaiderVersion.TR4, (uint)i);
                 newInfo.Volume = oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = oldInfo.Chance;
