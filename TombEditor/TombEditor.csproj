@@ -464,6 +464,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Editor\illegal_slope.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Editor\sky.png" />
     <None Include="Editor\TRCatalog.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
