@@ -1047,6 +1047,9 @@ namespace TombEditor.Geometry
             BlockFace qaFace, edFace, wsFace, rfFace, middleFace;
             int qA, qB, eA, eB, rA, rB, wA, wB, fA, fB, cA, cB;
 
+            bool isOtherFloorDiagonal = false;
+            bool isOtherCeilingDiagonal = false;
+
             switch (direction)
             {
                 case FaceDirection.PositiveZ:
@@ -1073,69 +1076,85 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveZ_RF;
                     wsFace = BlockFace.PositiveZ_WS;
 
+                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp || otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp;
+                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp;
+
                     // Try to adjust illegal combinations of heights
-                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        qA = fA;
-                        qB = fB;
+                        if (qA < fA && qB > fB || qA > fA && qB < fB)
+                        {
+                            qA = fA;
+                            qB = fB;
+                        }
+
+                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                        {
+                            qA = cA;
+                            qB = cB;
+                        }
+
+                        if (eA < qA && eB > qB || eA > qA && eB < qB)
+                        {
+                            eA = qA;
+                            eB = qB;
+                        }
+
+                        if (eA < cA && eB > cB || eA > cA && eB < cB)
+                        {
+                            eA = cA;
+                            eB = cB;
+                        }
                     }
 
-                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        qA = cA;
-                        qB = cB;
+                        if (wA < cA && wB > cB || wA > cA && wB < cB)
+                        {
+                            wA = cA;
+                            wB = cB;
+                        }
+
+                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                        {
+                            wA = fA;
+                            wB = fB;
+                        }
+
+                        if (rA < wA && rB > wB || rA > wA && rB < wB)
+                        {
+                            rA = wA;
+                            rB = wB;
+                        }
+
+                        if (rA < fA && rB > fB || rA > fA && rB < fB)
+                        {
+                            rA = fA;
+                            rB = fB;
+                        }
                     }
 
-                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        wA = cA;
-                        wB = cB;
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
+
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
                     }
 
-                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        wA = fA;
-                        wB = fB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
+
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
                     }
-
-                    if (eA < qA && eB > qB || eA > qA && eB < qB)
-                    {
-                        eA = qA;
-                        eB = qB;
-                    }
-
-                    if (eA < cA && eB > cB || eA > cA && eB < cB)
-                    {
-                        eA = cA;
-                        eB = cB;
-                    }
-
-                    if (rA < wA && rB > wB || rA > wA && rB < wB)
-                    {
-                        rA = wA;
-                        rB = wB;
-                    }
-
-                    if (rA < fA && rB > fB || rA > fA && rB < fB)
-                    {
-                        rA = fA;
-                        rB = fB;
-                    }
-
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
-
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
-
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
-
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
 
                     if (Blocks[x, z].WallPortal != null)
                     {
+                        // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeZ);
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
@@ -1144,19 +1163,41 @@ namespace TombEditor.Geometry
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
+                        // Get the near block in current room
+                        var nearBlock = Blocks[x, 1];
+
+                        var qaNearA = nearBlock.QAFaces[2];
+                        var qaNearB = nearBlock.QAFaces[3];
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qaNearA = qaNearB;
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qaNearB = qaNearA;
+
+                        var wsNearA = nearBlock.WSFaces[2];
+                        var wsNearB = nearBlock.WSFaces[3];
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearA = wsNearB;
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearB = wsNearA;
+
+                        // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
 
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].QAFaces[1];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].QAFaces[0];
-                        qA = (int)Position.Y + Blocks[x, 1].QAFaces[2];
-                        qB = (int)Position.Y + Blocks[x, 1].QAFaces[3];
+                        var adjoiningBlock = adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2];
+
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[1];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[0];
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qAportal = qBportal;
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qBportal = qAportal;
+
+                        qA = (int)Position.Y + qaNearA; 
+                        qB = (int)Position.Y + qaNearB; 
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].WSFaces[1];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, adjoiningRoom.NumZSectors - 2].WSFaces[0];
-                        wA = (int)Position.Y + Blocks[x, 1].WSFaces[2];
-                        wB = (int)Position.Y + Blocks[x, 1].WSFaces[3];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[1];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[0];
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wAportal = wBportal;
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wBportal = wAportal;
+
+                        wA = (int)Position.Y + wsNearA;
+                        wB = (int)Position.Y + wsNearB; 
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1248,69 +1289,85 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeZ_RF;
                     wsFace = BlockFace.NegativeZ_WS;
 
+                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn || otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn;
+                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn;
+
                     // Try to adjust illegal combinations of heights
-                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        qA = fA;
-                        qB = fB;
+                        if (qA < fA && qB > fB || qA > fA && qB < fB)
+                        {
+                            qA = fA;
+                            qB = fB;
+                        }
+
+                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                        {
+                            qA = cA;
+                            qB = cB;
+                        }
+
+                        if (eA < qA && eB > qB || eA > qA && eB < qB)
+                        {
+                            eA = qA;
+                            eB = qB;
+                        }
+
+                        if (eA < cA && eB > cB || eA > cA && eB < cB)
+                        {
+                            eA = cA;
+                            eB = cB;
+                        }
                     }
 
-                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        qA = cA;
-                        qB = cB;
+                        if (wA < cA && wB > cB || wA > cA && wB < cB)
+                        {
+                            wA = cA;
+                            wB = cB;
+                        }
+
+                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                        {
+                            wA = fA;
+                            wB = fB;
+                        }
+
+                        if (rA < wA && rB > wB || rA > wA && rB < wB)
+                        {
+                            rA = wA;
+                            rB = wB;
+                        }
+
+                        if (rA < fA && rB > fB || rA > fA && rB < fB)
+                        {
+                            rA = fA;
+                            rB = fB;
+                        }
                     }
 
-                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        wA = cA;
-                        wB = cB;
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
+
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
                     }
 
-                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        wA = fA;
-                        wB = fB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
+
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
                     }
-
-                    if (eA < qA && eB > qB || eA > qA && eB < qB)
-                    {
-                        eA = qA;
-                        eB = qB;
-                    }
-
-                    if (eA < cA && eB > cB || eA > cA && eB < cB)
-                    {
-                        eA = cA;
-                        eB = cB;
-                    }
-
-                    if (rA < wA && rB > wB || rA > wA && rB < wB)
-                    {
-                        rA = wA;
-                        rB = wB;
-                    }
-
-                    if (rA < fA && rB > fB || rA > fA && rB < fB)
-                    {
-                        rA = fA;
-                        rB = fB;
-                    }
-
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
-
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
-
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
-
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
 
                     if (Blocks[x, z].WallPortal != null)
                     {
+                        // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallPositiveZ);
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
@@ -1319,18 +1376,41 @@ namespace TombEditor.Geometry
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
+                        // Get the near block in current room
+                        var nearBlock = Blocks[x, NumZSectors - 2];
+
+                        var qaNearA = nearBlock.QAFaces[0];
+                        var qaNearB = nearBlock.QAFaces[1];
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qaNearA = qaNearB;
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qaNearB = qaNearA;
+
+                        var wsNearA = nearBlock.WSFaces[0];
+                        var wsNearB = nearBlock.WSFaces[1];
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearA = wsNearB;
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearB = wsNearA;
+
+                        // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingX = x + (int)(Position.X - adjoiningRoom.Position.X);
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, 1].QAFaces[3];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, 1].QAFaces[2];
-                        qA = (int)Position.Y + Blocks[x, NumZSectors - 2].QAFaces[0];
-                        qB = (int)Position.Y + Blocks[x, NumZSectors - 2].QAFaces[1];
+
+                        var adjoiningBlock = adjoiningRoom.Blocks[facingX, 1];
+
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[3];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[2];
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qAportal = qBportal;
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qBportal = qAportal;
+
+                        qA = (int)Position.Y + qaNearA;  
+                        qB = (int)Position.Y + qaNearB;  
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, 1].WSFaces[3];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[facingX, 1].WSFaces[2];
-                        wA = (int)Position.Y + Blocks[x, NumZSectors - 2].WSFaces[0];
-                        wB = (int)Position.Y + Blocks[x, NumZSectors - 2].WSFaces[1];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[3];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[2];
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wAportal = wBportal;
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wBportal = wAportal;
+
+                        wA = (int)Position.Y + wsNearA;  
+                        wB = (int)Position.Y + wsNearB;  
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1422,69 +1502,85 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.PositiveX_RF;
                     wsFace = BlockFace.PositiveX_WS;
 
+                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZp || otherBlock.FloorDiagonalSplit == DiagonalSplit.XpZn;
+                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn;
+
                     // Try to adjust illegal combinations of heights
-                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        qA = fA;
-                        qB = fB;
+                        if (qA < fA && qB > fB || qA > fA && qB < fB)
+                        {
+                            qA = fA;
+                            qB = fB;
+                        }
+
+                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                        {
+                            qA = cA;
+                            qB = cB;
+                        }
+
+                        if (eA < qA && eB > qB || eA > qA && eB < qB)
+                        {
+                            eA = qA;
+                            eB = qB;
+                        }
+
+                        if (eA < cA && eB > cB || eA > cA && eB < cB)
+                        {
+                            eA = cA;
+                            eB = cB;
+                        }
                     }
 
-                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        qA = cA;
-                        qB = cB;
+                        if (wA < cA && wB > cB || wA > cA && wB < cB)
+                        {
+                            wA = cA;
+                            wB = cB;
+                        }
+
+                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                        {
+                            wA = fA;
+                            wB = fB;
+                        }
+
+                        if (rA < wA && rB > wB || rA > wA && rB < wB)
+                        {
+                            rA = wA;
+                            rB = wB;
+                        }
+
+                        if (rA < fA && rB > fB || rA > fA && rB < fB)
+                        {
+                            rA = fA;
+                            rB = fB;
+                        }
                     }
 
-                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        wA = cA;
-                        wB = cB;
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
+
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
                     }
 
-                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        wA = fA;
-                        wB = fB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
+
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
                     }
-
-                    if (eA < qA && eB > qB || eA > qA && eB < qB)
-                    {
-                        eA = qA;
-                        eB = qB;
-                    }
-
-                    if (eA < cA && eB > cB || eA > cA && eB < cB)
-                    {
-                        eA = cA;
-                        eB = cB;
-                    }
-
-                    if (rA < wA && rB > wB || rA > wA && rB < wB)
-                    {
-                        rA = wA;
-                        rB = wB;
-                    }
-
-                    if (rA < fA && rB > fB || rA > fA && rB < fB)
-                    {
-                        rA = fA;
-                        rB = fB;
-                    }
-
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
-
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
-
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
-
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
 
                     if (Blocks[x, z].WallPortal != null)
-                    {
+                    {                        
+                        // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
                         var adjoiningRoom = portal.AdjoiningRoom;
                         if (Flipped && AlternateBaseRoom != null)
@@ -1493,18 +1589,41 @@ namespace TombEditor.Geometry
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
+                        // Get the near block in current room
+                        var nearBlock = Blocks[1, z];
+
+                        var qaNearA = nearBlock.QAFaces[3];
+                        var qaNearB = nearBlock.QAFaces[0];
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qaNearA = qaNearB;
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qaNearB = qaNearA;
+
+                        var wsNearA = nearBlock.WSFaces[3];
+                        var wsNearB = nearBlock.WSFaces[0];
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wsNearA = wsNearB;
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wsNearB = wsNearA;
+
+                        // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].QAFaces[2];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].QAFaces[1];
-                        qA = (int)Position.Y + Blocks[1, z].QAFaces[3];
-                        qB = (int)Position.Y + Blocks[1, z].QAFaces[0];
+
+                        var adjoiningBlock = adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ];
+
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[2];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[1];
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qAportal = qBportal;
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qBportal = qAportal;
+
+                        qA = (int)Position.Y + qaNearA;
+                        qB = (int)Position.Y + qaNearB;
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].WSFaces[2];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[adjoiningRoom.NumXSectors - 2, facingZ].WSFaces[1];
-                        wA = (int)Position.Y + Blocks[1, z].WSFaces[3];
-                        wB = (int)Position.Y + Blocks[1, z].WSFaces[0];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[2];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[1];
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wAportal = wBportal;
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wBportal = wAportal;
+
+                        wA = (int)Position.Y + wsNearA;
+                        wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1794,90 +1913,128 @@ namespace TombEditor.Geometry
                     rfFace = BlockFace.NegativeX_RF;
                     wsFace = BlockFace.NegativeX_WS;
 
+                    isOtherFloorDiagonal = otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZp || otherBlock.FloorDiagonalSplit == DiagonalSplit.XnZn;
+                    isOtherCeilingDiagonal = otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp || otherBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn;
+
                     // Try to adjust illegal combinations of heights
-                    if (qA < fA && qB > fB || qA > fA && qB < fB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        qA = fA;
-                        qB = fB;
+                        if (qA < fA && qB > fB || qA > fA && qB < fB)
+                        {
+                            qA = fA;
+                            qB = fB;
+                        }
+
+                        if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                        {
+                            qA = cA;
+                            qB = cB;
+                        }
+
+                        if (eA < qA && eB > qB || eA > qA && eB < qB)
+                        {
+                            eA = qA;
+                            eB = qB;
+                        }
+
+                        if (eA < cA && eB > cB || eA > cA && eB < cB)
+                        {
+                            eA = cA;
+                            eB = cB;
+                        }
                     }
 
-                    if (qA < cA && qB > cB || qA > cA && qB < cB || qA > cA && qB > cB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        qA = cA;
-                        qB = cB;
+                        if (wA < cA && wB > cB || wA > cA && wB < cB)
+                        {
+                            wA = cA;
+                            wB = cB;
+                        }
+
+                        if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                        {
+                            wA = fA;
+                            wB = fB;
+                        }
+
+                        if (rA < wA && rB > wB || rA > wA && rB < wB)
+                        {
+                            rA = wA;
+                            rB = wB;
+                        }
+
+                        if (rA < fA && rB > fB || rA > fA && rB < fB)
+                        {
+                            rA = fA;
+                            rB = fB;
+                        }
                     }
 
-                    if (wA < cA && wB > cB || wA > cA && wB < cB)
+                    if (!isOtherFloorDiagonal)
                     {
-                        wA = cA;
-                        wB = cB;
+                        if (qA < fA) qA = fA;
+                        if (qB < fB) qB = fB;
+
+                        if (wA < fA) wA = fA;
+                        if (wB < fB) wB = fB;
                     }
 
-                    if (wA < fA && wB > fB || wA > fA && wB < fB || wA < fA && wB < fB)
+                    if (!isOtherCeilingDiagonal)
                     {
-                        wA = fA;
-                        wB = fB;
+                        if (qA > cA) qA = cA;
+                        if (qB > cB) qB = cB;
+
+                        if (wA > cA) wA = cA;
+                        if (wB > cB) wB = cB;
                     }
-
-                    if (eA < qA && eB > qB || eA > qA && eB < qB)
-                    {
-                        eA = qA;
-                        eB = qB;
-                    }
-
-                    if (eA < cA && eB > cB || eA > cA && eB < cB)
-                    {
-                        eA = cA;
-                        eB = cB;
-                    }
-
-                    if (rA < wA && rB > wB || rA > wA && rB < wB)
-                    {
-                        rA = wA;
-                        rB = wB;
-                    }
-
-                    if (rA < fA && rB > fB || rA > fA && rB < fB)
-                    {
-                        rA = fA;
-                        rB = fB;
-                    }
-
-                    if (qA < fA) qA = fA;
-                    if (qB < fB) qB = fB;
-
-                    if (qA > cA) qA = cA;
-                    if (qB > cB) qB = cB;
-
-                    if (wA < fA) wA = fA;
-                    if (wB < fB) wB = fB;
-
-                    if (wA > cA) wA = cA;
-                    if (wB > cB) wB = cB;
 
                     if (Blocks[x, z].WallPortal != null)
                     {
-                        var portal = FindPortal(x, z, PortalDirection.WallPositiveX);
+                        // Get the adjoining room of the portal
+                        var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
                         var adjoiningRoom = portal.AdjoiningRoom;
-
                         if (Flipped && AlternateBaseRoom != null)
                         {
                             if (adjoiningRoom.Flipped && adjoiningRoom.AlternateRoom != null)
                                 adjoiningRoom = adjoiningRoom.AlternateRoom;
                         }
 
+                        // Get the near block in current room
+                        var nearBlock = Blocks[NumXSectors - 2, z];
+
+                        var qaNearA = nearBlock.QAFaces[1];
+                        var qaNearB = nearBlock.QAFaces[2];
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qaNearA = qaNearB;
+                        if (nearBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qaNearB = qaNearA;
+
+                        var wsNearA = nearBlock.WSFaces[1];
+                        var wsNearB = nearBlock.WSFaces[2];
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wsNearA = wsNearB;
+                        if (nearBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wsNearB = wsNearA;
+
+                        // Now get the facing block on the adjoining room and calculate the correct heights
                         int facingZ = z + (int)(Position.Z - adjoiningRoom.Position.Z);
-                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[1, facingZ].QAFaces[0];
-                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[1, facingZ].QAFaces[3];
-                        qA = (int)Position.Y + Blocks[NumXSectors - 2, z].QAFaces[1];
-                        qB = (int)Position.Y + Blocks[NumXSectors - 2, z].QAFaces[2];
+
+                        var adjoiningBlock = adjoiningRoom.Blocks[1, facingZ];
+
+                        int qAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[0];
+                        int qBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.QAFaces[3];
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qAportal = qBportal;
+                        if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qBportal = qAportal;
+
+                        qA = (int)Position.Y + qaNearA;
+                        qB = (int)Position.Y + qaNearB;
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
-                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[1, facingZ].WSFaces[0];
-                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningRoom.Blocks[1, facingZ].WSFaces[3];
-                        wA = (int)Position.Y + Blocks[NumXSectors - 2, z].WSFaces[1];
-                        wB = (int)Position.Y + Blocks[NumXSectors - 2, z].WSFaces[2];
+                        int wAportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[0];
+                        int wBportal = (int)adjoiningRoom.Position.Y + adjoiningBlock.WSFaces[3];
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wAportal = wBportal;
+                        if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZn) wBportal = wAportal;
+
+                        wA = (int)Position.Y + wsNearA;
+                        wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
