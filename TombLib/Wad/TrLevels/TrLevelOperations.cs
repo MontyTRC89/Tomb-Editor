@@ -396,7 +396,7 @@ namespace TombLib.Wad.TrLevels
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = OriginalSoundsDefinitions.GetSoundName(i);
+                newInfo.Name = TrCatalog.GetSoundName(GetTrVersion(oldLevel.Version), (uint)i);
                 newInfo.Volume = (byte)oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = (byte)oldInfo.Chance;

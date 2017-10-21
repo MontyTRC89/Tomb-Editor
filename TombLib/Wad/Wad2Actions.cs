@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.Graphics;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -429,7 +430,7 @@ namespace TombLib.Wad
                                 }
                                 else
                                 {
-                                    if (Wad2.MandatorySounds.Contains(soundId))
+                                    if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, soundId))
                                     {
                                         // If this is a mandatory sound, I can add it only if doesn't exist in dest Wad2
                                         if (!SoundInfo.ContainsKey(soundId))

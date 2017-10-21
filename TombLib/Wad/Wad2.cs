@@ -121,9 +121,9 @@ namespace TombLib.Wad
             WaveSounds = new Dictionary<Hash, WadSound>();
         }
 
-        public static string[] OfficialSoundNames { get { return _officialSoundNames; } }
+       // public static string[] OfficialSoundNames { get { return _officialSoundNames; } }
 
-        public static ushort[] MandatorySounds
+       /* public static ushort[] MandatorySounds
         {
             get
             {
@@ -136,7 +136,7 @@ namespace TombLib.Wad
                                       292, 294, 315, 326, 327, 339, 340, 345, 347, 348, 
                                       349, 350, 351, 369 };
             }
-        }
+        }*/
 
         public void RebuildTextureAtlas()
         {
