@@ -124,6 +124,8 @@ namespace TombEditor.Controls
         public bool DrawRoomNames { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawHorizon { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawIllegalSlopes { get; set; }
 
         private Editor _editor;
         private DeviceManager _deviceManager;
@@ -2650,6 +2652,7 @@ namespace TombEditor.Controls
                                 _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                                 break;
                         }
+
                     }
                     else if (face == (BlockFace)27 || face == (BlockFace)28)
                     {
@@ -3094,6 +3097,15 @@ namespace TombEditor.Controls
                             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                             _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                         }
+                    }
+                }
+                else if(DrawIllegalSlopes)
+                {
+                    if ((face == (BlockFace)25 || face == (BlockFace)26) && room.IsIllegalSlope(x, z))
+                    {
+                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["illegal_slope"]);
+                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                     }
                 }
 
