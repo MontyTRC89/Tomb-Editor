@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace TombLib.Wad.Catalog
 {
-    public class TrCatalogGame
+    internal class TrCatalogGame
     {
-        public TombRaiderVersion Version { get; private set; }
-        public Dictionary<int, TrCatalogItem> Moveables { get; private set; }
-        public Dictionary<int, TrCatalogItem> Sprites { get; private set; }
-        public Dictionary<int, TrCatalogItem> StaticMeshes { get; private set; }
+        internal TombRaiderVersion Version { get; private set; }
+        internal Dictionary<int, TrCatalogItem> Moveables { get; private set; }
+        internal Dictionary<int, TrCatalogItem> Sprites { get; private set; }
+        internal Dictionary<int, TrCatalogItem> StaticMeshes { get; private set; }
+        internal Dictionary<int, TrCatalogItemSound> Sounds { get; private set; }
 
         public TrCatalogGame(TombRaiderVersion version)
         {
@@ -19,6 +20,7 @@ namespace TombLib.Wad.Catalog
             Moveables = new Dictionary<int, TrCatalogItem>();
             Sprites = new Dictionary<int, TrCatalogItem>();
             StaticMeshes = new Dictionary<int, TrCatalogItem>();
+            Sounds = new Dictionary<int, TrCatalogItemSound>();
         }
     }
 }

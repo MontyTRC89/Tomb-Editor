@@ -10,7 +10,7 @@ namespace TombLib.Wad.Catalog
 {
     public class TrCatalog
     {
-        public static Dictionary<TombRaiderVersion, TrCatalogGame> Games { get; private set; } = new Dictionary<TombRaiderVersion, TrCatalogGame>();
+        internal static Dictionary<TombRaiderVersion, TrCatalogGame> Games { get; private set; } = new Dictionary<TombRaiderVersion, TrCatalogGame>();
 
         public static string GetMoveableName(TombRaiderVersion version, uint id)
         {
@@ -24,6 +24,20 @@ namespace TombLib.Wad.Catalog
             if (!Games.ContainsKey(version)) return "Unknown #" + id;
             if (!Games[version].StaticMeshes.ContainsKey((int)id)) return "Unknown #" + id;
             return Games[version].StaticMeshes[(int)id].Name;
+        }
+
+        public static string GetSoundName(TombRaiderVersion version, uint id)
+        {
+            if (!Games.ContainsKey(version)) return "Unknown #" + id;
+            if (!Games[version].Sounds.ContainsKey((int)id)) return "Unknown #" + id;
+            return Games[version].Sounds[(int)id].Name;
+        }
+
+        public static bool IsSoundMandatory(TombRaiderVersion version, uint id)
+        {
+            if (!Games.ContainsKey(version)) return false;
+            if (!Games[version].StaticMeshes.ContainsKey((int)id)) return false;
+            return Games[version].Sounds[(int)id].Mandatory;
         }
 
         public static void LoadCatalog(string fileName)
@@ -76,6 +90,24 @@ namespace TombLib.Wad.Catalog
                 {
                     var staticMesh = new TrCatalogItem(i, "Static #" + i);
                     game.StaticMeshes.Add(i, staticMesh);
+                }
+
+                foreach (XmlNode node in gameNode.ChildNodes)
+                {
+                    if (node.Name != "sounds") continue;
+
+                    // Parse sounds
+                    foreach (XmlNode soundNode in node.ChildNodes)
+                    {
+                        if (soundNode.Name != "sound") continue;
+
+                        var soundId = Int32.Parse(soundNode.Attributes["id"].Value);
+                        var objectName = soundNode.Attributes["name"].Value;
+                        var mandatory = (soundNode.Attributes["mandatory"] != null ? Boolean.Parse(soundNode.Attributes["mandatory"].Value) : false);
+
+                        var sound = new TrCatalogItemSound(soundId, objectName, mandatory);
+                        game.Sounds.Add(soundId, sound);
+                    }
                 }
 
                 Games.Add(version, game);
