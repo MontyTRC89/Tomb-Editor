@@ -150,6 +150,7 @@
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
     <Compile Include="Wad\Catalog\TrCatalogGame.cs" />
     <Compile Include="Wad\Catalog\TrCatalogItem.cs" />
+    <Compile Include="Wad\Catalog\TrCatalogItemSound.cs" />
     <Compile Include="Wad\OriginalSoundsDefinitions.cs" />
     <Compile Include="Wad\OriginalSound.cs" />
     <Compile Include="Wad\TrLevels\Enumerations.cs" />

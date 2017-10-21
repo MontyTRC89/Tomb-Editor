@@ -678,5 +678,53 @@ namespace WadTool
             using (FormAbout form = new FormAbout())
                 form.ShowDialog(this);
         }
+
+        private void debugAction7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /*for (var i = 1; i <= 4; i++)
+            {
+                var addedSounds = new List<int>();
+
+                using (var reader = new StreamReader(File.OpenRead("E:\\SFX_TR" + i + ".txt")))
+                {
+                    if (File.Exists("E:\\TR" + i + ".xml")) File.Delete("E:\\TR" + i + ".xml");
+
+                    using (var writer = new StreamWriter(File.OpenWrite("E:\\TR" + i + ".xml")))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            var s = reader.ReadLine();
+                            int id = Int32.Parse(s.Split(' ')[0]);
+                            if (addedSounds.Contains(id)) continue;
+                            addedSounds.Add(id);
+
+                            s = s.Substring(4, s.Length - 4);
+                            s = s.Replace("\"", "");
+                            s = s.Replace(" -- ", "\" name=\"");
+                            s = "<sound id=\"" + id + s + "\" ";
+                            if (i == 4 && Wad2.MandatorySounds.Contains((ushort)id)) s += "mandatory=\"true\"";
+                            s+= "/>";
+                            writer.WriteLine(s);
+                        }
+                    }
+                }
+            }*/
+
+            using (var reader = new StreamReader(File.OpenRead("E:\\sounds.txt")))
+            {
+                using (var writer = new StreamWriter(File.OpenWrite("E:\\TR5.xml")))
+                {
+                    int i = 0;
+                    while (!reader.EndOfStream)
+                    {
+                        var s = reader.ReadLine();
+                        s = s.Substring(0, s.IndexOf(":"));
+                        s = s[0] + s.Replace("_", " ").Substring(1, s.Length - 1).ToLower();
+                        writer.WriteLine("<sound id=\"" +i + "\" name=\"" + s + "\"/>");
+                        i++;
+                    }
+                }
+            }
+        }
     }
 }

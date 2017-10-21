@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace TombLib.Wad.Catalog
 {
-    public class TrCatalogItem
+    internal class TrCatalogItem
     {
-        public int ObjectId { get; private set; }
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public string Icon { get; private set; }
 
         public TrCatalogItem(int objectId, string name)
         {
-            ObjectId = objectId;
+            Id = objectId;
             Name = name;
         }
     }
