@@ -343,7 +343,6 @@
             // 
             this.butTextureFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureFloor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTextureFloor.Enabled = false;
             this.butTextureFloor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureFloor.Image = global::TombEditor.Properties.Resources.TextureFloor_16;
             this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -356,7 +355,6 @@
             // 
             this.butTextureCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureCeiling.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTextureCeiling.Enabled = false;
             this.butTextureCeiling.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.TextureCeiling_16;
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -369,7 +367,6 @@
             // 
             this.butTextureWalls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureWalls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTextureWalls.Enabled = false;
             this.butTextureWalls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.TextureWalls_16;
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
