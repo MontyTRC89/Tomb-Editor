@@ -90,7 +90,10 @@ namespace WadTool.Controls
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.White, 1.0f, 0);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, 
+                          _tool.Configuration.Rendering3D_BackgroundColor, 
+                          1.0f, 
+                          0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
             _device.SetBlendState(_device.BlendStates.Opaque);
 

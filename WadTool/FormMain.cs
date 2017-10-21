@@ -183,6 +183,12 @@ namespace WadTool
 
         private void UpdateDestinationWad2UI()
         {
+            // Disable rendering
+            treeDestWad.SelectedNodes.Clear();
+            panel3D.CurrentObject = null;
+            panel3D.CurrentWad = null;
+            panel3D.Invalidate();
+            
             treeDestWad.Nodes.Clear();
 
             var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
@@ -291,6 +297,12 @@ namespace WadTool
                 newWad.PrepareDataForDirectX();
                 _tool.SourceWad = newWad;
             }
+
+            // Disable rendering
+            treeSourceWad.SelectedNodes.Clear();
+            panel3D.CurrentObject = null;
+            panel3D.CurrentWad = null;
+            panel3D.Invalidate();
 
             // Update the UI
             treeSourceWad.Nodes.Clear();
