@@ -338,6 +338,7 @@ namespace TombEditor.Geometry
             const float criticalSlantComponent = 0.8f;
             const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
             const int lowestPassableHeight = 3;
+            const int lowestSlidableHeight = 3;
 
             Plane[] tri = new Plane[2];
 
@@ -346,7 +347,7 @@ namespace TombEditor.Geometry
             var p2 = new Vector3(4, sector.QAFaces[2], -4);
             var p3 = new Vector3(0, sector.QAFaces[3], -4);
 
-            if ( true ) /// WE'RE MISSING REAL TRIANGLE DIRECTION HERE
+            if (true) /// WE'RE MISSING REAL TRIANGLE DIRECTION HERE
             {
                 tri[0] = new Plane(p0, p1, p2);
                 tri[1] = new Plane(p0, p2, p3);
@@ -356,54 +357,34 @@ namespace TombEditor.Geometry
                 tri[0] = new Plane(p0, p1, p3);
                 tri[1] = new Plane(p1, p2, p3);
             }
-            
+
             EditorArrowType[] slopeDirections = new EditorArrowType[2] { EditorArrowType.EntireFace, EditorArrowType.EntireFace };
-
-            if (Math.Abs(tri[0].Normal.Y) <= criticalSlantComponent)
+            
+            for (int i = 0; i < (sector.FloorIsQuad ? 1 : 2); i++)
             {
-                int tri1Angle = (int)Math.Floor(Math.Atan2(tri[0].Normal.Z, tri[0].Normal.X) * (180.0f / Math.PI) / 90.0f) * 90;
-
-                switch (tri1Angle)
+                if (Math.Abs(tri[i].Normal.Y) <= criticalSlantComponent)
                 {
-                    case 0:
-                        slopeDirections[0] = EditorArrowType.EdgeE;
-                        break;
-                    case -90:
-                        slopeDirections[0] = EditorArrowType.EdgeS;
-                        break;
-                    case 90:
-                        slopeDirections[0] = EditorArrowType.EdgeN;
-                        break;
-                    case 180:
-                        slopeDirections[0] = EditorArrowType.EdgeW;
-                        break;
-                }
-            }
-
-            if (!sector.FloorIsQuad)
-            {
-                if (Math.Abs(tri[1].Normal.Y) <= criticalSlantComponent)
-                {
-                    int tri2Angle = (int)Math.Floor(Math.Atan2(tri[1].Normal.Z, tri[1].Normal.X) * (180.0f / Math.PI) / 90.0f) * 90;
-
-                    switch (tri2Angle)
+                    var angle = Math.Atan2(tri[i].Normal.X, tri[i].Normal.Z) * (180.0f / Math.PI);
+                    switch ((int)Math.Round((angle < 0 ? angle + 360.0f : angle) / 90.0f) * 90)
                     {
                         case 0:
-                            slopeDirections[1] = EditorArrowType.EdgeE;
-                            break;
-                        case -90:
-                            slopeDirections[1] = EditorArrowType.EdgeS;
+                        case 360:
+                            slopeDirections[i] = EditorArrowType.EdgeN;
                             break;
                         case 90:
-                            slopeDirections[1] = EditorArrowType.EdgeN;
+                            slopeDirections[i] = EditorArrowType.EdgeE;
                             break;
                         case 180:
-                            slopeDirections[1] = EditorArrowType.EdgeW;
+                            slopeDirections[i] = EditorArrowType.EdgeS;
+                            break;
+                        case 270:
+                            slopeDirections[i] = EditorArrowType.EdgeW;
                             break;
                     }
                 }
             }
-            else
+            
+            if(sector.FloorIsQuad)
                 slopeDirections[1] = slopeDirections[0];
 
             if (slopeDirections[0] == EditorArrowType.EntireFace && slopeDirections[1] == EditorArrowType.EntireFace)
@@ -429,7 +410,7 @@ namespace TombEditor.Geometry
             {
                 // Both triangles are slidable
                 var diff = tri[0].Normal - tri[1].Normal;
-                var angle = Math.Atan2(diff.X, diff.Z);
+                var angle = Math.Atan2(diff.X, diff.Z) * (180.0f / Math.PI);
 
                 if (angle < 0)
                     return true; // Slants are pointing to each other, hence engine can't resolve this situation
@@ -443,8 +424,8 @@ namespace TombEditor.Geometry
                     continue;
 
                 Block lookupBlock = null;
-                short[] facesToCheck = new short[2];
                 short[] heightsToCompare = new short[2];
+                short[] heightsToCheck = new short[4];
 
                 switch (slopeDirections[i])
                 {
@@ -452,32 +433,40 @@ namespace TombEditor.Geometry
                         lookupBlock = GetBlockTryThroughPortal(x, z + 1);
                         heightsToCompare[0] = 0;
                         heightsToCompare[1] = 1;
-                        facesToCheck[0] = 2;
-                        facesToCheck[1] = 3;
+                        heightsToCheck[0] = 2;
+                        heightsToCheck[1] = 3;
+                        heightsToCheck[2] = 1;
+                        heightsToCheck[3] = 0;
                         break;
 
                     case EditorArrowType.EdgeE:
                         lookupBlock = GetBlockTryThroughPortal(x + 1, z);
                         heightsToCompare[0] = 1;
                         heightsToCompare[1] = 2;
-                        facesToCheck[0] = 3;
-                        facesToCheck[1] = 0;
+                        heightsToCheck[0] = 3;
+                        heightsToCheck[1] = 0;
+                        heightsToCheck[2] = 2;
+                        heightsToCheck[3] = 1;
                         break;
 
                     case EditorArrowType.EdgeS:
                         lookupBlock = GetBlockTryThroughPortal(x, z - 1);
                         heightsToCompare[0] = 2;
                         heightsToCompare[1] = 3;
-                        facesToCheck[0] = 0;
-                        facesToCheck[1] = 1;
+                        heightsToCheck[0] = 0;
+                        heightsToCheck[1] = 1;
+                        heightsToCheck[2] = 3;
+                        heightsToCheck[3] = 2;
                         break;
 
                     case EditorArrowType.EdgeW:
                         lookupBlock = GetBlockTryThroughPortal(x - 1, z);
                         heightsToCompare[0] = 3;
                         heightsToCompare[1] = 0;
-                        facesToCheck[0] = 1;
-                        facesToCheck[1] = 2;
+                        heightsToCheck[0] = 1;
+                        heightsToCheck[1] = 2;
+                        heightsToCheck[2] = 0;
+                        heightsToCheck[3] = 3;
                         break;
                 }
 
@@ -486,7 +475,7 @@ namespace TombEditor.Geometry
                     slopeIsIllegal = true;
                     continue;
                 }
-                else if(lookupBlock.FloorDiagonalSplit != DiagonalSplit.None)
+                else if (lookupBlock.FloorDiagonalSplit != DiagonalSplit.None)
                 {
                     switch (slopeDirections[i])
                     {
@@ -501,9 +490,9 @@ namespace TombEditor.Geometry
                                 }
                             }
                             else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
-                                facesToCheck[1] = 2;
+                                heightsToCheck[1] = 2;
                             else
-                                facesToCheck[0] = 3;
+                                heightsToCheck[0] = 3;
                             break;
                         case EditorArrowType.EdgeE:
                             if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZn ||
@@ -516,9 +505,9 @@ namespace TombEditor.Geometry
                                 }
                             }
                             else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp)
-                                facesToCheck[1] = 3;
+                                heightsToCheck[1] = 3;
                             else
-                                facesToCheck[0] = 0;
+                                heightsToCheck[0] = 0;
                             break;
                         case EditorArrowType.EdgeS:
                             if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp ||
@@ -531,9 +520,9 @@ namespace TombEditor.Geometry
                                 }
                             }
                             else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZn)
-                                facesToCheck[1] = 0;
+                                heightsToCheck[1] = 0;
                             else
-                                facesToCheck[0] = 1;
+                                heightsToCheck[0] = 1;
                             break;
                         case EditorArrowType.EdgeW:
                             if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XpZp ||
@@ -546,17 +535,21 @@ namespace TombEditor.Geometry
                                 }
                             }
                             else if (lookupBlock.FloorDiagonalSplit == DiagonalSplit.XnZp)
-                                facesToCheck[0] = 2;
+                                heightsToCheck[0] = 2;
                             else
-                                facesToCheck[1] = 1;
+                                heightsToCheck[1] = 1;
                             break;
                     }
                 }
 
-                if (Math.Max(lookupBlock.QAFaces[facesToCheck[0]], lookupBlock.QAFaces[facesToCheck[1]]) - Math.Min(sector.QAFaces[heightsToCompare[0]], sector.QAFaces[heightsToCompare[1]]) > lowestPassableStep ||
-                    Math.Min(lookupBlock.WSFaces[facesToCheck[0]], lookupBlock.WSFaces[facesToCheck[1]]) - Math.Max(sector.QAFaces[heightsToCompare[0]], sector.QAFaces[heightsToCompare[1]]) < lowestPassableHeight ||
-                    Math.Min(lookupBlock.WSFaces[facesToCheck[0]], lookupBlock.WSFaces[facesToCheck[1]]) - Math.Max(lookupBlock.QAFaces[facesToCheck[1]], lookupBlock.QAFaces[facesToCheck[1]]) < lowestPassableHeight)
+                if (Math.Max(lookupBlock.QAFaces[heightsToCheck[0]], lookupBlock.QAFaces[heightsToCheck[1]]) - Math.Min(sector.QAFaces[heightsToCompare[0]], sector.QAFaces[heightsToCompare[1]]) > lowestPassableStep ||
+                    Math.Min(lookupBlock.WSFaces[heightsToCheck[0]], lookupBlock.WSFaces[heightsToCheck[1]]) - Math.Max(sector.QAFaces[heightsToCompare[0]], sector.QAFaces[heightsToCompare[1]]) < lowestPassableHeight ||
+                    Math.Min(lookupBlock.WSFaces[heightsToCheck[0]], lookupBlock.WSFaces[heightsToCheck[1]]) - Math.Max(lookupBlock.QAFaces[heightsToCheck[1]], lookupBlock.QAFaces[heightsToCheck[1]]) < lowestPassableHeight)
                     slopeIsIllegal = true;
+                else if(heightsToCheck[0] != heightsToCheck[1])
+                    if (lookupBlock.QAFaces[heightsToCheck[2]] - lookupBlock.QAFaces[heightsToCheck[0]] >= lowestSlidableHeight ||
+                        lookupBlock.QAFaces[heightsToCheck[3]] - lookupBlock.QAFaces[heightsToCheck[1]] >= lowestSlidableHeight)
+                        slopeIsIllegal = true;
             }
 
             return slopeIsIllegal;
