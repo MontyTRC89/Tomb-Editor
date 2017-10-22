@@ -4929,14 +4929,15 @@
             <moveable id="452" name="Floor 1 slope 2" icon="Tool" />
             <moveable id="453" name="Floor 2 slope 2" icon="Tool" />
             <moveable id="454" name="Horizon" icon="Sky" />
-            <moveable id="455" name="Sky graphics" icon="Sky" />
             <moveable id="456" name="Binoculars graphics" icon="Tool" />
             <moveable id="457" name="Target graphics" icon="Tool" />
-            <moveable id="458" name="Default sprites" icon="LetterA" />
-            <moveable id="459" name="Misc sprites" icon="LetterA" />
         </moveables>
         <static_meshes name="Static meshes" icon="StaticMeshes"></static_meshes>
-        <sprites name="Sprites" icon="Sprites"></sprites>
+        <sprites name="Sprites" icon="Sprites">
+            <sprite id="455" name="Sky graphics" icon="Tool" type="list" />
+            <sprite id="458" name="Default sprites" icon="Tool" type="list" />
+            <sprite id="459" name="Misc sprites" icon="Tool" type="list" />
+        </sprites>
         <sounds name="Sounds" icon="Sounds">
             <sound id="0" name="Lara feet" />
             <sound id="1" name="Lara climb2" />
