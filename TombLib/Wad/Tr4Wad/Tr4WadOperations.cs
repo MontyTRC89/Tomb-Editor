@@ -295,14 +295,14 @@ namespace TombLib.Wad.Tr4Wad
                         {
                             using (var reader = new BinaryReader(File.OpenRead(fileName)))
                             {
-                                var sound = new WadSound(oldWad.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
-                                if (wad.WaveSounds.ContainsKey(sound.Hash))
+                                var sound = new WadSample(oldWad.Sounds[j], reader.ReadBytes((int)reader.BaseStream.Length));
+                                if (wad.Samples.ContainsKey(sound.Hash))
                                 {
-                                    newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                                    newInfo.WaveSounds.Add(wad.Samples[sound.Hash]);
                                 }
                                 else
                                 {
-                                    wad.WaveSounds.Add(sound.Hash, sound);
+                                    wad.Samples.Add(sound.Hash, sound);
                                     newInfo.WaveSounds.Add(sound);
                                 }
                             }
