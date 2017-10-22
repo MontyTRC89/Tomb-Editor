@@ -10,7 +10,7 @@ namespace TombLib.Wad
         private static Dictionary<uint, string> _moveableNames = new Dictionary<uint, string>();
         private static Dictionary<uint, string> _staticNames = new Dictionary<uint, string>();
 
-        static ObjectNames()
+        /*static ObjectNames()
         {
             for (uint i = 0; i < 100; i++)
                 _staticNames.Add(i, "Static Mesh #" + i);
@@ -22,7 +22,7 @@ namespace TombLib.Wad
                     string[] tokens = line.Split(';');
                     _moveableNames.Add(uint.Parse(tokens[0]), tokens[1]);
                 }
-        }
+        }*/
 
         public static string GetMoveableName(uint MovableID)
         {
