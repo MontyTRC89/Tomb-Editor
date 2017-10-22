@@ -173,6 +173,47 @@ namespace TombEditor.Geometry.IO
                     levelSettingsIds.ImportedGeometries = importedGeometries;
                     ImportedGeometriesToLoad = toLoad;
                 }
+                else if (id == Prj2Chunks.AnimatedTextureSets)
+                {
+                    var animatedTextureSets = new List<AnimatedTextureSet>();
+                    chunkIO.ReadChunks((id2, chunkSize2) =>
+                    {
+                        if (id2 != Prj2Chunks.AnimatedTextureSet)
+                            return false;
+
+                        var set = new AnimatedTextureSet();
+                        chunkIO.ReadChunks((id3, chunkSize3) =>
+                        {
+                            if (id3 == Prj2Chunks.AnimatedTextureFrames)
+                            {
+                                var frames = new List<AnimatedTextureFrame>();
+                                chunkIO.ReadChunks((id4, chunkSize4) =>
+                                {
+                                    if (id4 != Prj2Chunks.AnimatedTextureFrame)
+                                        return false;
+
+                                    frames.Add(new AnimatedTextureFrame
+                                    {
+                                        Texture = levelSettingsIds.LevelTextures[LEB128.ReadLong(chunkIO.Raw)],
+                                        TexCoord0 = chunkIO.Raw.ReadVector2(),
+                                        TexCoord1 = chunkIO.Raw.ReadVector2(),
+                                        TexCoord2 = chunkIO.Raw.ReadVector2(),
+                                        TexCoord3 = chunkIO.Raw.ReadVector2()
+                                    });
+                                    return true;
+                                });
+
+                                set.Frames = frames;
+                            }
+                            else
+                                return false;
+                            return true;
+                        });
+                        animatedTextureSets.Add(set);
+                        return true;
+                    });
+                    settings.AnimatedTextureSets = animatedTextureSets;
+                }
                 else
                     return false;
                 return true;

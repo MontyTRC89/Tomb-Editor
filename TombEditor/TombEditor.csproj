@@ -123,6 +123,7 @@
     <Compile Include="Compilers\Structs.cs" />
     <Compile Include="Compilers\Textures.cs" />
     <Compile Include="Compilers\Util\ObjectTextureManager.cs" />
+    <Compile Include="Compilers\Util\ObjectTextureManagerWithAnimations.cs" />
     <Compile Include="Compilers\Util\TextureAllocator.cs" />
     <Compile Include="Compilers\Wad.cs" />
     <Compile Include="Compilers\Writer.cs" />
@@ -145,9 +146,6 @@
     </Compile>
     <Compile Include="Controls\MovementTimer.cs" />
     <Compile Include="Controls\PanelPalette.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\PanelAnimatedTextures.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\PanelRenderingItem.cs">
@@ -250,6 +248,7 @@
     <Compile Include="FormSink.Designer.cs">
       <DependentUpon>FormSink.cs</DependentUpon>
     </Compile>
+    <Compile Include="Geometry\AnimatedTextureSet.cs" />
     <Compile Include="Geometry\CameraInstance.cs" />
     <Compile Include="Geometry\FlybyCameraInstance.cs" />
     <Compile Include="Geometry\ImportedGeometry.cs" />

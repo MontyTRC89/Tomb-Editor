@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpDX;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,8 +41,8 @@ namespace TombLib.Utils
         /// <param name="b">The right value to compare.</param>
         /// <returns><c>true</c> if a almost equal to b, <c>false</c> otherwise</returns>
         /// <remarks>
-        /// The code is using the technique described by Bruce Dawson in 
-        /// <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating point numbers 2012 edition</a>. 
+        /// The code is using the technique described by Bruce Dawson in
+        /// <a href="http://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/">Comparing Floating point numbers 2012 edition</a>.
         /// </remarks>
         public unsafe static bool NearEqual(float a, float b)
         {
@@ -420,6 +421,24 @@ namespace TombLib.Utils
             var componentY = (cy * cy) / (2 * sigmaY * sigmaY);
 
             return amplitude * Math.Exp(-(componentX + componentY));
+        }
+
+        public static Vector2 Normalize_(this Vector2 this_)
+        {
+            this_.Normalize();
+            return this_;
+        }
+
+        public static Vector3 Normalize_(this Vector3 this_)
+        {
+            this_.Normalize();
+            return this_;
+        }
+
+        public static Vector4 Normalize_(this Vector4 this_)
+        {
+            this_.Normalize();
+            return this_;
         }
     }
 }

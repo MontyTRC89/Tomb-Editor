@@ -927,7 +927,7 @@ namespace TombEditor.Controls
             Vector3 transformedRayPos = Vector3.TransformCoordinate(ray.Position, inverseObjectMatrix);
             Vector3 transformedRayDestination = Vector3.TransformCoordinate(ray.Position + ray.Direction, inverseObjectMatrix);
             Ray transformedRay = new Ray(transformedRayPos, transformedRayDestination - transformedRayPos);
-            transformedRay.Direction.Normalize();
+            transformedRay.Direction = transformedRay.Direction.Normalize_();
 
             // Do a fast bounding box check
             float minDistance;
@@ -1887,9 +1887,7 @@ namespace TombEditor.Controls
             farPoint = _device.Viewport.Unproject(farPoint, viewProjection, Matrix.Identity, Matrix.Identity);
 
             Vector3 direction = farPoint - nearPoint;
-            direction.Normalize();
-
-            return new Ray(nearPoint, direction);
+            return new Ray(nearPoint, direction.Normalize_());
         }
 
         private static Vector4 GetSharpdDXColor(System.Drawing.Color color)

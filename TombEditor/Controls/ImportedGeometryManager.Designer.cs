@@ -57,6 +57,7 @@
             this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView.AutoGenerateColumns = false;
             this.dataGridView.ColumnHeadersHeight = 17;
             this.dataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameColumn,
@@ -87,7 +88,7 @@
             this.pathColumn.DataPropertyName = "Path";
             this.pathColumn.HeaderText = "Path";
             this.pathColumn.Name = "pathColumn";
-            this.pathColumn.Width = 53;
+            this.pathColumn.Width = 54;
             // 
             // searchButtonColumn
             // 
@@ -109,7 +110,7 @@
             this.errorMessageColumn.DataPropertyName = "ErrorMessage";
             this.errorMessageColumn.HeaderText = "Message";
             this.errorMessageColumn.Name = "errorMessageColumn";
-            this.errorMessageColumn.Width = 74;
+            this.errorMessageColumn.Width = 76;
             // 
             // ImportedGeometryManager
             // 

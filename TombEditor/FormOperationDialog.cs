@@ -1,4 +1,5 @@
-﻿using DarkUI.Forms;
+﻿using DarkUI.Extensions;
+using DarkUI.Forms;
 using NLog;
 using System;
 using System.Drawing;
@@ -29,14 +30,14 @@ namespace TombEditor
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
             MinimumSize = new Size(152, 93) + (Size - ClientSize);
         }
-        
+
         private void FormBuildLevel_Shown(object sender, EventArgs e)
         {
             _thread = new Thread(Run);
             _thread.IsBackground = true;
             _thread.Start();
         }
-        
+
         private void FormImportPRJ_FormClosing(object sender, FormClosingEventArgs e)
         {
             if ((e.CloseReason == CloseReason.UserClosing) && _thread.IsAlive && !_threadShouldAbort)
@@ -96,7 +97,7 @@ namespace TombEditor
             if (!(bool)this?.Invoke((Func<bool>)delegate
             {
                 if (progress.HasValue)
-                    pbStato.Value = (int)Math.Round(progress.Value, 0);
+                    pbStato.SetProgressNoAnimation((int)Math.Round(progress.Value, 0));
 
                 if (!string.IsNullOrEmpty(message))
                 {

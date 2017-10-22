@@ -404,12 +404,6 @@ namespace TombEditor.Compilers
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr_animatedTextures_set
-    {
-        public short[] Textures;
-    }
-
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_bounding_box
     {
         public short X1;

@@ -417,7 +417,7 @@ namespace TombEditor.Geometry
                     return true; // Slants are inward-pointing, hence engine can't resolve this situation
             }
 
-            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block 
+            // Main illegal slope calculation takes two adjacent corner heights (heightsToCheck[0-1]) from lookup block
             // and looks if they are higher than any slope's lower heights (heightsToCompare[0-1]). Also it checks if
             // lookup block's adjacent ceiling heights (heightsToCheck[2-3]) is lower than minimum passable height.
             // If lookup block contains floor or ceiling diagonal splits, resolve algorighm is diverted (look further).
@@ -475,7 +475,7 @@ namespace TombEditor.Geometry
                         heightsToCheck[3] = 0;
                         break;
                 }
-                
+
                 // Diagonal split resolver
 
                 if (lookupBlock.IsAnyWall && lookupBlock.FloorDiagonalSplit == DiagonalSplit.None)
@@ -492,7 +492,7 @@ namespace TombEditor.Geometry
                     // from split are always treated as potentially illegal, because steps facing towards
                     // split are resolved by engine position corrector nicely.
 
-                    // Since in Tomb Editor diagonal steps are made that way so only single corner height 
+                    // Since in Tomb Editor diagonal steps are made that way so only single corner height
                     // is used for setting step height, we copy one of lookup block's heightsToCheck to
                     // another.
 
@@ -1211,8 +1211,8 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZn) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZn) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA; 
-                        qB = (int)Position.Y + qaNearB; 
+                        qA = (int)Position.Y + qaNearA;
+                        qB = (int)Position.Y + qaNearB;
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
@@ -1222,7 +1222,7 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZn) wBportal = wAportal;
 
                         wA = (int)Position.Y + wsNearA;
-                        wB = (int)Position.Y + wsNearB; 
+                        wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1424,8 +1424,8 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XnZp) qAportal = qBportal;
                         if (adjoiningBlock.FloorDiagonalSplit == DiagonalSplit.XpZp) qBportal = qAportal;
 
-                        qA = (int)Position.Y + qaNearA;  
-                        qB = (int)Position.Y + qaNearB;  
+                        qA = (int)Position.Y + qaNearA;
+                        qB = (int)Position.Y + qaNearB;
                         qA = Math.Max(qA, qAportal) - (int)Position.Y;
                         qB = Math.Max(qB, qBportal) - (int)Position.Y;
 
@@ -1434,8 +1434,8 @@ namespace TombEditor.Geometry
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XnZp) wAportal = wBportal;
                         if (adjoiningBlock.CeilingDiagonalSplit == DiagonalSplit.XpZp) wBportal = wAportal;
 
-                        wA = (int)Position.Y + wsNearA;  
-                        wB = (int)Position.Y + wsNearB;  
+                        wA = (int)Position.Y + wsNearA;
+                        wB = (int)Position.Y + wsNearB;
                         wA = Math.Min(wA, wAportal) - (int)Position.Y;
                         wB = Math.Min(wB, wBportal) - (int)Position.Y;
                     }
@@ -1604,7 +1604,7 @@ namespace TombEditor.Geometry
                     }
 
                     if (Blocks[x, z].WallPortal != null)
-                    {                        
+                    {
                         // Get the adjoining room of the portal
                         var portal = FindPortal(x, z, PortalDirection.WallNegativeX);
                         var adjoiningRoom = portal.AdjoiningRoom;
@@ -2681,7 +2681,7 @@ namespace TombEditor.Geometry
             var normal = Vector3.Cross(
                 _allVertices[range.Start + 1].Position - _allVertices[range.Start].Position,
                 _allVertices[range.Start + 2].Position - _allVertices[range.Start].Position);
-            normal.Normalize();
+            normal = normal.Normalize_();
 
             for (int i = 0; i < range.Count; ++i)
             {
@@ -2800,7 +2800,7 @@ namespace TombEditor.Geometry
                             {
                                 // Calculate the ray from light to vertex
                                 var lightVector = position - light.Position;
-                                lightVector.Normalize();
+                                lightVector = lightVector.Normalize_();
 
                                 // Get the distance between light and vertex
                                 float distance = Math.Abs((position - light.Position).Length());

@@ -68,12 +68,6 @@ namespace TombEditor
             //
             this.comboType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboType.ForeColor = System.Drawing.Color.White;
-            this.comboType.FormattingEnabled = true;
-            this.comboType.ItemHeight = 18;
             this.comboType.Location = new System.Drawing.Point(89, 10);
             this.comboType.Name = "comboType";
             this.comboType.Size = new System.Drawing.Size(587, 24);
@@ -84,12 +78,6 @@ namespace TombEditor
             //
             this.comboTargetType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboTargetType.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboTargetType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboTargetType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTargetType.ForeColor = System.Drawing.Color.White;
-            this.comboTargetType.FormattingEnabled = true;
-            this.comboTargetType.ItemHeight = 18;
             this.comboTargetType.Location = new System.Drawing.Point(89, 37);
             this.comboTargetType.Name = "comboTargetType";
             this.comboTargetType.Size = new System.Drawing.Size(587, 24);
@@ -233,12 +221,6 @@ namespace TombEditor
             //
             this.comboParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboParameter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboParameter.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboParameter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboParameter.ForeColor = System.Drawing.Color.White;
-            this.comboParameter.FormattingEnabled = true;
-            this.comboParameter.ItemHeight = 18;
             this.comboParameter.Location = new System.Drawing.Point(89, 64);
             this.comboParameter.Name = "comboParameter";
             this.comboParameter.Size = new System.Drawing.Size(587, 24);

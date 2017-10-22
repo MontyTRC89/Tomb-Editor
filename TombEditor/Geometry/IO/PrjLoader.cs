@@ -1041,22 +1041,25 @@ namespace TombEditor.Geometry.IO
                         int firstTexture = reader.ReadInt32();
                         int lastTexture = reader.ReadInt32();
 
-                        if (defined != 1)
+                        if (defined == 0)
                             continue;
 
-                        int TODO_ANIMATED_TEXTURE_IMPORT;
-                        /*var aSet = new AnimatedTextureSet();
-
+                        var animatedTextureSet = new AnimatedTextureSet();
                         for (int j = firstTexture; j <= lastTexture; j++)
                         {
-                            int txtY = j / 4;
-                            int txtX = j % 4;
+                            float y = (j / 4) * 64.0f;
+                            float x = (j % 4) * 64.0f;
 
-                            AnimatedTexture aTexture = new AnimatedTexture(txtX, txtY, 64, 64);
-                            aSet.Textures.Add(aTexture);
+                            animatedTextureSet.Frames.Add(new AnimatedTextureFrame
+                            {
+                                Texture = texture,
+                                TexCoord0 = new Vector2(x + 0.5f, y + 63.5f),
+                                TexCoord1 = new Vector2(x + 0.5f, y + 0.5f),
+                                TexCoord2 = new Vector2(x + 63.5f, y + 0.5f),
+                                TexCoord3 = new Vector2(x + 63.5f, y + 63.5f)
+                            });
                         }
-
-                        level.AnimatedTextures.Add(aSet);*/
+                        level.Settings.AnimatedTextureSets.Add(animatedTextureSet);
                     }
 
                     // Read texture sounds
