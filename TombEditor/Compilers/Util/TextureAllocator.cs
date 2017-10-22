@@ -23,21 +23,19 @@ namespace TombEditor.Compilers.Util
             public int PosY;
             public int Width;
             public int Height;
-            public bool MustBeInFirstPage;
 
-            public TextureView(Texture texture, int posX, int posY, int width, int height, bool mustBeInFirstPage)
+            public TextureView(Texture texture, int posX, int posY, int width, int height)
             {
                 Texture = texture;
                 PosX = posX;
                 PosY = posY;
                 Width = width;
                 Height = height;
-                MustBeInFirstPage = mustBeInFirstPage;
             }
 
             public static implicit operator TextureView(Texture texture)
             {
-                return new TextureView(texture, 0, 0, texture.Image.Width, texture.Image.Height, false);
+                return new TextureView(texture, 0, 0, texture.Image.Width, texture.Image.Height);
             }
 
             // Custom implementation of these because default implementation is *insanely* slow.
@@ -48,26 +46,10 @@ namespace TombEditor.Compilers.Util
                     (*(ulong*)(&first.PosX) == *(ulong*)(&second.PosX)) &&
                     (*(ulong*)(&first.Width) == *(ulong*)(&second.Width));
             }
-
-            public static bool operator !=(TextureView first, TextureView second)
-            {
-                return !(first == second);
-            }
-
-            public bool Equals(TextureView other)
-            {
-                return this == other;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return this == (TextureView)obj;
-            }
-
-            public override int GetHashCode()
-            {
-                return base.GetHashCode();
-            }
+            public static bool operator !=(TextureView first, TextureView second) => !(first == second);
+            public bool Equals(TextureView other) => this == other;
+            public override bool Equals(object obj) => this == (TextureView)obj;
+            public override int GetHashCode() => Texture.GetHashCode();
         }
 
         public struct Result
@@ -83,17 +65,19 @@ namespace TombEditor.Compilers.Util
 
         private struct TextureComparer : IComparer<int>
         {
-            public List<TextureView> usedTextures;
+            public List<int> _priorityClass;
+            public List<TextureView> _usedTextures;
             public int Compare(int firstIndex, int secondIndex)
             {
-                TextureView first = usedTextures[firstIndex];
-                TextureView second = usedTextures[secondIndex];
+                // Compare priority eg for textures if they should be in first page
+                // Higher priorties are put in first
+                int firstPriorityClass = _priorityClass[firstIndex];
+                int secondPriorityClass = _priorityClass[secondIndex];
+                if (firstPriorityClass != secondPriorityClass)
+                    return firstPriorityClass > secondPriorityClass ? -1 : 1;
 
-                // Must be in first page?
-                if (first.MustBeInFirstPage && !second.MustBeInFirstPage)
-                    return -1;
-                if (!first.MustBeInFirstPage && second.MustBeInFirstPage)
-                    return 1;
+                TextureView first = _usedTextures[firstIndex];
+                TextureView second = _usedTextures[secondIndex];
 
                 // Compare height
                 int firstMaxHeight = Math.Max(first.Width, first.Height); //Because of flipping, the bigger dimension is the height.
@@ -111,21 +95,27 @@ namespace TombEditor.Compilers.Util
             }
         }
 
+        private readonly List<int> _priorityClass = new List<int>();
         private readonly List<TextureView> _usedTextures = new List<TextureView>();
         private readonly Dictionary<TextureView, int> _usedTexturesLookup = new Dictionary<TextureView, int>();
         private Result[] _usedTexturePackInfos;
 
-        public int GetOrAllocateTextureID(TextureView texture)
+        public int GetOrAllocateTextureID(TextureView texture, int priorityClass = 0)
         {
             if ((texture.Width > 256) || (texture.Height > 256))
                 throw new NotSupportedException("Texture page too big!");
 
             int textureID;
             if (_usedTexturesLookup.TryGetValue(texture, out textureID))
+            {
+                if (priorityClass > _priorityClass[textureID])
+                    _priorityClass[textureID] = priorityClass;
                 return textureID;
+            }
 
             textureID = _usedTextures.Count;
             _usedTextures.Add(texture);
+            _priorityClass.Add(priorityClass);
             _usedTexturesLookup.Add(texture, textureID);
             return textureID;
         }
@@ -146,7 +136,7 @@ namespace TombEditor.Compilers.Util
             int[] usedTexturesProcessingOrder = new int[_usedTextures.Count];
             for (int i = 0; i < _usedTextures.Count; ++i)
                 usedTexturesProcessingOrder[i] = i;
-            Array.Sort(usedTexturesProcessingOrder, new TextureComparer { usedTextures = _usedTextures });
+            Array.Sort(usedTexturesProcessingOrder, new TextureComparer { _usedTextures = _usedTextures, _priorityClass = _priorityClass });
 
             //Pack the textures...
             List<ImageC> resultingTextures = new List<ImageC>();
@@ -184,8 +174,8 @@ namespace TombEditor.Compilers.Util
             return resultingTextures;
         }
 
-        private int GetOrAllocateTextureIDForPageAt(ref TextureArea texture, int pageX, int pageY, 
-                                                    int pageWidth, int pageHeight, bool mustBeInFirstPage)
+        private int GetOrAllocateTextureIDForPageAt(ref TextureArea texture, int pageX, int pageY,
+                                                    int pageWidth, int pageHeight, int priorityClass)
         {
             Vector2 pageOffset = new Vector2(pageX, pageY);
             texture.TexCoord0 -= pageOffset;
@@ -196,10 +186,10 @@ namespace TombEditor.Compilers.Util
             pageWidth = Math.Min(texture.Texture.Image.Width - pageX, pageWidth);
             pageHeight = Math.Min(texture.Texture.Image.Height - pageY, pageHeight);
 
-            return GetOrAllocateTextureID(new TextureView(texture.Texture, pageX, pageY, pageWidth, pageHeight, mustBeInFirstPage));
+            return GetOrAllocateTextureID(new TextureView(texture.Texture, pageX, pageY, pageWidth, pageHeight), priorityClass);
         }
 
-        public int GetOrAllocateTextureID(ref TextureArea texture, bool isTriangle, bool mustBeInFirstPage)
+        public int GetOrAllocateTextureID(ref TextureArea texture, bool isTriangle, int priorityClass = 0)
         {
             // Textures bigger than 256² must be split into pieces of 256 max each
             Vector2 minTexCoord = Vector2.Min(Vector2.Min(texture.TexCoord0, texture.TexCoord1), isTriangle ? texture.TexCoord2 : Vector2.Min(texture.TexCoord2, texture.TexCoord3));
@@ -222,13 +212,13 @@ namespace TombEditor.Compilers.Util
                 { // Try to pack into a page that is at multiple of 256 on Y
                     return GetOrAllocateTextureIDForPageAt(ref texture,
                         (startX / pageWidth) * pageWidth,
-                        (startY / pageHeight) * pageHeight, pageWidth, pageHeight, mustBeInFirstPage);
+                        (startY / pageHeight) * pageHeight, pageWidth, pageHeight, priorityClass);
                 }
                 else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y + 128
                     return GetOrAllocateTextureIDForPageAt(ref texture,
                         (startX / pageWidth) * pageWidth,
-                        ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight, mustBeInFirstPage);
+                        ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight, priorityClass);
                 }
             }
             else if (((startX - pageWidth / 2) / pageWidth) == ((endX - pageWidth / 2) / pageWidth))
@@ -237,18 +227,18 @@ namespace TombEditor.Compilers.Util
                 { // Try to pack into a page that is at multiple of 256 on Y
                     return GetOrAllocateTextureIDForPageAt(ref texture,
                         ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
-                        (startY / pageHeight) * pageHeight, pageWidth, pageHeight, mustBeInFirstPage);
+                        (startY / pageHeight) * pageHeight, pageWidth, pageHeight, priorityClass);
                 }
                 else if (((startY - pageHeight / 2) / pageHeight) == ((endY - pageHeight / 2) / pageHeight))
                 { // Try to pack into a page that is at multiple of 256 on Y + 128
                     return GetOrAllocateTextureIDForPageAt(ref texture,
                         ((startX - pageWidth / 2) / pageWidth) * pageWidth - pageWidth / 2,
-                        ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight, mustBeInFirstPage);
+                        ((startY - pageHeight / 2) / pageHeight) * pageHeight + pageHeight / 2, pageWidth, pageHeight, priorityClass);
                 }
             }
 
             // Include the new texture specifically from whatever region it needs
-            return GetOrAllocateTextureIDForPageAt(ref texture, startX, startY, endX - startX + 1, endY - startY + 1, mustBeInFirstPage);
+            return GetOrAllocateTextureIDForPageAt(ref texture, startX, startY, endX - startX + 1, endY - startY + 1, priorityClass);
         }
 
         public Result GetPackInfo(int id)

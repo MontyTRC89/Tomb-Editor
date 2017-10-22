@@ -283,6 +283,13 @@ namespace TombEditor
             RaiseEvent(new LoadedImportedGeometriesChangedEvent { });
         }
 
+        // This is invoked if the animated texture sets changed for the level.
+        public class AnimatedTexturesChanged : IEditorEvent { }
+        public void AnimatedTexturesChange()
+        {
+            RaiseEvent(new AnimatedTexturesChanged { });
+        }
+
         // This is invoked when ever the applied textures in a room change.
         // "null" can be passed, if it is not determinable what room changed.
         public class RoomTextureChangedEvent : IEditorRoomChangedEvent
@@ -415,10 +422,11 @@ namespace TombEditor
 
             // Determine what will change when the new settings are applied
             // This has to be done now, because the old state will be lost after the new settings are applied
-            bool importedGeometryChanged = !ImportedGeometry.AreListsEqual(newSettings.ImportedGeometries, _level.Settings.ImportedGeometries);
-            bool texturesChanged = !LevelTexture.AreListsEqual(newSettings.Textures, _level.Settings.Textures);
+            bool importedGeometryChanged = !newSettings.ImportedGeometries.SequenceEqual(_level.Settings.ImportedGeometries);
+            bool texturesChanged = !newSettings.Textures.SequenceEqual(_level.Settings.Textures);
             bool wadsChanged = newSettings.MakeAbsolute(newSettings.WadFilePath) != _level.Settings.MakeAbsolute(_level.Settings.WadFilePath);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
+            bool animatedTexturesChanged = newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
 
             // Update the current settings
             _level.ApplyNewLevelSettings(newSettings, (instance) => ObjectChange(instance));
@@ -435,6 +443,9 @@ namespace TombEditor
 
             if (levelFilenameChanged)
                 LevelFileNameChange();
+
+            if (animatedTexturesChanged)
+                AnimatedTexturesChange();
         }
 
         // Configuration

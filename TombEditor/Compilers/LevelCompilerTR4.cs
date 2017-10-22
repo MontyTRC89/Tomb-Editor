@@ -50,13 +50,12 @@ namespace TombEditor.Compilers
         private tr_box[] _boxes = new tr_box[0];
         private ushort[] _overlaps = new ushort[0];
         private tr_zone[] _zones = new tr_zone[0];
-        private List<tr_animatedTextures_set> _animatedTextures = new List<tr_animatedTextures_set>();
 
         private List<tr_item> _items = new List<tr_item>();
         private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
 
         // texture data
-        private Util.ObjectTextureManager _objectTextureManager = new Util.ObjectTextureManager();
+        private Util.ObjectTextureManagerWithAnimations _objectTextureManager;
 
         // Temporary dictionaries for mapping editor IDs to level IDs
         private Dictionary<MoveableInstance, int> _moveablesTable;
@@ -70,7 +69,9 @@ namespace TombEditor.Compilers
 
         public LevelCompilerTr4(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
-        {}
+        {
+            _objectTextureManager = new Util.ObjectTextureManagerWithAnimations(level.Settings.AnimatedTextureSets);
+        }
 
         private void PrepareLevelData()
         {

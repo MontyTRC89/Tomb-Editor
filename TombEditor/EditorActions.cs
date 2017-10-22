@@ -1294,7 +1294,7 @@ namespace TombEditor
                     block.FloorDiagonalSplit = DiagonalSplit.XnZp;
             }
 
-            if((!floor || block.Type == BlockType.Wall) &&
+            if ((!floor || block.Type == BlockType.Wall) &&
                  block.CeilingDiagonalSplit != DiagonalSplit.None)
             {
                 if (block.CeilingDiagonalSplit == DiagonalSplit.XnZp)
@@ -1936,7 +1936,7 @@ namespace TombEditor
 
         public static void ShowAnimationRangesDialog(IWin32Window owner)
         {
-            using (FormAnimatedTextures form = new FormAnimatedTextures())
+            using (FormAnimatedTextures form = new FormAnimatedTextures(_editor))
                 form.ShowDialog(owner);
         }
 

@@ -40,12 +40,6 @@ namespace TombEditor
             // 
             // comboStrength
             // 
-            this.comboStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboStrength.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboStrength.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboStrength.ForeColor = System.Drawing.Color.White;
-            this.comboStrength.FormattingEnabled = true;
-            this.comboStrength.ItemHeight = 18;
             this.comboStrength.Items.AddRange(new object[] {
             "1",
             "2",

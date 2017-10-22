@@ -148,16 +148,18 @@ namespace TombEditor.Geometry
 
         public bool Equals(LevelTexture other) => base.Equals(other);
 
-        public static bool AreListsEqual(List<LevelTexture> first, List<LevelTexture> second)
+        public override string ToString()
         {
-            if (first.Count != second.Count)
-                return false;
-
-            for (int i = 0; i < first.Count; ++i)
-                if (!first[i].Equals(second[i]))
-                    return false;
-
-            return true;
+            string Filename;
+            try
+            {
+                Filename = System.IO.Path.GetFileNameWithoutExtension(Path);
+            }
+            catch
+            {
+                Filename = "<Unnamed>";
+            }
+            return Filename + " (Level Texture with " + Path + ")";
         }
     }
 }

@@ -119,6 +119,7 @@ namespace TombEditor.Compilers
                 newMesh.TexturedQuads = new tr_face4[numQuads];
                 newMesh.TexturedTriangles = new tr_face3[numTriangles];
 
+                int packPriority = waterfallMeshes.Contains(oldMesh) ? 1 : 0;
                 foreach (var poly in oldMesh.Polys)
                 {
                     ushort lightingEffect = (poly.Texture.BlendMode == TombLib.Utils.BlendMode.Additive) ? (ushort)1 : (ushort)0;
@@ -128,7 +129,7 @@ namespace TombEditor.Compilers
                     {
                         ObjectTextureManager.Result result;
                         lock (_objectTextureManager)
-                            result = _objectTextureManager.AddTexture(poly.Texture, false, false);
+                            result = _objectTextureManager.AddTexture(poly.Texture, false, false, packPriority);
                         newMesh.TexturedQuads[lastQuad++] = result.CreateFace4((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], (ushort)poly.Indices[3], lightingEffect);
                         currentMeshSize += 12;
                     }
@@ -136,7 +137,7 @@ namespace TombEditor.Compilers
                     {
                         ObjectTextureManager.Result result;
                         lock (_objectTextureManager)
-                            result = _objectTextureManager.AddTexture(poly.Texture, true, false);
+                            result = _objectTextureManager.AddTexture(poly.Texture, true, false, packPriority);
 
                         newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3((ushort)poly.Indices[0], (ushort)poly.Indices[1], (ushort)poly.Indices[2], lightingEffect);
                         currentMeshSize += 10;

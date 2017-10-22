@@ -135,22 +135,7 @@ namespace TombEditor.Compilers
                         writer.Write(_zones[i].FlyZone_Alternate);
 
                     // Write animated textures
-                    // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    int numAnimatedTexture = 1;
-                    for (var i = 0; i < _animatedTextures.Count; i++)
-                        numAnimatedTexture += _animatedTextures.Count + 1;
-
-                    writer.Write((uint)numAnimatedTexture);
-                    writer.Write((ushort)_animatedTextures.Count);
-                    for (var i = 0; i < _animatedTextures.Count; i++)
-                    {
-                        writer.Write((ushort)(_animatedTextures[i].Textures.GetLength(0)));
-
-                        foreach (var texture in _animatedTextures[i].Textures)
-                        {
-                            writer.Write(texture);
-                        }
-                    }
+                    _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
 
                     // Write object textures
                     writer.Write(new byte[] { 0x00, 0x54, 0x45, 0x58 });
@@ -201,9 +186,12 @@ namespace TombEditor.Compilers
                         soundInfo.Chance = wadInfo.Chance;
 
                         ushort characteristics = (ushort)(wadInfo.Samples.Count << 2);
-                        if (wadInfo.FlagN) characteristics |= 0x1000;
-                        if (wadInfo.RandomizePitch) characteristics |= 0x2000;
-                        if (wadInfo.RandomizeGain) characteristics |= 0x4000;
+                        if (wadInfo.FlagN)
+                            characteristics |= 0x1000;
+                        if (wadInfo.RandomizePitch)
+                            characteristics |= 0x2000;
+                        if (wadInfo.RandomizeGain)
+                            characteristics |= 0x4000;
                         characteristics |= (byte)wadInfo.Loop;
 
                         soundInfo.Characteristics = characteristics;
@@ -541,23 +529,7 @@ namespace TombEditor.Compilers
                 //   writer.WriteBlockArray(Zones);
 
                 // Write animated textures
-                int numAnimatedTextures = 1; // Offset by 1
-                for (var i = 0; i < _animatedTextures.Count; i++)
-                    numAnimatedTextures += _animatedTextures[i].Textures.Length;
-                writer.Write((uint)numAnimatedTextures);
-
-                writer.Write((short)_animatedTextures.Count);
-
-                for (var i = 0; i < _animatedTextures.Count; i++)
-                {
-                    writer.Write((short)(_animatedTextures[i].Textures.Length));
-
-                    // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                    foreach (short texture in _animatedTextures[i].Textures)
-                    {
-                        writer.Write(texture);
-                    }
-                }
+                _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
 
                 // Write object textures
                 _objectTextureManager.WriteObjectTexturesForTr4(writer);

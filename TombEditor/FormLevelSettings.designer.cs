@@ -164,7 +164,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(662, 293);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(670, 304);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // darkSectionPanel2
@@ -175,7 +175,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(209, 3);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(450, 253);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(458, 264);
             this.darkSectionPanel2.TabIndex = 2;
             // 
             // optionsContainer
@@ -191,7 +191,7 @@
             this.optionsContainer.Location = new System.Drawing.Point(1, 1);
             this.optionsContainer.Name = "optionsContainer";
             this.optionsContainer.SelectedIndex = 0;
-            this.optionsContainer.Size = new System.Drawing.Size(448, 251);
+            this.optionsContainer.Size = new System.Drawing.Size(456, 262);
             this.optionsContainer.TabIndex = 2;
             // 
             // tabPage1
@@ -203,7 +203,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(440, 225);
+            this.tabPage1.Size = new System.Drawing.Size(448, 236);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Level file paths";
             // 
@@ -215,15 +215,14 @@
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel6.Location = new System.Drawing.Point(3, 107);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(434, 52);
+            this.panel6.Size = new System.Drawing.Size(442, 52);
             this.panel6.TabIndex = 2;
             // 
             // levelFilePathBut
             // 
             this.levelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.levelFilePathBut.Location = new System.Drawing.Point(339, 20);
+            this.levelFilePathBut.Location = new System.Drawing.Point(347, 20);
             this.levelFilePathBut.Name = "levelFilePathBut";
-            this.levelFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.levelFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.levelFilePathBut.TabIndex = 3;
             this.levelFilePathBut.Text = "Search";
@@ -242,12 +241,9 @@
             // 
             this.levelFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.levelFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.levelFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.levelFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.levelFilePathTxt.Location = new System.Drawing.Point(19, 20);
             this.levelFilePathTxt.Name = "levelFilePathTxt";
-            this.levelFilePathTxt.Size = new System.Drawing.Size(314, 22);
+            this.levelFilePathTxt.Size = new System.Drawing.Size(322, 22);
             this.levelFilePathTxt.TabIndex = 2;
             this.levelFilePathTxt.TextChanged += new System.EventHandler(this.levelFilePathTxt_TextChanged);
             // 
@@ -259,15 +255,14 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel4.Location = new System.Drawing.Point(3, 55);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(434, 52);
+            this.panel4.Size = new System.Drawing.Size(442, 52);
             this.panel4.TabIndex = 2;
             // 
             // textureFilePathBut
             // 
             this.textureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureFilePathBut.Location = new System.Drawing.Point(339, 20);
+            this.textureFilePathBut.Location = new System.Drawing.Point(347, 20);
             this.textureFilePathBut.Name = "textureFilePathBut";
-            this.textureFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.textureFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.textureFilePathBut.TabIndex = 3;
             this.textureFilePathBut.Text = "Search";
@@ -286,12 +281,9 @@
             // 
             this.textureFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textureFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.textureFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textureFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.textureFilePathTxt.Location = new System.Drawing.Point(19, 20);
             this.textureFilePathTxt.Name = "textureFilePathTxt";
-            this.textureFilePathTxt.Size = new System.Drawing.Size(314, 22);
+            this.textureFilePathTxt.Size = new System.Drawing.Size(322, 22);
             this.textureFilePathTxt.TabIndex = 2;
             this.textureFilePathTxt.TextChanged += new System.EventHandler(this.textureFilePathTxt_TextChanged);
             // 
@@ -303,15 +295,14 @@
             this.panel5.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel5.Location = new System.Drawing.Point(3, 3);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(434, 52);
+            this.panel5.Size = new System.Drawing.Size(442, 52);
             this.panel5.TabIndex = 2;
             // 
             // wadFilePathBut
             // 
             this.wadFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.wadFilePathBut.Location = new System.Drawing.Point(339, 20);
+            this.wadFilePathBut.Location = new System.Drawing.Point(347, 20);
             this.wadFilePathBut.Name = "wadFilePathBut";
-            this.wadFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.wadFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.wadFilePathBut.TabIndex = 3;
             this.wadFilePathBut.Text = "Search";
@@ -330,12 +321,9 @@
             // 
             this.wadFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.wadFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.wadFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.wadFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.wadFilePathTxt.Location = new System.Drawing.Point(19, 20);
             this.wadFilePathTxt.Name = "wadFilePathTxt";
-            this.wadFilePathTxt.Size = new System.Drawing.Size(314, 22);
+            this.wadFilePathTxt.Size = new System.Drawing.Size(322, 22);
             this.wadFilePathTxt.TabIndex = 2;
             this.wadFilePathTxt.TextChanged += new System.EventHandler(this.wadFilePathTxt_TextChanged);
             // 
@@ -347,7 +335,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(440, 225);
+            this.tabPage2.Size = new System.Drawing.Size(448, 236);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Sky & Font paths";
             // 
@@ -362,7 +350,7 @@
             this.panel8.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel8.Location = new System.Drawing.Point(3, 74);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(434, 68);
+            this.panel8.Size = new System.Drawing.Size(442, 68);
             this.panel8.TabIndex = 2;
             // 
             // fontTextureFilePathPicPreview
@@ -371,7 +359,7 @@
             this.fontTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
             this.fontTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.TransparentBackground;
             this.fontTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.fontTextureFilePathPicPreview.Location = new System.Drawing.Point(301, 2);
+            this.fontTextureFilePathPicPreview.Location = new System.Drawing.Point(309, 2);
             this.fontTextureFilePathPicPreview.Name = "fontTextureFilePathPicPreview";
             this.fontTextureFilePathPicPreview.Size = new System.Drawing.Size(32, 32);
             this.fontTextureFilePathPicPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -381,9 +369,8 @@
             // fontTextureFilePathBut
             // 
             this.fontTextureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.fontTextureFilePathBut.Location = new System.Drawing.Point(339, 40);
+            this.fontTextureFilePathBut.Location = new System.Drawing.Point(347, 40);
             this.fontTextureFilePathBut.Name = "fontTextureFilePathBut";
-            this.fontTextureFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.fontTextureFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.fontTextureFilePathBut.TabIndex = 3;
             this.fontTextureFilePathBut.Text = "Search";
@@ -422,13 +409,10 @@
             // 
             this.fontTextureFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.fontTextureFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.fontTextureFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.fontTextureFilePathTxt.Enabled = false;
-            this.fontTextureFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fontTextureFilePathTxt.Location = new System.Drawing.Point(187, 40);
             this.fontTextureFilePathTxt.Name = "fontTextureFilePathTxt";
-            this.fontTextureFilePathTxt.Size = new System.Drawing.Size(146, 22);
+            this.fontTextureFilePathTxt.Size = new System.Drawing.Size(154, 22);
             this.fontTextureFilePathTxt.TabIndex = 2;
             this.fontTextureFilePathTxt.TextChanged += new System.EventHandler(this.fontTextureFilePathTxt_TextChanged);
             // 
@@ -443,7 +427,7 @@
             this.panel9.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel9.Location = new System.Drawing.Point(3, 3);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(434, 71);
+            this.panel9.Size = new System.Drawing.Size(442, 71);
             this.panel9.TabIndex = 2;
             // 
             // skyTextureFilePathPicPreview
@@ -452,7 +436,7 @@
             this.skyTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
             this.skyTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.TransparentBackground;
             this.skyTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.skyTextureFilePathPicPreview.Location = new System.Drawing.Point(301, 2);
+            this.skyTextureFilePathPicPreview.Location = new System.Drawing.Point(309, 2);
             this.skyTextureFilePathPicPreview.Name = "skyTextureFilePathPicPreview";
             this.skyTextureFilePathPicPreview.Size = new System.Drawing.Size(32, 32);
             this.skyTextureFilePathPicPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -462,9 +446,8 @@
             // skyTextureFilePathBut
             // 
             this.skyTextureFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.skyTextureFilePathBut.Location = new System.Drawing.Point(339, 40);
+            this.skyTextureFilePathBut.Location = new System.Drawing.Point(347, 40);
             this.skyTextureFilePathBut.Name = "skyTextureFilePathBut";
-            this.skyTextureFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.skyTextureFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.skyTextureFilePathBut.TabIndex = 3;
             this.skyTextureFilePathBut.Text = "Search";
@@ -503,13 +486,10 @@
             // 
             this.skyTextureFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.skyTextureFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.skyTextureFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.skyTextureFilePathTxt.Enabled = false;
-            this.skyTextureFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.skyTextureFilePathTxt.Location = new System.Drawing.Point(187, 40);
             this.skyTextureFilePathTxt.Name = "skyTextureFilePathTxt";
-            this.skyTextureFilePathTxt.Size = new System.Drawing.Size(146, 22);
+            this.skyTextureFilePathTxt.Size = new System.Drawing.Size(154, 22);
             this.skyTextureFilePathTxt.TabIndex = 2;
             this.skyTextureFilePathTxt.TextChanged += new System.EventHandler(this.skyTextureFilePathTxt_TextChanged);
             // 
@@ -522,7 +502,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(440, 225);
+            this.tabPage3.Size = new System.Drawing.Size(448, 236);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Sound locations";
             // 
@@ -531,10 +511,10 @@
             this.soundDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundDataGridViewControls.Enabled = false;
-            this.soundDataGridViewControls.Location = new System.Drawing.Point(342, 72);
+            this.soundDataGridViewControls.Location = new System.Drawing.Point(350, 72);
             this.soundDataGridViewControls.MinimumSize = new System.Drawing.Size(92, 100);
             this.soundDataGridViewControls.Name = "soundDataGridViewControls";
-            this.soundDataGridViewControls.Size = new System.Drawing.Size(92, 152);
+            this.soundDataGridViewControls.Size = new System.Drawing.Size(92, 163);
             this.soundDataGridViewControls.TabIndex = 3;
             // 
             // soundDataGridView
@@ -543,6 +523,7 @@
             this.soundDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundDataGridView.AutoGenerateColumns = false;
             this.soundDataGridView.ColumnHeadersHeight = 17;
             this.soundDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.soundDataGridViewColumnPath,
@@ -550,7 +531,7 @@
             this.soundDataGridView.Location = new System.Drawing.Point(3, 72);
             this.soundDataGridView.Name = "soundDataGridView";
             this.soundDataGridView.RowHeadersWidth = 41;
-            this.soundDataGridView.Size = new System.Drawing.Size(333, 150);
+            this.soundDataGridView.Size = new System.Drawing.Size(341, 161);
             this.soundDataGridView.TabIndex = 2;
             this.soundDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.soundDataGridView_CellContentClick);
             this.soundDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.soundDataGridView_CellFormatting);
@@ -575,7 +556,7 @@
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel10.Location = new System.Drawing.Point(3, 3);
             this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(434, 66);
+            this.darkLabel10.Size = new System.Drawing.Size(442, 66);
             this.darkLabel10.TabIndex = 1;
             this.darkLabel10.Text = resources.GetString("darkLabel10.Text");
             // 
@@ -653,7 +634,6 @@
             this.gameExecutableFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gameExecutableFilePathBut.Location = new System.Drawing.Point(339, 20);
             this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
-            this.gameExecutableFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameExecutableFilePathBut.TabIndex = 3;
             this.gameExecutableFilePathBut.Text = "Search";
@@ -672,9 +652,6 @@
             // 
             this.gameExecutableFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameExecutableFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.gameExecutableFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gameExecutableFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 20);
             this.gameExecutableFilePathTxt.Name = "gameExecutableFilePathTxt";
             this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(314, 22);
@@ -697,7 +674,6 @@
             this.gameLevelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gameLevelFilePathBut.Location = new System.Drawing.Point(339, 20);
             this.gameLevelFilePathBut.Name = "gameLevelFilePathBut";
-            this.gameLevelFilePathBut.Padding = new System.Windows.Forms.Padding(5);
             this.gameLevelFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameLevelFilePathBut.TabIndex = 3;
             this.gameLevelFilePathBut.Text = "Search";
@@ -716,9 +692,6 @@
             // 
             this.gameLevelFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameLevelFilePathTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.gameLevelFilePathTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gameLevelFilePathTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gameLevelFilePathTxt.Location = new System.Drawing.Point(19, 20);
             this.gameLevelFilePathTxt.Name = "gameLevelFilePathTxt";
             this.gameLevelFilePathTxt.Size = new System.Drawing.Size(314, 22);
@@ -741,7 +714,6 @@
             this.gameDirectoryBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gameDirectoryBut.Location = new System.Drawing.Point(339, 20);
             this.gameDirectoryBut.Name = "gameDirectoryBut";
-            this.gameDirectoryBut.Padding = new System.Windows.Forms.Padding(5);
             this.gameDirectoryBut.Size = new System.Drawing.Size(92, 22);
             this.gameDirectoryBut.TabIndex = 3;
             this.gameDirectoryBut.Text = "Search";
@@ -760,9 +732,6 @@
             // 
             this.gameDirectoryTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameDirectoryTxt.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.gameDirectoryTxt.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gameDirectoryTxt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.gameDirectoryTxt.Location = new System.Drawing.Point(19, 20);
             this.gameDirectoryTxt.Name = "gameDirectoryTxt";
             this.gameDirectoryTxt.Size = new System.Drawing.Size(314, 22);
@@ -834,7 +803,7 @@
             this.panel11.Controls.Add(this.butApply);
             this.panel11.Controls.Add(this.butOk);
             this.panel11.Controls.Add(this.butCancel);
-            this.panel11.Location = new System.Drawing.Point(404, 262);
+            this.panel11.Location = new System.Drawing.Point(412, 273);
             this.panel11.Name = "panel11";
             this.panel11.Size = new System.Drawing.Size(255, 28);
             this.panel11.TabIndex = 5;
@@ -845,7 +814,6 @@
             this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.butApply.Location = new System.Drawing.Point(2, 1);
             this.butApply.Name = "butApply";
-            this.butApply.Padding = new System.Windows.Forms.Padding(5);
             this.butApply.Size = new System.Drawing.Size(80, 24);
             this.butApply.TabIndex = 3;
             this.butApply.Text = "Apply";
@@ -857,7 +825,6 @@
             this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.butOk.Location = new System.Drawing.Point(88, 1);
             this.butOk.Name = "butOk";
-            this.butOk.Padding = new System.Windows.Forms.Padding(5);
             this.butOk.Size = new System.Drawing.Size(80, 24);
             this.butOk.TabIndex = 3;
             this.butOk.Text = "Ok";
@@ -869,7 +836,6 @@
             this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.butCancel.Location = new System.Drawing.Point(174, 1);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
             this.butCancel.Size = new System.Drawing.Size(80, 24);
             this.butCancel.TabIndex = 3;
             this.butCancel.Text = "Cancel";
@@ -883,7 +849,7 @@
             this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 253);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 264);
             this.darkSectionPanel1.TabIndex = 7;
             // 
             // optionsList
@@ -892,14 +858,14 @@
             this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.optionsList.Location = new System.Drawing.Point(1, 1);
             this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 251);
+            this.optionsList.Size = new System.Drawing.Size(198, 262);
             this.optionsList.TabIndex = 6;
             // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(662, 293);
+            this.ClientSize = new System.Drawing.Size(670, 304);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;

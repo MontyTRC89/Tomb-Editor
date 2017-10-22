@@ -1,28 +1,10 @@
-﻿/*using DarkUI.Controls;
+﻿using DarkUI.Controls;
 using System.Windows.Forms;
 
 namespace TombEditor
 {
     partial class FormAnimatedTextures
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -31,331 +13,454 @@ namespace TombEditor
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.panelTextureContainer = new System.Windows.Forms.Panel();
-            this.picTextureMap = new TombEditor.Controls.PanelAnimatedTextures();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.comboItems = new DarkUI.Controls.DarkComboBox(this.components);
-            this.butDelete = new DarkUI.Controls.DarkButton();
-            this.butAddNew = new DarkUI.Controls.DarkButton();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.butAddNewTexture = new DarkUI.Controls.DarkButton();
-            this.butDeleteTexture = new DarkUI.Controls.DarkButton();
-            this.comboEffect = new DarkUI.Controls.DarkComboBox(this.components);
+            this.comboAnimatedTextureSets = new DarkUI.Controls.DarkComboBox();
+            this.butAnimatedTextureSetDelete = new DarkUI.Controls.DarkButton();
+            this.butAnimatedTextureSetNew = new DarkUI.Controls.DarkButton();
+            this.comboEffect = new DarkUI.Controls.DarkComboBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.picPreview = new System.Windows.Forms.PictureBox();
+            this.previewImage = new System.Windows.Forms.PictureBox();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.lstTextures = new BrightIdeasSoftware.FastObjectListView();
-            this.olvColumn1 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn4 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn5 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.olvColumn2 = ((BrightIdeasSoftware.OLVColumn)(new BrightIdeasSoftware.OLVColumn()));
-            this.imgList = new System.Windows.Forms.ImageList(this.components);
-            this.timerPreview = new System.Windows.Forms.Timer(this.components);
-            this.butPlayAndStop = new DarkUI.Controls.DarkButton();
-            this.panelTextureContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTextureMap)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lstTextures)).BeginInit();
+            this.textureMap = new TombEditor.FormAnimatedTextures.PanelTextureMapForAnimations();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.animationSetSetupGroup = new DarkUI.Controls.DarkGroupBox();
+            this.previewProgressBar = new DarkUI.Controls.DarkProgressBar();
+            this.texturesDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.texturesDataGridViewColumnImage = new System.Windows.Forms.DataGridViewImageColumn();
+            this.texturesDataGridViewColumnRepeat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexture = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.texturesDataGridViewColumnArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord0 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.butUpdate = new DarkUI.Controls.DarkButton();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.darkLabel5 = new DarkUI.Controls.DarkLabel();
+            this.texturesDataGridViewControls = new TombEditor.Controls.DarkDataGridViewControls();
+            this.butOk = new DarkUI.Controls.DarkButton();
+            this.tooManyFramesWarning = new DarkUI.Controls.DarkLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.animationSetSetupGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // panelTextureContainer
-            // 
-            this.panelTextureContainer.AutoScroll = true;
-            this.panelTextureContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelTextureContainer.Controls.Add(this.picTextureMap);
-            this.panelTextureContainer.Location = new System.Drawing.Point(423, 12);
-            this.panelTextureContainer.Name = "panelTextureContainer";
-            this.panelTextureContainer.Size = new System.Drawing.Size(286, 477);
-            this.panelTextureContainer.TabIndex = 24;
-            // 
-            // picTextureMap
-            // 
-            this.picTextureMap.IsTextureSelected = false;
-            this.picTextureMap.Location = new System.Drawing.Point(-1, 0);
-            this.picTextureMap.Name = "picTextureMap";
-            this.picTextureMap.Page = ((short)(0));
-            this.picTextureMap.SelectedX = ((short)(0));
-            this.picTextureMap.SelectedY = ((short)(0));
-            this.picTextureMap.Size = new System.Drawing.Size(256, 567);
-            this.picTextureMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.picTextureMap.TabIndex = 0;
-            this.picTextureMap.TabStop = false;
             // 
             // darkLabel1
             // 
-            this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(13, 16);
+            this.darkLabel1.Location = new System.Drawing.Point(3, 9);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(64, 13);
-            this.darkLabel1.TabIndex = 25;
-            this.darkLabel1.Text = "Current set";
+            this.darkLabel1.Size = new System.Drawing.Size(125, 24);
+            this.darkLabel1.TabIndex = 0;
+            this.darkLabel1.Text = "Current animation set:";
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // comboItems
+            // comboAnimatedTextureSets
             // 
-            this.comboItems.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboItems.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboItems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboItems.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboItems.ForeColor = System.Drawing.Color.White;
-            this.comboItems.FormattingEnabled = true;
-            this.comboItems.ItemHeight = 18;
-            this.comboItems.Items.AddRange(new object[] {
-            "(Select animated texture set)"});
-            this.comboItems.Location = new System.Drawing.Point(80, 13);
-            this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(337, 24);
-            this.comboItems.TabIndex = 31;
-            this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
+            this.comboAnimatedTextureSets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboAnimatedTextureSets.ItemHeight = 18;
+            this.comboAnimatedTextureSets.Location = new System.Drawing.Point(129, 9);
+            this.comboAnimatedTextureSets.Name = "comboAnimatedTextureSets";
+            this.comboAnimatedTextureSets.Size = new System.Drawing.Size(263, 24);
+            this.comboAnimatedTextureSets.TabIndex = 1;
+            this.comboAnimatedTextureSets.Text = null;
+            this.comboAnimatedTextureSets.SelectedIndexChanged += new System.EventHandler(this.comboAnimatedTextureSets_SelectedIndexChanged);
             // 
-            // butDelete
+            // butAnimatedTextureSetDelete
             // 
-            this.butDelete.Location = new System.Drawing.Point(172, 43);
-            this.butDelete.Name = "butDelete";
-            this.butDelete.Padding = new System.Windows.Forms.Padding(5);
-            this.butDelete.Size = new System.Drawing.Size(86, 23);
-            this.butDelete.TabIndex = 33;
-            this.butDelete.Text = "Delete";
-            this.butDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDelete.Click += new System.EventHandler(this.butDelete_Click);
+            this.butAnimatedTextureSetDelete.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butAnimatedTextureSetDelete.Enabled = false;
+            this.butAnimatedTextureSetDelete.Location = new System.Drawing.Point(134, 0);
+            this.butAnimatedTextureSetDelete.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.butAnimatedTextureSetDelete.Name = "butAnimatedTextureSetDelete";
+            this.butAnimatedTextureSetDelete.Size = new System.Drawing.Size(129, 23);
+            this.butAnimatedTextureSetDelete.TabIndex = 3;
+            this.butAnimatedTextureSetDelete.Text = "Delete anim set";
+            this.butAnimatedTextureSetDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAnimatedTextureSetDelete.Click += new System.EventHandler(this.butAnimatedTextureSetDelete_Click);
             // 
-            // butAddNew
+            // butAnimatedTextureSetNew
             // 
-            this.butAddNew.Location = new System.Drawing.Point(80, 43);
-            this.butAddNew.Name = "butAddNew";
-            this.butAddNew.Padding = new System.Windows.Forms.Padding(5);
-            this.butAddNew.Size = new System.Drawing.Size(86, 23);
-            this.butAddNew.TabIndex = 32;
-            this.butAddNew.Text = "Add new";
-            this.butAddNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddNew.Click += new System.EventHandler(this.butAddNew_Click);
-            // 
-            // darkLabel2
-            // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(13, 151);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(48, 13);
-            this.darkLabel2.TabIndex = 35;
-            this.darkLabel2.Text = "Textures";
-            // 
-            // butAddNewTexture
-            // 
-            this.butAddNewTexture.Location = new System.Drawing.Point(304, 167);
-            this.butAddNewTexture.Name = "butAddNewTexture";
-            this.butAddNewTexture.Padding = new System.Windows.Forms.Padding(5);
-            this.butAddNewTexture.Size = new System.Drawing.Size(113, 23);
-            this.butAddNewTexture.TabIndex = 36;
-            this.butAddNewTexture.Text = "← Add texture";
-            this.butAddNewTexture.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butAddNewTexture.Click += new System.EventHandler(this.butAddNewTexture_Click);
-            // 
-            // butDeleteTexture
-            // 
-            this.butDeleteTexture.Location = new System.Drawing.Point(304, 196);
-            this.butDeleteTexture.Name = "butDeleteTexture";
-            this.butDeleteTexture.Padding = new System.Windows.Forms.Padding(5);
-            this.butDeleteTexture.Size = new System.Drawing.Size(113, 23);
-            this.butDeleteTexture.TabIndex = 37;
-            this.butDeleteTexture.Text = "Delete texture";
-            this.butDeleteTexture.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butDeleteTexture.Click += new System.EventHandler(this.butDeleteTexture_Click);
+            this.butAnimatedTextureSetNew.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.butAnimatedTextureSetNew.Location = new System.Drawing.Point(0, 0);
+            this.butAnimatedTextureSetNew.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.butAnimatedTextureSetNew.Name = "butAnimatedTextureSetNew";
+            this.butAnimatedTextureSetNew.Size = new System.Drawing.Size(129, 23);
+            this.butAnimatedTextureSetNew.TabIndex = 2;
+            this.butAnimatedTextureSetNew.Text = "New anim set";
+            this.butAnimatedTextureSetNew.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butAnimatedTextureSetNew.Click += new System.EventHandler(this.butAnimatedTextureSetNew_Click);
             // 
             // comboEffect
             // 
-            this.comboEffect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.comboEffect.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.comboEffect.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboEffect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.comboEffect.ForeColor = System.Drawing.Color.White;
-            this.comboEffect.FormattingEnabled = true;
-            this.comboEffect.ItemHeight = 18;
+            this.comboEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.comboEffect.Items.AddRange(new object[] {
             "Normal",
             "Half Rotate",
             "Full Rotate"});
-            this.comboEffect.Location = new System.Drawing.Point(80, 89);
+            this.comboEffect.Location = new System.Drawing.Point(70, 12);
             this.comboEffect.Name = "comboEffect";
-            this.comboEffect.Size = new System.Drawing.Size(218, 24);
-            this.comboEffect.TabIndex = 39;
+            this.comboEffect.Size = new System.Drawing.Size(163, 23);
+            this.comboEffect.TabIndex = 7;
+            this.comboEffect.Text = "Normal";
             // 
             // darkLabel3
             // 
-            this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(13, 92);
+            this.darkLabel3.Location = new System.Drawing.Point(9, 12);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(39, 13);
-            this.darkLabel3.TabIndex = 38;
+            this.darkLabel3.Size = new System.Drawing.Size(53, 23);
+            this.darkLabel3.TabIndex = 6;
             this.darkLabel3.Text = "Effect:";
+            this.darkLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // picPreview
+            // previewImage
             // 
-            this.picPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picPreview.Location = new System.Drawing.Point(329, 425);
-            this.picPreview.Name = "picPreview";
-            this.picPreview.Size = new System.Drawing.Size(64, 64);
-            this.picPreview.TabIndex = 40;
-            this.picPreview.TabStop = false;
+            this.previewImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.previewImage.Location = new System.Drawing.Point(250, 392);
+            this.previewImage.Name = "previewImage";
+            this.previewImage.Size = new System.Drawing.Size(130, 130);
+            this.previewImage.TabIndex = 0;
+            this.previewImage.TabStop = false;
             // 
             // darkLabel4
             // 
-            this.darkLabel4.AutoSize = true;
+            this.darkLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(326, 371);
+            this.darkLabel4.Location = new System.Drawing.Point(247, 371);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(46, 13);
-            this.darkLabel4.TabIndex = 41;
+            this.darkLabel4.Size = new System.Drawing.Size(133, 18);
+            this.darkLabel4.TabIndex = 0;
             this.darkLabel4.Text = "Preview";
+            this.darkLabel4.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // butCancel
+            // textureMap
             // 
-            this.butCancel.Location = new System.Drawing.Point(317, 505);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Padding = new System.Windows.Forms.Padding(5);
-            this.butCancel.Size = new System.Drawing.Size(86, 23);
-            this.butCancel.TabIndex = 1;
-            this.butCancel.Text = "Close";
-            this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
+            this.textureMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textureMap.Location = new System.Drawing.Point(404, 3);
+            this.textureMap.Name = "textureMap";
+            this.textureMap.Size = new System.Drawing.Size(395, 612);
+            this.textureMap.TabIndex = 0;
             // 
-            // lstTextures
+            // tableLayoutPanel1
             // 
-            this.lstTextures.AllColumns.Add(this.olvColumn1);
-            this.lstTextures.AllColumns.Add(this.olvColumn4);
-            this.lstTextures.AllColumns.Add(this.olvColumn5);
-            this.lstTextures.AllColumns.Add(this.olvColumn2);
-            this.lstTextures.CellEditUseWholeCell = false;
-            this.lstTextures.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.olvColumn1,
-            this.olvColumn4,
-            this.olvColumn5,
-            this.olvColumn2});
-            this.lstTextures.Cursor = System.Windows.Forms.Cursors.Default;
-            this.lstTextures.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lstTextures.FullRowSelect = true;
-            this.lstTextures.GridLines = true;
-            this.lstTextures.Location = new System.Drawing.Point(16, 167);
-            this.lstTextures.MultiSelect = false;
-            this.lstTextures.Name = "lstTextures";
-            this.lstTextures.RowHeight = 64;
-            this.lstTextures.ShowGroups = false;
-            this.lstTextures.ShowImagesOnSubItems = true;
-            this.lstTextures.Size = new System.Drawing.Size(282, 322);
-            this.lstTextures.SmallImageList = this.imgList;
-            this.lstTextures.TabIndex = 53;
-            this.lstTextures.UseCompatibleStateImageBehavior = false;
-            this.lstTextures.View = System.Windows.Forms.View.Details;
-            this.lstTextures.VirtualMode = true;
-            this.lstTextures.CellClick += new System.EventHandler<BrightIdeasSoftware.CellClickEventArgs>(this.lstTextures_CellClick);
-            this.lstTextures.Click += new System.EventHandler(this.lstTextures_Click);
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.textureMap, 1, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(802, 618);
+            this.tableLayoutPanel1.TabIndex = 43;
             // 
-            // olvColumn1
+            // panel1
             // 
-            this.olvColumn1.AspectName = "Texture";
-            this.olvColumn1.Text = "Texture";
-            this.olvColumn1.Width = 64;
+            this.panel1.Controls.Add(this.tableLayoutPanel2);
+            this.panel1.Controls.Add(this.darkLabel1);
+            this.panel1.Controls.Add(this.comboAnimatedTextureSets);
+            this.panel1.Controls.Add(this.animationSetSetupGroup);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(395, 613);
+            this.panel1.TabIndex = 0;
             // 
-            // olvColumn4
+            // tableLayoutPanel2
             // 
-            this.olvColumn4.AspectName = "X";
-            this.olvColumn4.Text = "X";
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.butAnimatedTextureSetNew, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.butAnimatedTextureSetDelete, 1, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(129, 39);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(263, 23);
+            this.tableLayoutPanel2.TabIndex = 43;
             // 
-            // olvColumn5
+            // animationSetSetupGroup
             // 
-            this.olvColumn5.AspectName = "Y";
-            this.olvColumn5.Text = "Y";
+            this.animationSetSetupGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.animationSetSetupGroup.Controls.Add(this.tooManyFramesWarning);
+            this.animationSetSetupGroup.Controls.Add(this.previewProgressBar);
+            this.animationSetSetupGroup.Controls.Add(this.texturesDataGridView);
+            this.animationSetSetupGroup.Controls.Add(this.darkLabel2);
+            this.animationSetSetupGroup.Controls.Add(this.butUpdate);
+            this.animationSetSetupGroup.Controls.Add(this.darkLabel4);
+            this.animationSetSetupGroup.Controls.Add(this.panel2);
+            this.animationSetSetupGroup.Controls.Add(this.previewImage);
+            this.animationSetSetupGroup.Controls.Add(this.texturesDataGridViewControls);
+            this.animationSetSetupGroup.Enabled = false;
+            this.animationSetSetupGroup.Location = new System.Drawing.Point(6, 68);
+            this.animationSetSetupGroup.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+            this.animationSetSetupGroup.Name = "animationSetSetupGroup";
+            this.animationSetSetupGroup.Size = new System.Drawing.Size(386, 544);
+            this.animationSetSetupGroup.TabIndex = 42;
+            this.animationSetSetupGroup.TabStop = false;
+            this.animationSetSetupGroup.Text = "Animation set setup";
             // 
-            // olvColumn2
+            // previewProgressBar
             // 
-            this.olvColumn2.AspectName = "Page";
-            this.olvColumn2.Text = "Page";
+            this.previewProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.previewProgressBar.Location = new System.Drawing.Point(250, 522);
+            this.previewProgressBar.Name = "previewProgressBar";
+            this.previewProgressBar.Size = new System.Drawing.Size(130, 16);
+            this.previewProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.previewProgressBar.TabIndex = 8;
+            this.previewProgressBar.TextMode = DarkUI.Controls.DarkProgressBarMode.XOfN;
             // 
-            // imgList
+            // texturesDataGridView
             // 
-            this.imgList.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
-            this.imgList.ImageSize = new System.Drawing.Size(64, 64);
-            this.imgList.TransparentColor = System.Drawing.Color.Transparent;
+            this.texturesDataGridView.AllowUserToAddRows = false;
+            this.texturesDataGridView.AllowUserToOrderColumns = true;
+            this.texturesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.texturesDataGridView.AutoGenerateColumns = false;
+            this.texturesDataGridView.ColumnHeadersHeight = 17;
+            this.texturesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.texturesDataGridViewColumnImage,
+            this.texturesDataGridViewColumnRepeat,
+            this.texturesDataGridViewColumnTexture,
+            this.texturesDataGridViewColumnArea,
+            this.texturesDataGridViewColumnTexCoord0,
+            this.texturesDataGridViewColumnTexCoord1,
+            this.texturesDataGridViewColumnTexCoord2,
+            this.texturesDataGridViewColumnTexCoord3});
+            this.texturesDataGridView.Location = new System.Drawing.Point(6, 21);
+            this.texturesDataGridView.Name = "texturesDataGridView";
+            this.texturesDataGridView.RowHeadersWidth = 41;
+            this.texturesDataGridView.RowTemplate.Height = 48;
+            this.texturesDataGridView.Size = new System.Drawing.Size(267, 350);
+            this.texturesDataGridView.TabIndex = 4;
+            this.texturesDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.texturesDataGridView_CellFormatting);
+            this.texturesDataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.texturesDataGridView_CellParsing);
+            this.texturesDataGridView.SelectionChanged += new System.EventHandler(this.texturesDataGridView_SelectionChanged);
             // 
-            // timerPreview
+            // texturesDataGridViewColumnImage
             // 
-            this.timerPreview.Interval = 33;
-            this.timerPreview.Tick += new System.EventHandler(this.timerPreview_Tick);
+            this.texturesDataGridViewColumnImage.HeaderText = "Image";
+            this.texturesDataGridViewColumnImage.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.texturesDataGridViewColumnImage.Name = "texturesDataGridViewColumnImage";
+            this.texturesDataGridViewColumnImage.ReadOnly = true;
+            this.texturesDataGridViewColumnImage.Width = 48;
             // 
-            // butPlayAndStop
+            // texturesDataGridViewColumnRepeat
             // 
-            this.butPlayAndStop.Location = new System.Drawing.Point(329, 396);
-            this.butPlayAndStop.Name = "butPlayAndStop";
-            this.butPlayAndStop.Padding = new System.Windows.Forms.Padding(5);
-            this.butPlayAndStop.Size = new System.Drawing.Size(64, 23);
-            this.butPlayAndStop.TabIndex = 54;
-            this.butPlayAndStop.Text = "Play";
-            this.butPlayAndStop.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butPlayAndStop.Click += new System.EventHandler(this.butPlayAndStop_Click);
+            this.texturesDataGridViewColumnRepeat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.texturesDataGridViewColumnRepeat.DataPropertyName = "Repeat";
+            this.texturesDataGridViewColumnRepeat.HeaderText = "Repeat";
+            this.texturesDataGridViewColumnRepeat.Name = "texturesDataGridViewColumnRepeat";
+            this.texturesDataGridViewColumnRepeat.Width = 67;
+            // 
+            // texturesDataGridViewColumnTexture
+            // 
+            this.texturesDataGridViewColumnTexture.DataPropertyName = "Texture";
+            this.texturesDataGridViewColumnTexture.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.texturesDataGridViewColumnTexture.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.texturesDataGridViewColumnTexture.HeaderText = "Texture";
+            this.texturesDataGridViewColumnTexture.Name = "texturesDataGridViewColumnTexture";
+            this.texturesDataGridViewColumnTexture.Width = 80;
+            // 
+            // texturesDataGridViewColumnArea
+            // 
+            this.texturesDataGridViewColumnArea.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.texturesDataGridViewColumnArea.HeaderText = "Area";
+            this.texturesDataGridViewColumnArea.Name = "texturesDataGridViewColumnArea";
+            this.texturesDataGridViewColumnArea.ReadOnly = true;
+            this.texturesDataGridViewColumnArea.Width = 54;
+            // 
+            // texturesDataGridViewColumnTexCoord0
+            // 
+            this.texturesDataGridViewColumnTexCoord0.DataPropertyName = "TexCoord0";
+            this.texturesDataGridViewColumnTexCoord0.HeaderText = "Edge 0";
+            this.texturesDataGridViewColumnTexCoord0.Name = "texturesDataGridViewColumnTexCoord0";
+            this.texturesDataGridViewColumnTexCoord0.Width = 70;
+            // 
+            // texturesDataGridViewColumnTexCoord1
+            // 
+            this.texturesDataGridViewColumnTexCoord1.DataPropertyName = "TexCoord1";
+            this.texturesDataGridViewColumnTexCoord1.HeaderText = "Edge 1";
+            this.texturesDataGridViewColumnTexCoord1.Name = "texturesDataGridViewColumnTexCoord1";
+            this.texturesDataGridViewColumnTexCoord1.Width = 70;
+            // 
+            // texturesDataGridViewColumnTexCoord2
+            // 
+            this.texturesDataGridViewColumnTexCoord2.DataPropertyName = "TexCoord2";
+            this.texturesDataGridViewColumnTexCoord2.HeaderText = "Edge 2";
+            this.texturesDataGridViewColumnTexCoord2.Name = "texturesDataGridViewColumnTexCoord2";
+            this.texturesDataGridViewColumnTexCoord2.Width = 70;
+            // 
+            // texturesDataGridViewColumnTexCoord3
+            // 
+            this.texturesDataGridViewColumnTexCoord3.DataPropertyName = "TexCoord3";
+            this.texturesDataGridViewColumnTexCoord3.HeaderText = "Edge 3";
+            this.texturesDataGridViewColumnTexCoord3.Name = "texturesDataGridViewColumnTexCoord3";
+            this.texturesDataGridViewColumnTexCoord3.Width = 70;
+            // 
+            // darkLabel2
+            // 
+            this.darkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(6, 371);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(238, 18);
+            this.darkLabel2.TabIndex = 0;
+            this.darkLabel2.Text = "Settings";
+            this.darkLabel2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            // 
+            // butUpdate
+            // 
+            this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butUpdate.Location = new System.Drawing.Point(279, 73);
+            this.butUpdate.Name = "butUpdate";
+            this.butUpdate.Size = new System.Drawing.Size(101, 20);
+            this.butUpdate.TabIndex = 2;
+            this.butUpdate.Text = "<--- Update ---|";
+            this.butUpdate.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butUpdate.Click += new System.EventHandler(this.butUpdate_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.darkLabel5);
+            this.panel2.Controls.Add(this.darkLabel3);
+            this.panel2.Controls.Add(this.comboEffect);
+            this.panel2.Location = new System.Drawing.Point(6, 392);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(238, 146);
+            this.panel2.TabIndex = 0;
+            // 
+            // darkLabel5
+            // 
+            this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel5.Location = new System.Drawing.Point(3, 10);
+            this.darkLabel5.Name = "darkLabel5";
+            this.darkLabel5.Size = new System.Drawing.Size(230, 81);
+            this.darkLabel5.TabIndex = 6;
+            this.darkLabel5.Text = "To Do";
+            this.darkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // texturesDataGridViewControls
+            // 
+            this.texturesDataGridViewControls.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.texturesDataGridViewControls.Enabled = false;
+            this.texturesDataGridViewControls.Location = new System.Drawing.Point(279, 21);
+            this.texturesDataGridViewControls.MinimumSize = new System.Drawing.Size(92, 100);
+            this.texturesDataGridViewControls.Name = "texturesDataGridViewControls";
+            this.texturesDataGridViewControls.NewName = "<--- New ---|";
+            this.texturesDataGridViewControls.Size = new System.Drawing.Size(101, 350);
+            this.texturesDataGridViewControls.TabIndex = 5;
+            // 
+            // butOk
+            // 
+            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Location = new System.Drawing.Point(599, 621);
+            this.butOk.Name = "butOk";
+            this.butOk.Size = new System.Drawing.Size(203, 23);
+            this.butOk.TabIndex = 8;
+            this.butOk.Text = "Ok";
+            this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butOk.Click += new System.EventHandler(this.butOk_Click);
+            // 
+            // tooManyFramesWarning
+            // 
+            this.tooManyFramesWarning.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tooManyFramesWarning.BackColor = System.Drawing.Color.Firebrick;
+            this.tooManyFramesWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tooManyFramesWarning.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tooManyFramesWarning.Location = new System.Drawing.Point(279, 96);
+            this.tooManyFramesWarning.Name = "tooManyFramesWarning";
+            this.tooManyFramesWarning.Size = new System.Drawing.Size(101, 223);
+            this.tooManyFramesWarning.TabIndex = 9;
+            this.tooManyFramesWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tooManyFramesWarning.Visible = false;
             // 
             // FormAnimatedTextures
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(721, 540);
-            this.Controls.Add(this.butPlayAndStop);
-            this.Controls.Add(this.lstTextures);
-            this.Controls.Add(this.darkLabel4);
-            this.Controls.Add(this.picPreview);
-            this.Controls.Add(this.comboEffect);
-            this.Controls.Add(this.darkLabel3);
-            this.Controls.Add(this.butDeleteTexture);
-            this.Controls.Add(this.butAddNewTexture);
-            this.Controls.Add(this.darkLabel2);
-            this.Controls.Add(this.butDelete);
-            this.Controls.Add(this.butAddNew);
-            this.Controls.Add(this.comboItems);
-            this.Controls.Add(this.darkLabel1);
-            this.Controls.Add(this.panelTextureContainer);
-            this.Controls.Add(this.butCancel);
+            this.ClientSize = new System.Drawing.Size(803, 647);
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.butOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(691, 500);
             this.Name = "FormAnimatedTextures";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Animated textures";
-            this.Load += new System.EventHandler(this.FormSink_Load);
-            this.panelTextureContainer.ResumeLayout(false);
-            this.panelTextureContainer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTextureMap)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.lstTextures)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.animationSetSetupGroup.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).EndInit();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private Panel panelTextureContainer;
-        private Controls.PanelAnimatedTextures picTextureMap;
         private DarkLabel darkLabel1;
-        private DarkComboBox comboItems;
-        private DarkButton butDelete;
-        private DarkButton butAddNew;
-        private DarkLabel darkLabel2;
-        private DarkButton butAddNewTexture;
-        private DarkButton butDeleteTexture;
+        private DarkComboBox comboAnimatedTextureSets;
+        private DarkButton butAnimatedTextureSetDelete;
+        private DarkButton butAnimatedTextureSetNew;
         private DarkComboBox comboEffect;
         private DarkLabel darkLabel3;
-        private PictureBox picPreview;
+        private PictureBox previewImage;
         private DarkLabel darkLabel4;
-        private DarkButton butCancel;
-        internal BrightIdeasSoftware.FastObjectListView lstTextures;
-        private BrightIdeasSoftware.OLVColumn olvColumn4;
-        private BrightIdeasSoftware.OLVColumn olvColumn5;
-        private BrightIdeasSoftware.OLVColumn olvColumn1;
-        private ImageList imgList;
-        private Timer timerPreview;
-        private DarkButton butPlayAndStop;
-        private BrightIdeasSoftware.OLVColumn olvColumn2;
+        private PanelTextureMapForAnimations textureMap;
+        private TableLayoutPanel tableLayoutPanel1;
+        private Panel panel1;
+        private DarkButton butOk;
+        private DarkGroupBox animationSetSetupGroup;
+        private DarkLabel darkLabel2;
+        private Panel panel2;
+        private Controls.DarkDataGridViewControls texturesDataGridViewControls;
+        private DarkDataGridView texturesDataGridView;
+        private DarkButton butUpdate;
+        private TableLayoutPanel tableLayoutPanel2;
+        private DarkProgressBar previewProgressBar;
+        private DarkLabel darkLabel5;
+        private DataGridViewImageColumn texturesDataGridViewColumnImage;
+        private DataGridViewTextBoxColumn texturesDataGridViewColumnRepeat;
+        private DataGridViewComboBoxColumn texturesDataGridViewColumnTexture;
+        private DataGridViewTextBoxColumn texturesDataGridViewColumnArea;
+        private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord0;
+        private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord1;
+        private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord2;
+        private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord3;
+        private DarkLabel tooManyFramesWarning;
     }
-}*/
+}

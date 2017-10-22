@@ -149,7 +149,7 @@ namespace TombEditor.Compilers
                     ushort vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i].Position, editorRoomVertices[i].FaceColor);
                     ushort vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 1].Position, editorRoomVertices[i + 1].FaceColor);
                     ushort vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, editorRoomVertices[i + 2].Position, editorRoomVertices[i + 2].FaceColor);
-                    Util.ObjectTextureManager.Result result = _objectTextureManager.AddTexture();
+                    Util.ObjectTextureManager.Result result = _objectTextureManager.AddTexturePossiblyAnimated();
 
                     roomTriangles.Add(new tr_face3 { Vertices = new ushort[3] { vertex0Index, vertex1Index, vertex2Index }, Texture = texture });
                 }*/
@@ -187,7 +187,7 @@ namespace TombEditor.Compilers
 
                                     Util.ObjectTextureManager.Result result;
                                     lock (_objectTextureManager)
-                                        result = _objectTextureManager.AddTexture(texture, false, true);
+                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, false, true);
 
                                     roomQuads.Add(result.CreateFace4(vertex0Index, vertex1Index, vertex2Index, vertex3Index, 0));
                                     i += 3;
@@ -199,7 +199,7 @@ namespace TombEditor.Compilers
 
                                     Util.ObjectTextureManager.Result result;
                                     lock (_objectTextureManager)
-                                        result = _objectTextureManager.AddTexture(texture, true, true);
+                                        result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
 
                                     roomTriangles.Add(result.CreateFace3(vertex0Index, vertex1Index, vertex2Index, 0));
                                 }
@@ -261,7 +261,7 @@ namespace TombEditor.Compilers
 
                             Util.ObjectTextureManager.Result result;
                             lock (_objectTextureManager)
-                                result = _objectTextureManager.AddTexture(texture, true, true, false);
+                                result = _objectTextureManager.AddTexturePossiblyAnimated(texture, true, true);
                             roomTriangles.Add(result.CreateFace3(index0, index1, index2, 0));
                         }
 

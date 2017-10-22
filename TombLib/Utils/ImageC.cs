@@ -22,6 +22,18 @@ namespace TombLib.Utils
             R = r;
             A = a;
         }
+
+        public static implicit operator Vector4(ColorC this_)
+        {
+            const float _floatFactor = 1.0f / 255.0f;
+            return new Vector4(this_.R * _floatFactor, this_.G * _floatFactor, this_.B * _floatFactor, this_.A * _floatFactor);
+        }
+
+        public static explicit operator ColorC(Vector4 this_)
+        {
+            this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()),  new Vector4(255.0f));
+            return new ColorC((byte)(this_.X), (byte)(this_.Y), (byte)(this_.Z), (byte)(this_.W));
+        }
     }
 
     // A very simple but very efficient image that is independent of GDI+.

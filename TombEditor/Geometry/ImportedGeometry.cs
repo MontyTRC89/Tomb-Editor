@@ -234,17 +234,5 @@ namespace TombEditor.Geometry
         public ImportedGeometry Clone() => (ImportedGeometry)MemberwiseClone();
         object ICloneable.Clone() => Clone();
         public bool Equals(ImportedGeometry other) => base.Equals(other);
-
-        public static bool AreListsEqual(List<ImportedGeometry> first, List<ImportedGeometry> second)
-        {
-            if (first.Count != second.Count)
-                return false;
-
-            for (int i = 0; i < first.Count; ++i)
-                if (!first[i].Equals(second[i]))
-                    return false;
-
-            return true;
-        }
     }
 }
