@@ -326,13 +326,6 @@ namespace TombLib.Wad.TrLevels
 
         private static void ConvertTrLevelSprites(Wad2 wad, TrLevel oldLevel)
         {
-           /* int spriteDataSize = oldLevel.SpriteData.Length;
-
-            // Load the real sprite texture data
-            int numSpriteTexturePages = spriteDataSize / 196608;
-            if ((spriteDataSize % 196608) != 0)
-                numSpriteTexturePages++;
-
             foreach (var oldSequence in oldLevel.SpriteSequences)
             {
                 int lengthOfSequence = -oldSequence.NegativeLength;
@@ -340,35 +333,48 @@ namespace TombLib.Wad.TrLevels
 
                 var newSequence = new WadSpriteSequence();
                 newSequence.ObjectID = (uint)oldSequence.ObjectID;
+                newSequence.Name = TrCatalog.GetSpriteName(GetTrVersion(oldLevel.Version), (uint)oldSequence.ObjectID);
 
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {
                     var oldSpriteTexture = oldLevel.SpriteTextures[i];
 
-                    var spriteWidth = oldSpriteTexture.Width + 1;
-                    var spriteHeight = oldSpriteTexture.Height + 1;
-                    var spriteX = oldSpriteTexture.X;
-                    var spriteY = oldSpriteTexture.Y;
-                    var spritePage = ImageC.CreateNew(spriteWidth, spriteHeight);
+                    int spriteWidth = 0;
+                    int spriteHeight = 0;
+                    int spriteX = 0;
+                    int spriteY = 0;
+
+                    if (oldLevel.Version == TrVersion.TR1 || oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                    {
+                        spriteX = oldSpriteTexture.X;
+                        spriteY = oldSpriteTexture.Y;
+                        spriteWidth = (oldSpriteTexture.Width - 255) / 256;
+                        spriteHeight = (oldSpriteTexture.Height - 255) / 256;
+                    }
+                    else
+                    {
+                        spriteX = oldSpriteTexture.LeftSide;
+                        spriteY = oldSpriteTexture.TopSide;
+                        spriteWidth = (oldSpriteTexture.Width / 256) + 1;
+                        spriteHeight = (oldSpriteTexture.Height / 256) + 1;
+                    }
+
+                    var spriteImage = ImageC.CreateNew(spriteWidth, spriteHeight);
 
                     for (int y = 0; y < spriteHeight; y++)
                         for (int x = 0; x < spriteWidth; x++)
                         {
-                            int baseIndex = oldSpriteTexture.Tile * 196608 + 768 * (y + spriteY) + 3 * (x + spriteX);
+                            byte b = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 0];
+                            byte g = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 1];
+                            byte r = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 2];
+                            byte a = oldLevel.TextureMap32[oldSpriteTexture.Tile * 65536 * 4 + (spriteY + y) * 1024 + (spriteX + x) * 4 + 3];
 
-                            byte b = oldLevel.SpriteData[baseIndex + 0];
-                            byte g = oldLevel.SpriteData[baseIndex + 1];
-                            byte r = oldLevel.SpriteData[baseIndex + 2];
-
-                            if (r == 255 & g == 0 && b == 255)
-                                spritePage.SetPixel(x, y, 0, 0, 0, 0);
-                            else
-                                spritePage.SetPixel(x, y, b, g, r, 255);
+                            spriteImage.SetPixel(x, y, new ColorC(r, g, b, a));
                         }
 
                     // Create the texture
                     var texture = new WadSprite();
-                    texture.Image = spritePage;
+                    texture.Image = spriteImage;
                     texture.UpdateHash();
 
                     // Check if texture already exists in Wad2 and eventually add it
@@ -382,7 +388,7 @@ namespace TombLib.Wad.TrLevels
                 }
 
                 wad.SpriteSequences.Add(newSequence);
-            }*/
+            }
         }
 
         private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)

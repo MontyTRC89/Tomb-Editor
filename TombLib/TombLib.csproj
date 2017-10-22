@@ -168,7 +168,6 @@
     <Compile Include="Wad\WadSprite.cs" />
     <Compile Include="Wad\WadSpriteSequence.cs" />
     <Compile Include="Wad\Enumerations.cs" />
-    <Compile Include="Wad\ObjectNames.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4Wad.cs" />
     <Compile Include="Wad\Wad2.cs" />
     <Compile Include="Wad\WadObject.cs" />

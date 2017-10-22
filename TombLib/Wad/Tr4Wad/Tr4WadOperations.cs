@@ -214,6 +214,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 var newSequence = new WadSpriteSequence();
                 newSequence.ObjectID = (uint)oldSequence.ObjectID;
+                newSequence.Name = TrCatalog.GetSpriteName(TombRaiderVersion.TR4, (uint)oldSequence.ObjectID);
 
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {

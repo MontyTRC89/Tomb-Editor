@@ -204,6 +204,7 @@ namespace TombLib.Wad
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.SpriteSequence, () =>
                     {
                         LEB128.Write(chunkIO.Raw, sequence.ObjectID);
+                        chunkIO.WriteChunkString(Wad2Chunks.SpriteSequenceName, sequence.Name);
                         foreach (var spr in sequence.Sprites)
                             chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSprite, _spritesTable.IndexOf(spr));
                     });

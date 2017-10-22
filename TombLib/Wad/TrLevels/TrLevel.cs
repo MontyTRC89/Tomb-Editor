@@ -781,7 +781,7 @@ namespace TombLib.Wad.TrLevels
                             var r = ((color & 0x7c00) >> 10) * 8;
                             var g = ((color & 0x03e0) >> 5) * 8;
                             var b = ((color & 0x001f) >> 0) * 8;
-                            var a = ((color & 0x8000) >> 15) << 8;
+                            var a = ((color & 0x8000) != 0 ? 255 : 0);
 
                             TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
                             TextureMap32[y * 1024 + x * 4 + 1] = (byte)g;
