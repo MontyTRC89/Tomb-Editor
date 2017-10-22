@@ -337,7 +337,7 @@ namespace TombEditor.Geometry
 
             const float criticalSlantComponent = 0.8f;
             const int lowestPassableStep = 2;  // Lara still can bug out of 2-click step heights
-            const int lowestPassableHeight = 3;
+            const int lowestPassableHeight = 4;
             const int lowestSlidableHeight = 3;
 
             Plane[] tri = new Plane[2];
