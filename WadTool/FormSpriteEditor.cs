@@ -32,13 +32,13 @@ namespace WadTool
 
             _tool = WadToolClass.Instance;
 
-            foreach (var slot in TrCatalog.GetAllSprites(TombRaiderVersion.TR4))
+            foreach (var slot in TrCatalog.GetAllSprites(_tool.DestinationWad.Version))
                 comboSlot.Items.Add(slot.Value);
         }
 
         private void FormSpriteEditor_Load(object sender, EventArgs e)
         {
-            var spritesCatalog = TrCatalog.GetAllSprites(TombRaiderVersion.TR4);
+            var spritesCatalog = TrCatalog.GetAllSprites(_tool.DestinationWad.Version);
 
             for (int i = 0; i < spritesCatalog.Count; i++)
             {
@@ -152,7 +152,7 @@ namespace WadTool
 
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
-            uint objectId = (uint)TrCatalog.GetAllSprites(TombRaiderVersion.TR4).ElementAt(comboSlot.SelectedIndex).Key;
+            uint objectId = (uint)TrCatalog.GetAllSprites(_tool.DestinationWad.Version).ElementAt(comboSlot.SelectedIndex).Key;
 
             // Check for already existing sequence
             if (objectId != SpriteSequence.ObjectID)
