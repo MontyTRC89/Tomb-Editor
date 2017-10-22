@@ -785,7 +785,7 @@ namespace TombEditor.Geometry.IO
                             }
 
                             // Add portal to rooms
-                            room.AddObject(level, portal);
+                            room.AddObjectAndSingularPortal(level, portal);
                         }
                     }
 
@@ -1093,15 +1093,27 @@ namespace TombEditor.Geometry.IO
                                 LoadTextureArea(room, x, z, BlockFace.Ceiling, texture, tempTextures, prjBlock._faces[1]);
 
                                 // 2: BLOCK_TEX_N4 (North QA)
-                                if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) ||
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.NegativeX_QA, texture, tempTextures, prjBlock._faces[2]);
+                                    if ((room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
+                                        room.IsFaceDefined(x, z, BlockFace.NegativeX_ED)) ||
+                                        !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[10]);
+                                    }
                                 }
                                 else
                                 {
                                     if (x > 0)
-                                        LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_QA, texture, tempTextures, prjBlock._faces[2]);
+                                        if ((room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
+                                            room.IsFaceDefined(x- 1, z , BlockFace.PositiveX_ED)) ||
+                                            !IsUndefinedButHasArea(room, x- 1, z , BlockFace.PositiveX_QA))
+                                        {
+                                            LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
+                                        }
                                 }
+
 
                                 // 3: BLOCK_TEX_N1 (North RF)
                                 if (room.IsFaceDefined(x, z, BlockFace.NegativeX_RF) ||
@@ -1153,14 +1165,25 @@ namespace TombEditor.Geometry.IO
                                 }
 
                                 // 5: BLOCK_TEX_W4 (West QA)
-                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) ||
+                                    room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[5]);
+                                    if ((room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
+                                        room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED)) ||
+                                        !IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[12]);
+                                    }
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_QA, texture, tempTextures, prjBlock._faces[5]);
+                                        if ((room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
+                                            room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED)) ||
+                                            !IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
+                                        {
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[12]);
+                                        }
                                 }
 
                                 // 6: BLOCK_TEX_W1 (West RF)
@@ -1219,14 +1242,43 @@ namespace TombEditor.Geometry.IO
                                 LoadTextureArea(room, x, z, BlockFace.CeilingTriangle2, texture, tempTextures, prjBlock._faces[9]);
 
                                 // 10: BLOCK_TEX_N5 (North ED)
-                                if (room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) ||
+                                   room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[10]);
+                                    if (room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
+                                        !room.IsFaceDefined(x, z, BlockFace.NegativeX_ED))
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeX_QA, texture, tempTextures, prjBlock._faces[2]);
+                                    }
+                                    else if (!room.IsFaceDefined(x, z, BlockFace.NegativeX_QA) &&
+                                             room.IsFaceDefined(x, z, BlockFace.NegativeX_ED) &&
+                                             IsUndefinedButHasArea(room, x, z, BlockFace.NegativeX_QA))
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeX_ED, texture, tempTextures, prjBlock._faces[2]);
+                                    }
+                                    else
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeX_QA, texture, tempTextures, prjBlock._faces[2]);
+                                    }
                                 }
                                 else
                                 {
                                     if (x > 0)
-                                        LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[10]);
+                                        if (room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
+                                            !room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED))
+                                        {
+                                            LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_QA, texture, tempTextures, prjBlock._faces[2]);
+                                        }
+                                        else if (!room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_QA) &&
+                                                 room.IsFaceDefined(x - 1, z, BlockFace.PositiveX_ED) &&
+                                                 IsUndefinedButHasArea(room, x - 1, z, BlockFace.PositiveX_QA))
+                                        {
+                                            LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_ED, texture, tempTextures, prjBlock._faces[2]);
+                                        }
+                                        else
+                                        {
+                                            LoadTextureArea(room, x - 1, z, BlockFace.PositiveX_QA, texture, tempTextures, prjBlock._faces[2]);
+                                        }
                                 }
 
                                 // 11: BLOCK_TEX_N2 (North WS)
@@ -1250,14 +1302,43 @@ namespace TombEditor.Geometry.IO
                                 }
 
                                 // 12: BLOCK_TEX_W5
-                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
+                                if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) ||
+                                   room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
                                 {
-                                    LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[12]);
+                                    if (room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
+                                        !room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED))
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[5]);
+                                    }
+                                    else if (!room.IsFaceDefined(x, z, BlockFace.NegativeZ_QA) &&
+                                             room.IsFaceDefined(x, z, BlockFace.NegativeZ_ED) &&
+                                             IsUndefinedButHasArea(room, x, z, BlockFace.NegativeZ_QA))
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_ED, texture, tempTextures, prjBlock._faces[5]);
+                                    }
+                                    else
+                                    {
+                                        LoadTextureArea(room, x, z, BlockFace.NegativeZ_QA, texture, tempTextures, prjBlock._faces[5]);
+                                    }
                                 }
                                 else
                                 {
                                     if (z > 0)
-                                        LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[12]);
+                                        if (room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
+                                            !room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED))
+                                        {
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_QA, texture, tempTextures, prjBlock._faces[5]);
+                                        }
+                                        else if (!room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_QA) &&
+                                                 room.IsFaceDefined(x, z - 1, BlockFace.PositiveZ_ED) &&
+                                                 IsUndefinedButHasArea(room, x, z - 1, BlockFace.PositiveZ_QA))
+                                        {
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_ED, texture, tempTextures, prjBlock._faces[5]);
+                                        }
+                                        else
+                                        {
+                                            LoadTextureArea(room, x, z - 1, BlockFace.PositiveZ_QA, texture, tempTextures, prjBlock._faces[5]);
+                                        }
                                 }
 
                                 // 13: BLOCK_TEX_W2 (West WS)
@@ -1299,6 +1380,36 @@ namespace TombEditor.Geometry.IO
                 level.Dispose(); // We log in the level above
                 throw;
             }
+        }
+
+        private static bool IsUndefinedButHasArea(Room room, int x, int z, BlockFace face)
+        {
+            var b = room.Blocks[x, z];
+
+            switch (face)
+            {
+                case BlockFace.PositiveZ_QA:
+                    return (!room.IsFaceDefined(x, z, face) &&
+                            (b.QAFaces[0] >= b.EDFaces[0] && b.QAFaces[1] >= b.EDFaces[1]) &&
+                            !(b.QAFaces[0] == b.EDFaces[0] && b.QAFaces[1] == b.EDFaces[1]));
+
+                case BlockFace.NegativeZ_QA:
+                    return (!room.IsFaceDefined(x, z, face) &&
+                            (b.QAFaces[3] >= b.EDFaces[3] && b.QAFaces[2] >= b.EDFaces[2]) &&
+                            !(b.QAFaces[3] == b.EDFaces[3] && b.QAFaces[2] == b.EDFaces[2]));
+
+                case BlockFace.NegativeX_QA:
+                    return (!room.IsFaceDefined(x, z, face) &&
+                            (b.QAFaces[3] >= b.EDFaces[3] && b.QAFaces[0] >= b.EDFaces[0]) &&
+                            !(b.QAFaces[3] == b.EDFaces[3] && b.QAFaces[0] == b.EDFaces[0]));
+
+                case BlockFace.PositiveX_QA:
+                    return (!room.IsFaceDefined(x, z, face) &&
+                               (b.QAFaces[1] >= b.EDFaces[1] && b.QAFaces[2] >= b.EDFaces[2]) &&
+                               !(b.QAFaces[1] == b.EDFaces[1] && b.QAFaces[2] == b.EDFaces[2]));
+            }
+
+            return false;
         }
 
 #pragma warning disable 0675 // Disable warning about bitwise or

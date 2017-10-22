@@ -17,20 +17,28 @@ namespace TombEditor.Geometry
 
     public class PortalInstance : SectorBasedObjectInstance
     {
-        public PortalDirection Direction { get; }
-        public Room AdjoiningRoom { get; internal set; }
-        public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
+        private Room _adjoiningRoom;
+        public Room AdjoiningRoom
+        {
+            get { return _adjoiningRoom; }
+            set
+            {
+                if (value == null)
+                    throw new NullReferenceException("'AdjoiningRoom' must not be null");
+                _adjoiningRoom = value.AlternateBaseRoom ?? value;
+            }
+        }
 
+        public PortalDirection Direction { get; }
+        public PortalOpacity Opacity { get; set; } = PortalOpacity.None;
         public bool HasTexturedFaces => Opacity != PortalOpacity.None;
         public bool IsTraversable => Opacity != PortalOpacity.SolidFaces;
 
-        public PortalInstance(Rectangle area, PortalDirection direction, Room adjoiningRoom)
+        public PortalInstance(Rectangle area, PortalDirection direction, Room adjoiningRoom = null)
             : base(area)
         {
-            if (adjoiningRoom == null)
-                throw new NullReferenceException("'adjoiningRoom' must not be null");
-            Direction = direction;
             AdjoiningRoom = adjoiningRoom;
+            Direction = direction;
         }
 
         public override string ToString()
@@ -104,6 +112,20 @@ namespace TombEditor.Geometry
             }
         }
 
+        public PortalInstance FindAlternatePortal(Room alternateRoom)
+        {
+            var sector = alternateRoom?.GetBlockTry(Area.X, Area.Y);
+            switch (Direction)
+            {
+                case PortalDirection.Floor:
+                    return sector?.FloorPortal; // A floor portal in this room is a ceiling portal in the adjoining room.
+                case PortalDirection.Ceiling:
+                    return sector?.CeilingPortal; // A ceiling portal in this room is a floor portal in the adjoining room.
+                default:
+                    return sector?.WallPortal;
+            }
+        }
+
         public override void AddToRoom(Level level, Room room)
         {
             base.AddToRoom(level, room);
@@ -150,9 +172,6 @@ namespace TombEditor.Geometry
         {
             base.RemoveFromRoom(level, room);
 
-            if ((room.Flipped) || (AdjoiningRoom?.Flipped ?? false))
-                throw new NotImplementedException("Removing portals from rooms that are flipped is not supported just yet. :(");
-
             // Remove portal reference
             switch (Direction)
             {
@@ -172,14 +191,6 @@ namespace TombEditor.Geometry
                             room.Blocks[x, z].WallPortal = null;
                     break;
             }
-
-            // Delete the corresponding opposite portal.
-            // (Will invoke this routine again from the other perspective).
-            var oppositePortal = FindOppositePortal(room);
-            if (oppositePortal != null)
-                AdjoiningRoom.RemoveObject(level, oppositePortal);
-
-            room.UpdateCompletely();
         }
     }
 }

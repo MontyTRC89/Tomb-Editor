@@ -58,6 +58,7 @@ namespace TombEditor.Controls
                 if ((e.Current != null) && (_editor?.Level?.Wad != null))
                     ResetCamera();
                 Invalidate();
+                Update(); // Magic fix for room view leaking into item view
             }
 
             if (obj is Editor.LoadedWadsChangedEvent)
@@ -112,8 +113,8 @@ namespace TombEditor.Controls
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, Color4.White, 1.0f, 0);
+
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor, 1.0f, 0);
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
@@ -161,24 +162,24 @@ namespace TombEditor.Controls
             else
             {
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[chosenItem.Id];
-                SkinnedModel skin = model;
+                SkinnedModel skin = ((chosenItem.Id == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
 
                 Effect mioEffect = _deviceManager.Effects["Model"];
 
-                _device.SetVertexBuffer(0, model.VertexBuffer);
-                _device.SetIndexBuffer(model.IndexBuffer, true);
+                _device.SetVertexBuffer(0, skin.VertexBuffer);
+                _device.SetIndexBuffer(skin.IndexBuffer, true);
 
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
 
                 mioEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
                 mioEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 
                 mioEffect.Parameters["Color"].SetValue(Vector4.One);
 
-                for (int i = 0; i < model.Meshes.Count; i++)
+                for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     SkinnedMesh mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (skin.Vertices.Count == 0)
                         continue;
 
                     Matrix modelMatrix;
@@ -203,12 +204,20 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (_editor?.Level?.Settings?.WadFilePath == null)
+            if (_editor?.Level?.Wad == null)
             {
+                string notifyMessage;
+                if (string.IsNullOrEmpty(_editor.Level.Settings.WadFilePath))
+                    notifyMessage = "Click here to load a new WAD file.";
+                else
+                {
+                    notifyMessage = "Unable to load WAD file '" + (_editor.Level.Settings.WadFilePath ?? "") + "'.\n";
+                    notifyMessage += "Click here to choose a replacement.\n\n";
+                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.WadFilePath) ?? "");
+                }
+
                 e.Graphics.Clear(Parent.BackColor);
-                e.Graphics.DrawString("Click here to load WAD.",
-                    Font, System.Drawing.Brushes.DarkGray,
-                    ClientRectangle,
+                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, ClientRectangle,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
             else
@@ -232,7 +241,7 @@ namespace TombEditor.Controls
             switch(e.Button)
             {
                 case MouseButtons.Left:
-                    if (_editor?.Level?.Settings?.WadFilePath == null)
+                    if (_editor?.Level?.Wad == null)
                     {
                         EditorActions.LoadWad(Parent);
                         return;

@@ -184,11 +184,27 @@ namespace TombEditor.Geometry
         public void SetEdge(int verticalSubdivision, int edge, short newValue)
         {
             GetVerticalSubdivision(verticalSubdivision)[edge] = newValue;
+            FixHeights(verticalSubdivision);
         }
 
         public void ChangeEdge(int verticalSubdivision, int edge, short increment)
         {
             GetVerticalSubdivision(verticalSubdivision)[edge] += increment;
+            FixHeights(verticalSubdivision);
+        }
+
+        public void FixHeights(int verticalSubdivision = -1)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                EDFaces[i] = Math.Min(EDFaces[i], QAFaces[i]);
+                RFFaces[i] = Math.Max(RFFaces[i], WSFaces[i]);
+
+                if (verticalSubdivision == 0 || verticalSubdivision == 2 || verticalSubdivision == -1)
+                    QAFaces[i] = Math.Min(QAFaces[i], WSFaces[i]);
+                if (verticalSubdivision == 1 || verticalSubdivision == 3 || verticalSubdivision == -1)
+                    WSFaces[i] = Math.Max(WSFaces[i], QAFaces[i]);
+            }
         }
 
         private static int FindHorizontalTriangle(int h1, int h2, int h3, int h4)
@@ -237,7 +253,10 @@ namespace TombEditor.Geometry
                     default:
                         int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
-
+                        
+                        if (h1 == h3 && h2 == h4 && h2 != h3)
+                            return FloorSplitDirectionToggled;
+                           
                         if (min == h1 && min == h3)
                             return FloorSplitDirectionToggled;
                         if (min == h2 && min == h4)
@@ -282,6 +301,9 @@ namespace TombEditor.Geometry
                     default:
                         int min = Math.Min(Math.Min(Math.Min(h1, h2), h3), h4);
                         int max = Math.Max(Math.Max(Math.Max(h1, h2), h3), h4);
+
+                        if (h1 == h3 && h2 == h4 && h2 != h3)
+                            return FloorSplitDirectionToggled;
 
                         if (max == h1 && max == h3)
                             return CeilingSplitDirectionToggled;

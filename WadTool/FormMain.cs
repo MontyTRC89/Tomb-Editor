@@ -12,7 +12,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.IO;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 using TombLib.Wad.Tr4Wad;
+using TombLib.Wad.TrLevels;
 
 namespace WadTool
 {
@@ -181,6 +183,12 @@ namespace WadTool
 
         private void UpdateDestinationWad2UI()
         {
+            // Disable rendering
+            treeDestWad.SelectedNodes.Clear();
+            panel3D.CurrentObject = null;
+            panel3D.CurrentWad = null;
+            panel3D.Invalidate();
+            
             treeDestWad.Nodes.Clear();
 
             var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
@@ -233,8 +241,8 @@ namespace WadTool
         private void butOpenSourceWad_Click(object sender, EventArgs e)
         {
             // Open the file dialog
-            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.Wad);
-            openFileDialogWad.Title = "Open source WAD/Wad2";
+            openFileDialogWad.Filter = SupportedFormats.GetFilter(FileFormatType.ObjectForWadTool);
+            openFileDialogWad.Title = "Open source WAD - Wad2 - Level";
             if (openFileDialogWad.ShowDialog() == DialogResult.Cancel)
                 return;
 
@@ -256,7 +264,7 @@ namespace WadTool
                 newWad.PrepareDataForDirectX();
                 _tool.SourceWad = newWad;
             }
-            else
+            else if (fileName.EndsWith("wad2"))
             {
                 using (var stream = File.OpenRead(fileName))
                 {
@@ -273,6 +281,28 @@ namespace WadTool
                     _tool.SourceWad = newWad;
                 }
             }
+            else
+            {
+                var originalLevel = new TrLevel();
+                originalLevel.LoadLevel(fileName, _tool.Configuration.Sounds_Tr2MainSfxPath, _tool.Configuration.Sounds_Tr3MainSfxPath);
+
+                var newWad = TrLevelOperations.ConvertTrLevel(originalLevel);
+                if (newWad == null)
+                    return;
+
+                if (_tool.SourceWad != null)
+                    _tool.SourceWad.Dispose();
+
+                newWad.GraphicsDevice = _tool.Device;
+                newWad.PrepareDataForDirectX();
+                _tool.SourceWad = newWad;
+            }
+
+            // Disable rendering
+            treeSourceWad.SelectedNodes.Clear();
+            panel3D.CurrentObject = null;
+            panel3D.CurrentWad = null;
+            panel3D.Invalidate();
 
             // Update the UI
             treeSourceWad.Nodes.Clear();
@@ -297,6 +327,30 @@ namespace WadTool
                 nodeStatic.Tag = staticMesh.Value;
 
                 treeSourceWad.Nodes[1].Nodes.Add(nodeStatic);
+            }
+
+            var nodeSprites = new DarkUI.Controls.DarkTreeNode("Sprites");
+            treeSourceWad.Nodes.Add(nodeSprites);
+
+            foreach (var sequence in _tool.SourceWad.SpriteSequences)
+            {
+                var nodeSequence = new DarkUI.Controls.DarkTreeNode(sequence.ToString());
+                nodeSequence.Tag = sequence;
+
+                treeSourceWad.Nodes[2].Nodes.Add(nodeSequence);
+
+                int spriteIndex = 0;
+                int currentNode = treeSourceWad.Nodes[2].Nodes.Count - 1;
+
+                foreach (var sprite in sequence.Sprites)
+                {
+                    var nodeSprite = new DarkUI.Controls.DarkTreeNode("Sprite #" + spriteIndex);
+                    nodeSprite.Tag = sprite;
+
+                    treeSourceWad.Nodes[2].Nodes[currentNode].Nodes.Add(nodeSprite);
+
+                    spriteIndex++;
+                }
             }
         }
 
@@ -597,6 +651,115 @@ namespace WadTool
                 if (form.ShowDialog() == DialogResult.Cancel) return;
 
                 UpdateDestinationWad2UI();
+            }
+        }
+
+        private void debugAction4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var level = new TrLevel();
+            //level.LoadLevel("E:\\Andrea1.trc");
+        }
+
+        private void soundManagerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            butSoundEditor_Click(null, null);
+        }
+
+        private void debugAction5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TrCatalog.LoadCatalog("Editor\\TRCatalog.xml");
+        }
+
+        private void debugAction6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var level = new TrLevel();
+            //level.LoadLevel("E:\\TR2\\data\\venice.tr2");
+            var newWad = TrLevelOperations.ConvertTrLevel(level);
+
+            if (_tool.SourceWad != null)
+                _tool.SourceWad.Dispose();
+
+            newWad.GraphicsDevice = _tool.Device;
+            newWad.PrepareDataForDirectX();
+            _tool.SourceWad = newWad;
+
+            // Update the UI
+            treeSourceWad.Nodes.Clear();
+
+            var nodeMoveables = new DarkUI.Controls.DarkTreeNode("Moveables");
+            treeSourceWad.Nodes.Add(nodeMoveables);
+
+            foreach (var moveable in _tool.SourceWad.Moveables)
+            {
+                var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
+                nodeMoveable.Tag = moveable.Value;
+
+                treeSourceWad.Nodes[0].Nodes.Add(nodeMoveable);
+            }
+
+            var nodeStatics = new DarkUI.Controls.DarkTreeNode("Statics");
+            treeSourceWad.Nodes.Add(nodeStatics);
+
+            foreach (var staticMesh in _tool.SourceWad.Statics)
+            {
+                var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
+                nodeStatic.Tag = staticMesh.Value;
+
+                treeSourceWad.Nodes[1].Nodes.Add(nodeStatic);
+            }
+        }
+
+        private void aboutWadToolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
+        }
+
+        private void debugAction7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            /*for (var i = 1; i <= 4; i++)
+            {
+                var addedSounds = new List<int>();
+
+                using (var reader = new StreamReader(File.OpenRead("E:\\SFX_TR" + i + ".txt")))
+                {
+                    if (File.Exists("E:\\TR" + i + ".xml")) File.Delete("E:\\TR" + i + ".xml");
+
+                    using (var writer = new StreamWriter(File.OpenWrite("E:\\TR" + i + ".xml")))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            var s = reader.ReadLine();
+                            int id = Int32.Parse(s.Split(' ')[0]);
+                            if (addedSounds.Contains(id)) continue;
+                            addedSounds.Add(id);
+
+                            s = s.Substring(4, s.Length - 4);
+                            s = s.Replace("\"", "");
+                            s = s.Replace(" -- ", "\" name=\"");
+                            s = "<sound id=\"" + id + s + "\" ";
+                            if (i == 4 && Wad2.MandatorySounds.Contains((ushort)id)) s += "mandatory=\"true\"";
+                            s+= "/>";
+                            writer.WriteLine(s);
+                        }
+                    }
+                }
+            }*/
+
+            using (var reader = new StreamReader(File.OpenRead("E:\\sounds.txt")))
+            {
+                using (var writer = new StreamWriter(File.OpenWrite("E:\\TR5.xml")))
+                {
+                    int i = 0;
+                    while (!reader.EndOfStream)
+                    {
+                        var s = reader.ReadLine();
+                        s = s.Substring(0, s.IndexOf(":"));
+                        s = s[0] + s.Replace("_", " ").Substring(1, s.Length - 1).ToLower();
+                        writer.WriteLine("<sound id=\"" +i + "\" name=\"" + s + "\"/>");
+                        i++;
+                    }
+                }
             }
         }
     }

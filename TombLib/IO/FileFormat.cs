@@ -9,7 +9,8 @@ namespace TombLib.IO
         Object,
         Texture,
         SpecialTexture,
-        Geometry
+        Geometry,
+        ObjectForWadTool
     }
 
     public static class SupportedFormats
@@ -24,6 +25,7 @@ namespace TombLib.IO
         private static List<FileFormat> _supportedTextureFormats = new List<FileFormat>();
         private static List<FileFormat> _supportedSpecialTextureFormats = new List<FileFormat>();
         private static List<FileFormat> _supportedWadFormats = new List<FileFormat>();
+        private static List<FileFormat> _supportedObjectsWadToolFormats = new List<FileFormat>();
 
         private static List<FileFormat> GetFormatList(FileFormatType type)
         {
@@ -37,6 +39,8 @@ namespace TombLib.IO
                     return _supportedSpecialTextureFormats;
                 case FileFormatType.Geometry:
                     return _supportedGeometryFormats;
+                case FileFormatType.ObjectForWadTool:
+                    return _supportedObjectsWadToolFormats;
                 default:
                     return null;
             }
@@ -143,6 +147,13 @@ namespace TombLib.IO
 
             AddFormat(FileFormatType.Object, "TRLE WAD", "wad");
             AddFormat(FileFormatType.Object, "TombEditor WAD2", "wad2");
+
+            AddFormat(FileFormatType.ObjectForWadTool, "TRLE WAD", "wad");
+            AddFormat(FileFormatType.ObjectForWadTool, "TombEditor WAD2", "wad2");
+            AddFormat(FileFormatType.ObjectForWadTool, "Tomb Raider I level", "phd");
+            AddFormat(FileFormatType.ObjectForWadTool, "Tomb Raider II/III level", "tr2");
+            AddFormat(FileFormatType.ObjectForWadTool, "Tomb Raider The Last Revelation level", "tr4");
+            AddFormat(FileFormatType.ObjectForWadTool, "Tomb Raider Chronicles level", "trc");
         }
 
         public static bool IsExtensionPresent(FileFormatType type, string extension)

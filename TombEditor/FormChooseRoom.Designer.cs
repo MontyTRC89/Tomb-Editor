@@ -43,6 +43,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.roomListBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.roomListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.roomListBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.roomListBox.ForeColor = System.Drawing.Color.White;
             this.roomListBox.FormattingEnabled = true;
@@ -115,6 +116,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.titelLabel);
             this.Controls.Add(this.roomListBox);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
             this.Name = "FormChooseRoom";
             this.ShowIcon = false;

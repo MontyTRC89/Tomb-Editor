@@ -25,12 +25,14 @@ namespace TombEditor.ToolWindows
             panelTextureMap.SelectedTextureChanged += delegate { _editor.SelectedTexture = panelTextureMap.SelectedTexture; };
 
             // Setup tile size options
-            if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 128.0f)
+            if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 64.0f)
+                rbTileSize64.Checked = true;
+            else if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 128.0f)
                 rbTileSize128.Checked = true;
             else if (_editor.Configuration.TextureMap_DefaultTileSelectionSize == 256.0f)
                 rbTileSize256.Checked = true;
             else
-                rbTileSize64.Checked = true;
+                rbTileSize32.Checked = true;
             panelTextureMap.TileSelectionSize = _editor.Configuration.TextureMap_DefaultTileSelectionSize;
         }
 
@@ -62,6 +64,12 @@ namespace TombEditor.ToolWindows
         private void butAnimationRanges_Click(object sender, EventArgs e)
         {
             EditorActions.ShowAnimationRangesDialog(this);
+        }
+
+        private void rbTileSize32_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbTileSize32.Checked)
+                panelTextureMap.TileSelectionSize = 32.0f;
         }
 
         private void rbTileSize64_CheckedChanged(object sender, EventArgs e)

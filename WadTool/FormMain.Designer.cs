@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            this.butTest = new DarkUI.Controls.DarkButton();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +54,9 @@
             this.debugAction0ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugAction1ToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStrip1 = new DarkUI.Controls.DarkToolStrip();
             this.butOpenDestWad2 = new System.Windows.Forms.ToolStripButton();
             this.butOpenSourceWad = new System.Windows.Forms.ToolStripButton();
@@ -78,20 +80,12 @@
             this.butDeleteObject = new DarkUI.Controls.DarkButton();
             this.butAddObjectToDifferentSlot = new DarkUI.Controls.DarkButton();
             this.butAddObject = new DarkUI.Controls.DarkButton();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutWadToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugAction7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // butTest
-            // 
-            this.butTest.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butTest.Location = new System.Drawing.Point(920, 562);
-            this.butTest.Name = "butTest";
-            this.butTest.Padding = new System.Windows.Forms.Padding(5);
-            this.butTest.Size = new System.Drawing.Size(75, 23);
-            this.butTest.TabIndex = 0;
-            this.butTest.Text = "Test";
-            this.butTest.Click += new System.EventHandler(this.butTest_Click);
             // 
             // darkStatusStrip1
             // 
@@ -112,7 +106,8 @@
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.toolsToolStripMenuItem,
-            this.debugToolStripMenuItem});
+            this.debugToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
             this.darkMenuStrip1.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
@@ -175,7 +170,7 @@
             this.openSourceWADToolStripMenuItem.Image = global::WadTool.Properties.Resources.import_16;
             this.openSourceWADToolStripMenuItem.Name = "openSourceWADToolStripMenuItem";
             this.openSourceWADToolStripMenuItem.Size = new System.Drawing.Size(262, 22);
-            this.openSourceWADToolStripMenuItem.Text = "Open source WAD/Wad2";
+            this.openSourceWADToolStripMenuItem.Text = "Open source WAD - Wad2 - Level";
             this.openSourceWADToolStripMenuItem.Click += new System.EventHandler(this.openSourceWADToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
@@ -274,6 +269,7 @@
             this.soundManagerToolStripMenuItem.Name = "soundManagerToolStripMenuItem";
             this.soundManagerToolStripMenuItem.Size = new System.Drawing.Size(231, 22);
             this.soundManagerToolStripMenuItem.Text = "Sound editor";
+            this.soundManagerToolStripMenuItem.Click += new System.EventHandler(this.soundManagerToolStripMenuItem_Click);
             // 
             // spriteEditorToolStripMenuItem
             // 
@@ -298,7 +294,11 @@
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.debugAction0ToolStripMenuItem,
             this.debugAction1ToolStripMenuItem,
-            this.debugAction1ToolStripMenuItem1});
+            this.debugAction1ToolStripMenuItem1,
+            this.debugAction4ToolStripMenuItem,
+            this.debugAction5ToolStripMenuItem,
+            this.debugAction6ToolStripMenuItem,
+            this.debugAction7ToolStripMenuItem});
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
@@ -328,6 +328,33 @@
             this.debugAction1ToolStripMenuItem1.Size = new System.Drawing.Size(154, 22);
             this.debugAction1ToolStripMenuItem1.Text = "Debug action 1";
             this.debugAction1ToolStripMenuItem1.Click += new System.EventHandler(this.debugAction1ToolStripMenuItem1_Click);
+            // 
+            // debugAction4ToolStripMenuItem
+            // 
+            this.debugAction4ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction4ToolStripMenuItem.Name = "debugAction4ToolStripMenuItem";
+            this.debugAction4ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction4ToolStripMenuItem.Text = "Debug action 4";
+            this.debugAction4ToolStripMenuItem.Click += new System.EventHandler(this.debugAction4ToolStripMenuItem_Click);
+            // 
+            // debugAction5ToolStripMenuItem
+            // 
+            this.debugAction5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
+            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction5ToolStripMenuItem.Text = "Debug action 5";
+            this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
+            // 
+            // debugAction6ToolStripMenuItem
+            // 
+            this.debugAction6ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction6ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction6ToolStripMenuItem.Name = "debugAction6ToolStripMenuItem";
+            this.debugAction6ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction6ToolStripMenuItem.Text = "Debug action 6";
+            this.debugAction6ToolStripMenuItem.Click += new System.EventHandler(this.debugAction6ToolStripMenuItem_Click);
             // 
             // darkToolStrip1
             // 
@@ -456,9 +483,9 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(713, 59);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(107, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(149, 13);
             this.darkLabel2.TabIndex = 6;
-            this.darkLabel2.Text = "Source WAD/Wad2";
+            this.darkLabel2.Text = "Source WAD - Wad2 - Level";
             // 
             // treeDestWad
             // 
@@ -575,6 +602,34 @@
             this.butAddObject.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddObject.Click += new System.EventHandler(this.butAddObject_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutWadToolToolStripMenuItem});
+            this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // aboutWadToolToolStripMenuItem
+            // 
+            this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
+            this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
+            // 
+            // debugAction7ToolStripMenuItem
+            // 
+            this.debugAction7ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.debugAction7ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.debugAction7ToolStripMenuItem.Name = "debugAction7ToolStripMenuItem";
+            this.debugAction7ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction7ToolStripMenuItem.Text = "Debug action 7";
+            this.debugAction7ToolStripMenuItem.Click += new System.EventHandler(this.debugAction7ToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -595,7 +650,6 @@
             this.Controls.Add(this.darkToolStrip1);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
-            this.Controls.Add(this.butTest);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -614,8 +668,6 @@
         }
 
         #endregion
-
-        private DarkUI.Controls.DarkButton butTest;
         private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
         private DarkUI.Controls.DarkMenuStrip darkMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
@@ -664,6 +716,12 @@
         private System.Windows.Forms.ToolStripMenuItem spriteEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addNewSpriteSequenceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugAction1ToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem debugAction4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction6ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutWadToolToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugAction7ToolStripMenuItem;
     }
 }
 

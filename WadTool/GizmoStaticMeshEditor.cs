@@ -44,11 +44,11 @@ namespace WadTool
         protected override float RotationZ => _control.StaticRotation.Z;
         protected override float Scale => _control.StaticScale;
 
-        protected override float CentreCubeSize => 128.0f;
-        protected override float TranslationConeSize => 128.0f;
-        protected override float ScaleCubeSize => 128.0f;
-        protected override float Size => 1024.0f;
-        protected override float LineThickness => 45.0f;
+        protected override float CentreCubeSize => _tool.Configuration.Gizmo_CenterCubeSize;
+        protected override float TranslationConeSize => _tool.Configuration.Gizmo_TranslationConeSize;
+        protected override float Size => _tool.Configuration.Gizmo_Size;
+        protected override float ScaleCubeSize => _tool.Configuration.Gizmo_ScaleCubeSize;
+        protected override float LineThickness => _tool.Configuration.Gizmo_LineThickness;
 
         protected override bool SupportScale => true;
         protected override bool SupportTranslate => true;

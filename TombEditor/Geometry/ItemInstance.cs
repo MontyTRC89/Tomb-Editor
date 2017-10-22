@@ -83,10 +83,24 @@ namespace TombEditor.Geometry
 
         public override string ToString()
         {
-            if (IsStatic)
-                return "Static (" + Id + ") " + ObjectNames.GetStaticName(Id);
+            var editor = Editor.Instance;
+            if (editor.Level == null) return "Unknown";
+            var wad = editor.Level.Wad;
+
+            if (wad == null)
+            {
+                if (IsStatic)
+                    return "Static (" + Id + ") Unknown";
+                else
+                    return "Moveable (" + Id + ") Unknown";
+            }
             else
-                return "Moveable (" + Id + ") " + ObjectNames.GetMoveableName(Id);
+            {
+                if (IsStatic)
+                    return "Static (" + Id + ") " + (wad.Statics.ContainsKey(Id) ? wad.Statics[Id].Name : "Unknown");
+                else
+                    return "Moveable (" + Id + ") " + (wad.Moveables.ContainsKey(Id) ? wad.Moveables[Id].Name : "Unknown");
+            }
         }
     };
 

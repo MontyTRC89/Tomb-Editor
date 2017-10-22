@@ -45,7 +45,7 @@ namespace TombLib.Wad
 
     public enum WadPolygonShape : ushort
     {
-        Rectangle = 0,
+        Quad = 0,
         Triangle = 1
     }
 

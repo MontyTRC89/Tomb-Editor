@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Ankh Icon 13.ico</ApplicationIcon>
+    <ApplicationIcon>wad_tool.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
@@ -72,11 +72,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Controls\PanelRendering.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\PanelRenderingStaticMeshEditor.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -124,6 +131,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WadToolClass.cs" />
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -180,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ankh Icon 13.ico" />
+    <Content Include="wad_tool.ico" />
     <None Include="Resources\3DView-16.png" />
     <None Include="Resources\small_icons-161.png" />
     <None Include="Resources\play-16.png" />

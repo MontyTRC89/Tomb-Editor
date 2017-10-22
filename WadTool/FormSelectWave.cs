@@ -83,9 +83,11 @@ namespace WadTool
 
             foreach (var wave in _tool.DestinationWad.WaveSounds)
             {
+                if (tbSearch.Text != "" && !wave.Value.Name.Contains(tbSearch.Text)) continue;
+
                 var item = new DarkUI.Controls.DarkListItem(wave.Value.Name);
                 item.Tag = wave.Value;
-                lstWaves.Items.Add(item);
+                lstWaves.Items.Add(item); 
             }
         }
 
@@ -97,6 +99,11 @@ namespace WadTool
             var wave = (WadSound)item.Tag;
 
             wave.Play();
+        }
+
+        private void tbSearch_KeyDown(object sender, KeyEventArgs e)
+        {
+            ReloadWaves();
         }
     }
 }

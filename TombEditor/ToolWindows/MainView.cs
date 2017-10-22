@@ -32,7 +32,7 @@ namespace TombEditor.ToolWindows
             panel3D.InitializePanel(_deviceManager);
 
             // Update 3D view
-            but3D_Click(null, null);
+            EditorActions.SwitchMode(EditorMode.Geometry);
         }
 
         public void MoveObjectRelative(PositionBasedObjectInstance instance, Vector3 pos, Vector3 precision = new Vector3(), bool canGoOutsideRoom = false)
@@ -67,13 +67,6 @@ namespace TombEditor.ToolWindows
                 butCopy.Enabled = selectedObject is PositionBasedObjectInstance;
                 butStamp.Enabled = selectedObject is PositionBasedObjectInstance;
             }
-            if (obj is Editor.SelectedSectorsChangedEvent)
-            {
-                bool validSectorSelection = _editor.SelectedSectors.Valid;
-                butTextureFloor.Enabled = validSectorSelection;
-                butTextureCeiling.Enabled = validSectorSelection;
-                butTextureWalls.Enabled = validSectorSelection;
-            }
             if (obj is Editor.ModeChangedEvent)
             {
                 EditorMode mode = ((Editor.ModeChangedEvent)obj).Current;
@@ -95,10 +88,10 @@ namespace TombEditor.ToolWindows
 
             // Update flipmap toolbar button
             if ((obj is Editor.SelectedRoomChangedEvent) ||
-                (obj is Editor.RoomPropertiesChangedEvent))
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPropertiesChangedEvent))
             {
-                Room room = ((IEditorRoomChangedEvent)obj).Room;
-                butFlipMap.Checked = room.Flipped && (room.AlternateRoom == null);
+                butFlipMap.Enabled = _editor.SelectedRoom.Flipped;
+                butFlipMap.Checked = _editor.SelectedRoom.AlternateBaseRoom != null;
             }
 
             // Update texture properties
@@ -128,27 +121,23 @@ namespace TombEditor.ToolWindows
         // Opens editor's 3D view
         private void but3D_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.Geometry;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.Geometry);
         }
 
         // Opens editor's 2D view
         private void but2D_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.Map2D;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.Map2D);
         }
 
         private void butFaceEdit_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.FaceEdit;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.FaceEdit);
         }
 
         private void butLightingMode_Click(object sender, EventArgs e)
         {
-            _editor.Mode = EditorMode.Lighting;
-            _editor.Action = EditorAction.None;
+            EditorActions.SwitchMode(EditorMode.Lighting);
         }
 
         private void butCenterCamera_Click(object sender, EventArgs e)
@@ -287,6 +276,18 @@ namespace TombEditor.ToolWindows
         private void butStamp_Click(object sender, EventArgs e)
         {
             EditorActions.Clone(this.ParentForm);
+        }
+
+        private void butAddImportedGeometry_Click(object sender, EventArgs e)
+        {
+            _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
+        }
+
+        private void butDrawIllegalSlopes_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawIllegalSlopes = !panel3D.DrawIllegalSlopes;
+            butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
+            panel3D.Invalidate();
         }
     }
 }

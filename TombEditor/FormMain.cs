@@ -13,6 +13,7 @@ using TombLib.Utils;
 using TombLib.NG;
 using DarkUI.Docking;
 using DarkUI.Forms;
+using TombEditor.Controls;
 
 namespace TombEditor
 {
@@ -186,7 +187,7 @@ namespace TombEditor
             if (obj is Editor.LevelFileNameChanged)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
-                    Path.GetFileNameWithoutExtension(_editor.Level.Settings.LevelFilePath);
+                    Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
                 saveLevelToolStripMenuItem.Enabled = false;
@@ -274,10 +275,6 @@ namespace TombEditor
 
             switch (keyData & ~(Keys.Alt | Keys.Shift | Keys.Control))
             {
-                case Keys.M: // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
-                    _pressedZorY = true;
-                    break;
-
                 case Keys.Escape: // End any action
                     _editor.Action = EditorAction.None;
                     _editor.SelectedSectors = SectorSelection.None;
@@ -286,22 +283,22 @@ namespace TombEditor
 
                 case Keys.F1: // 2D map mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.Map2D;
+                        EditorActions.SwitchMode(EditorMode.Map2D);
                     break;
 
                 case Keys.F2: // 3D geometry mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.Geometry;
+                        EditorActions.SwitchMode(EditorMode.Geometry);
                     break;
 
                 case Keys.F3: // 3D face texturing mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.FaceEdit;
+                        EditorActions.SwitchMode(EditorMode.FaceEdit);
                     break;
 
                 case Keys.F4: // 3D lighting mode
                     if (modifierKeys == Keys.None)
-                        _editor.Mode = EditorMode.Lighting;
+                        EditorActions.SwitchMode(EditorMode.Lighting);
                     break;
 
                 case Keys.F6: // Reset 3D camera
@@ -439,6 +436,9 @@ namespace TombEditor
                     break;
 
                 case Keys.Y:
+                    // Set camera relocation mode (Z on american keyboards, Y on german keyboards)
+                    _pressedZorY = true;
+
                     if (_editor.Mode == EditorMode.Geometry && _editor.SelectedSectors.Valid && focused)
                         EditorActions.EditSectorGeometry(_editor.SelectedRoom, _editor.SelectedSectors.Area, EditorArrowType.DiagonalFloorCorner, 0, (short)(shift ? 4 : 1), alt);
                     break;
@@ -639,6 +639,7 @@ namespace TombEditor
         {
             if (!EditorActions.ContinueOnFileDrop(this, "New level"))
                 return;
+
             _editor.Level = Level.CreateSimpleLevel();
         }
 
@@ -845,7 +846,7 @@ namespace TombEditor
                 EditorActions.DeleteObjectWithWarning(_editor.SelectedObject, this);
         }
 
-        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void editSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_editor.SelectedObject != null)
                 EditorActions.EditObject(_editor.SelectedObject, this);
@@ -1066,6 +1067,17 @@ namespace TombEditor
         {
             base.OnDragDrop(e);
             EditorActions.DragDropCommonFiles(e, this);
+        }
+
+        private void exportRoomToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //EditorActions.ExportCurrentRoom(this, PanelRendering3D.RoomsTextureAtlas);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FormAbout form = new FormAbout())
+                form.ShowDialog(this);
         }
     }
 }

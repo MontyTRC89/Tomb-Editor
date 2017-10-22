@@ -50,7 +50,7 @@
             this.butResetSearch.Name = "butResetSearch";
             this.butResetSearch.Padding = new System.Windows.Forms.Padding(5);
             this.butResetSearch.Size = new System.Drawing.Size(60, 23);
-            this.butResetSearch.TabIndex = 70;
+            this.butResetSearch.TabIndex = 6;
             this.butResetSearch.Text = "Reset";
             this.butResetSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butResetSearch.Click += new System.EventHandler(this.butResetSearch_Click);
@@ -63,7 +63,7 @@
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Padding = new System.Windows.Forms.Padding(5);
             this.butFindItem.Size = new System.Drawing.Size(60, 23);
-            this.butFindItem.TabIndex = 69;
+            this.butFindItem.TabIndex = 5;
             this.butFindItem.Text = "Find";
             this.butFindItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butFindItem.Click += new System.EventHandler(this.butFindItem_Click);
@@ -74,7 +74,7 @@
             this.panelStaticMeshColor.Location = new System.Drawing.Point(5, 36);
             this.panelStaticMeshColor.Name = "panelStaticMeshColor";
             this.panelStaticMeshColor.Size = new System.Drawing.Size(60, 20);
-            this.panelStaticMeshColor.TabIndex = 68;
+            this.panelStaticMeshColor.TabIndex = 4;
             this.panelStaticMeshColor.Click += new System.EventHandler(this.panelStaticMeshColor_Click);
             // 
             // darkLabel14
@@ -94,7 +94,7 @@
             this.butItemsBack.Name = "butItemsBack";
             this.butItemsBack.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsBack.Size = new System.Drawing.Size(24, 24);
-            this.butItemsBack.TabIndex = 64;
+            this.butItemsBack.TabIndex = 0;
             this.butItemsBack.Click += new System.EventHandler(this.butItemsBack_Click);
             // 
             // panelItem
@@ -137,7 +137,7 @@
             this.comboItems.Location = new System.Drawing.Point(29, 2);
             this.comboItems.Name = "comboItems";
             this.comboItems.Size = new System.Drawing.Size(196, 24);
-            this.comboItems.TabIndex = 66;
+            this.comboItems.TabIndex = 1;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             // 
             // panelHeaderRight
@@ -157,7 +157,7 @@
             this.butItemsNext.Name = "butItemsNext";
             this.butItemsNext.Padding = new System.Windows.Forms.Padding(5);
             this.butItemsNext.Size = new System.Drawing.Size(24, 24);
-            this.butItemsNext.TabIndex = 67;
+            this.butItemsNext.TabIndex = 2;
             this.butItemsNext.Click += new System.EventHandler(this.butItemsNext_Click);
             // 
             // butAddItem
@@ -167,7 +167,7 @@
             this.butAddItem.Name = "butAddItem";
             this.butAddItem.Padding = new System.Windows.Forms.Padding(5);
             this.butAddItem.Size = new System.Drawing.Size(24, 24);
-            this.butAddItem.TabIndex = 66;
+            this.butAddItem.TabIndex = 3;
             this.butAddItem.Click += new System.EventHandler(this.butAddItem_Click);
             // 
             // panelHeaderLeft

@@ -55,7 +55,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Tomb Raider - The Last Revelation [Alternate].ico</ApplicationIcon>
+    <ApplicationIcon>tomb_editor.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TombEditor.Program</StartupObject>
@@ -179,6 +179,12 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="EditorActions.cs" />
     <Compile Include="EditorState.cs" />
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormCamera.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -369,6 +375,9 @@
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormCamera.resx">
       <DependentUpon>FormCamera.cs</DependentUpon>
     </EmbeddedResource>
@@ -390,11 +399,11 @@
     <EmbeddedResource Include="ToolWindows\SectorOptions.resx">
       <DependentUpon>SectorOptions.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="Editor\font.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Misc\font.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\Palette.bin">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Misc\Palette.bin">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="Geometry\Block.cs" />
     <Compile Include="Geometry\Level.cs" />
@@ -475,283 +484,81 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Editor\sky.png" />
-    <Content Include="Tomb Raider - The Last Revelation [Alternate].ico" />
-    <None Include="Editor\arrow_ne_se.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\illegal_slope.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_nw_sw.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\sky.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Editor\RoomGeometry.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Misc\TRCatalog.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\arrow_ne_se.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Editor\Textures\arrow_nw_sw.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Editor\Shaders\RoomGeometry.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Editor\arrow_down.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_down.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_left.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_ne.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_ne.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_nw.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_nw.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_nw_se.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_nw_se.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_right.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_right.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_se.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_se.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_sw.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_sw.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_sw_ne.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_sw_ne.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_up.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_up.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\arrow_up_down.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\arrow_up_down.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\camera.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\cross.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\cross.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\Palette.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\light.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Shaders\Model.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\luce.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Shaders\Room.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\Objects.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Shaders\Solid.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\ombra.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Shaders\StaticModel.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\Palette.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\Font.pc.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\Model.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Editor\Textures\pcsky.raw.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Editor\Room.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Solid.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\spotlight.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\StaticModel.fx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\new.png" />
-    <None Include="Resources\open_folder.png" />
-    <None Include="Resources\save_as.png" />
-    <None Include="Resources\disk.png" />
-    <None Include="Resources\arrow_undo.png" />
-    <None Include="Resources\arrow_redo.png" />
-    <None Include="Resources\cut.png" />
-    <None Include="Resources\page_white_stack.png" />
-    <None Include="Resources\paste_plain.png" />
-    <None Include="Resources\images.png" />
-    <None Include="Resources\centroid.png" />
-    <None Include="Resources\door.png" />
-    <None Include="Resources\lightbulb.png" />
-    <None Include="Resources\picture.png" />
-    <None Include="Resources\bricks.png" />
-    <None Include="Resources\grid.png" />
-    <None Include="Resources\texture-ceiling.png" />
-    <None Include="Resources\texture-floor.png" />
-    <None Include="Resources\texture-walls.png" />
-    <None Include="Resources\opacity-1.png" />
-    <None Include="Resources\opacity-2.png" />
-    <None Include="Resources\opacity-none.png" />
-    <None Include="Resources\layer_group.png" />
-    <None Include="Resources\layer_transparent.png" />
-    <None Include="Resources\draw_eraser.png" />
-    <None Include="Resources\table_select_row.png" />
-    <None Include="Resources\layer_resize.png" />
-    <None Include="Resources\delete.png" />
-    <None Include="Resources\gear_in.png" />
-    <None Include="Resources\brick_edit.png" />
-    <None Include="Resources\user_egyptian.png" />
-    <None Include="Resources\tree.png" />
-    <None Include="Resources\scripts.png" />
-    <None Include="Resources\Rooms321.png" />
-    <None Include="Resources\sound.png" />
-    <None Include="Resources\table_select_row1.png" />
-    <None Include="Resources\gear_in1.png" />
-    <None Include="Resources\delete1.png" />
-    <None Include="Resources\layer_resize_replicate_v.png" />
-    <None Include="Resources\transform_crop_resize.png" />
-    <None Include="Resources\draw_clone.png" />
-    <None Include="Resources\texture-ceiling-16.png" />
-    <None Include="Resources\texture-floor-16.png" />
-    <None Include="Resources\texture-walls-16.png" />
-    <None Include="Resources\layer_transparent1.png" />
-    <None Include="Resources\layer_group1.png" />
-    <None Include="Resources\draw_eraser1.png" />
-    <None Include="Resources\tick.png" />
-    <None Include="Resources\cross.png" />
-    <None Include="Resources\fog.png" />
-    <None Include="Resources\weather_sun.png" />
-    <None Include="Resources\lighthouse_shine.png" />
-    <None Include="Resources\lightbulb_off.png" />
-    <None Include="Resources\lightbulb1.png" />
-    <None Include="Resources\camera1.png" />
-    <None Include="Resources\camera2.png" />
-    <None Include="Resources\draw_spiral.png" />
-    <None Include="Resources\cctv_camera.png" />
-    <None Include="Resources\lightning_go.png" />
-    <None Include="Resources\sound1.png" />
-    <None Include="Resources\Camera-24.png" />
-    <None Include="Resources\Camera-16.png" />
-    <None Include="Resources\2DView-16.png" />
-    <None Include="Resources\3DView-16.png" />
-    <None Include="Resources\Camera-161.png" />
-    <None Include="Resources\CameraFixed-16.png" />
-    <None Include="Resources\CeilingDecrease-16.png" />
-    <None Include="Resources\CeilingIncrease-16.png" />
-    <None Include="Resources\CrackMode-16.png" />
-    <None Include="Resources\DoubleSided-16.png" />
-    <None Include="Resources\Effect-16.png" />
-    <None Include="Resources\FindUntextured-16.png" />
-    <None Include="Resources\FloorDecrease-16.png" />
-    <None Include="Resources\FloorIncrease-16.png" />
-    <None Include="Resources\Fog-16.png" />
-    <None Include="Resources\LightPoint-16.png" />
-    <None Include="Resources\Move2Sector-16.png" />
-    <None Include="Resources\MovementGizmo-16.png" />
-    <None Include="Resources\NewRoomDown-16.png" />
-    <None Include="Resources\NewRoomUp-16.png" />
-    <None Include="Resources\NewTunnelRoom-16.png" />
-    <None Include="Resources\NoCollision-16.png" />
-    <None Include="Resources\Object2Trigger-16.png" />
-    <None Include="Resources\RoomLower-16.png" />
-    <None Include="Resources\RoomRaise-16.png" />
-    <None Include="Resources\SemiTransparent-16.png" />
-    <None Include="Resources\Shadow-16.png" />
-    <None Include="Resources\Spotlight-16.png" />
-    <None Include="Resources\Sunlight-16.png" />
-    <None Include="Resources\TextureCeiling-16.png" />
-    <None Include="Resources\TextureFloor-16.png" />
-    <None Include="Resources\TextureWalls-16.png" />
-    <None Include="Resources\ToEnd-16.png" />
-    <None Include="Resources\ToggleOpacity1-16.png" />
-    <None Include="Resources\ToggleOpacity2-16.png" />
-    <None Include="Resources\ToStart-16.png" />
-    <None Include="Resources\Trigger2Object-16.png" />
-    <None Include="Resources\TextureMode-16.png" />
-    <None Include="Resources\invisible-16.png" />
-    <None Include="Resources\trash-16.png" />
-    <None Include="Resources\minus_math-16.png" />
-    <None Include="Resources\plus_math-16.png" />
-    <None Include="Resources\cut-16.png" />
-    <None Include="Resources\copy-16.png" />
-    <None Include="Resources\clipboard-16.png" />
-    <None Include="Resources\software_installer-16.png" />
-    <None Include="Resources\play-16.png" />
-    <None Include="Resources\search-16.png" />
-    <None Include="Resources\settings-16.png" />
-    <None Include="Resources\trigger_mode-16.png" />
-    <None Include="Resources\volume_up-16.png" />
-    <None Include="Resources\tornado-16.png" />
-    <None Include="Resources\movie_projector-16.png" />
-    <None Include="Resources\door_opened-16.png" />
-    <None Include="Resources\light_on-16.png" />
-    <None Include="Resources\center_direction-16.png" />
-    <None Include="Resources\sun-16.png" />
-    <None Include="Resources\stones-16.png" />
-    <None Include="Resources\film_reel-16.png" />
-    <None Include="Resources\import-16.png" />
-    <None Include="Resources\redo-16.png" />
-    <None Include="Resources\undo-16.png" />
-    <None Include="Resources\save_as-16.png" />
-    <None Include="Resources\save-16.png" />
-    <None Include="Resources\opened_folder-16.png" />
-    <None Include="Resources\create_new-16.png" />
-    <None Include="Resources\small_icons-16.png" />
-    <None Include="Resources\rectangle_filled-16.png" />
-    <None Include="Resources\edit-16.png" />
-    <None Include="Resources\crop-16.png" />
-    <None Include="Resources\split_files-16.png" />
-    <None Include="Resources\climb-west.png" />
-    <None Include="Resources\climb-south.png" />
-    <None Include="Resources\climb-east.png" />
-    <None Include="Resources\climb-north.png" />
-    <None Include="Resources\angle_left-16.png" />
-    <None Include="Resources\angle_right-16.png" />
-    <None Include="Resources\copy_link-16.png" />
-    <None Include="Resources\generic_text-16.png" />
-    <None Include="Resources\diagonal-floor-NE.png" />
-    <None Include="Resources\diagonal-floor-NW.png" />
-    <None Include="Resources\diagonal-floor-SE.png" />
-    <None Include="Resources\diagonal-floor-SW.png" />
-    <None Include="Resources\diagonal-wall-NE.png" />
-    <None Include="Resources\diagonal-wall-NW.png" />
-    <None Include="Resources\diagonal-wall-SE.png" />
-    <None Include="Resources\diagonal-wall-SW.png" />
-    <None Include="Resources\diag-step-ceil-16.png" />
-    <None Include="Resources\diag-step-fl-16.png" />
-    <None Include="Resources\diag-wall-16.png" />
-    <None Include="Resources\paste-16.png" />
-    <None Include="Resources\rubber_stamp-16.png" />
-    <None Include="Resources\Splash.png" />
-    <None Include="Resources\Palette.png" />
-    <None Include="Resources\earth_element-16.png" />
-    <None Include="Resources\controller-down.png" />
-    <None Include="Resources\controller-up.png" />
-    <Content Include="Editor\Font.pc.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Editor\pcsky.raw.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <None Include="Resources\TransparentBackground.png" />
-    <None Include="Resources\toolbar-ombra.png" />
-    <None Include="Resources\toolbar-luce.png" />
-    <None Include="Resources\sprite-ombra.png" />
-    <None Include="Resources\sprite-luce.png" />
-    <None Include="Resources\toolbar-texture.png" />
-    <None Include="Resources\toolbar-3d.png" />
-    <None Include="Resources\toolbar-2d.png" />
-    <None Include="Resources\icona-lighting.png" />
-    <None Include="Resources\32_Ankh Icon 04_256x256-32.png" />
-    <None Include="Resources\Ankh Icon 08_256x256-32.png" />
-    <None Include="Resources\Ankh Icon 04_256x256-32.png" />
-    <None Include="Resources\ombra.png" />
-    <None Include="Resources\luce.png" />
-    <None Include="Resources\texture-1.png" />
-    <None Include="Resources\terreno.png" />
-    <None Include="Resources\sun.png" />
-    <None Include="Resources\split1.png" />
-    <None Include="Resources\split0.png" />
-    <None Include="Resources\sink.png" />
-    <None Include="Resources\Rooms48.png" />
-    <None Include="Resources\Rooms32.png" />
-    <None Include="Resources\portals.png" />
-    <None Include="Resources\lighting-mode.png" />
-    <None Include="Resources\fog-bulb.png" />
-    <None Include="Resources\flyby.png" />
-    <None Include="Resources\Floor.png" />
-    <None Include="Resources\diagonal_wall.png" />
-    <None Include="Resources\Cubi48.png" />
-    <None Include="Resources\Cubi32.png" />
-    <None Include="Resources\center-camera.png" />
-    <None Include="Resources\camera.png" />
-    <None Include="Resources\3d.png" />
-    <None Include="Resources\2d.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">

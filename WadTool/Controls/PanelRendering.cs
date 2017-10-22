@@ -90,7 +90,10 @@ namespace WadTool.Controls
             _device.Presenter = _presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, SharpDX.Color.White, 1.0f, 0);
+            _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, 
+                          _tool.Configuration.Rendering3D_BackgroundColor, 
+                          1.0f, 
+                          0);
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
@@ -189,7 +192,7 @@ namespace WadTool.Controls
         {
             base.OnMouseWheel(e);
 
-            Camera.Zoom(-e.Delta * 46000 /*_.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom*/);
+            Camera.Zoom(-e.Delta * _tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
             Invalidate();
         }
 
@@ -214,13 +217,13 @@ namespace WadTool.Controls
                 _lastX = e.X;
                 _lastY = e.Y;
 
-                if (ModifierKeys.HasFlag(Keys.Control))
-                    Camera.Zoom(-deltaY * 46000f /*_editor.Configuration.RenderingItem_NavigationSpeedMouseZoom*/);
-                else if (ModifierKeys.HasFlag(Keys.Shift))
-                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * 22000f /* _editor.Configuration.RenderingItem_NavigationSpeedMouseTranslate*/);
+                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                    Camera.Zoom(-deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                else if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift)
+                    Camera.MoveCameraPlane(new Vector3(-deltaX, -deltaY, 0) * _tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
                 else
-                    Camera.Rotate(deltaX * 2.2f /*_editor.Configuration.RenderingItem_NavigationSpeedMouseRotate*/,
-                                  -deltaY * 2.2f /*_editor.Configuration.RenderingItem_NavigationSpeedMouseRotate*/);
+                    Camera.Rotate(deltaX * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate, 
+                                  -deltaY * _tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 Invalidate();
             }
         }

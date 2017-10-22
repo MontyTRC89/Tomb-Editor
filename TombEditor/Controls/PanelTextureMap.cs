@@ -15,6 +15,7 @@ using TombEditor.Geometry;
 using TombLib.Utils;
 using RectangleF = System.Drawing.RectangleF;
 using Color = System.Drawing.Color;
+using System.IO;
 
 namespace TombEditor.Controls
 {
@@ -46,7 +47,7 @@ namespace TombEditor.Controls
         private DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
 
         private int _scrollSize => DarkUI.Config.Consts.ScrollBarSize;
-        private int _scrollSizeTotal => _scrollSize + 2;
+        private int _scrollSizeTotal => _scrollSize + 1;
 
         public PanelTextureMap()
         {
@@ -106,8 +107,8 @@ namespace TombEditor.Controls
             Vector2 max = Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), Vector2.Max(area.TexCoord2, area.TexCoord3));
 
             ViewPosition = (min + max) * 0.5f;
-            float requiredScaleX = Width / (max.X - min.X);
-            float requiredScaleY = Height / (max.Y - min.Y);
+            float requiredScaleX = (ClientSize.Width - _scrollSizeTotal) / (max.X - min.X);
+            float requiredScaleY = (ClientSize.Height - _scrollSizeTotal) / (max.Y - min.Y);
             ViewScale = Math.Min(requiredScaleX, requiredScaleY) * _editor.Configuration.TextureMap_TextureAreaToViewRelativeSize;
 
             LimitPosition();
@@ -120,20 +121,20 @@ namespace TombEditor.Controls
             _vScrollBar.SetViewCentered(
                 -viewMargin,
                 (hasTexture ? VisibleTexture.Image.Height : 1) + viewMargin * 2,
-                (Height - _scrollSizeTotal) / ViewScale,
+                (ClientSize.Height - _scrollSizeTotal) / ViewScale,
                 ViewPosition.Y, hasTexture);
             _hScrollBar.SetViewCentered(
                 -viewMargin,
                 (hasTexture ? VisibleTexture.Image.Width : 1) + viewMargin * 2,
-                (Width - _scrollSizeTotal) / ViewScale,
+                (ClientSize.Width - _scrollSizeTotal) / ViewScale,
                 ViewPosition.X, hasTexture);
         }
 
         public Vector2 FromVisualCoord(PointF pos, bool limited = true)
         {
             Vector2 textureCoord = new Vector2(
-               (pos.X - Width * 0.5f) / ViewScale + ViewPosition.X,
-               (pos.Y - Height * 0.5f) / ViewScale + ViewPosition.Y);
+               (pos.X - (ClientSize.Width - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.X,
+               (pos.Y - (ClientSize.Height - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.Y);
             if (limited)
                 textureCoord = Vector2.Min(VisibleTexture.Image.Size - new Vector2(0.5f), Vector2.Max(new Vector2(0.5f), textureCoord));
             return textureCoord;
@@ -142,8 +143,8 @@ namespace TombEditor.Controls
         public PointF ToVisualCoord(Vector2 texCoord)
         {
             return new PointF(
-                (texCoord.X - ViewPosition.X) * ViewScale + Width * 0.5f,
-                (texCoord.Y - ViewPosition.Y) * ViewScale + Height * 0.5f);
+                (texCoord.X - ViewPosition.X) * ViewScale + (ClientSize.Width - _scrollSizeTotal) * 0.5f,
+                (texCoord.Y - ViewPosition.Y) * ViewScale + (ClientSize.Height - _scrollSizeTotal) * 0.5f);
         }
 
         private void MoveToFixedPoint(PointF visualPoint, Vector2 worldPoint)
@@ -194,7 +195,7 @@ namespace TombEditor.Controls
 
             texCoord -= new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
             texCoord /= selectionPrecision.Precision;
-            if ((selectionPrecision.Precision >= 64.0f) && rectangularSelection)
+            if ((selectionPrecision.Precision >= 32.0f) && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -203,7 +204,7 @@ namespace TombEditor.Controls
             else
                 texCoord = new Vector2((float)Math.Round(texCoord.X), (float)Math.Round(texCoord.Y));
             texCoord *= selectionPrecision.Precision;
-            texCoord += new Vector2( endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
+            texCoord += new Vector2(endX ? -0.5f : 0.5f, endY ? -0.5f : 0.5f);
 
             return texCoord;
         }
@@ -397,7 +398,7 @@ namespace TombEditor.Controls
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.IntersectClip(new RectangleF(0, 0, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
+            e.Graphics.IntersectClip(new RectangleF(new PointF(), ClientSize - new SizeF(_scrollSizeTotal, _scrollSizeTotal)));
 
             // Only proceed if texture is actually available
             if (VisibleTexture?.IsAvailable ?? false)
@@ -410,8 +411,13 @@ namespace TombEditor.Controls
                 using (var textureBrush = new TextureBrush(Properties.Resources.TransparentBackground))
                     e.Graphics.FillRectangle(textureBrush, drawArea);
 
+                // Switch interpolation based on current view scale
+                if (ViewScale >= 1.0)
+                    e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+                else
+                    e.Graphics.InterpolationMode = InterpolationMode.Bicubic;
+
                 // Draw image
-                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 VisibleTexture.Image.GetTempSystemDrawingBitmap((tempBitmap) =>
                     {
                         // System.Drawing being silly, it draws the first row of pixels only half, so everything would be shifted
@@ -426,15 +432,30 @@ namespace TombEditor.Controls
             }
             else
             {
-                e.Graphics.DrawString("Click here to load textures.",
-                    Font, System.Drawing.Brushes.DarkGray,
-                    ClientRectangle,
+                string notifyMessage;
+
+                if (string.IsNullOrEmpty(VisibleTexture?.Path))
+                    notifyMessage = "Click here to load a new texture file.";
+                else
+                {
+                    string fileName = Utils.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";
+                    if (Utils.IsFileNotFoundException(VisibleTexture?.ImageLoadException))
+                        notifyMessage = "Texture file '" + fileName + "' was not found!\n";
+                    else
+                        notifyMessage = "Unable to load texture from file '" + fileName + "'.\n";
+                    notifyMessage += "Click here to choose a replacement.\n\n";
+                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(VisibleTexture?.Path) ?? "");
+                }
+
+                RectangleF textArea = ClientRectangle;
+                textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
+                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, textArea,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
 
             // Draw border next to scroll bars
             using (Pen pen = new Pen(DarkUI.Config.Colors.LighterBackground, 1.0f))
-                e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, Width - _scrollSizeTotal, Height - _scrollSizeTotal));
+                e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, ClientSize.Width - _scrollSizeTotal, ClientSize.Height - _scrollSizeTotal));
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
@@ -570,7 +591,7 @@ namespace TombEditor.Controls
         public void ResetVisibleTexture(LevelTexture texture)
         {
             _visibleTexture = texture;
-            ViewPosition = new Vector2((VisibleTexture?.IsAvailable ?? false) ? VisibleTexture.Image.Width * 0.5f : 128, (Height - _scrollSizeTotal) * 0.5f);
+            ViewPosition = new Vector2((VisibleTexture?.IsAvailable ?? false) ? VisibleTexture.Image.Width * 0.5f : 128, (ClientSize.Height - _scrollSizeTotal) * 0.5f);
             ViewScale = 1.0f;
             Invalidate();
         }

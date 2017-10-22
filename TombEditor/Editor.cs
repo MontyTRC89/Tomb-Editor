@@ -71,7 +71,7 @@ namespace TombEditor
                 // Validate level
                 int roomCount = value.Rooms.Count((room) => room != null);
                 if (roomCount <= 0)
-                    value.Rooms[0] = new Room(value, 20, 20, "Room 0");
+                    value.Rooms[0] = new Room(value, Room.MaxRoomDimensions, Room.MaxRoomDimensions, "Room 0");
 
                 // Reset state that was related to the old level
                 SelectedObject = null;

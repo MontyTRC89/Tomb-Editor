@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -26,7 +27,7 @@ namespace WadTool
         {
             if (IsMoveable)
             {
-                foreach (var moveable in ObjectNames.MoveablesNames)
+                foreach (var moveable in TrCatalog.GetAllMoveables(TombRaiderVersion.TR4))
                 {
                     var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
                     nodeMoveable.Tag = moveable.Key;
@@ -36,7 +37,7 @@ namespace WadTool
             }
             else
             {
-                foreach (var staticMesh in ObjectNames.StaticNames)
+                foreach (var staticMesh in TrCatalog.GetAllStaticMeshes(TombRaiderVersion.TR4))
                 {
                     var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
                     nodeStatic.Tag = staticMesh.Key;

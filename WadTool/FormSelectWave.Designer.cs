@@ -35,26 +35,25 @@
             this.openFileDialogWave = new System.Windows.Forms.OpenFileDialog();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
             this.butAddNewWave = new DarkUI.Controls.DarkButton();
+            this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.SuspendLayout();
             // 
             // darkStatusStrip1
             // 
-            this.darkStatusStrip1.AutoSize = false;
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Location = new System.Drawing.Point(0, 405);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(338, 24);
-            this.darkStatusStrip1.SizingGrip = false;
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
             // lstWaves
             // 
-            this.lstWaves.Location = new System.Drawing.Point(13, 13);
+            this.lstWaves.Location = new System.Drawing.Point(13, 39);
             this.lstWaves.Name = "lstWaves";
-            this.lstWaves.Size = new System.Drawing.Size(314, 343);
+            this.lstWaves.Size = new System.Drawing.Size(314, 317);
             this.lstWaves.TabIndex = 1;
             this.lstWaves.Text = "darkListView1";
             // 
@@ -107,11 +106,23 @@
             this.butAddNewWave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddNewWave.Click += new System.EventHandler(this.butAddNewWave_Click);
             // 
+            // tbSearch
+            // 
+            this.tbSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.tbSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tbSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.tbSearch.Location = new System.Drawing.Point(13, 12);
+            this.tbSearch.Name = "tbSearch";
+            this.tbSearch.Size = new System.Drawing.Size(313, 20);
+            this.tbSearch.TabIndex = 17;
+            this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
+            // 
             // FormSelectWave
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(338, 429);
+            this.Controls.Add(this.tbSearch);
             this.Controls.Add(this.butPlaySound);
             this.Controls.Add(this.butAddNewWave);
             this.Controls.Add(this.butCancel);
@@ -127,6 +138,7 @@
             this.Text = "Select WAV sample";
             this.Load += new System.EventHandler(this.FormSelectWave_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -139,5 +151,6 @@
         private DarkUI.Controls.DarkButton butAddNewWave;
         private System.Windows.Forms.OpenFileDialog openFileDialogWave;
         private DarkUI.Controls.DarkButton butPlaySound;
+        private DarkUI.Controls.DarkTextBox tbSearch;
     }
 }

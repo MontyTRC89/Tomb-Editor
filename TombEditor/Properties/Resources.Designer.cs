@@ -83,6 +83,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap about_header {
+            get {
+                object obj = ResourceManager.GetObject("about_header", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap angle_left_16 {
             get {
                 object obj = ResourceManager.GetObject("angle_left_16", resourceCulture);
@@ -213,6 +223,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap custom_geometry {
+            get {
+                object obj = ResourceManager.GetObject("custom_geometry", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap diag_step_ceil_16 {
             get {
                 object obj = ResourceManager.GetObject("diag_step_ceil_16", resourceCulture);
@@ -316,6 +336,16 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap generic_text_16 {
             get {
                 object obj = ResourceManager.GetObject("generic_text_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IllegalSlope1_16 {
+            get {
+                object obj = ResourceManager.GetObject("IllegalSlope1_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
-    internal class WadToolClass
+    internal class WadToolClass : IDisposable
     {
         public Wad2 DestinationWad { get; set; }
         public Wad2 SourceWad { get; set; }
@@ -21,6 +22,9 @@ namespace WadTool
         public Dictionary<string, Effect> Effects { get; } = new Dictionary<string, Effect>();
         public SpriteFont Font { get; set; }
 
+        public Configuration Configuration { get { return _configuration; } }
+
+        private Configuration _configuration;
         private static WadToolClass _instance;
 
         public static WadToolClass Instance
@@ -46,7 +50,7 @@ namespace WadTool
             string resourcePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
             // Load effects
-            IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor", "*.fx");
+            IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Shaders", "*.fx");
             foreach (string fileName in effectFiles)
             {
                 string effectName = Path.GetFileNameWithoutExtension(fileName);
@@ -58,7 +62,7 @@ namespace WadTool
             Effects.Add("Toolkit.BasicEffect", bEffect);
 
             // Load images
-            IEnumerable<string> textureFiles = Directory.EnumerateFiles(resourcePath + "\\Editor", "*.png");
+            IEnumerable<string> textureFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Textures", "*.png");
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
@@ -66,9 +70,15 @@ namespace WadTool
             }
 
             // Load default font
-            SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
+            SpriteFontData fontData = SpriteFontData.Load("Editor\\Misc\\Font.bin");
             fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
             Font = SpriteFont.New(Device, fontData);
+
+            // Load configuration
+            _configuration = Configuration.LoadOrUseDefault();
+
+            // Load items catalog
+            TrCatalog.LoadCatalog("Editor\\Misc\\TRCatalog.xml");
         }
 
         private Effect LoadEffect(string fileName)
@@ -84,6 +94,11 @@ namespace WadTool
             }
 
             return new Effect(Device, result.EffectData);
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

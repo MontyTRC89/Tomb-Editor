@@ -124,6 +124,8 @@ namespace TombEditor.Controls
         public bool DrawRoomNames { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawHorizon { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawIllegalSlopes { get; set; }
 
         private Editor _editor;
         private DeviceManager _deviceManager;
@@ -537,7 +539,7 @@ namespace TombEditor.Controls
                         break;
                 }
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -910,14 +912,12 @@ namespace TombEditor.Controls
                         if (!SupportedFormats.IsExtensionPresent(FileFormatType.Geometry, file))
                             continue;
 
+                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
                         var info = ImportedGeometryInfo.Default;
                         info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
                         info.Name = Path.GetFileNameWithoutExtension(file);
 
-                        var instance = new ImportedGeometryInstance();
-                        var geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
-
-                        if(geometryToDrop == null)
+                        if (geometryToDrop == null)
                         {
                             geometryToDrop = new ImportedGeometry();
                             _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
@@ -925,11 +925,9 @@ namespace TombEditor.Controls
                             _editor.LoadedImportedGeometriesChange();
                         }
 
+                        var instance = new ImportedGeometryInstance();
                         instance.Model = geometryToDrop;
-
-                        EditorActions.PlaceObject(_editor.SelectedRoom,
-                            newBlockPicking.Pos, instance);
-
+                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, instance);
                         _editor.ObjectChange(instance);
                     }
                 }
@@ -1628,30 +1626,33 @@ namespace TombEditor.Controls
             {
                 if (!(_editor?.Level?.Wad?.DirectXMoveables?.ContainsKey(instance.WadObjectId) ?? false))
                     continue;
+
                 SkinnedModel model = _editor.Level.Wad.DirectXMoveables[instance.WadObjectId];
+                SkinnedModel skin = ((instance.WadObjectId == 0 && _editor.Level.Wad.DirectXMoveables.ContainsKey(8)) ? _editor.Level.Wad.DirectXMoveables[8] : model);
+
                 _debug.NumMoveables++;
 
                 Room room = instance.Room;
 
                 if (_lastObject == null || instance.WadObjectId != _lastObject.WadObjectId)
                 {
-                    _device.SetVertexBuffer(0, model.VertexBuffer);
-                    _device.SetIndexBuffer(model.IndexBuffer, true);
+                    _device.SetVertexBuffer(0, skin.VertexBuffer);
+                    _device.SetIndexBuffer(skin.IndexBuffer, true);
                 }
 
                 if (_lastObject == null)
                 {
                     _device.SetVertexInputLayout(
-                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, model.VertexBuffer));
+                        VertexInputLayout.FromBuffer<SkinnedVertex>(0, skin.VertexBuffer));
                 }
 
                 skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector4(1.0f));
                 if (_editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_selectionColor);
 
-                for (int i = 0; i < model.Meshes.Count; i++)
+                for (int i = 0; i < skin.Meshes.Count; i++)
                 {
-                    SkinnedMesh mesh = model.Meshes[i];
+                    SkinnedMesh mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
 
@@ -1888,6 +1889,7 @@ namespace TombEditor.Controls
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_editor.Level.Wad.DirectXTexture);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+            skinnedModelEffect.Parameters["Color"].SetValue(Vector4.One);
 
             for (int i = 0; i < skinnedModel.Meshes.Count; i++)
             {
@@ -2119,17 +2121,8 @@ namespace TombEditor.Controls
                                     BlendMode = faceTexture.BlendMode
                                 };
 
-                                // calcolo il piano passante per la faccia
-
-                                // calcolo il centro della faccia
-                                Vector3 center = Vector3.Zero;
-                                var vertexRange = room.GetFaceVertexRange(x, z, face);
-                                for (int j = 0; j < vertexRange.Count; j++)
-                                    center += room.GetRoomVertices()[j].Position;
-                                center /= vertexRange.Count;
-
-                                // calcolo la distanza
-                                bucket.Distance = (center - cameraPosition).Length();
+                                // Get the distance of the face from the camera
+                                bucket.Distance = GetFaceDistance(x, z, room, face, cameraPosition);
 
                                 // aggiungo la struttura alla lista
                                 _transparentBuckets.Add(bucket);
@@ -2144,6 +2137,16 @@ namespace TombEditor.Controls
             _invisibleBuckets.Sort(comparer);
 
             Parallel.ForEach(_opaqueBuckets, PrepareIndexBuffer);
+        }
+
+        private float GetFaceDistance(int x, int z, Room room, BlockFace face, Vector3 cameraPosition)
+        {
+            Vector3 center = Vector3.Zero;
+            var vertexRange = room.GetFaceVertexRange(x, z, face);
+            for (int j = 0; j < vertexRange.Count; j++)
+                center += room.GetRoomVertices()[j].Position;
+            center /= vertexRange.Count;
+            return (center - cameraPosition).Length();
         }
 
         private void PrepareIndexBuffer(RoomRenderBucket item)
@@ -2236,6 +2239,7 @@ namespace TombEditor.Controls
             _roomEffect.Parameters["UseVertexColors"].SetValue(false);
             _roomEffect.Parameters["TextureEnabled"].SetValue(false);
             _roomEffect.Parameters["DrawSectorOutlinesAndUseEditorUV"].SetValue(false);
+            _roomEffect.Parameters["Texture"].SetResource((Texture2D)null);
             _roomEffect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.AnisotropicWrap);
             _roomEffect.Parameters["LineWidth"].SetValue(_editor.Configuration.Rendering3D_LineWidth);
             _roomEffect.Parameters["TextureAtlasRemappingSize"].SetValue(_textureAtlasRemappingSize);
@@ -2343,7 +2347,7 @@ namespace TombEditor.Controls
             float xBlocks = _editor.SelectedRoom.NumXSectors / 2.0f * 1024.0f;
             float zBlocks = _editor.SelectedRoom.NumZSectors / 2.0f * 1024.0f;
 
-            string[] messages = { "+Z (North)", "-Z (South)", "-X (East)", "+X (West)" };
+            string[] messages = { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
             Vector3[] positions = new Vector3[4];
 
             Vector3 center = _editor.SelectedRoom.GetLocalCenter();
@@ -2390,10 +2394,20 @@ namespace TombEditor.Controls
                     _roomEffect.Parameters["ModelViewProjection"].SetValue(room.Transform * viewProjection);
 
                     // Enable or disable static lighting
-                    /*bool lights = (room != _editor.SelectedRoom ||
-                                   (room == _editor.SelectedRoom && _editor.Mode == EditorMode.Lighting));*/
-                    bool lights = _editor.Mode == EditorMode.Lighting;
-                    _roomEffect.Parameters["UseVertexColors"].SetValue(lights);
+                    _roomEffect.Parameters["UseVertexColors"].SetValue(_editor.Mode == EditorMode.Lighting);
+
+                    // Set blend mode
+                    if (_lastBucket == null || _lastBucket.BlendMode != bucket.BlendMode)
+                    {
+                        if (bucket.BlendMode == BlendMode.Normal)
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+                        else if (bucket.BlendMode == BlendMode.Additive)
+                            _device.SetBlendState(_device.BlendStates.Additive);
+                        else if (bucket.BlendMode == BlendMode.AlphaTest)
+                            _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                        else
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+                    }
 
                     _roomEffect.Parameters["Model"].SetValue(room.Transform);
                 }
@@ -2687,6 +2701,7 @@ namespace TombEditor.Controls
                                 _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                                 break;
                         }
+
                     }
                     else if (face == (BlockFace)27 || face == (BlockFace)28)
                     {
@@ -3131,6 +3146,15 @@ namespace TombEditor.Controls
                             _roomEffect.Parameters["TextureEnabled"].SetValue(true);
                             _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                         }
+                    }
+                }
+                else if(DrawIllegalSlopes)
+                {
+                    if ((face == (BlockFace)25 || face == (BlockFace)26) && room.IsIllegalSlope(x, z))
+                    {
+                        _roomEffect.Parameters["Texture"].SetResource(_deviceManager.Textures["illegal_slope"]);
+                        _roomEffect.Parameters["TextureEnabled"].SetValue(true);
+                        _roomEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                     }
                 }
 

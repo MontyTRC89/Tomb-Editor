@@ -12,6 +12,7 @@ using TombLib.Graphics;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -31,15 +32,17 @@ namespace WadTool
 
             _tool = WadToolClass.Instance;
 
-            foreach (var slot in ObjectNames.SpriteSequenceSlots)
+            foreach (var slot in TrCatalog.GetAllSprites(TombRaiderVersion.TR4))
                 comboSlot.Items.Add(slot.Value);
         }
 
         private void FormSpriteEditor_Load(object sender, EventArgs e)
         {
-            for (int i = 0; i < ObjectNames.SpriteSequenceSlots.Count; i++)
+            var spritesCatalog = TrCatalog.GetAllSprites(TombRaiderVersion.TR4);
+
+            for (int i = 0; i < spritesCatalog.Count; i++)
             {
-                if (ObjectNames.SpriteSequenceSlots.ElementAt(i).Key == SpriteSequence.ObjectID)
+                if (spritesCatalog.ElementAt(i).Key == SpriteSequence.ObjectID)
                 {
                     comboSlot.SelectedIndex = i;
                     break;
@@ -149,7 +152,7 @@ namespace WadTool
 
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
-            uint objectId = ObjectNames.SpriteSequenceSlots.ElementAt(comboSlot.SelectedIndex).Key;
+            uint objectId = (uint)TrCatalog.GetAllSprites(TombRaiderVersion.TR4).ElementAt(comboSlot.SelectedIndex).Key;
 
             // Check for already existing sequence
             if (objectId != SpriteSequence.ObjectID)

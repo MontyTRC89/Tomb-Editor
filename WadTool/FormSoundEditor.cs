@@ -34,6 +34,13 @@ namespace WadTool
             ReloadSoundInfos();
         }
 
+        private void UpdateStatistics()
+        {
+            string message = "Sound Infos: " + _tool.DestinationWad.SoundInfo.Count + "    " + 
+                             "Embedded WAV samples: " + _tool.DestinationWad.WaveSounds.Count;
+            labelStatus.Text = message;
+        }
+
         private void ReloadSoundInfos()
         {
             lstSoundInfos.Items.Clear();
@@ -44,6 +51,8 @@ namespace WadTool
                 item.Tag = soundInfo.Key;
                 lstSoundInfos.Items.Add(item);
             }
+
+            UpdateStatistics();
         }
 
         private void butAddNewSound_Click(object sender, EventArgs e)
@@ -190,6 +199,8 @@ namespace WadTool
                     lstSoundInfos.Items[lstSoundInfos.SelectedIndices[0]].Text = oldSoundId + ": " + tbName.Text;
                 }
             }
+
+            UpdateStatistics();
         }
 
         private void butAddNewWave_Click(object sender, EventArgs e)
