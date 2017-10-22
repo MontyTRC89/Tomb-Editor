@@ -222,6 +222,17 @@ namespace TombEditor.Controls
             if (obj is Editor.ConfigurationChangedEvent)
                 Camera.FieldOfView = ((Editor.ConfigurationChangedEvent)obj).Current.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
+            // Update camera position
+            if (obj is Editor.RoomGeometryChangedEvent)
+            {
+                if(_editor.Mode == EditorMode.Map2D && Camera != null)
+                {
+                    var deltaRoomPos = _editor.SelectedRoom.Position - _currentRoomLastPos;
+                    Camera.MoveCameraLinear(deltaRoomPos * 1024);
+                    _currentRoomLastPos = _editor.SelectedRoom.Position;
+                }
+            }
+
             // Update drawing
             if ((obj is IEditorObjectChangedEvent) ||
                 (obj is IEditorRoomChangedEvent) ||
@@ -234,12 +245,6 @@ namespace TombEditor.Controls
                 (obj is Editor.LoadedTexturesChangedEvent) ||
                 (obj is Editor.LoadedImportedGeometriesChangedEvent))
             {
-                if (Camera != null && (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ModeChangedEvent))
-                {
-                    var deltaRoomPos = _editor.SelectedRoom.Position - _currentRoomLastPos;
-                    Camera.MoveCameraLinear(deltaRoomPos * 1024);
-                    _currentRoomLastPos = _editor.SelectedRoom.Position;
-                }
 
                 if (_editor.Mode != EditorMode.Map2D)
                     Invalidate();
