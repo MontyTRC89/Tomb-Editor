@@ -439,16 +439,17 @@
             <moveable id="18" name="Tyrannosaur" icon="TRex" />
             <moveable id="19" name="Raptor" icon="TRex" />
             <moveable id="20" name="Winged mummy / Winged mutant" icon="BadGuy" />
-            <moveable id="21" name="Placeholder" icon="Interrogative" />
-            <moveable id="22" name="Placeholder" icon="Interrogative" />
+            <moveable id="21" name="Respawn point" icon="Interrogative" />
+            <moveable id="22" name="AI target" icon="Interrogative" />
             <moveable id="23" name="Centaur mutant" icon="BadGuy" />
             <moveable id="24" name="Mummy" icon="BadGuy" />
+            <moveable id="25" name="DinoWarrior" icon="BadGuy" />
             <moveable id="27" name="Larson" icon="BadGuy" />
             <moveable id="28" name="Pierre" icon="NiceGuy" />
             <moveable id="29" name="Skateboard" icon="Truck" show_with="30" />
             <moveable id="30" name="Skateboard kid" icon="BadGuy" show_with="29" />
             <moveable id="31" name="Cowboy" icon="BadGuy" />
-            <moveable id="32" name="'Mr. T'" icon="BadGuy" />
+            <moveable id="32" name="Mr. T" icon="BadGuy" />
             <moveable id="33" name="Winged Natla (actually, Natla plus a winged mutant)" icon="BadGuy" />
             <moveable id="34" name="Giant mutant" icon="BadGuy" />
             <moveable id="35" name="Collapsible floor" icon="Tool" />
@@ -463,15 +464,15 @@
             <moveable id="44" name="Thor's hammer's handle" icon="Tool" />
             <moveable id="45" name="Thor's hammer's block" icon="Tool" />
             <moveable id="46" name="Lightning ball / Some kind of box?" icon="Light" />
-            <moveable id="47" name="Metal rod? / Powered mining cart" icon="Tool" />
+            <moveable id="47" name="Metal rod / Powered mining cart" icon="Tool" />
             <moveable id="48" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="49" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="50" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="51" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="52" name="Movable tall block" icon="Tool" />
-            <moveable id="53" name="Pieces of something?" icon="Tool" />
+            <moveable id="53" name="Falling ceiling" icon="Tool" />
             <moveable id="54" name="Sword of Damocles" icon="Tool" />
-            <moveable id="55" name="Switch" icon="Switch" />
+            <moveable id="55" name="Above-water switch" icon="Switch" />
             <moveable id="56" name="Underwater switch" icon="Switch" />
             <moveable id="57" name="Door" icon="Arrow" />
             <moveable id="58" name="Door" icon="Arrow" />
@@ -493,16 +494,17 @@
             <moveable id="75" name="Cogs (animated)" icon="Gear" />
             <moveable id="76" name="Cogs (animated)" icon="Gear" />
             <moveable id="81" name="Passport (closed)" icon="Settings" />
-            <moveable id="82" name="Natla's logo" y_adjust="0.1" icon="Tool" />
+            <moveable id="82" name="Natla's logo" icon="Tool" />
             <moveable id="83" name="Save crystal" icon="Food" />
             <moveable id="95" name="Sunglasses" icon="Settings" />
             <moveable id="96" name="Cassette player and headphones" icon="Settings" />
             <moveable id="97" name="Direction keys" icon="Settings" />
-            <moveable id="99" name="Pistol" id2="84" y_adjust="0.025" icon="Pistol" />
-            <moveable id="100" name="Shotgun" id2="85" y_adjust="0.1" icon="Shotgun" />
-            <moveable id="101" name="Magnum" id2="86" y_adjust="0.025" icon="Autopistol" />
-            <moveable id="102" name="Uzi" id2="87" y_adjust="0.1" icon="Uzis" />
-            <moveable id="103" name="Pistol ammo(?)" icon="Ammo" />
+            <moveable id="98" name="Flashlight" icon="Settings" />
+            <moveable id="99" name="Pistol" id2="84" icon="Pistol" />
+            <moveable id="100" name="Shotgun" id2="85" icon="Shotgun" />
+            <moveable id="101" name="Magnum" id2="86" icon="Autopistol" />
+            <moveable id="102" name="Uzi" id2="87" icon="Uzis" />
+            <moveable id="103" name="Pistol ammo" icon="Ammo" />
             <moveable id="104" name="Shotgun ammo" id2="89" icon="Ammo" />
             <moveable id="105" name="Magnum ammo" id2="90" icon="Ammo" />
             <moveable id="106" name="Uzi ammo" id2="91" icon="Ammo" />
@@ -521,7 +523,7 @@
             <moveable id="124" name="Slot 3 full" icon="Padlock" />
             <moveable id="125" name="Slot 4 full" icon="Padlock" />
             <moveable id="127" name="Pickup 1" id2="126" icon="Tool" />
-            <moveable id="128" name="Placeholder" icon="Interrogative" />
+            <moveable id="128" name="Midas gold touch" icon="Interrogative" />
             <moveable id="133" name="Key 1" id2="129" icon="Key" />
             <moveable id="134" name="Key 2" id2="130" icon="Key" />
             <moveable id="135" name="Key 3" id2="131" icon="Key" />
@@ -533,22 +535,22 @@
             <moveable id="145" name="Complete Scion" id2="141" icon="Tool" />
             <moveable id="146" name="Complete Scion" id2="142" icon="Tool" />
             <moveable id="147" name="Scion Holder" icon="Tool" />
-            <moveable id="150" name="Scion Piece" id2="144" y_adjust="0.1" icon="Tool" />
+            <moveable id="150" name="Scion Piece" id2="143" id3="144" icon="Tool" />
             <moveable id="161" name="Centaur statue" icon="Tool" />
             <moveable id="162" name="Shack suspended from wire rope" icon="Tool" />
             <moveable id="163" name="Mutant egg and holder (normal size)" icon="Tool" />
             <moveable id="166" name="Gunflare" icon="Light" />
-            <moveable id="169" name="Placeholder" icon="Interrogative" />
-            <moveable id="170" name="Placeholder" icon="Interrogative" />
+            <moveable id="169" name="Camera target" icon="Interrogative" />
+            <moveable id="170" name="Waterfall mist" icon="Interrogative" />
             <moveable id="172" name="Mutant bullet" icon="Tool" />
             <moveable id="173" name="Mutant grenade" icon="Skull" />
-            <moveable id="177" name="Placeholder" icon="Interrogative" />
-            <moveable id="179" name="Fire" icon="Interrogative" />
+            <moveable id="177" name="Lava particle emitter" icon="Interrogative" />
+            <moveable id="179" name="Flame emitter" icon="Interrogative" />
             <moveable id="180" name="Flowing Atlantean lava" icon="Fire" />
             <moveable id="181" name="Mutant egg and holder (big)" icon="Tool" />
             <moveable id="182" name="Motorboat" icon="Tool" />
-            <moveable id="183" name="Placeholder" icon="Interrogative" />
-            <moveable id="189" name="Shrinking wedge?" icon="Tool" />
+            <moveable id="183" name="Earthquake" icon="Tool" />
+            <moveable id="189" name="Lara's ponytail" icon="Tool" />
             <moveable id="207" name="Gunflare" icon="Light" />
         </moveables>
         <sprites name="Sprites" icon="Sprites">
@@ -1428,7 +1430,7 @@
             <moveable id="26" name="Yellow moray eel" icon="BadFish" />
             <moveable id="27" name="Black moray eel" icon="BadFish" />
             <moveable id="28" name="Barracuda / Whiskered Fish" icon="BadFish" />
-            <moveable id="29" name="Scuba diver" y_adjust="0.4" icon="BadGuy" />
+            <moveable id="29" name="Scuba diver" icon="BadGuy" />
             <moveable id="30" name="Gun-wielding rig worker (khaki pants)" icon="BadGuy" />
             <moveable id="31" name="Gun-wielding rig worker (blue jeans)" icon="BadGuy" />
             <moveable id="32" name="Stick-wielding goon" icon="BadGuy" />
@@ -1437,24 +1439,24 @@
             <moveable id="36" name="Spider" icon="Spider" />
             <moveable id="37" name="Giant spider" icon="Spider" />
             <moveable id="38" name="Crow" icon="Bird" />
-            <moveable id="39" name="Tiger / Leopard" icon="Tiger" />
-            <moveable id="40" name="Marco Bartoli" y_adjust="0.5" icon="BadGuy" />
+            <moveable id="39" name="Tiger / Snow leopard / White tiger" icon="Tiger" />
+            <moveable id="40" name="Marco Bartoli" icon="BadGuy" />
             <moveable id="41" name="Spear-wielding Xian Guard" icon="BadGuy" />
-            <moveable id="42" name="Spear-wielding Xian Guard statue" y_adjust="0.23" icon="BadGuy" />
-            <moveable id="43" name="Sword-wielding Xian Guard" y_adjust="0.3" icon="BadGuy" />
-            <moveable id="44" name="Sword-wielding Xian Guard statue" y_adjust="0.3" icon="BadGuy" />
-            <moveable id="45" name="Yeti" y_adjust="0.07" icon="BadGuy" />
-            <moveable id="46" name="Bird monster (guards Talion)" y_adjust="0.1" icon="BadGuy" />
+            <moveable id="42" name="Spear-wielding Xian Guard statue" icon="BadGuy" />
+            <moveable id="43" name="Sword-wielding Xian Guard" icon="BadGuy" />
+            <moveable id="44" name="Sword-wielding Xian Guard statue" icon="BadGuy" />
+            <moveable id="45" name="Yeti" icon="BadGuy" />
+            <moveable id="46" name="Bird monster (guards Talion)" icon="BadGuy" />
             <moveable id="47" name="Eagle" icon="Eagle" />
             <moveable id="48" name="Mercenary" icon="BadGuy" />
             <moveable id="49" name="Mercenary (black ski mask, gray jacket)" icon="BadGuy" />
             <moveable id="50" name="Mercenary (black ski mask, brown jacket)" icon="BadGuy" />
             <moveable id="51" name="Black snowmobile (with guns)" icon="Truck" show_with="52" />
-            <moveable id="52" name="Mercenary snowmobile driver" y_adjust="0.2" icon="BadGuy" show_with="51" />
-            <moveable id="53" name="Monk with long stick" y_adjust="0.2" icon="NiceGuy" />
-            <moveable id="54" name="Monk with knife-end stick" y_adjust="0.2" icon="NiceGuy" />
+            <moveable id="52" name="Mercenary snowmobile driver" icon="BadGuy" show_with="51" />
+            <moveable id="53" name="Monk with long stick" icon="NiceGuy" />
+            <moveable id="54" name="Monk with knife-end stick" icon="NiceGuy" />
             <moveable id="55" name="Collapsible floor" icon="Tool" />
-            <moveable id="57" name="Loose boards" Rx_adjust="-90" y_adjust="0.56" z_adjust="0.6" icon="Tool" />
+            <moveable id="57" name="Loose boards" icon="Tool" />
             <moveable id="58" name="Swinging sandbag / spiky ball" icon="Skull" />
             <moveable id="59" name="Spikes / Glass shards" icon="Skull" />
             <moveable id="60" name="Boulder" icon="Skull" />
@@ -1468,32 +1470,32 @@
             <moveable id="68" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="69" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="70" name="Movable cubical block (pushable)" icon="Tool" />
-            <moveable id="71" name="Big bowl (Ice Palace)" Rx_adjust="270" y_adjust="0.7" icon="Tool" />
+            <moveable id="71" name="Big bowl (Ice Palace)" icon="Tool" />
             <moveable id="72" name="Breakable window (can shoot out)" icon="Tool" />
             <moveable id="73" name="Breakable window (must jump through)" icon="Tool" />
             <moveable id="76" name="Airplane propeller" icon="Tool" />
             <moveable id="77" name="Power saw" icon="Skull" />
             <moveable id="78" name="Overhead pulley hook" icon="Tool" />
             <moveable id="79" name="Sandbag / Ceiling fragments" icon="Tool" />
-            <moveable id="80" name="Rolling spindle" Ry_adjust="90" icon="Skull" />
+            <moveable id="80" name="Rolling spindle" icon="Skull" />
             <moveable id="81" name="Wall-mounted knife blade" icon="Skull" />
             <moveable id="82" name="Statue with knife blade" icon="Skull" />
             <moveable id="83" name="Multiple boulders / snowballs" icon="Skull" />
             <moveable id="84" name="Detachable icicles" icon="Skull" />
             <moveable id="85" name="Spiky movable wall" icon="Skull" />
-            <moveable id="86" name="Bounce pad" y_adjust="0.25" icon="Tool" />
-            <moveable id="87" name="Spiky ceiling segment" Rx_adjust="-90" y_adjust="-0.5" z_adjust="0.5" icon="Skull" />
+            <moveable id="86" name="Bounce pad" icon="Tool" />
+            <moveable id="87" name="Spiky ceiling segment" icon="Skull" />
             <moveable id="88" name="Tibetan bell" icon="Bell" />
             <moveable id="91" name="Lara and a snowmobile" icon="LaraBody" />
             <moveable id="92" name="Wheel knob" icon="Tool" />
-            <moveable id="93" name="Switch" icon="Switch" />
+            <moveable id="93" name="Above-water switch" icon="Switch" />
             <moveable id="94" name="Underwater propeller" icon="Skull" />
             <moveable id="95" name="Air fan" icon="Skull" />
             <moveable id="96" name="Swinging box / spiky ball" icon="Skull" />
             <moveable id="101" name="Rolling storage drums" icon="Skull" />
             <moveable id="102" name="Zipline handle" icon="Tool" />
-            <moveable id="103" name="Switch" icon="Switch" />
-            <moveable id="104" name="Switch" icon="Switch" />
+            <moveable id="103" name="Above-water switch" icon="Switch" />
+            <moveable id="104" name="Above-water/underwater switch" icon="Switch" />
             <moveable id="105" name="Underwater switch" icon="Switch" />
             <moveable id="106" name="Door" icon="Arrow" />
             <moveable id="107" name="Door" icon="Arrow" />
@@ -1513,31 +1515,31 @@
             <moveable id="121" name="Secret #2" id2="191" use_body_from="248" icon="Clock" />
             <moveable id="122" name="Lara and butler picture" icon="Settings" />
             <moveable id="133" name="Secret #3" id2="192" use_body_from="248" icon="Book" />
-            <moveable id="134" name="Natla's logo" y_adjust="0.1" icon="Tool" />
+            <moveable id="134" name="Natla's logo" icon="Tool" />
             <moveable id="152" name="Flare" icon="Light" />
             <moveable id="153" name="Sunglasses" icon="Settings" />
             <moveable id="154" name="Portable CD player" icon="Settings" />
             <moveable id="155" name="Direction keys" icon="Settings" />
             <moveable id="157" name="Pistol" id2="135" icon="Pistol" />
-            <moveable id="158" name="Shotgun" id2="136" y_adjust="0.1" icon="Shotgun" />
+            <moveable id="158" name="Shotgun" id2="136" icon="Shotgun" />
             <moveable id="159" name="Auto-pistol" id2="137" icon="Autopistol" />
-            <moveable id="160" name="Uzi" id2="138" y_adjust="0.1" icon="Uzis" />
-            <moveable id="161" name="Harpoon gun" id2="139" y_adjust="0.05" icon="Arrow2" />
-            <moveable id="162" name="M16" id2="140" y_adjust="0.05" icon="M16" />
-            <moveable id="163" name="Grenade launcher" id2="141" y_adjust="0.05" icon="GrenadeLauncher" />
-            <moveable id="164" name="Pistol ammo(?)" icon="Ammo" />
+            <moveable id="160" name="Uzi" id2="138" icon="Uzis" />
+            <moveable id="161" name="Harpoon gun" id2="139" icon="Arrow2" />
+            <moveable id="162" name="M16" id2="140" icon="M16" />
+            <moveable id="163" name="Grenade launcher" id2="141" icon="GrenadeLauncher" />
+            <moveable id="164" name="Pistol ammo" icon="Ammo" />
             <moveable id="165" name="Shotgun ammo" id2="143" icon="Ammo" />
             <moveable id="166" name="Auto-pistol ammo" id2="144" icon="Ammo" />
             <moveable id="167" name="Uzi ammo" id2="145" icon="Ammo" />
             <moveable id="168" name="Harpoons" id2="146" icon="Ammo" />
-            <moveable id="169" name="M16 ammo" id2="147" y_adjust="0.025" icon="Ammo" />
-            <moveable id="170" name="Grenades" id2="148" y_adjust="0.05" icon="Ammo" />
+            <moveable id="169" name="M16 ammo" id2="147" icon="Ammo" />
+            <moveable id="170" name="Grenades" id2="148" icon="Ammo" />
             <moveable id="171" name="Small medipack" id2="149" icon="Food" />
             <moveable id="172" name="Large medipack" id2="150" icon="Food" />
             <moveable id="173" name="Flares (opening box)" id2="151" icon="Light" />
             <moveable id="178" name="Puzzle 1" id2="174" y_adjust="0.1" icon="Gear" />
             <moveable id="179" name="Puzzle 2" id2="175" icon="Gear" />
-            <moveable id="180" name="Puzzle 3 ?" id2="176" icon="Gear" />
+            <moveable id="180" name="Puzzle 3" id2="176" icon="Gear" />
             <moveable id="181" name="Puzzle 4" id2="177" icon="Gear" />
             <moveable id="182" name="Slot 1 empty" icon="Padlock" />
             <moveable id="183" name="Slot 2 empty" icon="Padlock" />
@@ -1555,16 +1557,18 @@
             <moveable id="202" name="Lock 2" icon="Keyhole" />
             <moveable id="203" name="Lock 3" icon="Keyhole" />
             <moveable id="204" name="Lock 4" icon="Keyhole" />
-            <moveable id="207" name="Pickup 5" y_adjust="0.14" icon="Tool" />
-            <moveable id="208" name="Pickup 6" icon="Tool" />
+            <moveable id="205" name="Pickup 1" icon="Tool" />
+            <moveable id="206" name="Pickup 2" icon="Tool" />
+            <moveable id="207" name="Pickup 3" icon="Tool" />
+            <moveable id="208" name="Pickup 4" icon="Tool" />
             <moveable id="209" name="Dragon explosion effect (expanding netted bubble)" icon="Dragon" />
             <moveable id="210" name="Dragon explosion effect (expanding netted bubble)" icon="Dragon" />
             <moveable id="211" name="Dragon explosion effect (expanding solid bubble)" icon="Dragon" />
-            <moveable id="212" name="Lara's hips / Alarm" icon="Tool" />
-            <moveable id="213" name="Placeholder" icon="Interrogative" />
+            <moveable id="212" name="Alarm" icon="Tool" />
+            <moveable id="213" name="Dripping water" icon="Interrogative" />
             <moveable id="214" name="Tyrannosaur" icon="TRex" />
-            <moveable id="215" name="Placeholder" icon="Interrogative" />
-            <moveable id="216" name="Placeholder" icon="Interrogative" />
+            <moveable id="215" name="Singing birds" icon="Interrogative" />
+            <moveable id="216" name="Bartoli's Hideout clock" icon="Interrogative" />
             <moveable id="217" name="Placeholder" icon="Interrogative" />
             <moveable id="218" name="Dragon bones (front)" icon="Dragon" show_with="219" />
             <moveable id="219" name="Dragon bones (back)" icon="Dragon" show_with="218" />
@@ -1577,23 +1581,23 @@
             <moveable id="235" name="Flare burning?" icon="Light" />
             <moveable id="240" name="Gunflare" icon="Light" />
             <moveable id="241" name="Gunflare (spiky)" icon="Light" />
-            <moveable id="243" name="Look At the bird" icon="Interrogative" />
-            <moveable id="244" name="Look At the bird" icon="Interrogative" />
-            <moveable id="245" name="Rod?" icon="Tool" />
-            <moveable id="247" name="Pointer?" icon="Tool" />
-            <moveable id="248" name="Support?" y_adjust="0.1" icon="Tool" />
-            <moveable id="249" name="Rod?" icon="Tool" />
-            <moveable id="251" name="spark" icon="Interrogative" />
-            <moveable id="253" name="Fire" use_body_from="248" icon="Interrogative" />
+            <moveable id="243" name="Camera target" icon="Interrogative" />
+            <moveable id="244" name="Waterfall mist" icon="Interrogative" />
+            <moveable id="245" name="Harpoon (single)" icon="Tool" />
+            <moveable id="247" name="Pointer (nullmesh)?" icon="Tool" />
+            <moveable id="248" name="Grenade (single)" icon="Tool" />
+            <moveable id="249" name="Harpoon (flying)" icon="Tool" />
+            <moveable id="251" name="Spark emitter" icon="Interrogative" />
+            <moveable id="253" name="Flame emitter" icon="Interrogative" />
             <moveable id="254" name="Skybox" icon="Sky" />
             <moveable id="256" name="Monk" icon="NiceGuy" />
-            <moveable id="257" name="Placeholder" icon="Interrogative" />
-            <moveable id="258" name="Placeholder" icon="Interrogative" />
+            <moveable id="257" name="Door bell" icon="Interrogative" />
+            <moveable id="258" name="Alarm bell" icon="Interrogative" />
             <moveable id="259" name="Helicopter" icon="Plane" />
             <moveable id="260" name="The butler" icon="NiceGuy" />
-            <moveable id="262" name="Placeholder" icon="Interrogative" />
+            <moveable id="262" name="Lara cutscene placement" icon="Interrogative" />
             <moveable id="263" name="Shotgun animation (Home Sweet Home)" icon="Shotgun" />
-            <moveable id="264" name="Placeholder" icon="Interrogative" />
+            <moveable id="264" name="Dragon explosion emitter" icon="Interrogative" />
         </moveables>
         <sprites name="Sprites" icon="Sprites">
             <sprite id="89" name="Boat wake (Venice, Bartoli)" icon="Water" type="animated" />
@@ -2859,7 +2863,7 @@
             <moveable id="8" name="Lara grenade-launcher animation" icon="LaraWeapons" use_body_from="315" />
             <moveable id="9" name="Lara harpoon-gun animation" icon="LaraWeapons" use_body_from="315" />
             <moveable id="10" name="Lara flare animation" icon="LaraBody" use_body_from="315" />
-            <moveable id="11" name="Lara Hydro-propeller animation" icon="LaraBody" use_body_from="315" />
+            <moveable id="11" name="Lara UPV animation" icon="LaraBody" use_body_from="315" />
             <moveable id="12" name="UPV" icon="" show_with="11" />
             <moveable id="13" name="Lara misc animations" icon="LaraBody" use_body_from="315" />
             <moveable id="14" name="Kayak" icon="Truck" show_with="11" />
@@ -2868,13 +2872,13 @@
             <moveable id="17" name="Mine cart" icon="Truck" show_with="11" />
             <moveable id="18" name="Big gun" icon="Truck" show_with="11" />
             <moveable id="19" name="Hydro propeller" icon="Truck" show_with="11" />
-            <moveable id="20" name="Tribesman with spiked ax" y_adjust="0.30" icon="BadGuy" />
-            <moveable id="21" name="Tribesman with poison-dart gun" y_adjust="0.30" icon="BadGuy" />
+            <moveable id="20" name="Tribesman with spiked ax" icon="BadGuy" />
+            <moveable id="21" name="Tribesman with poison-dart gun" icon="BadGuy" />
             <moveable id="22" name="Dog" icon="Dog" />
             <moveable id="23" name="Rat" icon="Mouse" />
             <moveable id="24" name="Kill All Triggers" icon="Tool" />
-            <moveable id="25" name="Killer whale" y_adjust="0.3" icon="Shark" />
-            <moveable id="26" name="Scuba diver" y_adjust="0.38" icon="BadGuy" />
+            <moveable id="25" name="Killer whale" icon="Shark" />
+            <moveable id="26" name="Scuba diver" icon="BadGuy" />
             <moveable id="27" name="Crow" icon="Bird" />
             <moveable id="28" name="Tiger" icon="Tiger" />
             <moveable id="29" name="Vulture" icon="Eagle" />
@@ -2887,14 +2891,14 @@
             <moveable id="37" name="Mercenary" icon="BadGuy" />
             <moveable id="38" name="Raptor hung by rope (fish bait)" icon="TRex" />
             <moveable id="39" name="RX-Tech guy in red jacket" icon="BadGuy" />
-            <moveable id="40" name="RX-Tech guy with gun (dressed like flamethrower guy)" icon="BadGuy" />
+            <moveable id="40" name="RX-Tech guy with gun" icon="BadGuy" />
             <moveable id="41" name="Dog (Antarctica)" icon="Dog" />
             <moveable id="42" name="Crawler mutant" icon="BadGuy" />
             <moveable id="44" name="Tinnos wasp" icon="BadGuy" />
             <moveable id="45" name="Tinnos monster" icon="BadGuy" />
             <moveable id="46" name="Brute mutant (with claw)" icon="BadGuy" />
-            <moveable id="47" name="Unknown Id #47" icon="Tool" />
-            <moveable id="48" name="Unknown Id #48" icon="Tool" />
+            <moveable id="47" name="Tinnos wasp respawn point" icon="Tool" />
+            <moveable id="48" name="Raptor respawn point" icon="Tool" />
             <moveable id="49" name="Willardspider" icon="BadGuy" />
             <moveable id="50" name="RX-Tech flamethrower guy" icon="BadGuy" />
             <moveable id="51" name="London goon" icon="BadGuy" />
@@ -2908,53 +2912,53 @@
             <moveable id="63" name="MP with sighted gun and night sight" icon="BadGuy" />
             <moveable id="64" name="Gun turret" icon="Skull" />
             <moveable id="65" name="Dam guard" icon="BadGuy" />
-            <moveable id="66" name="Kind of tripwire" icon="Tool" />
+            <moveable id="66" name="Tripwire" icon="Tool" />
             <moveable id="67" name="Electrified wire" icon="Tool" />
             <moveable id="68" name="Killer tripwire" icon="Tool" />
-            <moveable id="69" name="Cobra / Rattlesnake" z_adjust="-1.4" x_adjust="-1.2" icon="Snake" />
-            <moveable id="70" name="Temple statue" y_adjust="0.36" icon="BadGuy" />
+            <moveable id="69" name="Cobra / Rattlesnake" icon="Snake" />
+            <moveable id="70" name="Temple statue" icon="BadGuy" />
             <moveable id="71" name="Monkey" icon="Monkey" />
             <moveable id="73" name="Tony Firehands" icon="BadGuy" />
             <moveable id="74" name="AI Guard" icon="Tool" />
             <moveable id="75" name="AI Ambush" icon="Tool" />
-            <moveable id="76" name="AI Path" icon="Tool" />
-            <moveable id="77" name="AI Unknown #77" icon="Tool" />
+            <moveable id="76" name="AI Patrol 1" icon="Tool" />
+            <moveable id="77" name="AI Modify" icon="Tool" />
             <moveable id="78" name="AI Follow" icon="Tool" />
-            <moveable id="79" name="AI Patrol" icon="Tool" />
-            <moveable id="80" name="Unknown Id #80" icon="Tool" />
-            <moveable id="81" name="Unknown Id #81" icon="Tool" />
+            <moveable id="79" name="AI Patrol 2" icon="Tool" />
+            <moveable id="80" name="AI Path" icon="Tool" />
+            <moveable id="81" name="AI Check" icon="Tool" />
             <moveable id="82" name="Unknown Id #82" icon="Tool" />
             <moveable id="83" name="Collapsible floor" icon="Tool" />
-            <moveable id="86" name="Swinging thing" icon="Skull" />
+            <moveable id="86" name="Heavy swinging thing / Drill bit / Swinging brazier" icon="Skull" />
             <moveable id="87" name="Spikes / Barbed wire" icon="Skull" />
             <moveable id="88" name="Boulder / Barrel" icon="Skull" />
             <moveable id="89" name="Giant boulder (Temple of Puna)" icon="Skull" />
             <moveable id="90" name="Disk (like dart)" icon="Skull" />
-            <moveable id="91" name="Dart shooter" icon="Tool" />
-            <moveable id="94" name="Spiked impaled skeleton / Slamming door" icon="Skull" />
+            <moveable id="91" name="Dart emitter" icon="Tool" />
+            <moveable id="94" name="Spiked frame / Slamming door" icon="Skull" />
             <moveable id="97" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="98" name="Movable cubical block (pushable)" icon="Tool" />
             <moveable id="101" name="Destroyable boarded-up window" icon="Tool" />
             <moveable id="102" name="Destroyable boarded-up window / wall" icon="Tool" />
             <moveable id="106" name="Overhead pulley hook" icon="Tool" />
             <moveable id="107" name="Falling fragments" icon="Skull" />
-            <moveable id="108" name="Rolling spindle" Ry_adjust="90" icon="Skull" />
+            <moveable id="108" name="Rolling spindle" icon="Skull" />
             <moveable id="110" name="Subway train" icon="Tool" />
-            <moveable id="111" name="Wall-mounted knife blade / Knife disk" x_adjust="-1" z_adjust="1" y_adjust="0.1" icon="Skull" />
-            <moveable id="113" name="Detachable stalactites" icon="Skull" />
+            <moveable id="111" name="Wall-mounted knife blade / Knife disk" icon="Skull" />
+            <moveable id="113" name="Detachable stalacites" icon="Skull" />
             <moveable id="114" name="Spiky movable wall" icon="Skull" />
             <moveable id="116" name="Spiky movable vertical wall / Tunnel borer" icon="Skull" />
             <moveable id="117" name="Valve wheel / Pulley" icon="Switch" />
-            <moveable id="118" name="Switch" icon="Switch" />
-            <moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" y_adjust="0.27" icon="Skull" />
+            <moveable id="118" name="Switch / Pullable book" icon="Switch" />
+            <moveable id="119" name="Underwater propeller / Diver sitting on block / Underwater rotating knives / Meteorite" icon="Skull" />
             <moveable id="120" name="Fan" icon="Skull" />
             <moveable id="121" name="Heavy stamper / Grinding drum / Underwater rotating knives" icon="Skull" />
-            <moveable id="122" name="Temple statue (original petrified state)" y_adjust="0.38" icon="Tool" />
+            <moveable id="122" name="Temple statue (original petrified state)" icon="Tool" />
             <moveable id="123" name="Monkey with medipack" icon="Monkey" use_body_from="71" />
             <moveable id="124" name="Monkey with key" icon="Monkey" use_body_from="71" />
             <moveable id="127" name="Zipline handle" icon="Tool" />
-            <moveable id="128" name="Switch" icon="Switch" />
-            <moveable id="129" name="Switch" icon="Switch" />
+            <moveable id="128" name="Above-water switch" icon="Switch" />
+            <moveable id="129" name="Above-water switch" icon="Switch" />
             <moveable id="130" name="Underwater switch" icon="Switch" />
             <moveable id="131" name="Door" icon="Arrow" />
             <moveable id="132" name="Door" icon="Arrow" />
@@ -3075,8 +3079,8 @@
             <moveable id="295" name="Detonator switch box" icon="Tool" />
             <moveable id="300" name="Gunflare / Gunflare (spiky)" icon="Light" />
             <moveable id="301" name="Spiky gunflare for MP5" icon="Light" />
-            <moveable id="304" name="Look At item" icon="Tool" />
-            <moveable id="305" name="Smoke Edge" icon="Tool" />
+            <moveable id="304" name="Camera target" icon="Tool" />
+            <moveable id="305" name="Waterfall mist" icon="Tool" />
             <moveable id="306" name="Harpoon (single)" icon="Ammo" />
             <moveable id="309" name="Rocket (single)" icon="Ammo" />
             <moveable id="310" name="Harpoon (single)" icon="Ammo" />
@@ -3086,7 +3090,7 @@
             <moveable id="314" name="Movable Boom" icon="Tool" />
             <moveable id="315" name="Lara true appearance" icon="LaraBody" />
             <moveable id="317" name="Unknown visible #317" icon="Tool" />
-            <moveable id="318" name="Red ceiling rotating(?) light" icon="Light" />
+            <moveable id="318" name="Alarm light" icon="Light" />
             <moveable id="319" name="Light" icon="Tool" />
             <moveable id="321" name="Light #2" icon="Tool" />
             <moveable id="322" name="Pulsating Light" icon="Tool" />
@@ -3095,10 +3099,10 @@
             <moveable id="326" name="Blue Light" icon="Tool" />
             <moveable id="327" name="Light #3" icon="Tool" />
             <moveable id="328" name="Light #4" icon="Tool" />
-            <moveable id="330" name="Fire" icon="Tool" />
-            <moveable id="331" name="Alternate Fire" icon="Tool" />
-            <moveable id="332" name="Alternate Fire #2" icon="Tool" />
-            <moveable id="333" name="Fire #2" icon="Tool" />
+            <moveable id="330" name="Flame emitter" icon="Tool" />
+            <moveable id="331" name="Flame emitter 2" icon="Tool" />
+            <moveable id="332" name="Flame emitter 3" icon="Tool" />
+            <moveable id="333" name="Flame emitter 4" icon="Tool" />
             <moveable id="334" name="Smoke #2" icon="Tool" />
             <moveable id="335" name="Smoke #3" icon="Tool" />
             <moveable id="336" name="Smoke #4" icon="Tool" />
@@ -3106,12 +3110,12 @@
             <moveable id="338" name="Pirahnas" icon="Tool" />
             <moveable id="339" name="Fish" icon="Tool" />
             <moveable id="347" name="Bat swarm" icon="Tool" />
-            <moveable id="349" name="Misc item" icon="Tool" />
-            <moveable id="350" name="Misc item" icon="Tool" />
-            <moveable id="351" name="Misc item" icon="Tool" />
-            <moveable id="352" name="Misc item" icon="Tool" />
-            <moveable id="353" name="Footstool / Fish swimming in tank / Radar display" icon="Tool" />
-            <moveable id="354" name="Dead raptor / Alarm box / Mason-lodge dagger / Small version of big antenna" icon="Tool" />
+            <moveable id="349" name="Animating 1" icon="Tool" />
+            <moveable id="350" name="Animating 2" icon="Tool" />
+            <moveable id="351" name="Animating 3" icon="Tool" />
+            <moveable id="352" name="Animating 4" icon="Tool" />
+            <moveable id="353" name="Animating 5" icon="Tool" />
+            <moveable id="354" name="Animating 6" icon="Tool" />
             <moveable id="355" name="Skybox" icon="Sky" />
             <moveable id="357" name="Unknown id #357" icon="Tool" />
             <moveable id="358" name="Unknown id #358" icon="Tool" />
@@ -3551,7 +3555,7 @@
             <moveable id="32" name="Jeep" icon="Truck" show_with="33" />
             <moveable id="33" name="Vehicle extra" icon="LaraBody" use_body_from="8" />
             <moveable id="34" name="Enemy jeep" icon="Truck" />
-            <moveable id="35" name="Skeleton" y_adjust="5.1" icon="BadGuy" />
+            <moveable id="35" name="Skeleton" icon="BadGuy" />
             <moveable id="36" name="Skeleton MIP" icon="BadGuy" />
             <moveable id="37" name="Guide" icon="NiceGuy" />
             <moveable id="38" name="Guide MIP" icon="NiceGuy" />
@@ -3978,6 +3982,38 @@
             <moveable id="459" name="Horizon" icon="Sky" />
             <moveable id="461" name="Binocular graphics" icon="Tool" />
             <moveable id="462" name="Target graphics" icon="Tool" />
+            <moveable id="463" name="Parallel bars" icon="Tool" />
+            <moveable id="465" name="Motor Boat" icon="Boat" show_with="466" />
+            <moveable id="466" name="Motor Boat Lara" icon="LaraBody" use_body_from="8" />
+            <moveable id="467" name="Rubber Boat" icon="Boat" show_with="468" />
+            <moveable id="468" name="Rubber Boat Lara" icon="LaraBody" use_body_from="8" />
+            <moveable id="469" name="Motorbike Lara" icon="LaraBody" use_body_from="8" />
+            <moveable id="471" name="Parallel Bars" icon="Tool" />
+            <moveable id="472" name="Panel Border" icon="Tool" />
+            <moveable id="473" name="Panel Middle" icon="Tool" />
+            <moveable id="474" name="Panel Corner" icon="Tool" />
+            <moveable id="475" name="Panel Diagonal" icon="Tool" />
+            <moveable id="476" name="Panel Strip" icon="Tool" />
+            <moveable id="477" name="Panel Half Border1" icon="Tool" />
+            <moveable id="478" name="Panel Half Border2" icon="Tool" />
+            <moveable id="479" name="Panel Middle Corner" icon="Tool" />
+            <moveable id="480" name="Tight Rope" icon="Tool" />
+            <moveable id="481" name="Laser Head" icon="BadGuy" show_with="482" />
+            <moveable id="482" name="Laser Head Base" icon="BadGuy" show_with="481" />
+            <moveable id="483" name="Laser Head Tentacle" icon="BadGuy" show_with="481" />
+            <moveable id="484" name="Hydra" icon="BadGuy" />
+            <moveable id="485" name="Hydra Missile" icon="Skull" />
+            <moveable id="486" name="Enemy Submarine" icon="BadGuy" />
+            <moveable id="487" name="Enemy Submarine MIP" icon="BadGuy" />
+            <moveable id="488" name="Submarine Missile" icon="Skull" />
+            <moveable id="489" name="Frog Man" icon="BadGuy" />
+            <moveable id="490" name="Frog Man Harpoon" icon="Skull" />
+            <moveable id="491" name="Fish Emitter" icon="BadFish" />
+            <moveable id="492" name="Kayak" icon="Boat" show_with="493" />
+            <moveable id="493" name="Kayak Lara" icon="LaraBody" use_body_from="8" />
+            <moveable id="495" name="Bridge Tilt3" icon="Tool" />
+            <moveable id="496" name="Bridge Tilt4" icon="Tool" />
+            <moveable id="497" name="Bridge Custom" icon="Tool" />
         </moveables>
         <static_meshes name="Static meshes" icon="StaticMeshes">
             <static_mesh id="0" name="Plant 0" icon="Shape" />
@@ -4464,91 +4500,144 @@
             <moveable id="23" name="Actor2 head1" icon="NiceGuy" />
             <moveable id="24" name="Actor2 head2" icon="NiceGuy" />
             <moveable id="25" name="Lara X-Ray" icon="LaraBody" />
+            <moveable id="26" name="Lara X-Ray 1" icon="LaraBody" />
+            <moveable id="27" name="Lara X-Ray 2" icon="LaraBody" />
             <moveable id="28" name="Crowbar animation" icon="LaraBody" />
             <moveable id="29" name="Torch animation" icon="LaraBody" />
-            <moveable id="30" name="Lara's hairs" icon="LaraBody" />
-            <moveable id="32" name="Animation" icon="Tool" />
-            <moveable id="33" name="Animation" icon="Tool" />
-            <moveable id="34" name="Animation_mip" icon="Tool" />
-            <moveable id="35" name="VCI guard" icon="BadGuy" />
-            <moveable id="36" name="VCI guard_mip" icon="BadGuy" />
-            <moveable id="37" name="Guard gun" icon="BadGuy" />
-            <moveable id="38" name="Guard gun_mip" icon="BadGuy" />
+            <moveable id="30" name="Lara's hair" icon="LaraBody" />
+            <moveable id="31" name="Guard 1" icon="BadGuy" />
+            <moveable id="32" name="Guard 1_mip" icon="Badguy" />
+            <moveable id="33" name="Guard 2" icon="Tool" />
+            <moveable id="34" name="Guard 2_mip" icon="Tool" />
+            <moveable id="35" name="Guard 3" icon="BadGuy" />
+            <moveable id="36" name="Guard 3_mip" icon="BadGuy" />
+            <moveable id="37" name="Guard 4" icon="BadGuy" />
+            <moveable id="38" name="Guard 4_mip" icon="BadGuy" />
             <moveable id="39" name="Guard laser" icon="BadGuy" />
             <moveable id="40" name="Guard laser_mip" icon="BadGuy" />
             <moveable id="41" name="Doberman" icon="Doberman" />
-            <moveable id="42" name="Animation" icon="Tool" />
-            <moveable id="44" name="Animation" icon="Tool" />
+            <moveable id="42" name="Doberman_mip" icon="Doberman" />
+            <moveable id="43" name="Crow" icon="Crow" />
+            <moveable id="44" name="Crow_mip" icon="Crow" />
             <moveable id="45" name="Larson" icon="BadGuy" y_adjust="0.1" />
-            <moveable id="46" name="Keycard 1" icon="Key" />
+            <moveable id="46" name="Larson_mip" icon="Key" />
             <moveable id="47" name="Pierre" icon="BadGuy" y_adjust="0.1" />
-            <moveable id="48" name="Keycard 2" icon="Key" x_adjust="3" />
+            <moveable id="48" name="Pierre_mip" icon="Key" x_adjust="3" />
             <moveable id="49" name="Armed baddy 1" icon="BadGuy" />
+            <moveable id="50" name="Armed baddy 1_mip" icon="BadGuy" />
             <moveable id="51" name="Armed baddy 2" icon="BadGuy" />
-            <moveable id="54" name="Animation" icon="Tool" />
-            <moveable id="55" name="Guard robot control" icon="Tool" x_adjust="0.5" z_adjust="0.4" />
-            <moveable id="56" name="Animation" icon="Tool" />
+            <moveable id="52" name="Armed baddy 2_mip" icon="BadGuy" />
+            <moveable id="53" name="Guard 5" icon="BadGuy" />
+            <moveable id="54" name="Guard 5_mip" icon="BadGuy" />
+            <moveable id="55" name="Guard 6" icon="BadGuy" />
+            <moveable id="56" name="Guard 6_mip" icon="BadGuy" />
             <moveable id="57" name="Lion" icon="BadGuy" y_adjust="0.075" />
-            <moveable id="58" name="Animation" icon="Tool" />
+            <moveable id="58" name="Lion_mip" icon="Tool" />
             <moveable id="59" name="Gladiator" icon="BadGuy" y_adjust="0.1" />
-            <moveable id="60" name="Animation" icon="Tool" />
+            <moveable id="60" name="Gladiator_mip" icon="Tool" />
             <moveable id="61" name="Roman statue" icon="BadGuy" />
+            <moveable id="62" name="Roman statue_mip" icon="BadGuy" />
             <moveable id="63" name="Small dragon" icon="BadGuy" y_adjust="2" />
+            <moveable id="64" name="Small dragon_mip" icon="BadGuy" y_adjust="2" />
             <moveable id="65" name="Laser head" icon="BadGuy" />
+            <moveable id="66" name="Laser head_mip" icon="BadGuy" />
             <moveable id="67" name="Cyborg" icon="BadGuy" y_adjust="0.030" />
             <moveable id="68" name="Cyborg_mip" icon="BadGuy" />
             <moveable id="69" name="VCI worker" icon="NiceGuy" />
+            <moveable id="70" name="VCI worker_mip" icon="NiceGuy" />
+            <moveable id="71" name="Lighthing Guide" icon="NiceGuy" />
+            <moveable id="72" name="Lighthing Guide_mip" icon="NiceGuy" />
             <moveable id="73" name="Invisible ghost" icon="BadGuy" />
+            <moveable id="74" name="Invisible ghost_mip" icon="BadGuy" />
+            <moveable id="75" name="Reaper" icon="BadGuy" />
+            <moveable id="76" name="Reaper_mip" icon="BadGuy" />
             <moveable id="77" name="Brown beast" icon="BadGuy" />
+            <moveable id="78" name="Brown beast_mip" icon="BadGuy" />
+            <moveable id="79" name="Lagoon Witch" icon="BadGuy" />
+            <moveable id="80" name="Lagoon Witch_mip" icon="BadGuy" />
             <moveable id="81" name="Submarine" icon="Tool" />
-            <moveable id="82" name="Submarine" icon="Tool" />
+            <moveable id="82" name="Submarine_mip" icon="Tool" />
             <moveable id="83" name="M16 guard" icon="BadGuy" />
-            <moveable id="84" name="Tree with huged man" x_adjust="4" z_adjust="-1" icon="Plant" />
+            <moveable id="84" name="M16 guard_mip" icon="Badguy" />
             <moveable id="85" name="Dog" icon="Dog" />
-            <moveable id="86" name="Animation" icon="Tool" />
+            <moveable id="86" name="Dog_mip" icon="Tool" />
             <moveable id="87" name="The chef" icon="BadGuy" />
-            <moveable id="88" name="Rich1 hammer door" icon="arrow" x_adjust="-1" />
-            <moveable id="91" name="Helicopter" icon="Plane" z_adjust="3" />
+            <moveable id="88" name="Rich1 hammer door (The chef mip)" icon="arrow" x_adjust="-1" />
+            <moveable id="89" name="Imp" icon="BadGuy" />
+            <moveable id="90" name="Imp mip" icon="BadGuy" />
+            <moveable id="91" name="Gunship" icon="Plane" z_adjust="3" />
+            <moveable id="92" name="Gunship mip" icon="Plane" />
+            <moveable id="93" name="Little bat" icon="Bat" />
             <moveable id="94" name="Little rat" icon="Mouse" />
+            <moveable id="95" name="Spider" icon="Tool" />
+            <moveable id="96" name="Spider generator" icon="Tool" />
             <moveable id="97" name="Auto guns" icon="Tool" />
             <moveable id="98" name="Electricity wires" icon="Skull" />
+            <moveable id="99" name="Dart" icon="Skull" />
             <moveable id="100" name="Dart emitter" icon="Skull" />
             <moveable id="101" name="Fast dart emitter" icon="Skull" />
-            <moveable id="105" name="Trapdoor" icon="Arrow" />
-            <moveable id="106" name="Trapdoor" icon="Arrow" />
-            <moveable id="107" name="Trapdoor" icon="Arrow" />
-            <moveable id="109" name="Floor trapdoor" icon="Arrow" />
-            <moveable id="111" name="Ceiling trapdoor" icon="Arrow" />
-            <moveable id="114" name="Box 1" icon="Tool" />
+            <moveable id="102" name="Falling ceiling" icon="Arrow" />
+            <moveable id="103" name="Falling block 1" icon="Arrow" />
+            <moveable id="104" name="Falling block 2" icon="Arrow" />
+            <moveable id="105" name="Crumbling floor" icon="Arrow" />
+            <moveable id="106" name="Trapdoor 1" icon="Arrow" />
+            <moveable id="107" name="Trapdoor 2" icon="Arrow" />
+            <moveable id="108" name="Trapdoor 3" icon="Arrow" />
+            <moveable id="109" name="Floor trapdoor 1" icon="Arrow" />
+            <moveable id="110" name="Floor trapdoor 2" icon="Arrow" />
+            <moveable id="111" name="Ceiling trapdoor 1" icon="Arrow" />
+            <moveable id="112" name="Ceiling trapdoor 2" icon="Tool" />
+            <moveable id="113" name="Scaling trapdoor" icon="Tool" />
+            <moveable id="114" name="Rolling ball" icon="Tool" />
+            <moveable id="115" name="Rolling barrel" icon="Skull" />
+            <moveable id="116" name="Spiky floor" icon="Skull" />
             <moveable id="117" name="Spikes" icon="Skull" />
             <moveable id="118" name="Ram" icon="Skull" />
+            <moveable id="119" name="Rome hammer" icon="Skull" />
             <moveable id="120" name="Flame" icon="Skull" />
             <moveable id="121" name="Big flame" icon="Skull" />
             <moveable id="122" name="Torch flame" icon="Tool" />
             <moveable id="123" name="Death flame" icon="Skull" />
             <moveable id="124" name="Gas fire" icon="Skull" />
+            <moveable id="125" name="Burning roots" icon="Tool" />
             <moveable id="126" name="Rope" icon="Tool" />
-            <moveable id="127" name="Lara empty" icon="LaraWeapons" />
+            <moveable id="127" name="Fire rope" icon="Tool" />
             <moveable id="128" name="Pole rope" icon="Tool" />
             <moveable id="129" name="Ventilator" icon="Tool" />
             <moveable id="130" name="Ventilator" icon="Tool" />
             <moveable id="131" name="Grappling gun target" icon="Tool" />
-            <moveable id="134" name="Box 2" icon="Tool" />
-            <moveable id="135" name="Teleport" icon="Tool" />
-            <moveable id="136" name="Headset talk point" icon="Tool" />
-            <moveable id="137" name="Box 3" icon="Tool" />
-            <moveable id="138" name="Box 4" icon="Tool" />
+            <moveable id="132" name="One-block platform" icon="Tool" />
+            <moveable id="133" name="Two-block platform" icon="Tool" />
+            <moveable id="134" name="Raising block" icon="Tool" />
+            <moveable id="135" name="Teleport (?)" icon="Tool" />
+            <moveable id="136" name="Headset talk point (?)" icon="Tool" />
+            <moveable id="137" name="Pushable 1" icon="Tool" />
+            <moveable id="138" name="Pushable 2" icon="Tool" />
+            <moveable id="139" name="Pushable 3" icon="Tool" />
+            <moveable id="140" name="Pushable 4" icon="Tool" />
+            <moveable id="141" name="Pushable 5" icon="Tool" />
             <moveable id="142" name="Robot arm" icon="Tool" />
-            <moveable id="144" name="Rocket item" icon="Ammo" />
+            <moveable id="143" name="Death slide" icon="Tool" />
+            <moveable id="144" name="Rocket item" icon="Skull" />
             <moveable id="145" name="Chaff flare" icon="Light" />
+            <moveable id="146" name="Satchel bomb" icon="Skull" />
+            <moveable id="147" name="Electric fence" icon="Skull" />
+            <moveable id="148" name="Lift" icon="Tool" />
             <moveable id="149" name="Bomb" icon="Skull" />
+            <moveable id="150" name="Iris lightning" icon="Skull" />
             <moveable id="151" name="Monitor" icon="Projector" />
-            <moveable id="152" name="Camera board" icon="Tool" />
+            <moveable id="152" name="Security screen" icon="Tool" />
+            <moveable id="153" name="Motion sensors" icon="Tool" />
             <moveable id="154" name="Tight rope" icon="Tool" />
-            <moveable id="155" name="Tight rope" icon="Tool" />
+            <moveable id="155" name="Parallel bars" icon="Tool" />
+            <moveable id="156" name="X-ray controller (dummy item)" icon="Tool" />
+            <moveable id="157" name="Cutscene rope" icon="Tool" />
             <moveable id="158" name="Flat window" icon="Tool" />
+            <moveable id="159" name="Generic slot 1" icon="Tool" />
             <moveable id="160" name="Gas emitter" icon="Skull" />
+            <moveable id="161" name="Generic slot 2" icon="Tool" />
             <moveable id="162" name="Moving laser" icon="Skull" />
+            <moveable id="163" name="Imp rock" icon="Skull" />
             <moveable id="164" name="Cupboard" Ry_adjust="180" icon="Tool" />
             <moveable id="165" name="Cupboard_mip" icon="Tool" />
             <moveable id="166" name="Cupboard" Ry_adjust="180" icon="Tool" />
@@ -4556,6 +4645,7 @@
             <moveable id="168" name="Cupboard" icon="Tool" Ry_adjust="180" />
             <moveable id="169" name="Cupboard_mip" icon="Tool" />
             <moveable id="170" name="Suitcase" icon="Tool" />
+            <moveable id="171" name="Suitcase_mip" icon="Tool" />
             <moveable id="172" name="Puzzle 1" icon="Gear" />
             <moveable id="173" name="Puzzle 2" icon="Gear" />
             <moveable id="174" name="Puzzle 3" icon="Gear" />
@@ -4582,15 +4672,48 @@
             <moveable id="195" name="Puzzle 8 Combo 2" icon="Gear" />
             <moveable id="196" name="Key 1" icon="Key" />
             <moveable id="197" name="Key 2" icon="Key" />
-            <moveable id="201" name="Key 3" icon="Key" />
-            <moveable id="202" name="Key 4" icon="Key" />
-            <moveable id="203" name="Key 5" icon="Key" />
+            <moveable id="198" name="Key 3" icon="Key" />
+            <moveable id="199" name="Key 4" icon="Key" />
+            <moveable id="200" name="Key 5" icon="Key" />
+            <moveable id="201" name="Key 6" icon="Key" />
+            <moveable id="202" name="Key 7" icon="Key" />
+            <moveable id="203" name="Key 8" icon="Key" />
+            <moveable id="204" name="Key 1 Combo 1" icon="Gear" />
+            <moveable id="205" name="Key 1 Combo 2" icon="Gear" />
+            <moveable id="206" name="Key 2 Combo 1" icon="Gear" />
+            <moveable id="207" name="Key 2 Combo 2" icon="Gear" />
+            <moveable id="208" name="Key 3 Combo 1" icon="Gear" />
+            <moveable id="209" name="Key 3 Combo 2" icon="Gear" />
+            <moveable id="210" name="Key 4 Combo 1" icon="Gear" />
+            <moveable id="211" name="Key 4 Combo 2" icon="Gear" />
+            <moveable id="212" name="Key 5 Combo 1" icon="Gear" />
+            <moveable id="213" name="Key 5 Combo 2" icon="Gear" />
+            <moveable id="214" name="Key 6 Combo 1" icon="Gear" />
+            <moveable id="215" name="Key 6 Combo 2" icon="Gear" />
+            <moveable id="216" name="Key 7 Combo 1" icon="Gear" />
+            <moveable id="217" name="Key 7 Combo 2" icon="Gear" />
+            <moveable id="218" name="Key 8 Combo 1" icon="Gear" />
+            <moveable id="219" name="Key 8 Combo 2" icon="Gear" />
             <moveable id="220" name="Pickup item 1" y_adjust="0.04" icon="Padlock" />
             <moveable id="221" name="Pickup item 2" icon="Padlock" />
+            <moveable id="222" name="Pickup item 3" icon="Padlock" />
             <moveable id="223" name="Gold rose" icon="Dragon" y_adjust="0.1" />
-            <moveable id="235" name="Chloroform cloth" icon="Tool" />
-            <moveable id="236" name="Chloroform bottle" icon="Tool" />
+            <moveable id="224" name="Pickup item 1 combo 1" icon="Padlock" />
+            <moveable id="225" name="Pickup item 1 combo 2" icon="Padlock" />
+            <moveable id="226" name="Pickup item 2 combo 1" icon="Padlock" />
+            <moveable id="227" name="Pickup item 2 combo 2" icon="Padlock" />
+            <moveable id="228" name="Pickup item 3 combo 1" icon="Padlock" />
+            <moveable id="229" name="Pickup item 3 combo 2" icon="Padlock" />
+            <moveable id="230" name="Gold rose combo 1" icon="Padlock" />
+            <moveable id="231" name="Gold rose combo 2" icon="Padlock" />
+            <moveable id="232" name="Examine 1" icon="Tool" />
+            <moveable id="233" name="Examine 2" icon="Tool" />
+            <moveable id="234" name="Examine 3" icon="Tool" />
+            <moveable id="235" name="Chloroform bottle" icon="Tool" />
+            <moveable id="236" name="Chloroform cloth" icon="Tool" />
             <moveable id="237" name="Chloroform soaked cloth" icon="Tool" />
+            <moveable id="238" name="Cosh" icon="Tool" />
+            <moveable id="239" name="Hammer item" icon="Tool" />
             <moveable id="240" name="Crowbar item" icon="Tool" />
             <moveable id="241" name="Torch item" icon="Tool" y_adjust="0.03" />
             <moveable id="242" name="Slot empty 1" icon="Padlock" />
@@ -4611,9 +4734,12 @@
             <moveable id="257" name="Slot full 8" icon="Padlock" />
             <moveable id="258" name="Lock 1" icon="Keyhole" />
             <moveable id="259" name="Lock 2" icon="Keyhole" />
-            <moveable id="263" name="Lock 3" icon="Keyhole" />
-            <moveable id="264" name="Lock 4" icon="Keyhole" />
-            <moveable id="265" name="Lock 5" icon="Keyhole" />
+            <moveable id="260" name="Lock 3" icon="Keyhole" />
+            <moveable id="261" name="Lock 4" icon="Keyhole" />
+            <moveable id="262" name="Lock 5" icon="Keyhole" />
+            <moveable id="263" name="Lock 6" icon="Keyhole" />
+            <moveable id="264" name="Lock 7" icon="Keyhole" />
+            <moveable id="265" name="Lock 8" icon="Keyhole" />
             <moveable id="266" name="Switch type 1" icon="Switch" />
             <moveable id="267" name="Switch type 2" icon="Switch" />
             <moveable id="268" name="Switch type 3" icon="Switch" />
@@ -4622,10 +4748,16 @@
             <moveable id="271" name="Switch type 6" icon="Switch" />
             <moveable id="272" name="Shoot switch 1" icon="Switch" />
             <moveable id="273" name="Shoot switch 2" icon="Switch" />
-            <moveable id="274" name="Switch type 7" icon="Switch" />
+            <moveable id="274" name="Airlock switch" icon="Switch" />
+            <moveable id="275" name="Underwater switch 1" icon="Switch" />
+            <moveable id="276" name="Underwater switch 2" icon="Switch" />
+            <moveable id="277" name="Turn switch" icon="Switch" />
             <moveable id="278" name="Cog switch" icon="Switch" Rx_adjust="-90" y_adjust="0.26" />
+            <moveable id="279" name="Lever switch" icon="Switch" />
             <moveable id="280" name="Jump switch" icon="Switch" />
-            <moveable id="282" name="Pole rope" icon="Tool" />
+            <moveable id="281" name="Crowbar switch" icon="Switch" />
+            <moveable id="282" name="Pulley" icon="Switch" />
+            <moveable id="283" name="Crowdove switch" icon="Switch" />
             <moveable id="284" name="Door 1" icon="Arrow" />
             <moveable id="285" name="Door 1_mip" icon="Arrow" />
             <moveable id="286" name="Door 2" icon="Arrow" />
@@ -4650,16 +4782,32 @@
             <moveable id="305" name="Door 11_mip" icon="Arrow" />
             <moveable id="306" name="Door 12" icon="Arrow" />
             <moveable id="307" name="Door 12_mip" icon="Arrow" />
-            <moveable id="312" name="Door 13" icon="Arrow" />
-            <moveable id="313" name="Door 13_mip" icon="Arrow" />
-            <moveable id="314" name="Door 14" icon="Arrow" />
-            <moveable id="315" name="Door 14_mip" icon="Arrow" />
-            <moveable id="320" name="kick door" icon="Arrow" y_adjust="0.1" x_adjust="0.5" />
+            <moveable id="308" name="Door 13" icon="Arrow" />
+            <moveable id="309" name="Door 13_mip" icon="Arrow" />
+            <moveable id="310" name="Door 14" icon="Arrow" />
+            <moveable id="311" name="Door 14_mip" icon="Arrow" />
+            <moveable id="312" name="Lift doors 1" icon="Arrow" />
+            <moveable id="313" name="Lift doors 1 mip" icon="Arrow" />
+            <moveable id="314" name="Lift doors 2" icon="Arrow" />
+            <moveable id="315" name="Lift doors 2 mip" icon="Arrow" />
+            <moveable id="316" name="Push-pull door 1" icon="Arrow" />
+            <moveable id="317" name="Push-pull door 1 mip" icon="Arrow" />
+            <moveable id="318" name="Push-pull door 2" icon="Arrow" />
+            <moveable id="319" name="Push-pull door 2 mip" icon="Arrow" />
+            <moveable id="320" name="Kick door 1" icon="Arrow" />
+            <moveable id="321" name="Kick door 1 mip" icon="Arrow" />
+            <moveable id="322" name="Kick door 2" icon="Arrow" />
+            <moveable id="323" name="Kick door 2 mip" icon="Arrow" />
+            <moveable id="324" name="Underwater door" icon="Arrow" />
+            <moveable id="325" name="Underwater door mip" icon="Arrow" />
             <moveable id="326" name="Double doors" icon="Arrow" />
-            <moveable id="328" name="Door 13_mip" icon="Arrow" />
-            <moveable id="329" name="Door 14" icon="Arrow" />
-            <moveable id="330" name="Door 14_mip" icon="Arrow" />
-            <moveable id="331" name="Door 15" icon="Arrow" />
+            <moveable id="327" name="Double doors mip" icon="Arrow" />
+            <moveable id="328" name="Sequence door" icon="Arrow" />
+            <moveable id="329" name="Sequence switch 1" icon="Switch" />
+            <moveable id="330" name="Sequence switch 2" icon="Switch" />
+            <moveable id="331" name="Sequence switch 3" icon="Switch" />
+            <moveable id="332" name="Steel door" icon="Arrow" />
+            <moveable id="333" name="God head" icon="Tool" />
             <moveable id="334" name="Pistols" icon="Pistol" y_adjust="0.1" />
             <moveable id="335" name="Pistol clip" icon="Ammo" />
             <moveable id="336" name="Uzis" icon="Uzis" y_adjust="0.025" />
@@ -4679,7 +4827,7 @@
             <moveable id="350" name="Small Medi-Pack" icon="Food" />
             <moveable id="351" name="Laser sight" icon="Tool" y_adjust="0.05" />
             <moveable id="352" name="Binoculars" icon="Tool" y_adjust="0.07" />
-            <moveable id="353" name="Metal box" icon="Tool" />
+            <moveable id="353" name="Silencer" icon="Tool" />
             <moveable id="354" name="Burning flare" icon="Light" y_adjust="0.1" />
             <moveable id="355" name="Flares" icon="Light" y_adjust="0.1" />
             <moveable id="356" name="Timer" icon="Tool" />
@@ -4689,15 +4837,21 @@
             <moveable id="360" name="Disk save" icon="Tool" />
             <moveable id="361" name="Memcard load" icon="Tool" />
             <moveable id="362" name="Memcard save" icon="Tool" />
-            <moveable id="363" name="Stream emitter 1" icon="Tool" />
-            <moveable id="364" name="Stream emitter 2" icon="Tool" />
-            <moveable id="365" name="Stream emitter 3" icon="Tool" />
+            <moveable id="363" name="Smoke emitter white" icon="Tool" />
+            <moveable id="364" name="Smoke emitter black" icon="Tool" />
+            <moveable id="365" name="Steam emitter" icon="Tool" />
             <moveable id="366" name="Earthquake" icon="Tool" />
+            <moveable id="367" name="Bubbles" icon="Tool" />
+            <moveable id="368" name="Waterfall mist" icon="Tool" />
             <moveable id="369" name="Gun shell" icon="Ammo" />
             <moveable id="370" name="Shotgun shell" icon="Ammo" />
             <moveable id="371" name="Gun flash" icon="Light" />
-            <moveable id="375" name="Alarm" icon="Tool" />
-            <moveable id="376" name="Blinking light" icon="Light" />
+            <moveable id="372" name="Color light" icon="Light" />
+            <moveable id="373" name="Blinking light" icon="Light" />
+            <moveable id="374" name="Pulse light" icon="Light" />
+            <moveable id="375" name="Strobe light" icon="Light" />
+            <moveable id="376" name="Electrical light" icon="Light" />
+            <moveable id="377" name="Lens flare" icon="Light" />
             <moveable id="378" ai="1" name="AI guard" icon="Tool" />
             <moveable id="379" ai="1" name="AI ambush" icon="Tool" />
             <moveable id="380" ai="1" name="AI patrol 1" icon="Tool" />
@@ -4706,13 +4860,30 @@
             <moveable id="383" ai="1" name="AI patrol 2" icon="Tool" />
             <moveable id="384" ai="1" name="AI X1" icon="Tool" />
             <moveable id="385" ai="1" name="AI X2" icon="Tool" />
+            <moveable id="386" ai="1" name="Lara start position" icon="Tool" />
             <moveable id="387" name="Lara position changer" icon="LaraBody" />
             <moveable id="388" name="Elevator" icon="Tool" />
-            <moveable id="390" name="Laser 1" icon="Skull" />
-            <moveable id="391" name="Laser 2" icon="Skull" />
-            <moveable id="405" name="Animation" icon="Tool" />
-            <moveable id="406" name="Animation" icon="Tool" />
-            <moveable id="407" name="Animation" icon="Tool" />
+            <moveable id="389" name="Raising cog" icon="Skull" />
+            <moveable id="390" name="Laser" icon="Skull" />
+            <moveable id="391" name="Steam laser" icon="Skull" />
+            <moveable id="392" name="Floor laser" icon="Skull" />
+            <moveable id="393" name="Kill all triggers" icon="Tool" />
+            <moveable id="394" name="Trigger triggerer" icon="Tool" />
+            <moveable id="395" name="High object 1" icon="Tool" />
+            <moveable id="396" name="High object 2" icon="Tool" />
+            <moveable id="397" name="Smash object 1" icon="Tool" />
+            <moveable id="398" name="Smash object 2" icon="Tool" />
+            <moveable id="399" name="Smash object 3" icon="Tool" />
+            <moveable id="400" name="Smash object 4" icon="Tool" />
+            <moveable id="401" name="Smash object 5" icon="Tool" />
+            <moveable id="402" name="Smash object 6" icon="Tool" />
+            <moveable id="403" name="Smash object 7" icon="Tool" />
+            <moveable id="404" name="Smash object 8" icon="Tool" />
+            <moveable id="405" name="Meshswap 1" icon="Tool" />
+            <moveable id="406" name="Meshswap 2" icon="Tool" />
+            <moveable id="407" name="Meshswap 3" icon="Tool" />
+            <moveable id="408" name="Body part" icon="Tool" />
+            <moveable id="409" name="Camera target" icon="Tool" />
             <moveable id="410" name="Waterfall 1" icon="Water" />
             <moveable id="411" name="Waterfall 2" icon="Water" />
             <moveable id="413" name="Waterfall 3" icon="Water" />
