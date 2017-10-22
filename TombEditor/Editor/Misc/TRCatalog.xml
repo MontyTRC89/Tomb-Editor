@@ -4081,6 +4081,7 @@
             <sprite id="460" name="Sky graphics" icon="Tool" type="list" />
             <sprite id="463" name="Default sprites" icon="Tool" type="list" />
             <sprite id="464" name="Misc sprites" icon="Tool" type="list" />
+            <sprite id="494" name="NG custom sprites" icon="Tool" type="list" />
         </sprites>
         <sounds name="Sounds" icon="Sounds">
             <sound id="0" name="Lara feet" mandatory="true" />

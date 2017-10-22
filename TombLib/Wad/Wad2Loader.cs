@@ -533,6 +533,10 @@ namespace TombLib.Wad
                     {
                         s.Sprites.Add(wad.SpriteTextures.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
                     }
+                    else if (id2 == Wad2Chunks.SpriteSequenceName)
+                    {
+                        s.Name = chunkIO.ReadChunkString(chunkSize2);
+                    }
                     else
                     {
                         return false;

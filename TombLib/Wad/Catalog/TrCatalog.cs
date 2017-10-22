@@ -33,11 +33,50 @@ namespace TombLib.Wad.Catalog
             return Games[version].Sounds[(int)id].Name;
         }
 
+        public static string GetSpriteName(TombRaiderVersion version, uint id)
+        {
+            if (!Games.ContainsKey(version)) return "Unknown #" + id;
+            if (!Games[version].Sprites.ContainsKey((int)id)) return "Unknown #" + id;
+            return Games[version].Sprites[(int)id].Name;
+        }
+
         public static bool IsSoundMandatory(TombRaiderVersion version, uint id)
         {
             if (!Games.ContainsKey(version)) return false;
             if (!Games[version].StaticMeshes.ContainsKey((int)id)) return false;
             return Games[version].Sounds[(int)id].Mandatory;
+        }
+
+        public static Dictionary<int, string> GetAllMoveables(TombRaiderVersion version)
+        {
+            var result = new Dictionary<int, string>();
+            foreach (var item in Games[version].Moveables)
+                result.Add(item.Key, item.Value.Name);
+            return result;
+        }
+
+        public static Dictionary<int, string> GetAllStaticMeshes(TombRaiderVersion version)
+        {
+            var result = new Dictionary<int, string>();
+            foreach (var item in Games[version].StaticMeshes)
+                result.Add(item.Key, item.Value.Name);
+            return result;
+        }
+
+        public static Dictionary<int, string> GetAllSprites(TombRaiderVersion version)
+        {
+            var result = new Dictionary<int, string>();
+            foreach (var item in Games[version].Sprites)
+                result.Add(item.Key, item.Value.Name);
+            return result;
+        }
+
+        public static Dictionary<int, string> GetAllSounds(TombRaiderVersion version)
+        {
+            var result = new Dictionary<int, string>();
+            foreach (var item in Games[version].Sounds)
+                result.Add(item.Key, item.Value.Name);
+            return result;
         }
 
         public static void LoadCatalog(string fileName)
@@ -107,6 +146,23 @@ namespace TombLib.Wad.Catalog
 
                         var sound = new TrCatalogItemSound(soundId, objectName, mandatory);
                         game.Sounds.Add(soundId, sound);
+                    }
+                }
+
+                foreach (XmlNode node in gameNode.ChildNodes)
+                {
+                    if (node.Name != "sprites") continue;
+
+                    // Parse sounds
+                    foreach (XmlNode spriteNode in node.ChildNodes)
+                    {
+                        if (spriteNode.Name != "sprite") continue;
+
+                        var spriteId = Int32.Parse(spriteNode.Attributes["id"].Value);
+                        var objectName = spriteNode.Attributes["name"].Value;
+                        
+                        var sprite = new TrCatalogItem(spriteId, objectName);
+                        game.Sprites.Add(spriteId, sprite);
                     }
                 }
 

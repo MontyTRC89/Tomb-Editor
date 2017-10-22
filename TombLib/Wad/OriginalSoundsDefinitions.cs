@@ -61,13 +61,6 @@ namespace TombLib.Wad
             "STEAM", "JOBY_GARAGE_DOOR", "JOBY_WIND", "SANDHAM_IN_THE_HOUSE", "SANDHAM_CONVEYS", "CRANKY_GRAPE_CRUSH", "BIKE_HIT_OBJECTS",
             "BIKE_HIT_ENEMIES", "FLAME_EMITTER", "LARA_CLICK_SWITCH" };
 
-     /*   public static string GetSoundName(int oldSoundIndex)
-        {
-            if ((oldSoundIndex < 0) || (oldSoundIndex >= _soundNames.Length))
-                return "Unknown";
-            return _soundNames[oldSoundIndex];
-        }*/
-
         /// <summary>
         /// Parses a sounds.txt file that was consumed by pcwadsfx.exe
         /// Currently this is not used since we parse the *.sfx and *.sam files produced by pcwadsfx.exe.
