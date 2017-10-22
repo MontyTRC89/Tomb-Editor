@@ -430,7 +430,7 @@ namespace TombLib.Wad
                                 }
                                 else
                                 {
-                                    if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, soundId))
+                                    if (TrCatalog.IsSoundMandatory(Version, soundId))
                                     {
                                         // If this is a mandatory sound, I can add it only if doesn't exist in dest Wad2
                                         if (!SoundInfo.ContainsKey(soundId))

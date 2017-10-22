@@ -160,7 +160,7 @@ namespace TombLib.Wad.Tr4Wad
 
         public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths)
         {
-            Wad2 wad = new Wad2();
+            Wad2 wad = new Wad2(TombRaiderVersion.TR4);
             
             logger.Info("Converting TR4 WAD to WAD2");
 

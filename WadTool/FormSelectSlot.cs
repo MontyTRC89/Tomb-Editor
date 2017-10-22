@@ -18,6 +18,8 @@ namespace WadTool
         public uint ObjectId { get; set; }
         public string ObjectName { get; set; }
 
+        private WadToolClass _tool = WadToolClass.Instance;
+
         public FormSelectSlot()
         {
             InitializeComponent();
@@ -27,7 +29,7 @@ namespace WadTool
         {
             if (IsMoveable)
             {
-                foreach (var moveable in TrCatalog.GetAllMoveables(TombRaiderVersion.TR4))
+                foreach (var moveable in TrCatalog.GetAllMoveables(_tool.DestinationWad.Version))
                 {
                     var nodeMoveable = new DarkUI.Controls.DarkTreeNode(moveable.Value.ToString());
                     nodeMoveable.Tag = moveable.Key;
@@ -37,7 +39,7 @@ namespace WadTool
             }
             else
             {
-                foreach (var staticMesh in TrCatalog.GetAllStaticMeshes(TombRaiderVersion.TR4))
+                foreach (var staticMesh in TrCatalog.GetAllStaticMeshes(_tool.DestinationWad.Version))
                 {
                     var nodeStatic = new DarkUI.Controls.DarkTreeNode(staticMesh.Value.ToString());
                     nodeStatic.Tag = staticMesh.Key;
