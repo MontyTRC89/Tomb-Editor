@@ -10,10 +10,10 @@ namespace TombLib.Wad
 {
     public class WadSoundInfo
     {
-        private List<WadSound> _sound;
+        private List<WadSample> _sound;
 
         public string Name { get; set; }
-        public List<WadSound> WaveSounds { get { return _sound; } }
+        public List<WadSample> WaveSounds { get { return _sound; } }
         public byte Volume { get; set; }
         public byte Range { get; set; }
         public byte Chance { get; set; }
@@ -28,7 +28,7 @@ namespace TombLib.Wad
 
         public WadSoundInfo()
         {
-            _sound = new List<WadSound>();
+            _sound = new List<WadSample>();
         }
 
         public Hash UpdateHash()

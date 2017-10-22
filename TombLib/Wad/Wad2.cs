@@ -30,7 +30,7 @@ namespace TombLib.Wad
         public SortedDictionary<uint, WadMoveable> Moveables { get; private set; }
         public SortedDictionary<uint, WadStatic> Statics { get; private set; }
         public SortedDictionary<ushort, WadSoundInfo> SoundInfo { get; private set; }
-        public Dictionary<Hash, WadSound> WaveSounds { get; private set; }
+        public Dictionary<Hash, WadSample> Samples { get; private set; }
         public List<WadSpriteSequence> SpriteSequences { get; private set; }
         public Dictionary<Hash, WadSprite> SpriteTextures { get; private set; }
         public string FileName { get; set; }
@@ -69,7 +69,7 @@ namespace TombLib.Wad
             SoundInfo = new SortedDictionary<ushort, WadSoundInfo>();
             SpriteSequences = new List<WadSpriteSequence>();
             SpriteTextures = new Dictionary<Hash, WadSprite>();
-            WaveSounds = new Dictionary<Hash, WadSound>();
+            Samples = new Dictionary<Hash, WadSample>();
         }
 
         public void RebuildTextureAtlas()

@@ -529,10 +529,10 @@ namespace WadTool
             if (treeSounds.SelectedNodes.Count == 0)
                 return;
             var node = treeSounds.SelectedNodes[0];
-            if (node.Tag == null || node.Tag.GetType() != typeof(WadSound))
+            if (node.Tag == null || node.Tag.GetType() != typeof(WadSample))
                 return;
 
-            var currentSound = (WadSound)node.Tag;
+            var currentSound = (WadSample)node.Tag;
 
             currentSound.Play();
         }
@@ -782,7 +782,7 @@ namespace WadTool
             }
 
             wad.SoundInfo.Clear();
-            wad.WaveSounds.Clear();
+            wad.Samples.Clear();
 
             foreach (var info in newSounds)
             {
@@ -790,7 +790,7 @@ namespace WadTool
 
                 foreach (var sample in info.Value.WaveSounds)
                 {
-                    if (!wad.WaveSounds.ContainsKey(sample.Hash)) wad.WaveSounds.Add(sample.Hash, sample);
+                    if (!wad.Samples.ContainsKey(sample.Hash)) wad.Samples.Add(sample.Hash, sample);
                 }
             }
 

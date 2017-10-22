@@ -9,7 +9,7 @@ using System.Media;
 
 namespace TombLib.Wad
 {
-    public class WadSound : IEquatable<WadSound>
+    public class WadSample : IEquatable<WadSample>
     {
         public string Name { get; private set; }
         public byte[] WaveData { get; }
@@ -17,7 +17,7 @@ namespace TombLib.Wad
 
         private Hash _hash;
 
-        public WadSound(string name, byte[] data)
+        public WadSample(string name, byte[] data)
         {
             WaveData = data;
             Name = name;
@@ -31,14 +31,14 @@ namespace TombLib.Wad
             return _hash;
         }
 
-        public bool Equals(WadSound other)
+        public bool Equals(WadSample other)
         {
             return (Hash == other.Hash);
         }
 
-        public WadSound Clone()
+        public WadSample Clone()
         {
-            return new WadSound(Name, WaveData);
+            return new WadSample(Name, WaveData);
         }
 
         public void Play()

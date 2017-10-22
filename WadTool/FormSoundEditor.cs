@@ -37,7 +37,7 @@ namespace WadTool
         private void UpdateStatistics()
         {
             string message = "Sound Infos: " + _tool.DestinationWad.SoundInfo.Count + "    " + 
-                             "Embedded WAV samples: " + _tool.DestinationWad.WaveSounds.Count;
+                             "Embedded WAV samples: " + _tool.DestinationWad.Samples.Count;
             labelStatus.Text = message;
         }
 
@@ -177,7 +177,7 @@ namespace WadTool
 
             soundInfo.WaveSounds.Clear();
             foreach (var item in lstWaves.Items)
-                soundInfo.WaveSounds.Add((WadSound)item.Tag);
+                soundInfo.WaveSounds.Add((WadSample)item.Tag);
 
             if (oldSoundId == -1)
             {
@@ -212,7 +212,7 @@ namespace WadTool
             for (int i = 0; i < lstWaves.Items.Count; i++)
             {
                 var item = lstWaves.Items[i];
-                var wave = (WadSound)item.Tag;
+                var wave = (WadSample)item.Tag;
                 if (wave.Hash == form.SelectedWave.Hash)
                 {
                     DarkMessageBox.Show(this, "This WAV sample is already present in this sound info", "Error", MessageBoxIcon.Error);
@@ -231,7 +231,7 @@ namespace WadTool
             if (lstWaves.SelectedIndices.Count == 0) return;
 
             var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
-            var wave = (WadSound)item.Tag;
+            var wave = (WadSample)item.Tag;
 
             // Ask to the user the permission to delete WAV
             if (DarkMessageBox.Show(this,
@@ -247,7 +247,7 @@ namespace WadTool
             if (lstWaves.SelectedIndices.Count == 0) return;
 
             var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
-            var wave = (WadSound)item.Tag;
+            var wave = (WadSample)item.Tag;
 
             wave.Play();
         }

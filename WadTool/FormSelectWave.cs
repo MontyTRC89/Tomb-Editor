@@ -16,7 +16,7 @@ namespace WadTool
 {
     public partial class FormSelectWave : DarkForm
     {
-        public WadSound SelectedWave { get; private set; }
+        public WadSample SelectedWave { get; private set; }
 
         private WadToolClass _tool;
 
@@ -43,7 +43,7 @@ namespace WadTool
             if (lstWaves.SelectedIndices.Count == 0) return;
 
             var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
-            var wave = (WadSound)item.Tag;
+            var wave = (WadSample)item.Tag;
 
             SelectedWave = wave;
 
@@ -56,23 +56,23 @@ namespace WadTool
             if (openFileDialogWave.ShowDialog() == DialogResult.Cancel) return;
 
             // Create the new WAVE
-            WadSound sound;
+            WadSample sound;
 
             using (var reader = new BinaryReader(File.OpenRead(openFileDialogWave.FileName)))
             {
-                sound = new WadSound(Path.GetFileName(openFileDialogWave.FileName),
+                sound = new WadSample(Path.GetFileName(openFileDialogWave.FileName),
                                      reader.ReadBytes((int)reader.BaseStream.Length));
             }
 
             // Check if the sound exists
-            if (_tool.DestinationWad.WaveSounds.ContainsKey(sound.Hash))
+            if (_tool.DestinationWad.Samples.ContainsKey(sound.Hash))
             {
                 DarkMessageBox.Show(this, "The selected wave already exists in this Wad2", "Information", MessageBoxIcon.Information);
                 return;
             }
             else
             {
-                _tool.DestinationWad.WaveSounds.Add(sound.Hash, sound);
+                _tool.DestinationWad.Samples.Add(sound.Hash, sound);
                 ReloadWaves();
             }
         }
@@ -81,7 +81,7 @@ namespace WadTool
         {
             lstWaves.Items.Clear();
 
-            foreach (var wave in _tool.DestinationWad.WaveSounds)
+            foreach (var wave in _tool.DestinationWad.Samples)
             {
                 if (tbSearch.Text != "" && !wave.Value.Name.Contains(tbSearch.Text)) continue;
 
@@ -96,7 +96,7 @@ namespace WadTool
             if (lstWaves.SelectedIndices.Count == 0) return;
 
             var item = lstWaves.Items[lstWaves.SelectedIndices[0]];
-            var wave = (WadSound)item.Tag;
+            var wave = (WadSample)item.Tag;
 
             wave.Play();
         }

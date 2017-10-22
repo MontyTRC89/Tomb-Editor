@@ -421,14 +421,20 @@ namespace TombLib.Wad.TrLevels
 
                     if (j < oldLevel.Samples.Count)
                     {
-                        var sound = new WadSound(soundName, oldLevel.Samples[j].Data);
-                        if (wad.WaveSounds.ContainsKey(sound.Hash))
+                        var theSoundIndex = 0;
+                        if (oldLevel.Version == TrVersion.TR2 || oldLevel.Version == TrVersion.TR3)
+                            theSoundIndex = (int)oldLevel.SamplesIndices[j];
+                        else
+                            theSoundIndex = j;
+
+                        var sound = new WadSample(soundName, oldLevel.Samples[theSoundIndex].Data);
+                        if (wad.Samples.ContainsKey(sound.Hash))
                         {
-                            newInfo.WaveSounds.Add(wad.WaveSounds[sound.Hash]);
+                            newInfo.WaveSounds.Add(wad.Samples[sound.Hash]);
                         }
                         else
                         {
-                            wad.WaveSounds.Add(sound.Hash, sound);
+                            wad.Samples.Add(sound.Hash, sound);
                             newInfo.WaveSounds.Add(sound);
                         }
                     }
