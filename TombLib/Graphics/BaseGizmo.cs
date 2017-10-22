@@ -53,7 +53,6 @@ namespace TombLib.Graphics
         private readonly GraphicsDevice _device;
         private Buffer<SolidVertex> _rotationHelperGeometry;
         private readonly GeometricPrimitive _cylinder;
-        private readonly GeometricPrimitive _sphere;
         private readonly GeometricPrimitive _cube;
         private readonly GeometricPrimitive _cone;
         private GeometricPrimitive _torus;
@@ -83,7 +82,6 @@ namespace TombLib.Graphics
             // Create the gizmo geometry
             _rotationHelperGeometry = Buffer<SolidVertex>.Vertex.New<SolidVertex>(device, _rotationTrianglesCount * 3 + 2);
             _cylinder = GeometricPrimitive.Cylinder.New(_device, 1.0f, 1.0f, _lineRadiusTesselation);
-            _sphere = GeometricPrimitive.Sphere.New(_device, 1.0f, 16);
             _cube = GeometricPrimitive.Cube.New(_device, 1.0f);
             _cone = GeometricPrimitive.Cone.New(_device, 1.0f, 1.3f, 16);
 
@@ -109,7 +107,6 @@ namespace TombLib.Graphics
             _rasterizerWireframe?.Dispose();
             _rotationHelperGeometry?.Dispose();
             _cylinder?.Dispose();
-            _sphere?.Dispose();
             _cube?.Dispose();
             _cone?.Dispose();
             _torus?.Dispose();
