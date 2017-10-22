@@ -579,18 +579,7 @@ namespace TombEditor.Controls
                     // Set gizmo axis
                     _gizmo.ActivateGizmo((PickingResultGizmo)newPicking);
                 }
-
-                if (!(newPicking == null) && !(newPicking is PickingResultBlock) && !ModifierKeys.HasFlag(Keys.Control))
-                {
-                    // No tile selected
-                    _editor.SelectedSectors = SectorSelection.None;
-                }
-                if (!(newPicking == null) && !(newPicking is PickingResultGizmo) && !(newPicking is PickingResultObject) && !ModifierKeys.HasFlag(Keys.Control))
-                {
-                    // No object (or gizmo) selected and CTRL is not pressed
-                    _editor.SelectedObject = null;
-                }
-                if (newPicking == null)
+                else if (newPicking == null)
                 {
                     // Click outside room; if mouse is released without action, unselect all
                     _noSelectionConfirm = true;
@@ -781,10 +770,10 @@ namespace TombEditor.Controls
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            base.OnMouseMove(e);
+
             // Reset internal bool for deselection
             _noSelectionConfirm = false;
-
-            base.OnMouseMove(e);
 
             // Hover effect on gizmo
             if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
