@@ -24,6 +24,7 @@
             this.butDrawPortals = new System.Windows.Forms.ToolStripButton();
             this.butDrawHorizon = new System.Windows.Forms.ToolStripButton();
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
+            this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -70,6 +71,7 @@
             this.butDrawPortals,
             this.butDrawHorizon,
             this.butDrawRoomNames,
+            this.butDrawIllegalSlopes,
             this.toolStripSeparator1,
             this.butFlipMap,
             this.toolStripSeparator6,
@@ -200,6 +202,18 @@
             this.butDrawRoomNames.ToolTipText = "Draw room names";
             this.butDrawRoomNames.Click += new System.EventHandler(this.butDrawRoomNames_Click);
             // 
+            // butDrawIllegalSlopes
+            // 
+            this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawIllegalSlopes.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawIllegalSlopes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawIllegalSlopes.Image = global::TombEditor.Properties.Resources.IllegalSlope1_16;
+            this.butDrawIllegalSlopes.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawIllegalSlopes.Name = "butDrawIllegalSlopes";
+            this.butDrawIllegalSlopes.Size = new System.Drawing.Size(23, 25);
+            this.butDrawIllegalSlopes.ToolTipText = "Draw illegal slopes";
+            this.butDrawIllegalSlopes.Click += new System.EventHandler(this.butDrawIllegalSlopes_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -329,7 +343,6 @@
             // 
             this.butTextureFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureFloor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTextureFloor.Enabled = false;
             this.butTextureFloor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureFloor.Image = global::TombEditor.Properties.Resources.TextureFloor_16;
             this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -342,7 +355,6 @@
             // 
             this.butTextureCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureCeiling.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTextureCeiling.Enabled = false;
             this.butTextureCeiling.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.TextureCeiling_16;
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -355,7 +367,6 @@
             // 
             this.butTextureWalls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.butTextureWalls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTextureWalls.Enabled = false;
             this.butTextureWalls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.TextureWalls_16;
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -579,5 +590,6 @@
         private System.Windows.Forms.ToolStripButton butCompileLevelAndPlay;
         private TombEditor.Controls.PanelRendering3D panel3D;
         private TombEditor.Controls.Panel2DMap panel2DMap;
+        private System.Windows.Forms.ToolStripButton butDrawIllegalSlopes;
     }
 }

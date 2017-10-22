@@ -10,6 +10,7 @@ namespace TombLib.Wad
     class Wad2Chunks
     {
         public static readonly byte[] MagicNumber = new byte[] { 0x57, 0x41, 0x44, 0x32 };
+        public static readonly ChunkId GameVersion = ChunkId.FromString("W2GameVersion");
         public static readonly ChunkId Textures = ChunkId.FromString("W2Textures");
         /**/public static readonly ChunkId Texture = ChunkId.FromString("W2Txt");
         /****/public static readonly ChunkId TextureData = ChunkId.FromString("W2TxtData");
@@ -43,6 +44,7 @@ namespace TombLib.Wad
         /****/public static readonly ChunkId WaveData = ChunkId.FromString("W2WavData");
         public static readonly ChunkId Moveables = ChunkId.FromString("W2Moveables");
         /****/public static readonly ChunkId Moveable = ChunkId.FromString("W2Moveable");
+        /******/public static readonly ChunkId MoveableName = ChunkId.FromString("W2MovName");
         /******/public static readonly ChunkId MoveableOffset = ChunkId.FromString("W2MovOffset");
         /******/public static readonly ChunkId MoveableMeshes = ChunkId.FromString("W2MovMeshes");
         /********/public static readonly ChunkId MoveableMesh = ChunkId.FromString("W2MovMeshPtr");
@@ -66,10 +68,12 @@ namespace TombLib.Wad
         /************/public static readonly ChunkId AnimCommand = ChunkId.FromString("W2Cmd");
         public static readonly ChunkId Statics = ChunkId.FromString("W2Statics");
         /**/public static readonly ChunkId Static = ChunkId.FromString("W2Static");
+        /****/public static readonly ChunkId StaticName = ChunkId.FromString("W2StaticName");
         /****/public static readonly ChunkId StaticVisibilityBox = ChunkId.FromString("W2StaticVB");
         /****/public static readonly ChunkId StaticCollisionBox = ChunkId.FromString("W2StaticCB");
         public static readonly ChunkId SpriteSequences = ChunkId.FromString("W2SpriteSequences");
         /**/public static readonly ChunkId SpriteSequence = ChunkId.FromString("W2SpriteSeq");
+        /****/public static readonly ChunkId SpriteSequenceName = ChunkId.FromString("W2SpriteSeqName");
         /****/public static readonly ChunkId SpriteSequenceData = ChunkId.FromString("W2SpriteSeqData");
         /****/public static readonly ChunkId SpriteSequenceSprites = ChunkId.FromString("W2SpriteSeqSprites");
         /******/public static readonly ChunkId SpriteSequenceSprite = ChunkId.FromString("W2SpritePtr");

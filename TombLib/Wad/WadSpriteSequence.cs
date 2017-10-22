@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -13,6 +14,7 @@ namespace TombLib.Wad
     {
         public uint ObjectID { get; set; }
         public List<WadSprite> Sprites { get; private set; }
+        public string Name { get; set; }
 
         public WadSpriteSequence()
         {
@@ -21,10 +23,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            if (ObjectNames.SpriteSequenceSlots.ContainsKey(ObjectID))
-                return ObjectNames.SpriteSequenceSlots[ObjectID];
-            else
-                return "Unknown Sprites";
+            return Name;
         }
     }
 }

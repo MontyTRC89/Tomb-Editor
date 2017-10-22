@@ -16,6 +16,26 @@ namespace TombEditor
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public static bool IsFileNotFoundException(Exception exc)
+        {
+            return (exc is FileNotFoundException) || (exc is DirectoryNotFoundException) || (exc is DriveNotFoundException);
+        }
+
+        public static string GetFileNameWithoutExtensionTry(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return null;
+
+            try
+            {
+                return Path.GetFileNameWithoutExtension(path);
+            }
+            catch
+            {
+                return path;
+            }
+        }
+
         public static string GetDirectoryNameTry(string path)
         {
             if (string.IsNullOrEmpty(path))

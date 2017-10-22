@@ -94,7 +94,7 @@ namespace TombEditor.Controls
         {
             Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -MathUtil.PiOverTwo, MathUtil.PiOverTwo, 2048.0f, 0, 1000000, _editor.Configuration.RenderingItem_FieldOfView * (float)(Math.PI / 180));
         }
-        
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -113,7 +113,7 @@ namespace TombEditor.Controls
             _device.Presenter = Presenter;
             _device.SetViewports(new ViewportF(0, 0, Width, Height));
             _device.SetRenderTargets(_device.Presenter.DepthStencilBuffer, _device.Presenter.BackBuffer);
-            
+
             _device.Clear(ClearOptions.DepthBuffer | ClearOptions.Target, _editor.Configuration.Rendering3D_BackgroundColor, 1.0f, 0);
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
@@ -204,12 +204,20 @@ namespace TombEditor.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            if (string.IsNullOrEmpty(_editor?.Level.Settings.WadFilePath))
+            if (_editor?.Level?.Wad == null)
             {
+                string notifyMessage;
+                if (string.IsNullOrEmpty(_editor.Level.Settings.WadFilePath))
+                    notifyMessage = "Click here to load a new WAD file.";
+                else
+                {
+                    notifyMessage = "Unable to load WAD file '" + (_editor.Level.Settings.WadFilePath ?? "") + "'.\n";
+                    notifyMessage += "Click here to choose a replacement.\n\n";
+                    notifyMessage += "Path: " + (_editor.Level.Settings.MakeAbsolute(_editor.Level.Settings.WadFilePath) ?? "");
+                }
+
                 e.Graphics.Clear(Parent.BackColor);
-                e.Graphics.DrawString("Click here to load WAD.",
-                    Font, System.Drawing.Brushes.DarkGray,
-                    ClientRectangle,
+                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, ClientRectangle,
                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
             else
@@ -233,7 +241,7 @@ namespace TombEditor.Controls
             switch(e.Button)
             {
                 case MouseButtons.Left:
-                    if (_editor?.Level?.Settings?.WadFilePath == null)
+                    if (_editor?.Level?.Wad == null)
                     {
                         EditorActions.LoadWad(Parent);
                         return;

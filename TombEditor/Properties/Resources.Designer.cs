@@ -343,6 +343,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IllegalSlope1_16 {
+            get {
+                object obj = ResourceManager.GetObject("IllegalSlope1_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap import_16 {
             get {
                 object obj = ResourceManager.GetObject("import_16", resourceCulture);

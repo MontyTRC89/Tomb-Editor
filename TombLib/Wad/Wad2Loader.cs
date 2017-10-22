@@ -314,6 +314,10 @@ namespace TombLib.Wad
                     {
                         mov.Meshes.Add(wad.Meshes.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
                     }
+                    if (id2 == Wad2Chunks.MoveableName)
+                    {
+                        mov.Name = chunkIO.ReadChunkString(chunkSize2);
+                    }
                     else if (id2 == Wad2Chunks.MoveableLink)
                     {
                         var opcode = (WadLinkOpcode)LEB128.ReadUShort(chunkIO.Raw);
@@ -493,6 +497,10 @@ namespace TombLib.Wad
                         });
                         s.CollisionBox = new BoundingBox(min, max);
                     }
+                    else if (id2 == Wad2Chunks.StaticName)
+                    {
+                        s.Name = chunkIO.ReadChunkString(chunkSize2);
+                    }
                     else
                     {
                         return false;
@@ -524,6 +532,10 @@ namespace TombLib.Wad
                     if (id2 == Wad2Chunks.SpriteSequenceSprite)
                     {
                         s.Sprites.Add(wad.SpriteTextures.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
+                    }
+                    else if (id2 == Wad2Chunks.SpriteSequenceName)
+                    {
+                        s.Name = chunkIO.ReadChunkString(chunkSize2);
                     }
                     else
                     {

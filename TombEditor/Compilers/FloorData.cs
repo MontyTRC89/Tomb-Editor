@@ -170,13 +170,6 @@ namespace TombEditor.Compilers
                         var tempCodes = new List<ushort>();
                         var lastFloorDataFunction = (ushort)tempCodes.Count;
 
-                        // If sector is Death
-                        if (block.Flags.HasFlag(BlockFlags.DeathFire))
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x05);
-                        }
-
                         // If sector has a floor slope
                         if (block.FloorIfQuadSlopeX != 0 || block.FloorIfQuadSlopeZ != 0)
                         {
@@ -186,17 +179,6 @@ namespace TombEditor.Compilers
                             sector.Floor = (sbyte)(-room.Position.Y - block.FloorMax);
 
                             var slope = (ushort)(((block.FloorIfQuadSlopeZ) << 8) | ((block.FloorIfQuadSlopeX) & 0xff));
-
-                            tempCodes.Add(slope);
-                        }
-
-                        // If sector has a ceiling slope
-                        if (block.CeilingIfQuadSlopeX != 0 || block.CeilingIfQuadSlopeZ != 0)
-                        {
-                            lastFloorDataFunction = (ushort)tempCodes.Count;
-                            tempCodes.Add(0x03);
-
-                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
 
                             tempCodes.Add(slope);
                         }
@@ -643,6 +625,17 @@ namespace TombEditor.Compilers
                             }
                         }
 
+                        // If sector has a ceiling slope
+                        if (block.CeilingIfQuadSlopeX != 0 || block.CeilingIfQuadSlopeZ != 0)
+                        {
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
+                            tempCodes.Add(0x03);
+
+                            var slope = (ushort)(((block.CeilingIfQuadSlopeZ) << 8) | ((block.CeilingIfQuadSlopeX) & 0xff));
+
+                            tempCodes.Add(slope);
+                        }
+
                         if (block.CeilingDiagonalSplit != DiagonalSplit.None)
                         {
                             if (block.Type != BlockType.Wall)
@@ -1030,6 +1023,13 @@ namespace TombEditor.Compilers
                         }
 
                         // If sector is Death
+                        if (block.Flags.HasFlag(BlockFlags.DeathFire))
+                        {
+                            lastFloorDataFunction = (ushort)tempCodes.Count;
+                            tempCodes.Add(0x05);
+                        }
+
+                        // If sector is Monkey
                         if ((block.Flags & BlockFlags.Monkey) == BlockFlags.Monkey)
                         {
                             lastFloorDataFunction = (ushort)tempCodes.Count;

@@ -242,6 +242,7 @@ namespace TombLib.Wad.TrLevels
         public tr_face3[] ColoredTriangles;
         public int MeshSize;
         public int MeshPointer;
+        public int TotalBytesReadUntilThisMesh;
 
         public long WriteTr4(BinaryWriterEx writer)
         {
@@ -388,7 +389,7 @@ namespace TombLib.Wad.TrLevels
         public ushort StartingMesh;
         public uint MeshTree;
         public uint FrameOffset;
-        public ushort Animation;
+        public short Animation;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

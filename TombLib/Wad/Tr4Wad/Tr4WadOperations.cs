@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.Tr4Wad
 {
@@ -16,7 +17,7 @@ namespace TombLib.Wad.Tr4Wad
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        public static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad)
+        internal static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad)
         {
             var textures = new ConcurrentDictionary<int, WadTexture>();
 
@@ -48,7 +49,7 @@ namespace TombLib.Wad.Tr4Wad
                 // Replace magenta color with alpha transparent black
                 textureData.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
-                  texture.Image = textureData;
+                texture.Image = textureData;
 
                 // Update the hash of the texture
                 texture.UpdateHash();
@@ -61,7 +62,7 @@ namespace TombLib.Wad.Tr4Wad
             return new Dictionary<int, WadTexture>(textures);
         }
 
-        private static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
+        internal static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
         {
             int textureId = polygon.Texture & 0xfff;
             if (textureId > 2047)
@@ -69,7 +70,7 @@ namespace TombLib.Wad.Tr4Wad
             return textureId;
         }
 
-        public static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, wad_mesh oldMesh,
+        internal static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, wad_mesh oldMesh,
                                                       Dictionary<int, WadTexture> convertedTextures)
         {
             WadMesh mesh = new WadMesh();
@@ -160,7 +161,7 @@ namespace TombLib.Wad.Tr4Wad
         public static Wad2 ConvertTr4Wad(Tr4Wad oldWad, List<string> soundPaths)
         {
             Wad2 wad = new Wad2();
-
+            
             logger.Info("Converting TR4 WAD to WAD2");
 
             // First convert all textures
@@ -197,7 +198,7 @@ namespace TombLib.Wad.Tr4Wad
             return wad;
         }
 
-        private static void ConvertTr4Sprites(Wad2 wad, Tr4Wad oldWad)
+        internal static void ConvertTr4Sprites(Wad2 wad, Tr4Wad oldWad)
         {
             int spriteDataSize = oldWad.SpriteData.Length;
 
@@ -213,6 +214,7 @@ namespace TombLib.Wad.Tr4Wad
 
                 var newSequence = new WadSpriteSequence();
                 newSequence.ObjectID = (uint)oldSequence.ObjectID;
+                newSequence.Name = TrCatalog.GetSpriteName(TombRaiderVersion.TR4, (uint)oldSequence.ObjectID);
 
                 for (int i = startIndex; i < startIndex + lengthOfSequence; i++)
                 {
@@ -258,7 +260,7 @@ namespace TombLib.Wad.Tr4Wad
             }
         }
 
-        private static void ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<string> soundPaths)
+        internal static void ConvertTr4Sounds(Wad2 wad, Tr4Wad oldWad, List<string> soundPaths)
         {
             for (int i = 0; i < 370; i++)
             {
@@ -269,7 +271,7 @@ namespace TombLib.Wad.Tr4Wad
                 var newInfo = new WadSoundInfo();
 
                 // Fill the new sound info
-                newInfo.Name = OriginalSoundsDefinitions.GetSoundName(i);
+                newInfo.Name = TrCatalog.GetSoundName(TombRaiderVersion.TR4, (uint)i);
                 newInfo.Volume = oldInfo.Volume;
                 newInfo.Range = oldInfo.Range;
                 newInfo.Chance = oldInfo.Chance;
@@ -318,13 +320,14 @@ namespace TombLib.Wad.Tr4Wad
             }
         }
 
-        public static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
+        internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
                                                                   Dictionary<int, WadTexture> textures)
         {
             WadMoveable moveable = new WadMoveable();
             wad_moveable m = oldWad.Moveables[moveableIndex];
 
             moveable.ObjectID = m.ObjectID;
+            moveable.Name = TrCatalog.GetMoveableName(TombRaiderVersion.TR4, m.ObjectID);
 
             // First I build a list of meshes for this moveable
             List<wad_mesh> meshes = new List<wad_mesh>();
@@ -466,7 +469,10 @@ namespace TombLib.Wad.Tr4Wad
 
                 if (j + m.AnimationIndex == oldWad.Animations.Count - 1)
                 {
-                    numFrames = ((uint)(2 * oldWad.KeyFrames.Count) - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
+                    if (anim.KeyFrameSize == 0)
+                        numFrames = 0;
+                    else
+                        numFrames = ((uint)(2 * oldWad.KeyFrames.Count) - anim.KeyFrameOffset) / (uint)(2 * anim.KeyFrameSize);
                 }
                 else
                 {
@@ -624,11 +630,13 @@ namespace TombLib.Wad.Tr4Wad
             return moveable;
         }
 
-        public static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex,
+        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex,
                                                                 Dictionary<int, WadTexture> textures)
         {
             var staticMesh = new WadStatic();
             var oldStaticMesh = oldWad.StaticMeshes[staticIndex];
+
+            staticMesh.Name = TrCatalog.GetStaticName(TombRaiderVersion.TR4, oldStaticMesh.ObjectId);
 
             // First setup collisional and visibility bounding boxes
             staticMesh.CollisionBox = new BoundingBox(new Vector3(oldStaticMesh.CollisionX1,

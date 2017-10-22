@@ -203,7 +203,7 @@
             this.linkLabel9.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
             this.linkLabel9.AutoSize = true;
             this.linkLabel9.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(184)))), ((int)(((byte)(163)))), ((int)(((byte)(233)))));
-            this.linkLabel9.Location = new System.Drawing.Point(190, 240);
+            this.linkLabel9.Location = new System.Drawing.Point(364, 240);
             this.linkLabel9.Name = "linkLabel9";
             this.linkLabel9.Size = new System.Drawing.Size(64, 13);
             this.linkLabel9.TabIndex = 21;
@@ -219,9 +219,9 @@
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel14.Location = new System.Drawing.Point(6, 240);
             this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(188, 13);
+            this.darkLabel14.Size = new System.Drawing.Size(361, 13);
             this.darkLabel14.TabIndex = 20;
-            this.darkLabel14.Text = "Additional icons and graphics from";
+            this.darkLabel14.Text = "Additional icons and graphics used under CC-BY ND 3.0 license, from";
             // 
             // linkLabel8
             // 
@@ -467,7 +467,8 @@
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(317, 60);
             this.darkLabel3.TabIndex = 2;
-            this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte\r\nteme9, Lwmte\r\nDustie, Titak, Gemini";
+            this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte\r\nteme9, Lwmte\r\nDu" +
+    "stie, Titak, Gemini";
             // 
             // darkLabel2
             // 

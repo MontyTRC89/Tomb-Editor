@@ -294,5 +294,12 @@ namespace TombEditor.ToolWindows
         {
             _editor.Action = new EditorAction { Action = EditorActionType.PlaceImportedGeometry };
         }
+
+        private void butDrawIllegalSlopes_Click(object sender, EventArgs e)
+        {
+            panel3D.DrawIllegalSlopes = !panel3D.DrawIllegalSlopes;
+            butDrawIllegalSlopes.Checked = panel3D.DrawIllegalSlopes;
+            panel3D.Invalidate();
+        }
     }
 }

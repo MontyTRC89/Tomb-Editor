@@ -59,6 +59,7 @@ namespace TombLib.Wad
 
         // Helper data
         public Vector2 PositionInPackedTexture { get; set; }
+        public Vector2 PositionInOriginalTexturePage { get; set; }
         public ushort Tile { get; set; }
     }
 }

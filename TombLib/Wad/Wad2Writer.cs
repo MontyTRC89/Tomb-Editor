@@ -204,6 +204,7 @@ namespace TombLib.Wad
                     chunkIO.WriteChunkWithChildren(Wad2Chunks.SpriteSequence, () =>
                     {
                         LEB128.Write(chunkIO.Raw, sequence.ObjectID);
+                        chunkIO.WriteChunkString(Wad2Chunks.SpriteSequenceName, sequence.Name);
                         foreach (var spr in sequence.Sprites)
                             chunkIO.WriteChunkInt(Wad2Chunks.SpriteSequenceSprite, _spritesTable.IndexOf(spr));
                     });
@@ -308,6 +309,8 @@ namespace TombLib.Wad
                                 }
                             });
                         }
+
+                        chunkIO.WriteChunkString(Wad2Chunks.MoveableName, m.Name);
                     });
                 }
             });
@@ -338,6 +341,8 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMin, s.CollisionBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.CollisionBox.Maximum);
                         });
+
+                        chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
                     });
                 }
             });

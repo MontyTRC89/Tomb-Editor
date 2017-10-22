@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TombLib.Graphics;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -362,6 +363,7 @@ namespace TombLib.Wad
 
                 newMoveable.ObjectID = destination;
                 newMoveable.Offset = new Vector3(moveable.Offset.X, moveable.Offset.Y, moveable.Offset.Z);
+                newMoveable.Name = moveable.Name;
 
                 // Add mesh trees
                 foreach (var link in moveable.Links)
@@ -385,6 +387,8 @@ namespace TombLib.Wad
 
                 newStaticMesh.Mesh = Meshes[meshesToAdd[0].Hash];
                 newStaticMesh.ObjectID = destination;
+                newStaticMesh.Name = staticMesh.Name;
+
                 newStaticMesh.CollisionBox = new BoundingBox(new Vector3(staticMesh.CollisionBox.Minimum.X,
                                                                          staticMesh.CollisionBox.Minimum.Y,
                                                                          staticMesh.CollisionBox.Minimum.Z),
@@ -426,7 +430,7 @@ namespace TombLib.Wad
                                 }
                                 else
                                 {
-                                    if (Wad2.MandatorySounds.Contains(soundId))
+                                    if (TrCatalog.IsSoundMandatory(TombRaiderVersion.TR4, soundId))
                                     {
                                         // If this is a mandatory sound, I can add it only if doesn't exist in dest Wad2
                                         if (!SoundInfo.ContainsKey(soundId))
