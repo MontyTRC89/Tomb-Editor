@@ -27,7 +27,7 @@ namespace TombEditor
             string resourcePath = System.IO.Path.GetDirectoryName(Application.ExecutablePath);
 
             // Load effects
-            IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor", "*.fx");
+            IEnumerable<string> effectFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Shaders", "*.fx");
             foreach (string fileName in effectFiles)
             {
                 string effectName = Path.GetFileNameWithoutExtension(fileName);
@@ -39,7 +39,7 @@ namespace TombEditor
             Effects.Add("Toolkit.BasicEffect", bEffect);
 
             // Load images
-            IEnumerable<string> textureFiles = Directory.EnumerateFiles(resourcePath + "\\Editor", "*.png");
+            IEnumerable<string> textureFiles = Directory.EnumerateFiles(resourcePath + "\\Editor\\Textures", "*.png");
             foreach (string fileName in textureFiles)
             {
                 string textureName = Path.GetFileNameWithoutExtension(fileName);
@@ -47,7 +47,7 @@ namespace TombEditor
             }
 
             // Load default font
-            SpriteFontData fontData = SpriteFontData.Load("Editor\\Font.bin");
+            SpriteFontData fontData = SpriteFontData.Load("Editor\\Misc\\Font.bin");
             fontData.DefaultCharacter = '\n'; // Don't crash on uncommon Unicode values
             Font = SpriteFont.New(Device, fontData);
         }

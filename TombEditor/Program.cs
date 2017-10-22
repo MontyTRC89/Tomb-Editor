@@ -41,7 +41,7 @@ namespace TombEditor
             configuration.SaveTry();
             Editor editor = new Editor(WindowsFormsSynchronizationContext.Current, configuration);
             Editor.Instance = editor;
-            TrCatalog.LoadCatalog("Editor\\TRCatalog.xml");
+            TrCatalog.LoadCatalog("Editor\\Misc\\TRCatalog.xml");
             Application.Run(new FormMain(editor));
             editor.Configuration.SaveTry();
             logger.Info("The editor has exited cleanly. The configuration has been saved!");
