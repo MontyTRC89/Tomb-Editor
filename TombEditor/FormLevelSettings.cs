@@ -9,7 +9,6 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using TombEditor.Controls;
 using TombEditor.Geometry;
 using TombEditor.Geometry.IO;
@@ -260,14 +259,17 @@ namespace TombEditor
 
         private string BrowseFolder(string currentPath, string description, VariableType baseDirType)
         {
-            using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+            using (SaveFileDialog dialog = new SaveFileDialog())
             {
+                dialog.FileName = "\u00A0";
+                dialog.CheckFileExists = false;
+                dialog.OverwritePrompt = false;
+                dialog.ValidateNames = false;
                 dialog.Title = description;
                 dialog.InitialDirectory = _levelSettings.MakeAbsolute(currentPath);
-                dialog.IsFolderPicker = true;
-                if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+                if (dialog.ShowDialog(this) != DialogResult.OK)
                     return null;
-                return _levelSettings.MakeRelative(dialog.FileName, baseDirType);
+                return _levelSettings.MakeRelative(Path.GetDirectoryName(dialog.FileName), baseDirType);
             }
         }
 
