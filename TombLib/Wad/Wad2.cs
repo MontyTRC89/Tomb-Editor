@@ -164,7 +164,6 @@ namespace TombLib.Wad
 
             // Create the DirectX texture atlas
             DirectXTexture = TextureLoad.Load(GraphicsDevice, tempBitmap);
-            tempBitmap.Save("E:\\andrea1.png");
         }
 
         public void PrepareDataForDirectX()
