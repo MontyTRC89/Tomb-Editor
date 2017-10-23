@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpDX;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -18,7 +19,8 @@ namespace TombLib.Wad
         private Vector3 _offset;
         private List<WadAnimation> _animations;
 
-        public WadMoveable()
+        public WadMoveable(Wad2 wad)
+            : base (wad)
         {
             _meshes = new List<WadMesh>();
             _links = new List<WadLink>();
@@ -27,7 +29,7 @@ namespace TombLib.Wad
 
         public override string ToString()
         {
-            return "(" + ObjectID + ") " + Name; // ObjectNames.GetMoveableName(ObjectID);
+            return "(" + ObjectID + ") " + TrCatalog.GetMoveableName(Wad.Version, ObjectID);
         }
 
         public List<WadSoundInfo> GetSounds(Wad2 wad)

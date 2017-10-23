@@ -312,7 +312,7 @@ namespace TombLib.Wad
                             });
                         }
 
-                        chunkIO.WriteChunkString(Wad2Chunks.MoveableName, m.Name);
+                        //chunkIO.WriteChunkString(Wad2Chunks.MoveableName, m.Name);
                     });
                 }
             });
@@ -344,7 +344,7 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkVector3(Wad2Chunks.BoundingBoxMax, s.CollisionBox.Maximum);
                         });
 
-                        chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
+                        //chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
                     });
                 }
             });
