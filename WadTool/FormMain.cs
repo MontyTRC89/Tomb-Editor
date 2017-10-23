@@ -120,7 +120,7 @@ namespace WadTool
 
                     int i = 0;
 
-                    foreach (var wave in sound.WaveSounds)
+                    foreach (var wave in sound.Samples)
                     {
                         var nodeWave = new DarkUI.Controls.DarkTreeNode("Sample " + i);
                         nodeWave.Tag = wave;
@@ -788,7 +788,7 @@ namespace WadTool
             {
                 wad.SoundInfo.Add(info.Key, info.Value);
 
-                foreach (var sample in info.Value.WaveSounds)
+                foreach (var sample in info.Value.Samples)
                 {
                     if (!wad.Samples.ContainsKey(sample.Hash)) wad.Samples.Add(sample.Hash, sample);
                 }

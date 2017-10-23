@@ -580,7 +580,7 @@ namespace TombLib.Wad
                     }
                     else if (id2 == Wad2Chunks.SoundSample)
                     {
-                        s.WaveSounds.Add(wad.Samples.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
+                        s.Samples.Add(wad.Samples.ElementAt(chunkIO.ReadChunkInt(chunkSize2)).Value);
                     }
                     else
                     {

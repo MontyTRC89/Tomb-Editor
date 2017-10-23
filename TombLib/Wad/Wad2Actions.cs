@@ -170,7 +170,7 @@ namespace TombLib.Wad
 
                 // Second, for each sound found, collect samples
                 foreach (var foundSound in tempSounds)
-                    foreach (var wave in foundSound.WaveSounds)
+                    foreach (var wave in foundSound.Samples)
                         if (!tempWaves.Contains(wave))
                             tempWaves.Add(wave);
 
@@ -194,7 +194,7 @@ namespace TombLib.Wad
                                     if (SoundInfo.ContainsKey(soundId))
                                     {
                                         var currentSoundInfo = SoundInfo[soundId];
-                                        if (currentSoundInfo.WaveSounds.Contains(foundWave))
+                                        if (currentSoundInfo.Samples.Contains(foundWave))
                                         {
                                             isFound = true;
                                             break;
@@ -442,14 +442,14 @@ namespace TombLib.Wad
                                             soundsRemapTable.Add(soundId, soundId);
 
                                             // Add wave files or get them if they exist
-                                            for (int k = 0; k < newSoundInfo.WaveSounds.Count; k++)
+                                            for (int k = 0; k < newSoundInfo.Samples.Count; k++)
                                             {
-                                                var wave = newSoundInfo.WaveSounds[k];
+                                                var wave = newSoundInfo.Samples[k];
 
                                                 if (!Samples.ContainsKey(wave.Hash))
                                                     Samples.Add(wave.Hash, wave);
                                                 else
-                                                    newSoundInfo.WaveSounds[k] = Samples[wave.Hash];
+                                                    newSoundInfo.Samples[k] = Samples[wave.Hash];
                                             }
                                         }
                                     }
@@ -466,6 +466,7 @@ namespace TombLib.Wad
                                             if (currentInfo.Hash == srcWad.SoundInfo[soundId].Hash)
                                             {
                                                 soundsRemapTable.Add(soundId, currentSoundId);
+                                                foundSoundInfo = true;
 
                                                 // Remap current sound
                                                 command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + currentSoundId);
@@ -492,19 +493,18 @@ namespace TombLib.Wad
                                             soundsRemapTable.Add(soundId, freeId);
 
                                             // Add waves
-                                            for (int k = 0; k < newSoundInfo.WaveSounds.Count; k++)
+                                            for (int k = 0; k < newSoundInfo.Samples.Count; k++)
                                             {
-                                                var wave = newSoundInfo.WaveSounds[k];
+                                                var wave = newSoundInfo.Samples[k];
 
                                                 if (!Samples.ContainsKey(wave.Hash))
                                                     Samples.Add(wave.Hash, wave);
                                                 else
-                                                    newSoundInfo.WaveSounds[k] = Samples[wave.Hash];
+                                                    newSoundInfo.Samples[k] = Samples[wave.Hash];
                                             }
 
                                             // Remap current sound
                                             command.Parameter2 = (ushort)((command.Parameter2 & 0xc000) + freeId);
-
                                         }
                                     }
                                 }
@@ -676,7 +676,7 @@ namespace TombLib.Wad
 
                 foreach (var soundInfo in SoundInfo)
                 {
-                    if (soundInfo.Value.WaveSounds.Contains(wave.Value))
+                    if (soundInfo.Value.Samples.Contains(wave.Value))
                     {
                         found = true;
                         break;

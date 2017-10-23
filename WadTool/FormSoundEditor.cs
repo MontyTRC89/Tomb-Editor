@@ -102,7 +102,7 @@ namespace WadTool
             comboId.SelectedIndex = (ushort)item.Tag;
 
             lstWaves.Items.Clear();
-            foreach (var wave in soundInfo.WaveSounds)
+            foreach (var wave in soundInfo.Samples)
             {
                 var itemWave = new DarkUI.Controls.DarkListItem(wave.Name);
                 itemWave.Tag = wave;
@@ -175,9 +175,9 @@ namespace WadTool
             soundInfo.RandomizePitch = cbRandomizePitch.Checked;
             soundInfo.Name = tbName.Text;
 
-            soundInfo.WaveSounds.Clear();
+            soundInfo.Samples.Clear();
             foreach (var item in lstWaves.Items)
-                soundInfo.WaveSounds.Add((WadSample)item.Tag);
+                soundInfo.Samples.Add((WadSample)item.Tag);
 
             if (oldSoundId == -1)
             {
