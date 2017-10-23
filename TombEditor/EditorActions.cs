@@ -1990,20 +1990,19 @@ namespace TombEditor
                     if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                         return;
 
-                    _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
+                    // Save level
+                    try
+                    {
+                        _editor.UnsavedChanges = false;
+                        Prj2Writer.SaveToPrj2(saveFileDialog.FileName, _editor.Level);
+                        _editor.Level.Settings.LevelFilePath = saveFileDialog.FileName;
+                    }
+                    catch (Exception exc)
+                    {
+                        logger.Error(exc, "Unable to save to \"" + saveFileDialog.FileName + "\".");
+                        DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
+                    }
                 }
-
-            // Save level
-            try
-            {
-                Prj2Writer.SaveToPrj2(_editor.Level.Settings.LevelFilePath, _editor.Level);
-                _editor.UnsavedChanges = false;
-            }
-            catch (Exception exc)
-            {
-                logger.Error(exc, "Unable to save to \"" + _editor.Level.Settings.LevelFilePath + "\".");
-                DarkMessageBox.Show(owner, "There was an error while saving project file. Exception: " + exc, "Error", MessageBoxIcon.Error);
-            }
         }
 
         /*public static void ExportCurrentRoom(IWin32Window owner)

@@ -184,17 +184,21 @@ namespace TombEditor
             }
 
             // Update application title and save button
-            if (obj is Editor.LevelFileNameChanged)
+            if (obj is Editor.LevelFileNameChangedEvent)
             {
                 string LevelName = string.IsNullOrEmpty(_editor.Level.Settings.LevelFilePath) ? "Untitled" :
                     Utils.GetFileNameWithoutExtensionTry(_editor.Level.Settings.LevelFilePath);
 
                 Text = "Tomb Editor " + Application.ProductVersion.ToString() + " - " + LevelName;
                 saveLevelToolStripMenuItem.Enabled = false;
+            }
 
+            if (obj is Editor.LevelNeedsToBeSavedEvent)
+            {
                 if (_editor.UnsavedChanges)
                 {
-                    Text = Text + "*";
+                    if(!Text.EndsWith("*"))
+                        Text = Text + "*";
                     saveLevelToolStripMenuItem.Enabled = true;
                 }
             }
@@ -219,9 +223,8 @@ namespace TombEditor
             {
                 if (!_editor.UnsavedChanges)
                 {
-                    // TODO: fix event catch when simply opening a level, so it doesn't add "*" for a split second
                     _editor.UnsavedChanges = true;
-                    _editor.LevelFileNameChange();
+                    _editor.LevelNeedsToBeSaved();
                 }
             }
         }

@@ -310,10 +310,17 @@ namespace TombEditor
         }
 
         // This is invoked when the level is saved an the file name changed.
-        public class LevelFileNameChanged : IEditorEvent { }
+        public class LevelFileNameChangedEvent : IEditorEvent { }
         public void LevelFileNameChange()
         {
-            RaiseEvent(new LevelFileNameChanged { });
+            RaiseEvent(new LevelFileNameChangedEvent { });
+        }
+
+        // This is invoked when any changes are made to level that needs to be saved.
+        public class LevelNeedsToBeSavedEvent : IEditorEvent { }
+        public void LevelNeedsToBeSaved()
+        {
+            RaiseEvent(new LevelNeedsToBeSavedEvent { });
         }
 
         // This is invoked when the amount of rooms is changed. (Rooms have been added or removed)
